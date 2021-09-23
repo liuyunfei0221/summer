@@ -219,6 +219,19 @@ public class SecureServiceImpl implements SecureService {
     };
 
     /**
+     * authInfo解析器
+     */
+    private final Function<String, AuthInfo> AUTH_INFO_PARSER = authInfoStr -> {
+        AuthInfo authInfo;
+        try {
+            authInfo = GSON.fromJson(authInfoStr, AuthInfo.class);
+        } catch (JsonSyntaxException e) {
+            throw UNAUTHORIZED_EXP;
+        }
+        return authInfo;
+    };
+
+    /**
      * 资源信息动态刷新时的阻塞器
      */
     private final Supplier<Boolean> RESOURCE_OR_REL_REFRESHING_BLOCKER = () -> {
@@ -743,12 +756,8 @@ public class SecureServiceImpl implements SecureService {
                             .flatMap(v -> {
                                 if (v == null || "".equals(v))
                                     return error(UNAUTHORIZED_EXP);
-                                AuthInfo authInfo;
-                                try {
-                                    authInfo = GSON.fromJson(v, AuthInfo.class);
-                                } catch (JsonSyntaxException e) {
-                                    return error(UNAUTHORIZED_EXP);
-                                }
+
+                                AuthInfo authInfo = AUTH_INFO_PARSER.apply(v);
                                 if (!jwt.equals(authInfo.getJwt()))
                                     return error(UNAUTHORIZED_EXP);
                                 if (!AUTHORIZATION_RES_CHECKER.apply(authInfo.getRoleId(), resourceKey))

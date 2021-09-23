@@ -52,7 +52,7 @@ public class RequestAttributeDeploy {
     /**
      * 磁盘每次使用最大/每文件
      */
-    private Integer maxDiskUsagePerPart;
+    private Long maxDiskUsagePerPart;
 
     /**
      * 最大parts数量
@@ -123,11 +123,11 @@ public class RequestAttributeDeploy {
         this.maxInMemorySize = maxInMemorySize;
     }
 
-    public Integer getMaxDiskUsagePerPart() {
+    public Long getMaxDiskUsagePerPart() {
         return maxDiskUsagePerPart;
     }
 
-    public void setMaxDiskUsagePerPart(Integer maxDiskUsagePerPart) {
+    public void setMaxDiskUsagePerPart(Long maxDiskUsagePerPart) {
         this.maxDiskUsagePerPart = maxDiskUsagePerPart;
     }
 

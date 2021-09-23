@@ -10,6 +10,7 @@ import org.elasticsearch.client.Node;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import reactor.util.Logger;
 
 import java.util.*;
@@ -103,6 +104,18 @@ public final class BlueEsGenerator {
                 .ifPresent(builder::setNodeSelector);
 
         return new RestHighLevelClient(builder);
+    }
+
+    /**
+     * 创建es模板
+     *
+     * @param restHighLevelClient
+     * @return
+     */
+    public static ElasticsearchRestTemplate generateElasticsearchTemplate(RestHighLevelClient restHighLevelClient) {
+        if (restHighLevelClient == null)
+            throw new RuntimeException("restHighLevelClient can't be null");
+        return new ElasticsearchRestTemplate(restHighLevelClient);
     }
 
     /**

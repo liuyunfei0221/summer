@@ -3,6 +3,7 @@ package com.blue.business.service.impl;
 import com.blue.base.model.exps.BlueException;
 import com.blue.business.repository.entity.Article;
 import com.blue.business.repository.mapper.ArticleMapper;
+import com.blue.business.repository.template.ArticleRepository;
 import com.blue.business.service.inter.ArticleService;
 import com.blue.identity.common.BlueIdentityProcessor;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -31,15 +32,17 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final RestHighLevelClient restHighLevelClient;
 
+    private final ArticleRepository articleRepository;
+
     private final ArticleMapper articleMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ArticleServiceImpl(BlueIdentityProcessor blueIdentityProcessor,  RestHighLevelClient restHighLevelClient, ArticleMapper articleMapper) {
+    public ArticleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RestHighLevelClient restHighLevelClient, ArticleRepository articleRepository, ArticleMapper articleMapper) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.restHighLevelClient = restHighLevelClient;
+        this.articleRepository = articleRepository;
         this.articleMapper = articleMapper;
     }
-
 
     /**
      * 根据主键查询文章信息
