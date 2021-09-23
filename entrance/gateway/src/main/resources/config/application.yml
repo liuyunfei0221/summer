@@ -4,7 +4,7 @@ spring:
   aop:
     proxy-target-class: true
   profiles:
-    active: dev
+    active: test
   webflux:
     static-path-pattern: /*
   web:

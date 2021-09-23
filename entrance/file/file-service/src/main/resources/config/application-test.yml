@@ -163,7 +163,7 @@ request:
   maxContentLength: 4294967296
   maxHeadersSize: 1048576
   maxInMemorySize: 8388608
-  maxDiskUsagePerPart: 8388608
+  maxDiskUsagePerPart: 4294967296
   maxParts: 32
   enableLoggingRequestDetails: false
 

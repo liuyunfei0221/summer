@@ -17,7 +17,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -78,41 +77,39 @@ public final class FluxCommonFactory extends ReactiveCommonFunctions {
      * 封装request
      */
     public static final BiFunction<ServerHttpRequest, Mono<String>, ServerHttpRequestDecorator> REQUEST_DECORATOR_GENERATOR =
-            (request, dataMono) -> {
-                //noinspection NullableProblems
-                return new ServerHttpRequestDecorator(request) {
-                    @Override
-                    public Flux<DataBuffer> getBody() {
-                        return dataMono.flatMapIterable(s -> {
-                            byte[] bytes = s.getBytes(UTF_8);
-                            int len = bytes.length;
+            (request, dataMono) ->
+                    new ServerHttpRequestDecorator(request) {
+                        @SuppressWarnings("NullableProblems")
+                        @Override
+                        public Flux<DataBuffer> getBody() {
+                            return Flux.create(fluxSink ->
+                                    dataMono.subscribe(s -> {
+                                                byte[] bytes = s.getBytes(UTF_8);
+                                                int len = bytes.length;
 
-                            int limit = 0;
-                            int rows;
-                            int last;
+                                                int limit = 0;
+                                                int rows;
+                                                int last;
 
-                            LinkedList<DataBuffer> buffers = new LinkedList<>();
+                                                while (limit < len) {
+                                                    rows = BUFFER_ALLOCATE;
+                                                    if ((last = len - limit) < rows)
+                                                        rows = last;
 
-                            while (limit < len) {
-                                rows = BUFFER_ALLOCATE;
-                                if ((last = len - limit) < rows)
-                                    rows = last;
+                                                    DataBuffer dataBuffer = DATA_BUFFER_FACTORY.allocateBuffer(rows);
+                                                    dataBuffer.write(bytes, limit, rows);
+                                                    fluxSink.next(dataBuffer);
 
-                                DataBuffer dataBuffer = DATA_BUFFER_FACTORY.allocateBuffer(rows);
-                                dataBuffer.write(bytes, limit, rows);
-                                buffers.add(dataBuffer);
-
-                                limit += rows;
-                            }
-
-                            //noinspection UnusedAssignment
-                            bytes = null;
-
-                            return buffers;
-                        });
-                    }
-                };
-            };
+                                                    limit += rows;
+                                                }
+                                                //noinspection UnusedAssignment
+                                                bytes = null;
+                                                fluxSink.complete();
+                                            }
+                                    )
+                            );
+                        }
+                    };
 
     private static void addBindStringValue(Map<String, String> params, String key, List<String> values) {
         ofNullable(values)

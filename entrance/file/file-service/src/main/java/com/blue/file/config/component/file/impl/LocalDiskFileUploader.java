@@ -10,7 +10,6 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.BufferOverflowStrategy;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -30,6 +29,7 @@ import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
 import static java.lang.System.currentTimeMillis;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
+import static reactor.core.publisher.BufferOverflowStrategy.ERROR;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
@@ -58,7 +58,7 @@ public final class LocalDiskFileUploader implements FileUploader {
 
     private static final int BACKPRESSURE_BUFFER_MAX_SIZE = 128;
 
-    private  Set<String> validTypes;
+    private Set<String> validTypes;
 
     private Set<Character> invalidPres;
 
@@ -134,11 +134,9 @@ public final class LocalDiskFileUploader implements FileUploader {
         Monitor<Long> monitor = new Monitor<>(0L, Long::sum, m -> m <= SINGLE_FILE_SIZE_THRESHOLD);
         Flux<DataBuffer> dataBufferFlux = filePart.content();
 
-        FileOutputStream descOutputStream;
-        BufferedOutputStream descBufferedOutputStream;
         try {
-            descOutputStream = new FileOutputStream(desc);
-            descBufferedOutputStream = new BufferedOutputStream(descOutputStream);
+            FileOutputStream descOutputStream = new FileOutputStream(desc);
+            BufferedOutputStream descBufferedOutputStream = new BufferedOutputStream(descOutputStream);
 
             Runnable resourceCloser = () -> {
                 try {
@@ -157,12 +155,11 @@ public final class LocalDiskFileUploader implements FileUploader {
                         LOGGER.error("文件上传失败, throwable -> " + throwable);
                         resourceCloser.run();
                     })
-                    .onBackpressureBuffer(BACKPRESSURE_BUFFER_MAX_SIZE, BufferOverflowStrategy.ERROR)
-                    .flatMap(dataBuffer -> {
+                    .onBackpressureBuffer(BACKPRESSURE_BUFFER_MAX_SIZE, ERROR)
+                    .doOnNext(dataBuffer -> {
                         byte[] array = dataBuffer.asByteBuffer().array();
                         if (monitor.operateWithAssert((long) array.length)) {
                             try {
-                                //noinspection BlockingMethodInNonBlockingContext
                                 descBufferedOutputStream.write(array);
                             } catch (IOException e) {
                                 LOGGER.error("文件上传失败 e -> " + e);
@@ -172,9 +169,8 @@ public final class LocalDiskFileUploader implements FileUploader {
                             error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "文件大小不能超过" + monitor.getMonitored()));
                         }
                         array = null;
-                        return just(true);
                     }).collectList()
-                    .flatMap(l ->
+                    .flatMap(v ->
                             just(new FileUploadResult(descName, validResult.getName(), true, "上传成功", monitor.getMonitored())));
 
         } catch (BlueException e) {
