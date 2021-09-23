@@ -1,4 +1,4 @@
-package com.blue.marketing.component.event.handler;
+package com.blue.marketing.component.event.impl;
 
 import com.blue.base.constant.marketing.EventType;
 import com.blue.marketing.api.model.MarketingEvent;
@@ -8,24 +8,23 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.marketing.EventType.ACTIVITY_REWARD;
+import static com.blue.base.constant.marketing.EventType.SIGN_REWARD;
 import static reactor.util.Loggers.getLogger;
 
-
 /**
- * 活动奖励业务实现
+ * 用户业务实现
  *
  * @author DarkBlue
  */
 @SuppressWarnings("JavaDoc")
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
-public class ActivityRewardEventHandler implements EventHandler {
+public class SignRewardHandleServiceImpl implements EventHandler {
 
-    private static final Logger LOGGER = getLogger(ActivityRewardEventHandler.class);
+    private static final Logger LOGGER = getLogger(SignRewardHandleServiceImpl.class);
 
     /**
-     * 处理活动奖励事件
+     * 处理签到奖励事件
      *
      * @param marketingEvent
      */
@@ -37,7 +36,7 @@ public class ActivityRewardEventHandler implements EventHandler {
 
     @Override
     public EventType targetType() {
-        return ACTIVITY_REWARD;
+        return SIGN_REWARD;
     }
 
 }

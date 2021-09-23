@@ -16,28 +16,30 @@ public final class FileUploadResult implements Serializable {
     /**
      * 上传后的目标文件名/url
      */
-    private final String destination;
+    private String destination;
 
     /**
      * 上传前原文件名
      */
-    private final String resource;
+    private String resource;
 
     /**
      * 上传成功标识
      */
-    private final Boolean success;
+    private Boolean success;
 
     /**
      * 处理信息
      */
-    private final String message;
+    private String message;
 
     /**
      * 文件大小
      */
-    private final Long length;
+    private Long length;
 
+    public FileUploadResult() {
+    }
 
     public FileUploadResult(String destination, String resource, boolean success, String message, Long length) {
         this.destination = destination;
@@ -51,25 +53,45 @@ public final class FileUploadResult implements Serializable {
         return destination;
     }
 
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
+
     public String getResource() {
         return resource;
     }
 
-    public boolean isSuccess() {
+    public void setResource(String resource) {
+        this.resource = resource;
+    }
+
+    public Boolean getSuccess() {
         return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 
     public String getMessage() {
         return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public Long getLength() {
         return length;
     }
 
+    public void setLength(Long length) {
+        this.length = length;
+    }
+
     @Override
     public String toString() {
-        return "FileUploadVO{" +
+        return "FileUploadResult{" +
                 "destination='" + destination + '\'' +
                 ", resource='" + resource + '\'' +
                 ", success=" + success +
@@ -77,4 +99,5 @@ public final class FileUploadResult implements Serializable {
                 ", length=" + length +
                 '}';
     }
+
 }

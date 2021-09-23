@@ -1,11 +1,9 @@
 package com.blue.file.service.impl;
 
-import com.blue.base.common.multitask.BlueExecutor;
-import com.blue.base.common.multitask.BlueProcessor;
 import com.blue.base.constant.base.Status;
 import com.blue.base.model.exps.BlueException;
 import com.blue.file.api.model.FileUploadResult;
-import com.blue.file.config.common.FileProcessor;
+import com.blue.file.config.component.file.inter.FileUploader;
 import com.blue.file.config.deploy.FileDeploy;
 import com.blue.file.repository.entity.Attachment;
 import com.blue.file.repository.entity.DownloadHistory;
@@ -23,7 +21,6 @@ import reactor.util.Logger;
 import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
@@ -34,6 +31,7 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static org.apache.commons.lang3.StringUtils.substring;
 import static org.springframework.util.CollectionUtils.isEmpty;
+import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -48,7 +46,7 @@ public class FileServiceImpl implements FileService {
 
     private static final Logger LOGGER = getLogger(FileServiceImpl.class);
 
-    private final ExecutorService executorService;
+    private final FileUploader localDiskFileUploader;
 
     private final AttachmentService attachmentService;
 
@@ -59,10 +57,8 @@ public class FileServiceImpl implements FileService {
     private final FileDeploy fileDeploy;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public FileServiceImpl(ExecutorService executorService, AttachmentService attachmentService,
-                           DownloadHistoryService downloadHistoryService, BlueIdentityProcessor blueIdentityProcessor,
-                           FileDeploy fileDeploy) {
-        this.executorService = executorService;
+    public FileServiceImpl(FileUploader localDiskFileUploader, AttachmentService attachmentService, DownloadHistoryService downloadHistoryService, BlueIdentityProcessor blueIdentityProcessor, FileDeploy fileDeploy) {
+        this.localDiskFileUploader = localDiskFileUploader;
         this.attachmentService = attachmentService;
         this.downloadHistoryService = downloadHistoryService;
         this.blueIdentityProcessor = blueIdentityProcessor;
@@ -79,14 +75,8 @@ public class FileServiceImpl implements FileService {
      */
     private static String ATTR_NAME;
 
-    /**
-     * 文件处理器
-     */
-    private static BlueProcessor<Part, FileUploadResult> FILE_PROCESSOR;
-
     @PostConstruct
     public void init() {
-        FILE_PROCESSOR = new FileProcessor(fileDeploy);
         ATTR_NAME = fileDeploy.getAttrName();
         CURRENT_SIZE_THRESHOLD = fileDeploy.getCurrentSizeThreshold();
     }
@@ -131,30 +121,29 @@ public class FileServiceImpl implements FileService {
         if (size > CURRENT_SIZE_THRESHOLD)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "同时上传的文件数量不能超过" + CURRENT_SIZE_THRESHOLD);
 
-        //构造执行器
-        BlueExecutor<Part, FileUploadResult> blueExecutor = new BlueExecutor<>(resources, FILE_PROCESSOR, executorService);
+        return fromIterable(resources)
+                .flatMap(localDiskFileUploader::upload
+                )
+                .collectList()
+                .flatMap(uploadedFiles -> {
+                    allotByMax(uploadedFiles, (int) DB_INSERT.value, false)
+                            .stream()
+                            .filter(l -> !isEmpty(l))
+                            .forEach(l ->
+                                    attachmentService.insertBatch(
+                                            l
+                                                    .stream()
+                                                    .filter(FileUploadResult::getSuccess)
+                                                    .map(fur -> {
+                                                        Attachment attachment = ATTACHMENT_CONVERTER.apply(fur, memberId);
+                                                        attachment.setId(blueIdentityProcessor.generate(Attachment.class));
+                                                        return attachment;
+                                                    }).collect(toList()))
+                            );
+                    LOGGER.info("uploadedFiles -> " + uploadedFiles);
+                    return just(uploadedFiles);
+                });
 
-        //获取结果
-        List<FileUploadResult> uploadedFiles = blueExecutor.execute();
-
-        List<List<FileUploadResult>> files = allotByMax(uploadedFiles, (int) DB_INSERT.value, false);
-        files
-                .stream()
-                .filter(l -> !isEmpty(l))
-                .forEach(l ->
-                        attachmentService.insertBatch(
-                                l
-                                        .stream()
-                                        .filter(FileUploadResult::isSuccess)
-                                        .map(fur -> {
-                                            Attachment attachment = ATTACHMENT_CONVERTER.apply(fur, memberId);
-                                            attachment.setId(blueIdentityProcessor.generate(Attachment.class));
-                                            return attachment;
-                                        }).collect(toList()))
-                );
-
-        LOGGER.info("uploadedFiles -> " + uploadedFiles);
-        return just(uploadedFiles);
     }
 
 
