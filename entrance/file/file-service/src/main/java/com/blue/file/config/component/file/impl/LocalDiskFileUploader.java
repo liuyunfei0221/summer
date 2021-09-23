@@ -142,6 +142,7 @@ public final class LocalDiskFileUploader implements FileUploader {
                 try {
                     descBufferedOutputStream.close();
                     descBufferedOutputStream.close();
+                    LOGGER.info("资源释放");
                 } catch (IOException e) {
                     LOGGER.error("资源释放失败, e = {}", e);
                 }
