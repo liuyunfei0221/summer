@@ -1,0 +1,253 @@
+server:
+  #  address: 172.30.128.25
+  port: 39000
+  netty:
+    connection-timeout: 6s
+  http2:
+    enabled: true
+  error:
+    path: /error
+#  ssl:
+#    key-store: classpath:blue.keystore
+#    key-store-password: 123456
+#    key-alias: blue
+#    enabled: true
+#    key-store-type: PKCS12
+#  http:
+#    port: 8002
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 300
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+    hostname: ${spring.cloud.client.ip-address}
+  client:
+    service-url:
+      defaultZone: http://localhost:7777/eureka/
+    registry-fetch-interval-seconds: 300
+
+
+data:
+  shards:
+    - url: jdbc:mysql://localhost:3306/portal_0
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+
+    - url: jdbc:mysql://localhost:3306/portal_1
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+  tables: [ bulletin ]
+  tableSizePerDataBase: 2
+  shardingColumn: id
+  undoLogs: [ ]
+  cacheEnabled: false
+  lazyLoadingEnabled: false
+  aggressiveLazyLoading: false
+  multipleResultSetsEnabled: false
+  useColumnLabel: true
+  useGeneratedKeys: false
+  connectionTimeout: 30000
+  autoMappingBehavior: FULL
+  executorType: BATCH
+  mapperLocation: classpath:mapper/*.xml
+  props:
+    sql.show: true
+    sql.simple: true
+    executor.size: 128
+    max.connections.size.per.query: 2
+    check.table.metadata.enabled: true
+    query.with.cipher.column: false
+    xa.transaction.manager.type: Atomikos
+
+
+identity:
+  dataCenter: 0
+  worker: 0
+  serviceName: blue-shine
+  bootSeconds: 1618790400
+  bufferPower: 3
+  paddingFactor: 50
+  paddingCorePoolSize: 1
+  paddingMaximumPoolSize: 2
+  keepAliveSeconds: 128
+  paddingBlockingQueueSize: 1024
+  paddingScheduled: true
+  paddingScheduledCorePoolSize: 2
+  paddingScheduledInitialDelayMillis: 5000
+  paddingScheduledDelayMillis: 15000
+
+
+cache:
+  serverMode: SINGLE
+  nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
+  password: sfakjfiju99jjf87LJSDDU8
+  maxRedirects: 4
+  host: localhost
+  port: 6379
+  minIdle: 4
+  maxIdle: 64
+  maxTotal: 128
+  maxWaitMillis: 16
+  autoReconnect: true
+  bufferUsageRatio: 32.0
+  cancelCommandsOnReconnectFailure: false
+  pingBeforeActivateConnection: false
+  requestQueueSize: 64
+  publishOnScheduler: true
+  tcpNoDelay: true
+  connectTimeout: 4
+  keepAlive: false
+  suspendReconnectOnProtocolFailure: false
+  fixedTimeout: 4
+  commandTimeout: 4
+  shutdownTimeout: 8
+  shutdownQuietPeriod: 4
+  entryTtl: 60
+
+
+executor:
+  corePoolSize: 4
+  maximumPoolSize: 8
+  keepAliveTime: 64
+  blockingQueueCapacity: 128
+  threadNamePre: blue-summer
+
+
+redisson:
+  serverMode: SINGLE
+  nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
+  password: sfakjfiju99jjf87LJSDDU8
+  host: localhost
+  port: 6379
+  scanInterval: 8000
+  checkSlotsCoverage: false
+  tcpNoDelay: true
+  masterConnectionMinimumIdleSize: 2
+  slaveConnectionMinimumIdleSize: 2
+  masterConnectionPoolSize: 2
+  slaveConnectionPoolSize: 2
+  subscriptionConnectionMinimumIdleSize: 2
+  subscriptionConnectionPoolSize: 2
+  subscriptionsPerConnection: 2
+  subscriptionMode: MASTER
+  timeout: 8000
+  connectTimeout: 8000
+  idleConnectionTimeout: 32000
+  retryAttempts: 2
+  retryInterval: 4000
+  keepAlive: true
+  dnsMonitoringInterval: -1
+  pingConnectionInterval: 300000
+  executorCorePoolSize: 4
+  executorMaximumPoolSize: 8
+  executorKeepAliveTime: 64
+  executorBlockingQueueCapacity: 128
+
+
+dubbo:
+  metadataReportAddress: zookeeper://127.0.0.1:2181
+
+  registryId: zookeeper-registry
+  registryZone: summer-shine
+  registryProtocol: zookeeper
+  registryAddress: zookeeper://127.0.0.1:2181
+  registryFile: D:/locallogs/dubbo/shine/registry.properties
+  registryCheck: false
+  registryTimeout: 60000
+
+  applicationId: summer-shine
+  applicationName: summer-shine
+  applicationOwner: blue
+  applicationOrganization: blue
+  applicationShutWait: 20s
+
+  protocolName: dubbo
+  protocolHost: localhost
+  protocolPort: 42000
+  protocolAccesslog: D:/locallogs/dubbo/shine/access.log
+
+  providerRetries: 1
+  providerTimeout: 5000
+  providerLoadbalance: random
+
+  consumerRetries: 1
+  consumerTimeout: 5000
+  consumerLoadbalance: random
+  consumerCheck: false
+
+
+reactrest:
+  maxConnections: 64
+  workerCount: 64
+  useGlobalResources: false
+  connectTimeoutMillis: 7000
+  useTcpNodelay: false
+  protocols: [ HTTP11,H2,H2C ]
+  responseTimeoutMillis: 3000
+  readTimeoutMillis: 3000
+  writeTimeoutMillis: 3000
+  maxByteInMemorySize: 1048576
+
+
+syncrest:
+  maxPerRoute: 64
+  maxTotal: 256
+  soTimeout: 2000
+  connectTimeout: 2000
+  RequestTimeout: 2000
+  maxRedirects: 2
+  retryTimes: 1
+  userAgent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:63.0) Gecko/20100101 Firefox/63.0
+  radicalizationTry: false
+
+
+mongo:
+  addressAttrs:
+    - address: localhost
+      port: 27017
+  databaseName: shine
+  retryReads: true
+  retryWrites: false
+  applicationName: blue-shine
+  uuidRepresentation: JAVA_LEGACY
+  socketConnectTimeoutMillis: 5000
+  socketReadTimeoutMillis: 5000
+  socketReceiveBufferSize: 1000000
+  socketSendBufferSize: 1024
+  clusterConnectionMode: MULTIPLE
+  clusterType: STANDALONE
+  clusterLocalThresholdMillis: 5000
+  serverSelectionTimeoutMillis: 5000
+  poolMaxSize: 12
+  poolMinSize: 4
+  poolMaxWaitTimeMillis: 3000
+  poolMaxConnectionLifeTimeMillis: 60000
+  poolMaxConnectionIdleTimeMillis: 60000
+  poolMaintenanceInitialDelayMillis: 3000
+  poolMaintenanceFrequencyMillis: 60000
+  sslEnabled: false
+
+
+debug: false

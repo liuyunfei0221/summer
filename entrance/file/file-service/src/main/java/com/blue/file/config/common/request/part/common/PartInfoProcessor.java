@@ -1,0 +1,100 @@
+package com.blue.file.config.common.request.part.common;
+
+import com.blue.file.config.common.request.part.inter.PartInfoHandler;
+import org.springframework.http.codec.multipart.Part;
+import reactor.util.Logger;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import static com.blue.base.common.base.ClassGetter.getClassesByPackage;
+import static com.blue.file.config.common.request.part.common.FilePartElementKey.PART_CLASS;
+import static com.blue.file.config.common.request.part.common.FilePartElementKey.PART_NAME;
+import static java.util.stream.Collectors.toMap;
+import static reactor.util.Loggers.getLogger;
+
+/**
+ * 文件非文件体信息解析处理器
+ *
+ * @author DarkBlue
+ */
+@SuppressWarnings({"SameParameterValue", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
+public final class PartInfoProcessor {
+
+    private static final Logger LOGGER = getLogger(PartInfoProcessor.class);
+
+    /**
+     * 异常处理器实现类路径
+     */
+    private static final String DIR_NAME = "com.blue.file.config.common.request.part.impl";
+
+    private static final Map<String, PartInfoHandler> MAPPING = generatorMapping(DIR_NAME);
+
+    /**
+     * 初始化异常映射器
+     *
+     * @param dirName
+     * @return
+     */
+    private static Map<String, PartInfoHandler> generatorMapping(String dirName) {
+        List<Class<?>> classes = getClassesByPackage(dirName, true);
+
+        LOGGER.warn("开始加载clz");
+        return classes
+                .stream()
+                .filter(clz -> !clz.isInterface() &&
+                        Stream.of(clz.getInterfaces()).anyMatch(inter -> PartInfoHandler.class.getName().equals(inter.getName()))
+                )
+                .map(clz -> {
+                    try {
+                        LOGGER.warn("加载 clz->" + clz.getName());
+                        return (PartInfoHandler) clz.getConstructor().newInstance();
+                    } catch (Exception e) {
+                        LOGGER.error("newInstance() FAILED, e = ", e);
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .map(pih ->
+                        pih.classesCanHandle()
+                                .stream()
+                                .collect(toMap(k -> k, v -> pih, (a, b) -> a))
+                ).flatMap(m ->
+                        m.entrySet().stream()
+                ).collect(
+                        toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a)
+                );
+    }
+
+    /**
+     * 处理
+     *
+     * @param part
+     * @return
+     */
+    public static Map<String, String> process(Part part) {
+        LOGGER.warn("part = {}", part);
+
+        String partClzName = part.getClass().getName();
+
+        PartInfoHandler handler = MAPPING.get(partClzName);
+        if (handler != null)
+            try {
+                return handler.process(part);
+            } catch (Exception e) {
+                LOGGER.error("解析part失败,part = {}, e = {}", part, e);
+            }
+
+        LOGGER.error("未能处理的part," + "part = {}", part);
+        Map<String, String> infos = new HashMap<>(4);
+        infos.put(PART_CLASS.identity, partClzName);
+        infos.put(PART_NAME.identity, part.name());
+
+        return infos;
+    }
+
+
+}

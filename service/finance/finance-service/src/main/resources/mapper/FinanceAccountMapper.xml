@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.finance.repository.mapper.FinanceAccountMapper">
+    <resultMap id="BaseResultMap" type="com.blue.finance.repository.entity.FinanceAccount">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="balance" jdbcType="BIGINT" property="balance"/>
+        <result column="frozen" jdbcType="BIGINT" property="frozen"/>
+        <result column="income" jdbcType="BIGINT" property="income"/>
+        <result column="outlay" jdbcType="BIGINT" property="outlay"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , member_id, balance, frozen, income, outlay, status, create_time, update_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from finance_account
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from finance_account
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.blue.finance.repository.entity.FinanceAccount">
+        insert into finance_account (id, member_id, balance,
+                                     frozen, income, outlay,
+                                     status, create_time, update_time)
+        values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{balance,jdbcType=BIGINT},
+                #{frozen,jdbcType=BIGINT}, #{income,jdbcType=BIGINT}, #{outlay,jdbcType=BIGINT},
+                #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.blue.finance.repository.entity.FinanceAccount">
+        insert into finance_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="memberId != null">
+                member_id,
+            </if>
+            <if test="balance != null">
+                balance,
+            </if>
+            <if test="frozen != null">
+                frozen,
+            </if>
+            <if test="income != null">
+                income,
+            </if>
+            <if test="outlay != null">
+                outlay,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="memberId != null">
+                #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="balance != null">
+                #{balance,jdbcType=BIGINT},
+            </if>
+            <if test="frozen != null">
+                #{frozen,jdbcType=BIGINT},
+            </if>
+            <if test="income != null">
+                #{income,jdbcType=BIGINT},
+            </if>
+            <if test="outlay != null">
+                #{outlay,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.finance.repository.entity.FinanceAccount">
+        update finance_account
+        <set>
+            <if test="memberId != null">
+                member_id = #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="balance != null">
+                balance = #{balance,jdbcType=BIGINT},
+            </if>
+            <if test="frozen != null">
+                frozen = #{frozen,jdbcType=BIGINT},
+            </if>
+            <if test="income != null">
+                income = #{income,jdbcType=BIGINT},
+            </if>
+            <if test="outlay != null">
+                outlay = #{outlay,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.blue.finance.repository.entity.FinanceAccount">
+        update finance_account
+        set member_id   = #{memberId,jdbcType=BIGINT},
+            balance     = #{balance,jdbcType=BIGINT},
+            frozen      = #{frozen,jdbcType=BIGINT},
+            income      = #{income,jdbcType=BIGINT},
+            outlay      = #{outlay,jdbcType=BIGINT},
+            status      = #{status,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectByMemberId" resultMap="BaseResultMap">
+        <if test="memberId != null and memberId > 0">
+            SELECT
+            <include refid="Base_Column_List"/>
+            FROM
+            finance_account FORCE INDEX(idx_member)
+            WHERE
+            member_id = #{memberId,jdbcType=VARCHAR};
+        </if>
+    </select>
+
+</mapper>

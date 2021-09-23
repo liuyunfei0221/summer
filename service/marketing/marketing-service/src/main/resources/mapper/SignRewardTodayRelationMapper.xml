@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.marketing.repository.mapper.SignRewardTodayRelationMapper">
+    <resultMap id="BaseResultMap" type="com.blue.marketing.repository.entity.SignRewardTodayRelation">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="reward_id" jdbcType="BIGINT" property="rewardId"/>
+        <result column="year" jdbcType="SMALLINT" property="year"/>
+        <result column="month" jdbcType="TINYINT" property="month"/>
+        <result column="day" jdbcType="TINYINT" property="day"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+        <result column="creator" jdbcType="BIGINT" property="creator"/>
+        <result column="updater" jdbcType="BIGINT" property="updater"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , reward_id, year, month, day, create_time, update_time, creator, updater
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sign_reward_today_relation
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from sign_reward_today_relation
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.blue.marketing.repository.entity.SignRewardTodayRelation">
+        insert into sign_reward_today_relation (id, reward_id, year,
+                                                month, day, create_time,
+                                                update_time, creator, updater)
+        values (#{id,jdbcType=BIGINT}, #{rewardId,jdbcType=BIGINT}, #{year,jdbcType=SMALLINT},
+                #{month,jdbcType=TINYINT}, #{day,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.blue.marketing.repository.entity.SignRewardTodayRelation">
+        insert into sign_reward_today_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="rewardId != null">
+                reward_id,
+            </if>
+            <if test="year != null">
+                year,
+            </if>
+            <if test="month != null">
+                month,
+            </if>
+            <if test="day != null">
+                day,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="rewardId != null">
+                #{rewardId,jdbcType=BIGINT},
+            </if>
+            <if test="year != null">
+                #{year,jdbcType=SMALLINT},
+            </if>
+            <if test="month != null">
+                #{month,jdbcType=TINYINT},
+            </if>
+            <if test="day != null">
+                #{day,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.blue.marketing.repository.entity.SignRewardTodayRelation">
+        update sign_reward_today_relation
+        <set>
+            <if test="rewardId != null">
+                reward_id = #{rewardId,jdbcType=BIGINT},
+            </if>
+            <if test="year != null">
+                year = #{year,jdbcType=SMALLINT},
+            </if>
+            <if test="month != null">
+                month = #{month,jdbcType=TINYINT},
+            </if>
+            <if test="day != null">
+                day = #{day,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.blue.marketing.repository.entity.SignRewardTodayRelation">
+        update sign_reward_today_relation
+        set reward_id   = #{rewardId,jdbcType=BIGINT},
+            year        = #{year,jdbcType=SMALLINT},
+            month       = #{month,jdbcType=TINYINT},
+            day         = #{day,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT},
+            updater     = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="listRelationByYearAndMonth" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        sign_reward_today_relation FORCE INDEX(`idx_date_reward`)
+        WHERE
+        year = #{year, jdbcType=SMALLINT}
+        AND
+        month = #{month, jdbcType=TINYINT};
+    </select>
+
+</mapper>

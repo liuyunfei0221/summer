@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <artifactId>summer</artifactId>
+        <groupId>com.blue</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>service</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>service</name>
+    <description>service</description>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>base</module>
+        <module>business</module>
+        <module>data</module>
+        <module>finance</module>
+        <module>marketing</module>
+        <module>member</module>
+        <module>portal</module>
+        <module>risk</module>
+        <module>secure</module>
+        <module>shine</module>
+    </modules>
+
+</project>

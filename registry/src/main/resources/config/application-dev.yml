@@ -1,0 +1,22 @@
+server:
+  port: 7777
+eureka:
+  instance:
+    hostname: localhost
+    lease-expiration-duration-in-seconds: 300000
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone:
+        http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    enable-self-preservation: true
+    expected-client-renewal-interval-seconds: 10
+    eviction-interval-timer-in-ms: 30000
+    response-cache-update-interval-ms: 30000
+
+
+websocket:
+  direct: false
+  bufferSize: 1024

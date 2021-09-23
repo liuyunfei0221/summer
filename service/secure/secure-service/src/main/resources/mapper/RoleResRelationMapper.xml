@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.secure.repository.mapper.RoleResRelationMapper">
+    <resultMap id="BaseResultMap" type="com.blue.secure.repository.entity.RoleResRelation">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="role_id" jdbcType="BIGINT" property="roleId"/>
+        <result column="res_id" jdbcType="BIGINT" property="resId"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+        <result column="creator" jdbcType="BIGINT" property="creator"/>
+        <result column="updater" jdbcType="BIGINT" property="updater"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , role_id, res_id, create_time, update_time, creator, updater
+    </sql>
+
+    <select id="listRoleResRelation" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role_res_relation;
+    </select>
+
+    <select id="listResIdsByRoleId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT
+        res_id
+        FROM
+        role_res_relation
+        WHERE
+        role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+</mapper>

@@ -1,0 +1,239 @@
+spring:
+  application:
+    name: blue-gateway
+  aop:
+    proxy-target-class: true
+  profiles:
+    active: dev
+  webflux:
+    static-path-pattern: /*
+  web:
+    resources:
+      static-locations: classpath:static
+  codec:
+    max-in-memory-size: 32
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+  main:
+    allow-bean-definition-overriding: true
+
+  cloud:
+    loadbalancer:
+      enabled: true
+      eureka:
+        approximate-zone-from-hostname: false
+      service-discovery:
+        timeout: 5s
+      sticky-session:
+        add-service-instance-cookie: false
+      zone: summer
+      retry:
+        enabled: true
+        avoid-previous-instance: true
+        max-retries-on-next-service-instance: 1
+        max-retries-on-same-service-instance: 0
+        retry-on-all-operations: false
+        retryable-status-codes: [ 203,500,408,504 ]
+        backoff:
+          enabled: true
+          jitter: 0.5
+          min-backoff: 5ms
+          max-backoff: 10ms
+      cache:
+        enabled: true
+        caffeine:
+          spec: initialCapacity=1024,expireAfterWrite=5s
+        capacity: 1024
+        ttl: 5s
+
+    gateway:
+      httpclient:
+        connectTimeout: 100000
+        responseTimeout: 10s
+        maxHeaderSize: 2048
+        maxInitialLineLength: 2048
+        pool:
+          type: ELASTIC
+          name: proxy
+          maxConnections: 32
+          acquireTimeout: 4000
+          maxIdleTime: 4s
+          maxLifeTime: 32s
+        ssl:
+          useInsecureTrustManager: false
+          handshakeTimeout: 10000
+          closeNotifyFlushTimeout: 3000
+          closeNotifyReadTimeout: 3000
+        #          key-store:
+        #          key-password:
+        #          key-store-password:
+        #          key-store-type:
+        #          key-store-provider:
+        websocket:
+          maxFramePayloadLength: 4096
+          proxyPing: false
+
+      discovery:
+        locator:
+          enabled: true
+
+
+      global-filter:
+        remove-cached-body:
+          enabled: false
+        adapt-cached-body:
+          enabled: false
+        forward-path:
+          enabled: false
+        load-balancer-client:
+          enabled: false
+        websocket-routing:
+          enabled: false
+        forward-routing:
+          enabled: false
+        reactive-load-balancer-client:
+          enabled: true
+
+      filter:
+        prefix-path:
+          enabled: false
+        add-request-header:
+          enabled: false
+        rewrite-location:
+          enabled: false
+        strip-prefix:
+          enabled: false
+        request-rate-limiter:
+          enabled: false
+        request-header-size:
+          enabled: false
+        request-size:
+          enabled: false
+        add-request-parameter:
+          enabled: false
+        add-response-header:
+          enabled: false
+        circuit-breaker:
+          enabled: true
+        dedupe-response-header:
+          enabled: false
+        fallback-headers:
+          enabled: false
+        hystrix:
+          enabled: false
+        map-request-header:
+          enabled: false
+        modify-request-body:
+          enabled: false
+        modify-response-body:
+          enabled: false
+        preserve-host-header:
+          enabled: false
+        redirect-to:
+          enabled: false
+        remove-request-header:
+          enabled: false
+        remove-request-parameter:
+          enabled: false
+        remove-response-header:
+          enabled: false
+        request-header-to-request-uri:
+          enabled: false
+        rewrite-location-response-header:
+          enabled: false
+        retry:
+          enabled: false
+        rewrite-response-header:
+          enabled: false
+        save-session:
+          enabled: false
+        secure-headers:
+          enabled: false
+        set-path:
+          enabled: false
+        set-response-header:
+          enabled: false
+        set-status:
+          enabled: false
+        set-request-header:
+          enabled: false
+        set-request-host-header:
+          enabled: false
+
+      routes:
+        - id: blue-base
+          uri: lb://blue-base
+          predicates:
+            - Path=/blue-base/**
+
+        - id: blue-business
+          uri: lb://blue-business
+          predicates:
+            - Path=/blue-business/**
+
+        - id: blue-data
+          uri: lb://blue-data
+          predicates:
+            - Path=/blue-data/**
+
+        - id: blue-finance
+          uri: lb://blue-finance
+          predicates:
+            - Path=/blue-finance/**
+
+        - id: blue-marketing
+          uri: lb://blue-marketing
+          predicates:
+            - Path=/blue-marketing/**
+
+        - id: blue-member
+          uri: lb://blue-member
+          predicates:
+            - Path=/blue-member/**
+
+        - id: blue-portal
+          uri: lb://blue-portal
+          predicates:
+            - Path=/blue-portal/**
+
+        - id: blue-risk
+          uri: lb://blue-risk
+          predicates:
+            - Path=/blue-risk/**
+
+        - id: blue-secure
+          uri: lb://blue-secure
+          predicates:
+            - Path=/blue-secure/**
+
+        - id: blue-shine
+          uri: lb://blue-shine
+          predicates:
+            - Path=/blue-shine/**
+
+
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      slidingWindowType: TIME_BASED
+      slidingWindowSize: 8
+      ringBufferSizeInHalfOpenState: 8
+      ringBufferSizeInClosedState: 1000
+      minimumNumberOfCalls: 2
+      permittedNumberOfCallsInHalfOpenState: 3
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      waitDurationInOpenState: 5s
+      slowCallDurationThreshold: 6000
+      slowCallRateThreshold: 80
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 4
+      ignoreExceptions:
+        - com.blue.base.model.exps.BlueException
+
+server:
+  shutdown: graceful
+
+logging:
+  config: classpath:config/log4j2.xml

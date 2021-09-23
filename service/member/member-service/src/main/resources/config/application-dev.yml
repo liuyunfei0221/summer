@@ -1,0 +1,313 @@
+server:
+  #  address: 172.30.128.25
+  port: 23000
+  netty:
+    connection-timeout: 6s
+  http2:
+    enabled: true
+  error:
+    path: /error
+#  ssl:
+#    key-store: classpath:blue.keystore
+#    key-store-password: 123456
+#    key-alias: blue
+#    enabled: true
+#    key-store-type: PKCS12
+#  http:
+#    port: 8002
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 300
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+    hostname: ${spring.cloud.client.ip-address}
+  client:
+    service-url:
+      defaultZone: http://localhost:7777/eureka/
+    registry-fetch-interval-seconds: 300
+
+
+data:
+  shards:
+    - url: jdbc:mysql://localhost:3306/member_0
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+
+    - url: jdbc:mysql://localhost:3306/member_1
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+  tables: [ member_basic,member_business,member_detail ]
+  tableSizePerDataBase: 2
+  shardingColumn: id
+  broadcastTables: [ undo_log ]
+  cacheEnabled: false
+  lazyLoadingEnabled: false
+  aggressiveLazyLoading: false
+  multipleResultSetsEnabled: false
+  useColumnLabel: true
+  useGeneratedKeys: false
+  connectionTimeout: 30000
+  autoMappingBehavior: FULL
+  executorType: BATCH
+  mapperLocation: classpath:mapper/*.xml
+  props:
+    sql.show: true
+    sql.simple: false
+    executor.size: 128
+    max.connections.size.per.query: 2
+    check.table.metadata.enabled: true
+    query.with.cipher.column: false
+    xa.transaction.manager.type: Atomikos
+
+
+identity:
+  dataCenter: 0
+  worker: 0
+  serviceName: blue-member
+  bootSeconds: 1618790400
+  bufferPower: 3
+  paddingFactor: 50
+  paddingCorePoolSize: 1
+  paddingMaximumPoolSize: 2
+  keepAliveSeconds: 128
+  paddingBlockingQueueSize: 1024
+  paddingScheduled: true
+  paddingScheduledCorePoolSize: 2
+  paddingScheduledInitialDelayMillis: 5000
+  paddingScheduledDelayMillis: 15000
+
+
+seata:
+  enabled: true
+  application-id: member_trans
+  tx-service-group: summer_group
+  enable-auto-data-source-proxy: true
+  data-source-proxy-mode: AT
+  use-jdk-proxy: false
+  #  excludes-for-auto-proxying: firstClassNameForExclude,secondClassNameForExclude
+  client:
+    rm:
+      async-commit-buffer-limit: 10000
+      report-retry-count: 5
+      table-meta-check-enable: false
+      report-success-enable: false
+      saga-branch-register-enable: false
+      saga-json-parser: jackson
+      lock:
+        retry-interval: 10
+        retry-times: 30
+        retry-policy-branch-rollback-on-conflict: true
+    tm:
+      commit-retry-count: 5
+      rollback-retry-count: 5
+      default-global-transaction-timeout: 60000
+      degrade-check: false
+      degrade-check-period: 2000
+      degrade-check-allow-times: 10
+    undo:
+      data-validation: true
+      log-serialization: summer
+      log-table: undo_log
+      only-care-update-columns: false
+    load-balance:
+      type: RandomLoadBalance
+      virtualNodes: 10
+  service:
+    vgroup-mapping:
+      summer_group: default
+    grouplist:
+      default: 127.0.0.1:8091
+    enable-degrade: false
+    disable-global-transaction: false
+  transport:
+    shutdown:
+      wait: 3
+    thread-factory:
+      boss-thread-prefix: NettyBoss
+      worker-thread-prefix: NettyServerNIOWorker
+      server-executor-thread-prefix: NettyServerBizHandler
+      share-boss-worker: false
+      client-selector-thread-prefix: NettyClientSelector
+      client-selector-thread-size: 1
+      client-worker-thread-prefix: NettyClientWorkerThread
+      worker-thread-size: default
+      boss-thread-size: 1
+    type: TCP
+    server: NIO
+    heartbeat: true
+    serialization: seata
+    compressor: none
+    enable-client-batch-send-request: true
+  config:
+    type: zk
+    zk:
+      server-addr: 127.0.0.1:2181
+      session-timeout: 6000
+      connect-timeout: 2000
+      username:
+      password:
+    #      nodePath:
+    custom:
+      name: ""
+  registry:
+    type: zk
+    zk:
+      cluster: default
+      server-addr: 127.0.0.1:2181
+      session-timeout: 6000
+      connect-timeout: 2000
+      username:
+      password:
+    custom:
+      name:
+  log:
+    exception-rate: 100
+
+
+cache:
+  serverMode: SINGLE
+  nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
+  password: sfakjfiju99jjf87LJSDDU8
+  maxRedirects: 4
+  host: localhost
+  port: 6379
+  minIdle: 4
+  maxIdle: 64
+  maxTotal: 128
+  maxWaitMillis: 16
+  autoReconnect: true
+  bufferUsageRatio: 32.0
+  cancelCommandsOnReconnectFailure: false
+  pingBeforeActivateConnection: false
+  requestQueueSize: 64
+  publishOnScheduler: true
+  tcpNoDelay: true
+  connectTimeout: 4
+  keepAlive: false
+  suspendReconnectOnProtocolFailure: false
+  fixedTimeout: 4
+  commandTimeout: 4
+  shutdownTimeout: 8
+  shutdownQuietPeriod: 4
+  entryTtl: 60
+
+
+executor:
+  corePoolSize: 4
+  maximumPoolSize: 8
+  keepAliveTime: 64
+  blockingQueueCapacity: 128
+  threadNamePre: blue-summer
+
+
+redisson:
+  serverMode: SINGLE
+  nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
+  password:
+  host: localhost
+  port: 6379
+  scanInterval: 8000
+  checkSlotsCoverage: false
+  tcpNoDelay: true
+  masterConnectionMinimumIdleSize: 2
+  slaveConnectionMinimumIdleSize: 2
+  masterConnectionPoolSize: 2
+  slaveConnectionPoolSize: 2
+  subscriptionConnectionMinimumIdleSize: 2
+  subscriptionConnectionPoolSize: 2
+  subscriptionsPerConnection: 2
+  subscriptionMode: MASTER
+  timeout: 8000
+  connectTimeout: 8000
+  idleConnectionTimeout: 32000
+  retryAttempts: 2
+  retryInterval: 4000
+  keepAlive: true
+  dnsMonitoringInterval: -1
+  pingConnectionInterval: 300000
+  executorCorePoolSize: 4
+  executorMaximumPoolSize: 8
+  executorKeepAliveTime: 64
+  executorBlockingQueueCapacity: 128
+
+
+dubbo:
+  metadataReportAddress: zookeeper://127.0.0.1:2181
+
+  registryId: zookeeper-registry
+  registryZone: summer-member
+  registryProtocol: zookeeper
+  registryAddress: zookeeper://127.0.0.1:2181
+  registryFile: D:/locallogs/dubbo/member/registry.properties
+  registryCheck: false
+  registryTimeout: 60000
+
+  applicationId: summer-member
+  applicationName: summer-member
+  applicationOwner: blue
+  applicationOrganization: blue
+  applicationShutWait: 20s
+
+  protocolName: dubbo
+  protocolHost: localhost
+  protocolPort: 24000
+  protocolAccesslog: D:/locallogs/dubbo/member/access.log
+
+  providerRetries: 1
+  providerTimeout: 5000
+  providerLoadbalance: random
+
+  consumerRetries: 1
+  consumerTimeout: 5000
+  consumerLoadbalance: random
+  consumerCheck: false
+
+
+reactrest:
+  maxConnections: 64
+  workerCount: 64
+  useGlobalResources: false
+  connectTimeoutMillis: 7000
+  useTcpNodelay: false
+  protocols: [ HTTP11,H2,H2C ]
+  responseTimeoutMillis: 3000
+  readTimeoutMillis: 3000
+  writeTimeoutMillis: 3000
+  maxByteInMemorySize: 1048576
+
+
+syncrest:
+  maxPerRoute: 64
+  maxTotal: 256
+  soTimeout: 2000
+  connectTimeout: 2000
+  RequestTimeout: 2000
+  maxRedirects: 2
+  retryTimes: 1
+  userAgent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:63.0) Gecko/20100101 Firefox/63.0
+  radicalizationTry: false
+
+
+debug: false

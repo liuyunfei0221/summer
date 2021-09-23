@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.finance.repository.mapper.DynamicResourceMapper">
+    <resultMap id="BaseResultMap" type="com.blue.finance.repository.entity.DynamicResource">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="organization_id" jdbcType="BIGINT" property="organizationId"/>
+        <result column="handler_id" jdbcType="BIGINT" property="handlerId"/>
+        <result column="request_method" jdbcType="VARCHAR" property="requestMethod"/>
+        <result column="uri_placeholder" jdbcType="BIGINT" property="uriPlaceholder"/>
+        <result column="content_type" jdbcType="VARCHAR" property="contentType"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+        <result column="creator" jdbcType="BIGINT" property="creator"/>
+        <result column="updater" jdbcType="BIGINT" property="updater"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , organization_id, handler_id, request_method, uri_placeholder, content_type, name,
+    description, create_time, update_time, creator, updater
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from dynamic_resource
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from dynamic_resource
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.blue.finance.repository.entity.DynamicResource">
+        insert into dynamic_resource (id, organization_id, handler_id,
+                                      request_method, uri_placeholder, content_type,
+                                      name, description, create_time,
+                                      update_time, creator, updater)
+        values (#{id,jdbcType=BIGINT}, #{organizationId,jdbcType=BIGINT}, #{handlerId,jdbcType=BIGINT},
+                #{requestMethod,jdbcType=VARCHAR}, #{uriPlaceholder,jdbcType=BIGINT}, #{contentType,jdbcType=VARCHAR},
+                #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.blue.finance.repository.entity.DynamicResource">
+        insert into dynamic_resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="organizationId != null">
+                organization_id,
+            </if>
+            <if test="handlerId != null">
+                handler_id,
+            </if>
+            <if test="requestMethod != null">
+                request_method,
+            </if>
+            <if test="uriPlaceholder != null">
+                uri_placeholder,
+            </if>
+            <if test="contentType != null">
+                content_type,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="organizationId != null">
+                #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="handlerId != null">
+                #{handlerId,jdbcType=BIGINT},
+            </if>
+            <if test="requestMethod != null">
+                #{requestMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="uriPlaceholder != null">
+                #{uriPlaceholder,jdbcType=BIGINT},
+            </if>
+            <if test="contentType != null">
+                #{contentType,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.finance.repository.entity.DynamicResource">
+        update dynamic_resource
+        <set>
+            <if test="organizationId != null">
+                organization_id = #{organizationId,jdbcType=BIGINT},
+            </if>
+            <if test="handlerId != null">
+                handler_id = #{handlerId,jdbcType=BIGINT},
+            </if>
+            <if test="requestMethod != null">
+                request_method = #{requestMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="uriPlaceholder != null">
+                uri_placeholder = #{uriPlaceholder,jdbcType=BIGINT},
+            </if>
+            <if test="contentType != null">
+                content_type = #{contentType,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.blue.finance.repository.entity.DynamicResource">
+        update dynamic_resource
+        set organization_id = #{organizationId,jdbcType=BIGINT},
+            handler_id      = #{handlerId,jdbcType=BIGINT},
+            request_method  = #{requestMethod,jdbcType=VARCHAR},
+            uri_placeholder = #{uriPlaceholder,jdbcType=BIGINT},
+            content_type    = #{contentType,jdbcType=VARCHAR},
+            name            = #{name,jdbcType=VARCHAR},
+            description     = #{description,jdbcType=VARCHAR},
+            create_time     = #{createTime,jdbcType=BIGINT},
+            update_time     = #{updateTime,jdbcType=BIGINT},
+            creator         = #{creator,jdbcType=BIGINT},
+            updater         = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="listDynamicResource" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        dynamic_resource;
+    </select>
+
+</mapper>
