@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -68,7 +69,7 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     public Mono<ArticleInfo> getArticle(Long id) {
         if (id == null || id < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "主键不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         //TODO 查询es
         CompletableFuture<Optional<Article>> articleOptCf = CompletableFuture

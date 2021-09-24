@@ -1,7 +1,7 @@
 package com.blue.gateway.config.filter.global;
 
 import com.blue.base.model.exps.BlueException;
-import com.blue.gateway.config.common.GatewayCommonFactory;
+import com.blue.gateway.common.GatewayCommonFactory;
 import com.blue.gateway.remote.consumer.RpcSecureServiceConsumer;
 import com.blue.secure.api.model.AssertAuth;
 import com.blue.secure.api.model.AuthAsserted;

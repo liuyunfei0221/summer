@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_CONSTANT_IDENTITY;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -232,7 +233,7 @@ public final class ConstantProcessor {
      */
     public static ResponseElement getResponseElementByStatus(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         ResponseElement responseElement = RESPONSE_ELEMENT_MAPPING.get(identity);
         return responseElement != null ? responseElement : INTERNAL_SERVER_ERROR;
@@ -246,7 +247,7 @@ public final class ConstantProcessor {
      */
     public static MediaType getMediaTypeByIdentity(String identity) {
         if (isBlank(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         MediaType mediaType = MEDIA_TYPE_MAPPING.get(identity.toLowerCase());
         if (mediaType == null)
@@ -263,7 +264,7 @@ public final class ConstantProcessor {
      */
     public static ResourceType getResourceTypeByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         ResourceType resourceType = RESOURCE_TYPE_MAPPING.get(identity);
         if (resourceType == null)
@@ -280,7 +281,7 @@ public final class ConstantProcessor {
      */
     public static LoginType getLoginTypeByIdentity(String identity) {
         if (isBlank(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         LoginType loginType = LOGIN_TYPE_MAPPING.get(identity.toUpperCase());
         if (loginType == null)
@@ -297,7 +298,7 @@ public final class ConstantProcessor {
      */
     public static DeviceType getDeviceTypeByIdentity(String identity) {
         if (isBlank(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         DeviceType deviceType = DEVICE_TYPE_MAPPING.get(identity.toUpperCase());
         if (deviceType == null)
@@ -314,7 +315,7 @@ public final class ConstantProcessor {
      */
     public static Gender getGenderTypeByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         Gender gender = GENDER_MAPPING.get(identity);
         if (gender == null)
@@ -331,7 +332,7 @@ public final class ConstantProcessor {
      */
     public static Status getStatusTypeByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         Status status = STATUS_MAPPING.get(identity);
         if (status == null)
@@ -348,7 +349,7 @@ public final class ConstantProcessor {
      */
     public static BulletinType getBulletinTypeByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         BulletinType type = BULLETIN_TYPE_MAPPING.get(identity);
         if (type == null)
@@ -365,7 +366,7 @@ public final class ConstantProcessor {
      */
     public static StatisticsRange getStatisticsRangeByIdentity(String identity) {
         if (isBlank(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         StatisticsRange range = STATISTICS_RANGE_MAPPING.get(identity.toUpperCase());
         if (range == null)
@@ -382,7 +383,7 @@ public final class ConstantProcessor {
      */
     public static StatisticsType getStatisticsTypeByIdentity(String identity) {
         if (isBlank(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         StatisticsType type = STATISTICS_TYPE_MAPPING.get(identity.toUpperCase());
         if (type == null)
@@ -399,7 +400,7 @@ public final class ConstantProcessor {
      */
     public static SubjectType getSubjectTypeByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         SubjectType type = SUBJECT_TYPE_MAPPING.get(identity);
         if (type == null)
@@ -416,7 +417,7 @@ public final class ConstantProcessor {
      */
     public static ArticleType getArticleTypeByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
 
         ArticleType type = ARTICLE_TYPE_MAPPING.get(identity);
         if (type == null)

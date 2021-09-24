@@ -1,4 +1,4 @@
-package com.blue.gateway.config.component;
+package com.blue.gateway.component;
 
 import com.blue.base.model.event.data.DataEvent;
 import com.blue.gateway.config.mq.producer.RequestEventProducer;

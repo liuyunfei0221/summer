@@ -1,10 +1,10 @@
-package com.blue.file.config.component.file.impl;
+package com.blue.file.component.file.impl;
 
 import com.blue.base.common.base.Monitor;
 import com.blue.base.model.exps.BlueException;
 import com.blue.file.api.model.FileUploadResult;
 import com.blue.file.api.model.FileValidResult;
-import com.blue.file.config.component.file.inter.FileUploader;
+import com.blue.file.component.file.inter.FileUploader;
 import com.blue.file.config.deploy.FileDeploy;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.codec.multipart.FilePart;
@@ -136,13 +136,12 @@ public final class LocalDiskFileUploader implements FileUploader {
 
         try {
             FileOutputStream descOutputStream = new FileOutputStream(desc);
-            BufferedOutputStream descBufferedOutputStream = new BufferedOutputStream(descOutputStream);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(descOutputStream);
 
             Runnable resourceCloser = () -> {
                 try {
-                    descBufferedOutputStream.close();
-                    descBufferedOutputStream.close();
-                    LOGGER.info("资源释放");
+                    bufferedOutputStream.close();
+                    bufferedOutputStream.close();
                 } catch (IOException e) {
                     LOGGER.error("资源释放失败, e = {}", e);
                 }
@@ -161,7 +160,7 @@ public final class LocalDiskFileUploader implements FileUploader {
                         byte[] array = dataBuffer.asByteBuffer().array();
                         if (monitor.operateWithAssert((long) array.length)) {
                             try {
-                                descBufferedOutputStream.write(array);
+                                bufferedOutputStream.write(array);
                             } catch (IOException e) {
                                 LOGGER.error("文件上传失败 e -> " + e);
                                 error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "上传失败"));

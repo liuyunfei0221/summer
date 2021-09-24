@@ -4,8 +4,8 @@ import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.common.content.common.RequestBodyProcessor;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.model.event.data.DataEvent;
-import com.blue.gateway.config.common.GatewayCommonFactory;
-import com.blue.gateway.config.component.RequestEventReporter;
+import com.blue.gateway.common.GatewayCommonFactory;
+import com.blue.gateway.component.RequestEventReporter;
 import com.blue.gateway.config.deploy.EncryptDeploy;
 import com.google.gson.Gson;
 import org.reactivestreams.Publisher;
@@ -34,9 +34,10 @@ import java.util.Map;
 import java.util.function.*;
 
 import static com.blue.base.common.base.CommonFunctions.decryptRequestBody;
+import static com.blue.base.common.base.CommonFunctions.encryptResponseBody;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
-import static com.blue.gateway.config.common.GatewayCommonFactory.getRequestDecorator;
+import static com.blue.gateway.common.GatewayCommonFactory.getRequestDecorator;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_BODY_PROCESS_AND_DATA_REPORT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -112,10 +113,6 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                             ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(""),
                             EXPIRED_SECONDS);
 
-    /**
-     * 数据加密
-     */
-    private static final BinaryOperator<String> ENCRYPT_DATA_PROCESSOR = GatewayCommonFactory.ENCRYPT_DATA_PROCESSOR;
 
     /**
      * 响应体加密处理器
@@ -125,7 +122,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                     .map(b -> (boolean) b).orElse(true) ?
                     responseBody
                     :
-                    ENCRYPT_DATA_PROCESSOR.apply(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(""));
+                    encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(""));
 
     /**
      * 错误封装

@@ -1,7 +1,7 @@
 package com.blue.file.config.filter.global;
 
 import com.blue.base.model.exps.BlueException;
-import com.blue.file.config.common.FluxCommonFactory;
+import com.blue.file.common.FluxCommonFactory;
 import com.blue.file.remote.consumer.RpcSecureServiceConsumer;
 import com.blue.secure.api.model.AssertAuth;
 import com.blue.secure.api.model.AuthAsserted;

@@ -3,7 +3,7 @@ package com.blue.file.config.filter.global;
 import com.blue.base.common.reactive.ReactiveCommonFunctions;
 import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.model.exps.BlueException;
-import com.blue.file.config.common.FluxCommonFactory;
+import com.blue.file.common.FluxCommonFactory;
 import com.blue.file.config.deploy.RateLimiterDeploy;
 import org.springframework.core.Ordered;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;

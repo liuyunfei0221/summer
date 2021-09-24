@@ -1,4 +1,4 @@
-package com.blue.gateway.config.common;
+package com.blue.gateway.common;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.cloud.client.ServiceInstance;

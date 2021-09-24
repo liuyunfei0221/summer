@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 
 import static com.blue.base.common.base.RsaProcessor.HandleMode.*;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.*;
 import static java.lang.Math.min;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getDecoder;
@@ -89,6 +90,8 @@ public final class RsaProcessor {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "secKey不能为空");
     };
 
+    private static final BlueException RSA_EXP = new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+
     /**
      * 分段处理加解密
      *
@@ -124,7 +127,7 @@ public final class RsaProcessor {
             return outputStream.toByteArray();
         } catch (Exception e) {
             LOGGER.error("byte[] handleBySegment(byte[] source, Cipher cipher, HandleMode handleMode) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "数据加解密失败");
+            throw RSA_EXP;
         }
     }
 
@@ -156,7 +159,7 @@ public final class RsaProcessor {
             return signature;
         } catch (Exception e) {
             LOGGER.error("Signature signBySegment(byte[] source, Signature signature, HandleMode handleMode) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "数据加解密失败");
+            throw RSA_EXP;
         }
     }
 
@@ -178,7 +181,7 @@ public final class RsaProcessor {
             return ENCODER.encodeToString(handleBySegment(data.getBytes(DEFAULT_CHARSET), cipher, ENCRYPT));
         } catch (Exception e) {
             LOGGER.error("String encryptByPrivateKey(String data, String priKey) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "数据加密失败");
+            throw RSA_EXP;
         }
     }
 
@@ -200,7 +203,7 @@ public final class RsaProcessor {
             return new String(handleBySegment(DECODER.decode(secData), cipher, DECRYPT), DEFAULT_CHARSET);
         } catch (Exception e) {
             LOGGER.error("String decryptByPublicKey(String secData, String pubKey) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "数据解密失败");
+            throw RSA_EXP;
         }
     }
 
@@ -222,7 +225,7 @@ public final class RsaProcessor {
             return ENCODER.encodeToString(handleBySegment(data.getBytes(DEFAULT_CHARSET), cipher, ENCRYPT));
         } catch (Exception e) {
             LOGGER.error("String encryptByPublicKey(String data, String pubKey) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "数据加密失败");
+            throw RSA_EXP;
         }
     }
 
@@ -244,7 +247,7 @@ public final class RsaProcessor {
             return new String(handleBySegment(DECODER.decode(secData), cipher, DECRYPT), DEFAULT_CHARSET);
         } catch (Exception e) {
             LOGGER.error("String decryptByPrivateKey(String secData, String priKey) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "数据解密失败");
+            throw RSA_EXP;
         }
 
     }
@@ -266,7 +269,7 @@ public final class RsaProcessor {
             return new String(ENCODER.encode(signBySegment(data.getBytes(DEFAULT_CHARSET), signature, SIGN).sign()), DEFAULT_CHARSET);
         } catch (Exception e) {
             LOGGER.error("String sign(String data, String priKey) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "数据加签失败");
+            throw RSA_EXP;
         }
     }
 
@@ -291,7 +294,7 @@ public final class RsaProcessor {
             return signBySegment(data.getBytes(DEFAULT_CHARSET), signature, VERIFY).verify(DECODER.decode(sign.getBytes(DEFAULT_CHARSET)));
         } catch (Exception e) {
             LOGGER.error("boolean verify(String data, String sign, String pubKey) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "数据验签失败");
+            throw RSA_EXP;
         }
     }
 

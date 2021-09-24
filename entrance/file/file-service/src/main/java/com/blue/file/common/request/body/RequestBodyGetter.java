@@ -1,4 +1,4 @@
-package com.blue.file.config.common.request.body;
+package com.blue.file.common.request.body;
 
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -53,7 +54,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Optional<Article> getByPrimaryKey(Long id) {
         if (id == null || id < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "主键不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         LOGGER.info("id = {}", id);
         return ofNullable(articleMapper.selectByPrimaryKey(id));

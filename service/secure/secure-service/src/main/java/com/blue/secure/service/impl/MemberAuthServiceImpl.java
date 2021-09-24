@@ -16,6 +16,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_REQUEST_BODY;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_ACCT_OR_PWD;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -46,7 +48,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
      */
     private static final BiConsumer<String, MemberBasicInfo> PWD_ASSERTER = (access, mb) -> {
         if (access == null || mb == null || !ENCODER.matches(access, mb.getPassword()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "账号或密码错误");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message);
     };
 
     /**
@@ -67,7 +69,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     public Mono<MemberBasicInfo> getMemberByPhoneWithAssertVerify(ClientLoginParam clientLoginParam) {
         LOGGER.info("getMemberByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
         if (clientLoginParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "登录信息不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
 
         //TODO 校验验证码
         //TODO 校验短信验证码
@@ -92,7 +94,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     public Mono<MemberBasicInfo> getMemberByPhoneWithAssertPwd(ClientLoginParam clientLoginParam) {
         LOGGER.info("getMemberByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
         if (clientLoginParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "登录信息不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
 
         //TODO 校验验证码
 
@@ -117,7 +119,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     public Mono<MemberBasicInfo> getMemberByEmailWithAssertPwd(ClientLoginParam clientLoginParam) {
         LOGGER.info("getMemberByEmailWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
         if (clientLoginParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "登录信息不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
 
         //TODO 校验验证码
 

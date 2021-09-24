@@ -2,7 +2,7 @@ package com.blue.file.config.filter.global;
 
 import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.model.exps.BlueException;
-import com.blue.file.config.common.FluxCommonFactory;
+import com.blue.file.common.FluxCommonFactory;
 import com.blue.file.config.deploy.RequestAttributeDeploy;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import static com.blue.base.constant.base.ResponseElement.PAYLOAD_TOO_LARGE;
 import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
+import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.file.config.filter.BlueFilterOrder.BLUE_REQUEST_ATTR;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
@@ -57,7 +58,7 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
      */
     private static final Consumer<ServerHttpRequest> URI_ASSERTER = request -> {
         if (request.getURI().getRawPath().length() > MAX_URI_LENGTH)
-            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, "uri过长");
+            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, TOO_LARGE_URI.message);
     };
 
     /**
@@ -89,13 +90,13 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
 
         for (Map.Entry<String, List<String>> headerEntry : headers.entrySet()) {
             if (++headerCount > MAX_HEADER_COUNT)
-                throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, "请求头数量过多");
+                throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, TOO_MANY_HEADERS.message);
 
             headerValues = headerEntry.getValue();
             for (String value : headerValues) {
                 headerLength += value.getBytes().length;
                 if (headerLength > MAX_HEADER_LENGTH)
-                    throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, "请求头长度过大");
+                    throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, TOO_LARGE_HEADER.message);
             }
         }
     };
@@ -106,7 +107,7 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
     private static final Consumer<ServerHttpRequest> CONTENT_ASSERTER = request -> {
         if (ofNullable(request.getHeaders().getFirst(CONTENT_LENGTH))
                 .map(Integer::valueOf).orElse(1) > MAX_CONTENT_LENGTH)
-            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, "请求体长度过大");
+            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, TOO_LARGE_BODY.message);
     };
 
     @PostConstruct

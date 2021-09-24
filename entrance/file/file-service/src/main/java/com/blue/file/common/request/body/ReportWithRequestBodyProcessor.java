@@ -1,7 +1,7 @@
-package com.blue.file.config.common.request.body;
+package com.blue.file.common.request.body;
 
 import com.blue.base.model.event.data.DataEvent;
-import com.blue.file.config.component.RequestEventReporter;
+import com.blue.file.component.RequestEventReporter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;

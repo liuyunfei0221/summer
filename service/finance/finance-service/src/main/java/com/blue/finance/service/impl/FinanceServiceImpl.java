@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.base.Status.VALID;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
@@ -46,7 +47,7 @@ public class FinanceServiceImpl implements FinanceService {
         LOGGER.info("getBalanceByMemberId(Long memberId), memberId = {}", memberId);
 
         if (memberId == null || memberId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "成员主键不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
         return just(memberId)
                 .flatMap(mi -> {
                     Optional<FinanceAccount> faOpt = financeAccountService.getFinanceAccountByMemberId(mi);

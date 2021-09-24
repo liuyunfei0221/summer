@@ -1,4 +1,4 @@
-package com.blue.file.config.component;
+package com.blue.file.component;
 
 import com.blue.base.model.event.data.DataEvent;
 import com.blue.file.config.mq.producer.RequestEventProducer;

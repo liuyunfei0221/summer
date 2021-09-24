@@ -1,6 +1,6 @@
-package com.blue.file.config.common.request.part.impl;
+package com.blue.file.common.request.part.impl;
 
-import com.blue.file.config.common.request.part.inter.PartInfoHandler;
+import com.blue.file.common.request.part.inter.PartInfoHandler;
 import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
 
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.blue.file.config.common.request.part.common.FilePartElementKey.*;
+import static com.blue.file.common.request.part.common.FilePartElementKey.*;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 

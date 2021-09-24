@@ -37,6 +37,7 @@ import java.util.function.Supplier;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
@@ -298,7 +299,7 @@ public class SignServiceImpl implements SignService {
     public Mono<DayReward> insertSignIn(Long memberId) {
         LOGGER.info("insertSignIn(Long memberId), memberId = {}", memberId);
         if (memberId == null || memberId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "用户主键不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         LocalDate now = LocalDate.now();
         int year = now.getYear();

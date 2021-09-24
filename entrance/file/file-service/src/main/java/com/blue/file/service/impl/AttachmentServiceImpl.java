@@ -13,6 +13,8 @@ import reactor.util.Logger;
 import java.util.List;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.FILE_NOT_EXIST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -74,11 +76,11 @@ public class AttachmentServiceImpl implements AttachmentService {
         LOGGER.info("getAttachment(Long id), id = {}", id);
 
         if (id == null || id < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "id不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         Attachment attachment = attachmentMapper.selectByPrimaryKey(id);
         if (attachment == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "文件不存在");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, FILE_NOT_EXIST.message);
 
         LOGGER.info("attachment = {}", attachment);
         return attachment;
@@ -96,7 +98,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         LOGGER.info("listAttachment(PageModelParam<Void> pageModelParam, Long memberId), pageModelDTO = {},memberId = {}", pageModelParam, memberId);
 
         if (memberId == null || memberId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberId不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         Long page = pageModelParam.getPage();
         Long rows = pageModelParam.getRows();

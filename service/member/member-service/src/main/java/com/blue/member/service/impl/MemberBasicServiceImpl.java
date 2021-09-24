@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static java.util.Optional.ofNullable;
@@ -118,7 +119,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     public Mono<Optional<MemberBasic>> getByPrimaryKey(Long id) {
         LOGGER.info("getByPrimaryKey(Long id), id = {}", id);
         if (id == null || id < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "成员主键不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
         return just(ofNullable(memberBasicMapper.selectByPrimaryKey(id)));
     }
 
@@ -132,7 +133,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     public Mono<MemberInfo> getMemberInfoByPrimaryKeyWithAssert(Long id) {
         LOGGER.info("getVoByPrimaryKeyWithAssert(Long id), id = {}", id);
         if (id == null || id < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "成员主键不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return just(id)
                 .flatMap(this::getByPrimaryKey)

@@ -22,7 +22,12 @@ public enum BlueHeader {
     /**
      * 元数据
      */
-    METADATA("Metadata");
+    METADATA("Metadata"),
+
+    /**
+     * 内容处理
+     */
+    CONTENT_DISPOSITION("Content-disposition");
 
     public final String name;
 

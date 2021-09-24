@@ -1,4 +1,4 @@
-package com.blue.gateway.config.common;
+package com.blue.gateway.common;
 
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.common.reactive.ReactiveCommonFunctions;

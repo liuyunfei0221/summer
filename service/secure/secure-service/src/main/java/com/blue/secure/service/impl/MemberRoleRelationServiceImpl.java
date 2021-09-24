@@ -18,6 +18,7 @@ import reactor.util.Logger;
 import java.util.Optional;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.base.SyncKey.MEMBER_ROLE_REL_UPDATE_PRE;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
@@ -61,7 +62,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     public Optional<Long> getRoleIdByMemberId(Long memberId) {
         LOGGER.info("getRoleIdByMemberId(Long memberId), memberId = {}", memberId);
         if (memberId == null || memberId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "成员主键不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         Long roleId = memberRoleRelationMapper.getRoleIdByMemberId(memberId);
         LOGGER.info("memberId = {},roleId = {}", memberId, roleId);
@@ -82,7 +83,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     public void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
         if (memberId == null || memberId < 1L || roleId == null || roleId < 1L || operatorId == null || operatorId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "成员id或角色id或操作人id不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getMemberRoleRelationByMemberId(memberId);
         if (memberRoleRelation == null)
@@ -109,7 +110,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
 
         Long memberId = memberRoleRelation.getMemberId();
         if (memberId == null || memberId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberId不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
         String syncKey = MEMBER_ROLE_REL_UPDATE_PRE_SYNC_KEY + memberId;

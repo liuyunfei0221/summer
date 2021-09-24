@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -69,7 +70,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
         LOGGER.info("insertInitFinanceAccount(Long memberId), memberId = {}", memberId);
 
         if (memberId == null || memberId < 1L) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberId不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
         }
 
         long epochSecond = Instant.now().getEpochSecond();
@@ -102,7 +103,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
         LOGGER.info("getFinanceAccountByMemberId(Long memberId), memberId = {}", memberId);
 
         if (memberId == null || memberId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "成员主键不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return ofNullable(financeAccountMapper.selectByMemberId(memberId));
     }

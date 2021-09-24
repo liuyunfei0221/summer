@@ -7,7 +7,6 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.file.config.deploy.FileDeploy;
 import com.blue.file.service.inter.FileService;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -19,9 +18,12 @@ import java.net.URLEncoder;
 
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccess;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.base.constant.base.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.OK;
+import static com.blue.base.constant.base.ResponseMessage.FILE_NOT_EXIST;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 import static org.springframework.web.reactive.function.BodyInserters.fromResource;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -48,6 +50,8 @@ public final class FileApiHandler {
         this.fileDeploy = fileDeploy;
     }
 
+    private static final BlueException FILE_NOT_EXIST_EXP = new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, FILE_NOT_EXIST.message);
+
     @PostConstruct
     public void init() {
         ALL_FILE_SIZE_THRESHOLD = fileDeploy.getAllFileSizeThreshold();
@@ -70,7 +74,7 @@ public final class FileApiHandler {
                         fileService.uploadAttachment(mm, access.getId()))
                 .flatMap(rl ->
                         ok()
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, rl, OK.message), BlueResult.class));
     }
 
@@ -85,19 +89,20 @@ public final class FileApiHandler {
         return serverRequest.bodyToMono(IdentityWrapper.class)
                 .flatMap(dto ->
                         fileService.getAttachmentForDownload(dto.getId(), access.getId())
+                                .switchIfEmpty(error(FILE_NOT_EXIST_EXP))
                                 .flatMap(attachment -> {
                                     String link = attachment.getLink();
                                     if (link == null || "".equals(link))
-                                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "文件不存在"));
+                                        return error(FILE_NOT_EXIST_EXP);
 
                                     FileSystemResource resource = new FileSystemResource(new File(link));
                                     if (!resource.exists())
-                                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "文件不存在"));
+                                        return error(FILE_NOT_EXIST_EXP);
 
-                                    return ServerResponse.ok().contentType(APPLICATION_OCTET_STREAM)
-                                            .header("Content-disposition", "attachment; filename="
-                                                    + URLEncoder.encode(attachment.getName(), UTF_8))
-                                            .body(fromResource(new FileSystemResource(new File(link))));
+                                    return ok().contentType(APPLICATION_OCTET_STREAM)
+                                            .header(CONTENT_DISPOSITION.name,
+                                                    "attachment; filename=" + URLEncoder.encode(attachment.getName(), UTF_8))
+                                            .body(fromResource(resource));
                                 }));
     }
 

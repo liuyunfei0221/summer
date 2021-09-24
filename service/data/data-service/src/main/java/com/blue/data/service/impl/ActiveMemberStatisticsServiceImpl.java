@@ -7,6 +7,7 @@ import com.blue.data.service.inter.ActiveMemberStatisticsService;
 import org.springframework.stereotype.Service;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.data.StatisticsType.MEMBER_ACTIVE;
 
 /**
@@ -29,7 +30,7 @@ public class ActiveMemberStatisticsServiceImpl implements ActiveMemberStatistics
     @Override
     public Boolean markActive(Long memberId, StatisticsRange statisticsRange) {
         if (memberId == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberId不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return statisticsMarker.mark(MEMBER_ACTIVE, statisticsRange, memberId.toString());
     }

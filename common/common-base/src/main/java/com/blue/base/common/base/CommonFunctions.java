@@ -24,6 +24,7 @@ import java.util.function.*;
 import static com.blue.base.common.base.RsaProcessor.*;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.base.constant.base.SummerAttr.TIME_ZONE;
 import static com.blue.base.constant.base.Symbol.PAIR_SEPARATOR;
 import static java.lang.System.currentTimeMillis;
@@ -197,7 +198,7 @@ public class CommonFunctions {
         if (VALID_METHODS.contains(method.toUpperCase()))
             return;
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "非法的请求方式");
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);
     };
 
     /**
@@ -225,20 +226,10 @@ public class CommonFunctions {
      * 解密后数据校验及获取器
      */
     private static final BiFunction<DataWrapper, Long, String> DATA_CONVERTER = (dataWrapper, expire) -> {
-        LOGGER.info("dataWrapper = {}", dataWrapper);
+        if (TIME_STAMP_GETTER.get() - ofNullable(dataWrapper.getTimeStamp()).orElse(0L) <= expire)
+            return ofNullable(dataWrapper.getOriginal()).orElse("");
 
-        long signTime = ofNullable(dataWrapper.getTimeStamp()).orElse(0L);
-        long currentTime = TIME_STAMP_GETTER.get();
-
-        LOGGER.info("signTime = {}, currentTime = {}", signTime, currentTime);
-
-        if (currentTime - signTime > expire)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "验签超时");
-
-        String original = ofNullable(dataWrapper.getOriginal()).orElse("");
-        LOGGER.info("original = {}", original);
-
-        return original;
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
     };
 
     /**
@@ -250,45 +241,33 @@ public class CommonFunctions {
      * @return
      */
     public static String decryptRequestBody(String requestBody, String secKey, long expire) {
-        LOGGER.info("requestBody = {}", requestBody);
-
         if (requestBody == null || "".equals(requestBody))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestBody不能为空");
 
         EncryptedParam encryptedParam = GSON.fromJson(requestBody, EncryptedParam.class);
         String encrypted = encryptedParam.getEncrypted();
 
-        LOGGER.info("encrypted = {}", encrypted);
-
         if (!verify(encrypted, encryptedParam.getSign(), secKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "数据验签失败");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
 
-        String dataWrapperJson = decryptByPublicKey(encrypted, secKey);
-
-        LOGGER.info("dataWrapperJson = {}", dataWrapperJson);
-
-        DataWrapper dataWrapper = GSON.fromJson(dataWrapperJson, DataWrapper.class);
-
-        return DATA_CONVERTER.apply(dataWrapper, expire);
+        return DATA_CONVERTER.apply(GSON.fromJson(decryptByPublicKey(encrypted, secKey), DataWrapper.class), expire);
     }
 
     /**
      * 加密响应数据
+     *
+     * @param responseBody
+     * @param secKey
+     * @return
      */
-    public static final BinaryOperator<String> ENCRYPT_DATA_PROCESSOR = (data, secKey) -> {
-        if (data == null || "".equals(data))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "待加密数据不能为空");
+    public static String encryptResponseBody(String responseBody, String secKey) {
+        if (responseBody == null || "".equals(responseBody))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "responseBody不能为空");
 
         if (secKey == null || "".equals(secKey))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "secKey不能为空");
 
-        DataWrapper wrapper = new DataWrapper(data, TIME_STAMP_GETTER.get());
-        LOGGER.info("wrapper = {}", wrapper);
-
-        EncryptedResult encryptedResult = new EncryptedResult(encryptByPublicKey(GSON.toJson(wrapper), secKey));
-        LOGGER.info("encryptedResult = {}", encryptedResult);
-
-        return GSON.toJson(encryptedResult);
-    };
+        return GSON.toJson(new EncryptedResult(encryptByPublicKey(GSON.toJson(new DataWrapper(responseBody, TIME_STAMP_GETTER.get())), secKey)));
+    }
 
 }

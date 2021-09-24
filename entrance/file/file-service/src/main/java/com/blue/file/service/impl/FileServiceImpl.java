@@ -3,7 +3,7 @@ package com.blue.file.service.impl;
 import com.blue.base.constant.base.Status;
 import com.blue.base.model.exps.BlueException;
 import com.blue.file.api.model.FileUploadResult;
-import com.blue.file.config.component.file.inter.FileUploader;
+import com.blue.file.component.file.inter.FileUploader;
 import com.blue.file.config.deploy.FileDeploy;
 import com.blue.file.repository.entity.Attachment;
 import com.blue.file.repository.entity.DownloadHistory;
@@ -25,6 +25,7 @@ import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.FILE_NOT_EXIST;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
 import static com.blue.base.constant.base.ThresholdNumericalValue.DB_INSERT;
 import static java.util.stream.Collectors.toList;
@@ -112,11 +113,11 @@ public class FileServiceImpl implements FileService {
         //需要处理的任务资源
         List<Part> resources = valueMap.get(ATTR_NAME);
         if (isEmpty(resources))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "无上传文件");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, FILE_NOT_EXIST.message);
 
         int size = resources.size();
         if (size == 1 && "".equals(((FilePart) (resources.get(0))).filename()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "无上传文件");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, FILE_NOT_EXIST.message);
 
         if (size > CURRENT_SIZE_THRESHOLD)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "同时上传的文件数量不能超过" + CURRENT_SIZE_THRESHOLD);

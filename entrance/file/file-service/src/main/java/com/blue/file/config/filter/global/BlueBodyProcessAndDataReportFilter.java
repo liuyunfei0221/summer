@@ -5,9 +5,9 @@ import com.blue.base.common.content.common.RequestBodyProcessor;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.model.event.data.DataEvent;
 import com.blue.base.model.exps.BlueException;
-import com.blue.file.config.common.FluxCommonFactory;
-import com.blue.file.config.common.request.body.ReportWithRequestBodyProcessor;
-import com.blue.file.config.component.RequestEventReporter;
+import com.blue.file.common.FluxCommonFactory;
+import com.blue.file.common.request.body.ReportWithRequestBodyProcessor;
+import com.blue.file.component.RequestEventReporter;
 import com.blue.file.config.deploy.EncryptDeploy;
 import com.google.gson.Gson;
 import org.reactivestreams.Publisher;
@@ -41,10 +41,11 @@ import java.util.Map;
 import java.util.function.*;
 
 import static com.blue.base.common.base.CommonFunctions.decryptRequestBody;
+import static com.blue.base.common.base.CommonFunctions.encryptResponseBody;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
-import static com.blue.file.config.common.FluxCommonFactory.extractValuesToBind;
+import static com.blue.file.common.FluxCommonFactory.extractValuesToBind;
 import static com.blue.file.config.filter.BlueFilterOrder.BLUE_BODY_PROCESS_AND_DATA_REPORT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -125,10 +126,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                             ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(""),
                             EXPIRED_SECONDS);
 
-    /**
-     * 数据加密
-     */
-    private static final BinaryOperator<String> ENCRYPT_DATA_PROCESSOR = FluxCommonFactory.ENCRYPT_DATA_PROCESSOR;
 
     /**
      * 响应体加密处理器
@@ -138,7 +135,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                     .map(b -> (boolean) b).orElse(true) ?
                     responseBody
                     :
-                    ENCRYPT_DATA_PROCESSOR.apply(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(""));
+                    encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(""));
 
     /**
      * 错误上报

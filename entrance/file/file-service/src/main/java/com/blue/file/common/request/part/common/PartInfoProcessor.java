@@ -1,6 +1,6 @@
-package com.blue.file.config.common.request.part.common;
+package com.blue.file.common.request.part.common;
 
-import com.blue.file.config.common.request.part.inter.PartInfoHandler;
+import com.blue.file.common.request.part.inter.PartInfoHandler;
 import org.springframework.http.codec.multipart.Part;
 import reactor.util.Logger;
 
@@ -11,8 +11,8 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ClassGetter.getClassesByPackage;
-import static com.blue.file.config.common.request.part.common.FilePartElementKey.PART_CLASS;
-import static com.blue.file.config.common.request.part.common.FilePartElementKey.PART_NAME;
+import static com.blue.file.common.request.part.common.FilePartElementKey.PART_CLASS;
+import static com.blue.file.common.request.part.common.FilePartElementKey.PART_NAME;
 import static java.util.stream.Collectors.toMap;
 import static reactor.util.Loggers.getLogger;
 
@@ -29,7 +29,7 @@ public final class PartInfoProcessor {
     /**
      * 异常处理器实现类路径
      */
-    private static final String DIR_NAME = "com.blue.file.config.common.request.part.impl";
+    private static final String DIR_NAME = "com.blue.file.common.request.part.impl";
 
     private static final Map<String, PartInfoHandler> MAPPING = generatorMapping(DIR_NAME);
 

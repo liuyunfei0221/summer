@@ -1,8 +1,8 @@
-package com.blue.file.config.common;
+package com.blue.file.common;
 
 import com.blue.base.common.reactive.ReactiveCommonFunctions;
 import com.blue.base.model.exps.BlueException;
-import com.blue.file.config.common.request.part.common.PartInfoProcessor;
+import com.blue.file.common.request.part.common.PartInfoProcessor;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.NettyDataBufferFactory;
@@ -83,30 +83,31 @@ public final class FluxCommonFactory extends ReactiveCommonFunctions {
                         @Override
                         public Flux<DataBuffer> getBody() {
                             return Flux.create(fluxSink ->
-                                    dataMono.subscribe(s -> {
-                                                byte[] bytes = s.getBytes(UTF_8);
-                                                int len = bytes.length;
+                                    dataMono
+                                            .onErrorStop()
+                                            .subscribe(s -> {
+                                                        byte[] bytes = s.getBytes(UTF_8);
+                                                        int len = bytes.length;
 
-                                                int limit = 0;
-                                                int rows;
-                                                int last;
+                                                        int limit = 0;
+                                                        int rows = BUFFER_ALLOCATE;
+                                                        int last;
 
-                                                while (limit < len) {
-                                                    rows = BUFFER_ALLOCATE;
-                                                    if ((last = len - limit) < rows)
-                                                        rows = last;
+                                                        while (limit < len) {
+                                                            if ((last = len - limit) < rows)
+                                                                rows = last;
 
-                                                    DataBuffer dataBuffer = DATA_BUFFER_FACTORY.allocateBuffer(rows);
-                                                    dataBuffer.write(bytes, limit, rows);
-                                                    fluxSink.next(dataBuffer);
+                                                            DataBuffer dataBuffer = DATA_BUFFER_FACTORY.allocateBuffer(rows);
+                                                            dataBuffer.write(bytes, limit, rows);
+                                                            fluxSink.next(dataBuffer);
 
-                                                    limit += rows;
-                                                }
-                                                //noinspection UnusedAssignment
-                                                bytes = null;
-                                                fluxSink.complete();
-                                            }
-                                    )
+                                                            limit += rows;
+                                                        }
+                                                        //noinspection UnusedAssignment
+                                                        bytes = null;
+                                                        fluxSink.complete();
+                                                    }
+                                            )
                             );
                         }
                     };

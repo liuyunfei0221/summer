@@ -1,6 +1,6 @@
 package com.blue.gateway.config.universal;
 
-import com.blue.gateway.config.common.BlueRandomLoadBalancer;
+import com.blue.gateway.common.BlueRandomLoadBalancer;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClients;
 import org.springframework.cloud.loadbalancer.core.ReactorLoadBalancer;

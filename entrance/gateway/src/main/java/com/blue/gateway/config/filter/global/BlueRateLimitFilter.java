@@ -3,7 +3,7 @@ package com.blue.gateway.config.filter.global;
 import com.blue.base.common.reactive.ReactiveCommonFunctions;
 import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.model.exps.BlueException;
-import com.blue.gateway.config.common.GatewayCommonFactory;
+import com.blue.gateway.common.GatewayCommonFactory;
 import com.blue.gateway.config.deploy.RateLimiterDeploy;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

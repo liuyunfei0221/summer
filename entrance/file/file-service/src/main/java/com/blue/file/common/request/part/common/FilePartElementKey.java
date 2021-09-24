@@ -1,4 +1,4 @@
-package com.blue.file.config.common.request.part.common;
+package com.blue.file.common.request.part.common;
 
 /**
  * 文件属性key

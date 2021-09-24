@@ -1,4 +1,4 @@
-package com.blue.file.config.component.file.inter;
+package com.blue.file.component.file.inter;
 
 import com.blue.file.api.model.FileUploadResult;
 import org.springframework.http.codec.multipart.Part;
