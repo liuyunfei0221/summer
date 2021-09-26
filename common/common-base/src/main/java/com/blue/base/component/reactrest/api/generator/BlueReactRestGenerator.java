@@ -1,7 +1,6 @@
 package com.blue.base.component.reactrest.api.generator;
 
 import com.blue.base.component.reactrest.api.conf.ReactRestConf;
-import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -15,10 +14,12 @@ import reactor.netty.resources.LoopResources;
 import reactor.util.Logger;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
+import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
+import static io.netty.channel.ChannelOption.TCP_NODELAY;
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -49,14 +50,14 @@ public final class BlueReactRestGenerator {
 
         Function<HttpClient, HttpClient> mapper = httpClient ->
                 httpClient
-                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, reactRestConf.getConnectTimeoutMillis())
-                        .option(ChannelOption.TCP_NODELAY, reactRestConf.getUseTcpNodelay())
+                        .option(CONNECT_TIMEOUT_MILLIS, reactRestConf.getConnectTimeoutMillis())
+                        .option(TCP_NODELAY, reactRestConf.getUseTcpNodelay())
                         .protocol(reactRestConf.getProtocols().toArray(HttpProtocol[]::new))
-                        .responseTimeout(Duration.of(reactRestConf.getReadTimeoutMillis(), ChronoUnit.MILLIS))
+                        .responseTimeout(Duration.of(reactRestConf.getReadTimeoutMillis(), MILLIS))
                         .doOnConnected(
                                 connection -> connection
-                                        .addHandler(new ReadTimeoutHandler(reactRestConf.getReadTimeoutMillis(), TimeUnit.MILLISECONDS))
-                                        .addHandler(new WriteTimeoutHandler(reactRestConf.getWriteTimeoutMillis(), TimeUnit.MILLISECONDS)));
+                                        .addHandler(new ReadTimeoutHandler(reactRestConf.getReadTimeoutMillis(), MILLISECONDS))
+                                        .addHandler(new WriteTimeoutHandler(reactRestConf.getWriteTimeoutMillis(), MILLISECONDS)));
 
         ReactorClientHttpConnector reactorClientHttpConnector = new ReactorClientHttpConnector(reactorResourceFactory, mapper);
 
