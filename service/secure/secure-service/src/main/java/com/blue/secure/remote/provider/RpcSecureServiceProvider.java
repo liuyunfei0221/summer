@@ -11,9 +11,7 @@ import org.apache.dubbo.config.annotation.Method;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.converterMonoToFuture;
 import static reactor.util.Loggers.getLogger;
 
 
@@ -36,11 +34,8 @@ public class RpcSecureServiceProvider implements RpcSecureService {
 
     private final SecureService secureService;
 
-    private final ExecutorService executorService;
-
-    public RpcSecureServiceProvider(SecureService secureService, ExecutorService executorService) {
+    public RpcSecureServiceProvider(SecureService secureService) {
         this.secureService = secureService;
-        this.executorService = executorService;
     }
 
     /**
@@ -52,7 +47,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<AuthAsserted> assertAuth(AssertAuth assertAuth) {
         LOGGER.info("CompletableFuture<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", assertAuth);
-        return converterMonoToFuture(secureService.assertAuth(assertAuth), executorService);
+        return secureService.assertAuth(assertAuth).toFuture();
     }
 
     /**
@@ -64,7 +59,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<Boolean> invalidAuthByAccess(Access access) {
         LOGGER.info("CompletableFuture<Boolean> invalidAuthByAccess(Access access), access = {}", access);
-        return converterMonoToFuture(secureService.invalidAuthByAccess(access), executorService);
+        return secureService.invalidAuthByAccess(access).toFuture();
     }
 
     /**
@@ -76,7 +71,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<Boolean> invalidAuthByJwt(String jwt) {
         LOGGER.info("CompletableFuture<Boolean> invalidAuthByJwt(String jwt), jwt = {}", jwt);
-        return converterMonoToFuture(secureService.invalidAuthByJwt(jwt), executorService);
+        return secureService.invalidAuthByJwt(jwt).toFuture();
     }
 
     /**
@@ -88,7 +83,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<Authority> getAuthorityByAccess(Access access) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByAccess(Access access), access = {}", access);
-        return converterMonoToFuture(secureService.getAuthorityByAccess(access), executorService);
+        return secureService.getAuthorityByAccess(access).toFuture();
     }
 
     /**
@@ -100,7 +95,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<Authority> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
-        return converterMonoToFuture(secureService.getAuthorityByMemberId(memberId), executorService);
+        return secureService.getAuthorityByMemberId(memberId).toFuture();
     }
 
 }

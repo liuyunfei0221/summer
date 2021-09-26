@@ -9,9 +9,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.concurrent.ExecutorService;
-
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.converterFutureToMono;
+import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -19,7 +17,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
 @Component
 public class RpcSecureServiceConsumer {
 
@@ -30,12 +28,6 @@ public class RpcSecureServiceConsumer {
     })
     private RpcSecureService rpcSecureService;
 
-    private final ExecutorService executorService;
-
-    public RpcSecureServiceConsumer(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
-
     /**
      * 认证并鉴权
      *
@@ -44,7 +36,7 @@ public class RpcSecureServiceConsumer {
      */
     public Mono<AuthAsserted> assertAuth(AssertAuth assertAuth) {
         LOGGER.info("Mono<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", assertAuth);
-        return converterFutureToMono(rpcSecureService.assertAuth(assertAuth), executorService);
+        return fromFuture(rpcSecureService.assertAuth(assertAuth));
     }
 
 }

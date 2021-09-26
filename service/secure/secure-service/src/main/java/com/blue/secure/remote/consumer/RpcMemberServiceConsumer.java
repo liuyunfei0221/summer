@@ -8,9 +8,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.concurrent.ExecutorService;
-
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.converterFutureToMono;
+import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -18,7 +16,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
 @Component
 public class RpcMemberServiceConsumer {
 
@@ -30,12 +28,6 @@ public class RpcMemberServiceConsumer {
     })
     private RpcMemberService rpcMemberService;
 
-    private final ExecutorService executorService;
-
-    public RpcMemberServiceConsumer(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
-
     /**
      * 根据手机号获取成员关键信息
      *
@@ -44,7 +36,7 @@ public class RpcMemberServiceConsumer {
      */
     public Mono<MemberBasicInfo> getMemberBasicByPhone(String phone) {
         LOGGER.info("Mono<MemberBasicInfo> getMemberBasicByPhone(String phone), phone = {}", phone);
-        return converterFutureToMono(rpcMemberService.getMemberBasicByPhone(phone), executorService);
+        return fromFuture(rpcMemberService.getMemberBasicByPhone(phone));
     }
 
 
@@ -56,7 +48,7 @@ public class RpcMemberServiceConsumer {
      */
     public Mono<MemberBasicInfo> getMemberBasicByEmail(String email) {
         LOGGER.info("Mono<MemberBasicInfo> getMemberBasicByEmail(String email), email = {}", email);
-        return converterFutureToMono(rpcMemberService.getMemberBasicByEmail(email), executorService);
+        return fromFuture(rpcMemberService.getMemberBasicByEmail(email));
     }
 
 }

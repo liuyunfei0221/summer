@@ -123,8 +123,7 @@ public class FileServiceImpl implements FileService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "同时上传的文件数量不能超过" + CURRENT_SIZE_THRESHOLD);
 
         return fromIterable(resources)
-                .flatMap(localDiskFileUploader::upload
-                )
+                .flatMap(localDiskFileUploader::upload)
                 .collectList()
                 .flatMap(uploadedFiles -> {
                     allotByMax(uploadedFiles, (int) DB_INSERT.value, false)

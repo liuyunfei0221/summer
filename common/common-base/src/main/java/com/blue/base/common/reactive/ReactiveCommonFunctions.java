@@ -10,14 +10,11 @@ import reactor.core.publisher.Mono;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-import static reactor.core.publisher.Mono.create;
 import static reactor.core.publisher.Mono.just;
 
 /**
@@ -66,72 +63,6 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      */
     public static <T> Mono<BlueResult<T>> generate(int code, T data, String message) {
         return just(new BlueResult<>(code, data, message));
-    }
-
-    /**
-     * 转换
-     *
-     * @param future
-     * @param executorService
-     * @param <T>
-     * @return
-     */
-    public static <T> Mono<T> converterFutureToMono(CompletableFuture<T> future, ExecutorService executorService) {
-        return create(monoSink ->
-                future.whenCompleteAsync((data, throwable) -> {
-                    if (throwable == null) {
-                        monoSink.success(data);
-                    } else {
-                        monoSink.error(throwable);
-                    }
-                }, executorService));
-    }
-
-    /**
-     * 转换
-     *
-     * @param mono
-     * @param executorService
-     * @param <T>
-     * @return
-     */
-    public static <T> CompletableFuture<T> converterMonoToFuture(Mono<T> mono, ExecutorService executorService) {
-        CompletableFuture<T> future = new CompletableFuture<>();
-        mono.doOnError(future::completeExceptionally)
-                .subscribe(data -> future.completeAsync(() -> data, executorService));
-        return future;
-    }
-
-    /**
-     * 转换
-     *
-     * @param future
-     * @param <T>
-     * @return
-     */
-    public static <T> Mono<T> converterFutureToMono(CompletableFuture<T> future) {
-        return create(monoSink ->
-                future.whenCompleteAsync((data, throwable) -> {
-                    if (throwable == null) {
-                        monoSink.success(data);
-                    } else {
-                        monoSink.error(throwable);
-                    }
-                }));
-    }
-
-    /**
-     * 转换
-     *
-     * @param mono
-     * @param <T>
-     * @return
-     */
-    public static <T> CompletableFuture<T> converterMonoToFuture(Mono<T> mono) {
-        CompletableFuture<T> future = new CompletableFuture<>();
-        mono.doOnError(future::completeExceptionally)
-                .subscribe(data -> future.completeAsync(() -> data));
-        return future;
     }
 
     /**

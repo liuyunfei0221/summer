@@ -12,10 +12,8 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.converterMonoToFuture;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static reactor.util.Loggers.getLogger;
 
@@ -35,11 +33,8 @@ public class RpcMemberServiceProvider implements RpcMemberService {
 
     private final MemberBasicService memberBasicService;
 
-    private final ExecutorService executorService;
-
-    public RpcMemberServiceProvider(MemberBasicService memberBasicService, ExecutorService executorService) {
+    public RpcMemberServiceProvider(MemberBasicService memberBasicService) {
         this.memberBasicService = memberBasicService;
-        this.executorService = executorService;
     }
 
     /**
@@ -56,13 +51,11 @@ public class RpcMemberServiceProvider implements RpcMemberService {
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicByPhone(String phone) {
         LOGGER.info("CompletableFuture<MemberBasicInfo> getMemberBasicByPhone(String phone), phone = {},", phone);
-        return converterMonoToFuture(memberBasicService.getByPhone(phone)
-                .flatMap(mbOpt -> {
-                    LOGGER.info("mbOpt = {},", mbOpt);
-                    return mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
-                            .map(Mono::just)
-                            .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "帐户名或密码错误"));
-                }), executorService);
+        return memberBasicService.getByPhone(phone)
+                .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
+                        .map(Mono::just)
+                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "帐户名或密码错误")))
+                .toFuture();
     }
 
     /**
@@ -74,13 +67,11 @@ public class RpcMemberServiceProvider implements RpcMemberService {
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicByEmail(String email) {
         LOGGER.info("CompletableFuture<MemberBasicInfo> getMemberBasicByEmail(String email), email = {},", email);
-        return converterMonoToFuture(memberBasicService.getByEmail(email)
-                .flatMap(mbOpt -> {
-                    LOGGER.info("mbOpt = {},", mbOpt);
-                    return mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
-                            .map(Mono::just)
-                            .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "帐户名或密码错误"));
-                }), executorService);
+        return memberBasicService.getByEmail(email)
+                .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
+                        .map(Mono::just)
+                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "帐户名或密码错误")))
+                .toFuture();
     }
 
 }
