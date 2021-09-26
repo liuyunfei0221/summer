@@ -43,7 +43,7 @@ public final class FileApiHandler {
 
     private final FileDeploy fileDeploy;
 
-    private static long ALL_FILE_SIZE_THRESHOLD;
+    private long allFileSizeThreshold;
 
     public FileApiHandler(FileService fileService, FileDeploy fileDeploy) {
         this.fileService = fileService;
@@ -54,7 +54,7 @@ public final class FileApiHandler {
 
     @PostConstruct
     public void init() {
-        ALL_FILE_SIZE_THRESHOLD = fileDeploy.getAllFileSizeThreshold();
+        allFileSizeThreshold = fileDeploy.getAllFileSizeThreshold();
     }
 
     /**
@@ -65,8 +65,8 @@ public final class FileApiHandler {
      */
     public Mono<ServerResponse> upload(ServerRequest serverRequest) {
         long allFileSize = serverRequest.headers().contentLength().orElse(0L);
-        if (0L == allFileSize || allFileSize > ALL_FILE_SIZE_THRESHOLD)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "上传文件总大小不能为空或超过 " + ALL_FILE_SIZE_THRESHOLD);
+        if (0L == allFileSize || allFileSize > allFileSizeThreshold)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "上传文件总大小不能为空或超过 " + allFileSizeThreshold);
 
         Access access = getAccess(serverRequest);
         return serverRequest.multipartData()

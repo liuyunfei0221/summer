@@ -9,7 +9,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -70,20 +69,15 @@ public final class BlueKafkaProducer<T extends Serializable> {
     public void send(T data) {
         //发送消息
         ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, GSON.toJson(data));
-        future.addCallback(new ListenableFutureCallback<>() {
-            @Override
-            public void onSuccess(SendResult<String, String> sendResult) {
-                LOGGER.warn("sendMessage success --> sendResult = {}, data = {}", sendResult, data);
-                successHandler.accept(sendResult, data);
-            }
-
-            @SuppressWarnings("NullableProblems")
-            @Override
-            public void onFailure(Throwable throwable) {
-                LOGGER.error("sendMessage failed --> throwable = {}, data = {}", throwable.getMessage(), data);
-                failHandler.accept(throwable, data);
-            }
-        });
+        future.addCallback(result -> {
+                    LOGGER.warn("sendMessage success --> result = {}, data = {}", result, data);
+                    successHandler.accept(result, data);
+                },
+                ex -> {
+                    LOGGER.error("sendMessage failed --> throwable = {}, data = {}", ex.getMessage(), data);
+                    failHandler.accept(ex, data);
+                }
+        );
     }
 
 }
