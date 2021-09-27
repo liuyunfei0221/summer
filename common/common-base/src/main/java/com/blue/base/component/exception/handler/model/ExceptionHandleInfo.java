@@ -3,7 +3,7 @@ package com.blue.base.component.exception.handler.model;
 import com.blue.base.model.base.BlueResult;
 
 /**
- * 状态码及vo封装
+ * http status code and result
  *
  * @author DarkBlue
  */
@@ -16,9 +16,9 @@ public final class ExceptionHandleInfo {
 
     public ExceptionHandleInfo(Integer code, BlueResult<Void> blueResult) {
         if (code == null)
-            throw new RuntimeException("code不能为空");
+            throw new RuntimeException("code can't be null");
         if (blueResult == null)
-            throw new RuntimeException("blueVo不能为空");
+            throw new RuntimeException("blueVo can't be null");
 
         this.code = code;
         this.blueResult = blueResult;

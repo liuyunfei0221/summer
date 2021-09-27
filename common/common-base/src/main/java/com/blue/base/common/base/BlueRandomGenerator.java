@@ -10,7 +10,7 @@ import java.util.function.Function;
 import static com.blue.base.constant.base.RandomType.*;
 
 /**
- * 随机信息创建
+ * random util base on commons-lang
  *
  * @author liuyunfei
  * @date 2021/8/18

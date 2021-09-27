@@ -11,9 +11,9 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * conf BlueLifecycle component
+ * Used to configure the start and stop sequence of certain beans
  *
- * @author DarkBlueyunfe
+ * @author DarkBlue
  */
 @Target(TYPE)
 @Retention(RUNTIME)

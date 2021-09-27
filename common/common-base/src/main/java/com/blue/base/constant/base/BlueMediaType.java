@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 import org.springframework.http.MediaType;
 
 /**
- * 媒体类型
+ * media type
  *
  * @author liuyunfei
  * @date 2021/9/5

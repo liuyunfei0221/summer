@@ -9,7 +9,7 @@ import static com.blue.base.common.auth.AuthProcessor.jsonToAccess;
 import static reactor.core.publisher.Mono.just;
 
 /**
- * 用于reactive项目的用户获取工具
+ * access getter for reactive
  *
  * @author DarkBlue
  */
@@ -19,7 +19,7 @@ public final class AccessGetterForReactive {
     private static final String AUTHORIZATION = BlueHeader.AUTHORIZATION.name;
 
     /**
-     * 由request中获取用户信息
+     * get access from request
      *
      * @param serverRequest
      * @return
@@ -29,7 +29,7 @@ public final class AccessGetterForReactive {
     }
 
     /**
-     * 由request中获取用户信息
+     * get access mono from access
      *
      * @param serverRequest
      * @return

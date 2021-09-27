@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 import java.util.Set;
 
 /**
- * 用于定制化配置spring扫描的scanner
+ * Scanner for customized configuration
  *
  * @author DarkBlue
  * @date 2021/8/15

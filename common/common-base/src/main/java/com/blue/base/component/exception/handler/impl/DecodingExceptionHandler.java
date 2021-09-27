@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.StringUtils.substring;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 解析异常处理器
+ * decoding exp handler
  *
  * @author liuyunfei
  * @date 2021/9/5
@@ -36,13 +36,13 @@ public class DecodingExceptionHandler implements ExceptionHandler {
 
     private static final Map<String, String> KNOWN_MESSAGE_MAPPING = Stream.of(BlueMediaType.values())
             .collect(Collectors.toMap(bmt -> "No multipart boundary found in Content-Type: \"" + bmt.identity + "\"",
-                    bmt -> "<" + bmt.identity + ">类型未获取到边界,请指定<Content-Type>中的<boundary>属性.", (a, b) -> a));
+                    bmt -> "<" + bmt.identity + ">get bound failed,Please specify <boundary> in <Content-Type>.", (a, b) -> a));
 
     private static final UnaryOperator<String> TOO_MANY_PARTS_MESSAGE_CONVERTER = message -> {
         int beginIndex = StringUtils.indexOf(message, "/");
         int endIndex = lastIndexOf(message, " ");
 
-        return beginIndex != -1 && endIndex != -1 ? "文件数量不能超过" + substring(message, beginIndex + 1, endIndex) : message;
+        return beginIndex != -1 && endIndex != -1 ? "file size can't be greater than" + substring(message, beginIndex + 1, endIndex) : message;
     };
 
     private static final UnaryOperator<String> NO_BOUNDARY_MESSAGE_CONVERTER = message ->
@@ -50,9 +50,9 @@ public class DecodingExceptionHandler implements ExceptionHandler {
 
 
     /**
-     * 异常信息提取转换器
+     * exp message converter
      * <p>
-     * TODO 通过修改此函数将所有可能遇到的信息进行处理
+     * TODO By modifying this function to process all the information that may be encountered
      */
     private static final Function<DecodingException, String> MESSAGE_PARSER = decodingException -> {
         String originalMessage = ofNullable(decodingException.getMessage()).orElse(decodingException.getLocalizedMessage());

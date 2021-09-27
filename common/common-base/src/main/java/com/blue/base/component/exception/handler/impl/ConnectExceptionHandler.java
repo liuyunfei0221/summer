@@ -9,7 +9,7 @@ import static com.blue.base.constant.base.ResponseElement.REQUEST_TIMEOUT;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * RSA解密异常处理类
+ * connection exp handler
  *
  * @author DarkBlue
  */

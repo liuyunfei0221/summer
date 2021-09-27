@@ -6,7 +6,7 @@ import static java.util.regex.Pattern.*;
 import static java.util.stream.Stream.of;
 
 /**
- * XSS校验器
+ * XSS asserter
  *
  * @author DarkBlue
  */
@@ -49,7 +49,7 @@ public final class XssAsserter {
     };
 
     /**
-     * 校验
+     * check
      *
      * @param value
      * @return

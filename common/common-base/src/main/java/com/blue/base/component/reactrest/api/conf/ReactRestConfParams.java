@@ -5,7 +5,7 @@ import reactor.netty.http.HttpProtocol;
 import java.util.List;
 
 /**
- * 响应式rest组件配置
+ * reactive rest conf param
  *
  * @author liuyunfei
  * @date 2021/9/9

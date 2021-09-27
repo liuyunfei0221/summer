@@ -27,7 +27,7 @@ import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- * 常量约束校验器
+ * Constant Constraint Checker
  *
  * @author DarkBlue
  */

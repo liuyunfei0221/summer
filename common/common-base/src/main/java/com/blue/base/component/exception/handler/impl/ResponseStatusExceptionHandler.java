@@ -11,7 +11,7 @@ import static com.blue.base.common.base.ConstantProcessor.getResponseElementBySt
 import static reactor.util.Loggers.getLogger;
 
 /**
- * http状态异常处理类
+ * resp status exp handler
  *
  * @author DarkBlue
  */

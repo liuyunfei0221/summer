@@ -11,7 +11,7 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.groupingBy;
 
 /**
- * 资源分配
+ * list allocator
  *
  * @author DarkBlue
  */
@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.groupingBy;
 public final class ArrayAllocator {
 
     /**
-     * 是否启用多线程处理的元素阈值
+     * threshold for enable parallel
      */
     private static final int THRESHOLD = 1 << 8;
 
@@ -29,11 +29,11 @@ public final class ArrayAllocator {
     }
 
     /**
-     * 按切分后每个集合的最大元素数量分配
+     * According to the maximum number of elements in collections set after segmentation
      *
-     * @param list 要切分的集合
-     * @param max  切分后每集合的最大元素数量
-     * @param fair 是否公平分配(公平分配会有额外性能消耗)
+     * @param list list to be divided
+     * @param max  The maximum number of elements in each collection after segmentation
+     * @param fair enable fair distribution (fair distribution will have additional performance consumption)
      * @param <T>
      * @return
      */
@@ -48,11 +48,11 @@ public final class ArrayAllocator {
     }
 
     /**
-     * 按切分后的最大集合数量分配
+     * According to the maximum number of collections after segmentation
      *
-     * @param list 要切分的集合
-     * @param rows 切分数量
-     * @param fair 是否公平分配(公平分配会有额外性能消耗)
+     * @param list list to be divided
+     * @param rows The maximum number of elements in each collection after segmentation
+     * @param fair enable fair distribution (fair distribution will have additional performance consumption)
      * @param <T>
      * @return
      */
@@ -67,14 +67,13 @@ public final class ArrayAllocator {
             rows = size;
 
         if (fair) {
-            //公平拆分
             if (size > THRESHOLD) {
-                //元素数量高于阈值
+                //greater than threshold
                 final AtomicInteger pedometer = new AtomicInteger(0);
                 final int r = rows;
                 return new ArrayList<>(list.parallelStream().collect(groupingBy(e -> pedometer.getAndIncrement() % r)).values());
             } else {
-                //元素数量低于阈值
+                //less than threshold
                 List<List<T>> result = new ArrayList<>(rows);
                 for (int i = 0; i < rows; i++)
                     result.add(new LinkedList<>());
@@ -88,7 +87,6 @@ public final class ArrayAllocator {
                 return result;
             }
         } else {
-            //非公平拆分
             List<List<T>> result = new ArrayList<>(rows);
 
             int seq = 1;

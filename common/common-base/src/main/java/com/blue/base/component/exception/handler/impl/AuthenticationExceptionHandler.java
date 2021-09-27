@@ -9,6 +9,8 @@ import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
 import static reactor.util.Loggers.getLogger;
 
 /**
+ * auth exp handler
+ *
  * @author liuyunfei
  * @date 2021/8/17
  * @apiNote

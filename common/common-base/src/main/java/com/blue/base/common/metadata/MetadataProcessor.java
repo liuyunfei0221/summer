@@ -14,7 +14,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.google.gson.reflect.TypeToken.getParameterized;
 
 /**
- * 认证信息到用户信息转换
+ * metadata converter
  *
  * @author DarkBlue
  */
@@ -26,12 +26,12 @@ public final class MetadataProcessor {
     private static final Type METADATA_TYPE = getParameterized(Map.class, String.class, String.class).getType();
 
     /**
-     * 返回空metadata
+     * return empty metadata
      */
     private static final Supplier<Map<String, String>> EMPTY_METADATA_SUP = HashMap::new;
 
     /**
-     * 元数据信息转JSON
+     * metadata map -> json
      *
      * @param metadata
      * @return
@@ -40,11 +40,11 @@ public final class MetadataProcessor {
         if (metadata != null)
             return GSON.toJson(metadata);
 
-        throw new RuntimeException("metadata不能为空");
+        throw new RuntimeException("metadata can't be null");
     }
 
     /**
-     * json元数据转换为map
+     * json -> metadata map
      *
      * @param json
      * @return
@@ -54,7 +54,7 @@ public final class MetadataProcessor {
             try {
                 return GSON.fromJson(json, METADATA_TYPE);
             } catch (JsonSyntaxException e) {
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "metadata格式错误");
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "metadata is invalid");
             }
 
         return EMPTY_METADATA_SUP.get();

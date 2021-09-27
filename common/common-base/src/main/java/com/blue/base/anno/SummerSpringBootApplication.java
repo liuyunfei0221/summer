@@ -19,7 +19,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.springframework.context.annotation.FilterType.CUSTOM;
 
 /**
- * identity uni conf
+ * Custom startup items for summer
  *
  * @author DarkBlue
  */

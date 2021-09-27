@@ -1,9 +1,10 @@
 package com.blue.base.component.lifecycle.inter;
 
 /**
- * 用于处理上下文初始化后bean状态的接口约束,
- * 实现此接口的类会被自动注入容器并会根据优先级顺序在程序启动后执行start,在程序结束时执行stop,
- * 一般用于平滑发布时的优雅上下线处理
+ * Used to handle the interface constraints of the bean state after the context is initialized,
+ * The class that implements this interface will be automatically injected into the container and
+ * will execute start after the program starts according to the priority order, and execute stop at the end of the program.
+ * Generally used for elegant online and offline processing during smooth publishing
  *
  * @author DarkBlue
  * @date 2021/8/13
@@ -13,26 +14,26 @@ package com.blue.base.component.lifecycle.inter;
 public interface BlueLifecycle {
 
     /**
-     * 启动优先级
+     * order for start
      *
      * @return
      */
     int startPrecedence();
 
     /**
-     * 停止优先级
+     * order for stop
      *
      * @return
      */
     int stopPrecedence();
 
     /**
-     * 启动
+     * start action
      */
     void start();
 
     /**
-     * 停止
+     * stop action
      */
     void stop();
 

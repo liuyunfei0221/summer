@@ -10,7 +10,7 @@ import static com.blue.base.common.metadata.MetadataProcessor.jsonToMetadata;
 import static reactor.core.publisher.Mono.just;
 
 /**
- * 用于reactive项目的metadata获取工具
+ * metadata getter for reactive
  *
  * @author DarkBlue
  */
@@ -20,7 +20,7 @@ public class MetadataGetterForReactive {
     private static final String METADATA = BlueHeader.METADATA.name;
 
     /**
-     * 由request中获取metadata
+     * get metadata from request
      *
      * @param serverRequest
      * @return
@@ -30,7 +30,7 @@ public class MetadataGetterForReactive {
     }
 
     /**
-     * 由request中获取metadata
+     * get metadata mono from access
      *
      * @param serverRequest
      * @return

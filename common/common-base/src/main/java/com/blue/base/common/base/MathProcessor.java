@@ -13,7 +13,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * 数学工具类
+ * math util
  *
  * @author DarkBlue
  */

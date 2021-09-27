@@ -9,7 +9,8 @@ import com.google.gson.JsonSyntaxException;
 import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
 
 /**
- * auth -> json or json -> auth
+ * auth object and auth str converter
+ * (auth -> json) or (json -> auth)
  *
  * @author DarkBlue
  */

@@ -20,7 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static reactor.core.publisher.Mono.just;
 
 /**
- * 全局异常处理
+ * global exp handler bean
  *
  * @author DarkBlue
  */

@@ -1,7 +1,7 @@
 package com.blue.base.component.syncrest.api.conf;
 
 /**
- * rest参数配置
+ * rest conf
  *
  * @author liuyunfei
  * @date 2021/9/9

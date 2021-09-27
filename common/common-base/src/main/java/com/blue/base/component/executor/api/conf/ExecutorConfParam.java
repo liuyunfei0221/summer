@@ -3,7 +3,7 @@ package com.blue.base.component.executor.api.conf;
 import java.util.concurrent.RejectedExecutionHandler;
 
 /**
- * 线程池配置
+ * global executor conf param
  *
  * @author liuyunfei
  * @date 2021/9/9

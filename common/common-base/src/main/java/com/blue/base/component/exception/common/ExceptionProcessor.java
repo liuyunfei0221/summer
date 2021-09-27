@@ -17,7 +17,7 @@ import static java.util.stream.Stream.of;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 异常处理器
+ * global exp processor
  *
  * @author DarkBlue
  */
@@ -27,7 +27,7 @@ public final class ExceptionProcessor {
     private static final Logger LOGGER = getLogger(ExceptionProcessor.class);
 
     /**
-     * 异常处理器实现类路径
+     * handlers package
      */
     private static final String DIR_NAME = "com.blue.base.component.exception.handler.impl";
 
@@ -36,14 +36,14 @@ public final class ExceptionProcessor {
     private static final ResponseElement INTERNAL_SERVER_ERROR_RES = INTERNAL_SERVER_ERROR;
 
     /**
-     * 初始化异常映射器
+     * init mapping
      *
      * @param dirName
      * @return
      */
     private static Map<String, ExceptionHandler> generatorMapping(String dirName) {
         List<Class<?>> classes = getClassesByPackage(dirName, true);
-        LOGGER.info("Map<String, ExceptionHandler> generatorMapping(String dirName), 开始加载异常处理类, dirName = {}", dirName);
+        LOGGER.info("Map<String, ExceptionHandler> generatorMapping(String dirName), dirName = {}", dirName);
         return classes
                 .stream()
                 .filter(clz ->
@@ -51,10 +51,10 @@ public final class ExceptionProcessor {
                                 of(clz.getInterfaces()).anyMatch(inter -> ExceptionHandler.class.getName().equals(inter.getName())))
                 .map(clz -> {
                     try {
-                        LOGGER.info("generatorMapping(String dirName), 加载异常处理类, clz = {}", clz.getName());
+                        LOGGER.info("generatorMapping(String dirName), Load exception handler class, clz = {}", clz.getName());
                         return (ExceptionHandler) clz.getConstructor().newInstance();
                     } catch (Exception e) {
-                        LOGGER.info("generatorMapping(String dirName), 加载异常处理类失败, clz = {}, e = {}", clz.getName(), e);
+                        LOGGER.info("generatorMapping(String dirName), Load exception handler class failed, clz = {}, e = {}", clz.getName(), e);
                         return null;
                     }
                 })
@@ -63,7 +63,7 @@ public final class ExceptionProcessor {
     }
 
     /**
-     * 处理
+     * process
      *
      * @param throwable
      * @return
@@ -81,10 +81,10 @@ public final class ExceptionProcessor {
             try {
                 return handler.handle(t);
             } catch (Exception e) {
-                LOGGER.error("handle(Throwable throwable), 异常处理失败, t = {}, e = {}", t, e);
+                LOGGER.error("handle(Throwable throwable), Exception handling failed, t = {}, e = {}", t, e);
             }
 
-        LOGGER.error("handle(Throwable throwable), 未能识别的异常, t = {}", t);
+        LOGGER.error("handle(Throwable throwable), unknown exception, t = {}", t);
         return new ExceptionHandleInfo(INTERNAL_SERVER_ERROR_RES.status,
                 new BlueResult<>(INTERNAL_SERVER_ERROR_RES.code, null, INTERNAL_SERVER_ERROR_RES.message));
     }

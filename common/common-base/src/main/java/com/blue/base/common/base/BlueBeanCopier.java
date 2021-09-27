@@ -12,7 +12,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 对象拷贝,基于cglib
+ * bean copier base on cglib
  *
  * @author DarkBlue
  */

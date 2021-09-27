@@ -4,7 +4,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
 /**
- * 数值变动监控器
+ * monitor for value
  *
  * @author DarkBlue
  */

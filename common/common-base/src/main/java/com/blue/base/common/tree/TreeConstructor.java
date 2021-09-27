@@ -8,7 +8,7 @@ import java.util.Objects;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * 树构建
+ * tree builder
  *
  * @author DarkBlue
  */
@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toMap;
 public interface TreeConstructor<T> {
 
     /**
-     * 约束
+     * generate
      *
      * @param nodes
      * @return
@@ -25,7 +25,7 @@ public interface TreeConstructor<T> {
     List<TreeNode<T>> construct(final List<TreeNode<T>> nodes);
 
     /**
-     * 默认实现
+     * default generate
      *
      * @param nodes
      * @return

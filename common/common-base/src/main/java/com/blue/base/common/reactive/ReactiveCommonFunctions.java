@@ -18,7 +18,7 @@ import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
 
 /**
- * 响应式组件集
+ * common func for reactive
  *
  * @author DarkBlue
  */
@@ -37,7 +37,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
             h != null && !"".equals(h) && !UNKNOWN.equalsIgnoreCase(h);
 
     /**
-     * 请求特征获取器
+     * request identity getter func
      */
     public static final Function<ServerHttpRequest, String> REQUEST_IDENTITY_GETTER = request ->
             RATE_LIMIT_KEY_PRE + of(request)
@@ -53,7 +53,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
 
 
     /**
-     * 封装reactive响应
+     * package response result for reactive
      *
      * @param code
      * @param data
@@ -66,7 +66,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
     }
 
     /**
-     * 获取请求IP
+     * get request ip
      *
      * @param serverRequest
      * @return
@@ -105,7 +105,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
 
 
     /**
-     * 获取请求IP
+     * get request ip
      *
      * @param serverHttpRequest
      * @return

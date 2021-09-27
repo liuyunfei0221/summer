@@ -9,7 +9,7 @@ import static com.blue.base.constant.base.ResponseElement.NOT_FOUND;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 不支持的请求方式异常处理类
+ * method not support exp handler
  *
  * @author DarkBlue
  */
@@ -28,7 +28,9 @@ public final class HttpRequestMethodNotSupportedExceptionHandler implements Exce
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("httpRequestMethodNotSupportedExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        //项目中是按请求方式+资源路径来定义资源操作,不提供单独的请求方式校验,因为根本无法通过鉴权校验,只会返回404
+        //In the project, the resource operation is defined according to the request method + resource path,
+        // and no separate request method verification is provided, because the authentication verification cannot be passed at all,
+        // and only a 404 will be return.
         return new ExceptionHandleInfo(NOT_FOUND.status, new BlueResult<>(NOT_FOUND.code, null, NOT_FOUND.message));
     }
 }

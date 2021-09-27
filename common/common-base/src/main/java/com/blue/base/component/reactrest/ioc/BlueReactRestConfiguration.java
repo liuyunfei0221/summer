@@ -9,6 +9,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import static com.blue.base.component.reactrest.api.generator.BlueReactRestGenerator.createWebClient;
 
 /**
+ * reactive rest configuration
+ *
  * @author liuyunfei
  * @date 2021/9/9
  * @apiNote
@@ -19,7 +21,7 @@ public class BlueReactRestConfiguration {
 
     @Bean
     WebClient webClient(ReactRestConf reactRestConf) {
-       return createWebClient(reactRestConf);
+        return createWebClient(reactRestConf);
     }
 
 }

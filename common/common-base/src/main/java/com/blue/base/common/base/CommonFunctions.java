@@ -40,7 +40,7 @@ import static org.apache.commons.lang3.math.NumberUtils.isDigits;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 通用组件集
+ * Common function set
  *
  * @author DarkBlue
  */

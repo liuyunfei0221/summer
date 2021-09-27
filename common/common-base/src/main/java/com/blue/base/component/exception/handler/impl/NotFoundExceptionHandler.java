@@ -9,7 +9,7 @@ import static com.blue.base.constant.base.ResponseElement.NOT_FOUND;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 404异常处理类
+ * 404 exp handler
  *
  * @author DarkBlue
  */

@@ -13,9 +13,9 @@ import static java.util.stream.Collectors.toList;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 任务批处理的聚合器
+ * batch task collector
  *
- * @param <R> 用于聚合的通用响应结果
+ * @param <R>
  * @author DarkBlue
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
@@ -24,22 +24,22 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
     private final Logger LOGGER = getLogger(DefaultBlueCollector.class);
 
     /**
-     * 写超时时间
+     * write timeout
      */
     private final int WRITE_TIME_OUT;
 
     /**
-     * 读超时时间
+     * read timeout
      */
     private final long READ_TIME_OUT;
 
     /**
-     * 超时单位
+     * timeout unit
      */
     private final TimeUnit TIME_OUT_UNIT;
 
     /**
-     * 分片容器数组
+     * segments of sharding tasks
      */
     private final Segment<R>[] segments;
 
@@ -47,12 +47,12 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
     private final int MAX_IDX;
 
     /**
-     * 分片上限
+     * sharding threshold
      */
     private static final int MAXIMUM_CAPACITY = 1 << 16;
 
     /**
-     * 对应的分片容量
+     * capacity
      *
      * @param cap
      * @return
@@ -63,12 +63,12 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
     }
 
     /**
-     * 强制有参
+     * constructor
      *
-     * @param threads     线程数量
-     * @param writeTimeout 写超时
-     * @param readTimeOut  读超时
-     * @param timeUnit     超时单位
+     * @param threads
+     * @param writeTimeout
+     * @param readTimeOut
+     * @param timeUnit
      */
     DefaultBlueCollector(int threads, int writeTimeout, long readTimeOut, TimeUnit timeUnit) {
         this.WRITE_TIME_OUT = writeTimeout;
@@ -89,9 +89,9 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
 
 
     /**
-     * 获取聚合结果
+     * get collect result
      *
-     * @return 聚合结果
+     * @return
      */
     @Override
     public List<R> collect() {
@@ -102,9 +102,9 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
     }
 
     /**
-     * 任务消费回调
+     * process complete callback
      *
-     * @param r 资源处理结果
+     * @param r
      */
     @Override
     public void complete(R r) {
@@ -114,19 +114,19 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
 
 
     /**
-     * 分片容器
+     * segment
      *
      * @param <K>
      */
     private final class Segment<K> {
 
         /**
-         * 分片聚合结果
+         * results
          */
         private final List<K> SEGMENT_COLLECT = new LinkedList<>();
 
         /**
-         * 分片同步控制器
+         * coordinator
          */
         private final StampedLock SEGMENT_LOCK = new StampedLock();
 
@@ -134,9 +134,9 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
         }
 
         /**
-         * 任务消费回调
+         * collect
          *
-         * @param k 处理结果
+         * @param k
          */
         void segmentAdd(K k) {
             long stamp = 0L;
@@ -155,9 +155,9 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
         }
 
         /**
-         * 获取分片聚合结果
+         * get segment results
          *
-         * @return 分片聚合结果
+         * @return
          */
         @SuppressWarnings("ConstantConditions")
         List<K> segmentCollect() {

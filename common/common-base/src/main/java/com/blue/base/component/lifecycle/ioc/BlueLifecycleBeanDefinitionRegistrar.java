@@ -32,6 +32,8 @@ import static org.springframework.core.annotation.AnnotationAttributes.fromMap;
 import static reactor.util.Loggers.getLogger;
 
 /**
+ * Registrar for BlueLifecycle obj
+ *
  * @author DarkBlue
  * @date 2021/8/15
  * @apiNote
@@ -56,38 +58,38 @@ public class BlueLifecycleBeanDefinitionRegistrar implements ResourceLoaderAware
     private Map<String, BlueLifecycle> beans;
 
     /**
-     * 排序
+     * order
      */
     private static final Comparator<Map.Entry<String, BlueLifecycle>>
             COMPARATOR_FOR_START = comparingInt(e -> e.getValue().startPrecedence()),
             COMPARATOR_FOR_STOP = comparingInt(e -> e.getValue().stopPrecedence());
 
     /**
-     * 行为
+     * action
      */
     private static final Consumer<Map.Entry<String, BlueLifecycle>>
             ACTION_FOR_START = entry -> {
         BlueLifecycle blueLifecycle = entry.getValue();
         try {
             blueLifecycle.start();
-            LOGGER.info("start() success, {} 启动成功, 优先级为 {}", entry.getKey(), blueLifecycle.startPrecedence());
+            LOGGER.info("start() success, {} started, precedence is {}", entry.getKey(), blueLifecycle.startPrecedence());
         } catch (Exception e) {
             String beanName = entry.getKey();
             int precedence = blueLifecycle.startPrecedence();
-            LOGGER.error("start() failed, {} 启动失败, 优先级为 {}, e = {}", beanName, precedence, e);
-            throw new RuntimeException("stop() failed, " + beanName + " 启动失败, 优先级为 " + precedence + ", e = " + e);
+            LOGGER.error("start() failed, {} start failed, precedence is {}, e = {}", beanName, precedence, e);
+            throw new RuntimeException("stop() failed, " + beanName + " start failed, precedence is " + precedence + ", e = " + e);
         }
     },
             ACTION_FOR_STOP = entry -> {
                 BlueLifecycle blueLifecycle = entry.getValue();
                 try {
                     blueLifecycle.stop();
-                    LOGGER.info("stop() success, {} 终止成功, 优先级为 {}", entry.getKey(), blueLifecycle.stopPrecedence());
+                    LOGGER.info("stop() success, {} stopped, precedence is {}", entry.getKey(), blueLifecycle.stopPrecedence());
                 } catch (Exception e) {
                     String beanName = entry.getKey();
                     int precedence = blueLifecycle.startPrecedence();
-                    LOGGER.error("stop() failed, {} 终止失败, 优先级为 {}, e = {}", beanName, precedence, e);
-                    throw new RuntimeException("stop() failed, " + beanName + " 终止失败, 优先级为 " + precedence + ", e = " + e);
+                    LOGGER.error("stop() failed, {} stop failed, precedence is {}, e = {}", beanName, precedence, e);
+                    throw new RuntimeException("stop() failed, " + beanName + " stop failed, precedence is " + precedence + ", e = " + e);
                 }
             };
 

@@ -1,36 +1,37 @@
 package com.blue.base.constant.base;
 
 /**
- * 缓存key前缀
+ * cache keys
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public enum CacheKey {
 
+    //prefix
     /**
-     * 用户SESSION_KEY前缀
+     * member session key prefix
      */
     SESSION_KEY_PRE("B_SN:"),
 
     /**
-     * 认证信息动态刷新key前缀
+     * auth refresh key prefix
      */
     AUTH_REFRESH_KEY_PRE("AUTH_REF:"),
 
     /**
-     * 验证码key前缀
+     * verify key prefix
      */
     VERIFY_KEY_PRE("VERIFY_PRE:"),
 
     /**
-     * 签到KEY前缀
+     * sing in key prefix
      */
     SIGN_IN_KEY_PRE("SI_N:"),
 
-    //缓存key
+    //key
     /**
-     * 首页公告缓存KEY前缀
+     * portal key
      */
     PORTALS_PRE("PORTALS_PRE:");
 

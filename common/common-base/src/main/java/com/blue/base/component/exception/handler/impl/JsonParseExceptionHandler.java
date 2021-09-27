@@ -9,7 +9,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * JSON解析异常处理类
+ * json parse exp handler
  *
  * @author DarkBlue
  */

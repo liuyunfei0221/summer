@@ -1,32 +1,34 @@
 package com.blue.base.component.lifecycle.constant;
 
 /**
- * BlueLifecycle扫描配置
+ * BlueLifecycle scan conf
  *
  * @author DarkBlue
  */
 public enum BlueLifecycleScanConf {
 
     /**
-     * lifecycle扫描路径
+     * lifecycle package
      */
     BLUE_LIFECYCLE_SCAN_PACKAGE("basePackages", new String[]{"com.blue"}, false, "BlueLifecycle扫描配置");
 
     /**
-     * 待扫描的包路径的注解key名称
+     * anno param key
      */
     public final String scanPackagesAttrName;
 
     /**
-     * 默认的扫描路径
+     * default scan package
      */
     public final String[] defaultScanPackages;
 
-
+    /**
+     * use default filter
+     */
     public final Boolean useDefaultFilters;
 
     /**
-     * 描述
+     * disc
      */
     public final String disc;
 

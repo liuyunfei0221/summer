@@ -1,41 +1,41 @@
 package com.blue.base.constant.base;
 
 /**
- * pulsar topic约束
+ * pulsar topics
  *
  * @author DarkBlue
  */
 public enum BlueTopic {
 
     /**
-     * 非法ip或jwt前置拦截标记
+     * Illegal ip or jwt prefix mark
      */
-    ILLEGAL_MARK("illegalMark", "前置拦截标记"),
+    ILLEGAL_MARK("illegalMark", "Illegal ip or jwt prefix mark"),
 
     /**
-     * 数据上报通道/前置上报与后置上报通用
+     * Data reporting channel/pre-reporting and post-reporting are common
      */
-    REQUEST_EVENT("requestEvent", "数据上报"),
+    REQUEST_EVENT("requestEvent", "Data reporting channel/pre-reporting and post-reporting are common"),
 
     /**
-     * 认证过期时间刷新
+     * Refresh the certification expiration time
      */
-    AUTH_EXPIRE("authExpire", "认证过期时间刷新"),
+    AUTH_EXPIRE("authExpire", "Refresh the certification expiration time"),
 
     /**
-     * 本地auth认证过期
+     * Local auth certification expired
      */
-    INVALID_LOCAL_AUTH("invalidLocalAuth", "本地auth认证过期"),
+    INVALID_LOCAL_AUTH("invalidLocalAuth", "Local auth certification expired"),
 
     /**
-     * 签到数据过期时间刷新
+     * Refresh the sign-in data expiration time
      */
-    SIGN_EXPIRE("signExpire", "签到数据过期时间刷新"),
+    SIGN_EXPIRE("signExpire", "Refresh the sign-in data expiration time"),
 
     /**
-     * 营销/推广事件
+     * Marketing/Promotional Events
      */
-    MARKETING("marketing", "营销/推广事件");
+    MARKETING("marketing", "Marketing/Promotional Events");
 
 
     /**

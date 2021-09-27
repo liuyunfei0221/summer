@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 树封装
+ * tree node
  *
  * @author DarkBlue
  */
@@ -14,22 +14,22 @@ public final class TreeNode<T> implements Serializable {
     private static final long serialVersionUID = 2588759405716451873L;
 
     /**
-     * 元素主键
+     * id
      */
     private Long identity;
 
     /**
-     * 父节点元素主键
+     * parent id
      */
     private Long parentIdentity;
 
     /**
-     * 元素名称
+     * element
      */
     private T data;
 
     /**
-     * 子节点们
+     * children node
      */
     private List<TreeNode<T>> children;
 

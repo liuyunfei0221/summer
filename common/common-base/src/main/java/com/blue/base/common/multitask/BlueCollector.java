@@ -4,24 +4,25 @@ package com.blue.base.common.multitask;
 import java.util.List;
 
 /**
- * 聚合器接口
+ * collector interface
  *
  * @param <R>
  * @author DarkBlue
  */
+@SuppressWarnings("JavaDoc")
 public interface BlueCollector<R> {
 
     /**
-     * 获取聚合结果
+     * get result of collect
      *
-     * @return 聚合结果
+     * @return
      */
     List<R> collect();
 
     /**
-     * 任务消费回调
+     * complete callback
      *
-     * @param r 消费结果
+     * @param r
      */
     void complete(R r);
 

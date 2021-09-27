@@ -13,7 +13,7 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * http请求类型异常处理类
+ * unsupport exp handler
  *
  * @author DarkBlue
  */
@@ -36,6 +36,6 @@ public final class UnsupportedMediaTypeStatusExceptionHandler implements Excepti
         UnsupportedMediaTypeStatusException ex = (UnsupportedMediaTypeStatusException) throwable;
         return new ExceptionHandleInfo(UNSUPPORTED_MEDIA_TYPE.status,
                 new BlueResult<>(UNSUPPORTED_MEDIA_TYPE.code, null,
-                        "不支持的媒体类型 -> " + ofNullable(ex.getContentType()).map(c -> c.getType() + PATH_SEPARATOR + c.getSubtype()).orElse(UNKNOWN.identity)));
+                        "unsupport media type -> " + ofNullable(ex.getContentType()).map(c -> c.getType() + PATH_SEPARATOR + c.getSubtype()).orElse(UNKNOWN.identity)));
     }
 }

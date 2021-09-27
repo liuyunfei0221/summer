@@ -3,7 +3,7 @@ package com.blue.base.component.exception.handler.inter;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 
 /**
- * 异常处理接口 请使用模板方法用来扩展
+ * exp handler interface
  *
  * @author DarkBlue
  */
@@ -11,14 +11,14 @@ import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 public interface ExceptionHandler {
 
     /**
-     * 获取处理异常类的类名
+     * exp name
      *
      * @return
      */
     public String exceptionName();
 
     /**
-     * 处理异常
+     * handle exp
      *
      * @param throwable
      * @return

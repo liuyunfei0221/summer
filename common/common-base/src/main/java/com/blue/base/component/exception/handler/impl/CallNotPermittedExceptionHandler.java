@@ -9,11 +9,11 @@ import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * resilience4j熔断异常处理
+ * resilience4j exp handler
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"unused"})
+@SuppressWarnings({"unused", "SpellCheckingInspection"})
 public final class CallNotPermittedExceptionHandler implements ExceptionHandler {
 
     private static final Logger LOGGER = getLogger(CallNotPermittedExceptionHandler.class);

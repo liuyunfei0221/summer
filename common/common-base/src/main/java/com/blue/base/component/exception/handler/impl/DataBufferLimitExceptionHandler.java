@@ -15,7 +15,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * DataBufferLimitException处理器
+ * DataBufferLimitException handler
  *
  * @author liuyunfei
  * @date 2021/8/23
@@ -30,8 +30,8 @@ public class DataBufferLimitExceptionHandler implements ExceptionHandler {
 
     private static final String TAR_WORD = "of";
     private static final int TAR_WORD_LEN = TAR_WORD.length();
-    private static final String MSG_PRE = "文件大小不能超过";
-    private static final String DEFAULT_MSG = "文件大小不合法";
+    private static final String MSG_PRE = "file can't be lager than";
+    private static final String DEFAULT_MSG = "invalid file size";
 
     private static final Function<DataBufferLimitException, String> MESSAGE_CONVERTER = exception ->
             Optional.ofNullable(exception)

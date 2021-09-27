@@ -9,7 +9,7 @@ import static com.blue.base.constant.base.ResponseElement.GATEWAY_TIMEOUT;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 超时异常处理类
+ * timeout exp handler
  *
  * @author DarkBlue
  */

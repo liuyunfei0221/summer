@@ -29,6 +29,8 @@ import static javax.crypto.Cipher.ENCRYPT_MODE;
 import static reactor.util.Loggers.getLogger;
 
 /**
+ * rsa util
+ *
  * @author DarkBlue
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
@@ -48,7 +50,7 @@ public final class RsaProcessor {
             return Cipher.getInstance(KEY_ALGORITHM);
         } catch (Exception e) {
             LOGGER.error("CIPHER_SUP get(), failed, e = {}", e);
-            throw new RuntimeException("RsaProcessor算法配置错误");
+            throw new RuntimeException("RsaProcessor algorithm is invalid");
         }
     };
 
@@ -57,7 +59,7 @@ public final class RsaProcessor {
             return KeyFactory.getInstance(KEY_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("KEY_FACTORY_SUP get(), failed, e = {}", e);
-            throw new RuntimeException("RsaProcessor算法配置错误");
+            throw new RuntimeException("RsaProcessor algorithm is invalid");
         }
     };
 
@@ -66,7 +68,7 @@ public final class RsaProcessor {
             return Signature.getInstance(SIGN_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("SIGNATURE_SUP get(), failed, e = {}", e);
-            throw new RuntimeException("RsaProcessor算法配置错误");
+            throw new RuntimeException("RsaProcessor algorithm is invalid");
         }
     };
 
@@ -76,7 +78,7 @@ public final class RsaProcessor {
             return KeyPairGenerator.getInstance(KEY_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("KEY_PAIR_GEN_SUP get(), failed, e = {}", e);
-            throw new RuntimeException("RsaProcessor算法配置错误");
+            throw new RuntimeException("RsaProcessor algorithm is invalid");
         }
     };
 
@@ -85,15 +87,15 @@ public final class RsaProcessor {
      */
     private static final BiConsumer<String, String> PAR_ASSERT = (data, secKey) -> {
         if (data == null || "".equals(data))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data can't be blank");
         if (secKey == null || "".equals(secKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "secKey不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "secKey can't be blank");
     };
 
     private static final BlueException RSA_EXP = new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
 
     /**
-     * 分段处理加解密
+     * Segmented processing encryption and decryption
      *
      * @param source
      * @param cipher
@@ -132,7 +134,7 @@ public final class RsaProcessor {
     }
 
     /**
-     * 分段处理加签验签
+     * Subsequent processing sign and verification
      *
      * @param source
      * @param signature
@@ -164,12 +166,11 @@ public final class RsaProcessor {
     }
 
     /**
-     * 私钥加密
+     * encrypt by private key
      *
-     * @param data   加密前的字符串数据
-     * @param priKey 私钥字符串
+     * @param data
+     * @param priKey
      * @return
-     * @throws Exception
      */
     public static String encryptByPrivateKey(String data, String priKey) {
         PAR_ASSERT.accept(data, priKey);
@@ -186,12 +187,11 @@ public final class RsaProcessor {
     }
 
     /**
-     * 公钥解密
+     * decrypt by public key
      *
-     * @param secData 加密后的字符串数据
-     * @param pubKey  公钥字符串
+     * @param secData
+     * @param pubKey
      * @return
-     * @throws Exception
      */
     public static String decryptByPublicKey(String secData, String pubKey) {
         PAR_ASSERT.accept(secData, pubKey);
@@ -208,12 +208,11 @@ public final class RsaProcessor {
     }
 
     /**
-     * 公钥加密
+     * encrypt by public key
      *
-     * @param data   加密前的字符串数据
-     * @param pubKey 公钥字符串
+     * @param data
+     * @param pubKey
      * @return
-     * @throws Exception
      */
     public static String encryptByPublicKey(String data, String pubKey) {
         PAR_ASSERT.accept(data, pubKey);
@@ -230,12 +229,11 @@ public final class RsaProcessor {
     }
 
     /**
-     * 私钥解密
+     * decrypt by private key
      *
      * @param secData
      * @param priKey
      * @return
-     * @throws Exception
      */
     public static String decryptByPrivateKey(String secData, String priKey) {
         PAR_ASSERT.accept(secData, priKey);
@@ -253,7 +251,7 @@ public final class RsaProcessor {
     }
 
     /**
-     * 私钥加签
+     * sign by private key
      *
      * @param data
      * @param priKey
@@ -274,7 +272,7 @@ public final class RsaProcessor {
     }
 
     /**
-     * 公钥验签
+     * verify by public key
      *
      * @param data
      * @param sign
@@ -283,7 +281,7 @@ public final class RsaProcessor {
      */
     public static boolean verify(String data, String sign, String pubKey) {
         if (sign == null || "".equals(sign))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "sign不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "sign can't be blank");
         PAR_ASSERT.accept(data, pubKey);
 
         Signature signature = SIGNATURE_SUP.get();
@@ -299,10 +297,9 @@ public final class RsaProcessor {
     }
 
     /**
-     * 构建密钥对
+     * generate key pair
      *
      * @return
-     * @throws Exception
      */
     public static KeyPair initKeyPair() {
         KeyPairGenerator generator = KEY_PAIR_GEN_SUP.get();
@@ -317,27 +314,27 @@ public final class RsaProcessor {
 
 
     /**
-     * 模式
+     * mode
      */
     enum HandleMode {
         /**
-         * 初始化
+         * init
          */
         INIT(512),
         /**
-         * 加密
+         * encrypt
          */
         ENCRYPT(32),
         /**
-         * 解密
+         * decrypt
          */
         DECRYPT(64),
         /**
-         * 加签
+         * sign
          */
         SIGN(32),
         /**
-         * 验签
+         * verify
          */
         VERIFY(64);
 

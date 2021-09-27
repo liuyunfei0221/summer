@@ -23,7 +23,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 类获取工具
+ * util to obtain classes from package
  *
  * @author DarkBlue
  */

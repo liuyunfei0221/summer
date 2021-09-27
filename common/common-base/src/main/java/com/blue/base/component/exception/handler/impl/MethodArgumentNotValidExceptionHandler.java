@@ -14,7 +14,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 参数绑定异常处理类
+ * invalid arg exp handler
  *
  * @author DarkBlue
  */

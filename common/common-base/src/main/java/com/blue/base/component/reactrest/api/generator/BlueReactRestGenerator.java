@@ -23,6 +23,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static reactor.util.Loggers.getLogger;
 
 /**
+ * reactive rest generator
+ *
  * @author liuyunfei
  * @date 2021/9/11
  * @apiNote

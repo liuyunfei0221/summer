@@ -3,29 +3,29 @@ package com.blue.base.constant.base;
 import org.springframework.http.HttpHeaders;
 
 /**
- * HTTP头信息
+ * HTTP headers
  *
  * @author DarkBlue
  */
 public enum BlueHeader {
 
     /**
-     * 认证信息
+     * auth
      */
     AUTHORIZATION(HttpHeaders.AUTHORIZATION),
 
     /**
-     * 签发给客户端的私钥
+     * private key for client
      */
     SECRET("Secret"),
 
     /**
-     * 元数据
+     * metadata
      */
     METADATA("Metadata"),
 
     /**
-     * 内容处理
+     * content
      */
     CONTENT_DISPOSITION("Content-disposition");
 

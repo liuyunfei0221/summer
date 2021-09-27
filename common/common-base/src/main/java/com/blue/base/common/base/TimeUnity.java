@@ -14,7 +14,7 @@ import static java.time.ZoneId.systemDefault;
 
 
 /**
- * 时间转换
+ * time util
  *
  * @author DarkBlue
  */
@@ -26,7 +26,7 @@ public final class TimeUnity {
     public static final ZoneId ZONE_ID = systemDefault();
 
     /**
-     * 获取当前时间戳(秒)
+     * Get the current timestamp (seconds)
      *
      * @return
      */
@@ -35,7 +35,7 @@ public final class TimeUnity {
     }
 
     /**
-     * 获取当前时间戳(毫秒)
+     * Get the current timestamp (millis)
      *
      * @return
      */
@@ -44,7 +44,7 @@ public final class TimeUnity {
     }
 
     /**
-     * 获取当前时间字符串
+     * Get the current time str
      *
      * @return
      */
@@ -53,17 +53,17 @@ public final class TimeUnity {
     }
 
     /**
-     * 毫秒级时间戳转秒级时间戳
+     * millis -> second
      *
      * @return
      */
-    public static long convertEpochMilliToStamp(long epochMilli) {
+    public static long convertEpochMilliToSecond(long epochMilli) {
         Assert.isTrue(epochMilli > 0L, "epochMilli can't be less than 1");
         return epochMilli / 1000L;
     }
 
     /**
-     * Date转时间戳(秒)
+     * Date -> second stamp
      *
      * @return
      */
@@ -73,7 +73,7 @@ public final class TimeUnity {
     }
 
     /**
-     * LocalDateTime转时间戳(秒)
+     * LocalDateTime -> second stamp
      *
      * @return
      */
@@ -83,7 +83,7 @@ public final class TimeUnity {
     }
 
     /**
-     * 秒级时间戳转Date
+     * second -> data
      *
      * @return
      */
@@ -93,7 +93,7 @@ public final class TimeUnity {
     }
 
     /**
-     * 毫秒级时间戳转Date
+     * millis -> data
      *
      * @return
      */
@@ -103,7 +103,7 @@ public final class TimeUnity {
     }
 
     /**
-     * LocalDateTime转Date
+     * LocalDateTime -> Date
      *
      * @return
      */
@@ -113,7 +113,7 @@ public final class TimeUnity {
     }
 
     /**
-     * 秒级时间戳转LocalDateTime
+     * second -> LocalDateTime
      *
      * @return
      */
@@ -123,7 +123,7 @@ public final class TimeUnity {
     }
 
     /**
-     * 毫秒级时间戳转LocalDateTime
+     * millis -> LocalDateTime
      *
      * @return
      */
@@ -133,7 +133,7 @@ public final class TimeUnity {
     }
 
     /**
-     * Date转LocalDateTime
+     * Date -> LocalDateTime
      *
      * @return
      */
@@ -143,7 +143,7 @@ public final class TimeUnity {
     }
 
     /**
-     * 秒级时间戳转字符
+     * second stamp -> str
      *
      * @return
      */
@@ -152,7 +152,7 @@ public final class TimeUnity {
     }
 
     /**
-     * 毫秒级时间戳转字符
+     * millis stamp -> str
      *
      * @return
      */
@@ -161,7 +161,7 @@ public final class TimeUnity {
     }
 
     /**
-     * Date转字符
+     * Date -> str
      *
      * @return
      */
@@ -170,7 +170,7 @@ public final class TimeUnity {
     }
 
     /**
-     * LocalDateTime转字符
+     * LocalDateTime -> str
      *
      * @return
      */

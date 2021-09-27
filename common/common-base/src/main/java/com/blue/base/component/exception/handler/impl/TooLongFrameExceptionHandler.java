@@ -9,7 +9,7 @@ import static com.blue.base.constant.base.ResponseElement.PAYLOAD_TOO_LARGE;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * NETTY请求数据异常处理类
+ * frame exp handler for netty
  *
  * @author DarkBlue
  */

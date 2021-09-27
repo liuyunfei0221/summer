@@ -42,7 +42,7 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     protected List<String> shardingBroadcastTables;
 
     /**
-     * 当前可用数据库分片
+     * 当前数据库分片
      */
     protected List<SingleDatabaseWithTablesAttr> singleDatabasesWithTables;
 

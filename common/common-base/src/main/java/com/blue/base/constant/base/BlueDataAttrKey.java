@@ -8,79 +8,79 @@ package com.blue.base.constant.base;
 public enum BlueDataAttrKey {
 
     /**
-     * 请求方法
+     * request method
      */
-    METHOD("method", "请求方法"),
+    METHOD("method", "request method"),
 
     /**
-     * 资源路径
+     * resource uri
      */
-    URI("uri", "资源路径"),
+    URI("uri", "resource uri"),
 
     /**
-     * 请求内容
+     * request body
      */
-    REQUEST_BODY("requestBody", "请求内容"),
+    REQUEST_BODY("requestBody", "request body"),
 
     /**
-     * 响应状态码
+     * response status code
      */
-    RESPONSE_STATUS("responseStatus", "响应状态码"),
+    RESPONSE_STATUS("responseStatus", "response status code"),
 
     /**
-     * 响应内容
+     * response body
      */
-    RESPONSE_BODY("responseBody", "响应内容"),
+    RESPONSE_BODY("responseBody", "response body"),
 
     /**
-     * 用于标识不同请求的requestId
+     * request id
      */
-    REQUEST_ID("requestId", "请求id"),
+    REQUEST_ID("requestId", "request id"),
 
     /**
-     * 元数据
+     * request metadata
      */
-    METADATA("metadata", "元数据"),
+    METADATA("metadata", "request metadata"),
 
     /**
-     * 未解析的JWT
+     * original json web token
      */
-    JWT("jwt", "jwt"),
+    JWT("jwt", "original json web token"),
 
     /**
-     * 认证信息
+     * access from jwt with parse
      */
-    ACCESS("access", "认证信息"),
+    ACCESS("access", "access from jwt with parse"),
 
     /**
-     * 客户端ip地址
+     * client ip
      */
-    CLIENT_IP("clientIp", "客户端ip"),
+    CLIENT_IP("clientIp", "client ip"),
 
     /**
-     * 公钥/String
+     * public key on server
      */
-    SEC_KEY("secKey", "成员公钥"),
+    SEC_KEY("secKey", "public key on server"),
 
     /**
-     * 是否请求不解密/boolean
+     * Whether it is a requested resource that does not need to be decrypted
      */
-    PRE_UN_DECRYPTION("preUnDecryption", "是否为无需解密的请求的资源"),
+    PRE_UN_DECRYPTION("preUnDecryption", "Whether it is a requested resource that does not need to be decrypted"),
 
     /**
-     * 是否响应不加密/boolean
+     * Whether it is a resource that does not need to be encrypted
      */
-    POST_UN_ENCRYPTION("postUnEncryption", "是否为无需加密的响应的资源"),
+    POST_UN_ENCRYPTION("postUnEncryption", "Whether it is a resource that does not need to be encrypted"),
 
     /**
-     * 是否包含请求体
+     * Whether it is a resource containing the request body
      */
-    EXISTENCE_REQUEST_BODY("existenceRequestBody", "是否为包含请求体的资源"),
+    EXISTENCE_REQUEST_BODY("existenceRequestBody", "Whether it is a resource containing the request body"),
 
     /**
-     * 是否包含响应体
+     * Whether it is a resource containing the response body
      */
-    EXISTENCE_RESPONSE_BODY("existenceResponseBody", "是否为包含响应体的资源");
+    EXISTENCE_RESPONSE_BODY("existenceResponseBody", "Whether it is a resource containing the response body");
 
     /**
      * key

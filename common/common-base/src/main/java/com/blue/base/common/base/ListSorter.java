@@ -9,7 +9,7 @@ import static java.text.Collator.getInstance;
 import static java.util.stream.Collectors.toList;
 
 /**
- * 字典排序
+ * Lexicographic order
  *
  * @author DarkBlue
  */
