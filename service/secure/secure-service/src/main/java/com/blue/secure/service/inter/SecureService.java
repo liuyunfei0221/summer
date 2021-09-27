@@ -86,6 +86,7 @@ public interface SecureService {
      * 根据keyId失效本地缓存
      *
      * @param keyId
+     * @return
      */
     Mono<Boolean> invalidLocalAuthByKeyId(String keyId);
 

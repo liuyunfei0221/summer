@@ -5,7 +5,7 @@
 
 <generatorConfiguration>
 
-    <classPathEntry location="mysql-connector-java-8.0.21.jar"/>
+    <classPathEntry location="mysql-connector-java-8.0.26.jar"/>
 
     <context id="stormDB" targetRuntime="MyBatis3">
 
@@ -44,10 +44,8 @@
 
 
         <!-- 表 -->
-<!--        <table tableName="article" domainObjectName="Article"/>-->
-        <table tableName="link" domainObjectName="Link"/>
-<!--        <table tableName="comment" domainObjectName="Comment"/>-->
-<!--        <table tableName="reply" domainObjectName="Reply"/>-->
+        <table tableName="dict_type" domainObjectName="DictType"/>
+        <table tableName="dict" domainObjectName="Dict"/>
 
 
     </context>

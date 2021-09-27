@@ -476,6 +476,23 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (12445673836249089, 'POST', 'blue-member', '/manager/member/list', b'1', b'1', b'1', b'0', b'1', 2,
         '后台测试成员管理', '后台测试成员管理', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `pre_un_decryption`,
+                                    post_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (14978349487128577, 'GET', 'blue-base', '/dictType', b'0', b'1', b'1', b'0',
+        b'1', 1,
+        '字典类型查询', '字典类型查询', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `pre_un_decryption`,
+                                    post_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (14989734363267073, 'GET', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
+        '基础服务测试列表', '基础服务测试列表', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
 -- 动态端点
 
 INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `pre_un_decryption`,
@@ -540,6 +557,7 @@ INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (13739721721151496, 'OPTIONS', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1',
         b'1', 3,
         'OPTIONS动态端点path', 'OPTIONS动态端点path', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
 
 --
 
@@ -907,18 +925,18 @@ CREATE TABLE `dynamic_handler_1`
 
 CREATE TABLE `dynamic_resource_0`
 (
-    `id`              bigint       NOT NULL COMMENT '主键',
-    `organization_id` bigint       NOT NULL COMMENT '组织主键',
-    `handler_id`      bigint       NOT NULL COMMENT '动态资源处理器主键',
-    `request_method`  varchar(16)  NOT NULL COMMENT '请求方式/大写',
-    `uri_placeholder` bigint NOT NULL COMMENT '动态资源路径占位符',
-    `content_type`    varchar(64)  NOT NULL COMMENT '媒体类型',
+    `id`              bigint      NOT NULL COMMENT '主键',
+    `organization_id` bigint      NOT NULL COMMENT '组织主键',
+    `handler_id`      bigint      NOT NULL COMMENT '动态资源处理器主键',
+    `request_method`  varchar(16) NOT NULL COMMENT '请求方式/大写',
+    `uri_placeholder` bigint      NOT NULL COMMENT '动态资源路径占位符',
+    `content_type`    varchar(64) NOT NULL COMMENT '媒体类型',
     `name`            varchar(128) DEFAULT NULL COMMENT '动态资源名称',
     `description`     varchar(256) DEFAULT NULL COMMENT '动态资源描述',
-    `create_time`     bigint       NOT NULL COMMENT '创建时间',
-    `update_time`     bigint       NOT NULL COMMENT '修改时间',
-    `creator`         bigint       NOT NULL COMMENT '创建人',
-    `updater`         bigint       NOT NULL COMMENT '修改人',
+    `create_time`     bigint      NOT NULL COMMENT '创建时间',
+    `update_time`     bigint      NOT NULL COMMENT '修改时间',
+    `creator`         bigint      NOT NULL COMMENT '创建人',
+    `updater`         bigint      NOT NULL COMMENT '修改人',
     PRIMARY KEY (`id`),
     KEY               `idx_organization_handler`(`organization_id`,`handler_id`) USING BTREE,
     UNIQUE KEY `idx_method_placeholder_content`(`request_method`,`uri_placeholder`,`content_type`) USING BTREE
@@ -926,18 +944,18 @@ CREATE TABLE `dynamic_resource_0`
 
 CREATE TABLE `dynamic_resource_1`
 (
-    `id`              bigint       NOT NULL COMMENT '主键',
-    `organization_id` bigint       NOT NULL COMMENT '组织主键',
-    `handler_id`      bigint       NOT NULL COMMENT '动态资源处理器主键',
-    `request_method`  varchar(16)  NOT NULL COMMENT '请求方式/大写',
-    `uri_placeholder` bigint NOT NULL COMMENT '动态资源路径占位符',
-    `content_type`    varchar(64)  NOT NULL COMMENT '媒体类型',
+    `id`              bigint      NOT NULL COMMENT '主键',
+    `organization_id` bigint      NOT NULL COMMENT '组织主键',
+    `handler_id`      bigint      NOT NULL COMMENT '动态资源处理器主键',
+    `request_method`  varchar(16) NOT NULL COMMENT '请求方式/大写',
+    `uri_placeholder` bigint      NOT NULL COMMENT '动态资源路径占位符',
+    `content_type`    varchar(64) NOT NULL COMMENT '媒体类型',
     `name`            varchar(128) DEFAULT NULL COMMENT '动态资源名称',
     `description`     varchar(256) DEFAULT NULL COMMENT '动态资源描述',
-    `create_time`     bigint       NOT NULL COMMENT '创建时间',
-    `update_time`     bigint       NOT NULL COMMENT '修改时间',
-    `creator`         bigint       NOT NULL COMMENT '创建人',
-    `updater`         bigint       NOT NULL COMMENT '修改人',
+    `create_time`     bigint      NOT NULL COMMENT '创建时间',
+    `update_time`     bigint      NOT NULL COMMENT '修改时间',
+    `creator`         bigint      NOT NULL COMMENT '创建人',
+    `updater`         bigint      NOT NULL COMMENT '修改人',
     PRIMARY KEY (`id`),
     KEY               `idx_organization_handler`(`organization_id`,`handler_id`) USING BTREE,
     UNIQUE KEY `idx_method_placeholder_content`(`request_method`,`uri_placeholder`,`content_type`) USING BTREE
@@ -1062,18 +1080,18 @@ CREATE TABLE `dynamic_handler_1`
 
 CREATE TABLE `dynamic_resource_0`
 (
-    `id`              bigint       NOT NULL COMMENT '主键',
-    `organization_id` bigint       NOT NULL COMMENT '组织主键',
-    `handler_id`      bigint       NOT NULL COMMENT '动态资源处理器主键',
-    `request_method`  varchar(16)  NOT NULL COMMENT '请求方式/大写',
-    `uri_placeholder` bigint NOT NULL COMMENT '动态资源路径占位符',
-    `content_type`    varchar(64)  NOT NULL COMMENT '媒体类型',
+    `id`              bigint      NOT NULL COMMENT '主键',
+    `organization_id` bigint      NOT NULL COMMENT '组织主键',
+    `handler_id`      bigint      NOT NULL COMMENT '动态资源处理器主键',
+    `request_method`  varchar(16) NOT NULL COMMENT '请求方式/大写',
+    `uri_placeholder` bigint      NOT NULL COMMENT '动态资源路径占位符',
+    `content_type`    varchar(64) NOT NULL COMMENT '媒体类型',
     `name`            varchar(128) DEFAULT NULL COMMENT '动态资源名称',
     `description`     varchar(256) DEFAULT NULL COMMENT '动态资源描述',
-    `create_time`     bigint       NOT NULL COMMENT '创建时间',
-    `update_time`     bigint       NOT NULL COMMENT '修改时间',
-    `creator`         bigint       NOT NULL COMMENT '创建人',
-    `updater`         bigint       NOT NULL COMMENT '修改人',
+    `create_time`     bigint      NOT NULL COMMENT '创建时间',
+    `update_time`     bigint      NOT NULL COMMENT '修改时间',
+    `creator`         bigint      NOT NULL COMMENT '创建人',
+    `updater`         bigint      NOT NULL COMMENT '修改人',
     PRIMARY KEY (`id`),
     KEY               `idx_organization_handler`(`organization_id`,`handler_id`) USING BTREE,
     UNIQUE KEY `idx_method_placeholder_content`(`request_method`,`uri_placeholder`,`content_type`) USING BTREE
@@ -1081,18 +1099,18 @@ CREATE TABLE `dynamic_resource_0`
 
 CREATE TABLE `dynamic_resource_1`
 (
-    `id`              bigint       NOT NULL COMMENT '主键',
-    `organization_id` bigint       NOT NULL COMMENT '组织主键',
-    `handler_id`      bigint       NOT NULL COMMENT '动态资源处理器主键',
-    `request_method`  varchar(16)  NOT NULL COMMENT '请求方式/大写',
-    `uri_placeholder` bigint NOT NULL COMMENT '动态资源路径占位符',
-    `content_type`    varchar(64)  NOT NULL COMMENT '媒体类型',
+    `id`              bigint      NOT NULL COMMENT '主键',
+    `organization_id` bigint      NOT NULL COMMENT '组织主键',
+    `handler_id`      bigint      NOT NULL COMMENT '动态资源处理器主键',
+    `request_method`  varchar(16) NOT NULL COMMENT '请求方式/大写',
+    `uri_placeholder` bigint      NOT NULL COMMENT '动态资源路径占位符',
+    `content_type`    varchar(64) NOT NULL COMMENT '媒体类型',
     `name`            varchar(128) DEFAULT NULL COMMENT '动态资源名称',
     `description`     varchar(256) DEFAULT NULL COMMENT '动态资源描述',
-    `create_time`     bigint       NOT NULL COMMENT '创建时间',
-    `update_time`     bigint       NOT NULL COMMENT '修改时间',
-    `creator`         bigint       NOT NULL COMMENT '创建人',
-    `updater`         bigint       NOT NULL COMMENT '修改人',
+    `create_time`     bigint      NOT NULL COMMENT '创建时间',
+    `update_time`     bigint      NOT NULL COMMENT '修改时间',
+    `creator`         bigint      NOT NULL COMMENT '创建人',
+    `updater`         bigint      NOT NULL COMMENT '修改人',
     PRIMARY KEY (`id`),
     KEY               `idx_organization_handler`(`organization_id`,`handler_id`) USING BTREE,
     UNIQUE KEY `idx_method_placeholder_content`(`request_method`,`uri_placeholder`,`content_type`) USING BTREE
@@ -2434,3 +2452,38 @@ CREATE TABLE `reply_1`
     KEY             `idx_boring`(`boring`) USING BTREE,
     KEY             `idx_create`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='回复表1';
+
+
+-- the_data测试独立库表
+
+CREATE
+DATABASE dict CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+USE
+dict;
+
+CREATE TABLE `dict_type`
+(
+    `id`          bigint       NOT NULL COMMENT '主键',
+    `code`        varchar(128) NOT NULL COMMENT '字典类型code',
+    `name`        varchar(256) DEFAULT NULL COMMENT '字典类型name',
+    `create_time` bigint       NOT NULL COMMENT '创建时间',
+    `update_time` bigint       NOT NULL COMMENT '修改时间',
+    `creator`     bigint       NOT NULL COMMENT '创建人',
+    `updater`     bigint       NOT NULL COMMENT '修改人',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_code_name`(`code`,`name` ) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='字典类型表';
+
+CREATE TABLE `dict`
+(
+    `id`           bigint       NOT NULL COMMENT '主键',
+    `dict_type_id` bigint       NOT NULL COMMENT '字典类型主键',
+    `name`         varchar(256) DEFAULT NULL COMMENT '字典name',
+    `value`        varchar(128) NOT NULL COMMENT '字典value',
+    `create_time`  bigint       NOT NULL COMMENT '创建时间',
+    `update_time`  bigint       NOT NULL COMMENT '修改时间',
+    `creator`      bigint       NOT NULL COMMENT '创建人',
+    `updater`      bigint       NOT NULL COMMENT '修改人',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `type_name_value`(`dict_type_id`,`name`,`value` ) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='字典表';

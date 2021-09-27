@@ -3,6 +3,11 @@ server:
   port: 27000
   netty:
     connection-timeout: 6s
+    h2c-max-content-length: 0B
+    initial-buffer-size: 128B
+    max-chunk-size: 8KB
+    max-initial-line-length: 4KB
+    validate-headers: true
   http2:
     enabled: true
   error:
@@ -30,7 +35,7 @@ eureka:
 
 
 data:
-  shards:
+  shardingDatabases:
     - url: jdbc:mysql://localhost:3306/portal_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
@@ -58,10 +63,25 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-  tables: [ bulletin ]
-  tableSizePerDataBase: 2
+  shardingTables: [ bulletin ]
+  shardingTableSizePerDataBase: 2
   shardingColumn: id
-  undoLogs: [ ]
+  shardingBroadcastTables: [ ]
+  singleDatabasesWithTables:
+    - url: jdbc:mysql://localhost:3306/dict
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+      singleTables: [ dict_type,dict ]
   cacheEnabled: false
   lazyLoadingEnabled: false
   aggressiveLazyLoading: false
@@ -74,7 +94,7 @@ data:
   mapperLocation: classpath:mapper/*.xml
   props:
     sql.show: true
-    sql.simple: true
+    sql.simple: false
     executor.size: 128
     max.connections.size.per.query: 2
     check.table.metadata.enabled: true
@@ -103,7 +123,6 @@ trans:
   isolation: REPEATABLE_READ
   propagation: REQUIRED
   transTimeout: 15
-  methodPreWithoutTrans: [ get,list,select,query ]
   methodPreWithTrans: [ insert,update,delete ]
   pointCutExpression: execution(* com.blue.base.service.impl.*.*(..))
 
@@ -233,5 +252,8 @@ dubbo:
 #  monitor:
 #    protocol: registry
 
+caffeine:
+  maximumSize: 1024
+  expireSeconds: 10
 
 debug: false

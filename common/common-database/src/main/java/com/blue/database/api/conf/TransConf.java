@@ -19,8 +19,6 @@ public interface TransConf {
 
     Integer getTransTimeout();
 
-    List<String> getMethodPreWithoutTrans();
-
     List<String> getMethodPreWithTrans();
 
     String getPointCutExpression();

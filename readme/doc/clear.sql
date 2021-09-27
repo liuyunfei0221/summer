@@ -18,3 +18,5 @@ DROP DATABASE portal_1;
 
 DROP DATABASE business_0;
 DROP DATABASE business_1;
+
+DROP DATABASE dict;

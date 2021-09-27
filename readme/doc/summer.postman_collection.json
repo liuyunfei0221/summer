@@ -317,7 +317,32 @@
 						{
 							"key": "attachments",
 							"type": "file",
-							"src": "/E:/tempFile/source/星球大战外传：侠盗一号.mkv"
+							"src": [
+								"/E:/tempFile/source/walls/a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg",
+								"/E:/tempFile/source/walls/a_bridge_to_autumn-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/a_cloudy_day-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/a_different_world-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/a_field_of_poppies-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/a_flower_for_you-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/a_foggy_morning-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/a_mid_summers_sunrise-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/a_poolside_view_of_a_crystal_las_vegas-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/a_private_road-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/a_quiet_place_infrared_photography-wallpaper-1920x1080.jpg",
+								"/E:/tempFile/source/walls/a_spring_afternoon-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/a_sunny_days_end-wallpaper-5120x2880.jpg",
+								"/E:/tempFile/source/walls/a_touch_of_spring-wallpaper-1920x1080.jpg",
+								"/E:/tempFile/source/walls/a_wooden_house_forest-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/above_the_clouds_2-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/across_the_estate-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/across_the_little_lake_at_sunset-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/aerial_view_of_el_yeso-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/african_savanna-wallpaper-2560x1440.jpg",
+								"/E:/tempFile/source/walls/after_the_museums_close-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/agnaya_plaridel_scene-wallpaper-3840x2160.jpg",
+								"/E:/tempFile/source/walls/aida_ridic_2-wallpaper-1920x1080.jpg",
+								"/E:/tempFile/source/walls/akaroa_new_zealand-wallpaper-3840x2160 - 副本.jpg"
+							]
 						}
 					]
 				},
@@ -616,6 +641,57 @@
 					"path": [
 						"blue-finance",
 						"dynamic",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "测试字典类型",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:11000/blue-base/dictType",
+					"host": [
+						"localhost"
+					],
+					"port": "11000",
+					"path": [
+						"blue-base",
+						"dictType"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "测试基础服务数据",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:11000/blue-base/bulletin/1",
+					"host": [
+						"localhost"
+					],
+					"port": "11000",
+					"path": [
+						"blue-base",
+						"bulletin",
 						"1"
 					]
 				}

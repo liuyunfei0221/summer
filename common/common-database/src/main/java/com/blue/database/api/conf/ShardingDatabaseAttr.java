@@ -5,35 +5,35 @@ package com.blue.database.api.conf;
  *
  * @author DarkBlue
  */
-public final class ShardYmlAttr {
+public class ShardingDatabaseAttr {
 
-    private String url;
+    protected String url;
 
-    private String dataBaseConf;
+    protected String dataBaseConf;
 
-    private String username;
+    protected String username;
 
-    private String password;
+    protected String password;
 
-    private String driverClassName;
+    protected String driverClassName;
 
-    private Integer connectionTimeout;
+    protected Integer connectionTimeout;
 
-    private Integer maxLifetime;
+    protected Integer maxLifetime;
 
-    private Integer maximumPoolSize;
+    protected Integer maximumPoolSize;
 
-    private Integer minimumIdle;
+    protected Integer minimumIdle;
 
-    private Integer idleTimeout;
+    protected Integer idleTimeout;
 
-    private String testQuery;
+    protected String testQuery;
 
-    private Boolean readOnly;
+    protected Boolean readOnly;
 
-    private Boolean autoCommit;
+    protected Boolean autoCommit;
 
-    public ShardYmlAttr() {
+    public ShardingDatabaseAttr() {
     }
 
     public String getUrl() {
@@ -142,7 +142,7 @@ public final class ShardYmlAttr {
 
     @Override
     public String toString() {
-        return "ShardYmlAttr{" +
+        return "ShardintDatabaseAttr{" +
                 "url='" + url + '\'' +
                 ", dataBaseConf='" + dataBaseConf + '\'' +
                 ", username='" + username + '\'' +

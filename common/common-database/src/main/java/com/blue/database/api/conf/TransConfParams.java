@@ -17,8 +17,6 @@ public class TransConfParams implements TransConf {
 
     protected Propagation propagation;
 
-    protected List<String> methodPreWithoutTrans;
-
     protected List<String> methodPreWithTrans;
 
     protected Integer transTimeout;
@@ -28,11 +26,9 @@ public class TransConfParams implements TransConf {
     public TransConfParams() {
     }
 
-    public TransConfParams(Isolation isolation, Propagation propagation, List<String> methodPreWithoutTrans,
-                           List<String> methodPreWithTrans, Integer transTimeout, String pointCutExpression) {
+    public TransConfParams(Isolation isolation, Propagation propagation, List<String> methodPreWithTrans, Integer transTimeout, String pointCutExpression) {
         this.isolation = isolation;
         this.propagation = propagation;
-        this.methodPreWithoutTrans = methodPreWithoutTrans;
         this.methodPreWithTrans = methodPreWithTrans;
         this.transTimeout = transTimeout;
         this.pointCutExpression = pointCutExpression;
@@ -46,11 +42,6 @@ public class TransConfParams implements TransConf {
     @Override
     public Propagation getPropagation() {
         return propagation;
-    }
-
-    @Override
-    public List<String> getMethodPreWithoutTrans() {
-        return methodPreWithoutTrans;
     }
 
     @Override
@@ -76,10 +67,6 @@ public class TransConfParams implements TransConf {
         this.propagation = propagation;
     }
 
-    public void setMethodPreWithoutTrans(List<String> methodPreWithoutTrans) {
-        this.methodPreWithoutTrans = methodPreWithoutTrans;
-    }
-
     public void setMethodPreWithTrans(List<String> methodPreWithTrans) {
         this.methodPreWithTrans = methodPreWithTrans;
     }
@@ -97,7 +84,6 @@ public class TransConfParams implements TransConf {
         return "TransConfParams{" +
                 "isolation=" + isolation +
                 ", propagation=" + propagation +
-                ", methodPreWithoutTrans=" + methodPreWithoutTrans +
                 ", methodPreWithTrans=" + methodPreWithTrans +
                 ", transTimeout=" + transTimeout +
                 ", pointCutExpression='" + pointCutExpression + '\'' +

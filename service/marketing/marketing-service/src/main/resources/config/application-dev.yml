@@ -3,6 +3,11 @@ server:
   port: 33000
   netty:
     connection-timeout: 6s
+    h2c-max-content-length: 0B
+    initial-buffer-size: 128B
+    max-chunk-size: 8KB
+    max-initial-line-length: 4KB
+    validate-headers: true
   http2:
     enabled: true
   error:
@@ -30,7 +35,7 @@ eureka:
 
 
 data:
-  shards:
+  shardingDatabases:
     - url: jdbc:mysql://localhost:3306/marketing_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
@@ -58,10 +63,11 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-  tables: [ event,reward,sign_reward_today_relation ]
-  tableSizePerDataBase: 2
+  shardingTables: [ event,reward,sign_reward_today_relation ]
+  shardingTableSizePerDataBase: 2
   shardingColumn: id
-  undoLogs: [ ]
+  shardingBroadcastTables: [ ]
+  singleDatabasesWithTables:
   cacheEnabled: false
   lazyLoadingEnabled: false
   aggressiveLazyLoading: false

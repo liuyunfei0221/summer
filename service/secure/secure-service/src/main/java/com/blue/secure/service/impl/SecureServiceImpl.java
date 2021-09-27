@@ -834,7 +834,7 @@ public class SecureServiceImpl implements SecureService {
         if (access != null)
             return authInfoCacher.invalidAuthInfo(genSessionKey(access.getId(), access.getLoginType().intern(), access.getDeviceType().intern()));
 
-        throw UNAUTHORIZED_EXP;
+        return error(UNAUTHORIZED_EXP);
     }
 
     /**

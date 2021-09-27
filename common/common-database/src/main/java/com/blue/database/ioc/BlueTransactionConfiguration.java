@@ -20,6 +20,7 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
+import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -46,25 +47,11 @@ public class BlueTransactionConfiguration {
 
         NameMatchTransactionAttributeSource source = new NameMatchTransactionAttributeSource();
 
-        RuleBasedTransactionAttribute attributeWithoutTrans = new RuleBasedTransactionAttribute();
-        attributeWithoutTrans.setIsolationLevel(transConf.getIsolation().value());
-        attributeWithoutTrans.setPropagationBehavior(transConf.getPropagation().value());
-        attributeWithoutTrans.setTimeout(transConf.getTransTimeout());
-        attributeWithoutTrans.setReadOnly(true);
-        ofNullable(transConf.getMethodPreWithoutTrans())
-                .orElse(emptyList())
-                .stream()
-                .filter(StringUtils::isNotBlank)
-                .distinct()
-                .map(m -> m + "*")
-                .forEach(m -> source.addTransactionalMethod(m, attributeWithoutTrans));
-
-
         RuleBasedTransactionAttribute attributeWithTrans = new RuleBasedTransactionAttribute();
         attributeWithTrans.setIsolationLevel(transConf.getIsolation().value());
         attributeWithTrans.setPropagationBehavior(transConf.getPropagation().value());
         attributeWithTrans.setTimeout(transConf.getTransTimeout());
-        attributeWithTrans.setRollbackRules(List.of(new RollbackRuleAttribute(Throwable.class)));
+        attributeWithTrans.setRollbackRules(of(new RollbackRuleAttribute(Throwable.class)));
         attributeWithTrans.setReadOnly(false);
         ofNullable(transConf.getMethodPreWithTrans())
                 .orElse(emptyList())

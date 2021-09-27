@@ -1,6 +1,6 @@
 package com.blue.base.router.api;
 
-import com.blue.base.handler.api.BaseApiHandler;
+import com.blue.base.handler.api.DictApiHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -21,12 +21,12 @@ public class BaseApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> dataRouter(BaseApiHandler baseApiHandler) {
+    RouterFunction<ServerResponse> dictRouter(DictApiHandler dictApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-base/data");
+        RequestPredicate pathPredicate = path("/blue-base/dictType");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("", baseApiHandler::getData)
+                .GET("", dictApiHandler::selectDictType)
                 .build();
 
         return nest(pathPredicate, routerFunction);

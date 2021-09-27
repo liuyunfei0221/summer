@@ -9,7 +9,7 @@
         <result column="link" jdbcType="VARCHAR" property="link"/>
         <result column="type" jdbcType="TINYINT" property="type"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
-        <result column="order" jdbcType="INTEGER" property="order"/>
+        <result column="priority" jdbcType="INTEGER" property="priority"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
         <result column="creator" jdbcType="BIGINT" property="creator"/>
@@ -17,7 +17,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, title, content, link, type, status, order, create_time, update_time, creator,
+        id
+        , title, content, link, type, status, priority, create_time, update_time, creator,
         updater
     </sql>
 
@@ -29,19 +30,20 @@
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete from bulletin
+        delete
+        from bulletin
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
     <insert id="insert" parameterType="com.blue.base.repository.entity.Bulletin">
         insert into bulletin (id, title, content,
-        link, type, status,
-        order, create_time, update_time,
-        creator, updater)
+                              link, type, status,
+                              priority, create_time, update_time,
+                              creator, updater)
         values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
-        #{link,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
-        #{order,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
-        #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
+                #{link,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
+                #{priority,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
+                #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertSelective" parameterType="com.blue.base.repository.entity.Bulletin">
@@ -65,8 +67,8 @@
             <if test="status != null">
                 status,
             </if>
-            <if test="order != null">
-                order,
+            <if test="priority != null">
+                priority,
             </if>
             <if test="createTime != null">
                 create_time,
@@ -100,8 +102,8 @@
             <if test="status != null">
                 #{status,jdbcType=TINYINT},
             </if>
-            <if test="order != null">
-                #{order,jdbcType=INTEGER},
+            <if test="priority != null">
+                #{priority,jdbcType=INTEGER},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=BIGINT},
@@ -136,8 +138,8 @@
             <if test="status != null">
                 status = #{status,jdbcType=TINYINT},
             </if>
-            <if test="order != null">
-                order = #{order,jdbcType=INTEGER},
+            <if test="priority != null">
+                priority = #{priority,jdbcType=INTEGER},
             </if>
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=BIGINT},
@@ -157,30 +159,25 @@
 
     <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.Bulletin">
         update bulletin
-        set title = #{title,jdbcType=VARCHAR},
-        content = #{content,jdbcType=VARCHAR},
-        link = #{link,jdbcType=VARCHAR},
-        type = #{type,jdbcType=TINYINT},
-        status = #{status,jdbcType=TINYINT},
-        order = #{order,jdbcType=INTEGER},
-        create_time = #{createTime,jdbcType=BIGINT},
-        update_time = #{updateTime,jdbcType=BIGINT},
-        creator = #{creator,jdbcType=BIGINT},
-        updater = #{updater,jdbcType=BIGINT}
+        set title       = #{title,jdbcType=VARCHAR},
+            content     = #{content,jdbcType=VARCHAR},
+            link        = #{link,jdbcType=VARCHAR},
+            type        = #{type,jdbcType=TINYINT},
+            status      = #{status,jdbcType=TINYINT},
+            priority    = #{priority,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT},
+            updater     = #{updater,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
     <select id="listBulletin" resultMap="BaseResultMap">
         <if test="limit != null and limit > 0">
             SELECT
-            a.*
+            <include refid="Base_Column_List"/>
             FROM
-            bulletin AS a
-            INNER JOIN
-            (SELECT
-            id
-            FROM
-            bulletin FORCE INDEX(`idx_stat_ord`)
+            bulletin FORCE INDEX(`idx_stat_pri`)
 
             <where>
                 <if test="type != null">
@@ -194,10 +191,8 @@
             </where>
 
             ORDER BY
-            `order` DESC
-            LIMIT #{limit,jdbcType=BIGINT}) AS b
-            ON
-            a.id = b.id;
+            priority DESC
+            LIMIT 0,#{limit,jdbcType=BIGINT};
         </if>
     </select>
 

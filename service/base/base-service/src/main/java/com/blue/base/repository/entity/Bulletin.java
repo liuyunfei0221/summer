@@ -6,7 +6,7 @@ package com.blue.base.repository.entity;
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class Bulletin {
+public final class Bulletin {
 
     /**
      * 主键
@@ -41,7 +41,7 @@ public class Bulletin {
     /**
      * 优先级
      */
-    private Integer order;
+    private Integer priority;
 
     /**
      * 创建时间
@@ -111,12 +111,12 @@ public class Bulletin {
         this.status = status;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getPriority() {
+        return priority;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setPriority(Integer order) {
+        this.priority = order;
     }
 
     public Long getCreateTime() {

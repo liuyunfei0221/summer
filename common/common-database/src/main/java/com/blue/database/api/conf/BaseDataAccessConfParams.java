@@ -3,10 +3,8 @@ package com.blue.database.api.conf;
 import org.apache.ibatis.session.AutoMappingBehavior;
 import org.apache.ibatis.session.ExecutorType;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
-import java.util.function.UnaryOperator;
 
 /**
  * 数据源配置信息封装
@@ -21,17 +19,17 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     /**
      * 当前可用数据库分片
      */
-    protected List<ShardYmlAttr> shards;
+    protected List<ShardingDatabaseAttr> shardingDatabases;
 
     /**
      * 需要分片的表,建议初期就完善配置
      */
-    protected List<String> tables;
+    protected List<String> shardingTables;
 
     /**
      * 当前每库分表数量
      */
-    protected Integer tableSizePerDataBase;
+    protected Integer shardingTableSizePerDataBase;
 
     /**
      * 分片属性名
@@ -39,9 +37,14 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     protected String shardingColumn;
 
     /**
-     * 广播/当前主要用于seata undolog,因为当前无法定义seata回滚数据主键策略
+     * 广播/当前主要用于seata 会滚日志,因为当前无法定义seata回滚数据主键策略
      */
-    protected List<String> broadcastTables;
+    protected List<String> shardingBroadcastTables;
+
+    /**
+     * 当前可用数据库分片
+     */
+    protected List<SingleDatabaseWithTablesAttr> singleDatabasesWithTables;
 
     protected Boolean cacheEnabled;
 
@@ -68,43 +71,19 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     public BaseDataAccessConfParams() {
     }
 
-    public BaseDataAccessConfParams(List<ShardYmlAttr> shards, List<String> tables, Integer tableSizePerDataBase,
-                                    String shardingColumn, List<String> broadcastTables, Boolean cacheEnabled,
-                                    Boolean lazyLoadingEnabled, Boolean aggressiveLazyLoading,
-                                    Boolean multipleResultSetsEnabled, Boolean useColumnLabel, Boolean useGeneratedKeys,
-                                    Integer connectionTimeout, ExecutorType executorType, AutoMappingBehavior autoMappingBehavior,
-                                    String mapperLocation, Map<String, String> props) {
-        this.shards = shards;
-        this.tables = tables;
-        this.tableSizePerDataBase = tableSizePerDataBase;
-        this.shardingColumn = shardingColumn;
-        this.broadcastTables = broadcastTables;
-        this.cacheEnabled = cacheEnabled;
-        this.lazyLoadingEnabled = lazyLoadingEnabled;
-        this.aggressiveLazyLoading = aggressiveLazyLoading;
-        this.multipleResultSetsEnabled = multipleResultSetsEnabled;
-        this.useColumnLabel = useColumnLabel;
-        this.useGeneratedKeys = useGeneratedKeys;
-        this.connectionTimeout = connectionTimeout;
-        this.autoMappingBehavior = autoMappingBehavior;
-        this.executorType = executorType;
-        this.mapperLocation = mapperLocation;
-        this.props = props;
+    @Override
+    public List<ShardingDatabaseAttr> getShardingDatabases() {
+        return shardingDatabases;
     }
 
     @Override
-    public List<ShardYmlAttr> getShards() {
-        return shards;
+    public List<String> getShardingTables() {
+        return shardingTables;
     }
 
     @Override
-    public List<String> getTables() {
-        return tables;
-    }
-
-    @Override
-    public Integer getTableSizePerDataBase() {
-        return tableSizePerDataBase;
+    public Integer getShardingTableSizePerDataBase() {
+        return shardingTableSizePerDataBase;
     }
 
     @Override
@@ -113,8 +92,13 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     }
 
     @Override
-    public List<String> getBroadcastTables() {
-        return broadcastTables;
+    public List<String> getShardingBroadcastTables() {
+        return shardingBroadcastTables;
+    }
+
+    @Override
+    public List<SingleDatabaseWithTablesAttr> getSingleDatabasesWithTables() {
+        return singleDatabasesWithTables;
     }
 
     @Override
@@ -172,27 +156,28 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
         return props;
     }
 
-    @Override
-    public abstract List<UnaryOperator<DataSource>> getProxiesChain();
-
-    public void setShards(List<ShardYmlAttr> shards) {
-        this.shards = shards;
+    public void setShardingDatabases(List<ShardingDatabaseAttr> shardingDatabases) {
+        this.shardingDatabases = shardingDatabases;
     }
 
-    public void setTables(List<String> tables) {
-        this.tables = tables;
+    public void setShardingTables(List<String> shardingTables) {
+        this.shardingTables = shardingTables;
     }
 
-    public void setTableSizePerDataBase(Integer tableSizePerDataBase) {
-        this.tableSizePerDataBase = tableSizePerDataBase;
+    public void setShardingTableSizePerDataBase(Integer shardingTableSizePerDataBase) {
+        this.shardingTableSizePerDataBase = shardingTableSizePerDataBase;
     }
 
     public void setShardingColumn(String shardingColumn) {
         this.shardingColumn = shardingColumn;
     }
 
-    public void setBroadcastTables(List<String> broadcastTables) {
-        this.broadcastTables = broadcastTables;
+    public void setShardingBroadcastTables(List<String> shardingBroadcastTables) {
+        this.shardingBroadcastTables = shardingBroadcastTables;
+    }
+
+    public void setSingleDatabasesWithTables(List<SingleDatabaseWithTablesAttr> singleDatabasesWithTables) {
+        this.singleDatabasesWithTables = singleDatabasesWithTables;
     }
 
     public void setCacheEnabled(Boolean cacheEnabled) {
@@ -242,11 +227,12 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     @Override
     public String toString() {
         return "BaseDataAccessConfParams{" +
-                "shards=" + shards +
-                ", tables=" + tables +
-                ", tableSizePerDataBase=" + tableSizePerDataBase +
+                "shardingDatabases=" + shardingDatabases +
+                ", shardingTables=" + shardingTables +
+                ", shardingTableSizePerDataBase=" + shardingTableSizePerDataBase +
                 ", shardingColumn='" + shardingColumn + '\'' +
-                ", broadcastTables=" + broadcastTables +
+                ", shardingBroadcastTables=" + shardingBroadcastTables +
+                ", singleDatabasesWithTables=" + singleDatabasesWithTables +
                 ", cacheEnabled=" + cacheEnabled +
                 ", lazyLoadingEnabled=" + lazyLoadingEnabled +
                 ", aggressiveLazyLoading=" + aggressiveLazyLoading +

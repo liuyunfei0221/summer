@@ -1,5 +1,29 @@
 server:
   port: 7777
+  undertow:
+    max-http-post-size: -1B
+    buffer-size: 256
+    direct-buffers: true
+    eager-filter-init: true
+    max-parameters: 1000
+    max-headers: 200
+    max-cookies: 200
+    allow-encoded-slash: false
+    decode-url: true
+    url-charset: UTF-8
+    always-set-keep-alive: true
+    no-request-timeout: 256s
+    preserve-path-on-forward: false
+    accesslog:
+      enabled: false
+      pattern: common
+      prefix: access_log
+      suffix: log
+    threads:
+      io: 4
+      worker: 2
+
+
 eureka:
   instance:
     hostname: localhost

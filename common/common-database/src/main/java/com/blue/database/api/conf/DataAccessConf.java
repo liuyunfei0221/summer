@@ -21,21 +21,21 @@ public interface DataAccessConf {
      *
      * @return
      */
-    List<ShardYmlAttr> getShards();
+    List<ShardingDatabaseAttr> getShardingDatabases();
 
     /**
      * 需要分片的表,建议初期就完善配置
      *
      * @return
      */
-    List<String> getTables();
+    List<String> getShardingTables();
 
     /**
      * 当前每库分表数量
      *
      * @return
      */
-    Integer getTableSizePerDataBase();
+    Integer getShardingTableSizePerDataBase();
 
     /**
      * 分片属性名
@@ -49,7 +49,14 @@ public interface DataAccessConf {
      *
      * @return
      */
-    List<String> getBroadcastTables();
+    List<String> getShardingBroadcastTables();
+
+    /**
+     * 不进行分片的库表配置
+     *
+     * @return
+     */
+    List<SingleDatabaseWithTablesAttr> getSingleDatabasesWithTables();
 
     /**
      * 是否开启缓存

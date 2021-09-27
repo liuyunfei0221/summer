@@ -3,6 +3,11 @@ server:
   port: 37000
   netty:
     connection-timeout: 6s
+    h2c-max-content-length: 0B
+    initial-buffer-size: 128B
+    max-chunk-size: 8KB
+    max-initial-line-length: 4KB
+    validate-headers: true
   http2:
     enabled: true
   error:
@@ -30,7 +35,7 @@ eureka:
 
 
 data:
-  shards:
+  shardingDatabases:
     - url: jdbc:mysql://localhost:3306/portal_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
@@ -58,10 +63,11 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-  tables: [ bulletin ]
-  tableSizePerDataBase: 2
+  shardingTables: [ bulletin ]
+  shardingTableSizePerDataBase: 2
   shardingColumn: id
-  undoLogs: [ ]
+  shardingBroadcastTables: [ ]
+  singleDatabases:
   cacheEnabled: false
   lazyLoadingEnabled: false
   aggressiveLazyLoading: false
@@ -269,7 +275,7 @@ consumers:
       acknowledgementsGroupTimeMillis: 100
       replicateSubscriptionState: false
       maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: dataRequestEventConsumer001
+      consumerName: dataRequestEventConsumer000
       readCompacted: false
       patternAutoDiscoveryPeriodMillis: 1
       priorityLevel: 0

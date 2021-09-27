@@ -13,7 +13,7 @@ spring:
   codec:
     max-in-memory-size: 32
   lifecycle:
-    timeout-per-shutdown-phase: 30s
+    timeout-per-shutdown-phase: 10s
 
   main:
     allow-bean-definition-overriding: true
