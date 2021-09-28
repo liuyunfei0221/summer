@@ -29,6 +29,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/9/11
  * @apiNote
  */
+@SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class BlueReactRestGenerator {
 
     private static final Logger LOGGER = getLogger(BlueReactRestGenerator.class);
@@ -40,6 +41,9 @@ public final class BlueReactRestGenerator {
     private static final boolean DAEMON = true;
 
     public static WebClient createWebClient(ReactRestConf reactRestConf) {
+        if (reactRestConf == null)
+            throw new RuntimeException("reactRestConf can't be null");
+
         LOGGER.info("WebClient createWebClient(ReactRestConf reactRestConf), reactRestConf = {}", reactRestConf);
 
         ConnectionProvider connectionProvider = ConnectionProvider.create(PROVIDER_NAME, reactRestConf.getMaxConnections());

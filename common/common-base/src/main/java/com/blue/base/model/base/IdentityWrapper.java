@@ -5,7 +5,7 @@ import java.io.Serializable;
 import static java.util.Optional.ofNullable;
 
 /**
- * 用于POST提交的主键数据封装
+ * id wrapper
  *
  * @author DarkBlue
  */
@@ -15,7 +15,7 @@ public final class IdentityWrapper implements Serializable {
     private static final long serialVersionUID = 3631693809321831634L;
 
     /**
-     * 数据主键
+     * id
      */
     private Long id;
 

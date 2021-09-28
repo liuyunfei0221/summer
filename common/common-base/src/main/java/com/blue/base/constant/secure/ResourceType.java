@@ -2,30 +2,30 @@ package com.blue.base.constant.secure;
 
 
 /**
- * 资源类型
+ * resource type
  *
  * @author DarkBlue
  */
 public enum ResourceType {
 
     /**
-     * 前台接口
+     * rest for client
      */
-    FRONT(1, "前台接口"),
+    FRONT(1, "rest for client"),
 
     /**
-     * 后台接口
+     * rest for manager
      */
-    MANAGE(2, "后台接口"),
+    MANAGE(2, "rest for manager"),
 
     /**
-     * 开放api
+     * open api
      */
-    API(3, "开放api");
+    API(3, "open api");
 
-    public int identity;
+    public final int identity;
 
-    public String disc;
+    public final String disc;
 
     ResourceType(int identity, String disc) {
         this.identity = identity;

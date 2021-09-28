@@ -2,8 +2,8 @@ package com.blue.file.handler.api;
 
 import com.blue.base.common.reactive.AccessGetterForReactive;
 import com.blue.base.model.base.Access;
-import com.blue.base.model.base.BlueResult;
-import com.blue.base.model.base.PageModelParam;
+import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.exps.BlueException;
 import com.blue.file.api.model.WithdrawInfo;
 import com.blue.file.service.inter.AttachmentService;
@@ -45,14 +45,14 @@ public final class AttachmentApiHandler {
     @SuppressWarnings("unchecked")
     public Mono<ServerResponse> listAttachment(ServerRequest serverRequest) {
         Access access = AccessGetterForReactive.getAccess(serverRequest);
-        return serverRequest.bodyToMono(PageModelParam.class)
+        return serverRequest.bodyToMono(PageModelRequest.class)
                 .switchIfEmpty(
                         error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message)))
                 .flatMap(page ->
                         just(attachmentService.listAttachment(page, access.getId())))
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, vo, OK.message), BlueResult.class));
+                                .body(generate(OK.code, vo, OK.message), BlueResponse.class));
     }
 
 
@@ -76,7 +76,7 @@ public final class AttachmentApiHandler {
                 }).flatMap(
                         rs ->
                                 ok().contentType(APPLICATION_JSON)
-                                        .body(generate(OK.code, rs, OK.message), BlueResult.class));
+                                        .body(generate(OK.code, rs, OK.message), BlueResponse.class));
 
     }
 

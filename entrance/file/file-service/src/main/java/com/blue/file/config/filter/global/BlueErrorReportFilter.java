@@ -65,6 +65,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
     /**
      * 入口处断言请求方式,防止后续非法请求过多致使intern影响常量池
      */
+    private static final Consumer<String> SCHEMA_ASSERTER = FluxCommonFactory.SCHEMA_ASSERTER;
     private static final Consumer<String> METHOD_VALUE_ASSERTER = FluxCommonFactory.METHOD_VALUE_ASSERTER;
 
     private static final String AUTHORIZATION = BlueHeader.AUTHORIZATION.name;
@@ -160,6 +161,8 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
+
+        SCHEMA_ASSERTER.accept(request.getURI().getScheme());
 
         String methodValue = request.getMethodValue();
         METHOD_VALUE_ASSERTER.accept(methodValue);

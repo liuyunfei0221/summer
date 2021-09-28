@@ -1,7 +1,7 @@
 package com.blue.base.constant.base;
 
 /**
- * 状态约束
+ * element/data status
  *
  * @author DarkBlue
  */
@@ -9,21 +9,21 @@ package com.blue.base.constant.base;
 public enum Status {
 
     /**
-     * 可用
+     * VALID
      */
-    VALID(1, "可用"),
+    VALID(1, "valid"),
     /**
-     * 禁用
+     * INVALID
      */
-    INVALID(0, "禁用");
+    INVALID(0, "invalid");
 
     /**
-     * 状态标识
+     * status
      */
     public final int status;
 
     /**
-     * 状态描述
+     * disc
      */
     public final String disc;
 

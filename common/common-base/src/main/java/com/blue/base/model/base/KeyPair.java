@@ -3,7 +3,7 @@ package com.blue.base.model.base;
 import java.io.Serializable;
 
 /**
- * 密钥对
+ * public key - private key pair
  *
  * @author DarkBlue
  */
@@ -12,12 +12,12 @@ public final class KeyPair implements Serializable {
     private static final long serialVersionUID = -591395585005157171L;
 
     /**
-     * 公钥
+     * public key
      */
     private final String pubKey;
 
     /**
-     * 私钥
+     * private key
      */
     private final String priKey;
 

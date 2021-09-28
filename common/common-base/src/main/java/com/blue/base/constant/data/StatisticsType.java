@@ -1,7 +1,7 @@
 package com.blue.base.constant.data;
 
 /**
- * 统计类型
+ * statistics type
  *
  * @author liuyunfei
  * @date 2021/9/3
@@ -10,12 +10,18 @@ package com.blue.base.constant.data;
 public enum StatisticsType {
 
     /**
-     * 统计当日
+     * for member active
      */
-    MEMBER_ACTIVE("MA", "统计活跃用户");
+    MEMBER_ACTIVE("MA", "for member active");
 
+    /**
+     * identity
+     */
     public final String identity;
 
+    /**
+     * disc
+     */
     public final String disc;
 
     StatisticsType(String identity, String disc) {

@@ -1,7 +1,7 @@
 package com.blue.shine.handler.api;
 
 import com.blue.base.common.reactive.ReactiveCommonFunctions;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import com.blue.shine.service.inter.ShineService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -45,7 +45,7 @@ public final class ShineApiHandler {
                 .flatMap(shineInfo ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, shineInfo, OK.message), BlueResult.class));
+                                .body(generate(OK.code, shineInfo, OK.message), BlueResponse.class));
     }
 
 

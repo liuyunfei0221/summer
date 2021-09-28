@@ -78,7 +78,6 @@ spring:
         locator:
           enabled: true
 
-
       global-filter:
         remove-cached-body:
           enabled: false
@@ -93,7 +92,7 @@ spring:
         forward-routing:
           enabled: false
         reactive-load-balancer-client:
-          enabled: true
+          enabled: false
 
       filter:
         prefix-path:
@@ -115,7 +114,7 @@ spring:
         add-response-header:
           enabled: false
         circuit-breaker:
-          enabled: true
+          enabled: false
         dedupe-response-header:
           enabled: false
         fallback-headers:
@@ -213,27 +212,9 @@ spring:
             - Path=/blue-shine/**
 
 
-
-resilience4j.circuitbreaker:
-  configs:
-    default:
-      slidingWindowType: TIME_BASED
-      slidingWindowSize: 8
-      ringBufferSizeInHalfOpenState: 8
-      ringBufferSizeInClosedState: 1000
-      minimumNumberOfCalls: 2
-      permittedNumberOfCallsInHalfOpenState: 3
-      automaticTransitionFromOpenToHalfOpenEnabled: true
-      waitDurationInOpenState: 5s
-      slowCallDurationThreshold: 6000
-      slowCallRateThreshold: 80
-      failureRateThreshold: 50
-      eventConsumerBufferSize: 4
-      ignoreExceptions:
-        - com.blue.base.model.exps.BlueException
-
 server:
   shutdown: graceful
+
 
 logging:
   config: classpath:config/log4j2.xml

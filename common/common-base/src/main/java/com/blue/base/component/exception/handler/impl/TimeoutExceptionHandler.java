@@ -2,7 +2,7 @@ package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import reactor.util.Logger;
 
 import static com.blue.base.constant.base.ResponseElement.GATEWAY_TIMEOUT;
@@ -28,6 +28,6 @@ public final class TimeoutExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("timeoutExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(GATEWAY_TIMEOUT.status, new BlueResult<>(GATEWAY_TIMEOUT.code, null, GATEWAY_TIMEOUT.message));
+        return new ExceptionHandleInfo(GATEWAY_TIMEOUT.status, new BlueResponse<>(GATEWAY_TIMEOUT.code, null, GATEWAY_TIMEOUT.message));
     }
 }

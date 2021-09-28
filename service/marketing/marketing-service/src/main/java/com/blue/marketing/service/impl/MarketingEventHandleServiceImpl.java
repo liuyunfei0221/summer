@@ -1,6 +1,6 @@
 package com.blue.marketing.service.impl;
 
-import com.blue.base.constant.marketing.EventType;
+import com.blue.base.constant.marketing.MarketingEventType;
 import com.blue.base.constant.marketing.HandleStatus;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
@@ -44,7 +44,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
     /**
      * 登录类型模板方法
      */
-    private Map<EventType, EventHandler> marketingEventHandlers;
+    private Map<MarketingEventType, EventHandler> marketingEventHandlers;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MarketingEventHandleServiceImpl(EventMapper eventMapper, BlueIdentityProcessor blueIdentityProcessor) {
@@ -67,13 +67,13 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
      * 处理事件
      */
     private final Consumer<MarketingEvent> eventHandler = marketingEvent -> {
-        EventType eventType = marketingEvent.getEventType();
-        if (eventType == null)
+        MarketingEventType marketingEventType = marketingEvent.getEventType();
+        if (marketingEventType == null)
             throw new RuntimeException("eventType can't be null");
 
-        EventHandler eventHandler = marketingEventHandlers.get(eventType);
+        EventHandler eventHandler = marketingEventHandlers.get(marketingEventType);
         if (eventHandler == null)
-            throw new RuntimeException("eventHandler of eventType " + eventType + " doesn't exist");
+            throw new RuntimeException("eventHandler of eventType " + marketingEventType + " doesn't exist");
 
         eventHandler.handleEvent(marketingEvent);
     };
@@ -87,7 +87,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
 
         Event event = new Event();
 
-        event.setType(ofNullable(marketingEvent.getEventType()).map(type -> type.identity).orElse(EventType.UNKNOWN.identity));
+        event.setType(ofNullable(marketingEvent.getEventType()).map(type -> type.identity).orElse(MarketingEventType.UNKNOWN.identity));
         event.setData(marketingEvent.getEvent());
         event.setCreateTime(marketingEvent.getEventTime());
         event.setCreator(marketingEvent.getMemberId());

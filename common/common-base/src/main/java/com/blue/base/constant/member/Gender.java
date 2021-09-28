@@ -2,34 +2,34 @@ package com.blue.base.constant.member;
 
 
 /**
- * 性别
+ * gender
  *
  * @author DarkBlue
  */
 public enum Gender {
 
     /**
-     * 男性
+     * male
      */
-    MALE(1, "男"),
+    MALE(1, "male"),
 
     /**
-     * 女性
+     * female
      */
-    FEMALE(0, "女"),
+    FEMALE(0, "female"),
 
     /**
-     * 其他
+     * other
      */
-    OTHER(2, "其他");
+    OTHER(2, "other");
 
     /**
-     * 数字标识
+     * identity
      */
     public final int identity;
 
     /**
-     * 描述
+     * disc
      */
     public final String disc;
 

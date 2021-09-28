@@ -34,7 +34,7 @@ public final class BlueExecutorGenerator {
         assertConf(executorConf);
 
         String threadNamePre = ofNullable(executorConf.getThreadNamePre())
-                .map(tnp -> tnp + PAR_CONCATENATION_DATABASE_URL.identity)
+                .map(p -> p + PAR_CONCATENATION_DATABASE_URL.identity)
                 .orElse(DEFAULT_THREAD_NAME_PRE);
 
         return new ThreadPoolExecutor(executorConf.getCorePoolSize(),

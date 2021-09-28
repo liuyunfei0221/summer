@@ -1,7 +1,7 @@
 package com.blue.file.service.inter;
 
-import com.blue.base.model.base.PageModelParam;
-import com.blue.base.model.base.PageModelResult;
+import com.blue.base.model.base.PageModelRequest;
+import com.blue.base.model.base.PageModelResponse;
 import com.blue.file.api.model.AttachmentInfo;
 import com.blue.file.repository.entity.Attachment;
 
@@ -42,10 +42,10 @@ public interface AttachmentService {
     /**
      * 分页查询附件对应用户的附件列表
      *
-     * @param pageModelParam
+     * @param pageModelRequest
      * @param memberId
      * @return
      */
-    PageModelResult<AttachmentInfo> listAttachment(PageModelParam<Void> pageModelParam, Long memberId);
+    PageModelResponse<AttachmentInfo> listAttachment(PageModelRequest<Void> pageModelRequest, Long memberId);
 
 }

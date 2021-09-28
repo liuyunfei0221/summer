@@ -1,6 +1,6 @@
 package com.blue.marketing.component.event.inter;
 
-import com.blue.base.constant.marketing.EventType;
+import com.blue.base.constant.marketing.MarketingEventType;
 import com.blue.marketing.api.model.MarketingEvent;
 
 /**
@@ -23,6 +23,6 @@ public interface EventHandler {
      *
      * @return
      */
-    EventType targetType();
+    MarketingEventType targetType();
 
 }

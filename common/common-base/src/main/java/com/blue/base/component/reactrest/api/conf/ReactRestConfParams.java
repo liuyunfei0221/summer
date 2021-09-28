@@ -11,6 +11,7 @@ import java.util.List;
  * @date 2021/9/9
  * @apiNote
  */
+@SuppressWarnings({"SpellCheckingInspection", "unused"})
 public class ReactRestConfParams implements ReactRestConf {
 
     protected Integer maxConnections;

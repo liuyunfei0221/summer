@@ -10,22 +10,19 @@ package com.blue.base.constant.base;
 public enum ValidResourceFormatters {
 
     /**
-     * html模板
+     * html freemarker
      */
-    HTML(".html", "html模板"),
+    HTML(".html"),
 
     /**
-     * js模板
+     * js freemarker
      */
-    JS(".js", "js模板");
+    JS(".js");
 
     public final String identity;
 
-    public final String disc;
-
-    ValidResourceFormatters(String identity, String disc) {
+    ValidResourceFormatters(String identity) {
         this.identity = identity;
-        this.disc = disc;
     }
 
 }

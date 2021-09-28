@@ -1,6 +1,6 @@
 package com.blue.finance.handler.api;
 
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import com.blue.finance.service.inter.FinanceService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -41,7 +41,7 @@ public final class FinanceApiHandler {
                                 .flatMap(fv ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, fv, OK.message), BlueResult.class))
+                                                .body(generate(OK.code, fv, OK.message), BlueResponse.class))
                 );
     }
 

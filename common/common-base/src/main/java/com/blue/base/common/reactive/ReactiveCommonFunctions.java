@@ -1,7 +1,7 @@
 package com.blue.base.common.reactive;
 
 import com.blue.base.common.base.CommonFunctions;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.StringUtils;
@@ -61,8 +61,8 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @param <T>
      * @return
      */
-    public static <T> Mono<BlueResult<T>> generate(int code, T data, String message) {
-        return just(new BlueResult<>(code, data, message));
+    public static <T> Mono<BlueResponse<T>> generate(int code, T data, String message) {
+        return just(new BlueResponse<>(code, data, message));
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.blue.portal.service.impl;
 
 import com.blue.base.common.base.CommonFunctions;
-import com.blue.base.constant.base.ThresholdNumericalValue;
+import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.portal.BulletinType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
@@ -86,8 +86,8 @@ public class PortalServiceImpl implements PortalService {
 
     private static final Gson GSON = CommonFunctions.GSON;
 
-    private static final long WAIT_MILLIS_FOR_THREAD_SLEEP = ThresholdNumericalValue.WAIT_MILLIS_FOR_THREAD_SLEEP.value;
-    private static final long MAX_WAIT_MILLIS_FOR_REDISSON_SYNC = ThresholdNumericalValue.MAX_WAIT_MILLIS_FOR_REDISSON_SYNC.value;
+    private static final long WAIT_MILLIS_FOR_THREAD_SLEEP = BlueNumericalValue.WAIT_MILLIS_FOR_THREAD_SLEEP.value;
+    private static final long MAX_WAIT_MILLIS_FOR_REDISSON_SYNC = BlueNumericalValue.MAX_WAIT_MILLIS_FOR_REDISSON_SYNC.value;
 
     /**
      * po -> vo 转换器

@@ -1,6 +1,6 @@
 package com.blue.member.handler.api;
 
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberRegistryInfo;
 import com.blue.member.service.inter.MemberBasicService;
@@ -47,7 +47,7 @@ public final class MemberApiHandler {
                                 .flatMap(mv ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, mv, OK.message), BlueResult.class))
+                                                .body(generate(OK.code, mv, OK.message), BlueResponse.class))
                 );
     }
 
@@ -68,7 +68,7 @@ public final class MemberApiHandler {
                 .flatMap(b ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, b, OK.message), BlueResult.class)
+                                .body(generate(OK.code, b, OK.message), BlueResponse.class)
                 );
     }
 

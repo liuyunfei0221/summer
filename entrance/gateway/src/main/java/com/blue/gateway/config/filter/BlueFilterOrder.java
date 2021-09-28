@@ -41,7 +41,12 @@ public enum BlueFilterOrder {
     BLUE_BODY_PROCESS_AND_DATA_REPORT(WRITE_RESPONSE_FILTER_ORDER - 1),
 
     /**
-     * 实例级熔断过滤器
+     * loadbalancer
+     */
+    BLUE_LOAD_BALANCER_CLIENT(10150),
+
+    /**
+     * instance circuit
      */
     BLUE_INSTANCE_CIRCUIT_BREAKER(10151);
 

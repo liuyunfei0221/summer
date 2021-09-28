@@ -1,6 +1,6 @@
 package com.blue.data.handler.api;
 
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -32,7 +32,7 @@ public final class DataApiHandler {
                 .flatMap(ai ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, "test", OK.message), BlueResult.class)
+                                .body(generate(OK.code, "test", OK.message), BlueResponse.class)
                 );
     }
 

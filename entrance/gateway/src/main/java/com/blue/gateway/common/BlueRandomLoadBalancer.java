@@ -28,8 +28,7 @@ public final class BlueRandomLoadBalancer implements ReactorServiceInstanceLoadB
 
     private final ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider;
 
-    public BlueRandomLoadBalancer(
-            ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider) {
+    public BlueRandomLoadBalancer(ObjectProvider<ServiceInstanceListSupplier> serviceInstanceListSupplierProvider) {
         this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
     }
 
@@ -37,16 +36,13 @@ public final class BlueRandomLoadBalancer implements ReactorServiceInstanceLoadB
             instances.isEmpty() ? new EmptyResponse()
                     : new DefaultResponse(instances.get(current().nextInt(instances.size())));
 
-    private static final BiFunction<ServiceInstanceListSupplier, List<ServiceInstance>,
-            Response<ServiceInstance>> INSTANCE_RESPONSE_PROCESSOR =
-            (supplier, serviceInstances) -> {
-                Response<ServiceInstance> serviceInstanceResponse =
-                        INSTANCE_RESPONSE_GETTER.apply(serviceInstances);
-
-                if (supplier instanceof SelectedInstanceCallback && serviceInstanceResponse.hasServer())
-                    ((SelectedInstanceCallback) supplier).selectedServiceInstance(serviceInstanceResponse.getServer());
-                return serviceInstanceResponse;
-            };
+    private static final BiFunction<ServiceInstanceListSupplier, List<ServiceInstance>, Response<ServiceInstance>> INSTANCE_RESPONSE_PROCESSOR = (supplier, serviceInstances) -> {
+        Response<ServiceInstance> serviceInstanceResponse =
+                INSTANCE_RESPONSE_GETTER.apply(serviceInstances);
+        if (supplier instanceof SelectedInstanceCallback && serviceInstanceResponse.hasServer())
+            ((SelectedInstanceCallback) supplier).selectedServiceInstance(serviceInstanceResponse.getServer());
+        return serviceInstanceResponse;
+    };
 
 
     @Override

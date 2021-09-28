@@ -3,7 +3,7 @@ package com.blue.base.model.base;
 import java.io.Serializable;
 
 /**
- * 认证信息封装类
+ * access info
  *
  * @author DarkBlue
  */
@@ -13,32 +13,32 @@ public final class Access implements Serializable {
     private static final long serialVersionUID = -598996165142888324L;
 
     /**
-     * 认证成员主键
+     * id
      */
     private long id;
 
     /**
-     * 认证用户角色
+     * role id
      */
     private long roleId;
 
     /**
-     * 登录方式
+     * login type
      */
     private String loginType;
 
     /**
-     * 设备类型
+     * device type
      */
     private String deviceType;
 
     /**
-     * 本次登录时间戳/秒
+     * login timestamp(seconds)
      */
     private long loginTime;
 
     /**
-     * 仅提供用于序列化,不推荐使用,基于set无法保证参数正确性
+     * It is only provided for serialization and is not recommended. The correctness of parameters cannot be guaranteed with setter
      */
     @Deprecated
     public Access() {

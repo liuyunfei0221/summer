@@ -1,7 +1,7 @@
 package com.blue.file.handler.api;
 
 import com.blue.base.model.base.Access;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.base.IdentityWrapper;
 import com.blue.base.model.exps.BlueException;
 import com.blue.file.config.deploy.FileDeploy;
@@ -75,7 +75,7 @@ public final class FileApiHandler {
                 .flatMap(rl ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, rl, OK.message), BlueResult.class));
+                                .body(generate(OK.code, rl, OK.message), BlueResponse.class));
     }
 
     /**

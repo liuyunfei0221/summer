@@ -1,7 +1,7 @@
 package com.blue.base.constant.base;
 
 /**
- * 随机信息类型
+ * random value type
  *
  * @author liuyunfei
  * @date 2021/8/18
@@ -10,27 +10,27 @@ package com.blue.base.constant.base;
 public enum RandomType {
 
     /**
-     * 数字
+     * NUMERIC
      */
     NUMERIC,
 
     /**
-     * 字符
+     * ALPHABETIC
      */
     ALPHABETIC,
 
     /**
-     * 数字加字符
+     * ALPHANUMERIC
      */
     ALPHANUMERIC,
 
     /**
-     * ascii
+     * ASCII
      */
     ASCII,
 
     /**
-     * graph
+     * GRAPH
      */
     GRAPH
 

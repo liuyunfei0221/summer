@@ -1,7 +1,7 @@
 package com.blue.base.constant.secure;
 
 /**
- * 设备类型
+ * device type
  *
  * @author DarkBlue
  */
@@ -9,37 +9,37 @@ package com.blue.base.constant.secure;
 public enum DeviceType {
 
     /**
-     * 桌面端
+     * desk top
      */
-    DESK_TOP("D", "桌面端"),
+    DESK_TOP("D", "desk top"),
 
     /**
-     * 移动端
+     * mobile
      */
-    MOBILE("M", "移动端"),
+    MOBILE("M", "mobile"),
 
     /**
-     * 平板设备
+     * tablet
      */
-    TABLET("T", "平板设备"),
+    TABLET("T", "tablet"),
 
     /**
-     * 其他设备
+     * other devices
      */
-    OTHER("O", "其他设备"),
+    OTHER("O", "other devices"),
 
     /**
-     * 未登录
+     * devices identity for not login
      */
-    UNKNOWN("U", "未登录");
+    UNKNOWN("U", "devices identity for not login");
 
     /**
-     * 类型的数字标识
+     * identity
      */
     public final String identity;
 
     /**
-     * 文字描述
+     * disc
      */
     public final String disc;
 

@@ -55,9 +55,11 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
         this.requestEventReporter = requestEventReporter;
     }
 
+
     /**
      * 入口处断言请求方式,防止后续非法请求过多致使intern影响常量池
      */
+    private static final Consumer<String> SCHEMA_ASSERTER = GatewayCommonFactory.SCHEMA_ASSERTER;
     private static final Consumer<String> METHOD_VALUE_ASSERTER = GatewayCommonFactory.METHOD_VALUE_ASSERTER;
 
     private static final String AUTHORIZATION = BlueHeader.AUTHORIZATION.name;
@@ -107,6 +109,8 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
+
+        SCHEMA_ASSERTER.accept(request.getURI().getScheme());
 
         String methodValue = request.getMethodValue();
         METHOD_VALUE_ASSERTER.accept(methodValue);

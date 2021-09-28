@@ -7,7 +7,7 @@ package com.blue.base.component.syncrest.api.conf;
  * @date 2021/9/9
  * @apiNote
  */
-@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface SyncRestConf {
 
     Integer getMaxPerRoute();

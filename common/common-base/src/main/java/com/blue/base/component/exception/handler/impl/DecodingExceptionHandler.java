@@ -3,7 +3,7 @@ package com.blue.base.component.exception.handler.impl;
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.BlueMediaType;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.codec.DecodingException;
 import reactor.util.Logger;
@@ -78,6 +78,6 @@ public class DecodingExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("decodingExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResult<>(BAD_REQUEST.code, null, MESSAGE_PARSER.apply(((DecodingException) throwable))));
+        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, MESSAGE_PARSER.apply(((DecodingException) throwable))));
     }
 }

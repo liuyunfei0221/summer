@@ -1,7 +1,7 @@
 package com.blue.base.constant.business;
 
 /**
- * 内容类型
+ * subject type
  *
  * @author DarkBlue
  */
@@ -10,15 +10,15 @@ public enum SubjectType {
     /**
      * 文章
      */
-    ARTICLE(1, "文章");
+    ARTICLE(1, "article");
 
     /**
-     * 类型标识
+     * identity
      */
     public int identity;
 
     /**
-     * 类型描述
+     * disc
      */
     public String disc;
 

@@ -11,28 +11,22 @@ import java.io.Serializable;
 public enum DataEventType implements Serializable {
 
     /**
-     * 统一上报
+     * unified
      */
-    UNIFIED("unified", "统一上报"),
+    UNIFIED("unified"),
 
     /**
-     * 数据埋点
+     * buriedPoint
      */
-    BURIED_POINT("buriedPoint", "数据埋点");
+    BURIED_POINT("buriedPoint");
 
     /**
      * 标识
      */
     public final String identity;
 
-    /**
-     * 描述
-     */
-    public final String disc;
-
-    DataEventType(String identity, String disc) {
+    DataEventType(String identity) {
         this.identity = identity;
-        this.disc = disc;
     }
 
 }

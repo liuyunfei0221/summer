@@ -4,7 +4,6 @@ import com.blue.base.component.syncrest.api.conf.SyncRestConf;
 import io.netty.channel.ConnectTimeoutException;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.HttpRequestRetryHandler;
-import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.ConnectionConfig;
@@ -30,6 +29,7 @@ import java.net.SocketTimeoutException;
 
 import static java.nio.charset.CodingErrorAction.IGNORE;
 import static java.util.Optional.ofNullable;
+import static org.apache.http.client.config.CookieSpecs.STANDARD;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -47,14 +47,19 @@ public class BlueSyncRestGenerator {
 
     private static final String DEFAULT_USER_AGENT = "summer";
 
+    /**
+     * protocols
+     */
+    private static final String PROTOCOL = "http", SECURE_PROTOCOL = "https";
+
     private static final TrustStrategy TRUST_STRATEGY = new TrustAllStrategy();
 
     public static RestTemplate createRestTemplate(SyncRestConf syncRestConf) {
         try {
             PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
                     RegistryBuilder.<ConnectionSocketFactory>create()
-                            .register("http", new PlainConnectionSocketFactory())
-                            .register("https",
+                            .register(PROTOCOL, new PlainConnectionSocketFactory())
+                            .register(SECURE_PROTOCOL,
                                     new SSLConnectionSocketFactory(
                                             SSLContexts.custom().loadTrustMaterial(TRUST_STRATEGY).build(),
                                             NoopHostnameVerifier.INSTANCE))
@@ -70,7 +75,7 @@ public class BlueSyncRestGenerator {
             ofNullable(syncRestConf.getSoReuseAddress()).ifPresent(socketConfBuilder::setSoReuseAddress);
             connectionManager.setDefaultSocketConfig(socketConfBuilder.build());
 
-            RequestConfig.Builder requestConfBuilder = RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD);
+            RequestConfig.Builder requestConfBuilder = RequestConfig.custom().setCookieSpec(STANDARD);
             ofNullable(syncRestConf.getConnectTimeout()).ifPresent(requestConfBuilder::setConnectTimeout);
             ofNullable(syncRestConf.getSoTimeout()).ifPresent(requestConfBuilder::setSocketTimeout);
             ofNullable(syncRestConf.getRequestTimeout()).ifPresent(requestConfBuilder::setConnectionRequestTimeout);

@@ -3,12 +3,12 @@ package com.blue.base.model.base;
 import java.io.Serializable;
 
 /**
- * 响应封装类
+ * response result info
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class BlueResult<T> implements Serializable {
+public final class BlueResponse<T> implements Serializable {
 
     private static final long serialVersionUID = -5093752294116263164L;
 
@@ -18,19 +18,19 @@ public final class BlueResult<T> implements Serializable {
     private Integer code;
 
     /**
-     * 响应数据体
+     * response data
      */
     private T data;
 
     /**
-     * 响应信息
+     * response message
      */
     private String message;
 
-    public BlueResult() {
+    public BlueResponse() {
     }
 
-    public BlueResult(Integer code, T data, String message) {
+    public BlueResponse(Integer code, T data, String message) {
         this.code = code;
         this.data = data;
         this.message = message;
@@ -62,7 +62,7 @@ public final class BlueResult<T> implements Serializable {
 
     @Override
     public String toString() {
-        return "BlueVO{" +
+        return "BlueResponse{" +
                 "code=" + code +
                 ", data=" + data +
                 ", message='" + message + '\'' +

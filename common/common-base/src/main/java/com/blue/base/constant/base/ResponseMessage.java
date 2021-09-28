@@ -1,7 +1,7 @@
 package com.blue.base.constant.base;
 
 /**
- * 常用响应信息
+ * Common response messages
  *
  * @author liuyunfei
  * @date 2021/9/22
@@ -10,59 +10,59 @@ package com.blue.base.constant.base;
 public enum ResponseMessage {
 
     /**
-     * 请求内容为空
+     * EMPTY_REQUEST_BODY
      */
-    EMPTY_REQUEST_BODY("请求内容为空"),
+    EMPTY_REQUEST_BODY("Empty request body"),
 
     /**
-     * 请求头数量过多
+     * TOO_MANY_HEADERS
      */
-    TOO_MANY_HEADERS("请求头数量过多"),
+    TOO_MANY_HEADERS("Too many headers"),
 
     /**
-     * 请求头长度过大
+     * TOO_LARGE_HEADER
      */
-    TOO_LARGE_HEADER("请求头长度过大"),
+    TOO_LARGE_HEADER("Too large headers"),
 
     /**
-     * 请求体长度过大
+     * TOO_LARGE_BODY
      */
-    TOO_LARGE_BODY("请求体长度过大"),
+    TOO_LARGE_BODY("Too large body"),
 
     /**
-     * uri过长
+     * TOO_LARGE_URI
      */
-    TOO_LARGE_URI("uri过长"),
+    TOO_LARGE_URI("Uri is too long"),
 
     /**
-     * 加密或解密数据失败
+     * RSA_FAILED
      */
-    RSA_FAILED("加解密或签名/验签失败"),
+    RSA_FAILED("Encryption/decryption or signature/verification failed"),
 
     /**
-     * 请求方式非法
+     * INVALID_REQUEST_METHOD
      */
-    INVALID_REQUEST_METHOD("请求方式非法"),
+    INVALID_REQUEST_METHOD("Invalid request method"),
 
     /**
-     * 主键不能为空或小于1
+     * INVALID_IDENTITY
      */
-    INVALID_IDENTITY("主键不能为空或小于1"),
+    INVALID_IDENTITY("Invalid or empty identity"),
 
     /**
-     * identity不能为空
+     * INVALID_CONSTANT_IDENTITY
      */
-    INVALID_CONSTANT_IDENTITY("identity不能为空"),
+    INVALID_CONSTANT_IDENTITY("Invalid or empty identity element"),
 
     /**
-     * 账号或密码错误
+     * INVALID_ACCT_OR_PWD
      */
-    INVALID_ACCT_OR_PWD("账号或密码错误"),
+    INVALID_ACCT_OR_PWD("Invalid account or password"),
 
     /**
-     * 文件不存在
+     * FILE_NOT_EXIST
      */
-    FILE_NOT_EXIST("文件不存在");
+    FILE_NOT_EXIST("File not exist");
 
     public final String message;
 

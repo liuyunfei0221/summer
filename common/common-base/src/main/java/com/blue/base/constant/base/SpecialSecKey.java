@@ -1,28 +1,28 @@
 package com.blue.base.constant.base;
 
 /**
- * 特殊字符配置
+ * Special sec key
  *
  * @author DarkBlue
  */
-public enum SecKey {
+public enum SpecialSecKey {
 
     /**
-     * 未登录特殊secKey
+     * special secKey is not login
      */
-    NOT_LOGGED_IN_SEC_KEY("", "未登录特殊secKey");
+    NOT_LOGGED_IN_SEC_KEY("", "not access");
 
     /**
-     * 数值
+     * value
      */
     public final String value;
 
     /**
-     * 描述
+     * disc
      */
     public final String disc;
 
-    SecKey(String value, String disc) {
+    SpecialSecKey(String value, String disc) {
         this.value = value;
         this.disc = disc;
     }

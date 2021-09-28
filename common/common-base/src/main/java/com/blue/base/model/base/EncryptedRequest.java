@@ -3,31 +3,31 @@ package com.blue.base.model.base;
 import java.io.Serializable;
 
 /**
- * 用于加密数据封装
+ * encrypted request params
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class EncryptedParam implements Serializable {
+public final class EncryptedRequest implements Serializable {
 
     private static final long serialVersionUID = 6773955220682431886L;
     /**
-     * 已加密的数据(json)
+     * encrypted data json
      */
     private String encrypted;
 
     /**
-     * 针对加密数据的签名
+     * signature
      */
-    private String sign;
+    private String signature;
 
 
-    public EncryptedParam() {
+    public EncryptedRequest() {
     }
 
-    public EncryptedParam(String encrypted, String sign) {
+    public EncryptedRequest(String encrypted, String signature) {
         this.encrypted = encrypted;
-        this.sign = sign;
+        this.signature = signature;
     }
 
     public String getEncrypted() {
@@ -38,19 +38,19 @@ public final class EncryptedParam implements Serializable {
         this.encrypted = encrypted;
     }
 
-    public String getSign() {
-        return sign;
+    public String getSignature() {
+        return signature;
     }
 
-    public void setSign(String sign) {
-        this.sign = sign;
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     @Override
     public String toString() {
-        return "EncryptDTO{" +
+        return "EncryptedData{" +
                 "encrypted='" + encrypted + '\'' +
-                ", sign='" + sign + '\'' +
+                ", signature='" + signature + '\'' +
                 '}';
     }
 

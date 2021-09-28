@@ -2,7 +2,7 @@ package com.blue.base.constant.base;
 
 import com.blue.base.model.base.Access;
 
-import static com.blue.base.constant.base.ThresholdNumericalValue.*;
+import static com.blue.base.constant.base.BlueNumericalValue.*;
 import static com.blue.base.constant.secure.DeviceType.UNKNOWN;
 import static com.blue.base.constant.secure.LoginType.NOT_LOGGED_IN;
 

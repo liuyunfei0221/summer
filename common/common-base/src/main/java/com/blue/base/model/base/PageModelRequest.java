@@ -6,7 +6,7 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ThresholdNumericalValue.*;
+import static com.blue.base.constant.base.BlueNumericalValue.*;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -15,7 +15,7 @@ import static java.util.Optional.ofNullable;
  * @author DarkBlue
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public final class PageModelParam<T> implements Serializable {
+public final class PageModelRequest<T> implements Serializable {
 
     private static final long serialVersionUID = -59225648928098772L;
 
@@ -39,10 +39,10 @@ public final class PageModelParam<T> implements Serializable {
      */
     private T param;
 
-    public PageModelParam() {
+    public PageModelRequest() {
     }
 
-    public PageModelParam(Long page, Long rows, T param) {
+    public PageModelRequest(Long page, Long rows, T param) {
         if (page == null || page < 1L)
             throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "当前页不能小于1");
         if (rows == null || rows < 1L || rows > MAX_ROWS_PER_REQ)

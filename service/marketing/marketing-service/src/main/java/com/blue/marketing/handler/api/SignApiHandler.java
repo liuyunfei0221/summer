@@ -1,6 +1,6 @@
 package com.blue.marketing.handler.api;
 
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import com.blue.marketing.service.inter.SignService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -41,7 +41,7 @@ public final class SignApiHandler {
                                 .flatMap(r ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, r, OK.message), BlueResult.class))
+                                                .body(generate(OK.code, r, OK.message), BlueResponse.class))
                 );
     }
 
@@ -58,7 +58,7 @@ public final class SignApiHandler {
                                 .flatMap(info ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, info, OK.message), BlueResult.class))
+                                                .body(generate(OK.code, info, OK.message), BlueResponse.class))
 
                 );
     }

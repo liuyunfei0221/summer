@@ -33,7 +33,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "UnusedReturnValue", "unused", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
+@SuppressWarnings({"JavaDoc", "UnusedReturnValue", "unused", "AliControlFlowStatementWithoutBraces"})
 @Component
 public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
 

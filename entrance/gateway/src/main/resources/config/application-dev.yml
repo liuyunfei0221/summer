@@ -77,6 +77,20 @@ limit:
   burstCapacity: 2
 
 
+circuit:
+  failureRateThreshold: 50
+  slowCallRateThreshold: 80
+  slowCallDurationThresholdMillis: 6000
+  permittedNumberOfCallsInHalfOpenState: 10
+  maxWaitDurationInHalfOpenState: 1
+  slidingWindowType: TIME_BASED
+  slidingWindowSize: 10
+  minimumNumberOfCalls: 10
+  waitDurationInOpenState: 60000
+  automaticTransitionFromOpenToHalfOpenEnabled: false
+  recordFailurePredicateClassName: com.blue.gateway.common.BlueRecordFailurePredicate
+
+
 encrypt:
   expire: 10000000000
 
@@ -267,5 +281,6 @@ consumers:
       pollDurationMills: 1000
       workingThreads: 2
       enableNegativeAcknowledge: true
+
 
 debug: false

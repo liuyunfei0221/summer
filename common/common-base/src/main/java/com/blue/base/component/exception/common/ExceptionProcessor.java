@@ -3,7 +3,7 @@ package com.blue.base.component.exception.common;
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.ResponseElement;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -86,7 +86,7 @@ public final class ExceptionProcessor {
 
         LOGGER.error("handle(Throwable throwable), unknown exception, t = {}", t);
         return new ExceptionHandleInfo(INTERNAL_SERVER_ERROR_RES.status,
-                new BlueResult<>(INTERNAL_SERVER_ERROR_RES.code, null, INTERNAL_SERVER_ERROR_RES.message));
+                new BlueResponse<>(INTERNAL_SERVER_ERROR_RES.code, null, INTERNAL_SERVER_ERROR_RES.message));
     }
 
 }

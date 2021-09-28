@@ -1,7 +1,7 @@
 package com.blue.base.constant.marketing;
 
 /**
- * 状态约束
+ * handle status
  *
  * @author DarkBlue
  */
@@ -9,21 +9,21 @@ package com.blue.base.constant.marketing;
 public enum HandleStatus {
 
     /**
-     * 已处理
+     * handled
      */
-    HANDLED(1, "已处理"),
+    HANDLED(1, "handled"),
     /**
-     * 未处理
+     * broken
      */
-    BROKEN(0, "未处理");
+    BROKEN(0, "broken");
 
     /**
-     * 状态标识
+     * status
      */
     public final int status;
 
     /**
-     * 状态描述
+     * disc
      */
     public final String disc;
 

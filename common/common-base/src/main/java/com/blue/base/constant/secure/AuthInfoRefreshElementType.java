@@ -1,19 +1,19 @@
 package com.blue.base.constant.secure;
 
 /**
- * 动态刷新认证信息中的元素类型
+ * Dynamically refresh the element type for authentication information
  *
  * @author DarkBlue
  */
 public enum AuthInfoRefreshElementType {
 
     /**
-     * 角色信息
+     * role info
      */
     ROLE,
 
     /**
-     * 公钥
+     * public key
      */
     PUB_KEY
 

@@ -2,7 +2,7 @@ package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import org.springframework.core.io.buffer.DataBufferLimitException;
 import reactor.util.Logger;
 
@@ -55,7 +55,7 @@ public class DataBufferLimitExceptionHandler implements ExceptionHandler {
         LOGGER.info("dataBufferLimitExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
 
         DataBufferLimitException exception = (DataBufferLimitException) throwable;
-        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResult<>(BAD_REQUEST.code, null, MESSAGE_CONVERTER.apply(exception)));
+        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, MESSAGE_CONVERTER.apply(exception)));
     }
 
 }

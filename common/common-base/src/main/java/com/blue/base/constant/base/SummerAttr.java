@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 /**
- * 放置项目的一些通用属性
+ * project common attr
  *
  * @author DarkBlue
  */
@@ -15,17 +15,17 @@ public class SummerAttr {
     private static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     /**
-     * 默认时间模板
+     * default datetime formatter
      */
     public static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern(TIME_FORMAT);
 
     /**
-     * 项目标识
+     * summer identity
      */
     public static final String IDENTITY = "summer";
 
     /**
-     * 统一基于上海时区
+     * base time zone
      */
     public static final String TIME_ZONE = "Asia/Shanghai";
 

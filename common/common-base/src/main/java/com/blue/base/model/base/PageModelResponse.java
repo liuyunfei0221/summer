@@ -4,29 +4,29 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 响应分页数据封装
+ * page data
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class PageModelResult<T extends Serializable> implements Serializable {
+public final class PageModelResponse<T extends Serializable> implements Serializable {
 
     private static final long serialVersionUID = -2833276453789009836L;
 
     /**
-     * 数据列表
+     * data element list
      */
     private List<T> list;
 
     /**
-     * 总条数
+     * total count
      */
     private Long count;
 
-    public PageModelResult() {
+    public PageModelResponse() {
     }
 
-    public PageModelResult(List<T> list, Long count) {
+    public PageModelResponse(List<T> list, Long count) {
         this.list = list;
         this.count = count;
     }

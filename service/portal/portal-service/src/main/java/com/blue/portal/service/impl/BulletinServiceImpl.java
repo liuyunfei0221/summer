@@ -13,7 +13,7 @@ import reactor.util.Loggers;
 import java.util.List;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ThresholdNumericalValue.ROWS;
+import static com.blue.base.constant.base.BlueNumericalValue.ROWS;
 
 /**
  * 公告相关业务实现

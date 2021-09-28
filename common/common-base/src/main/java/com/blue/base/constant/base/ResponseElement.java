@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 import org.springframework.http.HttpStatus;
 
 /**
- * 异常信息约束
+ * global exception infos
  *
  * @author DarkBlue
  */
@@ -11,87 +11,87 @@ import org.springframework.http.HttpStatus;
 public enum ResponseElement {
 
     /**
-     * 成功
+     * success
      */
-    OK(HttpStatus.OK.value(), HttpStatus.OK.value(), "成功"),
+    OK(HttpStatus.OK.value(), HttpStatus.OK.value(), "success"),
 
     /**
-     * 请求过多
+     * too many requests
      */
-    TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS.value(), HttpStatus.TOO_MANY_REQUESTS.value(), "请求过多"),
+    TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS.value(), HttpStatus.TOO_MANY_REQUESTS.value(), "Too many requests"),
 
     /**
-     * 降级
+     * fallback
      */
-    PARTIAL_CONTENT(HttpStatus.PARTIAL_CONTENT.value(), HttpStatus.PARTIAL_CONTENT.value(), "降级"),
+    PARTIAL_CONTENT(HttpStatus.PARTIAL_CONTENT.value(), HttpStatus.PARTIAL_CONTENT.value(), "Fallback"),
 
     /**
-     * 未认证
+     * authentication failed or expired
      */
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.value(), "认证失败或过期,请重新登录"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.value(), "Authentication failed or expired, please log in"),
 
     /**
-     * 权限不足
+     * insufficient permissions
      */
-    FORBIDDEN(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.value(), "权限不足"),
+    FORBIDDEN(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.value(), "Insufficient permissions"),
 
     /**
-     * 资源不存在
+     * resource not found
      */
-    NOT_FOUND(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.value(), "资源不存在"),
+    NOT_FOUND(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.value(), "Resource not found"),
 
     /**
-     * 参数错误
+     * Illegal parameter
      */
-    BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.value(), "参数错误"),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.value(), "Illegal parameter"),
 
     /**
-     * "媒体类型错误"
+     * invalid media type
      */
-    UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "媒体类型错误"),
+    UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "Invalid media type"),
 
     /**
-     * 请求内容过大
+     * request body too large or request header too larger
      */
-    PAYLOAD_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE.value(), HttpStatus.PAYLOAD_TOO_LARGE.value(), "内容过大或请求/响应头过大"),
+    PAYLOAD_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE.value(), HttpStatus.PAYLOAD_TOO_LARGE.value(), "Request body too large or request header too larger"),
 
     /**
-     * 数据不存在
+     * no content
      */
-    NO_CONTENT(HttpStatus.NO_CONTENT.value(), HttpStatus.NO_CONTENT.value(), "数据不存在"),
+    NO_CONTENT(HttpStatus.NO_CONTENT.value(), HttpStatus.NO_CONTENT.value(), "No content"),
 
     /**
-     * 风控拦截
+     * you have been restricted access/ reject access by risk control
      */
-    NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE.value(), HttpStatus.NOT_ACCEPTABLE.value(), "您已被限制访问"),
+    NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE.value(), HttpStatus.NOT_ACCEPTABLE.value(), "You have been restricted access"),
 
     /**
-     * 系统错误
+     * system error
      */
-    INTERNAL_SERVER_ERROR(HttpStatus.NON_AUTHORITATIVE_INFORMATION.value(), HttpStatus.NON_AUTHORITATIVE_INFORMATION.value(), "服务开小差了"),
+    INTERNAL_SERVER_ERROR(HttpStatus.NON_AUTHORITATIVE_INFORMATION.value(), HttpStatus.NON_AUTHORITATIVE_INFORMATION.value(), "System busy"),
 
     /**
-     * 请求超时
+     * timeout
      */
-    REQUEST_TIMEOUT(HttpStatus.REQUEST_TIMEOUT.value(), HttpStatus.REQUEST_TIMEOUT.value(), "请求超时"),
+    REQUEST_TIMEOUT(HttpStatus.REQUEST_TIMEOUT.value(), HttpStatus.REQUEST_TIMEOUT.value(), "Timeout"),
 
     /**
-     * 网关超时
+     * gateway timeout
      */
-    GATEWAY_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT.value(), HttpStatus.GATEWAY_TIMEOUT.value(), "网关超时");
+    GATEWAY_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT.value(), HttpStatus.GATEWAY_TIMEOUT.value(), "Gateway timeout");
 
     /**
-     * 异常状态码
+     * http status
      */
     public final int status;
 
     /**
-     * 异常业务码
+     * business code
      */
     public final int code;
 
     /**
-     * 异常信息
+     * message
      */
     public final String message;
 

@@ -1,37 +1,37 @@
 package com.blue.base.constant.portal;
 
 /**
- * 公告类型
+ * bulletin type
  *
  * @author DarkBlue
  */
 public enum BulletinType {
 
     /**
-     * 热门公告
+     * popular
      */
-    POPULAR(1, "热门公告"),
+    POPULAR(1, "popular"),
 
     /**
-     * 最新公告
+     * newest
      */
-    NEWEST(2, "最新公告"),
+    NEWEST(2, "newest"),
 
     /**
-     * 推荐公告
+     * recommend
      */
-    RECOMMEND(3, "推荐公告");
+    RECOMMEND(3, "recommend");
 
 
     /**
-     * 类型标识
+     * identity
      */
-    public int identity;
+    public final int identity;
 
     /**
-     * 类型描述
+     * disc
      */
-    public String disc;
+    public final String disc;
 
     BulletinType(int identity, String disc) {
         this.identity = identity;

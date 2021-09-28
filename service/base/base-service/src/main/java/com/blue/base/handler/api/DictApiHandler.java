@@ -1,6 +1,6 @@
 package com.blue.base.handler.api;
 
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import com.blue.base.service.inter.DictService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -38,7 +38,7 @@ public final class DictApiHandler {
                 .flatMap(dts ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, dts, OK.message), BlueResult.class)
+                                .body(generate(OK.code, dts, OK.message), BlueResponse.class)
                 );
     }
 

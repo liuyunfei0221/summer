@@ -7,27 +7,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 数据上报事件
+ * unified data
  *
  * @author DarkBlue
  */
-@SuppressWarnings("UnusedReturnValue")
-public class DataEvent implements Serializable {
+@SuppressWarnings({"UnusedReturnValue", "unused"})
+public final class DataEvent implements Serializable {
 
     private static final long serialVersionUID = -7101856515135840564L;
 
     /**
-     * 事件类型
+     * event type
      */
     private DataEventType dataEventType;
 
     /**
-     * 秒级时间戳
+     * stamp(second)
      */
     private Long stamp;
 
     /**
-     * 数据
+     * data
      */
     private Map<String, String> entries = new HashMap<>();
 

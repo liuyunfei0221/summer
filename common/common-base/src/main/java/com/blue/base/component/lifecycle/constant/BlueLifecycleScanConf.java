@@ -13,7 +13,7 @@ public enum BlueLifecycleScanConf {
     BLUE_LIFECYCLE_SCAN_PACKAGE("basePackages", new String[]{"com.blue"}, false, "BlueLifecycle扫描配置");
 
     /**
-     * anno param key
+     * annotation param key
      */
     public final String scanPackagesAttrName;
 

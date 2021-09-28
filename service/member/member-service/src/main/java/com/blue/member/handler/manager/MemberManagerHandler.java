@@ -1,6 +1,6 @@
 package com.blue.member.handler.manager;
 
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberBasicService;
 import org.springframework.stereotype.Component;
@@ -45,7 +45,7 @@ public class MemberManagerHandler {
                     return just(ml);
                 }).flatMap(ml ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ml, OK.message), BlueResult.class)
+                                .body(generate(OK.code, ml, OK.message), BlueResponse.class)
                 );
     }
 

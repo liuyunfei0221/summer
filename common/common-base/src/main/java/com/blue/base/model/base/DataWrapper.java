@@ -3,7 +3,7 @@ package com.blue.base.model.base;
 import java.io.Serializable;
 
 /**
- * 加密数据与时间戳的信息封装类
+ * Encrypted data and timestamp information
  *
  * @author DarkBlue
  */
@@ -13,12 +13,12 @@ public final class DataWrapper implements Serializable {
     private static final long serialVersionUID = 3491515130185040722L;
 
     /**
-     * 数据加密前的json
+     * data json
      */
     private String original;
 
     /**
-     * 时间戳
+     * signature timestamp
      */
     private Long timeStamp;
 

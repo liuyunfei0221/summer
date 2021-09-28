@@ -27,7 +27,7 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.FILE_NOT_EXIST;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
-import static com.blue.base.constant.base.ThresholdNumericalValue.DB_INSERT;
+import static com.blue.base.constant.base.BlueNumericalValue.DB_WRITE;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static org.apache.commons.lang3.StringUtils.substring;
@@ -126,7 +126,7 @@ public class FileServiceImpl implements FileService {
                 .flatMap(localDiskFileUploader::upload)
                 .collectList()
                 .flatMap(uploadedFiles -> {
-                    allotByMax(uploadedFiles, (int) DB_INSERT.value, false)
+                    allotByMax(uploadedFiles, (int) DB_WRITE.value, false)
                             .stream()
                             .filter(l -> !isEmpty(l))
                             .forEach(l ->

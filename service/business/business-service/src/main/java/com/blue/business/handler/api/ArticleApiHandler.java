@@ -1,7 +1,7 @@
 package com.blue.business.handler.api;
 
 import com.blue.base.model.base.Access;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.business.api.model.ArticleInsertParam;
 import com.blue.business.service.inter.BusinessService;
@@ -53,7 +53,7 @@ public class ArticleApiHandler {
                 .flatMap(b ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, b, OK.message), BlueResult.class)
+                                .body(generate(OK.code, b, OK.message), BlueResponse.class)
                 );
     }
 

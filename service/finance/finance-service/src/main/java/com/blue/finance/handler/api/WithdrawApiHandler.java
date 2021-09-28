@@ -1,7 +1,7 @@
 package com.blue.finance.handler.api;
 
 import com.blue.base.model.base.Access;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.finance.api.model.WithdrawInfo;
 import org.springframework.stereotype.Component;
@@ -49,7 +49,7 @@ public final class WithdrawApiHandler {
                 }).flatMap(
                         rs ->
                                 ok().contentType(APPLICATION_JSON)
-                                        .body(generate(OK.code, rs, OK.message), BlueResult.class));
+                                        .body(generate(OK.code, rs, OK.message), BlueResponse.class));
 
     }
 

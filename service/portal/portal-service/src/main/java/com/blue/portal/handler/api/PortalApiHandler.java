@@ -2,7 +2,7 @@ package com.blue.portal.handler.api;
 
 import com.blue.base.common.reactive.MetadataGetterForReactive;
 import com.blue.base.common.reactive.ReactiveCommonFunctions;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import com.blue.portal.service.inter.PortalService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -52,7 +52,7 @@ public final class PortalApiHandler {
         return portalService.listBulletin(serverRequest.pathVariable(TYPE_PAR))
                 .flatMap(bl -> ok()
                         .contentType(APPLICATION_JSON)
-                        .body(generate(OK.code, bl, OK.message), BlueResult.class)
+                        .body(generate(OK.code, bl, OK.message), BlueResponse.class)
                 );
     }
 

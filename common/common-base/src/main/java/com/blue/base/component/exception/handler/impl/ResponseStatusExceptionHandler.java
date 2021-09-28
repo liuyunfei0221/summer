@@ -3,7 +3,7 @@ package com.blue.base.component.exception.handler.impl;
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.ResponseElement;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.util.Logger;
 
@@ -34,6 +34,6 @@ public final class ResponseStatusExceptionHandler implements ExceptionHandler {
         ResponseStatusException ex = (ResponseStatusException) throwable;
         ResponseElement responseElement = getResponseElementByStatus(ex.getStatus().value());
 
-        return new ExceptionHandleInfo(responseElement.status, new BlueResult<>(responseElement.code, null, responseElement.message));
+        return new ExceptionHandleInfo(responseElement.status, new BlueResponse<>(responseElement.code, null, responseElement.message));
     }
 }

@@ -2,45 +2,45 @@ package com.blue.base.constant.secure;
 
 
 /**
- * 登陆类型
+ * login type
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"unused", "SpellCheckingInspection"})
+@SuppressWarnings({"unused", "SpellCheckingInspection", "GrazieInspection"})
 public enum LoginType {
 
     /**
-     * 短信验证码登录
+     * login with phone num and message verify
      */
-    SMS_VERIGY("SV", "CLI", "手机号加短信验证码登录"),
+    SMS_VERIGY("SV", "CLI", "login with phone num and message verify"),
 
     /**
-     * 邮箱密码登录
+     * login with phone num and password
      */
-    PHONE_PWD("PP", "CLI", "手机号加密码登录"),
+    PHONE_PWD("PP", "CLI", "login with phone num and password"),
 
     /**
-     * 邮箱密码登录
+     * login with email and password
      */
-    EMAIL_PWD("EP", "CLI", "邮箱加密码登录"),
+    EMAIL_PWD("EP", "CLI", "login with email and password"),
 
     /**
-     * 微信登录
+     * login by wechat
      */
-    WECHAT("WE", "CLI", "微信登录"),
+    WECHAT("WE", "CLI", "login by wechat"),
 
     /**
-     * 小程序登录
+     * login by wechar mini pro
      */
-    MINI_PRO("MP", "MP", "小程序登录"),
+    MINI_PRO("MP", "MP", "login by wechar mini pro"),
 
     /**
-     * 未登录
+     * not login
      */
-    NOT_LOGGED_IN("NLI", "CLI", "未登录");
+    NOT_LOGGED_IN("NLI", "CLI", "not login");
 
     /**
-     * 类型的数字标识
+     * identity
      */
     public final String identity;
 
@@ -50,7 +50,7 @@ public enum LoginType {
     public final String nature;
 
     /**
-     * 文字描述
+     * disc
      */
     public final String disc;
 

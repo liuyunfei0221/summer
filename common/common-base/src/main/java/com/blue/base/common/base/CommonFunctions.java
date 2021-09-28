@@ -6,8 +6,8 @@ import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.constant.base.Symbol;
 import com.blue.base.constant.base.ValidResourceFormatters;
 import com.blue.base.model.base.DataWrapper;
-import com.blue.base.model.base.EncryptedParam;
-import com.blue.base.model.base.EncryptedResult;
+import com.blue.base.model.base.EncryptedRequest;
+import com.blue.base.model.base.EncryptedResponse;
 import com.blue.base.model.exps.BlueException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -184,7 +184,14 @@ public class CommonFunctions {
     };
 
     /**
-     * 合法请求方法
+     * valid schema
+     */
+    private static final Set<String> VALID_SCHEMAS = of("https", "http")
+            .map(String::toLowerCase)
+            .collect(toSet());
+
+    /**
+     * valid method
      */
     private static final Set<String> VALID_METHODS = of(HttpMethod.values())
             .map(Enum::name)
@@ -192,7 +199,17 @@ public class CommonFunctions {
             .collect(toSet());
 
     /**
-     * 合法请求方法断言
+     * schema asserter
+     */
+    public static final Consumer<String> SCHEMA_ASSERTER = schema -> {
+        if (VALID_SCHEMAS.contains(schema))
+            return;
+
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);
+    };
+
+    /**
+     * method asserter
      */
     public static final Consumer<String> METHOD_VALUE_ASSERTER = method -> {
         if (VALID_METHODS.contains(method.toUpperCase()))
@@ -244,10 +261,10 @@ public class CommonFunctions {
         if (requestBody == null || "".equals(requestBody))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestBody不能为空");
 
-        EncryptedParam encryptedParam = GSON.fromJson(requestBody, EncryptedParam.class);
-        String encrypted = encryptedParam.getEncrypted();
+        EncryptedRequest encryptedRequest = GSON.fromJson(requestBody, EncryptedRequest.class);
+        String encrypted = encryptedRequest.getEncrypted();
 
-        if (!verify(encrypted, encryptedParam.getSign(), secKey))
+        if (!verify(encrypted, encryptedRequest.getSignature(), secKey))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
 
         return DATA_CONVERTER.apply(GSON.fromJson(decryptByPublicKey(encrypted, secKey), DataWrapper.class), expire);
@@ -267,7 +284,7 @@ public class CommonFunctions {
         if (secKey == null || "".equals(secKey))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "secKey不能为空");
 
-        return GSON.toJson(new EncryptedResult(encryptByPublicKey(GSON.toJson(new DataWrapper(responseBody, TIME_STAMP_GETTER.get())), secKey)));
+        return GSON.toJson(new EncryptedResponse(encryptByPublicKey(GSON.toJson(new DataWrapper(responseBody, TIME_STAMP_GETTER.get())), secKey)));
     }
 
 }

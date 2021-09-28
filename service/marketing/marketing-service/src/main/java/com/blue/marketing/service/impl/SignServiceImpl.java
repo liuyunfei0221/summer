@@ -1,10 +1,9 @@
 package com.blue.marketing.service.impl;
 
 import com.blue.base.common.base.CommonFunctions;
+import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.base.CacheKey;
 import com.blue.base.constant.base.Symbol;
-import com.blue.base.constant.base.ThresholdNumericalValue;
-import com.blue.base.constant.marketing.EventType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.model.redis.KeyExpireParam;
 import com.blue.marketing.api.model.*;
@@ -38,6 +37,7 @@ import java.util.function.Supplier;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
@@ -86,7 +86,7 @@ public class SignServiceImpl implements SignService {
     /**
      * 月签到信息最大过期时间/天
      */
-    private static final int MAX_EXPIRE_DAYS_FOR_SIGN = (int) ThresholdNumericalValue.MAX_EXPIRE_DAYS_FOR_SIGN.value;
+    private static final int MAX_EXPIRE_DAYS_FOR_SIGN = (int) BlueNumericalValue.MAX_EXPIRE_DAYS_FOR_SIGN.value;
 
     /**
      * 签到信息过期时间单位
@@ -332,7 +332,7 @@ public class SignServiceImpl implements SignService {
                                 try {
                                     LOGGER.info("memberId 为 {} 的成员于 {} 年 {} 月 {} 日签到成功, 奖励为 {}",
                                             memberId, year, month, dayOfMonth, dayReward);
-                                    marketingEventProducer.send(new MarketingEvent(EventType.SIGN_REWARD, memberId,
+                                    marketingEventProducer.send(new MarketingEvent(SIGN_IN_REWARD, memberId,
                                             GSON.toJson(new SignRewardEvent(memberId, year, month, dayOfMonth, dayReward)), TIME_STAMP_GETTER.get()));
                                 } catch (Exception e) {
                                     LOGGER.error("memberId 为 {} 的成员于 {} 年 {} 月 {} 日签到成功但推送奖励处理事件失败, 奖励为 {}, e = {}",

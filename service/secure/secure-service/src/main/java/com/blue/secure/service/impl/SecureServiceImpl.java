@@ -41,8 +41,8 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.SecKey.NOT_LOGGED_IN_SEC_KEY;
-import static com.blue.base.constant.base.ThresholdNumericalValue.*;
+import static com.blue.base.constant.base.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
+import static com.blue.base.constant.base.BlueNumericalValue.*;
 import static com.blue.base.constant.secure.AuthInfoRefreshElementType.PUB_KEY;
 import static com.blue.base.constant.secure.AuthInfoRefreshElementType.ROLE;
 import static com.blue.base.constant.secure.DeviceType.UNKNOWN;

@@ -23,7 +23,7 @@ import static org.springframework.context.annotation.FilterType.CUSTOM;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "SpellCheckingInspection"})
 @Target(TYPE)
 @Retention(RUNTIME)
 @Documented
@@ -45,19 +45,42 @@ public @interface SummerSpringBootApplication {
             "org.apache.shardingsphere.shardingjdbc.spring.boot.SpringBootConfiguration",
             "org.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration",
 
+
             "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
             "org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration",
 
+
             "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration",
             "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration",
+            "org.springframework.boot.autoconfigure.data.mongo.MongoDatabaseFactoryConfiguratio",
             "org.springframework.boot.autoconfigure.data.mongo.MongoReactiveDataAutoConfiguration",
+
 
             "org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration",
             "org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRestClientAutoConfiguration",
 
+
             "org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration",
 
-            "org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration"
+
+            "org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration",
+
+
+            "org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JAutoConfiguration",
+            "org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JAutoConfiguration",
+            "io.github.resilience4j.bulkhead.autoconfigure.BulkheadAutoConfiguration",
+            "io.github.resilience4j.bulkhead.autoconfigure.BulkheadMetricsAutoConfiguration",
+            "io.github.resilience4j.circuitbreaker.autoconfigure.CircuitBreakerAutoConfiguration",
+            "io.github.resilience4j.circuitbreaker.autoconfigure.CircuitBreakerMetricsAutoConfiguration",
+            "io.github.resilience4j.circuitbreaker.autoconfigure.CircuitBreakerStreamEventsAutoConfiguration",
+            "io.github.resilience4j.circuitbreaker.autoconfigure.CircuitBreakersHealthIndicatorAutoConfiguration",
+            "io.github.resilience4j.ratelimiter.autoconfigure.RateLimiterAutoConfiguratio",
+            "io.github.resilience4j.ratelimiter.autoconfigure.RateLimiterMetricsAutoConfiguration",
+            "io.github.resilience4j.ratelimiter.autoconfigure.RateLimitersHealthIndicatorAutoConfiguration",
+            "io.github.resilience4j.retry.autoconfigure.RetryAutoConfiguration",
+            "io.github.resilience4j.retry.autoconfigure.RetryMetricsAutoConfiguration",
+            "io.github.resilience4j.timelimiter.autoconfigure.TimeLimiterAutoConfiguration",
+            "io.github.resilience4j.timelimiter.autoconfigure.TimeLimiterMetricsAutoConfiguratio"
     };
 
     @AliasFor(annotation = ComponentScan.class, attribute = "basePackages")

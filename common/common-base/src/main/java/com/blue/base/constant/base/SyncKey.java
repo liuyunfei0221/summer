@@ -1,7 +1,7 @@
 package com.blue.base.constant.base;
 
 /**
- * 同步KEY
+ * sync keys
  *
  * @author DarkBlue
  */
@@ -9,10 +9,13 @@ package com.blue.base.constant.base;
 public enum SyncKey {
 
     /**
-     * 首页公告缓存KEY
+     * portal cache sync key prefix
      */
     PORTALS_REFRESH_PRE("SYNC_PORTALS_REFRESH_PRE:"),
 
+    /**
+     * member role relation update sync key prefix
+     */
     MEMBER_ROLE_REL_UPDATE_PRE("MEMBER_ROLE_REL_UPDATE_PRE:");
 
     public final String key;

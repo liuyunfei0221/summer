@@ -1,7 +1,7 @@
 package com.blue.file.service.impl;
 
-import com.blue.base.model.base.PageModelParam;
-import com.blue.base.model.base.PageModelResult;
+import com.blue.base.model.base.PageModelRequest;
+import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.file.api.model.AttachmentInfo;
 import com.blue.file.repository.entity.Attachment;
@@ -89,25 +89,25 @@ public class AttachmentServiceImpl implements AttachmentService {
     /**
      * 分页查询附件对应用户的附件列表
      *
-     * @param pageModelParam
+     * @param pageModelRequest
      * @param memberId
      * @return
      */
     @Override
-    public PageModelResult<AttachmentInfo> listAttachment(PageModelParam<Void> pageModelParam, Long memberId) {
-        LOGGER.info("listAttachment(PageModelParam<Void> pageModelParam, Long memberId), pageModelDTO = {},memberId = {}", pageModelParam, memberId);
+    public PageModelResponse<AttachmentInfo> listAttachment(PageModelRequest<Void> pageModelRequest, Long memberId) {
+        LOGGER.info("listAttachment(PageModelParam<Void> pageModelParam, Long memberId), pageModelDTO = {},memberId = {}", pageModelRequest, memberId);
 
         if (memberId == null || memberId < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        Long page = pageModelParam.getPage();
-        Long rows = pageModelParam.getRows();
+        Long page = pageModelRequest.getPage();
+        Long rows = pageModelRequest.getRows();
 
         Long count = ofNullable(attachmentMapper.countAttachment(memberId)).orElse(0L);
 
-        PageModelResult<AttachmentInfo> pageModelResult = new PageModelResult<>();
-        pageModelResult.setCount(count);
-        pageModelResult.setList(0L < count ?
+        PageModelResponse<AttachmentInfo> pageModelResponse = new PageModelResponse<>();
+        pageModelResponse.setCount(count);
+        pageModelResponse.setList(0L < count ?
                 ofNullable(attachmentMapper.listAttachmentByLimit(memberId, (page - 1L) * rows, rows))
                         .orElse(emptyList()).stream().map(a ->
                                 new AttachmentInfo(a.getId(), a.getName(), a.getSize(), a.getCreateTime(), "")
@@ -115,7 +115,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                 : emptyList()
         );
 
-        LOGGER.info("pageModelVO = {}", pageModelResult);
-        return pageModelResult;
+        LOGGER.info("pageModelVO = {}", pageModelResponse);
+        return pageModelResponse;
     }
 }

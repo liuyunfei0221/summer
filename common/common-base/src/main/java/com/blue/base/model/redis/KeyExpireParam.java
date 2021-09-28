@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
 
 /**
- * redis key过期时间数据封装
+ * redis key expire info
  *
  * @author DarkBlue
  */
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
 public final class KeyExpireParam implements Serializable {
 
     private static final long serialVersionUID = 713277204676056312L;
@@ -19,12 +19,12 @@ public final class KeyExpireParam implements Serializable {
     private String key;
 
     /**
-     * 过期时间数值
+     * expire time
      */
     private Long expire;
 
     /**
-     * 过期时间单位
+     * time unit
      */
     private ChronoUnit unit;
 
@@ -33,11 +33,11 @@ public final class KeyExpireParam implements Serializable {
 
     public KeyExpireParam(String key, Long expire, ChronoUnit unit) {
         if (key == null || "".equals(key))
-            throw new RuntimeException("key不能为空或''");
+            throw new RuntimeException("key can't be blank");
         if (expire == null || expire < 1L)
-            throw new RuntimeException("过期时间不能为空或小于1");
+            throw new RuntimeException("expire can't be null or less than 1");
         if (unit == null)
-            throw new RuntimeException("过期单位不能为空或");
+            throw new RuntimeException("unit can't be null");
 
         this.key = key;
         this.expire = expire;
@@ -50,7 +50,7 @@ public final class KeyExpireParam implements Serializable {
 
     public void setKey(String key) {
         if (key == null || "".equals(key))
-            throw new RuntimeException("key不能为空或''");
+            throw new RuntimeException("key can't be blank");
         this.key = key;
     }
 
@@ -60,7 +60,7 @@ public final class KeyExpireParam implements Serializable {
 
     public void setExpire(Long expire) {
         if (expire == null || expire < 1L)
-            throw new RuntimeException("过期时间不能为空或小于1");
+            throw new RuntimeException("expire can't be null or less than 1");
         this.expire = expire;
     }
 
@@ -70,7 +70,7 @@ public final class KeyExpireParam implements Serializable {
 
     public void setUnit(ChronoUnit unit) {
         if (unit == null)
-            throw new RuntimeException("过期单位不能为空或");
+            throw new RuntimeException("unit can't be null");
         this.unit = unit;
     }
 

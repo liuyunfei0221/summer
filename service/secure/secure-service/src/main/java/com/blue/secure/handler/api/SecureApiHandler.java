@@ -1,6 +1,6 @@
 package com.blue.secure.handler.api;
 
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.secure.api.model.ClientLoginParam;
 import com.blue.secure.service.inter.SecureService;
@@ -51,7 +51,7 @@ public final class SecureApiHandler {
                                 .header(AUTHORIZATION.name, ma.getAuth())
                                 .header(SECRET.name, ma.getSecKey())
                                 .body(generate(OK.code, "登录成功", "登录成功")
-                                        , BlueResult.class));
+                                        , BlueResponse.class));
     }
 
     /**
@@ -68,7 +68,7 @@ public final class SecureApiHandler {
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(SECRET.name, secKey)
                                                 .body(generate(OK.code, "更新成功", "更新成功")
-                                                        , BlueResult.class)));
+                                                        , BlueResponse.class)));
     }
 
     /**
@@ -84,7 +84,7 @@ public final class SecureApiHandler {
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(generate(OK.code, authority, "查询成功")
-                                                        , BlueResult.class)));
+                                                        , BlueResponse.class)));
     }
 
     /**
@@ -101,7 +101,7 @@ public final class SecureApiHandler {
                                         .header(AUTHORIZATION.name, "")
                                         .body(
                                                 generate(OK.code, invalid, invalid ? "注销成功" : "认证已注销,无需再次注销")
-                                                , BlueResult.class)));
+                                                , BlueResponse.class)));
     }
 
 }

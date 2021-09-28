@@ -1,7 +1,7 @@
 package com.blue.secure.api.model;
 
 import com.blue.base.common.base.ConstantProcessor;
-import com.blue.base.constant.base.ThresholdNumericalValue;
+import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
@@ -18,9 +18,9 @@ public final class ClientLoginParam implements Serializable {
 
     private static final long serialVersionUID = 1819262766642404008L;
 
-    private static final int ID_LEN_MAX = (int) ThresholdNumericalValue.ID_LEN_MAX.value;
-    private static final int VFC_LEN_MAX = (int) ThresholdNumericalValue.VFC_LEN_MAX.value;
-    private static final int ACS_LEN_MAX = (int) ThresholdNumericalValue.ACS_LEN_MAX.value;
+    private static final int ID_LEN_MAX = (int) BlueNumericalValue.ID_LEN_MAX.value;
+    private static final int VFC_LEN_MAX = (int) BlueNumericalValue.VFC_LEN_MAX.value;
+    private static final int ACS_LEN_MAX = (int) BlueNumericalValue.ACS_LEN_MAX.value;
 
 
     /**

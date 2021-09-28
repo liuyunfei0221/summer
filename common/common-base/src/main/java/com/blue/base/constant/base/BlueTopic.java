@@ -10,32 +10,32 @@ public enum BlueTopic {
     /**
      * Illegal ip or jwt prefix mark
      */
-    ILLEGAL_MARK("illegalMark", "Illegal ip or jwt prefix mark"),
+    ILLEGAL_MARK("illegalMark"),
 
     /**
      * Data reporting channel/pre-reporting and post-reporting are common
      */
-    REQUEST_EVENT("requestEvent", "Data reporting channel/pre-reporting and post-reporting are common"),
+    REQUEST_EVENT("requestEvent"),
 
     /**
      * Refresh the certification expiration time
      */
-    AUTH_EXPIRE("authExpire", "Refresh the certification expiration time"),
+    AUTH_EXPIRE("authExpire"),
 
     /**
      * Local auth certification expired
      */
-    INVALID_LOCAL_AUTH("invalidLocalAuth", "Local auth certification expired"),
+    INVALID_LOCAL_AUTH("invalidLocalAuth"),
 
     /**
      * Refresh the sign-in data expiration time
      */
-    SIGN_EXPIRE("signExpire", "Refresh the sign-in data expiration time"),
+    SIGN_EXPIRE("signExpire"),
 
     /**
      * Marketing/Promotional Events
      */
-    MARKETING("marketing", "Marketing/Promotional Events");
+    MARKETING("marketing");
 
 
     /**
@@ -43,14 +43,8 @@ public enum BlueTopic {
      */
     public final String name;
 
-    /**
-     * 描述
-     */
-    public final String disc;
-
-    BlueTopic(String name, String disc) {
+    BlueTopic(String name) {
         this.name = name;
-        this.disc = disc;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.blue.base.constant.base;
 
 /**
- * 符号
+ * symbols
  *
  * @author DarkBlue
  */
@@ -9,84 +9,78 @@ package com.blue.base.constant.base;
 public enum Symbol {
 
     /**
-     * 请求特征key前缀
+     * request identity prefix
      */
-    RATE_LIMIT_KEY_PRE("RI:", "请求特征key前缀"),
+    RATE_LIMIT_KEY_PRE("RI:"),
 
     /**
-     * 未知标识
+     * unknown identity
      */
-    UNKNOWN("UNKNOWN", "未知信息标识"),
+    UNKNOWN("UNKNOWN"),
 
     /**
-     * 主键
+     * identity
      */
-    IDENTITY("id", "主键"),
+    IDENTITY("id"),
 
     /**
-     * 参数拼接符
+     * params concatenation
      */
-    PAR_CONCATENATION("_", "参数拼接符"),
+    PAR_CONCATENATION("_"),
 
     /**
-     * dbUrl参数配置符
+     * database conf params concatenation
      */
-    PAR_CONCATENATION_DATABASE_CONF("?", "dbUrl参数配置符"),
+    PAR_CONCATENATION_DATABASE_CONF("?"),
 
     /**
-     * dbUrl参数拼接符
+     * database url params concatenation
      */
-    PAR_CONCATENATION_DATABASE_URL("-", "dbUrl参数拼接符"),
+    PAR_CONCATENATION_DATABASE_URL("-"),
 
     /**
-     * 特殊参数拼接符
+     * special params concatenation
      */
-    PAR_CONCATENATION_SPEC("&&BLUE&&", "特殊参数拼接符"),
+    PAR_CONCATENATION_SPEC("&&BLUE&&"),
 
     /**
-     * 通配符
+     * wildcard
      */
-    WILDCARD("*", "通配符"),
+    WILDCARD("*"),
 
     /**
-     * list元素分隔符
+     * element separator
      */
-    LIST_ELEMENT_PATH_SEPARATOR(",", "list元素分隔符"),
+    LIST_ELEMENT_SEPARATOR(","),
 
     /**
-     * 路径分隔符
+     * path separator
      */
-    PATH_SEPARATOR("/", "路径分隔符"),
+    PATH_SEPARATOR("/"),
 
     /**
-     * 格式分隔符
+     * schema separator
      */
-    SCHEME_SEPARATOR(".", "格式分隔符"),
+    SCHEME_SEPARATOR("."),
 
     /**
-     * 键值分隔符
+     * key-value separator
      */
-    KEY_VALUE_SEPARATOR(":", "键值分隔符"),
+    KEY_VALUE_SEPARATOR(":"),
 
     /**
-     * 键值对分隔符
+     * pair separator
      */
-    PAIR_SEPARATOR(";", "键值对分隔符");
+    PAIR_SEPARATOR(";");
 
 
     /**
-     * 符号
+     * identity
      */
     public final String identity;
 
-    /**
-     * 描述
-     */
-    public final String disc;
-
-    Symbol(String identity, String disc) {
+    Symbol(String identity) {
         this.identity = identity;
-        this.disc = disc;
     }
 
 }

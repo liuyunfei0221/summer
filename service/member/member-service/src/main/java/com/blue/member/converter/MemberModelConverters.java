@@ -2,7 +2,7 @@ package com.blue.member.converter;
 
 import com.blue.base.common.base.ConstantProcessor;
 import com.blue.base.constant.base.Status;
-import com.blue.base.constant.base.ThresholdNumericalValue;
+import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryInfo;
@@ -28,25 +28,25 @@ public final class MemberModelConverters {
         String phone = memberRegistryInfo.getPhone();
         if (phone == null || "".equals(phone))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "手机号不能为空");
-        if (phone.length() > ThresholdNumericalValue.PHONE_LEN_MAX.value)
+        if (phone.length() > BlueNumericalValue.PHONE_LEN_MAX.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "手机号过长");
-        if (phone.length() < ThresholdNumericalValue.PHONE_LEN_MIN.value)
+        if (phone.length() < BlueNumericalValue.PHONE_LEN_MIN.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "手机号过短");
 
         String email = memberRegistryInfo.getEmail();
         if (email == null || "".equals(email))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "邮箱地址不能为空");
-        if (email.length() > ThresholdNumericalValue.EMAIL_LEN_MAX.value)
+        if (email.length() > BlueNumericalValue.EMAIL_LEN_MAX.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "邮箱地址号过长");
-        if (email.length() < ThresholdNumericalValue.EMAIL_LEN_MIN.value)
+        if (email.length() < BlueNumericalValue.EMAIL_LEN_MIN.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "邮箱地址号过短");
 
         String password = memberRegistryInfo.getPassword();
         if (password == null || "".equals(password))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "密码不能为空");
-        if (password.length() > ThresholdNumericalValue.ACS_LEN_MAX.value)
+        if (password.length() > BlueNumericalValue.ACS_LEN_MAX.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "密码过长");
-        if (password.length() < ThresholdNumericalValue.ACS_LEN_MIN.value)
+        if (password.length() < BlueNumericalValue.ACS_LEN_MIN.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "密码过短");
 
         String name = memberRegistryInfo.getName();

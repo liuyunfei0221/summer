@@ -2,35 +2,35 @@ package com.blue.base.constant.base;
 
 
 /**
- * 非法标记原因
+ * illegal request reason
  *
  * @author DarkBlue
  */
 public enum IllegalReason {
 
     /**
-     * 请求过多
+     * Too Many Request
      */
-    TOO_MANY_REQUEST("tooManyRequest", "请求过多"),
+    TOO_MANY_REQUEST("tooManyRequest", "Too Many Request"),
 
     /**
-     * 非法参数过多
+     * Too Many Ill Request
      */
-    TOO_MANY_ILL_REQUEST("tooManyIllRequest", "非法请求过多"),
+    TOO_MANY_ILL_REQUEST("tooManyIllRequest", "Too Many Ill Request"),
 
     /**
-     * 未知原因
+     * unknown reason
      */
-    UNKNOWN("unknown", "未知原因");
+    UNKNOWN("unknown", "unknown reason");
 
 
     /**
-     * 原因
+     * reason
      */
     public final String reason;
 
     /**
-     * 描述
+     * disc
      */
     public final String disc;
 

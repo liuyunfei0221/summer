@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2021/9/9
  * @apiNote
  */
-@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "SpellCheckingInspection"})
 public interface ReactRestConf {
 
     Integer getMaxConnections();

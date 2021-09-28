@@ -1,6 +1,6 @@
 package com.blue.marketing.component.event.impl;
 
-import com.blue.base.constant.marketing.EventType;
+import com.blue.base.constant.marketing.MarketingEventType;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.component.event.inter.EventHandler;
 import org.springframework.core.Ordered;
@@ -8,7 +8,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.marketing.EventType.ACTIVITY_REWARD;
+import static com.blue.base.constant.marketing.MarketingEventType.ACTIVITY_REWARD;
 import static reactor.util.Loggers.getLogger;
 
 
@@ -36,7 +36,7 @@ public class ActivityRewardEventHandler implements EventHandler {
     }
 
     @Override
-    public EventType targetType() {
+    public MarketingEventType targetType() {
         return ACTIVITY_REWARD;
     }
 

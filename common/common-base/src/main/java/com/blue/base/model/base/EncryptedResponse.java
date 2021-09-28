@@ -3,24 +3,24 @@ package com.blue.base.model.base;
 import java.io.Serializable;
 
 /**
- * 用于加密数据响应
+ * encrypted response data
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class EncryptedResult implements Serializable {
+public final class EncryptedResponse implements Serializable {
 
     private static final long serialVersionUID = 4448482455540785133L;
 
     /**
-     * 已加密的数据(json)
+     * encrypted data json
      */
     private String encrypted;
 
-    public EncryptedResult() {
+    public EncryptedResponse() {
     }
 
-    public EncryptedResult(String encrypted) {
+    public EncryptedResponse(String encrypted) {
         this.encrypted = encrypted;
     }
 

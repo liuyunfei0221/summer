@@ -2,7 +2,7 @@ package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.model.base.BlueResult;
+import com.blue.base.model.base.BlueResponse;
 import reactor.util.Logger;
 
 import static com.blue.base.constant.base.ResponseElement.NOT_FOUND;
@@ -31,6 +31,6 @@ public final class HttpRequestMethodNotSupportedExceptionHandler implements Exce
         //In the project, the resource operation is defined according to the request method + resource path,
         // and no separate request method verification is provided, because the authentication verification cannot be passed at all,
         // and only a 404 will be return.
-        return new ExceptionHandleInfo(NOT_FOUND.status, new BlueResult<>(NOT_FOUND.code, null, NOT_FOUND.message));
+        return new ExceptionHandleInfo(NOT_FOUND.status, new BlueResponse<>(NOT_FOUND.code, null, NOT_FOUND.message));
     }
 }

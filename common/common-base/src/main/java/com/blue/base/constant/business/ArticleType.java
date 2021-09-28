@@ -1,52 +1,53 @@
 package com.blue.base.constant.business;
 
 /**
- * 文章类型
+ * article types
  *
  * @author DarkBlue
  */
+@SuppressWarnings("GrazieInspection")
 public enum ArticleType {
 
-    //文章类型 1爬坑经验 2推荐 3吐槽 4牢骚 5晒物 6水文
+    //Article type 1.TRICKED 2.RECOMMEND 3.SHITS 4.GRUMBLE 5.SHARE 6.WATERING
 
     /**
-     * 爬坑经验
+     * tricked
      */
-    TRICKED(1, "爬坑经验"),
+    TRICKED(1, "tricked"),
 
     /**
-     * 推荐
+     * recommendation
      */
-    RECOMMEND(2, "推荐"),
+    RECOMMENDATION(2, "recommendation"),
 
     /**
-     * 吐槽
+     * shits
      */
-    SHITS(3, "吐槽"),
+    SHITS(3, "shits"),
 
     /**
-     * 牢骚
+     * grumble
      */
-    GRUMBLE(4, "牢骚"),
+    GRUMBLE(4, "grumble"),
 
     /**
-     * 晒物
+     * share
      */
-    SHARE(5, "晒物"),
+    SHARE(5, "share"),
 
     /**
-     * 水文
+     * water
      */
-    WATERING(6, "水文");
+    WATERING(6, "water");
 
 
     /**
-     * 类型标识
+     * identity
      */
     public int identity;
 
     /**
-     * 类型描述
+     * disc
      */
     public String disc;
 

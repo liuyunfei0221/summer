@@ -5,7 +5,7 @@ import com.blue.base.constant.base.IllegalReason;
 import java.io.Serializable;
 
 /**
- * 针对jwt串或ip的拦截标记事件
+ * illegal mark event
  *
  * @author DarkBlue
  */
@@ -15,22 +15,22 @@ public final class IllegalMarkEvent implements Serializable {
     private static final long serialVersionUID = -1983751954933572385L;
 
     /**
-     * jwt串
+     * jwt str
      */
     private String jwt;
 
     /**
-     * 目标ip
+     * target ip
      */
     private String ip;
 
     /**
-     * 拦截或取消拦截
+     * actions for intercept
      */
     private Boolean active;
 
     /**
-     * 非法原因/如果active为true
+     * illegal reason(if active is true)
      */
     private IllegalReason illegalReason;
 

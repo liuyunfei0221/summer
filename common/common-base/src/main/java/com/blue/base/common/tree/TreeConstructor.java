@@ -8,7 +8,7 @@ import java.util.Objects;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * tree builder
+ * tree constructor
  *
  * @author DarkBlue
  */

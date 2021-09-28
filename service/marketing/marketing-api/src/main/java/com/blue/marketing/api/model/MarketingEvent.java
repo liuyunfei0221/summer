@@ -1,6 +1,6 @@
 package com.blue.marketing.api.model;
 
-import com.blue.base.constant.marketing.EventType;
+import com.blue.base.constant.marketing.MarketingEventType;
 
 import java.io.Serializable;
 
@@ -17,7 +17,7 @@ public final class MarketingEvent implements Serializable {
     /**
      * 事件类型
      */
-    private EventType eventType;
+    private MarketingEventType marketingEventType;
 
     /**
      * 成员id
@@ -37,19 +37,19 @@ public final class MarketingEvent implements Serializable {
     public MarketingEvent() {
     }
 
-    public MarketingEvent(EventType eventType, Long memberId, String event, Long eventTime) {
-        this.eventType = eventType;
+    public MarketingEvent(MarketingEventType marketingEventType, Long memberId, String event, Long eventTime) {
+        this.marketingEventType = marketingEventType;
         this.memberId = memberId;
         this.event = event;
         this.eventTime = eventTime;
     }
 
-    public EventType getEventType() {
-        return eventType;
+    public MarketingEventType getEventType() {
+        return marketingEventType;
     }
 
-    public void setEventType(EventType eventType) {
-        this.eventType = eventType;
+    public void setEventType(MarketingEventType marketingEventType) {
+        this.marketingEventType = marketingEventType;
     }
 
     public Long getMemberId() {
@@ -79,7 +79,7 @@ public final class MarketingEvent implements Serializable {
     @Override
     public String toString() {
         return "MarketingEvent{" +
-                "eventType=" + eventType +
+                "eventType=" + marketingEventType +
                 ", memberId=" + memberId +
                 ", event='" + event + '\'' +
                 ", eventTime=" + eventTime +

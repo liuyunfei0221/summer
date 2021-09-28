@@ -5,7 +5,7 @@ import com.blue.base.constant.base.ResponseElement;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 
 /**
- * 业务异常
+ * global business exception
  *
  * @author DarkBlue
  */
@@ -15,22 +15,22 @@ public final class BlueException extends RuntimeException {
     private static final long serialVersionUID = -5482951655656407756L;
 
     /**
-     * 不能处理时的异常
+     * exp for can't process
      */
     private static final ResponseElement ELEMENT = INTERNAL_SERVER_ERROR;
 
     /**
-     * 响应状态码
+     * http status
      */
     private Integer status;
 
     /**
-     * 响应业务码
+     * business code
      */
     private Integer code;
 
     /**
-     * 异常信息
+     * message
      */
     private String message;
 
