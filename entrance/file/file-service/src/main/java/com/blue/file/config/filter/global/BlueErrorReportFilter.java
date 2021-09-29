@@ -42,11 +42,11 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 熔断降级过滤器
+ * error reporter
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public final class BlueErrorReportFilter implements WebFilter, Ordered {
 
@@ -62,57 +62,30 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
         withRequestBodyContentTypes = new HashSet<>(errorReportDeploy.getErrorReportWithRequestBodyContentTypes());
     }
 
-    /**
-     * 入口处断言请求方式,防止后续非法请求过多致使intern影响常量池
-     */
     private static final Consumer<String> SCHEMA_ASSERTER = FluxCommonFactory.SCHEMA_ASSERTER;
     private static final Consumer<String> METHOD_VALUE_ASSERTER = FluxCommonFactory.METHOD_VALUE_ASSERTER;
 
     private static final String AUTHORIZATION = BlueHeader.AUTHORIZATION.name;
 
-    /**
-     * 记录请求体的contentType
-     */
     private static Set<String> withRequestBodyContentTypes;
 
-    /**
-     * 是否上报请求体
-     */
     private static final Predicate<String> WITH_REQUEST_BODY_PRE = contentType ->
             withRequestBodyContentTypes.contains(contentType);
 
-    /**
-     * messageReader
-     */
     private static final List<HttpMessageReader<?>> MESSAGE_READERS = FluxCommonFactory.MESSAGE_READERS;
 
-    /**
-     * 秒级时间戳获取器
-     */
     private static final Supplier<Long> TIME_STAMP_GETTER = FluxCommonFactory.TIME_STAMP_GETTER;
 
     private static final Gson GSON = CommonFunctions.GSON;
 
-    /**
-     * 异常转换器
-     */
     private static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = FluxCommonFactory.THROWABLE_CONVERTER;
 
     private static final Supplier<String> RANDOM_KEY_GENERATOR = FluxCommonFactory.RANDOM_KEY_GETTER;
 
-    /**
-     * getter holder
-     */
     private final Map<String, RequestBodyGetter> REQUEST_BODY_GETTER_HOLDER = new HashMap<>(4, 1.0f);
 
-    /**
-     * 获取真实value
-     */
     public static final BiFunction<HttpHeaders, String, String> HEADER_VALUE_GETTER = FluxCommonFactory.HEADER_VALUE_GETTER;
 
-    /**
-     * 获取请求体解析器
-     */
     private final Function<HttpHeaders, RequestBodyGetter> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
         RequestBodyGetter processor = REQUEST_BODY_GETTER_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, HttpHeaders.CONTENT_TYPE));
 
@@ -122,12 +95,6 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
         return processor;
     };
 
-    /**
-     * 数据上报
-     *
-     * @param dataEvent
-     * @param throwable
-     */
     private void report(DataEvent dataEvent, Throwable throwable) {
         try {
             executorService.submit(() -> {
@@ -145,9 +112,6 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
         }
     }
 
-    /**
-     * 初始化
-     */
     @PostConstruct
     private void init() {
         RequestBodyGetter jsonRequestBodyGetter = new JsonRequestBodyGetter();
@@ -223,9 +187,6 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
     }
 
 
-    /**
-     * 获取json格式请求体
-     */
     protected static class JsonRequestBodyGetter implements RequestBodyGetter {
         @Override
         public String getContentType() {
@@ -242,9 +203,6 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
 
     }
 
-    /**
-     * 处理文件请求
-     */
     protected static class MultipartRequestBodyGetter implements RequestBodyGetter {
         @Override
         public String getContentType() {

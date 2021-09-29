@@ -8,6 +8,8 @@ import com.blue.dubbo.anno.EnableBlueDubbo;
 import static org.springframework.boot.SpringApplication.run;
 
 /**
+ * file application
+ *
  * @author DarkBlue
  */
 @SummerSpringBootApplication

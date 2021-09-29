@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * pulsar发送者
+ * rocket producer
  *
  * @author DarkBlue
  */

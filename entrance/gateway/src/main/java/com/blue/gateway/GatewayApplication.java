@@ -8,6 +8,8 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import static org.springframework.boot.SpringApplication.run;
 
 /**
+ * gateway application
+ *
  * @author DarkBlue
  */
 @SummerSpringBootApplication

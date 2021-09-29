@@ -33,7 +33,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
- * redis组件创建工厂
+ * redis components generator
  *
  * @author DarkBlue
  */
@@ -43,7 +43,7 @@ public final class BlueRedisGenerator {
     private static final String KEY_VALUE_SEPARATOR = ":";
 
     /**
-     * 创建配置
+     * generate redis configuration
      *
      * @param redisConf
      * @return
@@ -63,7 +63,7 @@ public final class BlueRedisGenerator {
     }
 
     /**
-     * 创建pool
+     * generate pool
      *
      * @param redisConf
      * @return
@@ -86,7 +86,7 @@ public final class BlueRedisGenerator {
     }
 
     /**
-     * 创建配置
+     * generate client options
      *
      * @param redisConf
      * @return
@@ -128,7 +128,7 @@ public final class BlueRedisGenerator {
     }
 
     /**
-     * 创建配置
+     * generate client configuration
      *
      * @param redisConf
      * @return
@@ -150,13 +150,13 @@ public final class BlueRedisGenerator {
     }
 
     /**
-     * 创建连接工厂
+     * generate connection factory
      *
      * @param redisConfiguration
      * @param lettuceClientConfiguration
      * @return
      */
-    public static LettuceConnectionFactory generateLettuceConnectionFactory(RedisConf redisConf, RedisConfiguration redisConfiguration, LettuceClientConfiguration lettuceClientConfiguration) {
+    public static LettuceConnectionFactory generateConnectionFactory(RedisConf redisConf, RedisConfiguration redisConfiguration, LettuceClientConfiguration lettuceClientConfiguration) {
         confAsserter(redisConf);
 
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisConfiguration, lettuceClientConfiguration);
@@ -168,7 +168,7 @@ public final class BlueRedisGenerator {
     }
 
     /**
-     * 创建模板
+     * generate template
      *
      * @param lettuceConnectionFactory
      * @return
@@ -180,7 +180,7 @@ public final class BlueRedisGenerator {
     }
 
     /**
-     * 创建模板
+     * generate template
      *
      * @param lettuceConnectionFactory
      * @return
@@ -190,7 +190,7 @@ public final class BlueRedisGenerator {
     }
 
     /**
-     * 创建模板
+     * generate template
      *
      * @param lettuceConnectionFactory
      * @return
@@ -210,11 +210,11 @@ public final class BlueRedisGenerator {
                 .build();
 
         return new ReactiveStringRedisTemplate(lettuceConnectionFactory, redisSerializationContext,
-                ofNullable(redisConf.getShareNativeConnection()).orElse(false));
+                ofNullable(redisConf.getExposeConnection()).orElse(false));
     }
 
     /**
-     * 创建模板
+     * generate template
      *
      * @param reactiveRedisConnectionFactory
      * @param clz
@@ -225,7 +225,7 @@ public final class BlueRedisGenerator {
         confAsserter(redisConf);
 
         if (Stream.of(clz.getInterfaces()).noneMatch(inter -> Serializable.class.getName().equals(inter.getName())))
-            throw new RuntimeException("clz 需实现序列化接口");
+            throw new RuntimeException("clz must be a implemented of serializable");
 
         RedisSerializationContext.RedisSerializationContextBuilder<String, T> contextBuilder =
                 RedisSerializationContext.newSerializationContext();
@@ -241,11 +241,11 @@ public final class BlueRedisGenerator {
                 .build();
 
         return new ReactiveRedisTemplate<>(reactiveRedisConnectionFactory, redisSerializationContext,
-                ofNullable(redisConf.getShareNativeConnection()).orElse(false));
+                ofNullable(redisConf.getExposeConnection()).orElse(false));
     }
 
     /**
-     * 集群
+     * generate cluster configuration
      *
      * @param redisConf
      * @return
@@ -273,7 +273,7 @@ public final class BlueRedisGenerator {
     }
 
     /**
-     * 单机
+     * generate standalone configuration
      *
      * @param redisConf
      * @return
@@ -292,28 +292,27 @@ public final class BlueRedisGenerator {
     }
 
     /**
-     * 参数校验
+     * assert params
      *
-     * @param redisConf
+     * @param conf
      */
-    private static void confAsserter(RedisConf redisConf) {
-        if (redisConf == null)
-            throw new RuntimeException("redisConf can't be null");
+    private static void confAsserter(RedisConf conf) {
+        if (conf == null)
+            throw new RuntimeException("conf can't be null");
 
-        ServerMode serverMode = redisConf.getServerMode();
+        ServerMode serverMode = conf.getServerMode();
         if (serverMode == null)
             throw new RuntimeException("serverMode can't be null");
 
         switch (serverMode) {
             case CLUSTER:
-                List<String> nodes = redisConf.getNodes();
+                List<String> nodes = conf.getNodes();
                 if (isEmpty(nodes))
                     throw new RuntimeException("nodes can't be null or empty");
                 break;
             case SINGLE:
-                String host = redisConf.getHost();
-                Integer port = redisConf.getPort();
-                if (isBlank(host) || port == null || port < 1)
+                Integer port = conf.getPort();
+                if (isBlank(conf.getHost()) || port == null || port < 1)
                     throw new RuntimeException("host can't be null or '', port can't be null or less than 1");
                 break;
             default:

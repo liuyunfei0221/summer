@@ -1,7 +1,7 @@
 package com.blue.curator.api.conf;
 
 /**
- * zk分布式锁配置
+ * zk lock conf
  *
  * @author DarkBlue
  */

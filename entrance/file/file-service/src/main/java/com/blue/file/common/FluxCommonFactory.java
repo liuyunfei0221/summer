@@ -34,7 +34,7 @@ import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 用于webflux的通用组件工厂类
+ * common factory for webflux
  *
  * @author DarkBlue
  */
@@ -48,12 +48,12 @@ public final class FluxCommonFactory extends ReactiveCommonFunctions {
     public static final DataBufferFactory DATA_BUFFER_FACTORY = new NettyDataBufferFactory(DEFAULT);
 
     /**
-     * ALLOCATE大小
+     * buffer allocate size
      */
     private static final int BUFFER_ALLOCATE = 512;
 
     /**
-     * 错误处理
+     * error message consumer
      */
     public static final BiConsumer<Throwable, ServerHttpRequestDecorator> ON_ERROR_CONSUMER = (throwable, decorator) -> {
         decorator.getBody()
@@ -74,7 +74,7 @@ public final class FluxCommonFactory extends ReactiveCommonFunctions {
     };
 
     /**
-     * 封装request
+     * decorator generator
      */
     public static final BiFunction<ServerHttpRequest, Mono<String>, ServerHttpRequestDecorator> REQUEST_DECORATOR_GENERATOR =
             (request, dataMono) ->

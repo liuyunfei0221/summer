@@ -3,7 +3,7 @@ package com.blue.file.api.model;
 import java.io.Serializable;
 
 /**
- * 提现信息封装
+ * withdraw info for test
  *
  * @author DarkBlue
  */
@@ -12,19 +12,10 @@ public final class WithdrawInfo implements Serializable {
 
     private static final long serialVersionUID = 1417300777577441966L;
 
-    /**
-     * 提现金额
-     */
     private Long amount;
 
-    /**
-     * 银行卡id
-     */
     private Long bankCardId;
 
-    /**
-     * 备注
-     */
     private String remark;
 
     public WithdrawInfo() {

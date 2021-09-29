@@ -19,7 +19,7 @@ import static org.apache.curator.framework.CuratorFrameworkFactory.builder;
 import static org.springframework.util.StringUtils.hasText;
 
 /**
- * 分布式锁创建工厂
+ * zk lock generator
  *
  * @author DarkBlue
  */
@@ -59,14 +59,14 @@ public final class BlueDistributedLockGenerator {
     }
 
     /**
-     * 名称数量
+     * name size
      */
     private static final int
             MIN_NAME_SIZE = 1,
             MAX_NAME_SIZE = 8;
 
     /**
-     * 校验锁名称
+     * assert lock name
      */
     private static final Consumer<String> NAME_ASSERTER = name -> {
         if (name == null || "".equals(name))
@@ -74,7 +74,7 @@ public final class BlueDistributedLockGenerator {
     };
 
     /**
-     * 校验锁名称集合
+     * assert lock name list
      */
     private static final Consumer<List<String>> NAMES_ASSERTER = names -> {
         if (names == null)
@@ -89,7 +89,7 @@ public final class BlueDistributedLockGenerator {
     };
 
     /**
-     * 获取互斥锁
+     * get interProcessMutexLock
      *
      * @param name
      * @return
@@ -100,7 +100,7 @@ public final class BlueDistributedLockGenerator {
     }
 
     /**
-     * 获取读写锁
+     * get interProcessReadWriteLock
      *
      * @param name
      * @return
@@ -111,7 +111,7 @@ public final class BlueDistributedLockGenerator {
     }
 
     /**
-     * 获取不可重入互斥锁
+     * get interProcessSemaphoreMutexLock
      *
      * @param name
      * @return
@@ -122,7 +122,7 @@ public final class BlueDistributedLockGenerator {
     }
 
     /**
-     * 获取多锁/集合锁
+     * get interProcessMultiLock
      *
      * @param names
      * @return
@@ -133,15 +133,15 @@ public final class BlueDistributedLockGenerator {
     }
 
     /**
-     * 参数校验
+     * assert params
      *
-     * @param distributedLockConf
+     * @param conf
      */
-    private static void confAsserter(DistributedLockConf distributedLockConf) {
-        if (distributedLockConf == null)
+    private static void confAsserter(DistributedLockConf conf) {
+        if (conf == null)
             throw new RuntimeException("distributedLockConf can't be null");
 
-        if (!hasText(distributedLockConf.getConnectString()))
+        if (!hasText(conf.getConnectString()))
             throw new RuntimeException("connectString can't be null or ''");
     }
 

@@ -1,44 +1,44 @@
 package com.blue.jwt.constant;
 
 /**
- * 数据id与分片配置
+ * jwt conf schema
  *
  * @author DarkBlue
  */
 public enum JwtConfSchema {
 
     /**
-     * jwtId长度
+     * jwtId len
      */
     RANDOM_JWT_ID(32),
 
     /**
-     * 签名key最小长度
+     * sign key min len
      */
     SEC_KEY_STR_MIN(32),
 
     /**
-     * 签名key最大长度
+     * sign key max len
      */
     SEC_KEY_STR_MAX(512),
 
     /**
-     * 混淆key最小长度
+     * gamma key min len
      */
     GAMMA_KEY_STR_MIN(16),
 
     /**
-     * 混淆key最大长度
+     * gamma key max len
      */
     GAMMA_KEY_STR_MAX(256),
 
     /**
-     * 混淆key最小数量
+     * gamma keys min size
      */
     GAMMA_SECRETS_MIN(16),
 
     /**
-     * 混淆key最大数量
+     * gamma keys max size
      */
     GAMMA_SECRETS_MAX(1024);
 

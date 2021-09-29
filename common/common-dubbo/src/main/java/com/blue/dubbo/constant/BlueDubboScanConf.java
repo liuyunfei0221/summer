@@ -1,7 +1,7 @@
 package com.blue.dubbo.constant;
 
 /**
- * BlueDubbo扫描配置
+ * dubbo conf schemas
  *
  * @author DarkBlue
  */
@@ -10,31 +10,31 @@ public enum BlueDubboScanConf {
     /**
      * dubbo扫描路径
      */
-    BLUE_DUBBO_SCAN_PACKAGE("basePackages", "basePackageClasses", new String[]{"com"}, "BlueDubbo扫描配置");
+    BLUE_DUBBO_SCAN_PACKAGE("basePackages", "basePackageClasses", new String[]{"com"}, "dubbo conf for scan");
 
     /**
-     * 待扫描的包路径的注解key名称
+     * package names for scan
      */
     public final String scanPackagesAttrName;
 
     /**
-     * 待扫描类的注解key名称
+     * class names for scan
      */
-    public final String basePackageClassesAttrName;
+    public final String scanClassesAttrName;
 
     /**
-     * 默认的扫描路径
+     * default package name for scan
      */
     public final String[] defaultScanPackages;
 
     /**
-     * 描述
+     * disc
      */
     public final String disc;
 
-    BlueDubboScanConf(String scanPackagesAttrName, String basePackageClassesAttrName, String[] defaultScanPackages, String disc) {
+    BlueDubboScanConf(String scanPackagesAttrName, String scanClassesAttrName, String[] defaultScanPackages, String disc) {
         this.scanPackagesAttrName = scanPackagesAttrName;
-        this.basePackageClassesAttrName = basePackageClassesAttrName;
+        this.scanClassesAttrName = scanClassesAttrName;
         this.defaultScanPackages = defaultScanPackages;
         this.disc = disc;
     }

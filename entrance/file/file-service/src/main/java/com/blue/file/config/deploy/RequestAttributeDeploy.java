@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 请求数据大小配置参数类
+ * request attr deploy
  *
  * @author DarkBlue
  */
@@ -15,47 +15,47 @@ import java.util.List;
 public class RequestAttributeDeploy {
 
     /**
-     * 合法数据类型
+     * valid content types
      */
     private List<String> validContentTypes;
 
     /**
-     * 最大uri长度
+     * max uri length
      */
     private Integer maxUriLength;
 
     /**
-     * 最大header数量
+     * max header count
      */
     private Integer maxHeaderCount;
 
     /**
-     * 最大header长度
+     * max header length
      */
     private Integer maxHeaderLength;
 
     /**
-     * 最大内容长度
+     * max content length
      */
     private Long maxContentLength;
 
     /**
-     * 最大文件大小
+     * max headers size
      */
     private Integer maxHeadersSize;
 
     /**
-     * 最大内存使用
+     * max memory size
      */
     private Integer maxInMemorySize;
 
     /**
-     * 磁盘每次使用最大/每文件
+     * max disk usage per part
      */
     private Long maxDiskUsagePerPart;
 
     /**
-     * 最大parts数量
+     * max part count
      */
     private Integer maxParts;
 

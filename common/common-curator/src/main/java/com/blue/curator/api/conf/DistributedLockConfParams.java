@@ -1,6 +1,8 @@
 package com.blue.curator.api.conf;
 
 /**
+ * zk lock params
+ *
  * @author liuyunfei
  * @date 2021/9/10
  * @apiNote

@@ -1,7 +1,7 @@
 package com.blue.jwt.exception;
 
 /**
- * jwt业务异常
+ * jwt exception
  *
  * @author DarkBlue
  */
@@ -11,17 +11,17 @@ public final class AuthenticationException extends RuntimeException {
     private static final long serialVersionUID = 1998280956652095252L;
 
     /**
-     * 响应状态码
+     * http status
      */
     private Integer status;
 
     /**
-     * 响应业务码
+     * business code
      */
     private Integer code;
 
     /**
-     * 异常信息
+     * message
      */
     private String message;
 

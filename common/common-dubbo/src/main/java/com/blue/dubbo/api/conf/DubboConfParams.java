@@ -3,11 +3,11 @@ package com.blue.dubbo.api.conf;
 import java.util.Map;
 
 /**
- * dubbo配置参数类
+ * dubbo params
  *
  * @author DarkBlue
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "SpellCheckingInspection"})
 public class DubboConfParams implements DubboConf {
 
     protected String metadataReportId;

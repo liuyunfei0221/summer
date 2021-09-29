@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toMap;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 文件非文件体信息解析处理器
+ * file info processor
  *
  * @author DarkBlue
  */
@@ -27,14 +27,14 @@ public final class PartInfoProcessor {
     private static final Logger LOGGER = getLogger(PartInfoProcessor.class);
 
     /**
-     * 异常处理器实现类路径
+     * implements package
      */
     private static final String DIR_NAME = "com.blue.file.common.request.part.impl";
 
     private static final Map<String, PartInfoHandler> MAPPING = generatorMapping(DIR_NAME);
 
     /**
-     * 初始化异常映射器
+     * init handler mapping
      *
      * @param dirName
      * @return
@@ -42,7 +42,7 @@ public final class PartInfoProcessor {
     private static Map<String, PartInfoHandler> generatorMapping(String dirName) {
         List<Class<?>> classes = getClassesByPackage(dirName, true);
 
-        LOGGER.warn("开始加载clz");
+        LOGGER.warn("load classes");
         return classes
                 .stream()
                 .filter(clz -> !clz.isInterface() &&
@@ -50,7 +50,7 @@ public final class PartInfoProcessor {
                 )
                 .map(clz -> {
                     try {
-                        LOGGER.warn("加载 clz->" + clz.getName());
+                        LOGGER.warn("load clz->" + clz.getName());
                         return (PartInfoHandler) clz.getConstructor().newInstance();
                     } catch (Exception e) {
                         LOGGER.error("newInstance() FAILED, e = ", e);
@@ -70,7 +70,7 @@ public final class PartInfoProcessor {
     }
 
     /**
-     * 处理
+     * handle
      *
      * @param part
      * @return
@@ -85,10 +85,10 @@ public final class PartInfoProcessor {
             try {
                 return handler.process(part);
             } catch (Exception e) {
-                LOGGER.error("解析part失败,part = {}, e = {}", part, e);
+                LOGGER.error("parse part failed, part = {}, e = {}", part, e);
             }
 
-        LOGGER.error("未能处理的part," + "part = {}", part);
+        LOGGER.error("un handled part, part = {}", part);
         Map<String, String> infos = new HashMap<>(4);
         infos.put(PART_CLASS.identity, partClzName);
         infos.put(PART_NAME.identity, part.name());

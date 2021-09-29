@@ -11,7 +11,7 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 
 /**
- * 请求体处理组件配置类
+ * request body processor config
  *
  * @author DarkBlue
  */
@@ -22,13 +22,12 @@ public class RequestBodyProcessorConfig {
     RequestBodyProcessor requestBodyProcessor(){
 
         /**
-         * TODO 这里是个扩展点
-         * 用于对请求体断言和处理,如果这里的操作过于耗时的话会影响网关的性能,
-         * 所以我并不建议你在这里做什么处理,下面仅以XSS过滤作为示例,你可以根据自己的需要使用bean,反射,spi
-         * 等等用于此处的配置,因为通用化配置的话过于繁琐且我认为没什么必要,所以不再对此处做处理,如果你想做,
-         * 或许你可以看一看common-base中的全局异常处理及common-identity中的配置项处理
+         * TODO Here is an extension point
+         * Used to assert and process the request body. If the operation here is too time-consuming, it will affect the performance of the gateway.
+         * So I don't recommend you to do anything here. The following only uses XSS filtering as an example. You can use bean, reflection, and spi according to your needs.
+         * Wait for the configuration here, because the generalized configuration is too cumbersome and I don't think it is necessary, so I won't do anything here anymore. If you want to do it,
+         * Maybe you can take a look at the global exception handling in common-base and the configuration item handling in common-identity
          */
-
         RequestBodyHandler handler = requestBody -> {
             XssAsserter.check(requestBody);
             return requestBody;

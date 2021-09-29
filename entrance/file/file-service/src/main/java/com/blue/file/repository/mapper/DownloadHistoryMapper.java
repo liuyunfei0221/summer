@@ -3,7 +3,7 @@ package com.blue.file.repository.mapper;
 import com.blue.file.repository.entity.DownloadHistory;
 
 /**
- * 下载记录持久层
+ * download history mapper
  *
  * @author DarkBlue
  */

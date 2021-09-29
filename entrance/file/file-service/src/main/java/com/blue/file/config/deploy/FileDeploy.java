@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * 文件校验配置参数类
+ * file deploy
  *
  * @author DarkBlue
  */

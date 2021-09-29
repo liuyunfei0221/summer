@@ -1,19 +1,16 @@
 package com.blue.dubbo.constant;
 
 /**
- * 通用beanname
+ * constant bean names
  *
  * @author DarkBlue
  */
-@SuppressWarnings("SpellCheckingInspection")
 public enum FilterBeanName {
 
     /**
-     * dubbo异常处理器,将默认加载spi中配置的blueExceptionFilter
+     * no filter, will use blue exp filter
      */
-    NO_EXCEPTION_FILTER("-exception"),
-
-    BLUE_EXCEPTION_FILTER("blueException");
+    NO_EXCEPTION_FILTER("-exception");
 
     public final String name;
 

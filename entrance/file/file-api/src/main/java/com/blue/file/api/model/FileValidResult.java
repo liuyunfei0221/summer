@@ -1,26 +1,17 @@
 package com.blue.file.api.model;
 
 /**
- * 文件校验结果封装
+ * file valid result
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public final class FileValidResult {
 
-    /**
-     * 是否合法
-     */
     private final Boolean valid;
 
-    /**
-     * 原文件名
-     */
     private final String name;
 
-    /**
-     * 信息
-     */
     private final String message;
 
     public FileValidResult(Boolean valid, String name, String message) {

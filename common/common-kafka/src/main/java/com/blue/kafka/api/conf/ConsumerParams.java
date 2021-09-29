@@ -1,7 +1,7 @@
 package com.blue.kafka.api.conf;
 
 /**
- * kafka单消费实例配置信息
+ * kafka consumer params
  *
  * @author DarkBlue
  */

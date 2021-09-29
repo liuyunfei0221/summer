@@ -29,7 +29,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 熔断过滤器
+ * instance circuit breaker
  *
  * @author DarkBlue
  */

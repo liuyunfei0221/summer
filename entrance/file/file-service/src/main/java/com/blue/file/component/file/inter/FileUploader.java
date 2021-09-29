@@ -5,7 +5,7 @@ import org.springframework.http.codec.multipart.Part;
 import reactor.core.publisher.Mono;
 
 /**
- * 文件上传抽象
+ * file upload interface
  *
  * @author liuyunfei
  * @date 2021/9/23
@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 public interface FileUploader {
 
     /**
-     * 文件上传
+     * upload
      *
      * @param part
      * @return

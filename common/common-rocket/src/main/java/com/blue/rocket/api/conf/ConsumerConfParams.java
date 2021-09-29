@@ -6,11 +6,11 @@ import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
 
 /**
- * 消费者参数封装
+ * consumer params
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming"})
+@SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming", "SpellCheckingInspection"})
 public class ConsumerConfParams implements ConsumerConf {
 
     private String namesrvAddr;

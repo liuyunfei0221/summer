@@ -8,7 +8,7 @@ import com.blue.file.repository.entity.Attachment;
 import java.util.List;
 
 /**
- * 附件业务接口
+ * attachment service
  *
  * @author DarkBlue
  */
@@ -16,7 +16,7 @@ import java.util.List;
 public interface AttachmentService {
 
     /**
-     * 新增附件
+     * insert attachment
      *
      * @param attachment
      * @return
@@ -24,7 +24,7 @@ public interface AttachmentService {
     void insert(Attachment attachment);
 
     /**
-     * 批量新增附件
+     * insert attachment batch
      *
      * @param attachments
      * @return
@@ -32,7 +32,7 @@ public interface AttachmentService {
     void insertBatch(List<Attachment> attachments);
 
     /**
-     * 根据文件id获取文件
+     * get attachment by id
      *
      * @param id
      * @return
@@ -40,7 +40,7 @@ public interface AttachmentService {
     Attachment getAttachment(Long id);
 
     /**
-     * 分页查询附件对应用户的附件列表
+     * select attachment by page and member id
      *
      * @param pageModelRequest
      * @param memberId

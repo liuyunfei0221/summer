@@ -7,30 +7,69 @@ package com.blue.database.api.conf;
  */
 public class ShardingDatabaseAttr {
 
+    /**
+     * db url, for example -> jdbc:mysql://localhost:3306/portal_0
+     */
     protected String url;
 
+    /**
+     * db conf, for example -> useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+     */
     protected String dataBaseConf;
 
+    /**
+     * username
+     */
     protected String username;
 
+    /**
+     * password
+     */
     protected String password;
 
+    /**
+     * driver class name, for example -> com.mysql.cj.jdbc.Driver
+     */
     protected String driverClassName;
 
+    /**
+     * connection timeout
+     */
     protected Integer connectionTimeout;
 
+    /**
+     * max lifetime
+     */
     protected Integer maxLifetime;
 
+    /**
+     * max connection pool size
+     */
     protected Integer maximumPoolSize;
 
+    /**
+     * min idle
+     */
     protected Integer minimumIdle;
 
+    /**
+     * idle timeout
+     */
     protected Integer idleTimeout;
 
+    /**
+     * sql for test
+     */
     protected String testQuery;
 
+    /**
+     * read only, true means that db is a slave node
+     */
     protected Boolean readOnly;
 
+    /**
+     * auto commit
+     */
     protected Boolean autoCommit;
 
     public ShardingDatabaseAttr() {
@@ -142,7 +181,7 @@ public class ShardingDatabaseAttr {
 
     @Override
     public String toString() {
-        return "ShardintDatabaseAttr{" +
+        return "ShardingDatabaseAttr{" +
                 "url='" + url + '\'' +
                 ", dataBaseConf='" + dataBaseConf + '\'' +
                 ", username='" + username + '\'' +

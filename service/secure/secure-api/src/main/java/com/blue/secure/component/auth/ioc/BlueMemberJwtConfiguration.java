@@ -1,7 +1,6 @@
 package com.blue.secure.component.auth.ioc;
 
 import com.blue.jwt.api.conf.BaseJwtConfParams;
-import com.blue.jwt.api.generator.BlueJwtProcessorGenerator;
 import com.blue.jwt.common.JwtProcessor;
 import com.blue.secure.api.model.MemberPayload;
 import com.blue.secure.component.auth.api.MemberJwtConf;
@@ -14,10 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.blue.jwt.api.generator.BlueJwtProcessorGenerator.generate;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 成员jwt配置
+ * member jwt configuration
  *
  * @author liuyunfei
  * @date 2021/9/10
@@ -30,7 +30,7 @@ public class BlueMemberJwtConfiguration {
     private static final Logger LOGGER = getLogger(BlueMemberJwtConfiguration.class);
 
     @Bean
-    public JwtProcessor<MemberPayload> create(MemberJwtConf memberJwtConf) {
+    public JwtProcessor<MemberPayload> jwtProcessor(MemberJwtConf memberJwtConf) {
         LOGGER.info("JwtProcessor<MemberPayload> create(MemberJwtConf memberJwtConf), memberJwtConf = {}", memberJwtConf);
 
         BaseJwtConfParams<MemberPayload> baseJwtConfParams = new BaseJwtConfParams<>(memberJwtConf.getGlobalMaxExpireMillis(),
@@ -61,7 +61,7 @@ public class BlueMemberJwtConfiguration {
             }
         };
 
-        return BlueJwtProcessorGenerator.create(baseJwtConfParams);
+        return generate(baseJwtConfParams);
     }
 
 }

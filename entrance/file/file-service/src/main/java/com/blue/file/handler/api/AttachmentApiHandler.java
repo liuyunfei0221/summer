@@ -22,7 +22,7 @@ import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 
 /**
- * 文件控制器
+ * attachment api handler
  *
  * @author DarkBlue
  */
@@ -37,7 +37,7 @@ public final class AttachmentApiHandler {
     }
 
     /**
-     * 分页查询附件
+     * select attachment by page
      *
      * @param serverRequest
      * @return
@@ -57,7 +57,7 @@ public final class AttachmentApiHandler {
 
 
     /**
-     * 测试数据加密
+     * test encrypt in file project
      *
      * @param serverRequest
      * @return

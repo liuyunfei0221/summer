@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * rest配置参数类
+ * risk control deploy
  *
  * @author DarkBlue
  */

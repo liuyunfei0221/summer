@@ -6,7 +6,7 @@ import java.util.List;
 
 
 /**
- * 消费者参数封装
+ * pulsar consumer conf
  *
  * @author DarkBlue
  */

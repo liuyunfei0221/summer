@@ -4,7 +4,7 @@ import static com.blue.identity.constant.SnowflakeBits.DATA_CENTER;
 import static com.blue.identity.constant.SnowflakeBits.WORKER;
 
 /**
- * 数据id与分片配置
+ * identity schema
  *
  * @author DarkBlue
  */

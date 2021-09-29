@@ -5,7 +5,7 @@ import org.apache.pulsar.client.api.ProxyProtocol;
 import java.util.List;
 
 /**
- * client参数封装
+ * pulsar client conf
  *
  * @author DarkBlue
  */

@@ -23,7 +23,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * redis组件创建工厂
+ * es components generator
  *
  * @author DarkBlue
  */
@@ -35,7 +35,7 @@ public final class BlueEsGenerator {
     private static final String DEFAULT_PATH_PREFIX = "/";
 
     /**
-     * 创建client
+     * generate client
      *
      * @param esConf
      * @return
@@ -107,7 +107,7 @@ public final class BlueEsGenerator {
     }
 
     /**
-     * 创建es模板
+     * generate es template
      *
      * @param restHighLevelClient
      * @return
@@ -119,15 +119,15 @@ public final class BlueEsGenerator {
     }
 
     /**
-     * 参数校验
+     * assert param
      *
-     * @param esConf
+     * @param conf
      */
-    private static void confAsserter(EsConf esConf) {
-        if (esConf == null)
-            throw new RuntimeException("esConf can't be null");
+    private static void confAsserter(EsConf conf) {
+        if (conf == null)
+            throw new RuntimeException("conf can't be null");
 
-        List<EsNode> esNodes = esConf.getEsNodes();
+        List<EsNode> esNodes = conf.getEsNodes();
         if (isEmpty(esNodes))
             throw new RuntimeException("esNodes can't be empty");
     }

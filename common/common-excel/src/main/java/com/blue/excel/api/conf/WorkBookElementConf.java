@@ -5,7 +5,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import java.util.function.BiConsumer;
 
 /**
- * excel元素封装
+ * excel elements conf
  *
  * @author DarkBlue
  */
@@ -13,14 +13,14 @@ import java.util.function.BiConsumer;
 public interface WorkBookElementConf<T> {
 
     /**
-     * 表头
+     * headers
      *
      * @return
      */
     String[] getHeaders();
 
     /**
-     * 元素与EXCEL行封装器
+     * elements in data list to excel row converter
      *
      * @return
      */

@@ -3,7 +3,7 @@ package com.blue.excel.api.conf;
 import static com.blue.excel.constant.WorkBookConf.*;
 
 /**
- * excel样式参数
+ * work book style params
  *
  * @author DarkBlue
  */
@@ -11,28 +11,28 @@ import static com.blue.excel.constant.WorkBookConf.*;
 public class WorkBookStyle implements WorkBookStyleConf {
 
     /**
-     * 列宽
+     * cell width
      */
     protected Integer columnWidth;
 
     /**
-     * 行高
+     * cell height
      */
     protected Short columnHeight;
 
     /**
-     * 字体大小
+     * font size
      */
     protected Short fontSize;
 
     /**
-     * 字体
+     * font name
      */
     protected String fontName;
 
 
     /**
-     * 默认参数
+     * default params
      */
     public WorkBookStyle() {
         this.columnWidth = DEFAULT_COLUMN_WIDTH;

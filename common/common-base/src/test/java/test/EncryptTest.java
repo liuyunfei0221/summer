@@ -6,7 +6,7 @@ import com.blue.base.model.base.KeyPair;
 import java.time.Instant;
 
 /**
- * @author 解密测试类
+ * @author encrype test
  */
 @SuppressWarnings("ALL")
 public class EncryptTest {
@@ -18,7 +18,7 @@ public class EncryptTest {
     }
 
     /**
-     * 对接调试
+     * debug
      */
     private static void debugging() {
         //本地生成测试数据
@@ -30,7 +30,7 @@ public class EncryptTest {
     }
 
     /**
-     * 加密接口测试参数生成
+     * encryption params for rest test
      */
     private static String generateTestParam(String original, String priKey) {
 
@@ -47,15 +47,15 @@ public class EncryptTest {
     }
 
     /**
-     * 加密接口测试参数生成
+     * decrypt test
      */
     private static void parstTestParam(String encrypt, String priKey) {
-        System.err.println("original = ");
+        System.err.println("encrypt = ");
         System.err.println(RsaProcessor.decryptByPrivateKey(encrypt, priKey));
     }
 
     /**
-     * 用于开发测试
+     * for debugging on develop
      *
      * @param data
      * @param pubKey

@@ -16,7 +16,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 配置项校验器
+ * asserter
  *
  * @author liuyunfei
  * @date 2021/9/2

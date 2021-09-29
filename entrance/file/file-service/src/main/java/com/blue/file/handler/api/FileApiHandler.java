@@ -31,7 +31,7 @@ import static reactor.core.publisher.Mono.error;
 
 
 /**
- * 文件处理控制器
+ * file api handler
  *
  * @author DarkBlue
  */
@@ -58,7 +58,7 @@ public final class FileApiHandler {
     }
 
     /**
-     * 文件上传
+     * upload
      *
      * @param serverRequest
      * @return
@@ -66,7 +66,7 @@ public final class FileApiHandler {
     public Mono<ServerResponse> upload(ServerRequest serverRequest) {
         long allFileSize = serverRequest.headers().contentLength().orElse(0L);
         if (0L == allFileSize || allFileSize > allFileSizeThreshold)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "上传文件总大小不能为空或超过 " + allFileSizeThreshold);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "total file size can't greater than " + allFileSizeThreshold);
 
         Access access = getAccess(serverRequest);
         return serverRequest.multipartData()
@@ -79,7 +79,7 @@ public final class FileApiHandler {
     }
 
     /**
-     * 文件下载
+     * download
      *
      * @param serverRequest
      * @return

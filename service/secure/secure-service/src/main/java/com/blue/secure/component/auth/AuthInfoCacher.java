@@ -18,7 +18,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
-import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.createCache;
+import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -97,7 +97,7 @@ public final class AuthInfoCacher {
         CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpireMillis, MILLIS),
                 AFTER_WRITE, executorService);
 
-        this.cacher = createCache(caffeineConf);
+        this.cacher = generateCache(caffeineConf);
     }
 
     /**

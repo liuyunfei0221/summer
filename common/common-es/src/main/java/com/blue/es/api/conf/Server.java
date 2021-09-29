@@ -3,6 +3,8 @@ package com.blue.es.api.conf;
 import java.util.Objects;
 
 /**
+ * es server
+ *
  * @author liuyunfei
  * @date 2021/9/19
  * @apiNote

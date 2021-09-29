@@ -11,7 +11,7 @@ import static org.apache.dubbo.common.logger.LoggerFactory.getLogger;
 import static org.apache.dubbo.rpc.RpcContext.getServiceContext;
 
 /**
- * dubbo异常处理
+ * dubbo exception filter
  *
  * @author DarkBlue
  */

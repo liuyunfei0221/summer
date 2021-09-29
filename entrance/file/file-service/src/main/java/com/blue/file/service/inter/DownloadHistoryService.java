@@ -3,7 +3,7 @@ package com.blue.file.service.inter;
 import com.blue.file.repository.entity.DownloadHistory;
 
 /**
- * 文件下载历史业务接口
+ * download history service
  *
  * @author DarkBlue
  */
@@ -11,7 +11,7 @@ import com.blue.file.repository.entity.DownloadHistory;
 public interface DownloadHistoryService {
 
     /**
-     * 新增文件下载历史
+     * insert download history
      *
      * @param downloadHistory
      * @return

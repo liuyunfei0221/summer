@@ -23,7 +23,7 @@ import static java.util.Optional.ofNullable;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * pulsar消费者
+ * rocket consumer
  *
  * @author DarkBlue
  */

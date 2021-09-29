@@ -5,13 +5,13 @@ import org.apache.rocketmq.client.AccessChannel;
 import java.util.concurrent.ExecutorService;
 
 /**
- * producer配置接口
+ * producer conf
  *
  * @author DarkBlue
  * @date 2021/8/9
  * @apiNote
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaLowerCamelCaseVariableNaming"})
 public interface ProducerConf {
 
     String getNamespace();

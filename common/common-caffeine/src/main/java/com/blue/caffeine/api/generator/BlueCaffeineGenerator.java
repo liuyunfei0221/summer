@@ -18,7 +18,7 @@ import static java.lang.Integer.numberOfLeadingZeros;
 import static java.util.Optional.ofNullable;
 
 /**
- * redis组件创建工厂
+ * caffeine component generator
  *
  * @author DarkBlue
  */
@@ -33,7 +33,7 @@ public final class BlueCaffeineGenerator {
     }
 
     /**
-     * 封装过期时间
+     * package expire info
      *
      * @param caffeine
      * @param expireStrategy
@@ -51,18 +51,18 @@ public final class BlueCaffeineGenerator {
     }
 
     /**
-     * 缓存数量
+     * cache size
      */
     private static final int DEFAULT_CAPACITY = 2048;
     private static final int MAXIMUM_CAPACITY = 1 << 16;
 
     /**
-     * cache创建
+     * create cache
      *
      * @param conf
      * @return
      */
-    public static <K, V> Cache<K, V> createCache(CaffeineConf conf) {
+    public static <K, V> Cache<K, V> generateCache(CaffeineConf conf) {
         confAsserter(conf);
 
         int n = -1 >>> numberOfLeadingZeros(ofNullable(conf.getMaximumSize()).filter(ms -> ms > 1).orElse(DEFAULT_CAPACITY) - 1);
@@ -77,7 +77,7 @@ public final class BlueCaffeineGenerator {
     }
 
     /**
-     * 参数校验
+     * assert params
      *
      * @param conf
      */

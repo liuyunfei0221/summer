@@ -7,14 +7,22 @@ import static com.blue.dubbo.constant.FilterBeanName.NO_EXCEPTION_FILTER;
 import static java.util.Optional.ofNullable;
 
 /**
+ * dubbo component generator
+ *
  * @author liuyunfei
  * @date 2021/9/11
  * @apiNote
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused", "AlibabaMethodTooLong"})
 public final class BlueDubboGenerator {
 
-    public static MetadataReportConfig createMetadataReportConfig(DubboConf dubboConf) {
+    /**
+     * generate metadata report config
+     *
+     * @param dubboConf
+     * @return
+     */
+    public static MetadataReportConfig generateMetadataReportConfig(DubboConf dubboConf) {
         assertConf(dubboConf);
 
         MetadataReportConfig metadataReportConfig = new MetadataReportConfig();
@@ -55,8 +63,13 @@ public final class BlueDubboGenerator {
         return metadataReportConfig;
     }
 
-
-    public static RegistryConfig createRegistryConfig(DubboConf dubboConf) {
+    /**
+     * generate registry config
+     *
+     * @param dubboConf
+     * @return
+     */
+    public static RegistryConfig generateRegistryConfig(DubboConf dubboConf) {
         assertConf(dubboConf);
 
         RegistryConfig registryConfig = new RegistryConfig();
@@ -125,8 +138,13 @@ public final class BlueDubboGenerator {
         return registryConfig;
     }
 
-
-    public static MonitorConfig createMonitorConfig(DubboConf dubboConf) {
+    /**
+     * generate monitor config
+     *
+     * @param dubboConf
+     * @return
+     */
+    public static MonitorConfig generateMonitorConfig(DubboConf dubboConf) {
         assertConf(dubboConf);
 
         MonitorConfig monitorConfig = new MonitorConfig();
@@ -154,7 +172,13 @@ public final class BlueDubboGenerator {
         return monitorConfig;
     }
 
-    public static ApplicationConfig createApplicationConfig(DubboConf dubboConf) {
+    /**
+     * generate application config
+     *
+     * @param dubboConf
+     * @return
+     */
+    public static ApplicationConfig generateApplicationConfig(DubboConf dubboConf) {
         assertConf(dubboConf);
 
         ApplicationConfig applicationConfig = new ApplicationConfig();
@@ -231,8 +255,13 @@ public final class BlueDubboGenerator {
         return applicationConfig;
     }
 
-
-    public static ProtocolConfig createProtocolConfig(DubboConf dubboConf) {
+    /**
+     * generate protocol config
+     *
+     * @param dubboConf
+     * @return
+     */
+    public static ProtocolConfig generateProtocolConfig(DubboConf dubboConf) {
         assertConf(dubboConf);
 
         ProtocolConfig protocolConfig = new ProtocolConfig();
@@ -313,8 +342,14 @@ public final class BlueDubboGenerator {
         return protocolConfig;
     }
 
+    /**
+     * generate provider config
+     *
+     * @param dubboConf
+     * @return
+     */
     @SuppressWarnings("AlibabaRemoveCommentedCode")
-    public static ProviderConfig createProviderConfig(DubboConf dubboConf) {
+    public static ProviderConfig generateProviderConfig(DubboConf dubboConf) {
         assertConf(dubboConf);
 
         ProviderConfig providerConfig = new ProviderConfig();
@@ -463,12 +498,16 @@ public final class BlueDubboGenerator {
         ofNullable(dubboConf.getProviderParameters())
                 .ifPresent(providerConfig::setParameters);
 
-        //TODO providerConfig.setMethods();
-
         return providerConfig;
     }
 
-    public static ConsumerConfig createConsumerConfig(DubboConf dubboConf) {
+    /**
+     * generate consumer config
+     *
+     * @param dubboConf
+     * @return
+     */
+    public static ConsumerConfig generateConsumerConfig(DubboConf dubboConf) {
         assertConf(dubboConf);
 
         ConsumerConfig consumerConfig = new ConsumerConfig();
@@ -571,13 +610,13 @@ public final class BlueDubboGenerator {
     }
 
     /**
-     * 断言
+     * assert params
      *
-     * @param dubboConf
+     * @param conf
      */
-    private static void assertConf(DubboConf dubboConf) {
-        if (dubboConf == null) {
-            throw new RuntimeException("dubboConf can't be null");
+    private static void assertConf(DubboConf conf) {
+        if (conf == null) {
+            throw new RuntimeException("conf can't be null");
         }
     }
 

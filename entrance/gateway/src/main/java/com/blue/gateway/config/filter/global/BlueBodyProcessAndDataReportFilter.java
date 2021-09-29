@@ -52,11 +52,10 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 数据上报过滤器
+ * data report filter
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc"})
 @Component
 public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, Ordered {
 
@@ -74,36 +73,18 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
         this.encryptDeploy = encryptDeploy;
     }
 
-    /**
-     * messageReader
-     */
     private static final List<HttpMessageReader<?>> MESSAGE_READERS = GatewayCommonFactory.MESSAGE_READERS;
 
-    /**
-     * 错误处理
-     */
     public static final BiConsumer<Throwable, CachedBodyOutputMessage> ON_ERROR_CONSUMER_WITH_MESSAGE = GatewayCommonFactory.ON_ERROR_CONSUMER_WITH_MESSAGE;
 
-    /**
-     * 秒级时间戳获取器
-     */
     private static final Supplier<Long> TIME_STAMP_GETTER = GatewayCommonFactory.TIME_STAMP_GETTER;
 
     private static final Gson GSON = CommonFunctions.GSON;
 
-    /**
-     * 异常转换器
-     */
     private static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = GatewayCommonFactory.THROWABLE_CONVERTER;
 
-    /**
-     * 加密请求过期时间
-     */
     private static long EXPIRED_SECONDS;
 
-    /**
-     * 请求体解密处理器
-     */
     private static final BiFunction<String, Map<String, Object>, String> REQUEST_BODY_PROCESSOR = (requestBody, attributes) ->
             ofNullable(attributes.get(PRE_UN_DECRYPTION.key))
                     .map(b -> (boolean) b).orElse(true) ?
@@ -113,10 +94,6 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                             ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(""),
                             EXPIRED_SECONDS);
 
-
-    /**
-     * 响应体加密处理器
-     */
     private static final BiFunction<String, Map<String, Object>, String> RESPONSE_BODY_PROCESSOR = (responseBody, attributes) ->
             ofNullable(attributes.get(POST_UN_ENCRYPTION.key))
                     .map(b -> (boolean) b).orElse(true) ?
@@ -124,24 +101,12 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                     :
                     encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(""));
 
-    /**
-     * 错误封装
-     *
-     * @param throwable
-     * @param dataEvent
-     */
     private void packageError(Throwable throwable, DataEvent dataEvent) {
         ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
         dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getCode()).intern());
         dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionHandleInfo.getBlueVo()));
     }
 
-    /**
-     * 封装请求数据
-     *
-     * @param request
-     * @param exchange
-     */
     @SuppressWarnings("DuplicatedCode")
     private void packageRequestInfo(DataEvent dataEvent, ServerHttpRequest request, ServerWebExchange exchange) {
         Map<String, Object> attributes = exchange.getAttributes();
@@ -161,18 +126,8 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
         dataEvent.addData(CLIENT_IP.key, ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf).orElse(""));
         dataEvent.addData(METHOD.key, request.getMethodValue().intern());
         dataEvent.addData(URI.key, request.getURI().getRawPath().intern());
-
-        LOGGER.info("packageRequestParam(), dataEvent = {}", dataEvent);
     }
 
-    /**
-     * 获取响应数据并封装到事件中
-     *
-     * @param exchange
-     * @param body
-     * @param dataEvent
-     * @return
-     */
     private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
         HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
@@ -188,7 +143,6 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                             String tarBody = RESPONSE_BODY_PROCESSOR.apply(responseBody, exchange.getAttributes());
 
                             dataEvent.addData(RESPONSE_BODY.key, responseBody);
-                            LOGGER.info("getBodyWithPackageResponse(), dataEvent = {}", dataEvent);
                             requestEventReporter.report(dataEvent);
 
                             response.getHeaders().put(CONTENT_LENGTH, singletonList(valueOf(tarBody.getBytes(UTF_8).length)));
@@ -197,10 +151,6 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                 );
     }
 
-    /**
-     * @param exchange
-     * @return
-     */
     private ServerHttpResponse getResponseAndReport(ServerWebExchange exchange, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
         if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
@@ -235,13 +185,6 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
         return response;
     }
 
-    /**
-     * 上报无请求体事件用于数据校验,风控,处理
-     *
-     * @param exchange
-     * @param chain
-     * @return
-     */
     private Mono<Void> reportWithoutRequestBody(ServerHttpRequest request, ServerWebExchange exchange, GatewayFilterChain chain, DataEvent dataEvent) {
         packageRequestInfo(dataEvent, request, exchange);
         return chain.filter(
@@ -250,13 +193,6 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                 ).build());
     }
 
-    /**
-     * 上报有请求体事件用于数据校验,风控,处理
-     *
-     * @param exchange
-     * @param chain
-     * @return
-     */
     private Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, GatewayFilterChain chain, DataEvent dataEvent) {
         HttpHeaders headers = new HttpHeaders();
         headers.putAll(request.getHeaders());

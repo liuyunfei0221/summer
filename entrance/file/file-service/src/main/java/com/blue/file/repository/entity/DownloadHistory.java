@@ -8,24 +8,12 @@ package com.blue.file.repository.entity;
 @SuppressWarnings("unused")
 public final class DownloadHistory {
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 文件id
-     */
     private Long attachmentId;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 创建人
-     */
     private Long creator;
 
     public Long getId() {

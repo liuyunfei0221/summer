@@ -13,7 +13,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- * redis脚本创建
+ * redis script generator
  *
  * @author liuyunfei
  * @date 2021/8/19
@@ -23,7 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public final class BlueRedisScriptGenerator {
 
     /**
-     * 根据文件创建redis脚本
+     * generate script by file
      *
      * @param location
      * @param clz
@@ -47,7 +47,7 @@ public final class BlueRedisScriptGenerator {
     }
 
     /**
-     * 根据文件创建redis脚本
+     * generate script by str
      *
      * @param script
      * @param clz

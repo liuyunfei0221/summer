@@ -1,7 +1,7 @@
 package com.blue.file.common.request.part.common;
 
 /**
- * 文件属性key
+ * file part element attr
  *
  * @author liuyunfei
  * @date 2021/9/1
@@ -10,24 +10,24 @@ package com.blue.file.common.request.part.common;
 public enum FilePartElementKey {
 
     /**
-     * 封装文件数据的具体类
+     * target handler class
      */
-    PART_CLASS("class", "封装文件数据的具体类"),
+    PART_CLASS("class", "target handler class"),
 
     /**
-     * 文件数据名称
+     * part name for handle
      */
-    PART_NAME("name", "文件数据名称"),
+    PART_NAME("name", "part name for handle"),
 
     /**
-     * 文件头
+     * part headers
      */
-    PART_HEADERS("headers", "文件头"),
+    PART_HEADERS("headers", "part headers"),
 
     /**
-     * 文件名
+     * file name
      */
-    FILE_NAME("fileName", "文件名");
+    FILE_NAME("fileName", "file name");
 
 
     public String identity;

@@ -27,7 +27,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
- * 事务配置
+ * transaction configuration base on expression
  *
  * @author liuyunfei
  * @date 2021/9/10
@@ -76,28 +76,28 @@ public class BlueTransactionConfiguration {
     }
 
     /**
-     * 校验
+     * assert params
      *
-     * @param transConf
+     * @param conf
      */
-    private static void assertConf(TransConf transConf) {
-        Isolation isolation = transConf.getIsolation();
+    private static void assertConf(TransConf conf) {
+        Isolation isolation = conf.getIsolation();
         if (isolation == null)
             throw new RuntimeException("isolation can't be null");
 
-        Propagation propagation = transConf.getPropagation();
+        Propagation propagation = conf.getPropagation();
         if (propagation == null)
             throw new RuntimeException("propagation can't be null");
 
-        Integer transTimeout = transConf.getTransTimeout();
+        Integer transTimeout = conf.getTransTimeout();
         if (transTimeout == null || transTimeout < 1)
             throw new RuntimeException("transTimeout can't be null or less than 1");
 
-        List<String> methodPreWithTrans = transConf.getMethodPreWithTrans();
+        List<String> methodPreWithTrans = conf.getMethodPreWithTrans();
         if (isEmpty(methodPreWithTrans))
             throw new RuntimeException("corePoolSize can't be null or less than 1");
 
-        String pointCutExpression = transConf.getPointCutExpression();
+        String pointCutExpression = conf.getPointCutExpression();
         if (isBlank(pointCutExpression))
             throw new RuntimeException("pointCutExpression can't be null or ''");
     }

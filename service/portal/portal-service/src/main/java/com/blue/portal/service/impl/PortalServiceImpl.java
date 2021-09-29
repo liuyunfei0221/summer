@@ -38,7 +38,7 @@ import static com.blue.base.common.base.ConstantProcessor.getBulletinTypeByIdent
 import static com.blue.base.constant.base.CacheKey.PORTALS_PRE;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.SyncKey.PORTALS_REFRESH_PRE;
-import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.createCache;
+import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.emptyList;
@@ -127,7 +127,7 @@ public class PortalServiceImpl implements PortalService {
                 caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
                 AFTER_WRITE, executorService);
 
-        LOCAL_CACHE = createCache(caffeineConf);
+        LOCAL_CACHE = generateCache(caffeineConf);
         Stream.of(BulletinType.values())
                 .forEach(this::getBulletinFromLocalCache);
     }

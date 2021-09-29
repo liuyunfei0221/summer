@@ -1,7 +1,7 @@
 package com.blue.excel.constant;
 
 /**
- * excel默认配置
+ * workbook processor default conf
  *
  * @author liuyunfei
  * @date 2021/8/20

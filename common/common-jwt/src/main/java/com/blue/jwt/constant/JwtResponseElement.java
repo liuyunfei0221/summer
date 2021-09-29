@@ -1,7 +1,7 @@
 package com.blue.jwt.constant;
 
 /**
- * 异常信息约束/与common中的ResponseElemen尽量统一
+ * Exception information constraint / try to be unified with ResponseElement in common
  *
  * @author DarkBlue
  */
@@ -9,27 +9,27 @@ package com.blue.jwt.constant;
 public enum JwtResponseElement {
 
     /**
-     * 未认证
+     * UNAUTHORIZED
      */
-    UNAUTHORIZED(401, 401, "认证失败或过期,请重新登录"),
+    UNAUTHORIZED(401, 401, "Authentication failed or expired, please log in"),
 
     /**
-     * 系统错误
+     * INTERNAL_SERVER_ERROR
      */
-    INTERNAL_SERVER_ERROR(203, 203, "服务开小差了");
+    INTERNAL_SERVER_ERROR(203, 203, "System busy");
 
     /**
-     * 异常状态码
+     * http status
      */
     public final int status;
 
     /**
-     * 异常业务码
+     * business code
      */
     public final int code;
 
     /**
-     * 异常信息
+     * message
      */
     public final String message;
 

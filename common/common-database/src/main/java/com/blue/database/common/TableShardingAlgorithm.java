@@ -13,7 +13,7 @@ import static com.blue.identity.core.SnowflakeIdentityParser.parse;
 import static java.util.stream.LongStream.range;
 
 /**
- * 分表
+ * table sharding algorithm
  *
  * @author DarkBlue
  */
@@ -25,9 +25,9 @@ public final class TableShardingAlgorithm implements PreciseShardingAlgorithm<Lo
     public TableShardingAlgorithm(String logicTableName, int tableSizePerDataBase) {
 
         if (logicTableName == null || "".equals(logicTableName))
-            throw new IdentityException("logicTableName不能为空或''");
+            throw new IdentityException("logicTableName can't be blank");
         if (tableSizePerDataBase < 1)
-            throw new IdentityException("tableSizePerDataBase不能小于1");
+            throw new IdentityException("tableSizePerDataBase can't be less than 1");
 
         Map<Long, String> indexAndTableMapping = new HashMap<>(tableSizePerDataBase);
         range(0L, tableSizePerDataBase)

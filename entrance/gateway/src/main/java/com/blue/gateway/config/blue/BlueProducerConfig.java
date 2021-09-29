@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * kafka生产者配置参数类
+ * producer config
  *
  * @author DarkBlue
  */

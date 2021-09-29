@@ -43,17 +43,17 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
- * sharding数据源创建工厂
+ * data access component generator
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "PlaceholderCountMatchesArgumentCount", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
+@SuppressWarnings({"JavaDoc", "PlaceholderCountMatchesArgumentCount", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection", "DuplicatedCode"})
 public final class BlueDataAccessGenerator {
 
     private static final Logger LOGGER = getLogger(BlueDataAccessGenerator.class);
 
     /**
-     * 创建数据源
+     * generate datasource
      *
      * @param dataAccessConf
      * @param identityConf
@@ -73,7 +73,7 @@ public final class BlueDataAccessGenerator {
     }
 
     /**
-     * 创建事务管理器
+     * generate transaction manager
      *
      * @param dataSource
      * @return
@@ -83,7 +83,7 @@ public final class BlueDataAccessGenerator {
     }
 
     /**
-     * SqlSessionFactory创建器
+     * generate sqlsession factory
      *
      * @param dataSource
      * @param dataAccessConf
@@ -102,7 +102,7 @@ public final class BlueDataAccessGenerator {
         ofNullable(dataAccessConf.getAutoMappingBehavior()).ifPresent(configuration::setAutoMappingBehavior);
         ofNullable(dataAccessConf.getExecutorType()).ifPresent(configuration::setDefaultExecutorType);
 
-        //TODO 开发阶段打印sql日志
+        //TODO Print SQL log during development phase
         configuration.setLogImpl(StdOutImpl.class);
 
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
@@ -113,19 +113,21 @@ public final class BlueDataAccessGenerator {
             ResourcePatternResolver resourceLoader = new PathMatchingResourcePatternResolver();
             sqlSessionFactoryBean.setMapperLocations(resourceLoader.getResources(dataAccessConf.getMapperLocation()));
         } catch (IOException e) {
-            throw new RuntimeException("mapper.xml文件路径异常");
+            LOGGER.error("invalid mapper.xml path, e = {}", e);
+            throw new RuntimeException("invalid mapper.xml path");
         }
 
         try {
             return sqlSessionFactoryBean.getObject();
         } catch (Exception e) {
-            throw new RuntimeException("获取sqlSessionFactory异常");
+            LOGGER.error("generate sqlSessionFactory failed, e = {}", e);
+            throw new RuntimeException("generate sqlSessionFactory failed, e = " + e);
         }
 
     }
 
     /**
-     * SqlSessionTemplate创建器
+     * generate sqlsession template
      *
      * @param sqlSessionFactory
      * @return
@@ -134,9 +136,9 @@ public final class BlueDataAccessGenerator {
         return new SqlSessionTemplate(sqlSessionFactory, executorType);
     }
 
-    //<editor-fold desc="常量定义">
+    //<editor-fold desc="constants">
     /**
-     * 合法数据元素组成部分
+     * valid data element parts num
      */
     private static final int VALID_DB_URL_PARTS_LEN = 4, VALID_DB_NAME_PARTS_LEN = 2;
     private static final int DATA_BASE_NAME_PAR = 3;
@@ -144,31 +146,27 @@ public final class BlueDataAccessGenerator {
     //</editor-fold>
 
     /**
-     * 连接池构建器
+     * datasource generator
      */
     private static final Function<ShardingDatabaseAttr, DataSource> DATA_SOURCE_GENERATOR = shardAttr -> {
         HikariConfig hikariConfig = new HikariConfig();
 
         String driverClassName = shardAttr.getDriverClassName();
         if (isBlank(driverClassName))
-            throw new RuntimeException("driverClassName不能为空");
+            throw new RuntimeException("driverClassName can't be blank");
 
         String url = shardAttr.getUrl();
         if (isBlank(url))
-            throw new RuntimeException("url不能为空");
+            throw new RuntimeException("url can't be blank");
 
         String username = shardAttr.getUsername();
         if (isBlank(username))
-            throw new RuntimeException("username不能为空");
-
-        String password = shardAttr.getPassword();
-        if (isBlank(password))
-            throw new RuntimeException("password不能为空");
+            throw new RuntimeException("username can't be blank");
 
         hikariConfig.setDriverClassName(driverClassName);
         hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDataBaseConf()).map(c -> PAR_CONCATENATION_DATABASE_CONF.identity + c).orElse(""));
         hikariConfig.setUsername(username);
-        hikariConfig.setPassword(password);
+        ofNullable(shardAttr.getPassword()).ifPresent(hikariConfig::setPassword);
 
         ofNullable(shardAttr.getReadOnly()).ifPresent(hikariConfig::setReadOnly);
         ofNullable(shardAttr.getConnectionTimeout()).ifPresent(hikariConfig::setConnectionTimeout);
@@ -181,7 +179,7 @@ public final class BlueDataAccessGenerator {
     };
 
     /**
-     * 构建数据源属性
+     * generate elements for datasource creation
      *
      * @param dataAccessConf
      * @param identityConf
@@ -191,17 +189,17 @@ public final class BlueDataAccessGenerator {
     @SuppressWarnings("AlibabaMethodTooLong")
     private static DataAccessConfElements generateDataConfAttr(DataAccessConf dataAccessConf, IdentityConf identityConf, List<UnaryOperator<DataSource>> proxiesChain) {
         if (dataAccessConf == null || identityConf == null)
-            throw new RuntimeException("shardingConf或shardingIdentityConf不能为空");
+            throw new RuntimeException("shardingConf or shardingIdentityConf can't be null");
 
         List<UnaryOperator<DataSource>> tarChain = ofNullable(proxiesChain).map(pc -> pc.stream().filter(Objects::nonNull).collect(toList())).orElse(emptyList());
         boolean enableProxy = !isEmpty(tarChain);
 
-        //<editor-fold desc="构建分片数据源">
+        //<editor-fold desc="generate sharding datasource">
         List<ShardingDatabaseAttr> shardingDatabases = dataAccessConf.getShardingDatabases();
 
         int shardingSize;
         if (shardingDatabases == null || (shardingSize = shardingDatabases.size()) < 1 || shardingSize > MAX_DATA_CENTER_ID.max)
-            throw new RuntimeException("dataBases配置不能为空,且不能小于1或大于最大数据中心数量 -> " + MAX_DATA_CENTER_ID.max);
+            throw new RuntimeException("shardingDatabases can't be empty or more than max datacenter size -> " + MAX_DATA_CENTER_ID.max);
 
         List<SingleDatabaseWithTablesAttr> singleDatabasesWithTables = dataAccessConf.getSingleDatabasesWithTables();
 
@@ -218,37 +216,37 @@ public final class BlueDataAccessGenerator {
         DataSource dataSource;
         for (ShardingDatabaseAttr shardingDatabase : shardingDatabases) {
             if (shardingDatabase == null)
-                throw new RuntimeException("shardingDatabase不能为空");
+                throw new RuntimeException("shardingDatabase can't be null");
 
             if (isBlank(url = shardingDatabase.getUrl()))
-                throw new RuntimeException("url不能为空");
+                throw new RuntimeException("url can't be blank");
 
             if ((urlParts = url.split(PATH_SEPARATOR.identity)).length != VALID_DB_URL_PARTS_LEN)
-                throw new RuntimeException("url错误, url = " + url);
+                throw new RuntimeException("invalid url, url = " + url);
 
             if (isBlank(dataBaseName = urlParts[DATA_BASE_NAME_PAR]))
-                throw new RuntimeException("数据库名称不能为空, url = " + url);
+                throw new RuntimeException("database name can't be blank, dataBaseName = " + dataBaseName);
 
             if (!existDatabases.add(dataBaseName))
-                throw new RuntimeException("数据分片中存在相同库名, dataBaseName = " + dataBaseName);
+                throw new RuntimeException("database name dupicates, dataBaseName = " + dataBaseName);
 
             if ((dataBaseNameParts = dataBaseName.split(PAR_CONCATENATION.identity)).length != VALID_DB_NAME_PARTS_LEN)
-                throw new RuntimeException("数据库名称必须由逻辑名称 + " + "_" + " + index组成, 例如 member_0");
+                throw new RuntimeException("database name must consist of logical name and index number, for example -> member_0");
 
             if (isBlank(tempLogicDataBaseName = dataBaseNameParts[DATA_BASE_LOGIC_NAME_PAR]))
-                throw new RuntimeException("数据库逻辑名称为空, 数据库名称必须由逻辑名称 + " + "_" + " + index组成, 例如 member_0");
+                throw new RuntimeException("database logical name can't be blank, for example -> member_0");
 
             if (isBlank(dataBaseIndexStr = dataBaseNameParts[DATA_BASE_INDEX_PAR]))
-                throw new RuntimeException("数据库索引为空 ,数据库名称必须由逻辑名称 + " + "_" + " + index组成, 例如 member_0");
+                throw new RuntimeException("database index number can't be null, for example -> member_0");
 
             try {
                 dataBaseIndex = Integer.parseInt(dataBaseIndexStr);
             } catch (NumberFormatException e) {
-                throw new RuntimeException("数据库索引只能为数字, 数据库名称必须由逻辑名称 + " + "_" + " + index组成, 例如 member_0");
+                throw new RuntimeException("database index number only number, for example -> member_0");
             }
 
             if (dataBaseIndex < 0)
-                throw new RuntimeException("数据库索引不能小于0, 数据库名称必须由逻辑名称 + " + "_" + " + index组成, 例如 member_0");
+                throw new RuntimeException("database index number can't be less than 0");
 
             assertIndexList.add(dataBaseIndex);
 
@@ -256,7 +254,7 @@ public final class BlueDataAccessGenerator {
                 logicDataBaseName = tempLogicDataBaseName;
             } else {
                 if (!tempLogicDataBaseName.equals(logicDataBaseName))
-                    throw new RuntimeException("数据库的逻辑名称/前缀必须相同, " + tempLogicDataBaseName + "/" + logicDataBaseName);
+                    throw new RuntimeException("sharding db in same micro service must has the same prefix, " + tempLogicDataBaseName + "/" + logicDataBaseName);
             }
 
             dataSource = DATA_SOURCE_GENERATOR.apply(shardingDatabase);
@@ -269,37 +267,37 @@ public final class BlueDataAccessGenerator {
         }
 
         if (0 != assertIndexList.stream().min(Integer::compare).orElse(-1))
-            throw new RuntimeException("数据库索引应由0开始");
+            throw new RuntimeException("db index number must start at 0");
 
         if (!MathProcessor.assertDisorderIntegerContinuous(assertIndexList))
-            throw new RuntimeException("数据库索引集应为由0开始的连续数字");
+            throw new RuntimeException("The database index set should be a continuous number starting from 0");
         //</editor-fold>
 
         ShardingRuleConfiguration shardingRuleConfiguration = new ShardingRuleConfiguration();
 
-        //<editor-fold desc="配置数据分片">
+        //<editor-fold desc="db shards">
         Integer shardingTableSizePerDataBase = dataAccessConf.getShardingTableSizePerDataBase();
         if (shardingTableSizePerDataBase == null || shardingTableSizePerDataBase < 1 || shardingTableSizePerDataBase > MAX_WORKER_ID.max)
-            throw new RuntimeException("每个库的表拆分数量不能小于1或高于每数据中心内最大机器数量 -> " + MAX_WORKER_ID.max);
+            throw new RuntimeException("the number of table splits in each database cannot be less than 1 or greater than the maximum number of machines in each data center -> " + MAX_WORKER_ID.max);
 
         int maxDataBaseIndex = shardingSize - 1;
         int maxTableIndex = shardingTableSizePerDataBase - 1;
 
         Integer dataCenter = identityConf.getDataCenter();
         if (dataCenter == null || dataCenter < 0 || dataCenter > maxDataBaseIndex)
-            throw new RuntimeException("dataCenter不能小于0或高于maxDataBaseIndex");
+            throw new RuntimeException("dataCenter can't be less than 0 or greater than maxDataBaseIndex");
 
         Integer worker = identityConf.getWorker();
         if (worker == null || worker < 0 || worker > maxTableIndex)
-            throw new RuntimeException("worker不能小于0或高于maxTableIndex");
+            throw new RuntimeException("worker can't be less than 0 or greater than maxTableIndex");
 
         List<String> shardingTables = dataAccessConf.getShardingTables();
         if (isEmpty(shardingTables))
-            throw new RuntimeException("tables不能为空,且应包含所有需要分片的表,否则无法定义数据分片");
+            throw new RuntimeException("tables cannot be null, and should contains all tables that need to be fragmented, otherwise data fragmentation cannot be defined");
 
         String shardingColumn = dataAccessConf.getShardingColumn();
         if (shardingColumn == null || "".equals(shardingColumn))
-            throw new RuntimeException("shardingColumn配置不能为空");
+            throw new RuntimeException("shardingColumn can't be blank");
 
         ShardingStrategyConfiguration dataBaseShardingStrategyConfiguration = new StandardShardingStrategyConfiguration(shardingColumn, new DatabaseShardingAlgorithm(logicDataBaseName, shardingSize));
         String shardingLogicDataBaseName = logicDataBaseName;
@@ -316,7 +314,7 @@ public final class BlueDataAccessGenerator {
                 }).collect(toList()));
         //</editor-fold>
 
-        //<editor-fold desc="配置分片广播">
+        //<editor-fold desc="broadcast">
         ofNullable(dataAccessConf.getShardingBroadcastTables())
                 .filter(sbts -> sbts.size() > 0)
                 .ifPresent(sbts ->
@@ -328,28 +326,28 @@ public final class BlueDataAccessGenerator {
                         ));
         //</editor-fold>
 
-        //<editor-fold desc="配置无需分片的库表">
+        //<editor-fold desc="single db and tables">
         if (!isEmpty(singleDatabasesWithTables)) {
             List<String> singleTables;
             for (SingleDatabaseWithTablesAttr single : singleDatabasesWithTables) {
                 if (single == null)
-                    throw new RuntimeException("single不能为空");
+                    throw new RuntimeException("single db can't be null");
 
                 if (isBlank(url = single.getUrl()))
-                    throw new RuntimeException("url不能为空");
+                    throw new RuntimeException("url can't be blank");
 
                 if ((urlParts = url.split(PATH_SEPARATOR.identity)).length != VALID_DB_URL_PARTS_LEN)
-                    throw new RuntimeException("url错误,url = " + url);
+                    throw new RuntimeException("invalid url, url = " + url);
 
                 if (isBlank(dataBaseName = urlParts[DATA_BASE_NAME_PAR]))
-                    throw new RuntimeException("数据库名称不能为空,url = " + url);
+                    throw new RuntimeException("database name can't be blank, dataBaseName = " + dataBaseName);
 
                 if (!existDatabases.add(dataBaseName))
-                    throw new RuntimeException("数据源中存在相同库名, dataBaseName = " + dataBaseName);
+                    throw new RuntimeException("database name dupicates, dataBaseName = " + dataBaseName);
 
                 singleTables = single.getSingleTables();
                 if (isEmpty(shardingTables))
-                    throw new RuntimeException("singleTables不能为空");
+                    throw new RuntimeException("singleTables can't be empty");
 
                 dataSource = DATA_SOURCE_GENERATOR.apply(single);
 
@@ -374,9 +372,9 @@ public final class BlueDataAccessGenerator {
         }
         //</editor-fold>
 
-        //<editor-fold desc="附加属性">
+        //<editor-fold desc="additional attributes">
         Properties props = new Properties();
-        props.putAll(dataAccessConf.getProps());
+        ofNullable(dataAccessConf.getProps()).ifPresent(props::putAll);
         //</editor-fold>
 
         return new DataAccessConfElements(dataSources, shardingRuleConfiguration, props);
@@ -407,7 +405,6 @@ public final class BlueDataAccessGenerator {
         public Properties getProps() {
             return props;
         }
-
     }
 
 }

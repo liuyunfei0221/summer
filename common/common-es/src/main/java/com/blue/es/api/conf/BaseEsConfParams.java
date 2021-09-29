@@ -7,7 +7,7 @@ import org.elasticsearch.client.RestClientBuilder;
 import java.util.List;
 
 /**
- * es配置参数
+ * es params
  *
  * @author liuyunfei
  * @date 2021/9/17

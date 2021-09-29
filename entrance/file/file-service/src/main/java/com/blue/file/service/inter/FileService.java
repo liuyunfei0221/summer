@@ -9,16 +9,15 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 /**
- * 文件业务接口
+ * file service
  *
  * @author DarkBlue
  */
-
 @SuppressWarnings("JavaDoc")
 public interface FileService {
 
     /**
-     * 文件上传
+     * upload attachment
      *
      * @param valueMap
      * @param memberId
@@ -27,7 +26,7 @@ public interface FileService {
     Mono<List<FileUploadResult>> uploadAttachment(MultiValueMap<String, Part> valueMap, Long memberId);
 
     /**
-     * 下载文件
+     * download attachment
      *
      * @param attachmentId
      * @param memberId

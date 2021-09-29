@@ -3,7 +3,7 @@ package com.blue.qr.api.conf;
 import java.awt.*;
 
 /**
- * 二维码配置参数封装
+ * qr conf
  *
  * @author DarkBlue
  */
@@ -11,49 +11,49 @@ import java.awt.*;
 public interface QrConf {
 
     /**
-     * 宽
+     * width
      *
      * @return
      */
     int getWidth();
 
     /**
-     * 高
+     * height
      *
      * @return
      */
     int getHeight();
 
     /**
-     * 内部颜色
+     * on color
      *
      * @return
      */
     int getOnColor();
 
     /**
-     * 外部颜色
+     * off color
      *
      * @return
      */
     int getOffColor();
 
     /**
-     * 笔画宽度
+     * strokes width
      *
      * @return
      */
     int getStrokesWidth();
 
     /**
-     * logo边框颜色
+     * logo frame color
      *
      * @return
      */
     Color getLogoFrameColor();
 
     /**
-     * 填充颜色
+     * frame color
      *
      * @return
      */

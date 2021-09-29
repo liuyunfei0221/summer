@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Propagation;
 import java.util.List;
 
 /**
+ * transaction params base on expression
+ *
  * @author liuyunfei
  * @date 2021/9/10
  * @apiNote

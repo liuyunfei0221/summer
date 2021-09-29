@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * rest配置参数类
+ * cors deploy
  *
  * @author DarkBlue
  */

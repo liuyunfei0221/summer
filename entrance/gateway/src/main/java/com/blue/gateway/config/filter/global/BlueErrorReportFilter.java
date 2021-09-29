@@ -36,12 +36,12 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 熔断过滤器
+ * error reporter
  *
  * @author DarkBlue
  */
 @Component
-@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "AliControlFlowStatementWithoutBraces"})
 public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
 
     private static final Logger LOGGER = getLogger(BlueErrorReportFilter.class);
@@ -55,40 +55,21 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
         this.requestEventReporter = requestEventReporter;
     }
 
-
-    /**
-     * 入口处断言请求方式,防止后续非法请求过多致使intern影响常量池
-     */
     private static final Consumer<String> SCHEMA_ASSERTER = GatewayCommonFactory.SCHEMA_ASSERTER;
     private static final Consumer<String> METHOD_VALUE_ASSERTER = GatewayCommonFactory.METHOD_VALUE_ASSERTER;
 
     private static final String AUTHORIZATION = BlueHeader.AUTHORIZATION.name;
 
-    /**
-     * messageReader
-     */
     private static final List<HttpMessageReader<?>> MESSAGE_READERS = GatewayCommonFactory.MESSAGE_READERS;
 
-    /**
-     * 秒级时间戳获取器
-     */
     private static final Supplier<Long> TIME_STAMP_GETTER = GatewayCommonFactory.TIME_STAMP_GETTER;
 
     private static final Gson GSON = CommonFunctions.GSON;
 
-    /**
-     * 异常转换器
-     */
     private static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = GatewayCommonFactory.THROWABLE_CONVERTER;
 
     private static final Supplier<String> RANDOM_KEY_GENERATOR = GatewayCommonFactory.RANDOM_KEY_GETTER;
 
-    /**
-     * 数据上报
-     *
-     * @param dataEvent
-     * @param throwable
-     */
     private void report(DataEvent dataEvent, Throwable throwable) {
         try {
             executorService.submit(() -> {
@@ -117,8 +98,6 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
 
         String requestId = RANDOM_KEY_GENERATOR.get();
         String clientIp = getIp(request);
-
-        LOGGER.info("blueErrorReportFilter -> requestId = {}, clientIp = {}", requestId, clientIp);
 
         Map<String, Object> attributes = exchange.getAttributes();
 

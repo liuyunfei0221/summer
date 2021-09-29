@@ -5,7 +5,7 @@ import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 
 /**
- * 消费者参数封装
+ * rocket conf
  *
  * @author DarkBlue
  */

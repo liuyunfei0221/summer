@@ -6,17 +6,27 @@ import java.util.Arrays;
 import java.util.function.BiConsumer;
 
 /**
- * excel元素封装
+ * excel elements params
  *
  * @author liuyunfei
  * @date 2021/9/11
  * @apiNote
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "JavaDoc"})
 public class WorkBookElementConfParams<T> implements WorkBookElementConf<T> {
 
+    /**
+     * headers
+     *
+     * @return
+     */
     protected String[] headers;
 
+    /**
+     * elements in data list to excel row converter
+     *
+     * @return
+     */
     BiConsumer<XSSFRow, T> rowElementPackager;
 
     public WorkBookElementConfParams() {

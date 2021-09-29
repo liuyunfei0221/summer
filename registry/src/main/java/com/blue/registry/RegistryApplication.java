@@ -6,6 +6,8 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 import static org.springframework.boot.SpringApplication.run;
 
 /**
+ * registry applicaton
+ *
  * @author DarkBlue
  */
 @SpringBootApplication

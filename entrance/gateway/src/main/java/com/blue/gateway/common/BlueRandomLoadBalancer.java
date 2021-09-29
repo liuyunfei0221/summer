@@ -19,7 +19,7 @@ import java.util.function.Function;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
- * 负载均衡器
+ * loadbalancer
  *
  * @author DarkBlue
  */

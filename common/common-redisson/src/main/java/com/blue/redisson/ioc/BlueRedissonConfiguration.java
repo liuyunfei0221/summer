@@ -11,7 +11,7 @@ import static com.blue.redisson.api.generator.BlueRedissonGenerator.createRediss
 import static reactor.util.Loggers.getLogger;
 
 /**
- * dubbo配置
+ * redisson configuration
  *
  * @author liuyunfei
  * @date 2021/8/24

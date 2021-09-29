@@ -6,7 +6,7 @@ import java.util.List;
 
 
 /**
- * redis配置参数封装
+ * redis conf
  *
  * @author DarkBlue
  */

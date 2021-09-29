@@ -36,7 +36,7 @@ public final class BlueIdentityProcessor {
     private static final String PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity;
 
     /**
-     * 本服务实例名称
+     * service name
      */
     private String serviceName;
 

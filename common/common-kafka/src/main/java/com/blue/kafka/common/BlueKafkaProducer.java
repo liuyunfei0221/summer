@@ -20,7 +20,7 @@ import static com.blue.kafka.utils.GsonFactory.getGson;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * kafka单发送实例
+ * kafka producer
  *
  * @author DarkBlue
  */
@@ -62,7 +62,7 @@ public final class BlueKafkaProducer<T extends Serializable> {
 
 
     /**
-     * 发送数据
+     * send
      *
      * @param data
      */

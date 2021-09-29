@@ -6,7 +6,7 @@ import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 
 /**
- * 缓存配置
+ * caffeine conf params
  *
  * @author liuyunfei
  * @date 2021/9/11

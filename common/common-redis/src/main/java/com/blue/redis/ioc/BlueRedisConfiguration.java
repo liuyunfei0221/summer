@@ -15,7 +15,7 @@ import static com.blue.redis.api.generator.BlueRedisGenerator.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * redis配置类
+ * redis configuration
  *
  * @author DarkBlue
  */
@@ -35,7 +35,7 @@ public class BlueRedisConfiguration {
     @Bean
     LettuceConnectionFactory lettuceConnectionFactory(RedisConf redisConf, RedisConfiguration redisConfiguration) {
         LOGGER.info("LettuceConnectionFactory lettuceConnectionFactory(RedisConfiguration redisConfiguration), redisConf = {}", redisConf);
-        return generateLettuceConnectionFactory(redisConf, redisConfiguration, generateLettuceClientConfiguration(redisConf, generateGenericObjectPoolConfig(redisConf), generateClientOptions(redisConf)));
+        return generateConnectionFactory(redisConf, redisConfiguration, generateLettuceClientConfiguration(redisConf, generateGenericObjectPoolConfig(redisConf), generateClientOptions(redisConf)));
     }
 
     @Bean

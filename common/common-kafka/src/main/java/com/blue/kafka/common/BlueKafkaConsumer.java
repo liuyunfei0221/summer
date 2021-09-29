@@ -28,7 +28,7 @@ import static java.util.Optional.ofNullable;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * kafka单消费实例
+ * kafka consumer
  *
  * @author DarkBlue
  */
@@ -48,7 +48,7 @@ public final class BlueKafkaConsumer<T extends Serializable> {
     private static final Gson GSON = getGson();
 
     /**
-     * record消费者构建器
+     * record consumer generator
      */
     @SuppressWarnings("FieldCanBeLocal")
     private final Function<Consumer<T>, Consumer<ConsumerRecord<String, String>>> RECORD_CONSUMER_GENERATOR = consumer ->
@@ -61,7 +61,7 @@ public final class BlueKafkaConsumer<T extends Serializable> {
                             });
 
     /**
-     * records消费者构建
+     * records consumer generator
      *
      * @param recordConsumer
      * @param kafkaConsumer
@@ -86,7 +86,7 @@ public final class BlueKafkaConsumer<T extends Serializable> {
     }
 
     /**
-     * KAFKA消费端构建器
+     * kafka consumer generator
      */
     private static final Function<ConsumerConf, org.apache.kafka.clients.consumer.KafkaConsumer> KAFKA_CONSUMER_GENERATOR = consumerConf -> {
         Properties configs = new Properties();
@@ -134,7 +134,7 @@ public final class BlueKafkaConsumer<T extends Serializable> {
     }
 
     /**
-     * 开始消费
+     * begin
      */
     @SuppressWarnings("AlibabaAvoidManuallyCreateThread")
     public void run() {
@@ -145,7 +145,7 @@ public final class BlueKafkaConsumer<T extends Serializable> {
     }
 
     /**
-     * 停机
+     * stop
      */
     public void shutdown() {
         try {
@@ -169,7 +169,7 @@ public final class BlueKafkaConsumer<T extends Serializable> {
     }
 
     /**
-     * kafka消费任务封装类
+     * kafka consumer task
      */
     private static final class KafkaConsumerTask implements Runnable {
 
@@ -206,9 +206,6 @@ public final class BlueKafkaConsumer<T extends Serializable> {
                 }
         }
 
-        /**
-         * 停机
-         */
         public void shutdown() {
             try {
                 this.running = false;

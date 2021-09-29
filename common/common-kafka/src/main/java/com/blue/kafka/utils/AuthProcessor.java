@@ -11,7 +11,7 @@ import static org.apache.kafka.clients.admin.AdminClientConfig.SECURITY_PROTOCOL
 import static org.springframework.util.StringUtils.hasText;
 
 /**
- * kafka认证处理工具
+ * kafka auth util
  *
  * @author DarkBlue
  */
@@ -21,7 +21,7 @@ public final class AuthProcessor {
     private static final String JAAS_TEMPLATE = "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"%s\" password=\"%s\";";
 
     /**
-     * 处理认证信息
+     * handle auth info for producer
      *
      * @param configs
      * @param producerConf
@@ -39,7 +39,7 @@ public final class AuthProcessor {
     }
 
     /**
-     * 处理认证信息
+     * handle auth info for consumer
      *
      * @param configs
      * @param consumerConf

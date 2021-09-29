@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * jwt配置封装
+ * jwt conf
  *
  * @author liuyunfei
  * @date 2021/9/10

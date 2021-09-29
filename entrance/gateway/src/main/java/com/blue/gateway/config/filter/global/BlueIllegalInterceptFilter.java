@@ -29,11 +29,11 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Optional.ofNullable;
 
 /**
- * 风控拦截过滤器
+ * illegal interceptor
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "UnusedReturnValue", "unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"UnusedReturnValue", "unused", "AliControlFlowStatementWithoutBraces"})
 @Component
 public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
 
@@ -49,43 +49,28 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
         this.executorService = executorService;
     }
 
-    /**
-     * ip黑名单
-     */
     private static Cache<String, String> illegalIpCacher;
 
-    /**
-     * jwt黑名单
-     */
     private static Cache<String, String> illegalJwtCacher;
 
-    /**
-     * 非法ip断言
-     */
     private static final Consumer<String> ILLEGAL_IP_ASSERTER = ip -> {
         String illegalReason = illegalIpCacher.getIfPresent(ip);
         if (illegalReason == null)
             return;
 
-        LOGGER.warn("该ip触发风控拦截, ip = {}, illegalReason = {}", ip, illegalReason);
+        LOGGER.warn("The ip has been risk control interception, ip = {}, illegalReason = {}", ip, illegalReason);
         throw new BlueException(NOT_ACCEPTABLE.status, NOT_ACCEPTABLE.code, illegalReason);
     };
 
-    /**
-     * 非法jwt断言
-     */
     private static final Consumer<String> ILLEGAL_JWT_ASSERTER = jwt -> {
         String illegalReason = illegalJwtCacher.getIfPresent(jwt);
         if (illegalReason == null)
             return;
 
-        LOGGER.warn("该jwt触发风控拦截, jwt = {}, illegalReason = {}", jwt, illegalReason);
+        LOGGER.warn("The jwt has been risk control interception, jwt = {}, illegalReason = {}", jwt, illegalReason);
         throw new BlueException(NOT_ACCEPTABLE.status, NOT_ACCEPTABLE.code, illegalReason);
     };
 
-    /**
-     * 过滤处理
-     */
     private final Consumer<ServerWebExchange> ILLEGAL_FILTER = exchange -> {
         Map<String, Object> attributes = exchange.getAttributes();
 
@@ -101,19 +86,15 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
                 jwt, clientIp);
     };
 
-
-    /**
-     * 初始化
-     */
     @PostConstruct
     private void init() {
         Long illegalExpireSeconds = riskControlDeploy.getIllegalExpireSeconds();
         if (illegalExpireSeconds == null || illegalExpireSeconds < 1L)
-            throw new RuntimeException("illegalExpireSeconds不能为空或小于1");
+            throw new RuntimeException("illegalExpireSeconds can't be null or less than 1");
 
         Integer illegalCapacity = riskControlDeploy.getIllegalCapacity();
         if (illegalCapacity == null || illegalCapacity < 1)
-            throw new RuntimeException("illegalCapacity不能为空或小于1");
+            throw new RuntimeException("illegalCapacity can't be null or less than 1");
 
         illegalIpCacher = newBuilder()
                 .expireAfterAccess(of(illegalExpireSeconds, SECONDS))
@@ -137,72 +118,45 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
         return BLUE_ILLEGAL_INTERCEPT.order;
     }
 
-
-    /**
-     * 标记ip黑名单
-     *
-     * @param ip
-     * @param illegalReason
-     * @return
-     */
     public boolean markIllegalIp(String ip, IllegalReason illegalReason) {
-        LOGGER.info("ip = {}, illegalReason = {}", ip, illegalReason);
+        LOGGER.info("markIllegalIp(String ip, IllegalReason illegalReason), ip = {}, illegalReason = {}", ip, illegalReason);
         try {
             illegalIpCacher.put(ip, ofNullable(illegalReason).orElse(UNKNOWN).reason.intern());
         } catch (Exception e) {
-            LOGGER.error("ip = {}, e = {}", ip, e);
+            LOGGER.error("markIllegalIp(String ip, IllegalReason illegalReason) failed, ip = {}, e = {}", ip, e);
             return false;
         }
         return true;
     }
 
-    /**
-     * 标记jwt串黑名单
-     *
-     * @param jwt
-     * @param illegalReason
-     * @return
-     */
     public boolean markIllegalJwt(String jwt, IllegalReason illegalReason) {
-        LOGGER.info("jwt = {}, active = {}, illegalReason = {}", jwt, illegalReason);
+        LOGGER.info("markIllegalJwt(String jwt, IllegalReason illegalReason), jwt = {}, active = {}, illegalReason = {}", jwt, illegalReason);
         try {
             illegalJwtCacher.put(jwt, ofNullable(illegalReason).orElse(UNKNOWN).reason.intern());
         } catch (Exception e) {
-            LOGGER.error("jwt = {},  e = {}", jwt, e);
+            LOGGER.error("markIllegalJwt(String jwt, IllegalReason illegalReason) failed, jwt = {},  e = {}", jwt, e);
             return false;
         }
         return true;
     }
 
-    /**
-     * 清除ip黑名单标记
-     *
-     * @param ip
-     * @return
-     */
     public boolean clearMarkIllegalIp(String ip) {
-        LOGGER.info("ip = {}", ip);
+        LOGGER.info("clearMarkIllegalIp(String ip), ip = {}", ip);
         try {
             illegalIpCacher.invalidate(ip);
         } catch (Exception e) {
-            LOGGER.error("ip = {}, e = {}", ip, e);
+            LOGGER.error("clearMarkIllegalIp(String ip) failed, ip = {}, e = {}", ip, e);
             return false;
         }
         return true;
     }
 
-    /**
-     * 清除jwt串黑名单标记
-     *
-     * @param jwt
-     * @return
-     */
     public boolean clearMarkIllegalJwt(String jwt) {
-        LOGGER.info("jwt = {}", jwt);
+        LOGGER.info("clearMarkIllegalJwt(String jwt), jwt = {}", jwt);
         try {
             illegalJwtCacher.invalidate(jwt);
         } catch (Exception e) {
-            LOGGER.error("jwt = {},  e = {}", jwt, e);
+            LOGGER.error("clearMarkIllegalJwt(String jwt) failed, jwt = {},  e = {}", jwt, e);
             return false;
         }
         return true;

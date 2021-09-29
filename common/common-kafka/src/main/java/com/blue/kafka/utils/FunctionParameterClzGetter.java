@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * consumer参数泛型获取
+ * generic type getter
  *
  * @author DarkBlue
  */

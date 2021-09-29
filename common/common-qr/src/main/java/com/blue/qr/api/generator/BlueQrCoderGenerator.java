@@ -5,17 +5,17 @@ import com.blue.qr.api.conf.QrConf;
 import com.blue.qr.common.QrCoder;
 
 /**
- * redis组件创建工厂
+ * qrcoder generator
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "unused"})
+@SuppressWarnings({"JavaDoc", "unused", "SpellCheckingInspection"})
 public final class BlueQrCoderGenerator {
 
     private static final QrConf DEFAULT_CONF = new QrConfParams();
 
     /**
-     * 创建二维码工具
+     * generate qrcoder
      *
      * @return
      */
@@ -24,7 +24,7 @@ public final class BlueQrCoderGenerator {
     }
 
     /**
-     * 创建二维码工具
+     * generate qrcoder
      *
      * @param qrConf
      * @return

@@ -19,7 +19,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * jwt过期时间刷新生产者
+ * data report producer
  *
  * @author DarkBlue
  */
@@ -59,7 +59,7 @@ public final class RequestEventProducer implements BlueLifecycle {
     }
 
     /**
-     * 发送消息
+     * send event
      *
      * @param dataEvent
      */

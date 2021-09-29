@@ -3,7 +3,7 @@ package com.blue.gateway.config.filter;
 import static org.springframework.cloud.gateway.filter.WebClientWriteResponseFilter.WRITE_RESPONSE_FILTER_ORDER;
 
 /**
- * 过滤器优先级
+ * filter order
  *
  * @author DarkBlue
  */
@@ -11,32 +11,32 @@ import static org.springframework.cloud.gateway.filter.WebClientWriteResponseFil
 public enum BlueFilterOrder {
 
     /**
-     * 异常上报过滤器
+     * error report
      */
     BLUE_ERROR_REPORT(WRITE_RESPONSE_FILTER_ORDER - 6),
 
     /**
-     * 限流过滤器
+     * rate limit
      */
     BLUE_RATE_LIMIT(WRITE_RESPONSE_FILTER_ORDER - 5),
 
     /**
-     * 非法拦截过滤器
+     * illegal intercept
      */
     BLUE_ILLEGAL_INTERCEPT(WRITE_RESPONSE_FILTER_ORDER - 4),
 
     /**
-     * 请求参数过滤器
+     * request attr
      */
     BLUE_REQUEST_ATTR(WRITE_RESPONSE_FILTER_ORDER - 3),
 
     /**
-     * 安全过滤器
+     * secure
      */
     BLUE_SECURE(WRITE_RESPONSE_FILTER_ORDER - 2),
 
     /**
-     * 请求/响应体处理及数据上报过滤器
+     * data report
      */
     BLUE_BODY_PROCESS_AND_DATA_REPORT(WRITE_RESPONSE_FILTER_ORDER - 1),
 

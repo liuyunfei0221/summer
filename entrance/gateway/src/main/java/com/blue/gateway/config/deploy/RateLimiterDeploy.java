@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 限流配置
+ * rate limiter config
  *
  * @author DarkBlue
  */
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 public class RateLimiterDeploy {
 
     /**
-     * 填充速率
+     * replenish rate
      */
     private int replenishRate;
 
     /**
-     * 突发容量
+     * burst capacity
      */
     private int burstCapacity;
 

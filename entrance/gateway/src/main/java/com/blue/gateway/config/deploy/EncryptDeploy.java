@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 加密数据过期时间配置参数类
+ * encrypt config
  *
  * @author DarkBlue
  */

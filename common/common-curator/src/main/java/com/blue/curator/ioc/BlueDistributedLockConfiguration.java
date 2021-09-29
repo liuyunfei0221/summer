@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * redis配置类
+ * zk lock configuration
  *
  * @author DarkBlue
  */
@@ -29,7 +29,7 @@ public class BlueDistributedLockConfiguration {
     }
 
     /**
-     * 参数校验
+     * assert params
      *
      * @param conf
      */

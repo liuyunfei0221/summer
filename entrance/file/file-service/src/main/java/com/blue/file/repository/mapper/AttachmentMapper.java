@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 附件持久层
+ * attachment mapper
  *
  * @author DarkBlue
  */
@@ -26,22 +26,14 @@ public interface AttachmentMapper {
     int updateByPrimaryKey(Attachment record);
 
     /**
-     * 批量插入
+     * insert batch
      *
      * @param list
      */
     void insertBatch(@Param("list") List<Attachment> list);
 
     /**
-     * 根据创建人查询文件
-     *
-     * @param memberId
-     * @return
-     */
-    List<Attachment> listAttachment(@Param("memberId") Long memberId);
-
-    /**
-     * 分页查询对应成员的附件列表
+     * select attachment page by member id
      *
      * @param memberId
      * @param limit
@@ -51,7 +43,7 @@ public interface AttachmentMapper {
     List<Attachment> listAttachmentByLimit(@Param("memberId") Long memberId, @Param("limit") long limit, @Param("rows") long rows);
 
     /**
-     * 统计对应成员的附件总数
+     * count attachment by member id
      *
      * @return
      */

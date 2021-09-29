@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toList;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 附件业务实现
+ * attachment service impl
  *
  * @author DarkBlue
  */
@@ -39,7 +39,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     /**
-     * 新增附件
+     * insert attachment
      *
      * @param attachment
      * @return
@@ -52,7 +52,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     /**
-     * 批量新增附件
+     * insert attachment batch
      *
      * @param attachments
      * @return
@@ -66,7 +66,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     /**
-     * 根据文件id获取文件
+     * get attachment by id
      *
      * @param id
      * @return
@@ -87,7 +87,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     /**
-     * 分页查询附件对应用户的附件列表
+     * select attachment by page and member id
      *
      * @param pageModelRequest
      * @param memberId

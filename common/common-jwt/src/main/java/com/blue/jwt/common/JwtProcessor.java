@@ -1,16 +1,16 @@
 package com.blue.jwt.common;
 
 /**
- * JWT处理接口
+ * JWT processor interface
  *
  * @author DarkBlue
  */
 
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface JwtProcessor<T> {
 
     /**
-     * 创建jwt
+     * create jwt
      *
      * @param t
      * @return
@@ -18,7 +18,7 @@ public interface JwtProcessor<T> {
     String create(T t);
 
     /**
-     * 解析jwt
+     * parse jwt
      *
      * @param jwtToken
      * @return
@@ -26,14 +26,14 @@ public interface JwtProcessor<T> {
     T parse(String jwtToken);
 
     /**
-     * 获取jwt过期时间上限值
+     * get the upper limit of the expiration time of jwt
      *
      * @return
      */
     long getMaxExpireMillis();
 
     /**
-     * 获取jwt过期时间下限值
+     * get the lower limit of the expiration time of jwt
      *
      * @return
      */

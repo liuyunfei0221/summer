@@ -37,7 +37,7 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 文件业务实现
+ * file service impl
  *
  * @author DarkBlue
  */
@@ -66,14 +66,8 @@ public class FileServiceImpl implements FileService {
         this.fileDeploy = fileDeploy;
     }
 
-    /**
-     * 同时上传文件数上限
-     */
     private static long CURRENT_SIZE_THRESHOLD;
 
-    /**
-     * 文件参数key
-     */
     private static String ATTR_NAME;
 
     @PostConstruct
@@ -82,9 +76,6 @@ public class FileServiceImpl implements FileService {
         CURRENT_SIZE_THRESHOLD = fileDeploy.getCurrentSizeThreshold();
     }
 
-    /**
-     * 初始化attachment构建器
-     */
     private final BiFunction<FileUploadResult, Long, Attachment> ATTACHMENT_CONVERTER = (fur, memberId) -> {
         Attachment attachment = new Attachment();
 
@@ -101,7 +92,7 @@ public class FileServiceImpl implements FileService {
     };
 
     /**
-     * 文件上传
+     * upload attachment
      *
      * @param valueMap
      * @param memberId
@@ -110,7 +101,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public Mono<List<FileUploadResult>> uploadAttachment(MultiValueMap<String, Part> valueMap, Long memberId) {
         LOGGER.info("uploadAttachment(MultiValueMap<String, Part> valueMap, Long memberId), valueMap = {}, memberId = {}", valueMap, memberId);
-        //需要处理的任务资源
+
         List<Part> resources = valueMap.get(ATTR_NAME);
         if (isEmpty(resources))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, FILE_NOT_EXIST.message);
@@ -120,7 +111,7 @@ public class FileServiceImpl implements FileService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, FILE_NOT_EXIST.message);
 
         if (size > CURRENT_SIZE_THRESHOLD)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "同时上传的文件数量不能超过" + CURRENT_SIZE_THRESHOLD);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "current upload file size can't greater than " + CURRENT_SIZE_THRESHOLD);
 
         return fromIterable(resources)
                 .flatMap(localDiskFileUploader::upload)
@@ -148,7 +139,7 @@ public class FileServiceImpl implements FileService {
 
 
     /**
-     * 下载文件
+     * download attachment
      *
      * @param attachmentId
      * @param memberId

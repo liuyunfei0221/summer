@@ -10,7 +10,7 @@ import org.apache.rocketmq.client.producer.TransactionMQProducer;
 import java.util.concurrent.ExecutorService;
 
 /**
- * pulsar消费者构建工厂
+ * rocket producer generator
  *
  * @author DarkBlue
  */

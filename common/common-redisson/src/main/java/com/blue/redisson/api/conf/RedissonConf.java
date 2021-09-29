@@ -9,7 +9,7 @@ import java.util.List;
 
 
 /**
- * redisson配置参数封装
+ * redisson conf
  *
  * @author DarkBlue
  */

@@ -19,7 +19,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * 数据上报生产端
+ * data report producer
  *
  * @author DarkBlue
  */
@@ -59,7 +59,7 @@ public final class RequestEventProducer implements BlueLifecycle {
     }
 
     /**
-     * 发送消息
+     * send event
      *
      * @param dataEvent
      */

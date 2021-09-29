@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * 通用组件工厂类
+ * gson factory
  *
  * @author DarkBlue
  */

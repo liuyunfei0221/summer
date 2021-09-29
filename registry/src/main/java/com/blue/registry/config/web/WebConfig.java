@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * web config
+ *
  * @author DarkBlue
  * @date 2021/8/10
  * @apiNote

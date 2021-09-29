@@ -24,7 +24,7 @@ import static reactor.core.publisher.Mono.error;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 用于网关的通用组件工厂类
+ * common factory for gateway
  *
  * @author DarkBlue
  */
@@ -38,7 +38,7 @@ public final class GatewayCommonFactory extends ReactiveCommonFunctions {
     public static final List<HttpMessageReader<?>> MESSAGE_READERS = withDefaults().messageReaders();
 
     /**
-     * 错误处理器
+     * error message consumer
      */
     public static final BiConsumer<Throwable, CachedBodyOutputMessage> ON_ERROR_CONSUMER_WITH_MESSAGE = (throwable, outputMessage) -> {
         outputMessage.getBody()
@@ -60,7 +60,7 @@ public final class GatewayCommonFactory extends ReactiveCommonFunctions {
     };
 
     /**
-     * 构建请求包装
+     * generate a new ServerHttpRequestDecorator
      *
      * @param request
      * @param headers

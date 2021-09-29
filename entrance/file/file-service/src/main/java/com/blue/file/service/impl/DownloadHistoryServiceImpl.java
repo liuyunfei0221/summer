@@ -9,7 +9,7 @@ import reactor.util.Logger;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 文件下载历史业务实现
+ * download history service impl
  *
  * @author DarkBlue
  */
@@ -27,7 +27,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     }
 
     /**
-     * 新增文件下载历史
+     * insert download history
      *
      * @param downloadHistory
      * @return

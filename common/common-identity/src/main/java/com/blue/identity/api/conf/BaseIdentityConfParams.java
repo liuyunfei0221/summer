@@ -3,7 +3,7 @@ package com.blue.identity.api.conf;
 import java.util.function.Consumer;
 
 /**
- * identity配置参数类
+ * identity params
  *
  * @author liuyunfei
  * @date 2021/9/9

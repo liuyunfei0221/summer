@@ -15,7 +15,7 @@ import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateTransConsumer
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * pulsar消费者
+ * pulsar transaction consumer
  *
  * @author DarkBlue
  */

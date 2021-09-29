@@ -3,14 +3,14 @@ package com.blue.dubbo.api.conf;
 import java.util.Map;
 
 /**
- * dubbo配置类
+ * dubbo conf
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaCommentsMustBeJavadocFormat"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaCommentsMustBeJavadocFormat", "SpellCheckingInspection"})
 public interface DubboConf {
 
-    //<editor-fold desc="metadataReport配置">
+    //<editor-fold desc="metadataReport conf">
     String getMetadataReportId();
 
     String getMetadataReportProtocol();
@@ -44,7 +44,7 @@ public interface DubboConf {
     Map<String, String> getMetadataReportParameters();
     //</editor-fold>
 
-    //<editor-fold desc="registry配置">
+    //<editor-fold desc="registry conf">
     String getRegistryId();
 
     String getRegistryAddress();
@@ -106,7 +106,7 @@ public interface DubboConf {
     Map<String, String> getRegistryParameters();
     //</editor-fold>
 
-    //<editor-fold desc="monitor配置">
+    //<editor-fold desc="monitor conf">
     Boolean getMonitorEnable();
 
     String getMonitorId();
@@ -126,7 +126,7 @@ public interface DubboConf {
     String getMonitorInterval();
     //</editor-fold>
 
-    //<editor-fold desc="application配置">
+    //<editor-fold desc="application conf">
     String getApplicationId();
 
     String getApplicationName();
@@ -182,7 +182,7 @@ public interface DubboConf {
     Boolean getApplicationQosAcceptForeignIp();
     //</editor-fold>
 
-    //<editor-fold desc="protocol配置">
+    //<editor-fold desc="protocol conf">
     String getProtocolId();
 
     String getProtocolName();
@@ -256,7 +256,7 @@ public interface DubboConf {
     Boolean getProtocolDefault();
     //</editor-fold>
 
-    //<editor-fold desc="provider配置">
+    //<editor-fold desc="provider conf">
     String getProviderId();
 
     String getProviderInterfaceName();
@@ -393,7 +393,7 @@ public interface DubboConf {
 
     //</editor-fold>
 
-    //<editor-fold desc="consumer配置">
+    //<editor-fold desc="consumer conf">
     String getConsumerId();
 
     Integer getConsumerTimeout();

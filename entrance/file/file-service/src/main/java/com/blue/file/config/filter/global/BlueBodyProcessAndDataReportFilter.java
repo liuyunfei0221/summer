@@ -60,11 +60,11 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 数据上报过滤器
+ * data report filter
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"NullableProblems", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"NullableProblems", "AliControlFlowStatementWithoutBraces"})
 @Component
 public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Ordered {
 
@@ -82,41 +82,20 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         this.encryptDeploy = encryptDeploy;
     }
 
-    /**
-     * messageReader
-     */
     private static final List<HttpMessageReader<?>> MESSAGE_READERS = FluxCommonFactory.MESSAGE_READERS;
 
-    /**
-     * 错误处理
-     */
     private static final BiConsumer<Throwable, ServerHttpRequestDecorator> ON_ERROR_CONSUMER = FluxCommonFactory.ON_ERROR_CONSUMER;
 
-    /**
-     * 异常转换器
-     */
     private static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = FluxCommonFactory.THROWABLE_CONVERTER;
 
     private static final Gson GSON = CommonFunctions.GSON;
 
-    /**
-     * 秒级时间戳获取器
-     */
     private static final Supplier<Long> TIME_STAMP_GETTER = FluxCommonFactory.TIME_STAMP_GETTER;
 
-    /**
-     * DATA_BUFFER_FACTORY
-     */
     private static final DataBufferFactory DATA_BUFFER_FACTORY = FluxCommonFactory.DATA_BUFFER_FACTORY;
 
-    /**
-     * 加密请求过期时间
-     */
     private static long EXPIRED_SECONDS;
 
-    /**
-     * 请求体解密处理器
-     */
     private static final BiFunction<String, Map<String, Object>, String> REQUEST_BODY_PROCESSOR = (requestBody, attributes) ->
             ofNullable(attributes.get(PRE_UN_DECRYPTION.key))
                     .map(b -> (boolean) b).orElse(true) ?
@@ -126,10 +105,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                             ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(""),
                             EXPIRED_SECONDS);
 
-
-    /**
-     * 响应体加密处理器
-     */
     private static final BiFunction<String, Map<String, Object>, String> RESPONSE_BODY_PROCESSOR = (responseBody, attributes) ->
             ofNullable(attributes.get(POST_UN_ENCRYPTION.key))
                     .map(b -> (boolean) b).orElse(true) ?
@@ -137,13 +112,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                     :
                     encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(""));
 
-    /**
-     * 错误上报
-     *
-     * @param throwable
-     * @param requestEventReporter
-     * @param dataEvent
-     */
     private void reportError(Throwable throwable, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
         ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
 
@@ -154,13 +122,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         requestEventReporter.report(dataEvent);
     }
 
-    /**
-     * 封装请求数据
-     *
-     * @param request
-     * @param exchange
-     */
-    @SuppressWarnings("DuplicatedCode")
     private void packageRequestInfo(DataEvent dataEvent, ServerHttpRequest request, ServerWebExchange exchange) {
         Map<String, Object> attributes = exchange.getAttributes();
 
@@ -183,14 +144,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         LOGGER.info("packageRequestParam(), dataEvent = {}", dataEvent);
     }
 
-    /**
-     * 获取响应数据并封装到事件中
-     *
-     * @param response
-     * @param body
-     * @param dataEvent
-     * @return
-     */
     private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, ServerHttpResponse response, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
         dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
@@ -214,10 +167,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                 );
     }
 
-    /**
-     * @param exchange
-     * @return
-     */
     private ServerHttpResponse getResponseAndReport(ServerWebExchange exchange, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
         if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
@@ -248,13 +197,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         return response;
     }
 
-    /**
-     * 上报无请求体事件用于数据校验,风控,处理
-     *
-     * @param exchange
-     * @param chain
-     * @return
-     */
     private Mono<Void> reportWithoutRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
         packageRequestInfo(dataEvent, request, exchange);
         return chain.filter(
@@ -263,16 +205,10 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                 ).build());
     }
 
-    /**
-     * 封装request
-     */
     private static final BiFunction<ServerHttpRequest, Mono<String>, ServerHttpRequestDecorator> REQUEST_DECORATOR_GENERATOR = FluxCommonFactory.REQUEST_DECORATOR_GENERATOR;
 
     private final Map<String, ReportWithRequestBodyProcessor> REQUEST_BODY_PROCESSOR_HOLDER = new HashMap<>(4, 1.0f);
 
-    /**
-     * 获取真实value
-     */
     public static final BiFunction<HttpHeaders, String, String> HEADER_VALUE_GETTER = FluxCommonFactory.HEADER_VALUE_GETTER;
 
     private final Function<HttpHeaders, ReportWithRequestBodyProcessor> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
@@ -284,22 +220,11 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         return processor;
     };
 
-
-    /**
-     * 上报有请求体事件用于数据校验,风控,处理
-     *
-     * @param exchange
-     * @param chain
-     * @return
-     */
     private Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
         packageRequestInfo(dataEvent, request, exchange);
         return REQUEST_BODY_PROCESSOR_GETTER.apply(request.getHeaders()).processor(request, exchange, chain, requestEventReporter, dataEvent);
     }
 
-    /**
-     * 初始化
-     */
     @PostConstruct
     private void init() {
         EXPIRED_SECONDS = encryptDeploy.getExpire();
@@ -330,9 +255,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
     }
 
 
-    /**
-     * 处理JSON请求
-     */
     protected class JsonRequestBodyProcessor implements ReportWithRequestBodyProcessor {
 
         @Override
@@ -365,9 +287,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         }
     }
 
-    /**
-     * 处理文件请求
-     */
     protected class MultipartRequestBodyProcessor implements ReportWithRequestBodyProcessor {
         @Override
         public String getContentType() {

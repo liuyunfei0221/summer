@@ -18,7 +18,7 @@ import static java.lang.String.valueOf;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * Excel文件创建器
+ * workbook processor
  *
  * @author DarkBlue
  */
@@ -28,39 +28,39 @@ public final class WorkBookProcessor<T> {
     private static final Logger LOGGER = getLogger(WorkBookProcessor.class);
 
     /**
-     * 列宽
+     * cell width
      */
     private final int columnWidth;
 
     /**
-     * 行高
+     * cell height
      */
     private final short columnHeight;
 
     /**
-     * 字体大小
+     * font size
      */
     private final short fontSize;
 
     /**
-     * 字体
+     * font name
      */
     private final String fontName;
 
     /**
-     * 表头
+     * headers
      */
     private final String[] headers;
 
     /**
-     * 实体到行元素的封装器
+     * elements in data list to excel row converter
      */
     private final BiConsumer<XSSFRow, T> rowElementPackager;
 
     /**
-     * 表头长度
+     * header size
      */
-    private final int headerLength;
+    private final int headerSize;
 
     public WorkBookProcessor(WorkBookElementConf<T> workBookElementConf) {
         this(workBookElementConf, new WorkBookStyle());
@@ -70,7 +70,7 @@ public final class WorkBookProcessor<T> {
         assertParam(workBookElementConf, workBookStyleConf);
 
         this.headers = workBookElementConf.getHeaders();
-        this.headerLength = this.headers.length;
+        this.headerSize = this.headers.length;
         this.rowElementPackager = workBookElementConf.getRowElementPackager();
 
         this.columnWidth = workBookStyleConf.getColumnWidth();
@@ -80,7 +80,7 @@ public final class WorkBookProcessor<T> {
     }
 
     /**
-     * 创建excel
+     * generate workbook
      *
      * @return
      */
@@ -93,7 +93,7 @@ public final class WorkBookProcessor<T> {
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFCellStyle style = generateStyle(workbook);
 
-        //内容
+        //page elements
         int sheetIndex = 1;
         int rowIndex;
         XSSFSheet sheet;
@@ -106,17 +106,17 @@ public final class WorkBookProcessor<T> {
             sheet.setDefaultColumnWidth(columnWidth);
             sheet.setDefaultRowHeight(columnHeight);
 
-            //表头
+            //header
             row = sheet.createRow(rowIndex++);
             row.setRowStyle(style);
 
-            for (int i = 0; i < headerLength; i++) {
+            for (int i = 0; i < headerSize; i++) {
                 cell = row.createCell(i);
                 cell.setCellType(CellType.STRING);
                 cell.setCellValue(headers[i]);
             }
 
-            //内容行
+            //row
             for (T rowElement : sheetElement) {
                 row = sheet.createRow(rowIndex++);
                 row.setRowStyle(style);
@@ -133,56 +133,56 @@ public final class WorkBookProcessor<T> {
     }
 
     /**
-     * 校验构造
+     * assert processor params
      */
     private void assertParam(WorkBookElementConf<T> workBookElementConf, WorkBookStyleConf workBookStyleConf) {
         if (workBookElementConf == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "workBookElement不能为空");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "workBookElement can't be null");
 
         String[] headers = workBookElementConf.getHeaders();
         if (headers == null || headers.length < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "表头元素不能为空");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "headers can't be null");
 
         BiConsumer<XSSFRow, T> rowElementPackager = workBookElementConf.getRowElementPackager();
         if (rowElementPackager == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "实体到行元素封装器不能为空");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "row packager can't be null");
 
         Integer columnWidth = workBookStyleConf.getColumnWidth();
         if (columnWidth == null || columnWidth < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "columnWidth不能小于1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "columnWidth can't be null or less than 1");
 
         Short columnHeight = workBookStyleConf.getColumnHeight();
         if (columnHeight == null || columnHeight < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "columnHeight不能小于1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "columnHeight can't be null or less than 1");
 
         String fontName = workBookStyleConf.getFontName();
         if (fontName == null || "".equals(fontName))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "fontName不能为空或''");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "fontName can't be blank");
 
         Short fontSize = workBookStyleConf.getFontSize();
         if (fontSize == null || fontSize < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "fontSize不能小于1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "fontSize can't be null or less than 1");
     }
 
     /**
-     * 参数校验
+     * assert elements
      *
      * @param sheetElements
      */
     private void elementsAsserter(List<List<T>> sheetElements) {
         if (sheetElements == null || sheetElements.size() < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "数据集为空");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "elements can't be empty");
 
         int sheetCheckIndex = 1;
         for (List<T> sheetElement : sheetElements) {
             if (sheetElement == null || sheetElement.size() < 1)
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "第" + sheetCheckIndex + "页数据集为空");
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "elements in page " + sheetCheckIndex + "is empty");
             sheetCheckIndex++;
         }
     }
 
     /**
-     * 创建样式
+     * generate cell style
      *
      * @param workbook
      * @return

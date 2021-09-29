@@ -34,7 +34,7 @@ import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.error;
 
 /**
- * 认证鉴权过滤器
+ * rate limiter
  *
  * @author DarkBlue
  */

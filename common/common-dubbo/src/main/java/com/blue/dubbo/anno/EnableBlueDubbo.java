@@ -12,19 +12,29 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * conf data component
+ * enable dubbo
  *
  * @author DarkBlue
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "JavaDoc"})
 @Target(TYPE)
 @Retention(RUNTIME)
 @Configuration
 @Import({BlueDubboConfiguration.class, BlueDubboComponentScanRegistrar.class})
 public @interface EnableBlueDubbo {
 
+    /**
+     * scan packages
+     *
+     * @return
+     */
     String[] basePackages() default {};
 
+    /**
+     * scan classes
+     *
+     * @return
+     */
     Class<?>[] basePackageClasses() default {};
 
 }

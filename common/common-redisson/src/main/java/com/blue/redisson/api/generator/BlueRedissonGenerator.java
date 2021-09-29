@@ -20,7 +20,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * redis组件创建工厂
+ * redisson components generator
  *
  * @author DarkBlue
  */
@@ -34,7 +34,7 @@ public final class BlueRedissonGenerator {
 
 
     /**
-     * 集群
+     * cluster
      *
      * @param config
      * @param redissonConf
@@ -69,7 +69,7 @@ public final class BlueRedissonGenerator {
     }
 
     /**
-     * 单机
+     * standalone
      *
      * @param config
      * @param redissonConf
@@ -127,7 +127,7 @@ public final class BlueRedissonGenerator {
     }
 
     /**
-     * 创建client
+     * generate client
      *
      * @param redissonConf
      * @return
@@ -159,7 +159,7 @@ public final class BlueRedissonGenerator {
         ExecutorService executorService = new ThreadPoolExecutor(redissonConf.getExecutorCorePoolSize(),
                 redissonConf.getExecutorMaximumPoolSize(),
                 redissonConf.getExecutorKeepAliveTime(), SECONDS, blockingQueue, threadFactory, (r, executor) -> {
-            LOGGER.warn("触发线程池拒绝策略,交由调用线程执行");
+            LOGGER.warn("Trigger the thread pool rejection strategy and hand it over to the calling thread for execution");
             r.run();
         });
 
@@ -169,7 +169,7 @@ public final class BlueRedissonGenerator {
     }
 
     /**
-     * 参数校验
+     * assert params
      *
      * @param redissonConf
      */

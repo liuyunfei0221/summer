@@ -14,7 +14,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * 文件映射器
+ * file api route
  *
  * @author DarkBlue
  */

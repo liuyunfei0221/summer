@@ -13,7 +13,7 @@ import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * rpc接口异步化封装
+ * rpc secure reference
  *
  * @author DarkBlue
  */
@@ -29,7 +29,7 @@ public class RpcSecureServiceConsumer {
     private RpcSecureService rpcSecureService;
 
     /**
-     * 认证并鉴权
+     * authentication and authorization
      *
      * @param assertAuth
      * @return

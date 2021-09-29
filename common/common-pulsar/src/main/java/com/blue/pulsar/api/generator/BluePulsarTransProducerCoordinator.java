@@ -32,7 +32,7 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
-     * 开启事务
+     * start transaction
      *
      * @return
      */
@@ -45,7 +45,7 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
-     * 开启事务
+     * start transaction
      *
      * @return
      */
@@ -58,7 +58,7 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
-     * 开启事务
+     * start transaction
      *
      * @param transTimeout
      * @param transTimeoutUnit
@@ -73,7 +73,7 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
-     * 开启事务
+     * start transaction
      *
      * @param transTimeout
      * @param transTimeoutUnit
@@ -88,7 +88,7 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
-     * 提交事务
+     * commit transaction
      *
      * @param transaction
      */
@@ -101,7 +101,7 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
-     * 提交事务
+     * commit transaction
      *
      * @param transaction
      * @return
@@ -111,7 +111,7 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
-     * 撤销事务
+     * rollback transaction
      *
      * @param transaction
      */
@@ -124,7 +124,7 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
-     * 撤销事务
+     * rollback transaction
      *
      * @param transaction
      * @return
@@ -134,7 +134,7 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
-     * 构建pulsar生产者
+     * generate producer
      *
      * @param conf
      * @param clz
@@ -146,7 +146,7 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
-     * 构建pulsar生产者
+     * generate producer
      *
      * @param conf
      * @param clz
@@ -158,7 +158,7 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
-     * 构建pulsar生产者
+     * generate producer
      *
      * @param conf
      * @param clz
@@ -173,6 +173,8 @@ public final class BluePulsarTransProducerCoordinator {
     }
 
     /**
+     * generate producer
+     *
      * @param conf
      * @param clz
      * @param messageRouter

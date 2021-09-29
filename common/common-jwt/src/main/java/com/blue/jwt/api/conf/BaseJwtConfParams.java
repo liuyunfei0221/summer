@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * jwt工具构建参数
+ * jwt params
  *
  * @author DarkBlue
  * @date 2021/8/12

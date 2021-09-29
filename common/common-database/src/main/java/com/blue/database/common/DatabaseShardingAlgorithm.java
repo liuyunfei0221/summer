@@ -13,7 +13,7 @@ import static com.blue.identity.core.SnowflakeIdentityParser.parse;
 import static java.util.stream.LongStream.range;
 
 /**
- * 分库
+ * db sharding algorithm
  *
  * @author DarkBlue
  */
@@ -23,17 +23,16 @@ public final class DatabaseShardingAlgorithm implements PreciseShardingAlgorithm
     private final Map<Long, String> mapping;
 
     public DatabaseShardingAlgorithm(String logicDataBaseName, int shardSize) {
-
         if (logicDataBaseName == null || "".equals(logicDataBaseName))
-            throw new IdentityException("logicDataBaseName不能为空或''");
+            throw new IdentityException("logicDataBaseName can't be blank");
         if (shardSize < 1)
-            throw new IdentityException("shardSize不能小于1");
+            throw new IdentityException("shardSize can't be less than 1");
 
-        Map<Long, String> indexAndDataBaseMapping = new HashMap<>(shardSize);
+        Map<Long, String> indexAndDatabaseMapping = new HashMap<>(shardSize);
         range(0L, shardSize)
-                .forEach(index -> indexAndDataBaseMapping.put(index, (logicDataBaseName.intern() + PAR_CONCATENATION.identity + index).intern()));
+                .forEach(index -> indexAndDatabaseMapping.put(index, (logicDataBaseName.intern() + PAR_CONCATENATION.identity + index).intern()));
 
-        mapping = indexAndDataBaseMapping;
+        mapping = indexAndDatabaseMapping;
     }
 
     @Override

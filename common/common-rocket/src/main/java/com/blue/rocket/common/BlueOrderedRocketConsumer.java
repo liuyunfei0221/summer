@@ -20,7 +20,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * pulsar消费者
+ * rocket ordered consumer
  *
  * @author DarkBlue
  */
@@ -128,7 +128,7 @@ public final class BlueOrderedRocketConsumer<T> {
     }
 
     /**
-     * 开始消费
+     * begin
      */
     public void run() {
         try {
@@ -140,7 +140,7 @@ public final class BlueOrderedRocketConsumer<T> {
     }
 
     /**
-     * 关闭资源
+     * stop
      */
     public void shutdown() {
         try {

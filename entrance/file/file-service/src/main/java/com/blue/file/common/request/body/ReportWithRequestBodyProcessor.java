@@ -8,7 +8,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 /**
- * 根据请求类型处理请求并封装上报的业务逻辑
+ * request body processor
  *
  * @author DarkBlue
  */
@@ -16,14 +16,14 @@ import reactor.core.publisher.Mono;
 public interface ReportWithRequestBodyProcessor {
 
     /**
-     * 处理的请求类型
+     * handle type
      *
      * @return
      */
     String getContentType();
 
     /**
-     * 处理
+     * handle
      *
      * @param request
      * @param exchange

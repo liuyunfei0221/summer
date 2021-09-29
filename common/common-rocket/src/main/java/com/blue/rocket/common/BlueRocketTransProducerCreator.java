@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * pulsar发送者
+ * rocket ordered producer
  *
  * @author DarkBlue
  */

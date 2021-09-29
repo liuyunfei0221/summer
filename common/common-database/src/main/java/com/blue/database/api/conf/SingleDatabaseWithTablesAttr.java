@@ -3,12 +3,16 @@ package com.blue.database.api.conf;
 import java.util.List;
 
 /**
- * 分片参数封装
+ * single db shard with tables
  *
  * @author DarkBlue
  */
+@SuppressWarnings("unused")
 public final class SingleDatabaseWithTablesAttr extends ShardingDatabaseAttr {
 
+    /**
+     * tables not sharding
+     */
     private List<String> singleTables;
 
     public SingleDatabaseWithTablesAttr() {

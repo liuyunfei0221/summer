@@ -5,7 +5,7 @@ import com.blue.excel.api.conf.WorkBookStyleConf;
 import com.blue.excel.common.WorkBookProcessor;
 
 /**
- * Excel工具构建工厂
+ * workbook process generator
  *
  * @author DarkBlue
  */
@@ -13,7 +13,7 @@ import com.blue.excel.common.WorkBookProcessor;
 public class BlueWorkBookProcessorGenerator {
 
     /**
-     * 创建WorkBookGenerator
+     * generate workBook processor
      *
      * @param workBookElementConf
      * @param workBookStyleConf
@@ -23,6 +23,5 @@ public class BlueWorkBookProcessorGenerator {
     public static <T> WorkBookProcessor<T> createWorkBookGenerator(WorkBookElementConf<T> workBookElementConf, WorkBookStyleConf workBookStyleConf) {
         return new WorkBookProcessor<>(workBookElementConf, workBookStyleConf);
     }
-
 
 }

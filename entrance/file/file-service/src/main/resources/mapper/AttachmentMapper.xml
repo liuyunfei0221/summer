@@ -157,15 +157,6 @@
         </if>
     </insert>
 
-    <select id="listAttachment" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        SELECT *
-        FROM attachment FORCE INDEX(`idx_creator`)
-        WHERE
-            creator = #{memberId,jdbcType=BIGINT}
-        ORDER BY
-            id DESC;
-    </select>
-
     <select id="listAttachmentByLimit" resultMap="BaseResultMap">
         SELECT *
         FROM attachment

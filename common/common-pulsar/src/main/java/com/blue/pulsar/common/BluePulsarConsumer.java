@@ -22,11 +22,11 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * pulsar消费者
+ * pulsar consumer
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "AlibabaAvoidManuallyCreateThread"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "AlibabaAvoidManuallyCreateThread", "JavaDoc"})
 public final class BluePulsarConsumer<T extends Serializable> {
 
     private static final Logger LOGGER = getLogger(BluePulsarConsumer.class);
@@ -40,7 +40,7 @@ public final class BluePulsarConsumer<T extends Serializable> {
     private final List<Thread> workingThreadHolder;
 
     /**
-     * 创建器map
+     * consumers holder
      */
     private final Map<Boolean, BiFunction<Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
             Consumer<Message<T>>>> ACK_CONSUMER_GENERATOR_HOLDER = new HashMap<>(4);
@@ -48,7 +48,7 @@ public final class BluePulsarConsumer<T extends Serializable> {
             Consumer<Messages<T>>>> ACK_BATCH_CONSUMER_GENERATOR_HOLDER = new HashMap<>(4);
 
     /**
-     * 根据ack类型获取创建器
+     * get consumer generator by actType
      */
     private final Function<Boolean, BiFunction<Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
             Consumer<Message<T>>>> ACK_CONSUMER_GENERATOR = ackType -> {
@@ -63,6 +63,16 @@ public final class BluePulsarConsumer<T extends Serializable> {
         return ACK_BATCH_CONSUMER_GENERATOR_HOLDER.get(ackType);
     };
 
+    /**
+     * constructor
+     *
+     * @param conf
+     * @param consumer
+     * @param messageListener
+     * @param consumerEventListener
+     * @param interceptors
+     * @param keySharedPolicy
+     */
     public BluePulsarConsumer(ConsumerConf conf, Consumer<T> consumer, MessageListener<T> messageListener, ConsumerEventListener consumerEventListener,
                               List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
         if (consumer == null)
@@ -100,7 +110,7 @@ public final class BluePulsarConsumer<T extends Serializable> {
     }
 
     /**
-     * 开始消费
+     * begin
      */
     @SuppressWarnings("AlibabaAvoidManuallyCreateThread")
     public void run() {
@@ -116,7 +126,7 @@ public final class BluePulsarConsumer<T extends Serializable> {
     }
 
     /**
-     * 关闭资源
+     * stop
      */
     public void shutdown() {
         try {
@@ -133,7 +143,7 @@ public final class BluePulsarConsumer<T extends Serializable> {
     }
 
     /**
-     * pulsar消费任务封装类
+     * pulsar consumer task
      */
     @SuppressWarnings({"FieldCanBeLocal", "JavaDoc"})
     private final class PulsarConsumerTask implements Runnable {
@@ -162,7 +172,7 @@ public final class BluePulsarConsumer<T extends Serializable> {
         };
 
         /**
-         * 构造
+         * constructor
          *
          * @param pulsarConsumer
          * @param consumer
@@ -213,7 +223,7 @@ public final class BluePulsarConsumer<T extends Serializable> {
         }
 
         /**
-         * 停机
+         * stop
          */
         void shutdown() {
             try {
@@ -225,7 +235,8 @@ public final class BluePulsarConsumer<T extends Serializable> {
     }
 
     /**
-     * 手动ack创建器   ->   处理事件/不开启自动确认/手动重置偏移 !!! 手动重置offset可能导致数据重复消费问题,如有需要,请自己在消费业务端做幂等处理
+     * manual ack -> Handling events/not enabling automatic confirmation/manually resetting the offset !!! Manually resetting the offset may cause the problem of repeated consumption of data. If necessary,
+     * please do idempotent processing on the consumer business side by yourself
      */
     private final BiFunction<
             Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
@@ -251,7 +262,7 @@ public final class BluePulsarConsumer<T extends Serializable> {
                     };
 
     /**
-     * 自动ack创建器   ->   处理事件/开启自动确认/自动处理偏移/需手动捕获具体的消费异常并补偿
+     * auto ack -> Handling events/enabling automatic confirmation/automatically handle offsets/need to manually capture specific consumption exceptions and compensate
      */
     private final BiFunction<
             Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
@@ -273,7 +284,8 @@ public final class BluePulsarConsumer<T extends Serializable> {
                     };
 
     /**
-     * 手动ack创建器   ->   处理事件/不开启自动确认/手动重置偏移 !!! 手动重置offset可能导致数据重复消费问题,如有需要,请自己在消费业务端做幂等处理
+     * manual ack -> Handling events/not enabling automatic confirmation/manually resetting the offset !!! Manually resetting the offset may cause the problem of repeated consumption of data. If necessary,
+     * please do idempotent processing on the consumer business side by yourself
      */
     private final BiFunction<
             Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
@@ -301,7 +313,7 @@ public final class BluePulsarConsumer<T extends Serializable> {
                     };
 
     /**
-     * 自动ack创建器   ->   处理事件/开启自动确认/自动处理偏移/需手动捕获具体的消费异常并补偿
+     * auto ack -> Handling events/enabling automatic confirmation/automatically handle offsets/need to manually capture specific consumption exceptions and compensate
      */
     private final BiFunction<
             Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,

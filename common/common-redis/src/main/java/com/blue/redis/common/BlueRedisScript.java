@@ -6,7 +6,7 @@ import org.springframework.lang.NonNull;
 import static org.springframework.data.redis.core.script.DigestUtils.sha1DigestAsHex;
 
 /**
- * redis脚本
+ * redis script
  *
  * @author liuyunfei
  * @date 2021/8/18

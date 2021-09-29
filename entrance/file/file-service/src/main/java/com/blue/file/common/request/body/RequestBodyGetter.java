@@ -4,7 +4,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**
- * 根据请求类型封装上报数据的业务逻辑
+ * request body getter
  *
  * @author DarkBlue
  */
@@ -12,14 +12,14 @@ import reactor.core.publisher.Mono;
 public interface RequestBodyGetter {
 
     /**
-     * 处理的请求类型
+     * handle type
      *
      * @return
      */
     String getContentType();
 
     /**
-     * 处理
+     * handle
      *
      * @param exchange
      * @return

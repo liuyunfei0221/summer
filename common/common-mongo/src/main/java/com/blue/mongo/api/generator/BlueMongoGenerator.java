@@ -19,7 +19,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * mongo配置
+ * mongo components generator
  *
  * @author liuyunfei
  * @date 2021/9/15
@@ -31,7 +31,7 @@ public final class BlueMongoGenerator {
     private static final Logger LOGGER = getLogger(BlueMongoGenerator.class);
 
     /**
-     * 创建clientSettingFactoryBean
+     * generate clientSettingFactoryBean
      *
      * @param mongoConf
      * @return
@@ -106,7 +106,7 @@ public final class BlueMongoGenerator {
     }
 
     /**
-     * 创建mongoClient
+     * generate mongoClient
      *
      * @param mongoClientSettingsFactoryBean
      * @return
@@ -126,7 +126,7 @@ public final class BlueMongoGenerator {
     }
 
     /**
-     * 构建响应模板
+     * generate template
      *
      * @param mongoClient
      * @param mongoConf
@@ -140,19 +140,19 @@ public final class BlueMongoGenerator {
     }
 
     /**
-     * 参数校验
+     * assert params
      *
-     * @param mongoConf
+     * @param conf
      */
-    private static void confAsserter(MongoConf mongoConf) {
-        if (mongoConf == null)
-            throw new RuntimeException("mongoConf can't be null");
+    private static void confAsserter(MongoConf conf) {
+        if (conf == null)
+            throw new RuntimeException("conf can't be null");
 
-        List<AddressAttr> addressAttrs = mongoConf.getAddressAttrs();
+        List<AddressAttr> addressAttrs = conf.getAddressAttrs();
         if (isEmpty(addressAttrs))
             throw new RuntimeException("addressAttrs can't be null or empty");
 
-        String databaseName = mongoConf.getDatabaseName();
+        String databaseName = conf.getDatabaseName();
         if (isBlank(databaseName))
             throw new RuntimeException("databaseName can't be null or ''");
     }

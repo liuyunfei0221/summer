@@ -6,7 +6,7 @@ import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 
 /**
- * caffeine配置参数封装
+ * caffeine conf
  *
  * @author DarkBlue
  */
@@ -14,28 +14,28 @@ import java.util.concurrent.ExecutorService;
 public interface CaffeineConf {
 
     /**
-     * 最大缓存量
+     * max size
      *
      * @return
      */
     Integer getMaximumSize();
 
     /**
-     * 过期时间
+     * expire
      *
      * @return
      */
     Duration getExpireDuration();
 
     /**
-     * 过期策略
+     * expire strategy
      *
      * @return
      */
     ExpireStrategy getExpireStrategy();
 
     /**
-     * 线程池
+     * executor pool
      *
      * @return
      */

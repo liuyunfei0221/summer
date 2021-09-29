@@ -18,6 +18,8 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
 
 /**
+ * data access components configuration
+ *
  * @author DarkBlue
  */
 @SuppressWarnings({"DefaultAnnotationParam"})

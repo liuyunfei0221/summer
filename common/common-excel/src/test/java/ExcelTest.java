@@ -17,7 +17,6 @@
 //public class ExcelTest {
 //
 //    /**
-//     * 导出推广员列表Excel
 //     *
 //     * @param exportByIdsDTO
 //     * @return
@@ -50,9 +49,7 @@
 //                    "无导出数据");
 //        }
 //
-//        //获取缓存的全部城市列表
 //        List<CityDTO> cityList = cityService.getCityList();
-//        //构建映射
 //        Map<Integer, String> codeNameMapping = new HashMap<>(cityList.size());
 //        cityList.forEach(c -> codeNameMapping.put(c.getCode(), c.getName()));
 //
@@ -87,13 +84,9 @@
 //            cell.setCellValue(FORMATTER.format(LocalDateTime.ofInstant(Instant.ofEpochSecond(e.getGmtCreate()), ZoneId.systemDefault())));
 //        };
 //
-//        //构建excel元素
 //        WorkBookElement<RecommenderDO> workBookElement = new WorkBookElement<>(RECOMMENDER_HEADERS, rowElementPackeger);
-//        //构建excel生成器
 //        WorkBookGenerator<RecommenderDO> generator = new WorkBookGenerator<>(workBookElement);
-//        //需要转换为excel的数据集 外层集合为页 内层集合为数据行
 //        List<List<RecommenderDO>> pageElements = new ArrayList<>(Collections.singletonList(recommenders));
-//        //创建excel
 //        XSSFWorkbook xssfWorkbook = generator.generate(pageElements);
 //
 //        try (final ServletOutputStream outputStream = response.getOutputStream();

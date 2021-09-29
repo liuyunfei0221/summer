@@ -11,7 +11,7 @@ import java.util.List;
 
 
 /**
- * pulsar生产者构建工厂
+ * pulsar producer generator
  *
  * @author DarkBlue
  */
@@ -19,7 +19,7 @@ import java.util.List;
 public final class BluePulsarProducerGenerator {
 
     /**
-     * 构建pulsar生产者
+     * generate producer
      *
      * @param conf
      * @param clz
@@ -31,7 +31,7 @@ public final class BluePulsarProducerGenerator {
     }
 
     /**
-     * 构建pulsar生产者
+     * generate producer
      *
      * @param conf
      * @param clz
@@ -43,7 +43,7 @@ public final class BluePulsarProducerGenerator {
     }
 
     /**
-     * 构建pulsar生产者
+     * generate producer
      *
      * @param conf
      * @param clz
@@ -58,6 +58,8 @@ public final class BluePulsarProducerGenerator {
     }
 
     /**
+     * generate producer
+     *
      * @param conf
      * @param clz
      * @param messageRouter

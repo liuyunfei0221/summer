@@ -6,7 +6,7 @@ import com.blue.rocket.common.BlueRocketConsumer;
 import java.util.function.Consumer;
 
 /**
- * pulsar消费者构建工厂
+ * rocket consumer generator
  *
  * @author DarkBlue
  */
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 public final class BlueRocketConsumerGenerator {
 
     /**
-     * 构建消费端
+     * generate consumer
      *
      * @param conf
      * @param consumer
@@ -26,7 +26,7 @@ public final class BlueRocketConsumerGenerator {
     }
 
     /**
-     * 参数校验
+     * assert params
      *
      * @param conf
      * @param consumer

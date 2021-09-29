@@ -32,7 +32,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 请求大小过滤器
+ * request attr filter
  *
  * @author DarkBlue
  */
@@ -53,22 +53,13 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
     private static int MAX_URI_LENGTH, MAX_HEADER_COUNT, MAX_HEADER_LENGTH;
     private static long MAX_CONTENT_LENGTH;
 
-    /**
-     * uri长度断言器
-     */
     private static final Consumer<ServerHttpRequest> URI_ASSERTER = request -> {
         if (request.getURI().getRawPath().length() > MAX_URI_LENGTH)
             throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, TOO_LARGE_URI.message);
     };
 
-    /**
-     * 获取真实value
-     */
     public static final BiFunction<HttpHeaders, String, String> HEADER_VALUE_GETTER = FluxCommonFactory.HEADER_VALUE_GETTER;
 
-    /**
-     * contentType校验
-     */
     private static final Consumer<HttpHeaders> CONTENT_TYPE_ASSERTER = headers -> {
         if (VALID_CONTENT_TYPES.contains(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE)))
             return;
@@ -76,9 +67,6 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
         throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message);
     };
 
-    /**
-     * 请求头数量及长度断言器
-     */
     private static final Consumer<ServerHttpRequest> HEADER_ASSERTER = request -> {
         HttpHeaders headers = request.getHeaders();
 
@@ -101,9 +89,6 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
         }
     };
 
-    /**
-     * 请求体断言器
-     */
     private static final Consumer<ServerHttpRequest> CONTENT_ASSERTER = request -> {
         if (ofNullable(request.getHeaders().getFirst(CONTENT_LENGTH))
                 .map(Integer::valueOf).orElse(1) > MAX_CONTENT_LENGTH)

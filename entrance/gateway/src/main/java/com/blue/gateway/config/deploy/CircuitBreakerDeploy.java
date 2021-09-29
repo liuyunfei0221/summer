@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * CircuitBreaker deploy for resilience4j
+ * circuitBreaker deploy for resilience4j
  *
  * @author DarkBlue
  */

@@ -12,7 +12,7 @@ import org.springframework.core.env.Environment;
 import static org.springframework.cloud.loadbalancer.support.LoadBalancerClientFactory.PROPERTY_NAME;
 
 /**
- * ribbon配置类
+ * loadbalancer config
  *
  * @author DarkBlue
  */

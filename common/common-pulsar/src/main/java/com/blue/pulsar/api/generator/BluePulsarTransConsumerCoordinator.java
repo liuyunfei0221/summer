@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
- * pulsar消费者构建工厂
+ * pulsar transaction consumer generator
  *
  * @author DarkBlue
  */
@@ -26,7 +26,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 开启事务
+     * start transaction
      *
      * @return
      */
@@ -39,7 +39,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 开启事务
+     * start transaction
      *
      * @return
      */
@@ -52,7 +52,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 开启事务
+     * start transaction
      *
      * @param transTimeout
      * @param transTimeoutUnit
@@ -67,7 +67,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 开启事务
+     * start transaction
      *
      * @param transTimeout
      * @param transTimeoutUnit
@@ -82,7 +82,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 提交事务
+     * commit transaction
      *
      * @param transaction
      */
@@ -95,7 +95,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 提交事务
+     * commit transaction
      *
      * @param transaction
      * @return
@@ -105,7 +105,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 撤销事务
+     * rollback transaction
      *
      * @param transaction
      */
@@ -118,7 +118,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 撤销事务
+     * rollback transaction
      *
      * @param transaction
      * @return
@@ -128,7 +128,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 构建消费端
+     * generate consumer
      *
      * @param conf
      * @param consumer
@@ -140,7 +140,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 构建消费端
+     * generate consumer
      *
      * @param conf
      * @param consumer
@@ -152,7 +152,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 构建消费端
+     * generate consumer
      *
      * @param conf
      * @param consumer
@@ -164,7 +164,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 构建消费端
+     * generate consumer
      *
      * @param conf
      * @param consumer
@@ -177,7 +177,7 @@ public final class BluePulsarTransConsumerCoordinator {
     }
 
     /**
-     * 构建消费端
+     * generate consumer
      *
      * @param conf
      * @param consumer

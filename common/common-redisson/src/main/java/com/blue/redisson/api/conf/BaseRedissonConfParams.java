@@ -7,7 +7,7 @@ import org.redisson.config.SubscriptionMode;
 import java.util.List;
 
 /**
- * redisson配置信息封装
+ * redisson params
  *
  * @author liuyunfei
  * @date 2021/9/9

@@ -16,7 +16,7 @@ import static java.lang.System.currentTimeMillis;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * pulsar发送者
+ * pulsar transaction producer
  *
  * @author DarkBlue
  */
@@ -47,7 +47,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 发送事务数据
+     * send data with trans
      *
      * @param data
      * @param transaction
@@ -67,7 +67,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 异步发送事务数据
+     * async send data with trans
      *
      * @param data
      * @param transaction
@@ -83,7 +83,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 发送延时事务数据
+     * deliver after send data with trans
      *
      * @param data
      * @param transaction
@@ -105,7 +105,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 异步发送延时事务数据
+     * async deliver after send data with trans
      *
      * @param data
      * @param transaction
@@ -122,7 +122,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 发送延时事务数据
+     * deliver at send data with trans
      *
      * @param data
      * @param transaction
@@ -143,7 +143,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 异步发送延时事务数据
+     * async deliver at send data with trans
      *
      * @param data
      * @param transaction
@@ -204,7 +204,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 关闭资源
+     * stop
      */
     public void shutdown() {
         try {
@@ -218,7 +218,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 异步关闭资源
+     * stop async
      */
     public CompletableFuture<Void> shutdownAsync() {
         return pulsarProducer.closeAsync()

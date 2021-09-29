@@ -42,34 +42,16 @@ public class BlueReactiveLoadBalancerClientFilter implements GlobalFilter, Order
         this.clientFactory = clientFactory;
     }
 
-    /**
-     * 404
-     */
     private static final BlueException NOT_FOUND_EXP = new BlueException(NOT_FOUND.status, NOT_FOUND.code, NOT_FOUND.message);
 
-    /**
-     * exp getter
-     */
     private static final Supplier<BlueException> NOT_FOUND_EXP_SUP = () -> NOT_FOUND_EXP;
 
-    /**
-     * load balance prefix
-     */
     private static final String LOAD_BALANCE_SCHEME = "lb";
 
-    /**
-     * schemas
-     */
     private static final String SECURE_PROTOCOL = "https", PROTOCOL = "http";
 
-    /**
-     * req supplier
-     */
     private static final Supplier<Request> REQUEST_SUPPLIER = () -> ReactiveLoadBalancer.REQUEST;
 
-    /**
-     * uri constructor
-     */
     private static final BiFunction<ServiceInstance, URI, URI> URI_RE_CONSTRUCTOR = LoadBalancerUriTools::reconstructURI;
 
     @Override

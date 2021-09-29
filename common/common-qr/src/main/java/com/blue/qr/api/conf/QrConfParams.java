@@ -11,19 +11,19 @@ import java.awt.*;
 public class QrConfParams implements QrConf {
 
     /**
-     * 二维码大小相关
+     * qrcode size
      */
     private int width = 200;
     private int height = 200;
 
     /**
-     * LOGO颜色相关
+     * logo color
      */
     private int onColor = 0xFF000001;
     private int offColor = 0xFFFFFFFF;
 
     /**
-     * 笔画相关
+     * strokes info
      */
     private int strokesWidth = 1;
 
@@ -99,7 +99,7 @@ public class QrConfParams implements QrConf {
 
     @Override
     public String toString() {
-        return "DefaultQrConf{" +
+        return "QrConfParams{" +
                 "width=" + width +
                 ", height=" + height +
                 ", onColor=" + onColor +

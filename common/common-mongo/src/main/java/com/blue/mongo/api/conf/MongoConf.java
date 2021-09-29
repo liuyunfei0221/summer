@@ -13,7 +13,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import java.util.List;
 
 /**
- * redis配置参数封装
+ * mongo conf
  *
  * @author DarkBlue
  */

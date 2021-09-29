@@ -21,7 +21,7 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 消费端配置
+ * illegal mark consumer
  *
  * @author DarkBlue
  */

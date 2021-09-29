@@ -3,12 +3,13 @@ package com.blue.pulsar.api.conf;
 import java.util.Map;
 
 /**
- * 多consumer配置信息封装
+ * multi consumer params
  *
  * @author liuyunfei
  * @date 2021/9/10
  * @apiNote
  */
+@SuppressWarnings("unused")
 public class MultiConsumerConfParams {
 
     protected Map<String, ConsumerConfParams> configs;

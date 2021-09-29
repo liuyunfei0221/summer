@@ -29,11 +29,11 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 安全过滤器
+ * secure filter
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces"})
 @Component
 public final class BlueSecureFilter implements WebFilter, Ordered {
 
@@ -45,24 +45,11 @@ public final class BlueSecureFilter implements WebFilter, Ordered {
         this.rpcSecureServiceConsumer = rpcSecureServiceConsumer;
     }
 
-    /**
-     * 获取真实value
-     */
     public static final BiFunction<HttpHeaders, String, String> HEADER_VALUE_GETTER = FluxCommonFactory.HEADER_VALUE_GETTER;
 
-    /**
-     * 将auth信息替换为成员信息
-     */
     private static final BiConsumer<ServerHttpRequest, String> AUTHENTICATION_REPACKAGER =
             (request, accessInfo) -> request.mutate().headers(hs -> hs.set(AUTHORIZATION.name, accessInfo));
 
-    /**
-     * 校验并处理认证信息
-     *
-     * @param authAsserted
-     * @param request
-     * @param exchangeAttributes
-     */
     private static void authProcess(AuthAsserted authAsserted, ServerHttpRequest request, Map<String, Object> exchangeAttributes) {
         if (authAsserted == null || exchangeAttributes == null)
             throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);

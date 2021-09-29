@@ -3,7 +3,7 @@ package com.blue.secure.api.inter;
 import com.blue.base.model.base.Access;
 
 /**
- * 角色关联相关RPC接口
+ * rpc role interface
  *
  * @author DarkBlue
  */

@@ -2,7 +2,7 @@ package com.blue.excel.api.conf;
 
 
 /**
- * excel样式配置
+ * work book style conf
  *
  * @author DarkBlue
  */
@@ -10,28 +10,28 @@ package com.blue.excel.api.conf;
 public interface WorkBookStyleConf {
 
     /**
-     * 单元格宽度
+     * cell width
      *
      * @return
      */
     Integer getColumnWidth();
 
     /**
-     * 单元格高度
+     * cell height
      *
      * @return
      */
     Short getColumnHeight();
 
     /**
-     * 字体大小
+     * font size
      *
      * @return
      */
     Short getFontSize();
 
     /**
-     * 字体名称
+     * font name
      *
      * @return
      */

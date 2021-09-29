@@ -3,10 +3,13 @@ package com.blue.rocket.api.conf;
 import java.util.Map;
 
 /**
+ * multi producer params
+ *
  * @author liuyunfei
  * @date 2021/9/10
  * @apiNote
  */
+@SuppressWarnings("unused")
 public class MultiProducerConfParams {
 
     private Map<String, ProducerConfParams> configs;

@@ -1,7 +1,7 @@
 package com.blue.kafka.api.conf;
 
 /**
- * kafka单创建者实例配置信息
+ * kafka producer params
  *
  * @author DarkBlue
  */

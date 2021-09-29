@@ -17,7 +17,7 @@ import static java.lang.System.currentTimeMillis;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * pulsar发送者
+ * pulsar producer
  *
  * @author DarkBlue
  */
@@ -45,7 +45,7 @@ public final class BluePulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 发送数据
+     * send
      *
      * @param data
      */
@@ -63,7 +63,7 @@ public final class BluePulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 异步发送数据
+     * send async
      *
      * @param data
      */
@@ -76,7 +76,7 @@ public final class BluePulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 发送延时数据
+     * delay send
      *
      * @param data
      * @param delay
@@ -97,7 +97,7 @@ public final class BluePulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 异步发送延时数据
+     * delay send async
      *
      * @param data
      * @param delay
@@ -113,7 +113,7 @@ public final class BluePulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 发送定时数据
+     * deliver at send
      *
      * @param data
      * @param timestamp
@@ -133,7 +133,7 @@ public final class BluePulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 异步发送定时数据
+     * deliver at send async
      *
      * @param data
      * @param timestamp
@@ -193,7 +193,7 @@ public final class BluePulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 关闭资源
+     * stop
      */
     public void shutdown() {
         try {
@@ -207,7 +207,7 @@ public final class BluePulsarProducer<T extends Serializable> {
     }
 
     /**
-     * 异步关闭资源
+     * stop async
      */
     public CompletableFuture<Void> shutdownAsync() {
         return pulsarProducer.closeAsync()

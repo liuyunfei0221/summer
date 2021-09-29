@@ -5,6 +5,8 @@ import com.blue.redis.constant.ServerMode;
 import java.util.List;
 
 /**
+ * redis params
+ *
  * @author liuyunfei
  * @date 2021/9/9
  * @apiNote

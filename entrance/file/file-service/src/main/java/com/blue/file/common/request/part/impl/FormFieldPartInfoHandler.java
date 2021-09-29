@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 
 
 /**
- * 针对AbstractSynchronossPart及其子类的处理
+ * handle AbstractSynchronossPart
  *
  * @author DarkBlue
  */

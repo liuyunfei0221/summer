@@ -23,7 +23,7 @@ import static org.apache.pulsar.shade.org.apache.commons.lang3.StringUtils.isBla
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * pulsar client 创建器
+ * pulsar commons generator
  *
  * @author DarkBlue
  */
@@ -41,7 +41,7 @@ public final class PulsarCommonsGenerator {
     private static final String AUTH_PLUGIN_CLASS_NAME = "org.apache.pulsar.client.impl.auth.AuthenticationTls";
 
     /**
-     * 转换为url
+     * converter to url
      */
     public static final Function<List<String>, String> SERVICES_2_URL_CONVERTER = services -> {
         if (services == null || services.size() < 1)
@@ -56,7 +56,7 @@ public final class PulsarCommonsGenerator {
             "tlsCertFile:" + tlsCertFilePath + "," + "tlsKeyFile:" + tlsKeyFilePath;
 
     /**
-     * 创建client
+     * generate client
      *
      * @param conf
      * @return
@@ -133,7 +133,7 @@ public final class PulsarCommonsGenerator {
     }
 
     /**
-     * 创建producer
+     * generate producer
      *
      * @param pulsarClient
      * @param conf
@@ -209,7 +209,7 @@ public final class PulsarCommonsGenerator {
     }
 
     /**
-     * 创建consumer
+     * generate consumer
      *
      * @param pulsarClient
      * @param conf
@@ -229,7 +229,7 @@ public final class PulsarCommonsGenerator {
     }
 
     /**
-     * 创建consumer
+     * generate consumer
      *
      * @param pulsarClient
      * @param conf
@@ -336,10 +336,11 @@ public final class PulsarCommonsGenerator {
             throw new RuntimeException("generate consumer failed, cause e = {}", e);
         }
     }
-    //<editor-fold desc="参数校验">
+
+    //<editor-fold desc="assert params">
 
     /**
-     * client参数校验
+     * assert client params
      *
      * @param conf
      */
@@ -381,7 +382,7 @@ public final class PulsarCommonsGenerator {
     }
 
     /**
-     * producer参数校验
+     * assert producer params
      *
      * @param pulsarClient
      * @param conf
@@ -421,7 +422,7 @@ public final class PulsarCommonsGenerator {
     }
 
     /**
-     * consumer参数校验
+     * assert consumer params
      *
      * @param conf
      */

@@ -1,7 +1,7 @@
 package com.blue.redis.constant;
 
 /**
- * redis脚本str
+ * redis script str
  *
  * @author liuyunfei
  * @date 2021/8/25

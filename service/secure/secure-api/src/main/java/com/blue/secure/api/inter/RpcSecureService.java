@@ -8,7 +8,7 @@ import com.blue.secure.api.model.Authority;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * 认证鉴权RPC接口
+ * rpc secure interface
  *
  * @author DarkBlue
  */

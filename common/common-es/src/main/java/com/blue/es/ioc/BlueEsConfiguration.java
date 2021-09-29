@@ -11,7 +11,7 @@ import static com.blue.es.api.generator.BlueEsGenerator.generateElasticsearchTem
 import static com.blue.es.api.generator.BlueEsGenerator.generateRestHighLevelClient;
 
 /**
- * es配置类
+ * es configuration
  *
  * @author DarkBlue
  */

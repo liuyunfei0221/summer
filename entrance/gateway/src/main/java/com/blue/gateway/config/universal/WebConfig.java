@@ -7,7 +7,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 
 
 /**
- * web相关组件配置类
+ * web config
  *
  * @author DarkBlue
  */

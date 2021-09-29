@@ -36,7 +36,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * 文件上传处理函数
+ * uploader implements
  *
  * @author DarkBlue
  */
@@ -69,42 +69,42 @@ public final class LocalDiskFileUploader implements FileUploader {
     private final String DESC_PATH;
 
     /**
-     * 文件校验
+     * assert file
      */
     private final Function<Part, FileValidResult> PART_VALIDATOR = part -> {
         if (part == null)
-            return new FileValidResult(false, "", "文件为空");
+            return new FileValidResult(false, "", "part can't be empty");
 
         FilePart filePart = (FilePart) part;
         String fileName = filePart.filename();
         if ("".equals(fileName))
-            return new FileValidResult(false, fileName, "文件的全文件名为空");
+            return new FileValidResult(false, fileName, "file name can't be blank");
 
         int nameLength = fileName.length();
         if (nameLength > nameLenThreshold)
-            return new FileValidResult(false, fileName, "文件(" + fileName + ")的全文件名长度超过" + nameLenThreshold);
+            return new FileValidResult(false, fileName, "file (" + fileName + ") name length can't be greater than " + nameLenThreshold);
 
         int index = lastIndexOf(fileName, SCHEME_SEPARATOR.identity);
         if (index == -1 || nameLength - 1 == index)
-            return new FileValidResult(false, fileName, "文件(" + fileName + ")为未识别的文件格式");
+            return new FileValidResult(false, fileName, "file (" + fileName + ") has a unknown type");
 
         String postName = fileName.substring(index).toUpperCase();
         if (!validTypes.contains(postName))
-            return new FileValidResult(false, fileName, "文件(" + fileName + ")的文件格式非法");
+            return new FileValidResult(false, fileName, "file (" + fileName + ") type is invalid");
 
         String preName = fileName.substring(0, index);
         int preLength = preName.length();
         for (int i = 0; i < preLength; i++) {
             char c = preName.charAt(i);
             if (invalidPres.contains(c))
-                return new FileValidResult(false, fileName, "文件(" + fileName + ")的前缀文件名包含非法字符(" + c + ")");
+                return new FileValidResult(false, fileName, "file (" + fileName + ") name's prefix contains invalid str (" + c + ")");
         }
 
-        return new FileValidResult(true, fileName, "校验通过");
+        return new FileValidResult(true, fileName, "access");
     };
 
     /**
-     * 文件名处理
+     * file name combiner
      */
     private static final BinaryOperator<String> NAME_COMBINER = (path, name) -> {
         int index = lastIndexOf(name, ".");
@@ -115,7 +115,7 @@ public final class LocalDiskFileUploader implements FileUploader {
     };
 
     /**
-     * 文件上传
+     * upload file
      *
      * @param part
      * @return
@@ -143,7 +143,7 @@ public final class LocalDiskFileUploader implements FileUploader {
                     bufferedOutputStream.close();
                     bufferedOutputStream.close();
                 } catch (IOException e) {
-                    LOGGER.error("资源释放失败, e = {}", e);
+                    LOGGER.error("resources release failed, e = {}", e);
                 }
             };
 
@@ -152,7 +152,7 @@ public final class LocalDiskFileUploader implements FileUploader {
                     .doOnComplete(resourceCloser)
                     .doOnCancel(resourceCloser)
                     .doOnError(throwable -> {
-                        LOGGER.error("文件上传失败, throwable -> " + throwable);
+                        LOGGER.error("upload failed, throwable -> " + throwable);
                         resourceCloser.run();
                     })
                     .onBackpressureBuffer(BACKPRESSURE_BUFFER_MAX_SIZE, ERROR)
@@ -162,23 +162,23 @@ public final class LocalDiskFileUploader implements FileUploader {
                             try {
                                 bufferedOutputStream.write(array);
                             } catch (IOException e) {
-                                LOGGER.error("文件上传失败 e -> " + e);
-                                error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "上传失败"));
+                                LOGGER.error("upload failed, e -> " + e);
+                                error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "upload failed"));
                             }
                         } else {
-                            error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "文件大小不能超过" + monitor.getMonitored()));
+                            error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "file size can't greater than " + monitor.getMonitored()));
                         }
                         array = null;
                     }).collectList()
                     .flatMap(v ->
-                            just(new FileUploadResult(descName, validResult.getName(), true, "上传成功", monitor.getMonitored())));
+                            just(new FileUploadResult(descName, validResult.getName(), true, "upload success", monitor.getMonitored())));
 
         } catch (BlueException e) {
-            LOGGER.error("文件上传失败 e -> " + e);
+            LOGGER.error("upload failed, e -> " + e);
             return just(new FileUploadResult(descName, validResult.getName(), false, e.getCause().getMessage(), monitor.getMonitored()));
         } catch (Exception e) {
-            LOGGER.error("文件上传失败 e -> " + e);
-            return just(new FileUploadResult(descName, validResult.getName(), false, "上传失败", monitor.getMonitored()));
+            LOGGER.error("upload failed, e -> " + e);
+            return just(new FileUploadResult(descName, validResult.getName(), false, "upload failed", monitor.getMonitored()));
         }
     }
 

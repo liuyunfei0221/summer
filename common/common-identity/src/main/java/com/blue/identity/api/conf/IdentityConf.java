@@ -3,6 +3,8 @@ package com.blue.identity.api.conf;
 import java.util.function.Consumer;
 
 /**
+ * identity conf
+ *
  * @author DarkBlue
  */
 
@@ -10,119 +12,119 @@ import java.util.function.Consumer;
 public interface IdentityConf {
 
     /**
-     * 获取数据中心编号
+     * datacenter no
      *
      * @return
      */
     Integer getDataCenter();
 
     /**
-     * 获取机器编号
+     * worker no
      *
      * @return
      */
     Integer getWorker();
 
     /**
-     * 获取本服务实例名称
+     * service name
      *
      * @return
      */
     String getServiceName();
 
     /**
-     * 获取上次记录时间点
+     * last id generated seconds
      *
      * @return
      */
     Long getLastSeconds();
 
     /**
-     * 获取项目上线时间点
+     * online seconds
      *
      * @return
      */
     Long getBootSeconds();
 
     /**
-     * 到达最大时间戳报警器
+     * alarm for timestamp reach max
      *
      * @return
      */
     Consumer<Long> getMaximumTimeAlarm();
 
     /**
-     * 时间戳记录器
+     * last id generated seconds recorder
      *
      * @return
      */
     Consumer<Long> getSecondsRecorder();
 
     /**
-     * 获取缓冲（2的幂数)
+     * buffer size (power of 2)
      *
      * @return
      */
     Integer getBufferPower();
 
     /**
-     * 获取填充阈值(百分比)
+     * threshold for padding (percentage)
      *
      * @return
      */
     Integer getPaddingFactor();
 
     /**
-     * 获取异步填充线程池核心线程数
+     * async padding executor core pool size
      *
      * @return
      */
     Integer getPaddingCorePoolSize();
 
     /**
-     * 获取异步填充线程池最大线程数
+     * async padding executor max pool size
      *
      * @return
      */
     Integer getPaddingMaximumPoolSize();
 
     /**
-     * 获取线程keep alive 秒数
+     * async padding executor max pool keep alive seconds
      *
      * @return
      */
     Long getKeepAliveSeconds();
 
     /**
-     * 获取异步填充线程池阻塞队列长度
+     * async padding executor max pool blocking queue size
      *
      * @return
      */
     Integer getPaddingBlockingQueueSize();
 
     /**
-     * 是否定时填充
+     * enable scheduled padding
      *
      * @return
      */
     Boolean getPaddingScheduled();
 
     /**
-     * 获取定时填充线程池核心线程数
+     * scheduled padding executor core pool size
      *
      * @return
      */
     Integer getPaddingScheduledCorePoolSize();
 
     /**
-     * 获取定时填充初始延迟/毫秒
+     * scheduled padding init delay millis
      *
      * @return
      */
     Long getPaddingScheduledInitialDelayMillis();
 
     /**
-     * 获取定时填充时间间隔/毫秒
+     * scheduled padding interval delay millis
      *
      * @return
      */

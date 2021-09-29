@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 
 /**
- * kafka消费者构建工厂
+ * kafka consumer generator
  *
  * @author DarkBlue
  */
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public final class BlueKafkaConsumerGenerator {
 
     /**
-     * 构建消费端
+     * generate consumer
      *
      * @param consumerConf
      * @param consumer
@@ -29,7 +29,7 @@ public final class BlueKafkaConsumerGenerator {
     }
 
     /**
-     * 参数校验
+     * assert params
      *
      * @param consumerConf
      * @param consumer

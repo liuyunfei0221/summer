@@ -10,8 +10,6 @@ import java.util.concurrent.TimeUnit;
 public class Test {
 
     /**
-     * 以下为调试内容 生产环境清除
-     *
      * @param args
      */
     public static void main(String[] args) {
@@ -35,7 +33,6 @@ public class Test {
     }
 
     private static void testParse(String filePath) {
-        //解析二维码
         try (FileInputStream fileInputStream = new FileInputStream(filePath);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream)) {
             byte[] qrData = bufferedInputStream.readAllBytes();
@@ -49,11 +46,9 @@ public class Test {
 
     private static void test1(int c, QrCoder qrCoder) {
         String content = "看看这个无图二维码里面装的是啥 -> //www.baidu度度度+" + c + ".com//";
-        //二维码生成路径
         String qrDesc = "E:\\tempTests\\qrcode\\a" + c + ".jpg";
         try (FileOutputStream fileOutputStream = new FileOutputStream(qrDesc);
              final BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream)) {
-            //生成不带LOGO的二维码文件
             byte[] qrData = qrCoder.generateCodeWithoutLogo(content);
             bufferedOutputStream.write(qrData);
         } catch (IOException e) {
@@ -66,10 +61,7 @@ public class Test {
 
     private static void test2(int c, QrCoder qrCoder) {
         String content = "看看这个有图二维码里面装的是啥 -> //www.baidu度度度+" + c + ".com//";
-        //生成带LOGO的二维码文件
-        //LOGO路径
         String logoPath = "E:\\tempTests\\logo.png";
-        //二维码生成地址
         String qrDesc = "E:\\tempTests\\qrcode\\b" + c + ".jpg";
         try (FileInputStream fileInputStream = new FileInputStream(logoPath);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);

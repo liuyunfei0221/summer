@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 
 /**
+ * producer params
+ *
  * @author DarkBlue
  * @date 2021/8/9
  * @apiNote

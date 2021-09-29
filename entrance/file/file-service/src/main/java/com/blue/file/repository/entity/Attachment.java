@@ -2,51 +2,27 @@ package com.blue.file.repository.entity;
 
 
 /**
- * 附件表
+ * attachment
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public final class Attachment {
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 资源链接
-     */
     private String link;
 
-    /**
-     * 资源名称
-     */
     private String name;
 
-    /**
-     * 文件类型
-     */
     private String fileType;
 
-    /**
-     * 资源大小
-     */
     private Long size;
 
-    /**
-     * 资源状态 0停用 1启用
-     */
     private Integer status;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 创建人
-     */
     private Long creator;
 
     public Long getId() {

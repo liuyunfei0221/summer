@@ -27,6 +27,8 @@ import static org.springframework.core.annotation.AnnotationAttributes.fromMap;
 import static org.springframework.util.ClassUtils.getPackageName;
 
 /**
+ * dubbo component scan registrar
+ *
  * @author liuyunfei
  * @date 2021/8/25
  * @apiNote
@@ -35,7 +37,7 @@ import static org.springframework.util.ClassUtils.getPackageName;
 public class BlueDubboComponentScanRegistrar implements ImportBeanDefinitionRegistrar {
 
     private static final String SCAN_PACKAGES_ATTR_NAME = BLUE_DUBBO_SCAN_PACKAGE.scanPackagesAttrName;
-    private static final String SCAN_PACKAGES_CLASSES_ATTR_NAME = BLUE_DUBBO_SCAN_PACKAGE.basePackageClassesAttrName;
+    private static final String SCAN_CLASSES_ATTR_NAME = BLUE_DUBBO_SCAN_PACKAGE.scanClassesAttrName;
     private static final String[] DEFAULT_SCAN_PACKAGES = BLUE_DUBBO_SCAN_PACKAGE.defaultScanPackages;
     private static final int ROLE = 2;
 
@@ -58,7 +60,7 @@ public class BlueDubboComponentScanRegistrar implements ImportBeanDefinitionRegi
         AnnotationAttributes attributes = fromMap(metadata.getAnnotationAttributes(EnableBlueDubbo.class.getName()));
 
         String[] basePackages = ofNullable(attributes).map(attr -> attr.getStringArray(SCAN_PACKAGES_ATTR_NAME)).orElse(DEFAULT_SCAN_PACKAGES);
-        Class<?>[] basePackageClasses = ofNullable(attributes).map(attr -> attr.getClassArray(SCAN_PACKAGES_CLASSES_ATTR_NAME)).orElse(new Class<?>[0]);
+        Class<?>[] basePackageClasses = ofNullable(attributes).map(attr -> attr.getClassArray(SCAN_CLASSES_ATTR_NAME)).orElse(new Class<?>[0]);
 
         List<String> packagesToScan = new LinkedList<>(asList(basePackages));
         for (Class<?> basePackageClass : basePackageClasses)

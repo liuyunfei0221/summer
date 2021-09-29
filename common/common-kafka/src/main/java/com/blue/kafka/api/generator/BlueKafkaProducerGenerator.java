@@ -9,7 +9,7 @@ import java.util.function.BiConsumer;
 
 
 /**
- * kafka消费者构建工厂
+ * kafka producer generator
  *
  * @author DarkBlue
  */
@@ -17,7 +17,7 @@ import java.util.function.BiConsumer;
 public final class BlueKafkaProducerGenerator {
 
     /**
-     * 构建kafka模板
+     * generate kafka producer
      *
      * @param producerConf
      * @return

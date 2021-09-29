@@ -1,7 +1,7 @@
 package com.blue.redisson.constant;
 
 /**
- * 服务模式
+ * server mode
  *
  * @author liuyunfei
  * @date 2021/9/16
@@ -10,11 +10,11 @@ package com.blue.redisson.constant;
 public enum ServerMode {
 
     /**
-     * 集群模式
+     * cluster
      */
     CLUSTER,
     /**
-     * 单机模式
+     * single
      */
     SINGLE
 

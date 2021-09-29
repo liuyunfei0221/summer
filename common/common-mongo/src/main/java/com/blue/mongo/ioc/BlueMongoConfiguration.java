@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import static com.blue.mongo.api.generator.BlueMongoGenerator.*;
 
 /**
- * redis配置类
+ * mongo configuration
  *
  * @author DarkBlue
  */

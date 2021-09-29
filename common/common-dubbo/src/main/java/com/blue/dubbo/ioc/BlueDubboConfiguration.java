@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import static com.blue.dubbo.api.generator.BlueDubboGenerator.*;
 
 /**
- * dubbo配置
+ * dubbo components configuration
  *
  * @author liuyunfei
  * @date 2021/8/24
@@ -23,37 +23,37 @@ public class BlueDubboConfiguration {
 
     @Bean
     MetadataReportConfig metadataReportConfig() {
-        return createMetadataReportConfig(dubboConf);
+        return generateMetadataReportConfig(dubboConf);
     }
 
     @Bean
     RegistryConfig registryConfig() {
-        return createRegistryConfig(dubboConf);
+        return generateRegistryConfig(dubboConf);
     }
 
     @Bean
     MonitorConfig monitorConfig() {
-        return createMonitorConfig(dubboConf);
+        return generateMonitorConfig(dubboConf);
     }
 
     @Bean
     ApplicationConfig applicationConfig() {
-        return createApplicationConfig(dubboConf);
+        return generateApplicationConfig(dubboConf);
     }
 
     @Bean
     ProtocolConfig protocolConfig() {
-        return createProtocolConfig(dubboConf);
+        return generateProtocolConfig(dubboConf);
     }
 
     @Bean
     ProviderConfig providerConfig() {
-        return createProviderConfig(dubboConf);
+        return generateProviderConfig(dubboConf);
     }
 
     @Bean
     ConsumerConfig consumerConfig() {
-        return createConsumerConfig(dubboConf);
+        return generateConsumerConfig(dubboConf);
     }
 
 }

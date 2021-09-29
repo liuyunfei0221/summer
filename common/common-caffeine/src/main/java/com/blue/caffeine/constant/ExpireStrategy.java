@@ -1,19 +1,19 @@
 package com.blue.caffeine.constant;
 
 /**
- * cache过期策略
+ * cache expire strategy
  *
  * @author DarkBlue
  */
 public enum ExpireStrategy {
 
     /**
-     * 写后
+     * after write
      */
     AFTER_WRITE,
 
     /**
-     * 访问后
+     * after access
      */
     AFTER_ACCESS
 

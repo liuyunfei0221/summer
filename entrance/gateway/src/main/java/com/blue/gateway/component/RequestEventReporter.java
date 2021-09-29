@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 请求数据上报器
+ * request event reporter
  *
  * @author DarkBlue
  */
@@ -32,7 +32,7 @@ public final class RequestEventReporter {
     }
 
     /**
-     * 信息发送器
+     * message sender
      */
     private final Consumer<DataEvent> MESSAGE_SENDER = event -> {
         LOGGER.info("MESSAGE_SENDER send, event = {}", event);
@@ -45,16 +45,16 @@ public final class RequestEventReporter {
     };
 
     /**
-     * 上报数据
+     * report data
      *
      * @param dataEvent
      */
     public void report(DataEvent dataEvent) {
         try {
             MESSAGE_SENDER.accept(dataEvent);
-            LOGGER.warn("上报数据成功, dataEvent = {}", dataEvent);
+            LOGGER.warn("report(DataEvent dataEvent) success, dataEvent = {}", dataEvent);
         } catch (Exception e) {
-            LOGGER.error("上报数据失败, dataEvent = {}, e = {}", dataEvent, e);
+            LOGGER.error("report(DataEvent dataEvent) failed, dataEvent = {}, e = {}", dataEvent, e);
         }
     }
 

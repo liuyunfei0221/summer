@@ -33,11 +33,11 @@ import static javax.imageio.ImageIO.write;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * 二维码工具类
+ * qrcoder
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "WeakerAccess", "PlaceholderCountMatchesArgumentCount", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "WeakerAccess", "PlaceholderCountMatchesArgumentCount", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
 public final class QrCoder {
 
     private static final Logger LOGGER = getLogger(QrCoder.class);
@@ -93,7 +93,7 @@ public final class QrCoder {
     }
 
     /**
-     * 解析二维码
+     * parse qrcode
      *
      * @param qrData
      * @return
@@ -118,7 +118,7 @@ public final class QrCoder {
     }
 
     /**
-     * 根据内容生成不带LOGO的二维码
+     * generate code without logo
      *
      * @param content
      * @return
@@ -142,7 +142,7 @@ public final class QrCoder {
     }
 
     /**
-     * 根据内容生成带LOGO的二维码
+     * generate code with logo
      *
      * @param content
      * @param logoData
@@ -180,7 +180,6 @@ public final class QrCoder {
             qrGraphics.dispose();
             qrImage.flush();
 
-            //图片字节
             write(qrImage, CODE_FORMAT, bufferedOutputStream);
 
             return byteArrayOutputStream.toByteArray();

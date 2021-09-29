@@ -31,6 +31,8 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * default impl of JwtProcessor
+ *
  * @author DarkBlue
  */
 @SuppressWarnings({"WeakerAccess", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
@@ -40,7 +42,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
 
     //<editor-fold desc="jwt配置信息">
     /**
-     * header信息
+     * header info
      */
     private static final String HEADER_TYPE_NAME = "Type", HEADER_TYPE_VALUE = "Jwt";
     private static final String HEADER_ALG_NAME = "alg", HEADER_ALG_VALUE = "HS512";
@@ -68,92 +70,92 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
             GAMMA_SECRETS_MAX_LEN = GAMMA_SECRETS_MAX.len;
 
     /**
-     * 最大过期时间/用于认证的最大有效期
+     * maximum expiration time/Maximum validity period for certification
      */
     private final long MAX_EXPIRE_MILLIS;
 
     /**
-     * 最小过期时间/用于最后一次操作之后的认证过期时间
+     * minimum expiration time/certification expiration time after the last operation
      */
     private final long MIN_EXPIRE_MILLIS;
 
     /**
-     * 加密
+     * encrypt algorithm
      */
     private final Algorithm ALGORITHM;
 
     /**
-     * 验证
+     * verifier
      */
     private final JWTVerifier VERIFIER;
 
     /**
-     * 抽象的用于将认证信息实体转换为payload的函数
+     * abstract function used to convert authentication information entity into payload
      */
     private final Function<T, Map<String, String>> DATA_2_CLAIM_PROCESSOR;
 
     /**
-     * 抽象的用于将payload转换为认证信息实体的函数
+     * abstract function used to convert payload into authentication information entity
      */
     private final Function<Map<String, String>, T> CLAIM_2_DATA_PROCESSOR;
 
     /**
-     * 签发者
+     * issuer
      */
     private final String ISSUER;
 
     /**
-     * 主题
+     * subject
      */
     private final String SUBJECT;
 
     /**
-     * 受众
+     * audience
      */
     private final String AUDIENCE;
 
     /**
-     * 混淆key
+     * gamma secret keys
      */
     private String[] gammaSecretArr;
 
     /**
-     * 混淆key最大角标
+     * gamma secret arr max index
      */
     private int gammaSecretArrIndexMask;
     //</editor-fold>
 
     /**
-     * 过期时间戳claim key
+     * expire key
      */
     private static final String EXPIRES_AT_STAMP_KEY = "blueExpiresAtStamp";
 
     /**
-     * 日期构建器
+     * date generator
      */
     private static final Function<Long, Date> DATE_GEN = Date::new;
 
     /**
-     * 时间戳生成器
+     * timestamp generator
      */
     private static final Supplier<Long> TIME_STAMP_SUP = System::currentTimeMillis;
 
     /**
-     * hash离散器
+     * hash discrete processor
      */
     private static final UnaryOperator<Integer> HASH_DISCRETE_PROCESSOR = hash ->
             hash ^ (hash >>> 16);
 
     /**
-     * expiresAtStamp离散器
+     * expiresAtStamp discrete processor
      */
     private static final Function<Long, Integer> EXPIRES_AT_STAMP_DISCRETE_PROCESSOR = expiresAtStamp ->
             HASH_DISCRETE_PROCESSOR.apply((int) ((expiresAtStamp << 31) >>> 31));
 
     /**
-     * 混淆器
+     * mix up processor
      */
-    private final BiFunction<String, Long, String> MIX_UP_GENERATOR = (jwtId, expiresAtStamp) -> {
+    private final BiFunction<String, Long, String> MIX_UP_PROCESSOR = (jwtId, expiresAtStamp) -> {
         int h = HASH_DISCRETE_PROCESSOR.apply(jwtId.hashCode());
         return gammaSecretArr[~h & gammaSecretArrIndexMask]
                 + gammaSecretArr[EXPIRES_AT_STAMP_DISCRETE_PROCESSOR.apply(expiresAtStamp) & gammaSecretArrIndexMask]
@@ -162,15 +164,15 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     };
 
     /**
-     * jwt keyId 生成器
+     * jwt keyId generator
      */
     private final BiFunction<String, Long, String> KEY_ID_GENERATOR = (jwtId, expiresAtStamp) ->
-            sha512Hex(MIX_UP_GENERATOR.apply(jwtId, expiresAtStamp));
+            sha512Hex(MIX_UP_PROCESSOR.apply(jwtId, expiresAtStamp));
 
     /**
-     * jwt keyId 断言器
+     * jwt keyId asserter
      */
-    private final Consumer<DecodedJWT> JWT_ASSERT = jwt -> {
+    private final Consumer<DecodedJWT> JWT_ASSERTER = jwt -> {
         long expiresAtStamp = ofNullable(jwt.getClaim(EXPIRES_AT_STAMP_KEY))
                 .map(Claim::asLong).orElse(0L);
 
@@ -180,7 +182,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     };
 
     /**
-     * 构造
+     * construct
      *
      * @param jwtConf
      */
@@ -205,7 +207,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     }
 
     /**
-     * 创建jwt
+     * create jwt
      *
      * @param t
      * @return
@@ -242,7 +244,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     }
 
     /**
-     * 解析jwt
+     * parse jwt
      *
      * @param jwtToken
      * @return
@@ -252,7 +254,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
         if (isNotEmpty(jwtToken))
             try {
                 DecodedJWT jwt = VERIFIER.verify(jwtToken);
-                JWT_ASSERT.accept(jwt);
+                JWT_ASSERTER.accept(jwt);
 
                 return CLAIM_2_DATA_PROCESSOR.apply(
                         jwt.getClaims().entrySet().stream()
@@ -266,7 +268,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     }
 
     /**
-     * 获取jwt过期时间上限值
+     * get the upper limit of the expiration time of jwt
      *
      * @return
      */
@@ -276,7 +278,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     }
 
     /**
-     * 获取jwt过期时间下限值
+     * get the lower limit of the expiration time of jwt
      *
      * @return
      */
@@ -286,60 +288,60 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     }
 
     /**
-     * 参数校验
+     * assert params
      *
-     * @param jwtConf
+     * @param conf
      * @param <T>
      */
-    private static <T> void assertConf(JwtConf<T> jwtConf) {
-        Long minExpireMillis = jwtConf.getMinExpireMillis();
+    private static <T> void assertConf(JwtConf<T> conf) {
+        Long minExpireMillis = conf.getMinExpireMillis();
         if (minExpireMillis == null || minExpireMillis < 0L)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "minExpireMillis不能为空或小于0L");
-        Long maxExpireMillis = jwtConf.getMaxExpireMillis();
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "minExpireMillis can't be null or less than 0L");
+        Long maxExpireMillis = conf.getMaxExpireMillis();
         if (maxExpireMillis == null || maxExpireMillis < 0L)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxExpireMillis不能为空或小于0L");
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxExpireMillis can't be null or less than 0L");
         if (maxExpireMillis <= minExpireMillis)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxExpireMillis须大于minExpireMillis");
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxExpireMillis can't less than minExpireMillis");
 
-        String signKey = jwtConf.getSignKey();
+        String signKey = conf.getSignKey();
         if (signKey == null || "".equals(signKey))
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "signKey不能为空或''");
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "signKey can't be blank");
         int secKeyLen = signKey.length();
         if (secKeyLen < SEC_KEY_STR_MIN_LEN || secKeyLen > SEC_KEY_STR_MAX_LEN)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "signKey的字符长度不能低于 " + SEC_KEY_STR_MIN_LEN + " 或高于 " + SEC_KEY_STR_MAX_LEN);
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "signKey len can't less than " + SEC_KEY_STR_MIN_LEN + " or greater than " + SEC_KEY_STR_MAX_LEN);
 
-        List<String> gammaSecrets = jwtConf.getGammaSecrets();
+        List<String> gammaSecrets = conf.getGammaSecrets();
         if (gammaSecrets == null || gammaSecrets.size() < 1)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets不能为空");
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets can't be empty");
 
         int gammaSecretSize = gammaSecrets.size();
         if (gammaSecretSize < GAMMA_SECRETS_MIN_LEN || gammaSecretSize > GAMMA_SECRETS_MAX_LEN)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret的元素数量不能低于 " + GAMMA_SECRETS_MIN_LEN + " 或高于 " + GAMMA_SECRETS_MAX_LEN);
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's element size can't be less than " + GAMMA_SECRETS_MIN_LEN + " or greater than " + GAMMA_SECRETS_MAX_LEN);
 
         if (Integer.bitCount(gammaSecretSize) != 1)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets的元素数量必须为2的幂数");
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's size must be power of 2");
         gammaSecrets = gammaSecrets.stream()
                 .peek(gs -> {
                     if (isBlank(gs))
-                        throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets不能存在空字符");
+                        throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets can't contains null element");
                     int gsLen = gs.length();
                     if (gsLen < GAMMA_KEY_STR_MIN_LEN || gsLen > GAMMA_KEY_STR_MAX_LEN)
-                        throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets元素的字符长度不能低于 " + GAMMA_KEY_STR_MIN_LEN + " 或高于 " + GAMMA_KEY_STR_MAX_LEN + ", gammaSecret -> " + gs);
+                        throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's element length can't less than " + GAMMA_KEY_STR_MIN_LEN + " or greater than " + GAMMA_KEY_STR_MAX_LEN + ", gammaSecret -> " + gs);
                 }).distinct().collect(toList());
         if (gammaSecrets.size() != gammaSecretSize)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets不能存在重复元素");
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets elements can't be same");
 
-        if (jwtConf.getDataToClaimProcessor() == null)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dataToClaimProcessor不能为空");
-        if (jwtConf.getClaimToDataProcessor() == null)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "claimToDataProcessor不能为空");
+        if (conf.getDataToClaimProcessor() == null)
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dataToClaimProcessor can't be null");
+        if (conf.getClaimToDataProcessor() == null)
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "claimToDataProcessor can't be null");
 
-        if (isBlank(jwtConf.getIssuer()))
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "issuer不能为空或''");
-        if (isBlank(jwtConf.getSubject()))
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "subject不能为空或''");
-        if (isBlank(jwtConf.getAudience()))
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "audience不能为空或''");
+        if (isBlank(conf.getIssuer()))
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "issuer can't be blank");
+        if (isBlank(conf.getSubject()))
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "subject can't be blank");
+        if (isBlank(conf.getAudience()))
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "audience can't be blank");
     }
 
 }

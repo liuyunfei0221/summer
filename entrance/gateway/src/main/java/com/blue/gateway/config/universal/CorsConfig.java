@@ -19,7 +19,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 跨域配置
+ * cors config
  *
  * @author DarkBlue
  */

@@ -5,7 +5,7 @@ import org.apache.pulsar.client.api.*;
 import java.util.List;
 
 /**
- * 生产者参数封装
+ * pulsar producer conf
  *
  * @author DarkBlue
  */

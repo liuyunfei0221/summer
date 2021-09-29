@@ -30,11 +30,13 @@ import static org.springframework.util.StringUtils.hasText;
 
 
 /**
+ * mybatis mapper scanner registrar
+ *
  * @author DarkBlue
  * @date 2021/8/15
  * @apiNote
  */
-@SuppressWarnings({"NullableProblems", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"NullableProblems", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
 @Order(HIGHEST_PRECEDENCE)
 public class BlueMapperScannerRegistrar implements ImportBeanDefinitionRegistrar {
 

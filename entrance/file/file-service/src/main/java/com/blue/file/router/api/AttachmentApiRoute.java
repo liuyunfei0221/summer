@@ -13,7 +13,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * 附件映射器
+ * attachment api route
  *
  * @author DarkBlue
  */
