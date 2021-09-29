@@ -23,7 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 用于可异步处理的key刷新批量处理
+ * refresh auth processor
  *
  * @author liuyunfei
  * @date 2021/8/19
@@ -59,17 +59,17 @@ public final class AuthBatchExpireProcessor {
                                     Long batchExpireScheduledDelayMillis, Integer batchExpireQueueCapacity) {
 
         if (stringRedisTemplate == null)
-            throw new RuntimeException("stringRedisTemplate不能为空");
+            throw new RuntimeException("stringRedisTemplate can't be null");
         if (batchExpireMaxPerHandle == null || batchExpireMaxPerHandle < 1)
-            throw new RuntimeException("batchExpireMaxPerHandle不能为空或小于1");
+            throw new RuntimeException("batchExpireMaxPerHandle can't be null");
         if (batchExpireScheduledCorePoolSize == null || batchExpireScheduledCorePoolSize < 1)
-            throw new RuntimeException("batchExpireScheduledCorePoolSize不能为空或小于1");
+            throw new RuntimeException("batchExpireScheduledCorePoolSize can't be null");
         if (batchExpireScheduledInitialDelayMillis == null || batchExpireScheduledInitialDelayMillis < 1L)
-            throw new RuntimeException("batchExpireScheduledInitialDelayMillis不能为空或小于1");
+            throw new RuntimeException("batchExpireScheduledInitialDelayMillis can't be null or less than 1");
         if (batchExpireScheduledDelayMillis == null || batchExpireScheduledDelayMillis < 1L)
-            throw new RuntimeException("batchExpireScheduledDelayMillis不能为空或小于1");
+            throw new RuntimeException("batchExpireScheduledDelayMillis can't be null or less than 1");
         if (batchExpireQueueCapacity == null || batchExpireQueueCapacity < 1)
-            throw new RuntimeException("batchExpireQueueCapacity不能为空或小于1");
+            throw new RuntimeException("batchExpireQueueCapacity can't be null or less than 1");
 
         this.stringRedisTemplate = stringRedisTemplate;
 
@@ -77,11 +77,11 @@ public final class AuthBatchExpireProcessor {
             for (int i = 0; i < batchExpireQueueCapacity; i++)
                 QUEUE_FOR_PACKAGE.put(new ExpireData());
         } catch (InterruptedException e) {
-            throw new RuntimeException("QUEUE_FOR_PACKAGE put数据失败, e = {0}", e);
+            throw new RuntimeException("QUEUE_FOR_PACKAGE put ExpireData failed, e = {0}", e);
         }
 
         RejectedExecutionHandler rejectedExecutionHandler = (r, executor) -> {
-            LOGGER.error("处理Auth批量刷新任务的独立线程池任务堆积: r = {}", r);
+            LOGGER.error("Trigger the thread pool rejection strategy and hand it over to the calling thread for execution, : r = {}", r);
             r.run();
         };
 
@@ -105,13 +105,13 @@ public final class AuthBatchExpireProcessor {
 
 
     /**
-     * 转为seconds
+     * convert duration to seconds
      */
     private static final BiFunction<Long, ChronoUnit, Long> SECONDS_CONVERTER = (expire, unit) ->
             of(expire, unit).toSeconds();
 
     /**
-     * 参数校验器
+     * params asserter
      */
     private static final Consumer<KeyExpireParam> DATA_ASSERTER = keyExpireParam -> {
         if (keyExpireParam == null)
@@ -129,7 +129,7 @@ public final class AuthBatchExpireProcessor {
     };
 
     /**
-     * 存放器
+     * putter
      */
     private final BiFunction<ExpireData, LinkedBlockingQueue<ExpireData>, Boolean> FAILED_STATUS_PUTTER = (expireData, queue) -> {
         try {
@@ -141,7 +141,7 @@ public final class AuthBatchExpireProcessor {
     };
 
     /**
-     * 阻塞式存放器
+     * putter
      */
     private final BiConsumer<ExpireData, LinkedBlockingQueue<ExpireData>> BLOCKING_ELEMENT_PUTTER = (expireData, queue) -> {
         while (FAILED_STATUS_PUTTER.apply(expireData, queue))
@@ -149,7 +149,7 @@ public final class AuthBatchExpireProcessor {
     };
 
     /**
-     * 阻塞式获取器
+     * getter
      */
     private final Function<LinkedBlockingQueue<ExpireData>, ExpireData> BLOCKING_ELEMENT_GETTER = queue -> {
         try {
@@ -160,12 +160,12 @@ public final class AuthBatchExpireProcessor {
     };
 
     /**
-     * 非阻塞式获取器
+     * getter
      */
     private final Function<LinkedBlockingQueue<ExpireData>, ExpireData> NON_BLOCKING_ELEMENT_GETTER = LinkedBlockingQueue::poll;
 
     /**
-     * 过期时间刷新器
+     * expire executor
      */
     private final BiConsumer<ExpireData, RedisConnection> DATA_EXPIRE_EXECUTOR = (expireData, connection) -> {
         try {
@@ -178,7 +178,7 @@ public final class AuthBatchExpireProcessor {
     };
 
     /**
-     * 刷新器
+     * expire refresher
      */
     private final Consumer<KeyExpireParam> DATA_EXPIRE_HANDLER = keyExpireParam -> {
         DATA_ASSERTER.accept(keyExpireParam);
@@ -194,7 +194,7 @@ public final class AuthBatchExpireProcessor {
 
 
     /**
-     * 定时批量刷新
+     * expire interval
      */
     private void handleExpire() {
         try {
@@ -209,7 +209,7 @@ public final class AuthBatchExpireProcessor {
                         DATA_EXPIRE_EXECUTOR.accept(ed, connection);
                     }
 
-                    LOGGER.info("刷新过期时间数据的数量 {}", size);
+                    LOGGER.info("refreshed size: {}", size);
                     return null;
                 });
             }
@@ -219,7 +219,7 @@ public final class AuthBatchExpireProcessor {
     }
 
     /**
-     * 刷新超时
+     * timeout for refresh
      *
      * @param keyExpireParam
      * @return
@@ -230,7 +230,7 @@ public final class AuthBatchExpireProcessor {
     }
 
     /**
-     * 数据封装类
+     * expire data info
      */
     static final class ExpireData {
         String key;

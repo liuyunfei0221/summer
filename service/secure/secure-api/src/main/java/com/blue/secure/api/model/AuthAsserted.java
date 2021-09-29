@@ -5,7 +5,7 @@ import com.blue.base.model.base.Access;
 import java.io.Serializable;
 
 /**
- * auth校验结果
+ * auth assert result
  *
  * @author DarkBlue
  */
@@ -15,47 +15,48 @@ public final class AuthAsserted implements Serializable {
     private static final long serialVersionUID = -3287463425057208346L;
 
     /**
-     * 是否需认证
+     * certificate resource?
      */
     private boolean certificate;
 
     /**
-     * 前置是否不解密
+     * decrypt request param?
      */
     private boolean preUnDecryption;
 
     /**
-     * 后置是否不加密
+     * encrypt response result?
      */
     private boolean postUnEncryption;
 
     /**
-     * 是否有请求体 1有 0没有
+     * exist request body?
      */
     private boolean existenceRequestBody;
 
     /**
-     * 是否有响应体 1有 0没有
+     * exist response body?
      */
     private boolean existenceResponseBody;
 
     /**
-     * 数据解密私钥
+     * sec key / private key
      */
     private String secKey;
 
     /**
-     * 用户信息
+     * member access info
      */
     private Access access;
 
     /**
-     * 信息提示
+     * message
      */
     private String message;
 
     /**
-     * 仅提供用于序列化,不推荐使用,基于set无法保证参数正确性
+     * It is only provided for serialization and is not recommended.
+     * The correctness of parameters cannot be guaranteed based on setter
      */
     @Deprecated
     public AuthAsserted() {

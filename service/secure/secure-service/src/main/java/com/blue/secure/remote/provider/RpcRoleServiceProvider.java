@@ -11,7 +11,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * 角色关联相关RPC实现
+ * rpc role provider
  *
  * @author DarkBlue
  */
@@ -32,7 +32,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     }
 
     /**
-     * 为成员分配默认角色
+     * assign default roles to member
      *
      * @param memberId
      */
@@ -43,7 +43,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     }
 
     /**
-     * 根据access更新成员auth的角色信息
+     * update member's auth by access
      *
      * @param access
      * @param roleId
@@ -56,7 +56,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     }
 
     /**
-     * 根据memberId更新成员auth的角色信息
+     * update member's auth by member id
      *
      * @param memberId
      * @param roleId

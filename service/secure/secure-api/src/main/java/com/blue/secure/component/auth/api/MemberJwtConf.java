@@ -3,7 +3,7 @@ package com.blue.secure.component.auth.api;
 import java.util.List;
 
 /**
- * 成员jwt处理器配置
+ * member jwt conf
  *
  * @author liuyunfei
  * @date 2021/9/10

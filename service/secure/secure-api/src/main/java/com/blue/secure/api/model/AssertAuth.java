@@ -3,7 +3,7 @@ package com.blue.secure.api.model;
 import java.io.Serializable;
 
 /**
- * 认证信息封装类
+ * auth assert params
  *
  * @author DarkBlue
  */
@@ -13,27 +13,28 @@ public final class AssertAuth implements Serializable {
     private static final long serialVersionUID = -7162502253332663234L;
 
     /**
-     * 认证信息
+     * authentication
      */
     private String authentication;
 
     /**
-     * client ip地址
+     * client ip
      */
     private String ip;
 
     /**
-     * 请求方式/大写
+     * request method str
      */
     private String method;
 
     /**
-     * 资源路径
+     * uri str
      */
     private String uri;
 
     /**
-     * 仅提供用于序列化,不推荐使用,基于set无法保证参数正确性
+     * It is only provided for serialization and is not recommended.
+     * The correctness of parameters cannot be guaranteed based on setter
      */
     @Deprecated
     public AssertAuth() {

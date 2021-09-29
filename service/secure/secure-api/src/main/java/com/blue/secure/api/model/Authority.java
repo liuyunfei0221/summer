@@ -4,16 +4,23 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * api层权限信息封装
+ * Authority
  *
  * @author DarkBlue
  */
+@SuppressWarnings("unused")
 public final class Authority implements Serializable {
 
     private static final long serialVersionUID = -6642630151271066692L;
 
+    /**
+     * role info
+     */
     private RoleInfo role;
 
+    /**
+     * resource infos
+     */
     private List<ResourceInfo> resources;
 
     public Authority(RoleInfo role, List<ResourceInfo> resources) {

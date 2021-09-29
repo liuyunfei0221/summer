@@ -3,7 +3,7 @@ package com.blue.secure.api.model;
 import java.io.Serializable;
 
 /**
- * api层资源信息
+ * resource info for rest
  *
  * @author DarkBlue
  */
@@ -15,62 +15,62 @@ public final class ResourceInfo implements Serializable {
     private Long id;
 
     /**
-     * 请求方式/大写
+     * request method/upper
      */
     private String requestMethod;
 
     /**
-     * 服务
+     * module/service name
      */
     private String module;
 
     /**
-     * 资源相对路径
+     * relative uri
      */
     private String relativeUri;
 
     /**
-     * 资源绝对路径
+     * absolute uri
      */
     private String absoluteUri;
 
     /**
-     * 认证标识 1需要认证 0免认证
+     * authenticate 1.yes 0.no
      */
     private Boolean authenticate;
 
     /**
-     * 请求数据不解密 1不解密 0解密
+     * decrypt request params? 1.no 0.yes
      */
     private Boolean preUnDecryption;
 
     /**
-     * 响应数据不加密 1不加密 0加密
+     * encrypt response result? 1.no 0.yes
      */
     private Boolean postUnEncryption;
 
     /**
-     * 是否有请求体 1有 0没有
+     * exist request body? 1.yes 0.no
      */
     private Boolean existenceRequestBody;
 
     /**
-     * 是否有响应体 1有 0没有
+     * exist response body? 1.yes 0.no
      */
     private Boolean existenceResponseBody;
 
     /**
-     * 资源类型 前台api 后台api 对外提供api
+     * resource type: 1.client api 2.manager api 3.open api
      */
     private String type;
 
     /**
-     * 资源名称
+     * resource name
      */
     private String name;
 
     /**
-     * 资源描述
+     * resource disc
      */
     private String description;
 

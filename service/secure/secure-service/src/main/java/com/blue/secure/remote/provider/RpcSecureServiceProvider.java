@@ -16,7 +16,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * 认证鉴权RPC实现
+ * rpc secure provider
  *
  * @author DarkBlue
  */
@@ -39,7 +39,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     }
 
     /**
-     * 认证并鉴权
+     * authentication and authorization
      *
      * @param assertAuth
      * @return
@@ -51,7 +51,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     }
 
     /**
-     * 根据accessInfo清除认证信息
+     * invalid auth by accessInfo
      *
      * @param access
      * @return
@@ -63,7 +63,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     }
 
     /**
-     * 根据jwt清除认证信息
+     * invalid auth by jwt
      *
      * @param jwt
      * @return
@@ -75,7 +75,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     }
 
     /**
-     * 根据access查询成员的角色及权限信息
+     * query authority by access
      *
      * @param access
      * @return
@@ -87,7 +87,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     }
 
     /**
-     * 根据memberId查询成员的角色及权限信息
+     * query authority by member id
      *
      * @param memberId
      * @return

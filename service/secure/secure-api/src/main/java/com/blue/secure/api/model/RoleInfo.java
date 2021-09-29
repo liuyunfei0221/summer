@@ -3,7 +3,7 @@ package com.blue.secure.api.model;
 import java.io.Serializable;
 
 /**
- * api层角色信息
+ * role info for rest
  *
  * @author DarkBlue
  */
@@ -13,22 +13,22 @@ public final class RoleInfo implements Serializable {
     private static final long serialVersionUID = -5082010699818859757L;
 
     /**
-     * 主键
+     * id
      */
     private Long id;
 
     /**
-     * 角色名称
+     * role name
      */
     private String name;
 
     /**
-     * 角色描述
+     * role disc
      */
     private String description;
 
     /**
-     * 是否默认角色
+     * default role?
      */
     private Boolean isDefault;
 

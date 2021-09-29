@@ -11,14 +11,14 @@ import com.blue.base.model.base.Access;
 public interface RpcRoleService {
 
     /**
-     * 为成员分配默认角色
+     * assign default roles to member
      *
      * @param memberId
      */
     void insertDefaultMemberRoleRelation(Long memberId);
 
     /**
-     * 根据access更新成员auth的角色信息
+     * update member's auth by access
      *
      * @param access
      * @param roleId
@@ -27,7 +27,7 @@ public interface RpcRoleService {
     void updateMemberRoleByAccess(Access access, Long roleId);
 
     /**
-     * 根据memberId更新成员auth的角色信息
+     * update member's auth by member id
      *
      * @param memberId
      * @param roleId

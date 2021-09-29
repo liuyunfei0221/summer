@@ -3,6 +3,8 @@ package com.blue.secure.api.model;
 import java.io.Serializable;
 
 /**
+ * local auth invalid key id
+ *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")

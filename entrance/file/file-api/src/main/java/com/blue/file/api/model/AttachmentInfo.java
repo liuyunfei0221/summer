@@ -57,7 +57,8 @@ public final class AttachmentInfo implements Serializable {
                 ", name='" + name + '\'' +
                 ", size=" + size +
                 ", createTime=" + createTime +
-                ", createrName='" + creatorName + '\'' +
+                ", creatorName='" + creatorName + '\'' +
                 '}';
     }
+
 }

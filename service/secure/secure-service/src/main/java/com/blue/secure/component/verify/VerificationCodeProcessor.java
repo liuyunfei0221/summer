@@ -22,7 +22,7 @@ import static org.springframework.util.StringUtils.hasText;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 验证码工具
+ * verify processor
  *
  * @author liuyunfei
  * @date 2021/8/18
@@ -36,30 +36,30 @@ public final class VerificationCodeProcessor {
     private final StringRedisTemplate stringRedisTemplate;
 
     /**
-     * 默认类型
+     * default type
      */
     private final RandomType DEFAULT_TYPE;
 
     /**
-     * 默认长度
+     * default length
      */
     private final Integer DEFAULT_LENGTH;
 
     /**
-     * 验证码最大/默认过期时间
+     * default expire duration
      */
     private final Duration DEFAULT_EXPIRE_DURATION;
 
 
     public VerificationCodeProcessor(StringRedisTemplate stringRedisTemplate, RandomType type, Integer length, Long expireMillis) {
         if (stringRedisTemplate == null)
-            throw new RuntimeException("stringRedisTemplate不能为空");
+            throw new RuntimeException("stringRedisTemplate can't be null");
         if (type == null)
-            throw new RuntimeException("type不能为空");
+            throw new RuntimeException("type can't be null");
         if (length == null || length < 1)
-            throw new RuntimeException("length不能为空或小于1");
+            throw new RuntimeException("length can't be null or less than 1");
         if (expireMillis == null || expireMillis < 1L)
-            throw new RuntimeException("expireMillis不能为空或小于1");
+            throw new RuntimeException("expireMillis can't be null or less than 1");
 
         this.stringRedisTemplate = stringRedisTemplate;
         this.DEFAULT_TYPE = type;
@@ -71,7 +71,7 @@ public final class VerificationCodeProcessor {
     private static final String SCRIPT_STR = VALIDATION.str;
 
     /**
-     * 判断验证码脚本
+     * verify assert script
      */
     private static final RedisScript<Boolean> SCRIPT = generateScriptByScriptStr(SCRIPT_STR, Boolean.class);
 
@@ -85,7 +85,7 @@ public final class VerificationCodeProcessor {
 
 
     /**
-     * 生成
+     * generate code
      *
      * @param key
      * @return
@@ -95,7 +95,7 @@ public final class VerificationCodeProcessor {
     }
 
     /**
-     * 生成
+     * generate code
      *
      * @param key
      * @param type
@@ -106,7 +106,7 @@ public final class VerificationCodeProcessor {
     }
 
     /**
-     * 生成
+     * generate code
      *
      * @param key
      * @param type
@@ -118,7 +118,7 @@ public final class VerificationCodeProcessor {
     }
 
     /**
-     * 生成
+     * generate code
      *
      * @param key
      * @param type
@@ -134,11 +134,11 @@ public final class VerificationCodeProcessor {
                             ofNullable(expireMillis).map(MILLIS_DURATION_GENERATOR).orElse(DEFAULT_EXPIRE_DURATION));
             return code;
         }
-        throw new RuntimeException("key不能为空或''");
+        throw new RuntimeException("key can't null or less than 1");
     }
 
     /**
-     * 验证
+     * verify
      *
      * @param key
      * @param code
@@ -148,7 +148,7 @@ public final class VerificationCodeProcessor {
         if (hasText(key) && hasText(code))
             return ofNullable(stringRedisTemplate.execute(SCRIPT, KEYS_GENERATOR.apply(key), code)).orElse(false);
 
-        throw new RuntimeException("key及code不能为空或''");
+        throw new RuntimeException("key or code can't be blank");
     }
 
 }

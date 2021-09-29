@@ -3,7 +3,7 @@ package com.blue.secure.api.model;
 import java.io.Serializable;
 
 /**
- * member认证信息封装/redis string json
+ * member auth info/json str in redis cache
  *
  * @author DarkBlue
  */
@@ -13,17 +13,17 @@ public final class AuthInfo implements Serializable {
     private static final long serialVersionUID = -4570565004686061550L;
 
     /**
-     * jwt串
+     * json web token
      */
     private String jwt;
 
     /**
-     * 动态角色
+     * role id
      */
     private Long roleId;
 
     /**
-     * 公钥
+     * public key used for encrypt rest
      */
     private String pubKey;
 

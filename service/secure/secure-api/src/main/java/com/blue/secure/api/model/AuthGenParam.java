@@ -1,7 +1,7 @@
 package com.blue.secure.api.model;
 
 /**
- * 用户和角色信息封装
+ * member, role, login infos for generate member auth
  *
  * @author DarkBlue
  */
@@ -9,22 +9,22 @@ package com.blue.secure.api.model;
 public final class AuthGenParam {
 
     /**
-     * 成员信息
+     * member id
      */
     private final Long memberId;
 
     /**
-     * 角色信息
+     * role id
      */
     private final Long roleId;
 
     /**
-     * 登录方式
+     * login type
      */
     private final String loginType;
 
     /**
-     * 设备类型
+     * device type
      */
     private final String deviceType;
 

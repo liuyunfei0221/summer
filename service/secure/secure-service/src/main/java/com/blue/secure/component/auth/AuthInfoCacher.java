@@ -28,11 +28,11 @@ import static reactor.core.publisher.Mono.justOrEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * authInfo缓存器
+ * authInfo cacher
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
 public final class AuthInfoCacher {
 
     private static final Logger LOGGER = getLogger(AuthInfoCacher.class);
@@ -44,22 +44,22 @@ public final class AuthInfoCacher {
     private ExecutorService executorService;
 
     /**
-     * 过期时间
+     * global expire millis
      */
     private Long globalExpireMillis;
 
     /**
-     * 过期时间单位
+     * millis
      */
     private final ChronoUnit UNIT = MILLIS;
 
     /**
-     * 全局过期时间
+     * global expire duration
      */
     private final Duration globalExpireDuration;
 
     /**
-     * 本地缓存器
+     * local cacher
      */
     private final Cache<String, String> cacher;
 
@@ -70,7 +70,7 @@ public final class AuthInfoCacher {
                           Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveTime,
                           Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
 
-        confAsserter(reactiveStringRedisTemplate, authExpireProducer,
+        assertConf(reactiveStringRedisTemplate, authExpireProducer,
                 refresherCorePoolSize, refresherMaximumPoolSize, refresherKeepAliveTime,
                 refresherBlockingQueueCapacity, globalExpireMillis, localExpireMillis, capacity);
 
@@ -84,7 +84,7 @@ public final class AuthInfoCacher {
         };
 
         RejectedExecutionHandler rejectedExecutionHandler = (r, executor) -> {
-            LOGGER.error("处理JWT刷新任务推送的独立线程池任务堆积: r = {}", r);
+            LOGGER.error("task has been reject: r = {}", r);
             r.run();
         };
 
@@ -101,7 +101,7 @@ public final class AuthInfoCacher {
     }
 
     /**
-     * redis authInfo 刷新器
+     * redis authInfo refresher
      */
     private final BiConsumer<String, String> REDIS_AUTH_REFRESHER = (keyId, authInfo) -> {
         try {
@@ -119,7 +119,7 @@ public final class AuthInfoCacher {
     };
 
     /**
-     * redis authInfo 获取器
+     * redis authInfo getter
      */
     private final Function<String, Mono<String>> REDIS_AUTH_GETTER = keyId -> {
         LOGGER.warn("REDIS_AUTH_GETTER, get authInfo from redis, keyId = {}", keyId);
@@ -134,7 +134,7 @@ public final class AuthInfoCacher {
     };
 
     /**
-     * 根据keyId获取authInfo value
+     * get authInfo value by keyId
      *
      * @param keyId
      * @return
@@ -148,7 +148,7 @@ public final class AuthInfoCacher {
     }
 
     /**
-     * 缓存authInfo
+     * cache authInfo
      *
      * @param keyId
      * @param authInfo
@@ -165,7 +165,7 @@ public final class AuthInfoCacher {
     }
 
     /**
-     * 清除authInfo
+     * invalid authInfo
      *
      * @param keyId
      */
@@ -179,7 +179,7 @@ public final class AuthInfoCacher {
     }
 
     /**
-     * 清除本地authInfo
+     * invalid local authInfo
      *
      * @param keyId
      */
@@ -195,11 +195,11 @@ public final class AuthInfoCacher {
     }
 
     /**
-     * 参数校验
+     * assert conf
      */
-    private static void confAsserter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer,
-                                     Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveTime,
-                                     Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
+    private static void assertConf(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer,
+                                   Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveTime,
+                                   Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
         if (reactiveStringRedisTemplate == null)
             throw new RuntimeException("reactiveStringRedisTemplate不能为空");
 

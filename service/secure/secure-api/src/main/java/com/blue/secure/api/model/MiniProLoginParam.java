@@ -4,27 +4,27 @@ package com.blue.secure.api.model;
 import java.io.Serializable;
 
 /**
- * 小程序登录参数
+ * login params for wechat mini pro
  *
  * @author DarkBlue
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "GrazieInspection"})
 public final class MiniProLoginParam implements Serializable {
 
     private static final long serialVersionUID = 305317890968502939L;
 
     /**
-     * 包括敏感数据在内的完整用户信息的加密数据
+     * user encrypted data
      */
     private String encryptedData;
 
     /**
-     * 加密算法的初始向量
+     * encrypt algorithm iv
      */
     private String iv;
 
     /**
-     * 登录时获取的 code
+     * js code
      */
     private String jsCode;
 

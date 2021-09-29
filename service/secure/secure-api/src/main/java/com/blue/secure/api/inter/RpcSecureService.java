@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 public interface RpcSecureService {
 
     /**
-     * 认证鉴权
+     * authentication and authorization
      *
      * @param assertAuth
      * @return
@@ -24,7 +24,7 @@ public interface RpcSecureService {
     CompletableFuture<AuthAsserted> assertAuth(AssertAuth assertAuth);
 
     /**
-     * 根据accessInfo清除认证信息
+     * invalid auth by access
      *
      * @param access
      * @return
@@ -32,7 +32,7 @@ public interface RpcSecureService {
     CompletableFuture<Boolean> invalidAuthByAccess(Access access);
 
     /**
-     * 根据jwt清除认证信息
+     * invalid auth by jwt
      *
      * @param jwt
      * @return
@@ -40,7 +40,7 @@ public interface RpcSecureService {
     CompletableFuture<Boolean> invalidAuthByJwt(String jwt);
 
     /**
-     * 根据access查询成员的角色及权限信息
+     * query authority by access
      *
      * @param access
      * @return
@@ -48,7 +48,7 @@ public interface RpcSecureService {
     CompletableFuture<Authority> getAuthorityByAccess(Access access);
 
     /**
-     * 根据memberId查询成员的角色及权限信息
+     * query authority by member id
      *
      * @param memberId
      * @return

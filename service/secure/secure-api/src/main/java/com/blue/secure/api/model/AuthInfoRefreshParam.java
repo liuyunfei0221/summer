@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * authInfo属性动态刷新参数封装
+ * authInfo refresh params
  *
  * @author DarkBlue
  */

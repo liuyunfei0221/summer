@@ -3,11 +3,11 @@ package com.blue.secure.api.model;
 import java.io.Serializable;
 
 /**
- * 用户jwt信息封装
+ * member auth with sec key used for wechat mini pro
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces", "GrazieInspection"})
 public final class MemberAuth implements Serializable {
 
     private static final long serialVersionUID = -726710353190335045L;
@@ -18,7 +18,7 @@ public final class MemberAuth implements Serializable {
     private final String auth;
 
     /**
-     * 加密接口公钥
+     * sec key
      */
     private final String secKey;
 

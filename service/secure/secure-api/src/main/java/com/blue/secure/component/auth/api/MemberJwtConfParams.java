@@ -3,12 +3,12 @@ package com.blue.secure.component.auth.api;
 import java.util.List;
 
 /**
- * MemberJwtProcessor创建参数封装
+ * member jwt params
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class MemberJwtConfParams implements MemberJwtConf{
+public final class MemberJwtConfParams implements MemberJwtConf {
 
     private Long globalMaxExpireMillis;
 
