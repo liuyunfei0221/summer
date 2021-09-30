@@ -14,14 +14,14 @@ import java.util.List;
 public interface RoleResRelationMapper {
 
     /**
-     * 获取全部角色权限关联
+     * select all role resource relation
      *
      * @return
      */
     List<RoleResRelation> listRoleResRelation();
 
     /**
-     * 根据角色id查询角色对应的资源id
+     * select resources ids by role id
      *
      * @return
      */

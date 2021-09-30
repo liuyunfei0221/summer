@@ -13,7 +13,7 @@ public enum ResponseElement {
     /**
      * success
      */
-    OK(HttpStatus.OK.value(), HttpStatus.OK.value(), "success"),
+    OK(HttpStatus.OK.value(), HttpStatus.OK.value(), "Success"),
 
     /**
      * too many requests
@@ -28,7 +28,7 @@ public enum ResponseElement {
     /**
      * authentication failed or expired
      */
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.value(), "Authentication failed or expired, please log in"),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.value(), "Authentication failed or expired, please login"),
 
     /**
      * insufficient permissions

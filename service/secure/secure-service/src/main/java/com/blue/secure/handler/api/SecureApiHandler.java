@@ -16,12 +16,13 @@ import static com.blue.base.constant.base.BlueHeader.SECRET;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static com.blue.base.constant.base.ResponseMessage.EMPTY_REQUEST_BODY;
+import static com.blue.base.constant.base.ResponseMessage.GENERIC_SUCCESS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
 
 /**
- * 登录接口
+ * secure api handler
  *
  * @author DarkBlue
  */
@@ -36,7 +37,7 @@ public final class SecureApiHandler {
     }
 
     /**
-     * 客户端登录
+     * login from client
      *
      * @param serverRequest
      * @return
@@ -50,12 +51,12 @@ public final class SecureApiHandler {
                         ok().contentType(APPLICATION_JSON)
                                 .header(AUTHORIZATION.name, ma.getAuth())
                                 .header(SECRET.name, ma.getSecKey())
-                                .body(generate(OK.code, "登录成功", "登录成功")
+                                .body(generate(OK.code, GENERIC_SUCCESS.message, GENERIC_SUCCESS.message)
                                         , BlueResponse.class));
     }
 
     /**
-     * 更新密钥接口
+     * update member's private key(client) and member's public key(server->redis)
      *
      * @param serverRequest
      * @return
@@ -67,12 +68,12 @@ public final class SecureApiHandler {
                                 .flatMap(secKey ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(SECRET.name, secKey)
-                                                .body(generate(OK.code, "更新成功", "更新成功")
+                                                .body(generate(OK.code, GENERIC_SUCCESS.message, GENERIC_SUCCESS.message)
                                                         , BlueResponse.class)));
     }
 
     /**
-     * 获取权限信息
+     * get authority info
      *
      * @param serverRequest
      * @return
@@ -83,12 +84,12 @@ public final class SecureApiHandler {
                         secureService.getAuthorityByAccess(acc)
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, authority, "查询成功")
+                                                .body(generate(OK.code, authority, GENERIC_SUCCESS.message)
                                                         , BlueResponse.class)));
     }
 
     /**
-     * 注销登录接口
+     * logout
      *
      * @param serverRequest
      * @return
@@ -97,10 +98,11 @@ public final class SecureApiHandler {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
                         secureService.invalidAuthByAccess(acc)
-                                .flatMap(invalid -> ok().contentType(APPLICATION_JSON)
+                                .then()
+                                .flatMap(aVoid -> ok().contentType(APPLICATION_JSON)
                                         .header(AUTHORIZATION.name, "")
                                         .body(
-                                                generate(OK.code, invalid, invalid ? "注销成功" : "认证已注销,无需再次注销")
+                                                generate(OK.code, GENERIC_SUCCESS.message, GENERIC_SUCCESS.message)
                                                 , BlueResponse.class)));
     }
 

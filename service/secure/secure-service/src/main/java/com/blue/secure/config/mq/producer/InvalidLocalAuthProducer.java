@@ -18,7 +18,7 @@ import static java.lang.Integer.MIN_VALUE;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * jwt过期时间刷新生产者
+ * invalid auth from local cache consumer
  *
  * @author DarkBlue
  */

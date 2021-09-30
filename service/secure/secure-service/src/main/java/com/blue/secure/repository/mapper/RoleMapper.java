@@ -5,7 +5,7 @@ import com.blue.secure.repository.entity.Role;
 import java.util.List;
 
 /**
- * 角色持久层
+ * role mapper
  *
  * @author DarkBlue
  */
@@ -13,7 +13,7 @@ import java.util.List;
 public interface RoleMapper {
 
     /**
-     * 根据角色id获取角色信息
+     * get role by id
      *
      * @param id
      * @return
@@ -21,7 +21,7 @@ public interface RoleMapper {
     Role selectByPrimaryKey(Long id);
 
     /**
-     * 获取全部角色
+     * select all roles
      *
      * @return
      */

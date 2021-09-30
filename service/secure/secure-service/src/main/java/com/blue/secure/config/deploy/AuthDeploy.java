@@ -6,11 +6,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * auth配置参数类
+ * auth deploy
  *
  * @author DarkBlue
  */
-@SuppressWarnings("SpellCheckingInspection")
 @Component
 @ConfigurationProperties(prefix = "auth")
 public class AuthDeploy {

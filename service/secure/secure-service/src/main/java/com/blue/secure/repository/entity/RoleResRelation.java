@@ -1,46 +1,28 @@
 package com.blue.secure.repository.entity;
 
 /**
- * 角色资源关联表
+ * role resource relation
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public class RoleResRelation {
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 角色id
-     */
     private Long roleId;
 
     /**
-     * 资源id
+     * resource id
      */
     private Long resId;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 修改时间
-     */
     private Long updateTime;
 
-    /**
-     * 创建人
-     */
     private Long creator;
 
-    /**
-     * 修改人
-     */
     private Long updater;
 
     public Long getId() {

@@ -30,12 +30,12 @@ public final class AuthAsserted implements Serializable {
     private boolean postUnEncryption;
 
     /**
-     * exist request body?
+     * has request body?
      */
     private boolean existenceRequestBody;
 
     /**
-     * exist response body?
+     * has response body?
      */
     private boolean existenceResponseBody;
 

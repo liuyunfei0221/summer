@@ -11,7 +11,7 @@ import static com.blue.base.common.base.ConstantProcessor.getResourceTypeByIdent
 import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
 
 /**
- * secure服务转换器
+ * model converters in secure project
  *
  * @author DarkBlue
  */
@@ -19,7 +19,7 @@ import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
 public final class SecureModelConverters {
 
     /**
-     * 角色实体转角色信息
+     * role -> role info
      */
     public static final Function<Role, RoleInfo> ROLE_2_ROLE_INFO_CONVERTER = role -> {
         if (role == null)
@@ -29,7 +29,7 @@ public final class SecureModelConverters {
     };
 
     /**
-     * 资源实体转资源信息
+     * resource -> resource info
      */
     public static final Function<Resource, ResourceInfo> RESOURCE_2_RESOURCE_INFO_CONVERTER = resource -> {
         if (resource == null)

@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 
 /**
- * 成员业务接口
+ * member auth service
  *
  * @author DarkBlue
  */
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 public interface MemberAuthService {
 
     /**
-     * 根据手机号获取成员并校验短信验证码及状态用于登录返回
+     * get member by phone and check verify
      *
      * @param clientLoginParam
      * @return
@@ -22,7 +22,7 @@ public interface MemberAuthService {
     Mono<MemberBasicInfo> getMemberByPhoneWithAssertVerify(ClientLoginParam clientLoginParam);
 
     /**
-     * 根据手机号获取成员并校验密码及状态用于登录返回
+     * get member by phone and check password
      *
      * @param clientLoginParam
      * @return
@@ -30,7 +30,7 @@ public interface MemberAuthService {
     Mono<MemberBasicInfo> getMemberByPhoneWithAssertPwd(ClientLoginParam clientLoginParam);
 
     /**
-     * 根据邮箱地址获取成员并校验密码及状态用于登录返回
+     * get member by email and check password
      *
      * @param clientLoginParam
      * @return

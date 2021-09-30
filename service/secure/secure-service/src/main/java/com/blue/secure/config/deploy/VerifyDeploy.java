@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * jwt配置参数类
+ * verify config
  *
  * @author DarkBlue
  */

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 角色业务接口
+ * role service
  *
  * @author DarkBlue
  */
@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface RoleService {
 
     /**
-     * 根据主键查询角色信息
+     * get role by role id
      *
      * @param id
      * @return
@@ -22,7 +22,7 @@ public interface RoleService {
     Optional<Role> getRoleById(Long id);
 
     /**
-     * 根据成员id获取角色id
+     * get role id by member id
      *
      * @param memberId
      * @return
@@ -30,7 +30,7 @@ public interface RoleService {
     Optional<Long> getRoleIdByMemberId(Long memberId);
 
     /**
-     * 根据成员id获取角色信息
+     * get role by member id
      *
      * @param memberId
      * @return
@@ -38,14 +38,14 @@ public interface RoleService {
     Optional<Role> getRoleByMemberId(Long memberId);
 
     /**
-     * 获取全部角色信息
+     * select all roles
      *
      * @return
      */
     List<Role> listRoles();
 
     /**
-     * 查询默认角色
+     * get default role
      *
      * @return
      */

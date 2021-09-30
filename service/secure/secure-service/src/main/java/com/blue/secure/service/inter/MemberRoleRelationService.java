@@ -6,7 +6,7 @@ import com.blue.secure.repository.entity.MemberRoleRelation;
 import java.util.Optional;
 
 /**
- * 用户角色关联业务接口
+ * member role relation service
  *
  * @author DarkBlue
  */
@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface MemberRoleRelationService {
 
     /**
-     * 根据成员id获取用户角色id
+     * get role id by member id
      *
      * @param memberId
      * @return
@@ -22,7 +22,7 @@ public interface MemberRoleRelationService {
     Optional<Long> getRoleIdByMemberId(Long memberId);
 
     /**
-     * 更新成员对应的角色id
+     * update member role relation
      *
      * @param memberId
      * @param roleId
@@ -31,7 +31,7 @@ public interface MemberRoleRelationService {
     void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
 
     /**
-     * 添加成员角色关联
+     * insert member role relation
      *
      * @param memberRoleRelation
      */

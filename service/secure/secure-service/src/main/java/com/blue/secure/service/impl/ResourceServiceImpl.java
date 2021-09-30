@@ -15,7 +15,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * 资源实现
+ * resource service interface impl
  *
  * @author DarkBlue
  */
@@ -36,7 +36,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     /**
-     * 获取全部资源
+     * select all resources
      *
      * @return
      */
@@ -47,7 +47,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     /**
-     * 根据ids批量查询成员资源列表
+     * select resources by ids
      *
      * @param ids
      * @return
@@ -59,7 +59,7 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     /**
-     * 根据roleId查询所有的资源信息
+     * select resources by role id
      *
      * @param roleId
      * @return

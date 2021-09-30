@@ -16,13 +16,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.EMPTY_REQUEST_BODY;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_ACCT_OR_PWD;
+import static com.blue.base.constant.base.ResponseMessage.*;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 用户业务实现
+ * member auth service impl
  *
  * @author DarkBlue
  */
@@ -38,29 +37,20 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         this.rpcMemberServiceConsumer = rpcMemberServiceConsumer;
     }
 
-    /**
-     * 加解密
-     */
     private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
 
-    /**
-     * 密码校验器
-     */
     private static final BiConsumer<String, MemberBasicInfo> PWD_ASSERTER = (access, mb) -> {
         if (access == null || mb == null || !ENCODER.matches(access, mb.getPassword()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message);
     };
 
-    /**
-     * member状态断言
-     */
     private static final Consumer<MemberBasicInfo> MEMBER_STATUS_ASSERTER = memberBasicInfo -> {
         if (Status.VALID.status != memberBasicInfo.getStatus())
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "账号已冻结");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, ACCOUNT_HAS_BEEN_FROZEN.message);
     };
 
     /**
-     * 根据手机号获取成员并校验密码及状态用于登录返回
+     * get member by phone and check verify
      *
      * @param clientLoginParam
      * @return
@@ -71,8 +61,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         if (clientLoginParam == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
 
-        //TODO 校验验证码
-        //TODO 校验短信验证码
+        //TODO check verify
+        //TODO check message verify
 
         return rpcMemberServiceConsumer.getMemberBasicByPhone(clientLoginParam.getIdentity())
                 .flatMap(memberBasicInfo -> {
@@ -85,7 +75,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     }
 
     /**
-     * 根据手机号获取成员并校验密码及状态用于登录返回
+     * get member by phone and check password
      *
      * @param clientLoginParam
      * @return
@@ -96,7 +86,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         if (clientLoginParam == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
 
-        //TODO 校验验证码
+        //TODO check verify
 
         return rpcMemberServiceConsumer.getMemberBasicByPhone(clientLoginParam.getIdentity())
                 .flatMap(memberBasicInfo -> {
@@ -110,7 +100,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     }
 
     /**
-     * 根据邮箱地址获取成员并校验密码及状态用于登录返回
+     * get member by email and check password
      *
      * @param clientLoginParam
      * @return
@@ -121,7 +111,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         if (clientLoginParam == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
 
-        //TODO 校验验证码
+        //TODO check verify
 
         return rpcMemberServiceConsumer.getMemberBasicByEmail(clientLoginParam.getIdentity())
                 .flatMap(memberBasicInfo -> {

@@ -8,7 +8,6 @@ import com.blue.secure.repository.mapper.RoleMapper;
 import com.blue.secure.service.inter.MemberRoleRelationService;
 import com.blue.secure.service.inter.RoleService;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -20,11 +19,13 @@ import java.util.function.Supplier;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -103,8 +104,10 @@ public class RoleServiceImpl implements RoleService {
             List<Role> defaultRoles = roleList.stream().filter(Role::getIsDefault)
                     .collect(toList());
 
-            if (CollectionUtils.isEmpty(defaultRoles) || defaultRoles.size() > 1)
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "默认角色信息不存在或多于1条");
+            if (isEmpty(defaultRoles) || defaultRoles.size() > 1) {
+                LOGGER.error("default role not exist or more than 1");
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+            }
 
             Role tempDefaultRole = defaultRoles.get(0);
 
@@ -138,7 +141,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
-     * 根据主键查询角色信息
+     * get role by role id
      *
      * @param id
      * @return
@@ -147,14 +150,14 @@ public class RoleServiceImpl implements RoleService {
     public Optional<Role> getRoleById(Long id) {
         LOGGER.info("getRoleById(Long id), id = {}", id);
         if (id == null || id < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "id不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         Role role = roleMapper.selectByPrimaryKey(id);
         return ofNullable(role);
     }
 
     /**
-     * 根据成员id获取角色id
+     * get role id by member id
      *
      * @param memberId
      * @return
@@ -163,14 +166,14 @@ public class RoleServiceImpl implements RoleService {
     public Optional<Long> getRoleIdByMemberId(Long memberId) {
         LOGGER.info("getRoleIdByMemberId(Long memberId), memberId = {}", memberId);
         if (memberId == null || memberId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberId不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         LOGGER.info("memberId = {}", memberId);
         return memberRoleRelationService.getRoleIdByMemberId(memberId);
     }
 
     /**
-     * 根据成员id获取角色信息
+     * get role by member id
      *
      * @param memberId
      * @return
@@ -181,15 +184,15 @@ public class RoleServiceImpl implements RoleService {
 
         Optional<Long> roleIdOpt = this.getRoleIdByMemberId(memberId);
         if (roleIdOpt.isEmpty()) {
-            LOGGER.error("memberId 为 " + memberId + " 对应的角色不存在");
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "角色不存在");
+            LOGGER.error("the member that id is " + memberId + " not have a role");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
         }
 
         return ofNullable(roleMapper.selectByPrimaryKey(roleIdOpt.get()));
     }
 
     /**
-     * 获取全部角色信息
+     * select all roles
      *
      * @return
      */
@@ -200,7 +203,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
-     * 查询默认角色
+     * get default role
      *
      * @return
      */
@@ -211,8 +214,10 @@ public class RoleServiceImpl implements RoleService {
         Role role = DEFAULT_ROLE_GETTER.get();
 
         LOGGER.info("role = {}", role);
-        if (role == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "默认角色不存在");
+        if (role == null) {
+            LOGGER.error("Role getDefaultRole(), default role not exist");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+        }
 
         return role;
     }

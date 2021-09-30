@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 资源持久层
+ * resource mapper
  *
  * @author DarkBlue
  */
@@ -14,14 +14,14 @@ import java.util.List;
 public interface ResourceMapper {
 
     /**
-     * 获取全部资源
+     * select all resources
      *
      * @return
      */
     List<Resource> listResource();
 
     /**
-     * 根据id批量查询资源
+     * select resources by ids
      *
      * @param ids
      * @return

@@ -18,13 +18,13 @@ import reactor.util.Logger;
 import java.util.Optional;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.base.constant.base.SyncKey.MEMBER_ROLE_REL_UPDATE_PRE;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 用户角色关联业务实现
+ * member role relation service
  *
  * @author DarkBlue
  */
@@ -47,13 +47,10 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         this.redissonClient = redissonClient;
     }
 
-    /**
-     * 公告列表同步刷新缓存key
-     */
     private static final String MEMBER_ROLE_REL_UPDATE_PRE_SYNC_KEY = MEMBER_ROLE_REL_UPDATE_PRE.key;
 
     /**
-     * 根据成员id获取用户角色id
+     * get role id by member id
      *
      * @param memberId
      * @return
@@ -71,7 +68,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     }
 
     /**
-     * 更新成员对应的角色id
+     * update member role relation
      *
      * @param memberId
      * @param roleId
@@ -87,7 +84,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
 
         MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getMemberRoleRelationByMemberId(memberId);
         if (memberRoleRelation == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "成员角色不存在");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message);
 
         memberRoleRelation.setRoleId(roleId);
         memberRoleRelation.setUpdateTime(CommonFunctions.TIME_STAMP_GETTER.get());
@@ -97,7 +94,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     }
 
     /**
-     * 添加成员角色关联
+     * insert member role relation
      *
      * @param memberRoleRelation
      */
@@ -121,15 +118,15 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         try {
             MemberRoleRelation existRelation = memberRoleRelationMapper.getMemberRoleRelationByMemberId(memberId);
             if (existRelation != null)
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "该成员已拥有角色");
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_ALREADY_HAS_A_ROLE.message);
 
             memberRoleRelationMapper.insertSelective(memberRoleRelation);
 //            if (1 == 1) {
-//                throw new BlueException(500, 500, "测试异常回滚");
+//                throw new BlueException(500, 500, "test rollback on exception");
 //            }
-            LOGGER.info("添加角色成功,memberRoleRelation = {}", memberRoleRelation);
+            LOGGER.info("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) success, memberRoleRelation = {}", memberRoleRelation);
         } catch (Exception e) {
-            LOGGER.error("添加角色失败,memberRoleRelation = {},e = {}", memberRoleRelation, e);
+            LOGGER.error("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) failed, memberRoleRelation = {},e = {}", memberRoleRelation, e);
             throw e;
         } finally {
             try {

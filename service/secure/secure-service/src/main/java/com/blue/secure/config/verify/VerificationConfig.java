@@ -10,7 +10,7 @@ import reactor.util.Logger;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 验证码配置类
+ * verify config
  *
  * @author liuyunfei
  * @date 2021/8/18

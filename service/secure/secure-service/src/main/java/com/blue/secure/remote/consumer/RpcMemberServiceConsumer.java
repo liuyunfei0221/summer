@@ -12,7 +12,7 @@ import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 成员相关RPC接口
+ * rpc member reference
  *
  * @author DarkBlue
  */
@@ -29,7 +29,7 @@ public class RpcMemberServiceConsumer {
     private RpcMemberService rpcMemberService;
 
     /**
-     * 根据手机号获取成员关键信息
+     * get member basic info by member's phone
      *
      * @param phone
      * @return
@@ -41,7 +41,7 @@ public class RpcMemberServiceConsumer {
 
 
     /**
-     * 根据邮箱地址获取成员关键信息
+     * get member basic info by member's email
      *
      * @param email
      * @return

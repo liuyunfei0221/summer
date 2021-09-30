@@ -10,6 +10,16 @@ package com.blue.base.constant.base;
 public enum ResponseMessage {
 
     /**
+     * GENERIC_SUCCESS
+     */
+    GENERIC_SUCCESS("SUCCESS"),
+
+    /**
+     * GENERIC_FAILED
+     */
+    GENERIC_FAILED("Failed"),
+
+    /**
      * EMPTY_REQUEST_BODY
      */
     EMPTY_REQUEST_BODY("Empty request body"),
@@ -62,7 +72,22 @@ public enum ResponseMessage {
     /**
      * FILE_NOT_EXIST
      */
-    FILE_NOT_EXIST("File not exist");
+    FILE_NOT_EXIST("File not exist"),
+
+    /**
+     * MEMBER_NOT_HAS_A_ROLE
+     */
+    MEMBER_NOT_HAS_A_ROLE("Member not has a role"),
+
+    /**
+     * MEMBER_ALREADY_HAS_A_ROLE
+     */
+    MEMBER_ALREADY_HAS_A_ROLE("Member already has a role"),
+
+    /**
+     * ACCOUNT_HAS_BEEN_FROZEN
+     */
+    ACCOUNT_HAS_BEEN_FROZEN("Your account has been frozen");
 
     public final String message;
 

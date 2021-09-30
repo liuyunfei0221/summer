@@ -4,7 +4,7 @@ import com.blue.secure.repository.entity.MemberRoleRelation;
 import org.apache.ibatis.annotations.Param;
 
 /**
- * 成员角色关联关系持久层
+ * member role relation mapper
  *
  * @author DarkBlue
  */
@@ -12,7 +12,7 @@ import org.apache.ibatis.annotations.Param;
 public interface MemberRoleRelationMapper {
 
     /**
-     * 新增成员角色关联
+     * insert relation
      *
      * @param record
      * @return
@@ -20,7 +20,7 @@ public interface MemberRoleRelationMapper {
     int insertSelective(MemberRoleRelation record);
 
     /**
-     * 更新成员角色关联
+     * update relation
      *
      * @param record
      * @return
@@ -28,7 +28,7 @@ public interface MemberRoleRelationMapper {
     int updateByPrimaryKeySelective(MemberRoleRelation record);
 
     /**
-     * 根据成员id获取成员角色id
+     * get member's role id by member's id
      *
      * @param memberId
      * @return
@@ -36,7 +36,7 @@ public interface MemberRoleRelationMapper {
     Long getRoleIdByMemberId(@Param("memberId") Long memberId);
 
     /**
-     * 根据成员id获取成员角色关联信息
+     * get member role relation  by member's id
      *
      * @param memberId
      * @return

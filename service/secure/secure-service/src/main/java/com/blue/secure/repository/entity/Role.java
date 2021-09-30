@@ -1,51 +1,27 @@
 package com.blue.secure.repository.entity;
 
 /**
- * 角色表
+ * role
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public class Role {
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 角色名称
-     */
     private String name;
 
-    /**
-     * 角色描述
-     */
     private String description;
 
-    /**
-     * 是否默认角色
-     */
     private Boolean isDefault;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 修改时间
-     */
     private Long updateTime;
 
-    /**
-     * 创建人
-     */
     private Long creator;
 
-    /**
-     * 修改人
-     */
     private Long updater;
 
     public Long getId() {

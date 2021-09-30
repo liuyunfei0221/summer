@@ -5,22 +5,22 @@ import com.blue.secure.repository.entity.Resource;
 import java.util.List;
 
 /**
- * 资源接口
+ * resource service interface
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface ResourceService {
 
     /**
-     * 获取全部资源
+     * select all resources
      *
      * @return
      */
     List<Resource> listResource();
 
     /**
-     * 根据ids批量查询成员资源列表
+     * select resources by ids
      *
      * @param ids
      * @return
@@ -28,7 +28,7 @@ public interface ResourceService {
     List<Resource> listResourceByIds(List<Long> ids);
 
     /**
-     * 根据roleId查询所有的资源信息
+     * select resources by role id
      *
      * @param roleId
      * @return

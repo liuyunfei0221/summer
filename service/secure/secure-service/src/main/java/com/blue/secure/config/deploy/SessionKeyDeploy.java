@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * SessionKey配置参数类
+ * SessionKey config
  *
  * @author DarkBlue
  */

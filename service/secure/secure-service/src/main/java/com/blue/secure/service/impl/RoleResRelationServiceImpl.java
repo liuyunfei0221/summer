@@ -12,7 +12,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * 角色资源关联实现
+ * role resource relation service impl
  *
  * @author DarkBlue
  */
@@ -30,7 +30,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     }
 
     /**
-     * 获取全部资源角色关联
+     * select all role resource relation
      *
      * @return
      */
@@ -41,7 +41,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     }
 
     /**
-     * 根据角色id查询角色对应的资源id
+     * select resources ids by role id
      *
      * @return
      */

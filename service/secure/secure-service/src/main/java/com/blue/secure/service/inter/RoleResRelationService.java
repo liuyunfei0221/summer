@@ -5,7 +5,7 @@ import com.blue.secure.repository.entity.RoleResRelation;
 import java.util.List;
 
 /**
- * 角色资源关联接口
+ * role resource relation service
  *
  * @author DarkBlue
  */
@@ -13,14 +13,14 @@ import java.util.List;
 public interface RoleResRelationService {
 
     /**
-     * 获取全部资源角色关联
+     * select all role resource relation
      *
      * @return
      */
     List<RoleResRelation> listRoleResRelation();
 
     /**
-     * 根据角色id查询角色对应的资源id
+     * select resources ids by role id
      *
      * @param roleId
      * @return

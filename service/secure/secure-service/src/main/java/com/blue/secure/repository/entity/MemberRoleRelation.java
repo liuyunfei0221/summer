@@ -1,46 +1,25 @@
 package com.blue.secure.repository.entity;
 
 /**
- * 成员角色关联表
+ * member role relation
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public class MemberRoleRelation {
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 成员id
-     */
     private Long memberId;
 
-    /**
-     * 角色id
-     */
     private Long roleId;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 修改时间
-     */
     private Long updateTime;
 
-    /**
-     * 创建人
-     */
     private Long creator;
 
-    /**
-     * 修改人
-     */
     private Long updater;
 
 

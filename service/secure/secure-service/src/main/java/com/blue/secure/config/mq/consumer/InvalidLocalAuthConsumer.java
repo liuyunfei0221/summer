@@ -20,7 +20,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * 消费端配置
+ * invalid auth from local cache consumer
  *
  * @author DarkBlue
  */

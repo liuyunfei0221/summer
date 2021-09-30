@@ -1,91 +1,73 @@
 package com.blue.secure.repository.entity;
 
 /**
- * 资源
+ * resource
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public class Resource {
 
-    /**
-     * 主键
-     */
     private Long id;
 
     /**
-     * 请求方式/大写
+     * request method str/upper
      */
     private String requestMethod;
 
     /**
-     * 服务
+     * module/service name
      */
     private String module;
 
     /**
-     * 资源路径
+     * resource uri
      */
     private String uri;
 
     /**
-     * 认证标识 1需要认证 0免认证
+     * certificate resource?
      */
     private Boolean authenticate;
 
     /**
-     * 请求数据不解密 1不解密 0解密
+     * decrypt request param?
      */
     private Boolean preUnDecryption;
 
     /**
-     * 响应数据不加密 1不加密 0加密
+     * encrypt response result?
      */
     private Boolean postUnEncryption;
 
     /**
-     * 是否有请求体 1有 0没有
+     * has request body?
      */
     private Boolean existenceRequestBody;
 
     /**
-     * 是否有响应体 1有 0没有
+     * has response body?
      */
     private Boolean existenceResponseBody;
 
     /**
-     * 资源类型 1前台api 2后台api 3对外提供api
+     * resource type: 1.client api 2.manager api 3.open api
      */
     private Integer type;
 
     /**
-     * 资源名称
+     * resource name
      */
     private String name;
 
-    /**
-     * 资源描述
-     */
     private String description;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 修改时间
-     */
     private Long updateTime;
 
-    /**
-     * 创建人
-     */
     private Long creator;
 
-    /**
-     * 修改人
-     */
     private Long updater;
 
     public Long getId() {
