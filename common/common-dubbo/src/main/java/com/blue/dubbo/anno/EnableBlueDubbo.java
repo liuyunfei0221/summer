@@ -2,8 +2,10 @@ package com.blue.dubbo.anno;
 
 import com.blue.dubbo.ioc.BlueDubboComponentScanRegistrar;
 import com.blue.dubbo.ioc.BlueDubboConfiguration;
+import org.apache.dubbo.config.spring.context.annotation.EnableDubboConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -20,6 +22,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(TYPE)
 @Retention(RUNTIME)
 @Configuration
+@EnableDubboConfig
 @Import({BlueDubboConfiguration.class, BlueDubboComponentScanRegistrar.class})
 public @interface EnableBlueDubbo {
 
@@ -36,5 +39,11 @@ public @interface EnableBlueDubbo {
      * @return
      */
     Class<?>[] basePackageClasses() default {};
+
+    @AliasFor(
+            annotation = EnableDubboConfig.class,
+            attribute = "multiple"
+    )
+    boolean multipleConfig() default true;
 
 }

@@ -1,18 +1,14 @@
 package com.blue.data.config.mq.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.model.event.data.DataEvent;
 import com.blue.data.common.statistics.StatisticsProcessor;
 import com.blue.data.config.blue.BlueConsumerConfig;
-import com.blue.jwt.common.JwtProcessor;
 import com.blue.pulsar.api.conf.ConsumerConfParams;
 import com.blue.pulsar.common.BluePulsarConsumer;
-import com.blue.secure.api.model.MemberPayload;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.blue.base.constant.base.BlueTopic.REQUEST_EVENT;
@@ -27,12 +23,10 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"unused"})
 public final class DataEventConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(DataEventConsumer.class);
-
-    private final JwtProcessor<MemberPayload> jwtProcessor;
 
     private final StatisticsProcessor statisticsProcessor;
 
@@ -40,8 +34,7 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     private BluePulsarConsumer<DataEvent> dataEventConsumer;
 
-    public DataEventConsumer(JwtProcessor<MemberPayload> jwtProcessor, StatisticsProcessor statisticsProcessor, BlueConsumerConfig blueConsumerConfig) {
-        this.jwtProcessor = jwtProcessor;
+    public DataEventConsumer(StatisticsProcessor statisticsProcessor, BlueConsumerConfig blueConsumerConfig) {
         this.statisticsProcessor = statisticsProcessor;
         this.blueConsumerConfig = blueConsumerConfig;
     }
@@ -51,22 +44,9 @@ public final class DataEventConsumer implements BlueLifecycle {
         Consumer<DataEvent> dataEventDataConsumer = dataEvent ->
                 ofNullable(dataEvent)
                         .ifPresent(de -> {
-                            //TODO 行为分析
-                            String accessJson = de.getData(BlueDataAttrKey.ACCESS.key);
-                            String jwtStr = de.getData(BlueDataAttrKey.JWT.key);
 
                             LOGGER.warn("de = {}", de);
-
-                            Map<String, String> entries = de.getEntries();
-                            if (jwtStr != null && !"".equals(jwtStr))
-                                try {
-                                    MemberPayload memberPayload = jwtProcessor.parse(jwtStr);
-                                    entries.put("memberId", memberPayload.getId());
-                                } catch (Exception e) {
-                                    LOGGER.error("jwtStr解析失败, jwtStr = {}, e = {}", jwtStr, e);
-                                }
-
-                            statisticsProcessor.process(entries);
+                            statisticsProcessor.process(de.getEntries());
                         });
 
         ConsumerConfParams dataEventDeploy = blueConsumerConfig.getByKey(REQUEST_EVENT.name);

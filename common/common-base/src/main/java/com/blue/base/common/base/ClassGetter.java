@@ -33,38 +33,38 @@ public final class ClassGetter {
     private static final Logger LOGGER = getLogger(ClassGetter.class);
 
     /**
-     * class文件后缀
+     * class post
      */
     private static final String CLASS_SUFFIX = ".class";
 
     /**
-     * class前缀
+     * class prefix
      */
     private static final String JAVA_MAIN_PREFIX = separator + "java" + separator + "main" + separator;
 
     /**
-     * target前缀
+     * target prefix
      */
     private static final String CLASS_PREFIX = separator + "classes" + separator;
 
     /**
-     * 路径分隔符,包分隔符
+     * separators
      */
     private static final String PATH_SEPARATOR = "/", PACKAGE_SEPARATOR = ".";
 
     /**
-     * 内部类标识
+     * inner class token
      */
     private static final String INNER_CLASS_IDENTITY = "$";
 
     /**
-     * 文件,jar
+     * protocols
      */
     private static final String FILE_PROTOCOL = "file", JAR_PROTOCOL = "jar";
 
 
     /**
-     * 根据包路径获取类
+     * get classes by package
      *
      * @param packageName
      * @param recursive

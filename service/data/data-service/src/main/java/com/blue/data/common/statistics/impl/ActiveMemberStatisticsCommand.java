@@ -1,6 +1,9 @@
 package com.blue.data.common.statistics.impl;
 
+import com.blue.base.common.auth.AuthProcessor;
+import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.constant.data.StatisticsRange;
+import com.blue.base.model.base.Access;
 import com.blue.data.common.statistics.inter.StatisticsCommand;
 import com.blue.data.service.inter.ActiveMemberStatisticsService;
 import reactor.util.Logger;
@@ -8,7 +11,6 @@ import reactor.util.Logger;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -34,13 +36,15 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
 
     @Override
     public void packageAnalyzeData(Map<String, String> data) {
-        String memberId = data.get("memberId");
+        try {
+            Access access = AuthProcessor.jsonToAccess(data.get(BlueDataAttrKey.ACCESS.key));
+            long memberId = access.getId();
 
-        if (!isBlank(memberId)) {
-            activeMemberStatisticsService.markActive(Long.parseLong(memberId), StatisticsRange.DAY);
-            activeMemberStatisticsService.markActive(Long.parseLong(memberId), StatisticsRange.MONTH);
+            activeMemberStatisticsService.markActive(memberId, StatisticsRange.DAY);
+            activeMemberStatisticsService.markActive(memberId, StatisticsRange.MONTH);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     @Override
