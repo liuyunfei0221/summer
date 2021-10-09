@@ -11,8 +11,6 @@ import java.util.concurrent.*;
 import static com.blue.identity.constant.SnowflakeBits.*;
 
 /**
- * 雪花测试类
- *
  * @author DarkBlue
  */
 @SuppressWarnings("ALL")

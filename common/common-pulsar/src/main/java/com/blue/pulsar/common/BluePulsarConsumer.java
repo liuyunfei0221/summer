@@ -75,9 +75,6 @@ public final class BluePulsarConsumer<T extends Serializable> {
      */
     public BluePulsarConsumer(ConsumerConf conf, Consumer<T> consumer, MessageListener<T> messageListener, ConsumerEventListener consumerEventListener,
                               List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
-        if (consumer == null)
-            throw new RuntimeException("consumer can't null");
-
         this.pulsarClient = generateClient(conf);
         this.pulsarConsumer = generateConsumer(pulsarClient, conf, consumer, messageListener, consumerEventListener, interceptors, keySharedPolicy);
 

@@ -16,9 +16,9 @@ import static com.blue.base.constant.secure.LoginType.NOT_LOGGED_IN;
 public enum SpecialAccess {
 
     /**
-     * 游客身份
+     * visitor not login
      */
-    VISITOR(new Access(NOT_LOGGED_IN_MEMBER_ID.value, NOT_LOGGED_IN_ROLE_ID.value, NOT_LOGGED_IN.identity, UNKNOWN.identity, NOT_LOGGED_IN_TIME.value), "游客身份");
+    VISITOR(new Access(NOT_LOGGED_IN_MEMBER_ID.value, NOT_LOGGED_IN_ROLE_ID.value, NOT_LOGGED_IN.identity, UNKNOWN.identity, NOT_LOGGED_IN_TIME.value), "visitor not login");
 
     public final Access access;
 

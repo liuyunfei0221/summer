@@ -20,7 +20,7 @@ public final class Md5Processor {
     private static final Logger LOGGER = getLogger(Md5Processor.class);
 
     /**
-     * 生成md5
+     * generate md5
      *
      * @param originalData
      * @return

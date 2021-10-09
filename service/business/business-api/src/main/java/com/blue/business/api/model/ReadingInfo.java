@@ -3,7 +3,7 @@ package com.blue.business.api.model;
 import java.io.Serializable;
 
 /**
- * 阅读信息封装
+ * reading info
  *
  * @author DarkBlue
  */

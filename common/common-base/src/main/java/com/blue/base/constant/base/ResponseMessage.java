@@ -12,7 +12,7 @@ public enum ResponseMessage {
     /**
      * GENERIC_SUCCESS
      */
-    GENERIC_SUCCESS("SUCCESS"),
+    GENERIC_SUCCESS("Success"),
 
     /**
      * GENERIC_FAILED
@@ -68,6 +68,16 @@ public enum ResponseMessage {
      * INVALID_ACCT_OR_PWD
      */
     INVALID_ACCT_OR_PWD("Invalid account or password"),
+
+    /**
+     * NO_AUTH_REQUIRED_RES
+     */
+    NO_AUTH_REQUIRED_RESOURCE("Resources do not require authentication access"),
+
+    /**
+     * ACCESS
+     */
+    ACCESS("Access"),
 
     /**
      * FILE_NOT_EXIST

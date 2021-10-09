@@ -226,7 +226,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
     }
 
     /**
-     * 初始化
+     * init
      */
     @PostConstruct
     private void init() {

@@ -21,7 +21,7 @@ public class RequestBodyProcessorConfig {
     @Bean
     RequestBodyProcessor requestBodyProcessor() {
 
-        /**
+        /*
          * TODO Here is an extension point
          * Used to assert and process the request body. If the operation here is too time-consuming, it will affect the performance of the gateway.
          * So I don't recommend you to do anything here. The following only uses XSS filtering as an example. You can use bean, reflection, and spi according to your needs.

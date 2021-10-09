@@ -32,7 +32,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class AuthInfoCacher {
 
     private static final Logger LOGGER = getLogger(AuthInfoCacher.class);

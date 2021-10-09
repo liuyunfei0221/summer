@@ -1,5 +1,11 @@
 package com.blue.business.repository.entity;
 
+/**
+ * comment
+ *
+ * @author DarkBlue
+ */
+@SuppressWarnings("unused")
 public class Comment {
 
     private Long id;

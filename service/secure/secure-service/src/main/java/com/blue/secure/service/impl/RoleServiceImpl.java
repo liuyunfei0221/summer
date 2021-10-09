@@ -29,7 +29,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 角色业务实现
+ * role service impl
  *
  * @author DarkBlue
  */
@@ -60,43 +60,27 @@ public class RoleServiceImpl implements RoleService {
         this.blockingDeploy = blockingDeploy;
     }
 
-    /**
-     * 刷新资源时最大等待时间
-     */
     private static long MAX_WAITING_FOR_REFRESH;
 
-    /**
-     * 默认角色
-     */
     private static Role defaultRole;
 
-    /**
-     * 默认角色是否刷新中的标记位
-     */
     private static volatile boolean defaultRoleRefreshing = false;
 
-    /**
-     * 默认角色信息动态刷新时的阻塞器
-     */
     private static final Supplier<String> DEFAULT_ROLE_REFRESHING_BLOCKER = () -> {
         if (defaultRoleRefreshing) {
             long start = currentTimeMillis();
             while (defaultRoleRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "默认角色信息刷新超时");
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "waiting default role refresh timeout");
                 onSpinWait();
             }
         }
         return "refreshed";
     };
 
-    /**
-     * 初始化免认证资源信息与角色资源映射等
-     */
     @SuppressWarnings("UnusedReturnValue")
     private boolean generateDefaultRoleInfo() {
         try {
-            //查询所有角色信息
             CompletableFuture<List<Role>> roleListCf =
                     supplyAsync(roleMapper::listRoles, executorService);
 
@@ -120,20 +104,15 @@ public class RoleServiceImpl implements RoleService {
             LOGGER.error("generateDefaultRoleInfo() -> FAILED,error = " + e);
             return false;
         }
+
         return true;
     }
 
-    /**
-     * 默认角色获取器
-     */
     private static final Supplier<Role> DEFAULT_ROLE_GETTER = () -> {
         DEFAULT_ROLE_REFRESHING_BLOCKER.get();
         return defaultRole;
     };
 
-    /**
-     * 初始化
-     */
     @PostConstruct
     public void init() {
         MAX_WAITING_FOR_REFRESH = blockingDeploy.getBlockingMillis();

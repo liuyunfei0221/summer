@@ -11,6 +11,7 @@ import java.io.Serializable;
 public final class EncryptedRequest implements Serializable {
 
     private static final long serialVersionUID = 6773955220682431886L;
+
     /**
      * encrypted data json
      */
@@ -20,7 +21,6 @@ public final class EncryptedRequest implements Serializable {
      * signature
      */
     private String signature;
-
 
     public EncryptedRequest() {
     }

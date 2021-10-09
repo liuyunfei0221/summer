@@ -20,8 +20,7 @@ import static org.springframework.cloud.loadbalancer.support.LoadBalancerClientF
 public class LoadBalanceConfig {
 
     @Bean
-    ReactorLoadBalancer<ServiceInstance> reactorLoadBalancer(Environment environment,
-                                                             LoadBalancerClientFactory loadBalancerClientFactory) {
+    ReactorLoadBalancer<ServiceInstance> reactorLoadBalancer(Environment environment, LoadBalancerClientFactory loadBalancerClientFactory) {
         String name = environment.getProperty(PROPERTY_NAME);
         return new BlueRandomLoadBalancer(loadBalancerClientFactory.getLazyProvider(name, ServiceInstanceListSupplier.class));
     }

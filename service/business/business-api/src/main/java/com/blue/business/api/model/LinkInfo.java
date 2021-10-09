@@ -3,10 +3,11 @@ package com.blue.business.api.model;
 import java.io.Serializable;
 
 /**
- * 相关链接数据封装
+ * link info
  *
  * @author DarkBlue
  */
+@SuppressWarnings("unused")
 public final class LinkInfo implements Serializable {
 
     private static final long serialVersionUID = -1399542570751999295L;

@@ -26,7 +26,7 @@ public final class BlueBeanCopier {
     private static final Map<String, BeanCopier> COPIERS_HOLDER = new ConcurrentHashMap<>();
 
     /**
-     * 构建key
+     * generate key
      *
      * @param source
      * @param target
@@ -35,15 +35,15 @@ public final class BlueBeanCopier {
      */
     private static String generateKey(Class source, Class target, boolean useConverter) {
         if (source == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "source不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "source can't be null");
         if (target == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "target不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "target can't be null");
 
         return source.getName() + PAR_CONCATENATION + target.getName() + PAR_CONCATENATION + useConverter;
     }
 
     /**
-     * 创建复制bean
+     * create copier
      *
      * @param source
      * @param target

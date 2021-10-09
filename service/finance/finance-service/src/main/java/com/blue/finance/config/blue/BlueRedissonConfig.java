@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * redisson配置参数类
+ * redisson config
  *
  * @author DarkBlue
  */

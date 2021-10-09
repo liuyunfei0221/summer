@@ -18,7 +18,7 @@ import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateClient;
 
 
 /**
- * pulsar事务生产者构建工厂
+ * pulsar transaction producer coordinator
  *
  * @author DarkBlue
  */

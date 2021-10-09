@@ -4,7 +4,7 @@ import com.blue.business.service.inter.CommonService;
 import org.springframework.stereotype.Service;
 
 /**
- * 评论业务实现
+ * common service
  *
  * @author DarkBlue
  * @date 2021/8/11

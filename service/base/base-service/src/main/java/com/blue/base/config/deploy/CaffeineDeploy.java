@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * redis配置参数类
+ * caffeine deploy
  *
  * @author DarkBlue
  */

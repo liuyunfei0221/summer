@@ -57,7 +57,7 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
         if (illegalReason == null)
             return;
 
-        LOGGER.warn("该ip触发风控拦截, ip = {}, illegalReason = {}", ip, illegalReason);
+        LOGGER.warn("The ip has been risk control interception, ip = {}, illegalReason = {}", ip, illegalReason);
         throw new BlueException(NOT_ACCEPTABLE.status, NOT_ACCEPTABLE.code, illegalReason);
     };
 
@@ -66,7 +66,7 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
         if (illegalReason == null)
             return;
 
-        LOGGER.warn("该jwt触发风控拦截, jwt = {}, illegalReason = {}", jwt, illegalReason);
+        LOGGER.warn("The jwt has been risk control interception, jwt = {}, illegalReason = {}", jwt, illegalReason);
         throw new BlueException(NOT_ACCEPTABLE.status, NOT_ACCEPTABLE.code, illegalReason);
     };
 
@@ -89,11 +89,11 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
     private void init() {
         Long illegalExpireSeconds = riskControlDeploy.getIllegalExpireSeconds();
         if (illegalExpireSeconds == null || illegalExpireSeconds < 1L)
-            throw new RuntimeException("illegalExpireSeconds不能为空或小于1");
+            throw new RuntimeException("illegalExpireSeconds can't be null or less than 1");
 
         Integer illegalCapacity = riskControlDeploy.getIllegalCapacity();
         if (illegalCapacity == null || illegalCapacity < 1)
-            throw new RuntimeException("illegalCapacity不能为空或小于1");
+            throw new RuntimeException("illegalCapacity can't be null or less than 1");
 
         illegalIpCacher = newBuilder()
                 .expireAfterAccess(of(illegalExpireSeconds, SECONDS))

@@ -17,7 +17,7 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 相关链接业务实现
+ * link service impl
  *
  * @author DarkBlue
  */
@@ -35,7 +35,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     /**
-     * 根据主键查询相关链接信息
+     * get link by id
      *
      * @param id
      * @return
@@ -50,7 +50,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     /**
-     * 根据主键集批量查询相关链接信息
+     * list link by ids
      *
      * @param ids
      * @return
@@ -61,7 +61,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     /**
-     * 根据主题id和主题类型查询相关链接
+     * list link by subject id and subject type
      *
      * @param subId
      * @param subType
@@ -82,7 +82,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     /**
-     * 添加相关链接
+     * insert link
      *
      * @param link
      */
@@ -92,7 +92,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     /**
-     * 批量添加相关链接
+     * insert link batch
      *
      * @param links
      */
@@ -102,7 +102,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     /**
-     * 修改相关链接
+     * update link
      *
      * @param link
      */

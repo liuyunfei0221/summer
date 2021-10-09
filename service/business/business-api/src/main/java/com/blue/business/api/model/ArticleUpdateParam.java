@@ -15,30 +15,27 @@ public final class ArticleUpdateParam implements Serializable {
 
     private Long id;
 
-    /**
-     * 标题
-     */
     private String title;
 
-    /**
-     * 作者
-     */
     private String author;
 
-    /**
-     * 类型
-     */
     private Integer type;
 
-    /**
-     * 内容
-     */
     private String content;
 
-    /**
-     * 相关链接
-     */
     private List<String> links;
+
+    public ArticleUpdateParam() {
+    }
+
+    public ArticleUpdateParam(Long id, String title, String author, Integer type, String content, List<String> links) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.type = type;
+        this.content = content;
+        this.links = links;
+    }
 
     public Long getId() {
         return id;

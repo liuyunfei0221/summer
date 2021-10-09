@@ -9,7 +9,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 import static reactor.core.publisher.Mono.just;
 
 /**
- * 动态处理器实现
+ * dynamic endpoint handler impl for post
  *
  * @author liuyunfei
  * @date 2021/9/14
@@ -21,4 +21,5 @@ public class BluePostDynamicEndPointHandlerImpl implements DynamicEndPointHandle
     public Mono<ServerResponse> handle(ServerRequest serverRequest) {
         return ok().body(just("BluePostDynamicEndPointHandlerImpl ok"), String.class);
     }
+
 }

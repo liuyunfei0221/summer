@@ -33,7 +33,7 @@ public final class ClassGetter {
     private static final Logger LOGGER = getLogger(ClassGetter.class);
 
     /**
-     * class post
+     * class suffix
      */
     private static final String CLASS_SUFFIX = ".class";
 

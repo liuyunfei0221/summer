@@ -12,7 +12,7 @@ import java.util.function.UnaryOperator;
 import static java.util.Collections.singletonList;
 
 /**
- * mysql配置参数类
+ * data access config
  *
  * @author DarkBlue
  */

@@ -58,7 +58,7 @@ public final class InvalidLocalAuthProducer implements BlueLifecycle {
     }
 
     /**
-     * 发送消息
+     * send message
      *
      * @param invalidLocalAuthParam
      */

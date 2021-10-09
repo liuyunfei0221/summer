@@ -20,7 +20,7 @@ public final class AuthProcessor {
     private static final Gson GSON = CommonFunctions.GSON;
 
     /**
-     * 认证信息转换为打到下游的成员信息
+     * access -> json
      *
      * @param access
      * @return
@@ -29,11 +29,11 @@ public final class AuthProcessor {
         if (access != null)
             return GSON.toJson(access);
 
-        throw new RuntimeException("access不能为空");
+        throw new RuntimeException("access can't be null");
     }
 
     /**
-     * 成员信息转为实体封装
+     * json -> access
      *
      * @param json
      * @return

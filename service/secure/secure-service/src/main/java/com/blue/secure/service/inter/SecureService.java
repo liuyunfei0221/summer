@@ -5,29 +5,29 @@ import com.blue.secure.api.model.*;
 import reactor.core.publisher.Mono;
 
 /**
- * 用户认证授权业务接口
+ * secure service
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
+@SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue", "GrazieInspection"})
 public interface SecureService {
 
     /**
-     * 更新资源或关联信息
+     * refresh resource key/info or role-resource-relation
      *
      * @return
      */
     boolean refreshResourceKeyOrRelation();
 
     /**
-     * 更新角色信息
+     * refresh role info
      *
      * @return
      */
     boolean refreshRoleInfo();
 
     /**
-     * 客户端登录
+     * login by client
      *
      * @param clientLoginParam
      * @return
@@ -35,7 +35,7 @@ public interface SecureService {
     Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam);
 
     /**
-     * 小程序登录
+     * login by wechat mini program
      *
      * @param miniProLoginParam
      * @return
@@ -43,7 +43,7 @@ public interface SecureService {
     Mono<MemberAuth> loginByMiniPro(MiniProLoginParam miniProLoginParam);
 
     /**
-     * 微信登录
+     * login by wechat
      *
      * @param wechatProLoginParam
      * @return
@@ -51,7 +51,7 @@ public interface SecureService {
     Mono<MemberAuth> loginByWechat(WechatProLoginParam wechatProLoginParam);
 
     /**
-     * 校验auth合法性
+     * assert auth
      *
      * @param assertAuth
      * @return
@@ -59,7 +59,7 @@ public interface SecureService {
     Mono<AuthAsserted> assertAuth(AssertAuth assertAuth);
 
     /**
-     * 生成用户jwt信息
+     * generate member auth
      *
      * @param authGenParam
      * @return
@@ -67,7 +67,7 @@ public interface SecureService {
     Mono<MemberAuth> generateAuth(AuthGenParam authGenParam);
 
     /**
-     * 根据access清除认证信息
+     * invalid auth by access
      *
      * @param access
      * @return
@@ -75,7 +75,7 @@ public interface SecureService {
     Mono<Boolean> invalidAuthByAccess(Access access);
 
     /**
-     * 根据jwt清除认证信息
+     * invalid auth by jwt
      *
      * @param jwt
      * @return
@@ -83,7 +83,7 @@ public interface SecureService {
     Mono<Boolean> invalidAuthByJwt(String jwt);
 
     /**
-     * 根据keyId失效本地缓存
+     * invalid local auth by key id
      *
      * @param keyId
      * @return
@@ -91,7 +91,7 @@ public interface SecureService {
     Mono<Boolean> invalidLocalAuthByKeyId(String keyId);
 
     /**
-     * 根据access更新成员auth的角色信息
+     * update member role info by access
      *
      * @param access
      * @param roleId
@@ -100,7 +100,7 @@ public interface SecureService {
     void updateMemberRoleByAccess(Access access, Long roleId);
 
     /**
-     * 根据memberId更新成员auth的角色信息
+     * update member role info by member id
      *
      * @param memberId
      * @param roleId
@@ -110,7 +110,7 @@ public interface SecureService {
     void updateMemberRoleById(Long memberId, Long roleId, Long operatorId);
 
     /**
-     * 根据access更新成员auth的密钥信息
+     * update member sec key by access
      *
      * @param access
      * @return
@@ -118,14 +118,14 @@ public interface SecureService {
     Mono<String> updateSecKeyByAccess(Access access);
 
     /**
-     * 为成员分配默认角色
+     * set a default role to member
      *
      * @param memberId
      */
     void insertDefaultMemberRoleRelation(Long memberId);
 
     /**
-     * 根据access查询成员的角色及权限信息
+     * get member's authority by access
      *
      * @param access
      * @return
@@ -133,7 +133,7 @@ public interface SecureService {
     Mono<Authority> getAuthorityByAccess(Access access);
 
     /**
-     * 根据memberId查询成员的角色及权限信息
+     * get member's authority by member id
      *
      * @param memberId
      * @return

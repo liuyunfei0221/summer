@@ -59,7 +59,7 @@ public final class AuthExpireProducer implements BlueLifecycle {
     }
 
     /**
-     * 发送消息
+     * send message
      *
      * @param keyExpireParam
      */

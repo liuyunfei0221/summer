@@ -13,18 +13,22 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused", "AlibabaCommentsMustBeJavadocFormat"})
 public interface RedissonConf {
 
     ServerMode getServerMode();
 
+    //<editor-fold desc="cluster conf">
     List<String> getNodes();
 
     String getPassword();
+    //</editor-fold>
 
+    //<editor-fold desc="standalone conf">
     String getHost();
 
     Integer getPort();
+    //</editor-fold>
 
     Integer getScanInterval();
 

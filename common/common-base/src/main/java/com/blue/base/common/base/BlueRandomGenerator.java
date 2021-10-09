@@ -32,7 +32,7 @@ public final class BlueRandomGenerator {
     }
 
     /**
-     * 根据类型及长度生成随机信息
+     * generate random data by type and length
      *
      * @param type
      * @param length
@@ -40,11 +40,11 @@ public final class BlueRandomGenerator {
      */
     public static String generateRandom(RandomType type, int length) {
         if (type == null || length < 1)
-            throw new RuntimeException("type不能为空且length不能小于1");
+            throw new RuntimeException("type can't be null, length can't be less than 1");
 
         Function<Integer, String> generator = GENERATOR_MAPPING.get(type);
         if (generator == null)
-            throw new RuntimeException("不支持的type" + type);
+            throw new RuntimeException("invalid type" + type);
 
         return generator.apply(length);
     }

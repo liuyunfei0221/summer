@@ -11,7 +11,7 @@ package com.blue.redis.constant;
 public enum RedisScripts {
 
     /**
-     * 限流脚本
+     * limiter script
      */
     RATE_LIMITER("local tokens_key = KEYS[1]\n" +
             "local timestamp_key = KEYS[2]\n" +
@@ -48,7 +48,11 @@ public enum RedisScripts {
             "  redis.call(\"setex\", timestamp_key, ttl, now)\n" +
             "end\n" +
             "\n" +
-            "return allowed_num", "限流脚本"),
+            "return allowed_num", "limiter script"),
+
+    /**
+     * validator script
+     */
     VALIDATION("local key = KEYS[1]\n" +
             "\n" +
             "local v = redis.call(\"get\", key)\n" +
@@ -56,7 +60,7 @@ public enum RedisScripts {
             "  redis.call(\"del\", key)\n" +
             "end\n" +
             "\n" +
-            "return v == ARGV[1]", "校验脚本");
+            "return v == ARGV[1]", "validator script");
 
     public final String str;
 

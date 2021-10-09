@@ -89,19 +89,19 @@ public class BlueSyncRestGenerator {
 
             HttpRequestRetryHandler httpRequestRetryHandler = (exception, executionCount, context) -> {
                 if (executionCount > syncRestConf.getRetryTimes()) {
-                    LOGGER.info("重试次数过多", exception);
+                    LOGGER.info("too many retries", exception);
                     return false;
                 }
                 if (exception instanceof ConnectTimeoutException) {
-                    LOGGER.info("连接超时", exception);
+                    LOGGER.info("connection timeout", exception);
                     return true;
                 }
                 if (exception instanceof SocketTimeoutException) {
-                    LOGGER.info("连接超时", exception);
+                    LOGGER.info("socket timeout", exception);
                     return false;
                 }
                 if (!(HttpClientContext.adapt(context).getRequest() instanceof HttpEntityEnclosingRequest)) {
-                    LOGGER.info("幂等异常，重试中......", exception);
+                    LOGGER.info("Idempotent exception, retry......", exception);
                     return true;
                 }
                 return syncRestConf.getRadicalizationTry();
@@ -121,8 +121,8 @@ public class BlueSyncRestGenerator {
 
             return new RestTemplate(requestFactory);
         } catch (Exception e) {
-            LOGGER.error("restTemplate 初始化失败,e = {0}", e);
-            throw new RuntimeException("restTemplate 初始化失败,e = " + e);
+            LOGGER.error("restTemplate init failed, e = {0}", e);
+            throw new RuntimeException("restTemplate init failed, e = " + e);
         }
     }
 

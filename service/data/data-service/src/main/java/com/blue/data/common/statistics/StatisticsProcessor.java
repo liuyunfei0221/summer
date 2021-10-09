@@ -75,7 +75,7 @@ public final class StatisticsProcessor implements ResourceLoaderAware, ImportBea
      */
     public void process(Map<String, String> data) {
         for (StatisticsCommand command : commands) {
-            command.packageAnalyzeData(data);
+            command.analyzeAndPackage(data);
             command.summary(data);
         }
     }

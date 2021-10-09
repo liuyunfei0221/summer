@@ -11,24 +11,22 @@ import java.util.List;
  * @date 2021/9/9
  * @apiNote
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "AlibabaCommentsMustBeJavadocFormat"})
 public class RedisConfParams implements RedisConf {
 
     protected ServerMode serverMode;
 
-    /**
-     * 集群配置
-     */
+    //<editor-fold desc="cluster conf">
     protected List<String> nodes;
 
     protected String password;
+    //</editor-fold>
 
-    /**
-     * 单机配置,开发完成后可删除
-     */
+    //<editor-fold desc="standalone conf">
     protected String host;
 
     protected Integer port;
+    //</editor-fold>
 
     protected Integer maxRedirects;
 

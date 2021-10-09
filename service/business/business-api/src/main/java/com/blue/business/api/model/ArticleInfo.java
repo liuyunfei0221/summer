@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 文章信息封装
+ * article info
  *
  * @author DarkBlue
  */
@@ -53,96 +53,96 @@ public final class ArticleInfo implements Serializable {
         this.links = links;
     }
 
-    public  Long getId() {
+    public Long getId() {
         return id;
     }
 
-    public  void setId(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public  String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public  void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public  Long getAuthorId() {
+    public Long getAuthorId() {
         return authorId;
     }
 
-    public  void setAuthorId(Long authorId) {
+    public void setAuthorId(Long authorId) {
         this.authorId = authorId;
     }
 
-    public  String getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public  void setAuthor(String author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
-    public  Integer getType() {
+    public Integer getType() {
         return type;
     }
 
-    public  void setType(Integer type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
-    public  String getTypeDisc() {
+    public String getTypeDisc() {
         return typeDisc;
     }
 
-    public  void setTypeDisc(String typeDisc) {
+    public void setTypeDisc(String typeDisc) {
         this.typeDisc = typeDisc;
     }
 
-    public  Long getCreateTime() {
+    public Long getCreateTime() {
         return createTime;
     }
 
-    public  void setCreateTime(Long createTime) {
+    public void setCreateTime(Long createTime) {
         this.createTime = createTime;
     }
 
-    public  Long getUpdateTime() {
+    public Long getUpdateTime() {
         return updateTime;
     }
 
-    public  void setUpdateTime(Long updateTime) {
+    public void setUpdateTime(Long updateTime) {
         this.updateTime = updateTime;
     }
 
-    public  String getContent() {
+    public String getContent() {
         return content;
     }
 
-    public  void setContent(String content) {
+    public void setContent(String content) {
         this.content = content;
     }
 
-    public  ReadingInfo getReadingVO() {
+    public ReadingInfo getReadingVO() {
         return readingInfo;
     }
 
-    public  void setReadingVO(ReadingInfo readingInfo) {
+    public void setReadingVO(ReadingInfo readingInfo) {
         this.readingInfo = readingInfo;
     }
 
-    public  List<LinkInfo> getLinks() {
+    public List<LinkInfo> getLinks() {
         return links;
     }
 
-    public  void setLinks(List<LinkInfo> links) {
+    public void setLinks(List<LinkInfo> links) {
         this.links = links;
     }
 
     @Override
-    public  String toString() {
+    public String toString() {
         return "ArticleVO{" +
                 "id=" + id +
                 ", title='" + title + '\'' +

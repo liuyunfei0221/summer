@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.time.temporal.ChronoUnit;
 
 /**
- * redis配置参数类
+ * local cache deploy
  *
  * @author DarkBlue
  */

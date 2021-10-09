@@ -1,5 +1,11 @@
 package com.blue.business.repository.entity;
 
+/**
+ * link
+ *
+ * @author DarkBlue
+ */
+@SuppressWarnings("unused")
 public class Link {
 
     private Long id;

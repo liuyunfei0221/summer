@@ -14,11 +14,11 @@ import java.util.concurrent.ExecutorService;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "unused"})
+@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class BlueRocketProducerGenerator {
 
     /**
-     * 构建生产端
+     * generate producer
      *
      * @param conf
      * @return
@@ -29,7 +29,7 @@ public final class BlueRocketProducerGenerator {
     }
 
     /**
-     * 构建生产端
+     * generate transaction producer
      *
      * @param conf
      * @return
@@ -39,13 +39,14 @@ public final class BlueRocketProducerGenerator {
     }
 
     /**
-     * 参数校验
+     * assert params
      *
      * @param conf
      * @param <T>
      */
     private static <T> void assertParams(ProducerConf conf) {
-
+        if (conf == null)
+            throw new RuntimeException("conf can't be null");
     }
 
 

@@ -21,7 +21,6 @@ public class EncryptTest {
      * debug
      */
     private static void debugging() {
-        //本地生成测试数据
         String priKey = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAyEXfJTvIkt6LFAwgB0Y680MdJsPVwchT7BDzLzfXNLUKlldiLkA+GMGtn30gT0EenvK0XoteYOWKNwjbb39W6QIDAQABAkACXLieEs9x1Agl62KxU0W8uszsOSEbUQaUYTrNEsaKC5c/kpCtPQF5RogNJp3t8xZEheVLubJQtBjDCUh6iyBVAiEA+WairwsXgXRnMqkAsGA0oxlkhQhU1MOWm9ewNrp+10MCIQDNknVcw+KfZ78MyTmDSR+ebKm7jNwc2xoeribL1+gIYwIgTlA3N2XxPJozqYm+CKQ9AxX/JXLnSGQeT9NbpuPK3ocCIFyr8YxoIfmKY234KJ0ukbpxcfLChVfczeGW0JaENm3RAiEAq3zKC372212F829qb0jWCfILT9ohptNZq0zJogp+t0w=";
         String original = "{\"original\":\"{\\\"amount\\\":400000,\\\"bankCardId\\\":8888888888,\\\"remark\\\":\\\"提现到钱包中\\\"}\",\"timeStamp\":" + Instant.now().getEpochSecond() + "}";
 

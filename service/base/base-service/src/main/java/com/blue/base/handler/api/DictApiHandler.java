@@ -13,11 +13,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 /**
- * 用户接口
+ * dict api handler
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 @Component
 public final class DictApiHandler {
 
@@ -28,7 +28,7 @@ public final class DictApiHandler {
     }
 
     /**
-     * 测试接口
+     * select dict type
      *
      * @param serverRequest
      * @return

@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 /**
+ * dynamic endpoint configuration
+ *
  * @author liuyunfei
  * @date 2021/9/14
  * @apiNote

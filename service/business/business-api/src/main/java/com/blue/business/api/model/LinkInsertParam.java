@@ -3,24 +3,19 @@ package com.blue.business.api.model;
 import java.io.Serializable;
 
 /**
- * 链接新增数据封装
+ * link insert param
  *
  * @author DarkBlue
  * @date 2021/8/11
  * @apiNote
  */
+@SuppressWarnings("unused")
 public final class LinkInsertParam implements Serializable {
 
     private static final long serialVersionUID = -9009080234789649834L;
 
-    /**
-     * 链接
-     */
     private String linkUrl;
 
-    /**
-     * 内容/描述等
-     */
     private String content;
 
     public LinkInsertParam() {

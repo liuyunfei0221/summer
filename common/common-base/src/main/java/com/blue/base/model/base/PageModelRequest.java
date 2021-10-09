@@ -10,7 +10,7 @@ import static com.blue.base.constant.base.BlueNumericalValue.*;
 import static java.util.Optional.ofNullable;
 
 /**
- * 分页参数封装
+ * page model request params
  *
  * @author DarkBlue
  */
@@ -44,9 +44,9 @@ public final class PageModelRequest<T> implements Serializable {
 
     public PageModelRequest(Long page, Long rows, T param) {
         if (page == null || page < 1L)
-            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "当前页不能小于1");
+            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "page can't be less than 1");
         if (rows == null || rows < 1L || rows > MAX_ROWS_PER_REQ)
-            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "每页条数不能超过" + MAX_ROWS_PER_REQ);
+            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "max rows per page can't be greater than " + MAX_ROWS_PER_REQ);
 
         this.page = page;
         this.rows = rows;
@@ -59,7 +59,7 @@ public final class PageModelRequest<T> implements Serializable {
 
     public void setPage(Long page) {
         if (page == null || page < 1L)
-            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "当前页不能小于1");
+            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "page can't be less than 1");
 
         this.page = page;
     }
@@ -70,7 +70,7 @@ public final class PageModelRequest<T> implements Serializable {
 
     public void setRows(Long rows) {
         if (rows == null || rows < 1L || rows > MAX_ROWS_PER_REQ)
-            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "每页条数不能超过" + MAX_ROWS_PER_REQ);
+            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "max rows per page can't be greater than " + MAX_ROWS_PER_REQ);
 
         this.rows = rows;
     }

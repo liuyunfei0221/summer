@@ -40,7 +40,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * request identity getter func
      */
     public static final Function<ServerHttpRequest, String> REQUEST_IDENTITY_GETTER = request ->
-            RATE_LIMIT_KEY_PRE + of(request)
+            RATE_LIMIT_KEY_PREFIX + of(request)
                     .map(ServerHttpRequest::getHeaders)
                     .map(h -> h.getFirst(AUTHORIZATION))
                     .filter(StringUtils::hasText)

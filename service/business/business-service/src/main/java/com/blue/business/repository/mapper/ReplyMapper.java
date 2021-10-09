@@ -2,6 +2,12 @@ package com.blue.business.repository.mapper;
 
 import com.blue.business.repository.entity.Reply;
 
+/**
+ * reply mapper
+ *
+ * @author DarkBlue
+ */
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaLowerCamelCaseVariableNaming"})
 public interface ReplyMapper {
 
     int deleteByPrimaryKey(Long id);

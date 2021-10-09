@@ -5,7 +5,12 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-@SuppressWarnings("JavaDoc")
+/**
+ * link mapper
+ *
+ * @author DarkBlue
+ */
+@SuppressWarnings({"JavaDoc", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface LinkMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -21,8 +26,6 @@ public interface LinkMapper {
     int updateByPrimaryKey(Link record);
 
     /**
-     * 根据主题id与主题类型查询链接信息
-     *
      * @param subId
      * @param subType
      * @return
@@ -30,8 +33,6 @@ public interface LinkMapper {
     List<Link> listBySubIdAndSubType(@Param("subId") Long subId, @Param("subType") Integer subType);
 
     /**
-     * 批量插入
-     *
      * @param list
      */
     void insertBatch(@Param("list") List<Link> list);

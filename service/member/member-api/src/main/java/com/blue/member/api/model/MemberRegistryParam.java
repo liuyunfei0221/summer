@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author DarkBlue
  */
 @SuppressWarnings({"unused", "WeakerAccess"})
-public final class MemberRegistryInfo implements Serializable {
+public final class MemberRegistryParam implements Serializable {
 
     private static final long serialVersionUID = 8543617230220651524L;
 
@@ -42,10 +42,10 @@ public final class MemberRegistryInfo implements Serializable {
      */
     private Integer gender;
 
-    public MemberRegistryInfo() {
+    public MemberRegistryParam() {
     }
 
-    public MemberRegistryInfo(String phone, String email, String password, String name, String icon, Integer gender) {
+    public MemberRegistryParam(String phone, String email, String password, String name, String icon, Integer gender) {
         this.phone = phone;
         this.email = email;
         this.password = password;

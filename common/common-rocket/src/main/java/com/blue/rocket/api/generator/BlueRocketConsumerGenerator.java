@@ -10,7 +10,7 @@ import java.util.function.Consumer;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "unused"})
+@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class BlueRocketConsumerGenerator {
 
     /**
@@ -33,7 +33,8 @@ public final class BlueRocketConsumerGenerator {
      * @param <T>
      */
     private static <T> void assertParams(ConsumerConf conf, Consumer<T> consumer) {
-
+        if (conf == null || consumer == null)
+            throw new RuntimeException("conf or consumer can't be null");
     }
 
 

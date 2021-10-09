@@ -14,6 +14,8 @@ import java.util.Optional;
 import static reactor.util.Loggers.getLogger;
 
 /**
+ * active member statistics command impl
+ *
  * @author liuyunfei
  * @date 2021/9/3
  * @apiNote
@@ -35,7 +37,7 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
     }
 
     @Override
-    public void packageAnalyzeData(Map<String, String> data) {
+    public void analyzeAndPackage(Map<String, String> data) {
         try {
             Access access = AuthProcessor.jsonToAccess(data.get(BlueDataAttrKey.ACCESS.key));
             long memberId = access.getId();

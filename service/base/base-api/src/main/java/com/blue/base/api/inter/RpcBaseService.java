@@ -1,7 +1,7 @@
 package com.blue.base.api.inter;
 
 /**
- * 基础服务rpc接口
+ * rpc base interface
  *
  * @author DarkBlue
  * @date 2021/8/12

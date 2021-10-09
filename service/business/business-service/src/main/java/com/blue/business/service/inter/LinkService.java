@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 相关链接业务接口
+ * link service
  *
  * @author DarkBlue
  */
@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface LinkService {
 
     /**
-     * 根据主键查询相关链接信息
+     * get link by id
      *
      * @param id
      * @return
@@ -22,7 +22,7 @@ public interface LinkService {
     public Optional<Link> getByPrimaryKey(Long id);
 
     /**
-     * 根据主键集批量查询相关链接信息
+     * list link by ids
      *
      * @param ids
      * @return
@@ -30,7 +30,7 @@ public interface LinkService {
     public List<Link> listByIds(List<Long> ids);
 
     /**
-     * 根据主题id和主题类型查询相关链接
+     * list link by subject id and subject type
      *
      * @param subId
      * @param subType
@@ -39,21 +39,21 @@ public interface LinkService {
     public List<Link> listBySubIdAndSubType(Long subId, Integer subType);
 
     /**
-     * 添加相关链接
+     * insert link
      *
      * @param link
      */
     public void insert(Link link);
 
     /**
-     * 批量添加相关链接
+     * insert link batch
      *
      * @param links
      */
     public void insertBatch(List<Link> links);
 
     /**
-     * 修改相关链接
+     * update link
      *
      * @param link
      */

@@ -12,27 +12,27 @@ import java.util.function.Predicate;
 public final class Monitor<T> {
 
     /**
-     * 被监控对象
+     * monitored object
      */
     private T monitored;
 
     /**
-     * 合并器
+     * combiner
      */
     private final BinaryOperator<T> combiner;
 
     /**
-     * 断言器
+     * asserter
      */
     private final Predicate<T> predicate;
 
     public Monitor(T monitored, BinaryOperator<T> combiner, Predicate<T> predicate) {
         if (monitored == null)
-            throw new RuntimeException("monitored不能为空");
+            throw new RuntimeException("monitored can't be null");
         if (combiner == null)
-            throw new RuntimeException("monitored不能为空");
+            throw new RuntimeException("combiner can't be null");
         if (predicate == null)
-            throw new RuntimeException("monitored不能为空");
+            throw new RuntimeException("predicate can't be null");
 
         this.monitored = monitored;
         this.combiner = combiner;
@@ -40,7 +40,7 @@ public final class Monitor<T> {
     }
 
     /**
-     * 获取被监控对象当前值
+     * get current value
      *
      * @return
      */
@@ -49,14 +49,14 @@ public final class Monitor<T> {
     }
 
     /**
-     * 操作并断言
+     * combine and assert
      *
      * @param data
      * @return
      */
     public boolean operateWithAssert(T data) {
         if (data == null)
-            throw new RuntimeException("data不能为空");
+            throw new RuntimeException("data can't be null");
 
         synchronized (this) {
             monitored = combiner.apply(monitored, data);

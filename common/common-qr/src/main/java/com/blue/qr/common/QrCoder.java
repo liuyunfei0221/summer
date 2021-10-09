@@ -100,7 +100,7 @@ public final class QrCoder {
      */
     public static String parseCode(byte[] qrData) {
         if (qrData == null || qrData.length < 1)
-            throw new RuntimeException("二维码字节数据为空");
+            throw new RuntimeException("qrData can't be empty");
 
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(qrData);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream)) {

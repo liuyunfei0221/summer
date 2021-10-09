@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutorService;
  * @date 2021/8/9
  * @apiNote
  */
-@SuppressWarnings({"AlibabaLowerCamelCaseVariableNaming", "SpellCheckingInspection"})
+@SuppressWarnings({"AlibabaLowerCamelCaseVariableNaming", "SpellCheckingInspection", "unused"})
 public class ProducerConfParams implements ProducerConf {
 
     private String namespace;

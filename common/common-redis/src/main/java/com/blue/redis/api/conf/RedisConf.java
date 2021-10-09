@@ -10,18 +10,22 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaCommentsMustBeJavadocFormat"})
 public interface RedisConf {
 
     ServerMode getServerMode();
 
+    //<editor-fold desc="cluster conf">
     List<String> getNodes();
 
     String getPassword();
+    //</editor-fold>
 
+    //<editor-fold desc="standalone conf">
     String getHost();
 
     Integer getPort();
+    //</editor-fold>
 
     Integer getMaxRedirects();
 

@@ -24,6 +24,8 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
+ * statistics marker
+ *
  * @author liuyunfei
  * @date 2021/9/6
  * @apiNote
@@ -48,45 +50,27 @@ public final class StatisticsMarker {
                 CURRENT_KEY_VALUE_HOLDER.put(HOLDER_KEY_GENERATOR.apply(statisticsType, statisticsRange), REDIS_KEY_GENERATOR.apply(statisticsType, statisticsRange));
     }
 
-    /**
-     * 统计key与当前redis key维护
-     */
     private final Map<String, String> CURRENT_KEY_VALUE_HOLDER = new ConcurrentHashMap<>(StatisticsType.values().length * StatisticsRange.values().length, 1.0f);
 
-    /**
-     * 参数校验
-     */
     private static final BiConsumer<StatisticsType, StatisticsRange> PARAMS_ASSERTER = (type, range) -> {
         if (type == null || range == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type不能为空,range不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null, range can't be null");
     };
 
-    /**
-     * key构建规则
-     */
     private static final BiFunction<StatisticsType, StatisticsRange, String> HOLDER_KEY_GENERATOR = (type, range) ->
             type.identity.intern() + PAR_CONCATENATION.identity.intern() + range.identity.intern();
 
-    /**
-     * value构建规则
-     */
     private static final BiFunction<StatisticsType, StatisticsRange, String> REDIS_KEY_GENERATOR = (type, range) ->
             type.identity.intern() + PAR_CONCATENATION.identity.intern() + range.keyGenerator.get().intern();
 
-    /**
-     * redis key删除
-     */
     private final Consumer<String> REDIS_KEY_DELETER = key -> {
         try {
             stringRedisTemplate.opsForHyperLogLog().delete(key);
         } catch (Exception e) {
-            LOGGER.error("REDIS_KEY_DELETER -> key删除失败, key = {}", key);
+            LOGGER.error("REDIS_KEY_DELETER -> key delete failed, key = {}, e = {}", key, e);
         }
     };
 
-    /**
-     * 获取统计key
-     */
     private final BiFunction<StatisticsType, StatisticsRange, String> STATISTICS_KEY_GENERATOR = (type, range) -> {
         PARAMS_ASSERTER.accept(type, range);
 
@@ -105,24 +89,15 @@ public final class StatisticsMarker {
         return currentRedisKey;
     };
 
-    /**
-     * merge key前缀
-     */
-    private static final String UNION_PF_KEY_PRE = "union_pf_key_";
+    private static final String UNION_PF_KEY_PREFIX = "union_pf_key_";
 
-    /**
-     * 随机key字符串长度
-     */
     private static final int RAN_KEY_STR_LEN = 6;
 
-    /**
-     * 随机字符串生成器
-     */
     public static final Supplier<String> UNION_PF_KEY_GETTER = () ->
-            UNION_PF_KEY_PRE + randomAlphanumeric(RAN_KEY_STR_LEN);
+            UNION_PF_KEY_PREFIX + randomAlphanumeric(RAN_KEY_STR_LEN);
 
     /**
-     * 标记
+     * mark
      *
      * @param statisticsType
      * @param statisticsRange
@@ -134,14 +109,14 @@ public final class StatisticsMarker {
                 statisticsType, statisticsRange, value);
 
         if (isBlank(value))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "value不能为空或''");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "value can't be blank");
 
         return stringRedisTemplate.opsForHyperLogLog()
                 .add(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange), value) > 0L;
     }
 
     /**
-     * 统计
+     * count
      *
      * @param statisticsType
      * @param statisticsRange
@@ -154,7 +129,7 @@ public final class StatisticsMarker {
     }
 
     /**
-     * 合并统计
+     * merge count
      *
      * @param statisticsTypes
      * @param statisticsRanges

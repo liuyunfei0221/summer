@@ -1,5 +1,11 @@
 package com.blue.business.repository.entity;
 
+/**
+ * reply
+ *
+ * @author DarkBlue
+ */
+@SuppressWarnings("unused")
 public class Reply {
 
     private Long id;

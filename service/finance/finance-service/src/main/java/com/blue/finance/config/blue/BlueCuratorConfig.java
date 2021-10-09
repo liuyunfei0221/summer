@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * zk分布锁配置参数类
+ * curator config
  *
  * @author DarkBlue
  */

@@ -7,7 +7,7 @@ import java.util.concurrent.*;
 import static com.blue.identity.constant.SnowflakeBits.*;
 
 /**
- * @author 雪花测试类
+ * @author liuyunfei
  */
 public class GenTestIdTest {
 

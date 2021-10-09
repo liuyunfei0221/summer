@@ -1,66 +1,33 @@
 package com.blue.base.repository.entity;
 
 /**
- * 公告表
+ * test entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public final class Bulletin {
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 公告标题
-     */
     private String title;
 
-    /**
-     * 公告内容
-     */
     private String content;
 
-    /**
-     * 公告图片链接
-     */
     private String link;
 
-    /**
-     * 公告类型 1热门
-     */
     private Integer type;
 
-    /**
-     * 公告状态 0停用 1启用
-     */
     private Integer status;
 
-    /**
-     * 优先级
-     */
     private Integer priority;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 修改时间
-     */
     private Long updateTime;
 
-    /**
-     * 创建人
-     */
     private Long creator;
 
-    /**
-     * 修改人
-     */
     private Long updater;
 
     public Long getId() {

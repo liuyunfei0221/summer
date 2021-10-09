@@ -67,7 +67,6 @@ public final class BlueKafkaProducer<T extends Serializable> {
      * @param data
      */
     public void send(T data) {
-        //发送消息
         ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, GSON.toJson(data));
         future.addCallback(result -> {
                     LOGGER.warn("sendMessage success --> result = {}, data = {}", result, data);

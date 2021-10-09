@@ -40,7 +40,7 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public Mono<List<DictType>> selectDictType() {
-        return just(dictTypeMapper.selectByExample(null));
+        return just(dictTypeMapper.listDictType());
     }
 
     /**
@@ -50,7 +50,7 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public Mono<List<Dict>> selectDict() {
-        return just(dictMapper.selectByExample(null));
+        return just(dictMapper.listDict());
     }
 
     /**
@@ -61,6 +61,8 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public Mono<List<Dict>> selectDictByTypeCode(String code) {
-        return just(dictMapper.selectByExample(null));
+        //return just(dictMapper.selectByExample(null));
+
+        return null;
     }
 }

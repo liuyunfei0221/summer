@@ -19,7 +19,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 /**
- * 公告控制器
+ * test handler
  *
  * @author DarkBlue
  */
@@ -38,8 +38,6 @@ public final class PortalApiHandler {
     private static final String TYPE_PAR = "bulletinType";
 
     /**
-     * 获取公告
-     *
      * @param serverRequest
      * @return
      */

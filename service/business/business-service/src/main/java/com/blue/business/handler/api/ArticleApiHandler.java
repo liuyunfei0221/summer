@@ -21,7 +21,7 @@ import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 
 /**
- * 用户接口
+ * article api handler
  *
  * @author DarkBlue
  */
@@ -36,7 +36,7 @@ public class ArticleApiHandler {
     }
 
     /**
-     * 发表文章
+     * insert article
      *
      * @param serverRequest
      * @return

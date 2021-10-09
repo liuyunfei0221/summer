@@ -44,7 +44,6 @@ public final class DataEventConsumer implements BlueLifecycle {
         Consumer<DataEvent> dataEventDataConsumer = dataEvent ->
                 ofNullable(dataEvent)
                         .ifPresent(de -> {
-
                             LOGGER.warn("de = {}", de);
                             statisticsProcessor.process(de.getEntries());
                         });

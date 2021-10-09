@@ -1,13 +1,12 @@
 package com.blue.base.converter;
 
 /**
- * base服务模型转换器
+ * model converters in base project
  *
  * @author DarkBlue
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class BaseModelConverters {
-
 
 
 }

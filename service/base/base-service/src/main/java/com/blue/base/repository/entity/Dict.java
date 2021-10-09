@@ -1,45 +1,27 @@
 package com.blue.base.repository.entity;
 
+/**
+ * dict
+ *
+ * @author DarkBlue
+ */
+@SuppressWarnings("unused")
 public class Dict {
 
-    /**
-     *
-     */
     private Long id;
 
-    /**
-     *
-     */
     private Long dictTypeId;
 
-    /**
-     *
-     */
     private String name;
 
-    /**
-     *
-     */
     private String value;
 
-    /**
-     *
-     */
     private Long createTime;
 
-    /**
-     *
-     */
     private Long updateTime;
 
-    /**
-     *
-     */
     private Long creator;
 
-    /**
-     *
-     */
     private Long updater;
 
     public Long getId() {

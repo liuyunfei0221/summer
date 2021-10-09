@@ -13,41 +13,73 @@ import java.util.List;
  * @date 2021/9/9
  * @apiNote
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "AlibabaCommentsMustBeJavadocFormat"})
 public abstract class BaseRedissonConfParams implements RedissonConf {
 
     protected ServerMode serverMode;
+
+    //<editor-fold desc="cluster conf">
     protected List<String> nodes;
+
     protected String password;
+    //</editor-fold>
+
+    //<editor-fold desc="standalone conf">
     protected String host;
+
     protected Integer port;
+    //</editor-fold>
+
     protected Integer scanInterval;
+
     protected Boolean checkSlotsCoverage;
+
     protected Boolean tcpNoDelay;
+
     protected Integer masterConnectionMinimumIdleSize;
+
     protected Integer slaveConnectionMinimumIdleSize;
+
     protected Integer masterConnectionPoolSize;
+
     protected Integer slaveConnectionPoolSize;
+
     protected Integer subscriptionConnectionMinimumIdleSize;
+
     protected Integer subscriptionConnectionPoolSize;
+
     protected Integer subscriptionsPerConnection;
+
     protected ReadMode readMode;
+
     protected SubscriptionMode subscriptionMode;
 
     protected Integer timeout;
+
     protected Integer connectTimeout;
+
     protected Integer idleConnectionTimeout;
+
     protected Integer retryAttempts;
+
     protected Integer retryInterval;
+
     protected Integer connectionMinimumIdleSize;
+
     protected Integer connectionPoolSize;
+
     protected Boolean keepAlive;
+
     protected Integer dnsMonitoringInterval;
+
     protected Integer pingConnectionInterval;
 
     protected Integer executorCorePoolSize;
+
     protected Integer executorMaximumPoolSize;
+
     protected Long executorKeepAliveTime;
+
     protected Integer executorBlockingQueueCapacity;
 
     public BaseRedissonConfParams() {

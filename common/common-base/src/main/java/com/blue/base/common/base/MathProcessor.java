@@ -23,7 +23,7 @@ public final class MathProcessor {
     public static final Logger LOGGER = getLogger(MathProcessor.class);
 
     /**
-     * 校验int集合连续性
+     * check the continuity of the set
      *
      * @param collection
      * @return
@@ -52,7 +52,7 @@ public final class MathProcessor {
     }
 
     /**
-     * 校验long集合连续性
+     * check the continuity of the set
      *
      * @param collection
      * @return
@@ -81,7 +81,7 @@ public final class MathProcessor {
     }
 
     /**
-     * 求最大公约数
+     * find the greatest common divisor
      *
      * @param a
      * @param b
@@ -122,7 +122,7 @@ public final class MathProcessor {
     }
 
     /**
-     * 是否为2的幂数
+     * is power of 2
      *
      * @param num
      * @return
@@ -132,7 +132,7 @@ public final class MathProcessor {
     }
 
     /**
-     * 获取删除k个数字后的最小值
+     * get the minimum value after deleting k numbers
      *
      * @param num
      * @param k

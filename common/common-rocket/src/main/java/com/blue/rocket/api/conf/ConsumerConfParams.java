@@ -14,42 +14,77 @@ import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 public class ConsumerConfParams implements ConsumerConf {
 
     private String namesrvAddr;
+
     private String topic;
+
     private String subExpression;
+
     private String clientIP;
+
     private String instanceName;
+
     private Boolean enableNegativeAcknowledge;
+
     private Integer clientCallbackExecutorThreads;
+
     private String namespace;
+
     private AccessChannel accessChannel;
+
     private Integer pollNameServerInterval;
+
     private Integer heartbeatBrokerInterval;
+
     private Integer persistConsumerOffsetInterval;
+
     private Long pullTimeDelayMillsWhenException;
+
     private Boolean unitMode;
+
     private String unitName;
+
     private Boolean vipChannelEnabled;
+
     private Boolean useTLS;
 
     private String consumerGroup;
+
     private MessageModel messageModel;
+
     private ConsumeFromWhere consumeFromWhere;
+
     private String consumeTimestamp;
+
     private Integer consumeThreadMin;
+
     private Integer consumeThreadMax;
+
     private Long adjustThreadPoolNumsThreshold;
+
     private Integer consumeConcurrentlyMaxSpan;
+
     private Integer pullThresholdForQueue;
+
     private Integer pullThresholdSizeForQueue;
+
     private Integer pullThresholdForTopic;
+
     private Integer pullThresholdSizeForTopic;
+
     private Long pullInterval;
+
     private Integer consumeMessageBatchMaxSize;
+
     private Integer pullBatchSize;
+
     private Boolean postSubscriptionWhenPull;
+
     private Integer maxReconsumeTimes;
+
     private Long suspendCurrentQueueTimeMillis;
+
     private Long consumeTimeout;
+
     private Long awaitTerminationMillisWhenShutdown;
 
     @Override

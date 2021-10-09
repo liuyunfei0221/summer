@@ -3,7 +3,7 @@ package com.blue.member.service.impl;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberInfo;
-import com.blue.member.api.model.MemberRegistryInfo;
+import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
 import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
@@ -154,7 +154,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     /**
      * 注册账户
      *
-     * @param memberRegistryInfo
+     * @param memberRegistryParam
      * @return
      */
     @SuppressWarnings("CommentedOutCode")
@@ -164,12 +164,12 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 150000)
     @GlobalLock
-    public void insert(MemberRegistryInfo memberRegistryInfo) {
-        LOGGER.info("memberRegistryDTO = {}", memberRegistryInfo);
-        if (memberRegistryInfo == null)
+    public void insert(MemberRegistryParam memberRegistryParam) {
+        LOGGER.info("memberRegistryDTO = {}", memberRegistryParam);
+        if (memberRegistryParam == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "注册信息不能为空");
 
-        MemberBasic memberBasic = MEMBER_REGISTRY_INFO_2_MEMBER_BASIC.apply(memberRegistryInfo);
+        MemberBasic memberBasic = MEMBER_REGISTRY_INFO_2_MEMBER_BASIC.apply(memberRegistryParam);
 
         //校验
         MEMBER_EXIST_VALIDATOR.accept(memberBasic);

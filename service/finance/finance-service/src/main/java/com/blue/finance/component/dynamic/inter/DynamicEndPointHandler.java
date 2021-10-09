@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
- * 动态处理器接口
+ * dynamic endpoint handler interface
  *
  * @author liuyunfei
  * @date 2021/9/14
@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 public interface DynamicEndPointHandler {
 
     /**
-     * 处理
+     * handle
      *
      * @param serverRequest
      * @return

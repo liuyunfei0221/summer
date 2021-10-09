@@ -1,7 +1,7 @@
 package com.blue.member.service.inter;
 
 import com.blue.member.api.model.MemberInfo;
-import com.blue.member.api.model.MemberRegistryInfo;
+import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.repository.entity.MemberBasic;
 import reactor.core.publisher.Mono;
 
@@ -51,10 +51,10 @@ public interface MemberBasicService {
     /**
      * 注册账户
      *
-     * @param memberRegistryInfo
+     * @param memberRegistryParam
      * @return
      */
-    void insert(MemberRegistryInfo memberRegistryInfo);
+    void insert(MemberRegistryParam memberRegistryParam);
 
     /**
      * 查询用户

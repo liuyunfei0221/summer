@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 文章业务接口
+ * article service
  *
  * @author DarkBlue
  */
@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ArticleService {
 
     /**
-     * 根据主键查询文章信息
+     * get article by id
      *
      * @param id
      * @return
@@ -22,7 +22,7 @@ public interface ArticleService {
     public Optional<Article> getByPrimaryKey(Long id);
 
     /**
-     * 根据主键集批量查询文章信息
+     * list article by ids
      *
      * @param ids
      * @return
@@ -30,14 +30,14 @@ public interface ArticleService {
     public List<Article> listByIds(List<Long> ids);
 
     /**
-     * 添加文章
+     * insert article
      *
      * @param article
      */
     public void insert(Article article);
 
     /**
-     * 修改文章
+     * update article
      *
      * @param article
      */

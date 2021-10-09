@@ -15,7 +15,7 @@ import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Optional.ofNullable;
 
 /**
- * business服务转换器
+ * model converters in business project
  *
  * @author DarkBlue
  */
@@ -25,14 +25,14 @@ public final class BusinessModelConverters {
     public static final Function<ArticleInsertParam, Article> ARTICLE_INSERT_PARAM_2_ARTICLE = articleInsertParam -> {
         String title = articleInsertParam.getTitle();
         if (title == null || "".equals(title))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "标题不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "title can't be blank");
 
         Integer type = articleInsertParam.getType();
         ConstantProcessor.assertArticleType(type);
 
         String content = articleInsertParam.getContent();
         if (content == null || "".equals(content))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "内容不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "content can't be blank");
 
         long epochSecond = Instant.now().getEpochSecond();
 
@@ -57,7 +57,7 @@ public final class BusinessModelConverters {
 
         String linkUrl = linkInsertParam.getLinkUrl();
         if (linkUrl == null || "".equals(linkUrl))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "linkUrl不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "linkUrl can't be blank");
 
         long epochSecond = Instant.now().getEpochSecond();
         Link link = new Link();

@@ -19,7 +19,7 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 文章业务实现
+ * article service impl
  *
  * @author DarkBlue
  */
@@ -46,7 +46,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 根据主键查询文章信息
+     * get article by id
      *
      * @param id
      * @return
@@ -61,7 +61,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 根据主键集批量查询文章信息
+     * list article by ids
      *
      * @param ids
      * @return
@@ -72,7 +72,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 添加文章
+     * insert article
      *
      * @param article
      */
@@ -82,7 +82,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 修改文章
+     * update article
      *
      * @param article
      */

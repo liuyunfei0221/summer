@@ -4,32 +4,21 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 新增文章信息数据封装
+ * article insert param
  *
  * @author DarkBlue
  */
+@SuppressWarnings("unused")
 public final class ArticleInsertParam implements Serializable {
 
     private static final long serialVersionUID = 40217575295999511L;
 
-    /**
-     * 标题
-     */
     private String title;
 
-    /**
-     * 类型
-     */
     private Integer type;
 
-    /**
-     * 内容
-     */
     private String content;
 
-    /**
-     * 相关链接
-     */
     private List<LinkInsertParam> links;
 
     public ArticleInsertParam() {

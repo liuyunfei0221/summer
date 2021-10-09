@@ -13,11 +13,11 @@ import static java.util.stream.Collectors.toList;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "WeakerAccess"})
+@SuppressWarnings({"JavaDoc", "WeakerAccess", "unused"})
 public final class ListSorter {
 
     /**
-     * 按语言对字符集合做字典排序
+     * sort
      *
      * @param list
      * @param locale

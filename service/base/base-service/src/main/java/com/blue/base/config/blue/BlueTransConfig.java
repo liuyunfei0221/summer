@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 事务控制配置参数类
+ * expression trans config
  *
  * @author DarkBlue
  */

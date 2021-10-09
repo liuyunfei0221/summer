@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 动态端点配置项
+ * dynamic api deploy
  *
  * @author DarkBlue
  */

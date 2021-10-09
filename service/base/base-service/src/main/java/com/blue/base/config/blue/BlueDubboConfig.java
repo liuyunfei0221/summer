@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * dubbo配置参数类
+ * dubbo config
  *
  * @author DarkBlue
  */

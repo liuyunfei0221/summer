@@ -18,5 +18,4 @@ public interface DownloadHistoryService {
      */
     void insert(DownloadHistory downloadHistory);
 
-
 }

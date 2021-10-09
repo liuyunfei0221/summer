@@ -2,7 +2,7 @@ package com.blue.member.handler.api;
 
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.member.api.model.MemberRegistryInfo;
+import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.service.inter.MemberBasicService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -58,7 +58,7 @@ public final class MemberApiHandler {
      * @return
      */
     public Mono<ServerResponse> registry(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(MemberRegistryInfo.class)
+        return serverRequest.bodyToMono(MemberRegistryParam.class)
                 .switchIfEmpty(
                         error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message)))
                 .flatMap(mr -> {

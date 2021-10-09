@@ -40,9 +40,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.*;
 import java.util.stream.Stream;
 
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
 import static com.blue.base.constant.base.BlueNumericalValue.*;
+import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseMessage.*;
+import static com.blue.base.constant.base.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
 import static com.blue.base.constant.secure.AuthInfoRefreshElementType.PUB_KEY;
 import static com.blue.base.constant.secure.AuthInfoRefreshElementType.ROLE;
 import static com.blue.base.constant.secure.DeviceType.UNKNOWN;
@@ -66,11 +67,11 @@ import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 用户认证授权业务实现
+ * secure service impl
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "CatchMayIgnoreException", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "CatchMayIgnoreException", "AliControlFlowStatementWithoutBraces", "GrazieInspection"})
 @Service
 public class SecureServiceImpl implements SecureService {
 
@@ -126,19 +127,10 @@ public class SecureServiceImpl implements SecureService {
 
     private static final Supplier<Long> TIME_STAMP_GETTER = CommonFunctions.TIME_STAMP_GETTER;
 
-    /**
-     * 随机信息长度
-     */
     private static int RANDOM_ID_LENGTH;
 
-    /**
-     * 刷新资源时最大等待时间
-     */
     private static long MAX_WAITING_FOR_REFRESH;
 
-    /**
-     * 符号
-     */
     public static final String
             SESSION_KEY_PRE = CacheKey.SESSION_KEY_PRE.key,
             AUTH_REFRESH_KEY_PRE = CacheKey.AUTH_REFRESH_KEY_PRE.key,
@@ -152,61 +144,55 @@ public class SecureServiceImpl implements SecureService {
             .collect(toList());
 
     /**
-     * 初始化资源key构建规则(method, uri)
+     * generate resource key on init(method, uri)
      */
     private static final BiFunction<String, String, String> INIT_RES_KEY_GENERATOR = CommonFunctions.INIT_RES_KEY_GENERATOR;
 
     /**
-     * 带服务前缀的uri
+     * get uri
      */
     private static final Function<Resource, String> REAL_URI_GETTER = resource ->
             PATH_SEPARATOR + resource.getModule().intern() + resource.getUri().intern();
 
     /**
-     * 请求资源key构建规则(method, uri)
+     * generate resource key for request(method, uri)
      */
     private static final BiFunction<String, String, String> REQ_RES_KEY_GENERATOR = CommonFunctions.REQ_RES_KEY_GENERATOR;
 
     /**
-     * 常用异常
+     * exps
      */
     private static final BlueException
             UNAUTHORIZED_EXP = new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message),
             NOT_FOUND_EXP = new BlueException(NOT_FOUND.status, NOT_FOUND.code, NOT_FOUND.message),
             INTERNAL_SERVER_ERROR_EXP = new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
 
-    /**
-     * 资源信息或关联关系更新标记位
-     */
     private volatile boolean resourceOrRelationRefreshing = true;
 
     /**
-     * 角色与资源特征映射集
+     * role id -> resource key
      */
     private volatile Map<Long, Set<String>> roleAndResourcesKeyMapping = emptyMap();
 
     /**
-     * 角色id与角色资源映射
+     * role -> role info
      */
     private volatile Map<Long, RoleInfo> idAndRoleInfoMapping = emptyMap();
 
     /**
-     * 角色与资源信息映射集
+     * role id -> resource info list
      */
     private volatile Map<Long, List<ResourceInfo>> roleAndResourceInfosMapping = emptyMap();
 
     /**
-     * 资源特征与资源信息映射集
+     * resource key -> resource
      */
     private volatile Map<String, Resource> keyAndResourceMapping = emptyMap();
 
-    /**
-     * 角色信息更新标记位
-     */
     private volatile boolean roleRefreshing = false;
 
     /**
-     * jwt解析器
+     * jwt parser
      */
     private final Function<String, MemberPayload> JWT_PARSER = jwt -> {
         MemberPayload memberPayload;
@@ -219,7 +205,7 @@ public class SecureServiceImpl implements SecureService {
     };
 
     /**
-     * authInfo解析器
+     * authInfo parser
      */
     private final Function<String, AuthInfo> AUTH_INFO_PARSER = authInfoStr -> {
         AuthInfo authInfo;
@@ -232,14 +218,14 @@ public class SecureServiceImpl implements SecureService {
     };
 
     /**
-     * 资源信息动态刷新时的阻塞器
+     * blocker when resource or relation refreshing
      */
     private final Supplier<Boolean> RESOURCE_OR_REL_REFRESHING_BLOCKER = () -> {
         if (resourceOrRelationRefreshing) {
             long start = currentTimeMillis();
             while (resourceOrRelationRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "资源信息刷新超时");
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "waiting resource refresh timeout");
                 onSpinWait();
             }
         }
@@ -247,14 +233,14 @@ public class SecureServiceImpl implements SecureService {
     };
 
     /**
-     * 资源信息动态刷新时的阻塞器
+     * blocker when role info refreshing
      */
     private final Supplier<Boolean> ROLE_REFRESHING_BLOCKER = () -> {
         if (roleRefreshing) {
             long start = currentTimeMillis();
             while (roleRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "角色信息刷新超时");
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "waiting role refresh timeout");
                 onSpinWait();
             }
         }
@@ -262,7 +248,7 @@ public class SecureServiceImpl implements SecureService {
     };
 
     /**
-     * 根据资源标识获取资源
+     * get resource by resKey
      */
     private final Function<String, Resource> RESOURCE_GETTER = resourceKey -> {
         RESOURCE_OR_REL_REFRESHING_BLOCKER.get();
@@ -270,7 +256,7 @@ public class SecureServiceImpl implements SecureService {
     };
 
     /**
-     * 访问权限检查器
+     * authorization checker
      */
     private final BiFunction<Long, String, Boolean> AUTHORIZATION_RES_CHECKER = (roleId, resourceKey) -> {
         RESOURCE_OR_REL_REFRESHING_BLOCKER.get();
@@ -278,35 +264,35 @@ public class SecureServiceImpl implements SecureService {
     };
 
     /**
-     * 资源名称获取器
+     * un authorization message getter
      */
     private final UnaryOperator<String> RES_NOT_ACCESS_MESSAGE_GETTER = resourceKey -> {
         RESOURCE_OR_REL_REFRESHING_BLOCKER.get();
-        return "无权访问" + ofNullable(keyAndResourceMapping.get(resourceKey))
-                .map(Resource::getName).orElse("该资源");
+        return "Can't access " + ofNullable(keyAndResourceMapping.get(resourceKey))
+                .map(Resource::getName).orElse(" resource ");
     };
 
     /**
-     * identity与loginType映射
+     * login type identity -> login type
      */
     private static final Map<String, LoginType> IDENTITY_NATURE_MAPPING = Stream.of(LoginType.values())
             .collect(toMap(lt -> lt.identity, lt -> lt, (a, b) -> a));
 
     /**
-     * identity转nature
+     * login type identity -> login type nature
      */
     private static final UnaryOperator<String> LOGIN_TYPE_2_NATURE_CONVERTER = identity -> {
         if (identity != null && !"".equals(identity)) {
             LoginType loginType = IDENTITY_NATURE_MAPPING.get(identity);
             if (loginType != null)
                 return loginType.nature.intern();
-            throw new RuntimeException("loginType with identity " + identity + " is not exist");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "loginType with identity " + identity + " is not exist");
         }
-        throw new RuntimeException("identity can't be null or ''");
+        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "identity can't be null or ''");
     };
 
     /**
-     * 无需认证响应数据
+     * Resources do not require authentication access
      */
     private final Function<Resource, Mono<AuthAsserted>> NO_AUTH_REQUIRED_RES_GEN = resource ->
             just(new AuthAsserted(
@@ -316,17 +302,17 @@ public class SecureServiceImpl implements SecureService {
                     NOT_LOGGED_IN_SEC_KEY.value,
                     new Access(NOT_LOGGED_IN_MEMBER_ID.value,
                             NOT_LOGGED_IN_ROLE_ID.value, NOT_LOGGED_IN.identity, UNKNOWN.identity,
-                            NOT_LOGGED_IN_TIME.value), "资源无需认证访问"));
+                            NOT_LOGGED_IN_TIME.value), NO_AUTH_REQUIRED_RESOURCE.message));
 
     /**
-     * 登录类型模板方法
+     * login func
      */
     private Map<String, Function<ClientLoginParam, Mono<MemberBasicInfo>>> clientLoginHandlers;
 
     /**
-     * 初始化免认证资源信息与角色资源映射等
+     * init login handler
      */
-    private void generateLoginHandler() {
+    private void initLoginHandler() {
         clientLoginHandlers = new HashMap<>(16, 1.0f);
         clientLoginHandlers.put(SMS_VERIGY.identity, memberAuthService::getMemberByPhoneWithAssertVerify);
         clientLoginHandlers.put(PHONE_PWD.identity, memberAuthService::getMemberByPhoneWithAssertPwd);
@@ -336,46 +322,46 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 登录处理器获取器
+     * get login handler
      */
     private final Function<String, Function<ClientLoginParam, Mono<MemberBasicInfo>>> LOGIN_HANDLER_GETTER = loginType -> {
         LOGGER.info("LOGIN_HANDLER_GETTER, loginType = {}", loginType);
         if (loginType == null || "".equals(loginType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "loginType不能为空或''");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "loginType can't be blank");
 
         Function<ClientLoginParam, Mono<MemberBasicInfo>> loginFunc = clientLoginHandlers.get(loginType);
         if (loginFunc == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "客户端登录不支持该登录类型 " + loginType);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid login type " + loginType);
 
         return loginFunc;
     };
 
     /**
-     * authInfo属性重新封装器
+     * refresh element type -> authInfo packagers
      */
     private static final Map<AuthInfoRefreshElementType, BiConsumer<AuthInfo, String>> RE_PACKAGERS = new HashMap<>();
 
     /**
-     * business同步key构建器
+     * generate auth refresh sync key
      */
     private static final Map<AuthInfoRefreshElementType, BinaryOperator<String>> AUTH_REFRESH_KEY_GENS = new HashMap<>();
 
     static {
         RE_PACKAGERS.put(ROLE, (ai, ele) -> {
             if (ai == null || ele == null || "".equals(ele))
-                throw new RuntimeException("ai,ele均不能为空");
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "ai or ele can't be null");
 
             long roleId;
             try {
                 roleId = Long.parseLong(ele);
             } catch (NumberFormatException e) {
-                throw new RuntimeException("角色id类型元素类型转换失败");
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "parse ele to roleId failed, e = " + e);
             }
             ai.setRoleId(roleId);
         });
         RE_PACKAGERS.put(PUB_KEY, (ai, ele) -> {
             if (ai == null || ele == null || "".equals(ele))
-                throw new RuntimeException("ai,ele均不能为空");
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "ai or ele can't be null");
             ai.setPubKey(ele);
         });
 
@@ -388,7 +374,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 根据角色id查询资源集的获取器
+     * get role info by role id
      */
     private final Function<Long, Optional<RoleInfo>> ROLE_INFO_BY_ID_GETTER = roleId -> {
         ROLE_REFRESHING_BLOCKER.get();
@@ -396,7 +382,7 @@ public class SecureServiceImpl implements SecureService {
     };
 
     /**
-     * 根据角色id查询资源集的获取器
+     * get resource info list by role id
      */
     private final Function<Long, List<ResourceInfo>> RESOURCE_INFOS_BY_ROLE_ID_GETTER = roleId -> {
         RESOURCE_OR_REL_REFRESHING_BLOCKER.get();
@@ -404,7 +390,7 @@ public class SecureServiceImpl implements SecureService {
     };
 
     /**
-     * 构建redis sessionKey
+     * generate redis sessionKey
      *
      * @param id
      * @param loginTypeIdentity
@@ -414,19 +400,19 @@ public class SecureServiceImpl implements SecureService {
     private String genSessionKey(Long id, String loginTypeIdentity, String deviceTypeIdentity) {
         LOGGER.info("genSessionKey(Long id, String loginTypeIdentity, String deviceTypeIdentity), id = {}, loginTypeIdentity = {}, deviceTypeIdentity = {}", id, loginTypeIdentity, deviceTypeIdentity);
         if (id == null || id < 1L || deviceTypeIdentity == null || "".equals(deviceTypeIdentity))
-            throw new RuntimeException("id或loginType或deviceType不能为空");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "id or loginType or deviceType can't be null");
 
         return SESSION_KEY_PRE + id + PAR_CONCATENATION + LOGIN_TYPE_2_NATURE_CONVERTER.apply(loginTypeIdentity).intern() + PAR_CONCATENATION + deviceTypeIdentity;
     }
 
     /**
-     * 构建全局同步key
+     * generate global sync key
      */
-    private static final UnaryOperator<String> GLOBAL_LOCK_KEY_GEN = snKey ->
-            valueOf(snKey.hashCode());
+    private static final UnaryOperator<String> GLOBAL_LOCK_KEY_GEN = keyId ->
+            valueOf(keyId.hashCode());
 
     /**
-     * 权限业务同步key
+     * generate auth refresh sync key
      *
      * @param snKey
      * @param elementType
@@ -436,13 +422,13 @@ public class SecureServiceImpl implements SecureService {
     private String genAuthRefreshLockKey(String snKey, AuthInfoRefreshElementType elementType, String elementValue) {
         LOGGER.info("genAuthRefreshLockKey(String snKey, AuthInfoRefreshElementType elementType, String elementValue), snKey = {}, elementType = {}, elementValue = {}", snKey, elementType, elementValue);
         if (snKey == null || "".equals(snKey) || elementType == null || elementValue == null || "".equals(elementValue))
-            throw new RuntimeException("id或loginType或deviceType不能为空");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "id or loginType or deviceType can't be null");
 
         return AUTH_REFRESH_KEY_GENS.get(elementType).apply(snKey, elementValue);
     }
 
     /**
-     * 刷新authInfo中的元素
+     * refresh auth info (role id/sec key) by key id
      *
      * @param keyId
      * @param elementType
@@ -454,7 +440,7 @@ public class SecureServiceImpl implements SecureService {
                 .orElse("");
 
         if ("".equals(originalAuthInfoJson)) {
-            LOGGER.info("用户的authInfo为空,未完成角色动态刷新");
+            LOGGER.info("member's authInfo is empty, can't refresh");
             return;
         }
 
@@ -462,7 +448,7 @@ public class SecureServiceImpl implements SecureService {
         try {
             authInfo = GSON.fromJson(originalAuthInfoJson, AuthInfo.class);
         } catch (JsonSyntaxException e) {
-            LOGGER.info("用户的authInfo非法,未完成角色动态刷新");
+            LOGGER.info("member's authInfo is invalid, can't refresh");
             return;
         }
 
@@ -481,21 +467,22 @@ public class SecureServiceImpl implements SecureService {
                 RE_PACKAGERS.get(elementType).accept(authInfo, elementValue);
                 stringRedisTemplate.opsForValue().set(keyId, GSON.toJson(authInfo), Duration.of(ofNullable(stringRedisTemplate.getExpire(keyId, SECONDS)).orElse(0L), ChronoUnit.SECONDS));
             } catch (Exception exception) {
-                LOGGER.error("exception = {}", exception);
+                LOGGER.error("lock on global failed, e = {}", exception);
             } finally {
                 try {
                     globalLock.unlock();
                 } catch (Exception e) {
-                    LOGGER.error("globalLock已超时释放");
+                    LOGGER.error("globalLock unlock failed, e = {}", e);
                 }
             }
         } catch (Exception exception) {
-            LOGGER.error("exception = {}", exception);
+            LOGGER.error("lock on business failed, e = {}", exception);
         } finally {
             if (tryBusinessLock) {
                 try {
                     authRefreshLock.unlock();
                 } catch (Exception e) {
+                    LOGGER.error("authRefreshLock unlock failed, e = {}", e);
                 }
                 try {
                     invalidLocalAuthProducer.send(new InvalidLocalAuthParam(keyId));
@@ -506,7 +493,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 动态刷新认证的信息的元素
+     * refresh auth elements
      *
      * @param authInfoRefreshParam
      */
@@ -514,11 +501,11 @@ public class SecureServiceImpl implements SecureService {
         LOGGER.info("refreshAuthElementMultiTypes(AuthInfoRefreshParam authInfoRefreshParam), authInfoRefreshParam = {}", authInfoRefreshParam);
         AuthInfoRefreshElementType elementType = authInfoRefreshParam.getElementType();
         if (elementType == null)
-            throw new RuntimeException("elementType can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "elementType can't be null");
 
         String elementValue = authInfoRefreshParam.getElementValue();
         if (elementValue == null || "".equals(elementValue))
-            throw new RuntimeException("elementValue can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "elementValue can't be null");
 
         List<String> loginTypes = ofNullable(authInfoRefreshParam.getLoginTypes())
                 .filter(lts -> lts.size() > 0)
@@ -551,7 +538,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 通用同步构建权限信息
+     * get authority by role id
      *
      * @param roleId
      * @return
@@ -563,11 +550,11 @@ public class SecureServiceImpl implements SecureService {
                         new Authority(role,
                                 RESOURCE_INFOS_BY_ROLE_ID_GETTER.apply(roleId)))
                 .orElseThrow(() ->
-                        new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access的角色为空"));
+                        new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role info doesn't exist, roleId = " + roleId));
     }
 
     /**
-     * 初始化
+     * init
      */
     @PostConstruct
     public void init() {
@@ -576,11 +563,11 @@ public class SecureServiceImpl implements SecureService {
 
         refreshResourceKeyOrRelation();
         refreshRoleInfo();
-        generateLoginHandler();
+        initLoginHandler();
     }
 
     /**
-     * 更新资源或关联信息
+     * refresh resource key/info or role-resource-relation
      *
      * @return
      */
@@ -588,19 +575,16 @@ public class SecureServiceImpl implements SecureService {
     public boolean refreshResourceKeyOrRelation() {
         LOGGER.info("refreshResourceKeyOrRelation()");
 
-        //查询所有资源信息与所有角色资源关联信息
         CompletableFuture<List<Resource>> resourceListCf =
                 supplyAsync(resourceService::listResource, executorService);
         CompletableFuture<List<RoleResRelation>> roleResRelationListCf =
                 supplyAsync(roleResRelationService::listRoleResRelation, executorService);
 
-        //构建资源id与资源的临时映射
         List<Resource> resources = resourceListCf.join();
         Map<Long, Resource> idAndResourceMapping = resources
                 .parallelStream()
                 .collect(toMap(Resource::getId, e -> e, (a, b) -> a));
 
-        //角色id与资源key集的映射
         List<RoleResRelation> roleResRelations = roleResRelationListCf.join();
         Map<Long, Set<String>> tempRoleAndResourcesKeyMapping = roleResRelations
                 .parallelStream()
@@ -616,7 +600,6 @@ public class SecureServiceImpl implements SecureService {
                                                 REAL_URI_GETTER.apply(r).intern()).intern())
                                 .collect(toSet()), (a, b) -> a));
 
-        //角色id与资源集的映射
         Map<Long, List<ResourceInfo>> tempRoleAndResourceInfosMapping = roleResRelations
                 .parallelStream()
                 .collect(groupingBy(RoleResRelation::getRoleId))
@@ -631,7 +614,6 @@ public class SecureServiceImpl implements SecureService {
                                 .collect(toList())
                         , (a, b) -> a));
 
-        //初始化资源特征与资源的映射集
         Map<String, Resource> tempKeyAndResourceMapping = resources
                 .parallelStream()
                 .collect(toMap(r -> INIT_RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
@@ -649,7 +631,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 更新角色信息
+     * refresh role info
      *
      * @return
      */
@@ -657,7 +639,6 @@ public class SecureServiceImpl implements SecureService {
     public boolean refreshRoleInfo() {
         LOGGER.info("refreshRoleInfo()");
 
-        //所有角色
         List<Role> roles = roleService.listRoles();
         Map<Long, RoleInfo> tempIdAndRoleInfoMapping = roles
                 .parallelStream()
@@ -672,7 +653,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 客户端登录
+     * login by client
      *
      * @param clientLoginParam
      * @return
@@ -681,9 +662,11 @@ public class SecureServiceImpl implements SecureService {
     public Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam) {
         LOGGER.info("loginByClient(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
 
+        if (clientLoginParam == null)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
+
         return zip(
-                LOGIN_HANDLER_GETTER.apply(clientLoginParam.getLoginType())
-                        .apply(clientLoginParam),
+                LOGIN_HANDLER_GETTER.apply(clientLoginParam.getLoginType()).apply(clientLoginParam),
                 just(clientLoginParam.getLoginType().intern()),
                 just(clientLoginParam.getDeviceType().intern()))
                 .flatMap(t3 -> {
@@ -696,14 +679,14 @@ public class SecureServiceImpl implements SecureService {
                                     ridOpt.map(rid ->
                                                     just(new AuthGenParam(mid, rid, t3.getT2(), t3.getT3())))
                                             .orElseGet(() -> {
-                                                LOGGER.info("系统错误,成员的角色不存在, mid = {}", mid);
-                                                return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "成员角色不存在"));
+                                                LOGGER.error("loginByClient(ClientLoginParam clientLoginParam) failed, member has no role, memberId = {}", mid);
+                                                return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message));
                                             }));
                 }).flatMap(this::generateAuth);
     }
 
     /**
-     * 小程序登录
+     * login by wechat mini program
      *
      * @param miniProLoginParam
      * @return
@@ -711,11 +694,15 @@ public class SecureServiceImpl implements SecureService {
     @Override
     public Mono<MemberAuth> loginByMiniPro(MiniProLoginParam miniProLoginParam) {
         LOGGER.info("loginByMiniPro(MiniProLoginParam miniProLoginParam), miniProLoginParam = {}", miniProLoginParam);
+
+        if (miniProLoginParam == null)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
+
         return null;
     }
 
     /**
-     * 微信登录
+     * login by wechat
      *
      * @param wechatProLoginParam
      * @return
@@ -723,11 +710,15 @@ public class SecureServiceImpl implements SecureService {
     @Override
     public Mono<MemberAuth> loginByWechat(WechatProLoginParam wechatProLoginParam) {
         LOGGER.info("loginByWechat(WechatProLoginParam wechatProLoginParam), wechatProLoginParam = {}", wechatProLoginParam);
+
+        if (wechatProLoginParam == null)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
+
         return null;
     }
 
     /**
-     * 认证并鉴权,除断言外,任何时候都返回AuthAssertResult
+     * assert auth
      *
      * @param assertAuth
      * @return
@@ -766,11 +757,10 @@ public class SecureServiceImpl implements SecureService {
                                 boolean preUnDecryption = resource.getPreUnDecryption();
                                 boolean postUnEncryption = resource.getPostUnEncryption();
 
-                                //认证并鉴权通过响应数据
                                 AuthAsserted assertResult = new AuthAsserted(true, preUnDecryption, postUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                                         preUnDecryption && postUnEncryption ? "" : authInfo.getPubKey(),
                                         new Access(parseLong(memberPayload.getId()), authInfo.getRoleId(), memberPayload.getLoginType().intern(),
-                                                memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), "认证与鉴权通过");
+                                                memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), ACCESS.message);
 
                                 LOGGER.info("assertResult = {}", assertResult);
 
@@ -780,7 +770,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 生成用户jwt信息
+     * generate member auth
      *
      * @param authGenParam
      * @return
@@ -797,7 +787,7 @@ public class SecureServiceImpl implements SecureService {
                     String loginType = agp.getLoginType().intern();
                     String deviceType = agp.getDeviceType().intern();
                     KeyPair keyPair = RsaProcessor.initKeyPair();
-                    //构建UserPayload
+
                     return just(new MemberPayload(
                             randomAlphanumeric(RANDOM_ID_LENGTH),
                             genSessionKey(memberId, loginType, deviceType),
@@ -805,7 +795,6 @@ public class SecureServiceImpl implements SecureService {
                             loginType, deviceType,
                             valueOf(TIME_STAMP_GETTER.get()))
                     ).flatMap(mp -> {
-                        //生成authInfo并落入REDIS
                         String jwt = jwtProcessor.create(mp);
                         String authInfoJson = GSON.toJson(new AuthInfo(jwt, authGenParam.getRoleId(), keyPair.getPubKey()));
 
@@ -823,7 +812,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 根据accessInfo清除认证信息
+     * invalid auth by access
      *
      * @param access
      * @return
@@ -838,7 +827,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 根据jwt清除认证信息
+     * invalid auth by jwt
      *
      * @param jwt
      * @return
@@ -856,7 +845,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 根据keyId失效本地缓存
+     * invalid local auth by key id
      *
      * @param keyId
      */
@@ -867,7 +856,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 根据access更新成员auth的角色信息,半同步
+     * update member role info by access
      *
      * @param access
      * @param roleId
@@ -876,8 +865,8 @@ public class SecureServiceImpl implements SecureService {
     @Override
     public void updateMemberRoleByAccess(Access access, Long roleId) {
         LOGGER.info("updateMemberRoleByAccess(Access access, Long roleId), access = {}, roleId = {}", access, roleId);
-        if (roleId == null || roleId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "角色id不能为空或小于1");
+        if (access == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "access can't be null");
 
         long memberId = access.getId();
         memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, memberId);
@@ -895,7 +884,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 根据memberId更新成员auth的角色信息
+     * update member role info by member id
      *
      * @param memberId
      * @param roleId
@@ -914,7 +903,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 根据access更新成员auth的密钥信息
+     * update member sec key by access
      *
      * @param access
      * @return
@@ -922,6 +911,9 @@ public class SecureServiceImpl implements SecureService {
     @Override
     public Mono<String> updateSecKeyByAccess(Access access) {
         LOGGER.info("updateSecKeyByAccess(Access access), access = {}", access);
+        if (access == null)
+            throw UNAUTHORIZED_EXP;
+
         return just(RsaProcessor.initKeyPair())
                 .flatMap(keyPair -> {
                     refreshAuthInfoElementByKeyId(
@@ -932,7 +924,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 为成员分配默认角色
+     * set a default role to member
      *
      * @param memberId
      */
@@ -940,11 +932,11 @@ public class SecureServiceImpl implements SecureService {
     public void insertDefaultMemberRoleRelation(Long memberId) {
         LOGGER.info("insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
         if (memberId == null || memberId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberId不能为空或小于1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INVALID_IDENTITY.message);
 
         Role role = roleService.getDefaultRole();
         if (role == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "默认角色不能为空,请查看项目配置");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "default role not found");
 
         MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
         long epochSecond = TIME_STAMP_GETTER.get();
@@ -959,7 +951,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 根据access查询成员的角色及权限信息
+     * get member's authority by access
      *
      * @param access
      * @return
@@ -967,11 +959,14 @@ public class SecureServiceImpl implements SecureService {
     @Override
     public Mono<Authority> getAuthorityByAccess(Access access) {
         LOGGER.info("getAuthorityByAccess(Access access), access = {}", access);
+        if (access == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "access can't be null");
+
         return just(getAuthorityByRoleId(access.getRoleId()));
     }
 
     /**
-     * 根据memberId查询成员的角色及权限信息
+     * get member's authority by member id
      *
      * @param memberId
      * @return
@@ -979,10 +974,13 @@ public class SecureServiceImpl implements SecureService {
     @Override
     public Mono<Authority> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
+        if (memberId == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INVALID_IDENTITY.message);
+
         return just(getAuthorityByRoleId(
                 memberRoleRelationService.getRoleIdByMemberId(memberId)
                         .orElseThrow(() ->
-                                new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access的角色为空"))));
+                                new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "role id of the member id -> " + memberId + " not found"))));
     }
 
     /**

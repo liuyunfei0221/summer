@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
  * @date 2021/8/9
  * @apiNote
  */
-@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaLowerCamelCaseVariableNaming"})
+@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaLowerCamelCaseVariableNaming", "SpellCheckingInspection"})
 public interface ProducerConf {
 
     String getNamespace();

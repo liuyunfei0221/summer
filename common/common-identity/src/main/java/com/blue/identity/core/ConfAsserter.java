@@ -38,7 +38,7 @@ public final class ConfAsserter {
     private static final long MAX_RAN_ADVANCE_SEC_BOUND = 120L;
 
     /**
-     * 校验配置项
+     * asserter conf
      *
      * @param identityConf
      */
@@ -124,7 +124,6 @@ public final class ConfAsserter {
             if (paddingScheduledDelayMillis == null || paddingScheduledDelayMillis < 1)
                 throw new IdentityException("paddingScheduledDelayMillis can't be null or less than 1");
         }
-
     }
 
 }

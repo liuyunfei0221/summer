@@ -63,7 +63,7 @@ public final class AesProcessor {
     }
 
     /**
-     * 加密数据
+     * encrypt data
      *
      * @param originalData
      * @return
@@ -81,7 +81,7 @@ public final class AesProcessor {
     }
 
     /**
-     * 解密数据
+     * decrypt data
      *
      * @param encryptData
      * @return
@@ -100,7 +100,7 @@ public final class AesProcessor {
 
 
     /**
-     * 加密数据
+     * encrypt data
      *
      * @param originalData
      * @return
@@ -118,7 +118,7 @@ public final class AesProcessor {
     }
 
     /**
-     * 解密数据
+     * decrypt data
      *
      * @param encryptData
      * @return

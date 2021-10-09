@@ -8,7 +8,7 @@ import java.io.Serializable;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("GrazieInspection")
+@SuppressWarnings({"GrazieInspection", "unused"})
 public class WechatProLoginParam implements Serializable {
 
     private static final long serialVersionUID = 305317890968502939L;

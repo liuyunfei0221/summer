@@ -2,6 +2,12 @@ package com.blue.business.repository.entity;
 
 import org.springframework.data.annotation.Id;
 
+/**
+ * article
+ *
+ * @author DarkBlue
+ */
+@SuppressWarnings("unused")
 public class Article {
 
     @Id

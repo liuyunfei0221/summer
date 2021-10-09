@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * redis配置参数类
+ * es cibfug
  *
  * @author DarkBlue
  */
