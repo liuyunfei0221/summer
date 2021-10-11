@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 公告持久层
+ * test mapper
  *
  * @author DarkBlue
  */
@@ -26,7 +26,7 @@ public interface BulletinMapper {
     int updateByPrimaryKey(Bulletin record);
 
     /**
-     * 根据条件查询对应数量公告
+     * list bulletin by condition
      *
      * @param type
      * @param status

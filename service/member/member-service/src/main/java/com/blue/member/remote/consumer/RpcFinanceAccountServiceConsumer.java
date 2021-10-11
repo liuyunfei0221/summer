@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 资金账户相关RPC接口
+ * rpc finance consumer
  *
  * @author DarkBlue
  */
@@ -33,7 +33,7 @@ public class RpcFinanceAccountServiceConsumer {
     }
 
     /**
-     * 为成员初始化资金账户
+     * init finance account for member
      *
      * @param memberId
      */

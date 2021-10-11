@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 /**
- * 公益功能接口
+ * shine service
  *
  * @author DarkBlue
  */
@@ -14,11 +14,11 @@ import java.util.List;
 public interface ShineService {
 
     /**
-     * 获取公益信息
+     * list shine infos
      *
      * @param ip
      * @return
      */
-    Mono<List<ShineInfo>> getShineInfo(String ip);
+    Mono<List<ShineInfo>> listShineInfo(String ip);
 
 }

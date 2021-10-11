@@ -97,7 +97,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
     private static long EXPIRED_SECONDS;
 
     private static final BiFunction<String, Map<String, Object>, String> REQUEST_BODY_PROCESSOR = (requestBody, attributes) ->
-            ofNullable(attributes.get(PRE_UN_DECRYPTION.key))
+            ofNullable(attributes.get(REQUEST_UN_DECRYPTION.key))
                     .map(b -> (boolean) b).orElse(true) ?
                     requestBody
                     :
@@ -106,7 +106,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                             EXPIRED_SECONDS);
 
     private static final BiFunction<String, Map<String, Object>, String> RESPONSE_BODY_PROCESSOR = (responseBody, attributes) ->
-            ofNullable(attributes.get(POST_UN_ENCRYPTION.key))
+            ofNullable(attributes.get(RESPONSE_UN_ENCRYPTION.key))
                     .map(b -> (boolean) b).orElse(true) ?
                     responseBody
                     :

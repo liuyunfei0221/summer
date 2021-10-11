@@ -1,7 +1,7 @@
 package com.blue.data.converter;
 
 /**
- * data服务模型转换器
+ * model converters in data project
  *
  * @author DarkBlue
  */

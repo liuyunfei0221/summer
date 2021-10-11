@@ -19,7 +19,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 /**
- * 公告控制器
+ * portal api handler
  *
  * @author DarkBlue
  */
@@ -38,7 +38,7 @@ public final class PortalApiHandler {
     private static final String TYPE_PAR = "bulletinType";
 
     /**
-     * 获取公告
+     * get bulletin
      *
      * @param serverRequest
      * @return
@@ -49,7 +49,7 @@ public final class PortalApiHandler {
         Map<String, String> metadata = MetadataGetterForReactive.getMetadata(serverRequest);
         LOGGER.warn("metadata = {}", metadata);
 
-        return portalService.listBulletin(serverRequest.pathVariable(TYPE_PAR))
+        return portalService.listBulletinInfo(serverRequest.pathVariable(TYPE_PAR))
                 .flatMap(bl -> ok()
                         .contentType(APPLICATION_JSON)
                         .body(generate(OK.code, bl, OK.message), BlueResponse.class)

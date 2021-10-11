@@ -13,7 +13,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * 用户路由
+ * member api router
  *
  * @author DarkBlue
  */
@@ -28,7 +28,7 @@ public class MemberApiRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/registry", accept(APPLICATION_JSON), memberApiHandler::registry)
-                .GET("", memberApiHandler::getMember)
+                .GET("", memberApiHandler::getMemberInfo)
                 .build();
 
         return nest(pathPredicate, routerFunction);

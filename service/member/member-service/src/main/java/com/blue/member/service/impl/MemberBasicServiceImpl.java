@@ -23,16 +23,17 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static java.util.Optional.ofNullable;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 用户业务实现
+ * member basic service impl
  *
  * @author DarkBlue
  */
@@ -68,19 +69,19 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     private final Consumer<MemberBasic> MEMBER_EXIST_VALIDATOR = mb -> {
         MemberBasic exist = memberBasicMapper.selectByPhone(mb.getPhone());
         if (exist != null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "手机号已存在");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The phone number already exists");
 
         exist = memberBasicMapper.selectByEmail(mb.getEmail());
         if (exist != null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "邮箱地址已存在");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The email already exists");
 
         exist = memberBasicMapper.selectByName(mb.getName());
         if (exist != null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "昵称已存在");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists");
     };
 
     /**
-     * 根据手机号获取成员信息
+     * query member by phone
      *
      * @param phone
      * @return
@@ -88,14 +89,14 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<Optional<MemberBasic>> getByPhone(String phone) {
         LOGGER.info("getByPhone(String phone), phone = {}", phone);
-        if (phone == null || "".equals(phone))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone不能为空或''");
+        if (isBlank(phone))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
         LOGGER.info("phone = {}", phone);
         return just(ofNullable(memberBasicMapper.selectByPhone(phone)));
     }
 
     /**
-     * 根据邮箱获取成员信息
+     * query member by email
      *
      * @param email
      * @return
@@ -104,13 +105,13 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     public Mono<Optional<MemberBasic>> getByEmail(String email) {
         LOGGER.info("getByEmail(String email), email = {}", email);
         if (email == null || "".equals(email))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email不能为空或''");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank''");
         LOGGER.info("email = {}", email);
         return just(ofNullable(memberBasicMapper.selectByEmail(email)));
     }
 
     /**
-     * 根据主键获取成员信息
+     * query member by id
      *
      * @param id
      * @return
@@ -124,7 +125,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     }
 
     /**
-     * 根据主键获取用户信息并校验
+     * query member by id with assert
      *
      * @param id
      * @return
@@ -143,7 +144,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                                         error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message)))
                 ).flatMap(mb -> {
                     if (VALID.status != mb.getStatus())
-                        return error(new BlueException(FORBIDDEN.status, FORBIDDEN.code, "账号已冻结"));
+                        return error(new BlueException(FORBIDDEN.status, FORBIDDEN.code, ACCOUNT_HAS_BEEN_FROZEN.message));
                     LOGGER.info("mb = {}", mb);
                     return just(mb);
                 }).flatMap(mb ->
@@ -152,7 +153,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     }
 
     /**
-     * 注册账户
+     * member registry
      *
      * @param memberRegistryParam
      * @return
@@ -167,11 +168,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     public void insert(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("memberRegistryDTO = {}", memberRegistryParam);
         if (memberRegistryParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "注册信息不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         MemberBasic memberBasic = MEMBER_REGISTRY_INFO_2_MEMBER_BASIC.apply(memberRegistryParam);
 
-        //校验
         MEMBER_EXIST_VALIDATOR.accept(memberBasic);
 
         long id = blueIdentityProcessor.generate(MemberBasic.class);
@@ -179,22 +179,21 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         memberBasic.setId(id);
         memberBasic.setPassword(ENCODER.encode(memberBasic.getPassword()));
 
-        //初始化默认角色
+        //init default role
         rpcRoleServiceConsumer.insertDefaultMemberRoleRelation(id);
 
-        //初始化资金账户
+        //init finance account
         rpcFinanceAccountServiceConsumer.insertInitFinanceAccount(id);
 
-        //添加成员基础信息
         memberBasicMapper.insert(memberBasic);
 
         /*if (1 == 1) {
-            throw new BlueException(500, 500, "测试异常回滚");
+            throw new BlueException(500, 500, "test rollback");
         }*/
     }
 
     /**
-     * 查询用户
+     * select member
      *
      * @return
      */

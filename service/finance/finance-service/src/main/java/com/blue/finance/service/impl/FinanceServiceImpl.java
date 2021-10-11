@@ -20,7 +20,7 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 财务业务实现
+ * finance service impl
  *
  * @author DarkBlue
  */
@@ -37,7 +37,7 @@ public class FinanceServiceImpl implements FinanceService {
     }
 
     /**
-     * 根据成员主键获取资金账户余额信息
+     * get balance by member id
      *
      * @param memberId
      * @return
@@ -51,12 +51,14 @@ public class FinanceServiceImpl implements FinanceService {
         return just(memberId)
                 .flatMap(mi -> {
                     Optional<FinanceAccount> faOpt = financeAccountService.getFinanceAccountByMemberId(mi);
-                    if (faOpt.isEmpty())
-                        return error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "资金账户不存在"));
+                    if (faOpt.isEmpty()) {
+                        LOGGER.error("A member did not allocate funds account, please repair data, memberId = {}", memberId);
+                        return error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "The finance account does not exist, please contact customer service."));
+                    }
 
                     FinanceAccount financeAccount = faOpt.get();
                     if (VALID.status != financeAccount.getStatus())
-                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "资金账户已冻结"));
+                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "Your finance account has been frozen"));
 
                     return just(financeAccount);
                 })

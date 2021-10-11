@@ -5,7 +5,7 @@ import com.blue.finance.repository.entity.DynamicResource;
 import java.util.List;
 
 /**
- * 动态资源业务接口
+ * dynamic resource service
  *
  * @author liuyunfei
  * @date 2021/9/13
@@ -15,7 +15,7 @@ import java.util.List;
 public interface DynamicResourceService {
 
     /**
-     * 获取全部动态资源
+     * list all dynamic resources
      *
      * @return
      */

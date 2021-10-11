@@ -140,7 +140,7 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="selectByMemberId" resultMap="BaseResultMap">
+    <select id="getByMemberId" resultMap="BaseResultMap">
         <if test="memberId != null and memberId > 0">
             SELECT
             <include refid="Base_Column_List"/>

@@ -8,8 +8,8 @@
         <result column="module" jdbcType="VARCHAR" property="module"/>
         <result column="uri" jdbcType="VARCHAR" property="uri"/>
         <result column="authenticate" jdbcType="BIT" property="authenticate"/>
-        <result column="pre_un_decryption" jdbcType="BIT" property="preUnDecryption"/>
-        <result column="post_un_encryption" jdbcType="BIT" property="postUnEncryption"/>
+        <result column="request_un_decryption" jdbcType="BIT" property="requestUnDecryption"/>
+        <result column="response_un_encryption" jdbcType="BIT" property="responseUnEncryption"/>
         <result column="existence_request_body" jdbcType="BIT" property="existenceRequestBody"/>
         <result column="existence_response_body" jdbcType="BIT" property="existenceResponseBody"/>
         <result column="type" jdbcType="TINYINT" property="type"/>
@@ -23,7 +23,7 @@
 
     <sql id="Base_Column_List">
         `id`
-        , `request_method`,`module`, `uri`, `authenticate`, `pre_un_decryption`, `post_un_encryption`, `existence_request_body`, `existence_response_body`, `type`, `name`, `description`, `create_time`, `update_time`, `creator`, `updater`
+        , `request_method`,`module`, `uri`, `authenticate`, `request_un_decryption`, `response_un_encryption`, `existence_request_body`, `existence_response_body`, `type`, `name`, `description`, `create_time`, `update_time`, `creator`, `updater`
     </sql>
 
     <select id="listResource" resultMap="BaseResultMap">

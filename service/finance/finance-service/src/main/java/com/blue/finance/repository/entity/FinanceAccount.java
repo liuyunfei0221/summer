@@ -1,56 +1,29 @@
 package com.blue.finance.repository.entity;
 
 /**
- * 成员资金账户表
+ * finance account/unit is fen
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public final class FinanceAccount {
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 成员id
-     */
     private Long memberId;
 
-    /**
-     * 可用余额/分
-     */
     private Long balance;
 
-    /**
-     * 冻结金额/分
-     */
     private Long frozen;
 
-    /**
-     * 历史总收入/分
-     */
     private Long income;
 
-    /**
-     * 历史总支出/分
-     */
     private Long outlay;
 
-    /**
-     * 状态 0停用 1启用
-     */
     private Integer status;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 修改时间
-     */
     private Long updateTime;
 
 

@@ -14,7 +14,6 @@ import com.blue.portal.service.inter.BulletinService;
 import com.blue.portal.service.inter.PortalService;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.google.gson.Gson;
-import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -44,10 +43,11 @@ import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static reactor.core.publisher.Mono.just;
 
 /**
- * 门户业务实现
+ * portal service impl
  *
  * @author DarkBlue
  */
@@ -106,15 +106,15 @@ public class PortalServiceImpl implements PortalService {
      * 公告类型转换
      */
     private static final Function<String, BulletinType> TYPE_CONVERTER = typeStr -> {
-        if (StringUtils.isBlank(typeStr)) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "公告类型不能为空");
+        if (isBlank(typeStr)) {
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "typeStr can't be blank");
         }
 
         int type;
         try {
             type = Integer.parseInt(typeStr);
         } catch (NumberFormatException e) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "公告类型不合法");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid bulletin type");
         }
 
         return getBulletinTypeByIdentity(type);
@@ -133,44 +133,44 @@ public class PortalServiceImpl implements PortalService {
     }
 
     /**
-     * 由数据库中获取
+     * list bulletin infos from db
      *
      * @param bulletinType
      * @return
      */
     private List<BulletinInfo> getBulletinFromDataBase(BulletinType bulletinType) {
         List<Bulletin> bulletins = bulletinService.listBulletin(bulletinType);
-        LOGGER.info("由数据库中获取公告列表,bulletins = {}", bulletins);
+        LOGGER.info("getBulletinFromDataBase(BulletinType bulletinType), bulletins = {}", bulletins);
         return VO_LIST_CONVERTER.apply(bulletins);
     }
 
     /**
-     * 由redis获取公告列表
+     * list bulletin infos from redis
      */
     private final Function<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_FUNC = type -> {
         List<String> bulletins = ofNullable(stringRedisTemplate.opsForList().range(ofNullable(type)
                 .map(t -> PORTALS_PRE.key + t.identity)
                 .orElse(PORTALS_PRE.key + BulletinType.POPULAR.identity), 0, -1))
                 .orElse(emptyList());
-        LOGGER.info("由redis中获取公告列表,bulletins = {}", bulletins);
+        LOGGER.info("REDIS_CACHE_PORTAL_FUNC, type = {}, bulletins = {}", type, bulletins);
         return bulletins
                 .stream().map(s -> GSON.fromJson(s, BulletinInfo.class)).collect(toList());
     };
 
     /**
-     * 将公告列表缓存到redis
+     * set bulletin info to redis
      */
     private final BiConsumer<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_CACHER = (type, list) -> {
         if (type != null && !CollectionUtils.isEmpty(list)) {
             String key = PORTALS_PRE.key + type.identity;
             stringRedisTemplate.opsForList().rightPushAll(key, list.stream().map(GSON::toJson).collect(toList()));
             stringRedisTemplate.expire(key, redisExpire, EXPIRE_UNIT);
-            LOGGER.info("将公告列表缓存到redis,key = {},list = {}", key, list);
+            LOGGER.info("REDIS_CACHE_PORTAL_CACHER, key = {},list = {}", key, list);
         }
     };
 
     /**
-     * 由redis缓存中获取
+     * list bulletin infos from redis
      *
      * @param bulletinType
      * @return
@@ -208,16 +208,16 @@ public class PortalServiceImpl implements PortalService {
     }
 
     /**
-     * 由本地缓存获取公告列表
+     * list bulletin infos from local cache
      */
     private final Function<BulletinType, List<BulletinInfo>> LOCAL_CACHE_PORTAL_FUNC = type -> {
         List<BulletinInfo> bulletins = LOCAL_CACHE.get(type, this::getBulletinFromRedisCache);
-        LOGGER.info("由本地缓存中获取公告列表,bulletins = {}", bulletins);
+        LOGGER.info("LOCAL_CACHE_PORTAL_FUNC, type = {}, bulletins = {}", type, bulletins);
         return bulletins;
     };
 
     /**
-     * 由本地缓存中获取
+     * list bulletin infos from local cache
      *
      * @param bulletinType
      * @return
@@ -227,13 +227,13 @@ public class PortalServiceImpl implements PortalService {
     }
 
     /**
-     * 获取公告信息
+     * list bulletin infos
      *
      * @param bulletinType
      * @return
      */
     @Override
-    public Mono<List<BulletinInfo>> listBulletin(String bulletinType) {
+    public Mono<List<BulletinInfo>> listBulletinInfo(String bulletinType) {
         LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
 
         List<BulletinInfo> vos = ofNullable(getBulletinFromLocalCache(TYPE_CONVERTER.apply(bulletinType))).orElse(emptyList());

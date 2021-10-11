@@ -14,7 +14,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 /**
- * 用户接口
+ * finance api handler
  *
  * @author DarkBlue
  */
@@ -29,7 +29,7 @@ public final class FinanceApiHandler {
     }
 
     /**
-     * 根据商户session信息获取商户余额
+     * query member's balance
      *
      * @param serverRequest
      * @return

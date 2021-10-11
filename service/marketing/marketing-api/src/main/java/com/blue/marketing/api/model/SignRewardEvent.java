@@ -35,17 +35,17 @@ public final class SignRewardEvent implements Serializable {
     /**
      * 当日奖励
      */
-    private DayReward dayReward;
+    private SignInReward signInReward;
 
     public SignRewardEvent() {
     }
 
-    public SignRewardEvent(Long memberId, Integer year, Integer month, Integer day, DayReward dayReward) {
+    public SignRewardEvent(Long memberId, Integer year, Integer month, Integer day, SignInReward signInReward) {
         this.memberId = memberId;
         this.year = year;
         this.month = month;
         this.day = day;
-        this.dayReward = dayReward;
+        this.signInReward = signInReward;
     }
 
     public Long getMemberId() {
@@ -80,12 +80,12 @@ public final class SignRewardEvent implements Serializable {
         this.day = day;
     }
 
-    public DayReward getDayReward() {
-        return dayReward;
+    public SignInReward getDayReward() {
+        return signInReward;
     }
 
-    public void setDayReward(DayReward dayReward) {
-        this.dayReward = dayReward;
+    public void setDayReward(SignInReward signInReward) {
+        this.signInReward = signInReward;
     }
 
     @Override
@@ -95,7 +95,7 @@ public final class SignRewardEvent implements Serializable {
                 ", year=" + year +
                 ", month=" + month +
                 ", day=" + day +
-                ", dayReward=" + dayReward +
+                ", dayReward=" + signInReward +
                 '}';
     }
 

@@ -23,7 +23,7 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 用户业务实现
+ * finance account service impl
  *
  * @author DarkBlue
  */
@@ -44,7 +44,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
     }
 
     /**
-     * 新增资金账户
+     * create a finance account
      *
      * @param financeAccount
      */
@@ -57,10 +57,15 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
         LOGGER.info("insertFinanceAccount(FinanceAccount financeAccount), financeAccount = {}", financeAccount);
         financeAccountMapper.insert(financeAccount);
 //        if (1 == 1) {
-//            throw new BlueException(500, 500, "测试异常回滚");
+//            throw new BlueException(500, 500, "test rollback");
 //        }
     }
 
+    /**
+     * init finance account for a member
+     *
+     * @param memberId
+     */
     @GlobalTransactional
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 15)
@@ -93,7 +98,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
     }
 
     /**
-     * 根据成员主键获取资金账户余额信息
+     * get finance account by member id
      *
      * @param memberId
      * @return
@@ -105,7 +110,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
         if (memberId == null || memberId < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        return ofNullable(financeAccountMapper.selectByMemberId(memberId));
+        return ofNullable(financeAccountMapper.getByMemberId(memberId));
     }
 
 }

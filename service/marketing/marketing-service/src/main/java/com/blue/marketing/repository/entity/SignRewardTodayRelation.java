@@ -2,56 +2,29 @@ package com.blue.marketing.repository.entity;
 
 
 /**
- * 当日签到奖励关联表
+ * reward and date relation
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public final class SignRewardTodayRelation {
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 奖励id
-     */
     private Long rewardId;
 
-    /**
-     * 年份
-     */
     private Integer year;
 
-    /**
-     * 月份
-     */
     private Integer month;
 
-    /**
-     * 日期
-     */
     private Integer day;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 修改时间
-     */
     private Long updateTime;
 
-    /**
-     * 创建人
-     */
     private Long creator;
 
-    /**
-     * 修改人
-     */
     private Long updater;
 
     public Long getId() {

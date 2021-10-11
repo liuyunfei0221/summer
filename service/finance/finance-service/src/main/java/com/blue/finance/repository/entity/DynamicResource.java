@@ -1,71 +1,35 @@
 package com.blue.finance.repository.entity;
 
 /**
- * 动态资源
+ * dynamic resource
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public class DynamicResource {
 
-    /**
-     *
-     */
     private Long id;
 
-    /**
-     *
-     */
     private Long organizationId;
 
-    /**
-     *
-     */
     private Long handlerId;
 
-    /**
-     *
-     */
     private String requestMethod;
 
-    /**
-     *
-     */
     private Long uriPlaceholder;
 
-    /**
-     *
-     */
     private String contentType;
 
-    /**
-     *
-     */
     private String name;
 
-    /**
-     *
-     */
     private String description;
 
-    /**
-     *
-     */
     private Long createTime;
 
-    /**
-     *
-     */
     private Long updateTime;
 
-    /**
-     *
-     */
     private Long creator;
 
-    /**
-     *
-     */
     private Long updater;
 
     public Long getId() {

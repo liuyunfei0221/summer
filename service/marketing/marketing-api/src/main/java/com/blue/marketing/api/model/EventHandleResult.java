@@ -3,7 +3,7 @@ package com.blue.marketing.api.model;
 import java.io.Serializable;
 
 /**
- * 营销事件处理结果
+ * event handling result
  *
  * @author DarkBlue
  */

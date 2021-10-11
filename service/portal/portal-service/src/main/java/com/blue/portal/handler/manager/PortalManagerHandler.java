@@ -6,6 +6,8 @@ import reactor.util.Logger;
 import reactor.util.Loggers;
 
 /**
+ * portal manager handler
+ *
  * @author liuyunfei
  * @date 2021/8/31
  * @apiNote
@@ -20,7 +22,6 @@ public class PortalManagerHandler {
     public PortalManagerHandler(PortalService portalService) {
         this.portalService = portalService;
     }
-
 
 
 }

@@ -5,7 +5,7 @@ import com.blue.base.constant.marketing.MarketingEventType;
 import java.io.Serializable;
 
 /**
- * 营销事件
+ * marketing event
  *
  * @author DarkBlue
  */
@@ -14,24 +14,15 @@ public final class MarketingEvent implements Serializable {
 
     private static final long serialVersionUID = -3232798896272586812L;
 
-    /**
-     * 事件类型
-     */
     private MarketingEventType marketingEventType;
 
-    /**
-     * 成员id
-     */
     private Long memberId;
 
     /**
-     * 事件的json
+     * event json
      */
     private String event;
 
-    /**
-     * 事件时间
-     */
     private Long eventTime;
 
     public MarketingEvent() {

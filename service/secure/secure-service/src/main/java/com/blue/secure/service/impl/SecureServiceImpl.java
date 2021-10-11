@@ -663,7 +663,7 @@ public class SecureServiceImpl implements SecureService {
         LOGGER.info("loginByClient(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
 
         if (clientLoginParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         return zip(
                 LOGIN_HANDLER_GETTER.apply(clientLoginParam.getLoginType()).apply(clientLoginParam),
@@ -696,7 +696,7 @@ public class SecureServiceImpl implements SecureService {
         LOGGER.info("loginByMiniPro(MiniProLoginParam miniProLoginParam), miniProLoginParam = {}", miniProLoginParam);
 
         if (miniProLoginParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         return null;
     }
@@ -712,7 +712,7 @@ public class SecureServiceImpl implements SecureService {
         LOGGER.info("loginByWechat(WechatProLoginParam wechatProLoginParam), wechatProLoginParam = {}", wechatProLoginParam);
 
         if (wechatProLoginParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         return null;
     }
@@ -754,11 +754,11 @@ public class SecureServiceImpl implements SecureService {
                                 if (!AUTHORIZATION_RES_CHECKER.apply(authInfo.getRoleId(), resourceKey))
                                     return error(new BlueException(FORBIDDEN.status, FORBIDDEN.code, RES_NOT_ACCESS_MESSAGE_GETTER.apply(resourceKey)));
 
-                                boolean preUnDecryption = resource.getPreUnDecryption();
-                                boolean postUnEncryption = resource.getPostUnEncryption();
+                                boolean reqUnDecryption = resource.getRequestUnDecryption();
+                                boolean resUnEncryption = resource.getResponseUnEncryption();
 
-                                AuthAsserted assertResult = new AuthAsserted(true, preUnDecryption, postUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
-                                        preUnDecryption && postUnEncryption ? "" : authInfo.getPubKey(),
+                                AuthAsserted assertResult = new AuthAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
+                                        reqUnDecryption && resUnEncryption ? "" : authInfo.getPubKey(),
                                         new Access(parseLong(memberPayload.getId()), authInfo.getRoleId(), memberPayload.getLoginType().intern(),
                                                 memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), ACCESS.message);
 

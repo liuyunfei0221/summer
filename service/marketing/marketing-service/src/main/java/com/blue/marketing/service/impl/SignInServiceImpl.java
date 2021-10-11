@@ -13,7 +13,7 @@ import com.blue.marketing.config.mq.producer.SignExpireProducer;
 import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.entity.SignRewardTodayRelation;
 import com.blue.marketing.service.inter.RewardService;
-import com.blue.marketing.service.inter.SignService;
+import com.blue.marketing.service.inter.SignInService;
 import com.google.gson.Gson;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
@@ -49,15 +49,15 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 签到业务实现
+ * sign in service impl
  *
  * @author DarkBlue
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
-public class SignServiceImpl implements SignService {
+public class SignInServiceImpl implements SignInService {
 
-    private static final Logger LOGGER = getLogger(SignServiceImpl.class);
+    private static final Logger LOGGER = getLogger(SignInServiceImpl.class);
 
     private RewardService rewardService;
 
@@ -70,8 +70,8 @@ public class SignServiceImpl implements SignService {
     private final BlockingDeploy blockingDeploy;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public SignServiceImpl(RewardService rewardService, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
-                           SignExpireProducer signExpireProducer, MarketingEventProducer marketingEventProducer, BlockingDeploy blockingDeploy) {
+    public SignInServiceImpl(RewardService rewardService, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
+                             SignExpireProducer signExpireProducer, MarketingEventProducer marketingEventProducer, BlockingDeploy blockingDeploy) {
         this.rewardService = rewardService;
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.signExpireProducer = signExpireProducer;
@@ -84,58 +84,34 @@ public class SignServiceImpl implements SignService {
     private static final Supplier<Long> TIME_STAMP_GETTER = CommonFunctions.TIME_STAMP_GETTER;
 
     /**
-     * 月签到信息最大过期时间/天
+     * sign in redis key expire/day
      */
     private static final int MAX_EXPIRE_DAYS_FOR_SIGN = (int) BlueNumericalValue.MAX_EXPIRE_DAYS_FOR_SIGN.value;
 
-    /**
-     * 签到信息过期时间单位
-     */
     private static final ChronoUnit EXPIRE_UNIT = ChronoUnit.DAYS;
 
-    /**
-     * 奖励信息是否刷新中的标记位
-     */
     private static volatile boolean rewardInfoRefreshing = false;
 
-    /**
-     * 刷新资源时最大等待时间
-     */
     private static long MAX_WAITING_FOR_REFRESH;
 
     /**
-     * 当前月份
+     * current month
      */
-    private static volatile int MONTH;
+    private static volatile int CURRENT_MONTH;
 
-    /**
-     * 当日签到奖励信息映射
-     */
-    private static volatile Map<Integer, DayReward> TODAY_REWARD_MAPPING;
+    private static volatile Map<Integer, SignInReward> TODAY_REWARD_MAPPING;
 
-    /**
-     * 签到key前缀
-     */
-    private static final String SIGN_IN_KEY_PRE = CacheKey.SIGN_IN_KEY_PRE.key;
+    private static final String SIGN_IN_KEY_PREFIX = CacheKey.SIGN_IN_KEY_PRE.key;
 
-    /**
-     * 参数拼接符
-     */
     private static final String PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity;
 
-    /**
-     * 日签到奖励信息转换器
-     */
-    private static final Function<Reward, DayReward> REWARD_CONVERTER = r ->
-            new DayReward(r != null ? new RewardInfo(r.getId(), r.getName(), r.getDetail(), r.getLink()) : null);
+    private static final Function<Reward, SignInReward> REWARD_CONVERTER = r ->
+            new SignInReward(r != null ? new RewardInfo(r.getId(), r.getName(), r.getDetail(), r.getLink()) : null);
 
-    /**
-     * 当月奖励信息构建器
-     */
     private final BiConsumer<Integer, Integer> DAY_REWARD_INITIALIZER = (year, month) -> {
         List<SignRewardTodayRelation> relations = rewardService.listRelationByYearAndMonth(year, month);
         if (isEmpty(relations))
-            LOGGER.error("未配置" + year + "年" + month + "月的每日签到奖励信息");
+            LOGGER.error("Sign-in bonus information at is not configured");
 
         List<Reward> rewards = rewardService.listRewardByIds(relations.stream()
                 .map(SignRewardTodayRelation::getRewardId).collect(toList()));
@@ -144,27 +120,23 @@ public class SignServiceImpl implements SignService {
         LocalDate currentDate = LocalDate.of(year, month, 1);
         int dayOfMonth = currentDate.lengthOfMonth();
 
-        Map<Integer, DayReward> tempMapping = relations.stream()
+        Map<Integer, SignInReward> tempMapping = relations.stream()
                 .collect(toMap(SignRewardTodayRelation::getDay, r ->
                         REWARD_CONVERTER.apply(rewardMap.get(r.getRewardId())), (a, b) -> b));
 
-        Map<Integer, DayReward> relationMapping = new HashMap<>(dayOfMonth);
+        Map<Integer, SignInReward> relationMapping = new HashMap<>(dayOfMonth);
         for (int i = 1; i <= dayOfMonth; i++)
-            relationMapping.put(i, ofNullable(tempMapping.get(i)).orElse(new DayReward(null)));
+            relationMapping.put(i, ofNullable(tempMapping.get(i)).orElse(new SignInReward(null)));
 
         rewardInfoRefreshing = true;
         TODAY_REWARD_MAPPING = relationMapping;
-        MONTH = month;
+        CURRENT_MONTH = month;
         rewardInfoRefreshing = false;
 
         //noinspection UnusedAssignment
         tempMapping = null;
     };
 
-
-    /**
-     * 资源信息动态刷新时的阻塞器
-     */
     private static final Supplier<String> BLOCKER = () -> {
         if (rewardInfoRefreshing) {
             long start = currentTimeMillis();
@@ -177,56 +149,44 @@ public class SignServiceImpl implements SignService {
         return "refreshed";
     };
 
-    /**
-     * 当日奖励获取器
-     */
-    private static final Function<Integer, DayReward> TODAY_REWARD_GETTER = day -> {
+    private static final Function<Integer, SignInReward> TODAY_REWARD_GETTER = day -> {
         BLOCKER.get();
         return TODAY_REWARD_MAPPING.get(day);
     };
 
     /**
-     * 根据年月日获取当日奖励信息
+     * get reward by date
      *
      * @param year
      * @param month
      * @param day
      * @return
      */
-    private DayReward getDayReward(int year, int month, int day) {
-        if (MONTH != month)
-            synchronized (SignServiceImpl.class) {
-                if (MONTH != month)
+    private SignInReward getDayReward(int year, int month, int day) {
+        if (CURRENT_MONTH != month)
+            synchronized (SignInServiceImpl.class) {
+                if (CURRENT_MONTH != month)
                     DAY_REWARD_INITIALIZER.accept(year, month);
             }
         return TODAY_REWARD_GETTER.apply(day);
     }
 
     /**
-     * 根据用户ID及当天日期构建当月签到KEY
+     * generate sign in key
      *
-     * @param mid
+     * @param memberId
      * @param year
      * @param month
      * @return
      */
-    private static String generateSignKey(long mid, int year, int month) {
-        return SIGN_IN_KEY_PRE + mid + PAR_CONCATENATION + year + PAR_CONCATENATION + month;
+    private static String generateSignKey(long memberId, int year, int month) {
+        return SIGN_IN_KEY_PREFIX + memberId + PAR_CONCATENATION + year + PAR_CONCATENATION + month;
     }
 
-    /**
-     * 标记位空缺
-     */
     private static final long MARK_BIT = 1L;
 
-    /**
-     * Flux返回的的一个元素 -> list的第一个元素即为目标bitmap
-     */
     private static final int FLUX_ELEMENT_INDEX = 0, LIST_ELEMENT_INDEX = 0;
 
-    /**
-     * bitMap获取器
-     */
     private final BiFunction<String, Integer, Mono<Long>> BITMAP_LIMIT_GETTER = (key, limit) ->
             reactiveStringRedisTemplate.execute(con ->
                             con.stringCommands()
@@ -237,33 +197,19 @@ public class SignServiceImpl implements SignService {
                     .elementAt(FLUX_ELEMENT_INDEX)
                     .flatMap(l -> just(l.get(LIST_ELEMENT_INDEX)));
 
-    /**
-     * bitMap标记获取器
-     */
     private final BiFunction<String, Long, Mono<Boolean>> BITMAP_BIT_GETTER = (key, offset) ->
             reactiveStringRedisTemplate.opsForValue().getBit(key, offset);
 
-    /**
-     * bitMap 签到状态标记器
-     */
     private final BiFunction<String, Long, Mono<Boolean>> BITMAP_TRUE_BIT_SETTER = (key, offset) ->
             reactiveStringRedisTemplate.opsForValue().setBit(key, offset, true);
 
-    /**
-     * 日签到信息构建器
-     */
-    private static final BiFunction<Integer, Boolean, DayRewardRecord> DAY_REWARD_RECORD_GENERATOR = (day, sign) ->
-            new DayRewardRecord(TODAY_REWARD_MAPPING.get(day), sign);
+    private static final BiFunction<Integer, Boolean, SignInRewardRecord> DAY_REWARD_RECORD_GENERATOR = (day, sign) ->
+            new SignInRewardRecord(TODAY_REWARD_MAPPING.get(day), sign);
 
-    /**
-     * 月签到信息构建器
-     */
     private static final BiFunction<Long, Integer, MonthRewardRecord> MONTH_REWARD_RECORD_GENERATOR = (record, lengthOfMonth) -> {
-        //签到记录,总签到次数
-        Map<Integer, DayRewardRecord> recordInfo = new TreeMap<>();
+        Map<Integer, SignInRewardRecord> recordInfo = new TreeMap<>();
         int total = 0;
 
-        //用于计算的中间变量
         boolean signed;
         long bit = 1L;
 
@@ -279,9 +225,6 @@ public class SignServiceImpl implements SignService {
         return new MonthRewardRecord(recordInfo, total);
     };
 
-    /**
-     * 初始化
-     */
     @PostConstruct
     public final void init() {
         MAX_WAITING_FOR_REFRESH = blockingDeploy.getMillis();
@@ -290,13 +233,13 @@ public class SignServiceImpl implements SignService {
     }
 
     /**
-     * 当日签到
+     * sign in today
      *
      * @param memberId
      * @return
      */
     @Override
-    public Mono<DayReward> insertSignIn(Long memberId) {
+    public Mono<SignInReward> insertSignIn(Long memberId) {
         LOGGER.info("insertSignIn(Long memberId), memberId = {}", memberId);
         if (memberId == null || memberId < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
@@ -313,38 +256,38 @@ public class SignServiceImpl implements SignService {
         return BITMAP_BIT_GETTER.apply(key, (long) dayOfMonth)
                 .flatMap(b -> {
                     if (b)
-                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "当日已签到,请勿重复签到"));
+                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "Please do not sign in again"));
 
                     return BITMAP_TRUE_BIT_SETTER.apply(key, (long) dayOfMonth)
                             .flatMap(f -> {
                                 if (f)
-                                    return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "当日已签到,请勿重复签到"));
+                                    return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "Please do not sign in again"));
 
                                 try {
                                     signExpireProducer.send(new KeyExpireParam(key, (long) (MAX_EXPIRE_DAYS_FOR_SIGN - dayOfMonth), EXPIRE_UNIT));
                                 } catch (Exception e) {
-                                    LOGGER.error("延长用户签到过期时间的事件推送失败, key = {}, expire = {}, e = {}", key, (MAX_EXPIRE_DAYS_FOR_SIGN - dayOfMonth), e);
+                                    LOGGER.error("sign in key expire failed, key = {}, expire = {}, e = {}", key, (MAX_EXPIRE_DAYS_FOR_SIGN - dayOfMonth), e);
                                 }
 
                                 return just(getDayReward(year, month, dayOfMonth));
                             })
-                            .flatMap(dayReward -> {
+                            .flatMap(signInReward -> {
                                 try {
-                                    LOGGER.info("memberId 为 {} 的成员于 {} 年 {} 月 {} 日签到成功, 奖励为 {}",
-                                            memberId, year, month, dayOfMonth, dayReward);
+                                    LOGGER.info("sign in success, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}",
+                                            memberId, year, month, dayOfMonth, signInReward);
                                     marketingEventProducer.send(new MarketingEvent(SIGN_IN_REWARD, memberId,
-                                            GSON.toJson(new SignRewardEvent(memberId, year, month, dayOfMonth, dayReward)), TIME_STAMP_GETTER.get()));
+                                            GSON.toJson(new SignRewardEvent(memberId, year, month, dayOfMonth, signInReward)), TIME_STAMP_GETTER.get()));
                                 } catch (Exception e) {
-                                    LOGGER.error("memberId 为 {} 的成员于 {} 年 {} 月 {} 日签到成功但推送奖励处理事件失败, 奖励为 {}, e = {}",
-                                            memberId, year, month, dayOfMonth, dayReward, e);
+                                    LOGGER.info("sign in failed, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}, e = {}",
+                                            memberId, year, month, dayOfMonth, signInReward, e);
                                 }
-                                return just(dayReward);
+                                return just(signInReward);
                             });
                 });
     }
 
     /**
-     * 查询当月签到
+     * query sign in records
      *
      * @param memberId
      * @return

@@ -1,61 +1,37 @@
 package com.blue.member.repository.entity;
 
 /**
- * 成员基础信息表
+ * member basic
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public final class MemberBasic {
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 手机号
-     */
     private String phone;
 
-    /**
-     * 邮箱地址
-     */
     private String email;
 
-    /**
-     * 登录密码
-     */
     private String password;
 
-    /**
-     * 昵称
-     */
     private String name;
 
-    /**
-     * 图标url
-     */
     private String icon;
 
     /**
-     * 性别 1男 0女 2其他
+     * @see com.blue.base.constant.member.Gender
      */
     private Integer gender;
 
     /**
-     * 状态，1可用 0禁用
+     * @see com.blue.base.constant.base.Status
      */
     private Integer status;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 修改时间
-     */
     private Long updateTime;
 
 

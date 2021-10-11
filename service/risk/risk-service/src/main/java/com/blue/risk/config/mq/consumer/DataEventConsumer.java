@@ -1,8 +1,10 @@
 package com.blue.risk.config.mq.consumer;
 
+import com.blue.base.common.auth.AuthProcessor;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.constant.base.BlueTopic;
+import com.blue.base.model.base.Access;
 import com.blue.base.model.event.data.DataEvent;
 import com.blue.jwt.common.JwtProcessor;
 import com.blue.pulsar.api.conf.ConsumerConfParams;
@@ -21,7 +23,7 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 消费端配置
+ * data event consumer
  *
  * @author DarkBlue
  */
@@ -47,20 +49,10 @@ public final class DataEventConsumer implements BlueLifecycle {
                 ofNullable(dataEvent)
                         .ifPresent(de -> {
                             //TODO 风控分析
-                            String accessJson = de.getData(BlueDataAttrKey.ACCESS.key);
-                            String jwtStr = de.getData(BlueDataAttrKey.JWT.key);
-
-                            LOGGER.warn("de = {}", de);
-                            LOGGER.warn("accessJson = {}", accessJson);
-                            LOGGER.warn("jwtStr = {}", jwtStr);
-
-                            if (jwtStr != null && !"".equals(jwtStr))
-                                try {
-                                    MemberPayload memberPayload = jwtProcessor.parse(jwtStr);
-                                    LOGGER.warn("memberPayload = {}", memberPayload);
-                                } catch (Exception e) {
-                                    LOGGER.error("jwtStr解析失败, jwtStr = {}, e = {}", jwtStr, e);
-                                }
+                            ofNullable(de.getData(BlueDataAttrKey.ACCESS.key))
+                                    .map(AuthProcessor::jsonToAccess)
+                                    .map(Access::getId)
+                                    .ifPresent(access -> LOGGER.warn("access = {}", access));
                         });
 
         ConsumerConfParams dataEventDeploy = blueConsumerConfig.getByKey(BlueTopic.REQUEST_EVENT.name);

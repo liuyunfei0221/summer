@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * 动态处理器业务实现
+ * dynamic handler service impl
  *
  * @author liuyunfei
  * @date 2021/9/14
  * @apiNote
  */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "JavaDoc"})
 @Service
 public class DynamicHandlerServiceImpl implements DynamicHandlerService {
 
@@ -24,8 +24,14 @@ public class DynamicHandlerServiceImpl implements DynamicHandlerService {
         this.dynamicHandlerMapper = dynamicHandlerMapper;
     }
 
+    /**
+     * list all dynamic handlers
+     *
+     * @return
+     */
     @Override
     public List<DynamicHandler> listDynamicHandler() {
         return dynamicHandlerMapper.listDynamicHandler();
     }
+
 }

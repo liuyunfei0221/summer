@@ -6,11 +6,11 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 公告持久层
+ * test mapper
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
+@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface BulletinMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -25,14 +25,6 @@ public interface BulletinMapper {
 
     int updateByPrimaryKey(Bulletin record);
 
-    /**
-     * 根据条件查询对应数量公告
-     *
-     * @param type
-     * @param status
-     * @param limit
-     * @return
-     */
     List<Bulletin> listBulletin(@Param("type") Integer type,
                                 @Param("status") Integer status, @Param("limit") Long limit);
 

@@ -5,7 +5,7 @@ import com.blue.member.api.model.MemberBasicInfo;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * 成员相关RPC接口
+ * rpc member interface
  *
  * @author DarkBlue
  */
@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 public interface RpcMemberService {
 
     /**
-     * 根据手机号获取成员关键信息
+     * query member basic by phone
      *
      * @param phone
      * @return
@@ -21,7 +21,7 @@ public interface RpcMemberService {
     CompletableFuture<MemberBasicInfo> getMemberBasicByPhone(String phone);
 
     /**
-     * 根据邮箱地址获取成员关键信息
+     * query member basic by email
      *
      * @param email
      * @return

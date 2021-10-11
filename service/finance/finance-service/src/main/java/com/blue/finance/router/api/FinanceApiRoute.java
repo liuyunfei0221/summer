@@ -12,7 +12,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * 资金账户路由
+ * finance api routers
  *
  * @author DarkBlue
  */

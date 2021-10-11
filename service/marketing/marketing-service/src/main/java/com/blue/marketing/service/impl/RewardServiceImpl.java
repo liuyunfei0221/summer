@@ -20,7 +20,7 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 奖励信息业务实现
+ * reward service impl
  *
  * @author DarkBlue
  */
@@ -41,7 +41,7 @@ public class RewardServiceImpl implements RewardService {
     }
 
     /**
-     * 根据主键查询奖励信息
+     * select reward by id
      *
      * @param id
      * @return
@@ -56,7 +56,7 @@ public class RewardServiceImpl implements RewardService {
     }
 
     /**
-     * 根据主键集合批量查询奖励信息列表
+     * select rewards by ids
      *
      * @param ids
      * @return
@@ -71,7 +71,7 @@ public class RewardServiceImpl implements RewardService {
     }
 
     /**
-     * 根据年份及月份查询该月的当日奖励关联信息
+     * select reward-date-relation by date
      *
      * @param year
      * @param month
@@ -81,7 +81,7 @@ public class RewardServiceImpl implements RewardService {
     public List<SignRewardTodayRelation> listRelationByYearAndMonth(Integer year, Integer month) {
         LOGGER.info("listRelationByYearAndMonth(Integer year, Integer month), year = {}, month = {}", year, month);
         if (year == null || month == null || year < 1 || month < 1)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "year或month不能为空或小于1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "year or month can't be null or less than 1");
 
         return signRewardTodayRelationMapper.listRelationByYearAndMonth(year, month);
     }

@@ -3,26 +3,26 @@ package com.blue.marketing.api.model;
 import java.io.Serializable;
 
 /**
- * 当日签到奖励信息封装
+ * sign in reward info
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class DayReward implements Serializable {
+public final class SignInReward implements Serializable {
 
     private static final long serialVersionUID = 5141433813644232691L;
 
     /**
-     * 当日签到奖励
+     * reward info
      */
     private final RewardInfo reward;
 
     /**
-     * 是否存在奖励
+     * is present reward?
      */
     private final Boolean present;
 
-    public DayReward(RewardInfo reward) {
+    public SignInReward(RewardInfo reward) {
         this.reward = reward;
         this.present = this.reward != null;
     }

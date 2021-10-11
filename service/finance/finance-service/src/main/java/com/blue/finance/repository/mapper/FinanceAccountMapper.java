@@ -4,7 +4,7 @@ import com.blue.finance.repository.entity.FinanceAccount;
 import org.apache.ibatis.annotations.Param;
 
 /**
- * 用户资金账户信息持久层
+ * finance account mapper
  *
  * @author DarkBlue
  */
@@ -24,11 +24,11 @@ public interface FinanceAccountMapper {
     int updateByPrimaryKey(FinanceAccount record);
 
     /**
-     * 根据成员手机号查询成员资金账户信息
+     * get finance account by member id
      *
      * @param memberId
      * @return
      */
-    FinanceAccount selectByMemberId(@Param("memberId") Long memberId);
+    FinanceAccount getByMemberId(@Param("memberId") Long memberId);
 
 }

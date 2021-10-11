@@ -1,13 +1,12 @@
 package com.blue.marketing.converter;
 
 /**
- * marketing服务模型转换器
+ * model converters in marketing project
  *
  * @author DarkBlue
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class MarketingModelConverters {
-
 
 
 }

@@ -1,66 +1,46 @@
 package com.blue.marketing.repository.entity;
 
 /**
- * 签到奖励表
+ * reward
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public final class Reward {
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 奖励名称
-     */
     private String name;
 
-    /**
-     * 奖励描述
-     */
     private String detail;
 
-    /**
-     * 奖励图片链接
-     */
     private String link;
 
     /**
-     * 奖励类型
+     * reward type
+     *
+     * @see com.blue.base.constant.marketing.RewardType
      */
     private Integer type;
 
     /**
-     * json格式奖励信息数据S
+     * reward json
      */
     private String data;
 
     /**
-     * 状态，1可用 0禁用
+     * reward status
+     *
+     * @see com.blue.base.constant.base.Status
      */
     private Integer status;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 修改时间
-     */
     private Long updateTime;
 
-    /**
-     * 创建人
-     */
     private Long creator;
 
-    /**
-     * 修改人
-     */
     private Long updater;
 
     public Long getId() {

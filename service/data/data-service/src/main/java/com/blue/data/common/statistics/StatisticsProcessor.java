@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.toList;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 统计处理链执行器
+ * statistics chain processor
  *
  * @author liuyunfei
  * @date 2021/9/3

@@ -15,7 +15,7 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 公益功能实现
+ * shine service impl
  *
  * @author DarkBlue
  */
@@ -42,7 +42,7 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<List<ShineInfo>> getShineInfo(String ip) {
+    public Mono<List<ShineInfo>> listShineInfo(String ip) {
 
         LOGGER.warn("ip = {}", ip);
 

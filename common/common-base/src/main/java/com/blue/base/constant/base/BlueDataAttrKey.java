@@ -65,12 +65,12 @@ public enum BlueDataAttrKey {
     /**
      * Whether it is a requested resource that does not need to be decrypted
      */
-    PRE_UN_DECRYPTION("preUnDecryption"),
+    REQUEST_UN_DECRYPTION("requestUnDecryption"),
 
     /**
      * Whether it is a resource that does not need to be encrypted
      */
-    POST_UN_ENCRYPTION("postUnEncryption"),
+    RESPONSE_UN_ENCRYPTION("responseUnEncryption"),
 
     /**
      * Whether it is a resource containing the request body

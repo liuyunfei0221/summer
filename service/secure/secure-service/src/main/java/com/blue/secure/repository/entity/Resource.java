@@ -33,12 +33,12 @@ public class Resource {
     /**
      * decrypt request param?
      */
-    private Boolean preUnDecryption;
+    private Boolean requestUnDecryption;
 
     /**
      * encrypt response result?
      */
-    private Boolean postUnEncryption;
+    private Boolean responseUnEncryption;
 
     /**
      * has request body?
@@ -110,20 +110,20 @@ public class Resource {
         this.authenticate = authenticate;
     }
 
-    public Boolean getPreUnDecryption() {
-        return preUnDecryption;
+    public Boolean getRequestUnDecryption() {
+        return requestUnDecryption;
     }
 
-    public void setPreUnDecryption(Boolean preUnDecryption) {
-        this.preUnDecryption = preUnDecryption;
+    public void setRequestUnDecryption(Boolean requestUnDecryption) {
+        this.requestUnDecryption = requestUnDecryption;
     }
 
-    public Boolean getPostUnEncryption() {
-        return postUnEncryption;
+    public Boolean getResponseUnEncryption() {
+        return responseUnEncryption;
     }
 
-    public void setPostUnEncryption(Boolean postUnEncryption) {
-        this.postUnEncryption = postUnEncryption;
+    public void setResponseUnEncryption(Boolean responseUnEncryption) {
+        this.responseUnEncryption = responseUnEncryption;
     }
 
     public Boolean getExistenceRequestBody() {
@@ -206,8 +206,8 @@ public class Resource {
                 ", module='" + module + '\'' +
                 ", uri='" + uri + '\'' +
                 ", authenticate=" + authenticate +
-                ", preUnDecryption=" + preUnDecryption +
-                ", postUnEncryption=" + postUnEncryption +
+                ", requestUnDecryption=" + requestUnDecryption +
+                ", responseUnEncryption=" + responseUnEncryption +
                 ", existenceRequestBody=" + existenceRequestBody +
                 ", existenceResponseBody=" + existenceResponseBody +
                 ", type=" + type +

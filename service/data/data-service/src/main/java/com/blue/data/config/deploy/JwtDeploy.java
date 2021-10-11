@@ -6,11 +6,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * jwt配置参数类
+ * jwt deploy
  *
  * @author DarkBlue
  */
-@SuppressWarnings("SpellCheckingInspection")
 @Component
 @ConfigurationProperties(prefix = "jwt")
 public class JwtDeploy {

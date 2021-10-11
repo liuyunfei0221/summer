@@ -15,10 +15,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 认证鉴权RPC实现
+ * rpc member provider
  *
  * @author DarkBlue
  */
@@ -37,13 +38,10 @@ public class RpcMemberServiceProvider implements RpcMemberService {
         this.memberBasicService = memberBasicService;
     }
 
-    /**
-     * DTO转换器
-     */
     private static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 
     /**
-     * 根据手机号获取成员关键信息
+     * query member basic by phone
      *
      * @param phone
      * @return
@@ -54,12 +52,12 @@ public class RpcMemberServiceProvider implements RpcMemberService {
         return memberBasicService.getByPhone(phone)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "帐户名或密码错误")))
+                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
                 .toFuture();
     }
 
     /**
-     * 根据邮箱地址获取成员关键信息
+     * query member basic by email
      *
      * @param email
      * @return
@@ -70,7 +68,7 @@ public class RpcMemberServiceProvider implements RpcMemberService {
         return memberBasicService.getByEmail(email)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "帐户名或密码错误")))
+                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
                 .toFuture();
     }
 

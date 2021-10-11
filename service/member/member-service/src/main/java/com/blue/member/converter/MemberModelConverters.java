@@ -1,8 +1,8 @@
 package com.blue.member.converter;
 
 import com.blue.base.common.base.ConstantProcessor;
-import com.blue.base.constant.base.Status;
 import com.blue.base.constant.base.BlueNumericalValue;
+import com.blue.base.constant.base.Status;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
@@ -12,9 +12,10 @@ import java.time.Instant;
 import java.util.function.Function;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- * member服务转换器
+ * model converters in member project
  *
  * @author DarkBlue
  */
@@ -26,36 +27,36 @@ public final class MemberModelConverters {
             throw new RuntimeException("memberRegistryInfo can't be null");
 
         String phone = memberRegistryParam.getPhone();
-        if (phone == null || "".equals(phone))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "手机号不能为空");
+        if (isBlank(phone))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
         if (phone.length() > BlueNumericalValue.PHONE_LEN_MAX.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "手机号过长");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too long");
         if (phone.length() < BlueNumericalValue.PHONE_LEN_MIN.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "手机号过短");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too short");
 
         String email = memberRegistryParam.getEmail();
-        if (email == null || "".equals(email))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "邮箱地址不能为空");
+        if (isBlank(email))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank");
         if (email.length() > BlueNumericalValue.EMAIL_LEN_MAX.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "邮箱地址号过长");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too long");
         if (email.length() < BlueNumericalValue.EMAIL_LEN_MIN.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "邮箱地址号过短");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too short");
 
         String password = memberRegistryParam.getPassword();
-        if (password == null || "".equals(password))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "密码不能为空");
+        if (isBlank(password))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password can't be blank");
         if (password.length() > BlueNumericalValue.ACS_LEN_MAX.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "密码过长");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password length is too long");
         if (password.length() < BlueNumericalValue.ACS_LEN_MIN.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "密码过短");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password length is too short");
 
         String name = memberRegistryParam.getName();
-        if (name == null || "".equals(name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "昵称不能为空");
+        if (isBlank(name))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
         Integer gender = memberRegistryParam.getGender();
         if (gender == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "性别不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "gender can't be null");
 
         ConstantProcessor.assertGenderIdentity(gender);
 
@@ -80,7 +81,7 @@ public final class MemberModelConverters {
     public static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = memberBasic ->
             memberBasic != null ?
                     new MemberBasicInfo(memberBasic.getId(),
-                            memberBasic.getPassword(), memberBasic.getPhone(),
+                            memberBasic.getPassword(), memberBasic.getPhone(), memberBasic.getEmail(),
                             memberBasic.getName(), memberBasic.getIcon(),
                             memberBasic.getGender(), memberBasic.getStatus(),
                             memberBasic.getCreateTime(), memberBasic.getUpdateTime())

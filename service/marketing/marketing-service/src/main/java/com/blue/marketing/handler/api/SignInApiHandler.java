@@ -1,7 +1,7 @@
 package com.blue.marketing.handler.api;
 
 import com.blue.base.model.base.BlueResponse;
-import com.blue.marketing.service.inter.SignService;
+import com.blue.marketing.service.inter.SignInService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -14,22 +14,22 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 /**
- * 签到接口
+ * sign in api handler
  *
  * @author DarkBlue
  */
 @SuppressWarnings("JavaDoc")
 @Component
-public final class SignApiHandler {
+public final class SignInApiHandler {
 
-    private final SignService signService;
+    private final SignInService signInService;
 
-    public SignApiHandler(SignService signService) {
-        this.signService = signService;
+    public SignInApiHandler(SignInService signInService) {
+        this.signInService = signInService;
     }
 
     /**
-     * 签到
+     * sign in
      *
      * @param serverRequest
      * @return
@@ -37,7 +37,7 @@ public final class SignApiHandler {
     public Mono<ServerResponse> signIn(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(ai ->
-                        signService.insertSignIn(ai.getId())
+                        signInService.insertSignIn(ai.getId())
                                 .flatMap(r ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
@@ -46,7 +46,7 @@ public final class SignApiHandler {
     }
 
     /**
-     * 查询当月签到
+     * query sign in rerord
      *
      * @param serverRequest
      * @return
@@ -54,7 +54,7 @@ public final class SignApiHandler {
     public Mono<ServerResponse> getSignInRecord(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(ai ->
-                        signService.getSignInRecord(ai.getId())
+                        signInService.getSignInRecord(ai.getId())
                                 .flatMap(info ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)

@@ -1,7 +1,7 @@
 package com.blue.portal.converter;
 
 /**
- * portal服务模型转换器
+ * model converters in portal project
  *
  * @author DarkBlue
  */

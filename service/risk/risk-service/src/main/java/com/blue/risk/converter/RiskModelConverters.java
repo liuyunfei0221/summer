@@ -1,13 +1,12 @@
 package com.blue.risk.converter;
 
 /**
- * risk服务模型转换器
+ * model converters in risk project
  *
  * @author DarkBlue
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class RiskModelConverters {
-
 
 
 }

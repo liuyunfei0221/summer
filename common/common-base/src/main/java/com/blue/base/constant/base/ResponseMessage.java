@@ -20,9 +20,9 @@ public enum ResponseMessage {
     GENERIC_FAILED("Failed"),
 
     /**
-     * EMPTY_REQUEST_BODY
+     * EMPTY_PARAM
      */
-    EMPTY_REQUEST_BODY("Empty request body"),
+    EMPTY_PARAM("Empty request param"),
 
     /**
      * TOO_MANY_HEADERS
@@ -58,6 +58,11 @@ public enum ResponseMessage {
      * INVALID_IDENTITY
      */
     INVALID_IDENTITY("Invalid or empty identity"),
+
+    /**
+     * DATA_NOT_EXIST
+     */
+    DATA_NOT_EXIST("Data not exist"),
 
     /**
      * INVALID_CONSTANT_IDENTITY

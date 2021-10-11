@@ -23,7 +23,7 @@ public class BlueExecutorConfig extends ExecutorConfParam {
     @Override
     public RejectedExecutionHandler getRejectedExecutionHandler() {
         return (r, executor) -> {
-            LOGGER.warn("触发线程池拒绝策略,交由调用线程执行");
+            LOGGER.warn("Trigger the thread pool rejection strategy and hand it over to the calling thread for execution");
             r.run();
         };
     }

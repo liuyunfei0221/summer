@@ -3,7 +3,7 @@ package com.blue.member.api.model;
 import java.io.Serializable;
 
 /**
- * 成员注册信息封装
+ * member registry params
  *
  * @author DarkBlue
  */
@@ -12,33 +12,18 @@ public final class MemberRegistryParam implements Serializable {
 
     private static final long serialVersionUID = 8543617230220651524L;
 
-    /**
-     * 手机号
-     */
     private String phone;
 
-    /**
-     * 邮箱地址
-     */
     private String email;
 
-    /**
-     * 登录密码
-     */
     private String password;
 
-    /**
-     * 昵称
-     */
     private String name;
 
-    /**
-     * 图标url
-     */
     private String icon;
 
     /**
-     * 性别 1男 0女 2其他
+     * @see com.blue.base.constant.member.Gender
      */
     private Integer gender;
 

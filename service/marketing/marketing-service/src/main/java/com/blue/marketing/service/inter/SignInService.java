@@ -1,27 +1,27 @@
 package com.blue.marketing.service.inter;
 
-import com.blue.marketing.api.model.DayReward;
+import com.blue.marketing.api.model.SignInReward;
 import com.blue.marketing.api.model.MonthRewardRecord;
 import reactor.core.publisher.Mono;
 
 /**
- * 签到业务接口
+ * sign in service
  *
  * @author DarkBlue
  */
 @SuppressWarnings("JavaDoc")
-public interface SignService {
+public interface SignInService {
 
     /**
-     * 当日签到
+     * sign in today
      *
      * @param memberId
      * @return
      */
-    Mono<DayReward> insertSignIn(Long memberId);
+    Mono<SignInReward> insertSignIn(Long memberId);
 
     /**
-     * 查询当月签到
+     * query sign in records
      *
      * @param memberId
      * @return

@@ -6,8 +6,11 @@ import com.blue.qr.common.QrCoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 /**
- * @author 二维码配置类
+ * qrcode config
+ *
+ * @author DarkBlue
  */
 @SuppressWarnings("AlibabaRemoveCommentedCode")
 @Configuration

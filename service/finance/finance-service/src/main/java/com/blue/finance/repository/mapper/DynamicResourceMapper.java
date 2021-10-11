@@ -4,6 +4,11 @@ import com.blue.finance.repository.entity.DynamicResource;
 
 import java.util.List;
 
+/**
+ * dynamic resource mapper
+ *
+ * @author DarkBlue
+ */
 @SuppressWarnings({"JavaDoc", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface DynamicResourceMapper {
 

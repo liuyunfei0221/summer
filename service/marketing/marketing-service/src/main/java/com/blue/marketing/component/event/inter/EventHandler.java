@@ -4,7 +4,7 @@ import com.blue.base.constant.marketing.MarketingEventType;
 import com.blue.marketing.api.model.MarketingEvent;
 
 /**
- * 营销事件处理接口
+ * event handler interface
  *
  * @author DarkBlue
  */
@@ -12,14 +12,14 @@ import com.blue.marketing.api.model.MarketingEvent;
 public interface EventHandler {
 
     /**
-     * 消费营销事件
+     * handle event
      *
      * @param marketingEvent
      */
     void handleEvent(MarketingEvent marketingEvent);
 
     /**
-     * 处理的营销事件类型
+     * target event type to process
      *
      * @return
      */

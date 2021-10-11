@@ -42,12 +42,12 @@ public final class ResourceInfo implements Serializable {
     /**
      * decrypt request params? 1.no 0.yes
      */
-    private Boolean preUnDecryption;
+    private Boolean requestUnDecryption;
 
     /**
      * encrypt response result? 1.no 0.yes
      */
-    private Boolean postUnEncryption;
+    private Boolean responseUnEncryption;
 
     /**
      * exist request body? 1.yes 0.no
@@ -78,7 +78,7 @@ public final class ResourceInfo implements Serializable {
     }
 
     public ResourceInfo(Long id, String requestMethod, String module, String relativeUri, String absoluteUri,
-                        Boolean authenticate, Boolean preUnDecryption, Boolean postUnEncryption, Boolean existenceRequestBody,
+                        Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody,
                         Boolean existenceResponseBody, String type, String name, String description) {
         this.id = id;
         this.requestMethod = requestMethod;
@@ -86,8 +86,8 @@ public final class ResourceInfo implements Serializable {
         this.relativeUri = relativeUri;
         this.absoluteUri = absoluteUri;
         this.authenticate = authenticate;
-        this.preUnDecryption = preUnDecryption;
-        this.postUnEncryption = postUnEncryption;
+        this.requestUnDecryption = requestUnDecryption;
+        this.responseUnEncryption = responseUnEncryption;
         this.existenceRequestBody = existenceRequestBody;
         this.existenceResponseBody = existenceResponseBody;
         this.type = type;
@@ -143,20 +143,20 @@ public final class ResourceInfo implements Serializable {
         this.authenticate = authenticate;
     }
 
-    public Boolean getPreUnDecryption() {
-        return preUnDecryption;
+    public Boolean getRequestUnDecryption() {
+        return requestUnDecryption;
     }
 
-    public void setPreUnDecryption(Boolean preUnDecryption) {
-        this.preUnDecryption = preUnDecryption;
+    public void setRequestUnDecryption(Boolean requestUnDecryption) {
+        this.requestUnDecryption = requestUnDecryption;
     }
 
-    public Boolean getPostUnEncryption() {
-        return postUnEncryption;
+    public Boolean getResponseUnEncryption() {
+        return responseUnEncryption;
     }
 
-    public void setPostUnEncryption(Boolean postUnEncryption) {
-        this.postUnEncryption = postUnEncryption;
+    public void setResponseUnEncryption(Boolean responseUnEncryption) {
+        this.responseUnEncryption = responseUnEncryption;
     }
 
     public Boolean getExistenceRequestBody() {
@@ -208,8 +208,8 @@ public final class ResourceInfo implements Serializable {
                 ", relativeUri='" + relativeUri + '\'' +
                 ", absoluteUri='" + absoluteUri + '\'' +
                 ", authenticate=" + authenticate +
-                ", preUnDecryption=" + preUnDecryption +
-                ", postUnEncryption=" + postUnEncryption +
+                ", requestUnDecryption=" + requestUnDecryption +
+                ", responseUnEncryption=" + responseUnEncryption +
                 ", existenceRequestBody=" + existenceRequestBody +
                 ", existenceResponseBody=" + existenceResponseBody +
                 ", type='" + type + '\'' +

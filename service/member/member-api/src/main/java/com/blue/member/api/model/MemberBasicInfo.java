@@ -3,7 +3,7 @@ package com.blue.member.api.model;
 import java.io.Serializable;
 
 /**
- * 成员基础信息表
+ * member basic info
  *
  * @author DarkBlue
  */
@@ -12,58 +12,40 @@ public final class MemberBasicInfo implements Serializable {
 
     private static final long serialVersionUID = -8231116867917923473L;
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    //邮箱
-
-    /**
-     * 登录密码
-     */
     private String password;
 
-    /**
-     * 手机号
-     */
     private String phone;
 
-    /**
-     * 昵称
-     */
+    private String email;
+
     private String name;
 
-    /**
-     * 图标url
-     */
     private String icon;
 
     /**
-     * 性别 1男 0女 2其他
+     * @see com.blue.base.constant.member.Gender
      */
     private Integer gender;
 
     /**
-     * 状态，1可用 0禁用
+     * @see com.blue.base.constant.base.Status
      */
     private Integer status;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 修改时间
-     */
     private Long updateTime;
 
-    public MemberBasicInfo(Long id, String password, String phone, String name, String icon,
-                           Integer gender, Integer status, Long createTime, Long updateTime) {
+    public MemberBasicInfo() {
+    }
+
+    public MemberBasicInfo(Long id, String password, String phone, String email, String name, String icon, Integer gender, Integer status, Long createTime, Long updateTime) {
         this.id = id;
         this.password = password;
         this.phone = phone;
+        this.email = email;
         this.name = name;
         this.icon = icon;
         this.gender = gender;
@@ -94,6 +76,14 @@ public final class MemberBasicInfo implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getName() {
@@ -146,10 +136,11 @@ public final class MemberBasicInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "MemberBasicDTO{" +
+        return "MemberBasicInfo{" +
                 "id=" + id +
                 ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", icon='" + icon + '\'' +
                 ", gender=" + gender +

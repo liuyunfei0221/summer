@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 奖励信息业务接口
+ * reward service
  *
  * @author DarkBlue
  */
@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface RewardService {
 
     /**
-     * 根据主键查询奖励信息
+     * select reward by id
      *
      * @param id
      * @return
@@ -24,7 +24,7 @@ public interface RewardService {
     Optional<Reward> getRewardByPrimaryKey(Long id);
 
     /**
-     * 根据主键集合批量查询奖励信息列表
+     * select rewards by ids
      *
      * @param ids
      * @return
@@ -32,7 +32,7 @@ public interface RewardService {
     List<Reward> listRewardByIds(List<Long> ids);
 
     /**
-     * 根据年份及月份查询该月底当日奖励关联信息
+     * select reward-date-relation by date
      *
      * @param year
      * @param month

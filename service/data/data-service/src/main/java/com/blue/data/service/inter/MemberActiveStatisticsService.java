@@ -3,18 +3,18 @@ package com.blue.data.service.inter;
 import com.blue.base.constant.data.StatisticsRange;
 
 /**
- * 统计业务接口
+ * member active statistics service
  *
  * @author liuyunfei
  * @date 2021/9/3
  * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
-public interface ActiveMemberStatisticsService {
+public interface MemberActiveStatisticsService {
 
 
     /**
-     * 标记活跃
+     * mark a member active
      *
      * @param memberId
      * @param statisticsRange
@@ -23,7 +23,7 @@ public interface ActiveMemberStatisticsService {
     Boolean markActive(Long memberId, StatisticsRange statisticsRange);
 
     /**
-     * 查询活跃
+     * select active
      *
      * @param memberId
      * @param statisticsRange

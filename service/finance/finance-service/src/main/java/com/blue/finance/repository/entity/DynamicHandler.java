@@ -1,51 +1,27 @@
 package com.blue.finance.repository.entity;
 
 /**
- * 动态处理器
+ * dynamic handler config
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public class DynamicHandler {
 
-    /**
-     *
-     */
     private Long id;
 
-    /**
-     *
-     */
     private String name;
 
-    /**
-     *
-     */
     private String description;
 
-    /**
-     *
-     */
     private String handlerBean;
 
-    /**
-     *
-     */
     private Long createTime;
 
-    /**
-     *
-     */
     private Long updateTime;
 
-    /**
-     *
-     */
     private Long creator;
 
-    /**
-     *
-     */
     private Long updater;
 
     public Long getId() {

@@ -10,7 +10,7 @@ import reactor.util.Logger;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * jwt处理器配置
+ * jwt prosessor config
  *
  * @author DarkBlue
  */

@@ -6,7 +6,7 @@ import com.blue.finance.repository.entity.FinanceAccount;
 import java.util.Optional;
 
 /**
- * 资金账户业务接口
+ * finance account service
  *
  * @author DarkBlue
  */
@@ -14,21 +14,21 @@ import java.util.Optional;
 public interface FinanceAccountService {
 
     /**
-     * 新增资金账户
+     * create a finance account
      *
      * @param financeAccount
      */
     void insertFinanceAccount(FinanceAccount financeAccount);
 
     /**
-     * 为成员初始化资金账户
+     * init finance account for a member
      *
      * @param memberId
      */
     void insertInitFinanceAccount(Long memberId);
 
     /**
-     * 根据成员主键获取资金账户余额信息
+     * get finance account by member id
      *
      * @param memberId
      * @return

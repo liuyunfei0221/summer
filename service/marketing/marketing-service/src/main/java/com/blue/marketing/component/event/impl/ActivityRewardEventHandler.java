@@ -13,22 +13,16 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * 活动奖励业务实现
+ * activity reward event handler impl
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class ActivityRewardEventHandler implements EventHandler {
 
     private static final Logger LOGGER = getLogger(ActivityRewardEventHandler.class);
 
-    /**
-     * 处理活动奖励事件
-     *
-     * @param marketingEvent
-     */
     @Override
     public void handleEvent(MarketingEvent marketingEvent) {
         LOGGER.warn("handleEvent(MarketingEvent marketingEvent), marketingEvent = {}", marketingEvent);

@@ -1,6 +1,6 @@
 package com.blue.marketing.router.api;
 
-import com.blue.marketing.handler.api.SignApiHandler;
+import com.blue.marketing.handler.api.SignInApiHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -13,22 +13,22 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * 签到路由
+ * sign in api routers
  *
  * @author DarkBlue
  */
 @Configuration
-public class SignApiRoute {
+public class SignInApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> signInRouter(SignApiHandler signApiHandler) {
+    RouterFunction<ServerResponse> signInRouter(SignInApiHandler signInApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-marketing/signIn");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("", accept(APPLICATION_JSON), signApiHandler::signIn)
-                .GET("", signApiHandler::getSignInRecord)
+                .POST("", accept(APPLICATION_JSON), signInApiHandler::signIn)
+                .GET("", signInApiHandler::getSignInRecord)
                 .build();
 
         return nest(pathPredicate, routerFunction);

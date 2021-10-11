@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * 用户业务接口
+ * member basic service
  *
  * @author DarkBlue
  */
@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface MemberBasicService {
 
     /**
-     * 根据手机号获取成员信息
+     * query member by phone
      *
      * @param phone
      * @return
@@ -25,7 +25,7 @@ public interface MemberBasicService {
     Mono<Optional<MemberBasic>> getByPhone(String phone);
 
     /**
-     * 根据邮箱获取成员信息
+     * query member by email
      *
      * @param email
      * @return
@@ -33,7 +33,7 @@ public interface MemberBasicService {
     Mono<Optional<MemberBasic>> getByEmail(String email);
 
     /**
-     * 根据主键获取用户信息
+     * query member by id
      *
      * @param id
      * @return
@@ -41,7 +41,7 @@ public interface MemberBasicService {
     Mono<Optional<MemberBasic>> getByPrimaryKey(Long id);
 
     /**
-     * 根据主键获取用户信息并校验
+     * query member by id with assert
      *
      * @param id
      * @return
@@ -49,7 +49,7 @@ public interface MemberBasicService {
     Mono<MemberInfo> getMemberInfoByPrimaryKeyWithAssert(Long id);
 
     /**
-     * 注册账户
+     * member registry
      *
      * @param memberRegistryParam
      * @return
@@ -57,7 +57,7 @@ public interface MemberBasicService {
     void insert(MemberRegistryParam memberRegistryParam);
 
     /**
-     * 查询用户
+     * select member
      *
      * @return
      */

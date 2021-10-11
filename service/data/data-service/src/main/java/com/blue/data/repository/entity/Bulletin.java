@@ -1,7 +1,7 @@
 package com.blue.data.repository.entity;
 
 /**
- * 公告表
+ * bulletin/test entity
  *
  * @author DarkBlue
  */

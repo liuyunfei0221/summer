@@ -3,6 +3,8 @@ package com.blue.marketing.repository.mapper;
 import com.blue.marketing.repository.entity.Event;
 
 /**
+ * event mapper
+ *
  * @author DarkBlue
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})

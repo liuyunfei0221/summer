@@ -12,22 +12,16 @@ import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 用户业务实现
+ * sign in reward event handler impl
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class SignRewardHandleServiceImpl implements EventHandler {
 
     private static final Logger LOGGER = getLogger(SignRewardHandleServiceImpl.class);
 
-    /**
-     * 处理签到奖励事件
-     *
-     * @param marketingEvent
-     */
     @Override
     public void handleEvent(MarketingEvent marketingEvent) {
         LOGGER.warn("handleEvent(MarketingEvent marketingEvent), marketingEvent = {}", marketingEvent);

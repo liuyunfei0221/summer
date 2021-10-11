@@ -12,7 +12,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * 公益路由
+ * shine api routers
  *
  * @author DarkBlue
  */

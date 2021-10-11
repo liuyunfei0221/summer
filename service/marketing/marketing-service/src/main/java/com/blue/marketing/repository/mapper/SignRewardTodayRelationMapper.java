@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
+ * reward and date relation mapper
+ *
  * @author DarkBlue
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
@@ -24,7 +26,7 @@ public interface SignRewardTodayRelationMapper {
     int updateByPrimaryKey(SignRewardTodayRelation record);
 
     /**
-     * 根据年份及月份查询当月每日签到奖励关联
+     * query relation by year and month
      *
      * @param year
      * @param month

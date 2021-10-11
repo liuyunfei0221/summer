@@ -4,7 +4,7 @@ package com.blue.marketing.api.model;
 import java.io.Serializable;
 
 /**
- * 签到奖励信息
+ * sign in reward info
  *
  * @author DarkBlue
  */
@@ -14,22 +14,22 @@ public final class RewardInfo implements Serializable {
     private static final long serialVersionUID = 5642744602142762972L;
 
     /**
-     * 奖励id
+     * reward id
      */
     private final Long id;
 
     /**
-     * 奖励名称
+     * reward name
      */
     private final String name;
 
     /**
-     * 奖励描述
+     * disc
      */
     private final String detail;
 
     /**
-     * 奖励图片链接
+     * reward link
      */
     private final String link;
 

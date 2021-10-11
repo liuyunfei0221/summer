@@ -15,6 +15,8 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 import static reactor.core.publisher.Mono.just;
 
 /**
+ * member manager handler
+ *
  * @author liuyunfei
  * @date 2021/8/31
  * @apiNote
@@ -30,7 +32,7 @@ public class MemberManagerHandler {
     }
 
     /**
-     * 测试查询成员
+     * test select members
      *
      * @param serverRequest
      * @return

@@ -27,7 +27,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 营销事件处理接口
+ * marketing event handle service
  *
  * @author DarkBlue
  */
@@ -42,7 +42,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
     private final BlueIdentityProcessor blueIdentityProcessor;
 
     /**
-     * 登录类型模板方法
+     * event type -> event handler
      */
     private Map<MarketingEventType, EventHandler> marketingEventHandlers;
 
@@ -63,9 +63,6 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
                 .collect(toMap(EventHandler::targetType, eh -> eh, (a, b) -> a));
     }
 
-    /**
-     * 处理事件
-     */
     private final Consumer<MarketingEvent> eventHandler = marketingEvent -> {
         MarketingEventType marketingEventType = marketingEvent.getEventType();
         if (marketingEventType == null)
@@ -78,12 +75,9 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
         eventHandler.handleEvent(marketingEvent);
     };
 
-    /**
-     * 根据事件消息初始化事件实体
-     */
     private static final Function<MarketingEvent, Event> EVENT_ENTITY_GEN = marketingEvent -> {
         if (marketingEvent == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "marketingEvent不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "marketingEvent can't be null");
 
         Event event = new Event();
 
@@ -95,7 +89,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
     };
 
     /**
-     * 消费营销事件
+     * handle marketing event
      *
      * @param marketingEvent
      */
@@ -115,13 +109,13 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
             LOGGER.info("handleEvent(MarketingEvent marketingEvent) success, marketingEvent = {}", marketingEvent);
 
             handleResult.setSuccess(true);
-            handleResult.setMessage("处理成功");
+            handleResult.setMessage("handle success");
         } catch (Exception exception) {
             event.setStatus(HandleStatus.BROKEN.status);
             LOGGER.error("handleEvent(MarketingEvent marketingEvent) failed, marketingEvent = {}, e = {}", marketingEvent, exception);
 
             handleResult.setSuccess(false);
-            handleResult.setMessage("处理失败");
+            handleResult.setMessage("handle failed");
             handleResult.setThrowable(exception);
         } finally {
             try {

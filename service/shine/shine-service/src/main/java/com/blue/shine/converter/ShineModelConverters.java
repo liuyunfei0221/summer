@@ -1,13 +1,12 @@
 package com.blue.shine.converter;
 
 /**
- * shine服务模型转换器
+ * model converters in shine project
  *
  * @author DarkBlue
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class ShineModelConverters {
-
 
 
 }

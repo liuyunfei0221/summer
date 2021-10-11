@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 import static java.time.Instant.now;
 
 /**
- * 主键生成配置参数类
+ * identity config
  *
  * @author DarkBlue
  */

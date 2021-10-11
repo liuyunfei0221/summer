@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 /**
- * mysql配置参数类
+ * data access config
  *
  * @author DarkBlue
  */

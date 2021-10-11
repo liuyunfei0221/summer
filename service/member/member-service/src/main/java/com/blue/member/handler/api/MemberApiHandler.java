@@ -13,14 +13,14 @@ import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessRea
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.OK;
-import static com.blue.base.constant.base.ResponseMessage.EMPTY_REQUEST_BODY;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 
 /**
- * 用户api接口
+ * member api handler
  *
  * @author DarkBlue
  */
@@ -40,7 +40,7 @@ public final class MemberApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> getMember(ServerRequest serverRequest) {
+    public Mono<ServerResponse> getMemberInfo(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(ai ->
                         memberBasicService.getMemberInfoByPrimaryKeyWithAssert(ai.getId())
@@ -60,7 +60,7 @@ public final class MemberApiHandler {
     public Mono<ServerResponse> registry(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(MemberRegistryParam.class)
                 .switchIfEmpty(
-                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message)))
+                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
                 .flatMap(mr -> {
                     memberBasicService.insert(mr);
                     return just(true);

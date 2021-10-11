@@ -12,7 +12,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * 用户路由
+ * portal api routers
  *
  * @author DarkBlue
  */

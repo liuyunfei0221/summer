@@ -60,8 +60,8 @@ public final class BlueSecureFilter implements WebFilter, Ordered {
 
         exchangeAttributes.put(ACCESS.key, accStr);
         exchangeAttributes.put(SEC_KEY.key, authAsserted.getSecKey());
-        exchangeAttributes.put(PRE_UN_DECRYPTION.key, authAsserted.getPreUnDecryption());
-        exchangeAttributes.put(POST_UN_ENCRYPTION.key, authAsserted.getPostUnEncryption());
+        exchangeAttributes.put(REQUEST_UN_DECRYPTION.key, authAsserted.getRequestUnDecryption());
+        exchangeAttributes.put(RESPONSE_UN_ENCRYPTION.key, authAsserted.getResponseUnEncryption());
         exchangeAttributes.put(EXISTENCE_REQUEST_BODY.key, authAsserted.getExistenceRequestBody());
         exchangeAttributes.put(EXISTENCE_RESPONSE_BODY.key, authAsserted.getExistenceResponseBody());
     }

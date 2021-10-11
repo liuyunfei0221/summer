@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 /**
- * 门户业务接口
+ * portal service
  *
  * @author DarkBlue
  */
@@ -14,11 +14,11 @@ import java.util.List;
 public interface PortalService {
 
     /**
-     * 获取公告信息
+     * list bulletin infos
      *
      * @param bulletinType
      * @return
      */
-    Mono<List<BulletinInfo>> listBulletin(String bulletinType);
+    Mono<List<BulletinInfo>> listBulletinInfo(String bulletinType);
 
 }

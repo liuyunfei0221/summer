@@ -19,7 +19,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * jwt过期时间刷新生产者
+ * marketing event producer
  *
  * @author DarkBlue
  */

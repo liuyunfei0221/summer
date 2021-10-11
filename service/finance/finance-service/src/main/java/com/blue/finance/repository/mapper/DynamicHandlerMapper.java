@@ -4,6 +4,11 @@ import com.blue.finance.repository.entity.DynamicHandler;
 
 import java.util.List;
 
+/**
+ * dynamic handler mapper
+ *
+ * @author DarkBlue
+ */
 @SuppressWarnings({"JavaDoc", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface DynamicHandlerMapper {
 
@@ -20,7 +25,7 @@ public interface DynamicHandlerMapper {
     int updateByPrimaryKey(DynamicHandler record);
 
     /**
-     * 获取全部动态处理器
+     * list all dynamic handler
      *
      * @return
      */

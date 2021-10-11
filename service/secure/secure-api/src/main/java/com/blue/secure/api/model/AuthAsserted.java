@@ -22,12 +22,12 @@ public final class AuthAsserted implements Serializable {
     /**
      * decrypt request param?
      */
-    private boolean preUnDecryption;
+    private boolean requestUnDecryption;
 
     /**
      * encrypt response result?
      */
-    private boolean postUnEncryption;
+    private boolean responseUnEncryption;
 
     /**
      * has request body?
@@ -62,13 +62,13 @@ public final class AuthAsserted implements Serializable {
     public AuthAsserted() {
     }
 
-    public AuthAsserted(boolean certificate, boolean preUnDecryption, boolean postUnEncryption, boolean existenceRequestBody, boolean existenceResponseBody, String secKey, Access access, String message) {
+    public AuthAsserted(boolean certificate, boolean requestUnDecryption, boolean responseUnEncryption, boolean existenceRequestBody, boolean existenceResponseBody, String secKey, Access access, String message) {
         if (secKey == null || access == null)
             throw new RuntimeException("secKey,accessInfo均不能为空");
 
         this.certificate = certificate;
-        this.preUnDecryption = preUnDecryption;
-        this.postUnEncryption = postUnEncryption;
+        this.requestUnDecryption = requestUnDecryption;
+        this.responseUnEncryption = responseUnEncryption;
         this.existenceRequestBody = existenceRequestBody;
         this.existenceResponseBody = existenceResponseBody;
         this.secKey = secKey;
@@ -84,20 +84,20 @@ public final class AuthAsserted implements Serializable {
         this.certificate = certificate;
     }
 
-    public boolean getPreUnDecryption() {
-        return preUnDecryption;
+    public boolean getRequestUnDecryption() {
+        return requestUnDecryption;
     }
 
-    public void setPreUnDecryption(boolean preUnDecryption) {
-        this.preUnDecryption = preUnDecryption;
+    public void setRequestUnDecryption(boolean requestUnDecryption) {
+        this.requestUnDecryption = requestUnDecryption;
     }
 
-    public boolean getPostUnEncryption() {
-        return postUnEncryption;
+    public boolean getResponseUnEncryption() {
+        return responseUnEncryption;
     }
 
-    public void setPostUnEncryption(boolean postUnEncryption) {
-        this.postUnEncryption = postUnEncryption;
+    public void setResponseUnEncryption(boolean responseUnEncryption) {
+        this.responseUnEncryption = responseUnEncryption;
     }
 
     public boolean getExistenceRequestBody() {
@@ -144,8 +144,8 @@ public final class AuthAsserted implements Serializable {
     public String toString() {
         return "AuthAsserted{" +
                 "certificate=" + certificate +
-                ", preUnDecryption=" + preUnDecryption +
-                ", postUnEncryption=" + postUnEncryption +
+                ", requestUnDecryption=" + requestUnDecryption +
+                ", responseUnEncryption=" + responseUnEncryption +
                 ", existenceRequestBody=" + existenceRequestBody +
                 ", existenceResponseBody=" + existenceResponseBody +
                 ", secKey='" + secKey + '\'' +

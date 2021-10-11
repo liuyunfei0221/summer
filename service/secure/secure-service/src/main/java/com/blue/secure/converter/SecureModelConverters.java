@@ -39,7 +39,7 @@ public final class SecureModelConverters {
         String relativeUri = resource.getUri().intern();
 
         return new ResourceInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(),
-                resource.getAuthenticate(), resource.getPreUnDecryption(), resource.getPostUnEncryption(),
+                resource.getAuthenticate(), resource.getRequestUnDecryption(), resource.getResponseUnEncryption(),
                 resource.getExistenceRequestBody(), resource.getExistenceResponseBody(), getResourceTypeByIdentity(resource.getType()).disc.intern(),
                 resource.getName(), resource.getDescription());
     };

@@ -3,35 +3,33 @@ package com.blue.marketing.api.model;
 import java.io.Serializable;
 
 /**
- * 历史日签到信息封装
- *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class DayRewardRecord implements Serializable {
+public final class SignInRewardRecord implements Serializable {
 
     private static final long serialVersionUID = 194111541862815072L;
     /**
-     * 日签到奖励
+     * sign in reward
      */
-    private DayReward dayReward;
+    private SignInReward signInReward;
 
     /**
-     * 是否签到
+     * already sign in?
      */
     private Boolean signed;
 
-    public DayRewardRecord(DayReward dayReward, Boolean signed) {
-        this.dayReward = dayReward;
+    public SignInRewardRecord(SignInReward signInReward, Boolean signed) {
+        this.signInReward = signInReward;
         this.signed = signed;
     }
 
-    public DayReward getDayReward() {
-        return dayReward;
+    public SignInReward getDayReward() {
+        return signInReward;
     }
 
-    public void setDayReward(DayReward dayReward) {
-        this.dayReward = dayReward;
+    public void setDayReward(SignInReward signInReward) {
+        this.signInReward = signInReward;
     }
 
     public Boolean getSigned() {
@@ -45,7 +43,7 @@ public final class DayRewardRecord implements Serializable {
     @Override
     public String toString() {
         return "DayRewardRecordDTO{" +
-                "dayReward=" + dayReward +
+                "dayReward=" + signInReward +
                 ", signed=" + signed +
                 '}';
     }

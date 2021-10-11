@@ -12,7 +12,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * 角色关联相关RPC接口
+ * rpc role consumer
  *
  * @author DarkBlue
  */
@@ -34,7 +34,7 @@ public class RpcRoleServiceConsumer {
     }
 
     /**
-     * 为成员分配默认角色
+     * assign default roles to member
      *
      * @param memberId
      */

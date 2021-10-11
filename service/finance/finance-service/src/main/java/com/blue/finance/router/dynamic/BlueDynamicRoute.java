@@ -23,7 +23,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 动态端点路由
+ * dynamic routers
  *
  * @author liuyunfei
  * @date 2021/9/13
@@ -50,13 +50,13 @@ public class BlueDynamicRoute {
     private static final Function<String, RequestPredicate> MEDIA_TYPE_PREDICATE_GENERATOR = str -> accept(getMediaTypeByIdentity(str.toLowerCase().intern()));
 
     /**
-     * 封装端点信息
+     * generate endPoint
      *
      * @param routeBuilder
      * @param dynamicResource
      * @param handlerFunction
      */
-    private static void packageEndPointAttr(RouterFunctions.Builder routeBuilder, DynamicResource dynamicResource, HandlerFunction<ServerResponse> handlerFunction) {
+    private static void generateEndPointAttr(RouterFunctions.Builder routeBuilder, DynamicResource dynamicResource, HandlerFunction<ServerResponse> handlerFunction) {
 
         String requestMethod = dynamicResource.getRequestMethod().intern().toUpperCase().intern();
         Long uriPlaceholder = dynamicResource.getUriPlaceholder();
@@ -97,7 +97,7 @@ public class BlueDynamicRoute {
                 throw new RuntimeException("not support method -> " + requestMethod);
         }
 
-        LOGGER.info("加载动态端点, dynamicResource = {}", dynamicResource);
+        LOGGER.info("generate endPoint, dynamicResource = {}", dynamicResource);
     }
 
     @Bean
@@ -105,7 +105,7 @@ public class BlueDynamicRoute {
         List<DynamicResource> dynamicResources = dynamicResourceService.listDynamicResource();
 
         RouterFunctions.Builder routeBuilder = route();
-        dynamicResources.forEach(resource -> packageEndPointAttr(routeBuilder, resource, blueDynamicHandler::handle));
+        dynamicResources.forEach(resource -> generateEndPointAttr(routeBuilder, resource, blueDynamicHandler::handle));
 
         RequestPredicate pathPredicate = path(PATH);
         return nest(pathPredicate, routeBuilder.build());

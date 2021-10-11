@@ -20,7 +20,7 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 消费端配置
+ * marketing event consumer
  *
  * @author DarkBlue
  */
@@ -46,7 +46,6 @@ public final class MarketingConsumer implements BlueLifecycle {
                 ofNullable(marketingEvent)
                         .ifPresent(me -> {
                             LOGGER.info("marketingDataConsumer received, me = {}", me);
-                            //处理营销事件
                             EventHandleResult eventHandleResult = marketingEventHandleService.handleEvent(me);
                             LOGGER.info("marketingEventHandleService.handleEvent(marketingEvent), me = {}. eventHandleResult = {}",
                                     me, eventHandleResult);

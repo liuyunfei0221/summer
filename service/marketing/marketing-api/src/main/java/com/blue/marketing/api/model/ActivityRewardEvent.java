@@ -3,7 +3,7 @@ package com.blue.marketing.api.model;
 import java.io.Serializable;
 
 /**
- * 签到奖励事件
+ * activity reward event
  *
  * @author DarkBlue
  */
@@ -12,19 +12,10 @@ public final class ActivityRewardEvent implements Serializable {
 
     private static final long serialVersionUID = 7287064070086873373L;
 
-    /**
-     * 用户id
-     */
     private Long memberId;
 
-    /**
-     * 活动id
-     */
     private Long activityId;
 
-    /**
-     * 奖励信息
-     */
     private RewardInfo rewardInfo;
 
     public ActivityRewardEvent() {

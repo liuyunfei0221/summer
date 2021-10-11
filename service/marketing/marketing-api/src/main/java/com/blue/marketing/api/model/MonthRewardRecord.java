@@ -16,19 +16,19 @@ public final class MonthRewardRecord implements Serializable {
     /**
      * 月签到记录
      */
-    private final Map<Integer, DayRewardRecord> record;
+    private final Map<Integer, SignInRewardRecord> record;
 
     /**
      * 当月总签到次数
      */
     private final Integer total;
 
-    public MonthRewardRecord(Map<Integer, DayRewardRecord> record, Integer total) {
+    public MonthRewardRecord(Map<Integer, SignInRewardRecord> record, Integer total) {
         this.record = record;
         this.total = total;
     }
 
-    public Map<Integer, DayRewardRecord> getRecord() {
+    public Map<Integer, SignInRewardRecord> getRecord() {
         return record;
     }
 

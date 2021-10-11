@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import java.io.Serializable;
 
 /**
+ * shine info
+ *
  * @author liuyunfei
  * @date 2021/9/16
  * @apiNote
@@ -13,46 +15,22 @@ import java.io.Serializable;
 @SuppressWarnings("unused")
 public class Shine implements Serializable {
 
-    /**
-     * 主键
-     */
     @Id
     private Long id;
 
-    /**
-     * 标题
-     */
     @Indexed(unique = true)
     private String title;
 
-    /**
-     * 内容
-     */
     private String content;
 
-    /**
-     * 优先级
-     */
     private Integer order;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
-    /**
-     * 修改时间
-     */
     private Long updateTime;
 
-    /**
-     * 创建人
-     */
     private Long creator;
 
-    /**
-     * 修改人
-     */
     private Long updater;
 
     public Shine() {

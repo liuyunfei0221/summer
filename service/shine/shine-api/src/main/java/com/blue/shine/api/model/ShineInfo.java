@@ -3,7 +3,7 @@ package com.blue.shine.api.model;
 import java.io.Serializable;
 
 /**
- * 公益信息
+ * shine info
  *
  * @author DarkBlue
  */
@@ -12,29 +12,14 @@ public final class ShineInfo implements Serializable {
 
     private static final long serialVersionUID = 4417623130276820000L;
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 标题
-     */
     private String title;
 
-    /**
-     * 内容
-     */
     private String content;
 
-    /**
-     * 优先级
-     */
     private Integer order;
 
-    /**
-     * 创建时间
-     */
     private Long createTime;
 
     public ShineInfo() {

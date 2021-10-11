@@ -1,56 +1,29 @@
 package com.blue.finance.repository.entity;
 
 /**
- * 组织表
+ * organization
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public class Organization {
 
-    /**
-     *
-     */
     private Long id;
 
-    /**
-     *
-     */
     private String phone;
 
-    /**
-     *
-     */
     private String email;
 
-    /**
-     *
-     */
     private String name;
 
-    /**
-     *
-     */
     private Byte status;
 
-    /**
-     *
-     */
     private Long createTime;
 
-    /**
-     *
-     */
     private Long updateTime;
 
-    /**
-     *
-     */
     private Long creator;
 
-    /**
-     *
-     */
     private Long updater;
 
     public Long getId() {

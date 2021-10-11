@@ -4,7 +4,7 @@ import com.blue.finance.api.model.FinanceInfo;
 import reactor.core.publisher.Mono;
 
 /**
- * 财务业务接口
+ * finance service
  *
  * @author DarkBlue
  */
@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 public interface FinanceService {
 
     /**
-     * 根据成员主键获取资金账户余额信息
+     * get balance by member id
      *
      * @param memberId
      * @return

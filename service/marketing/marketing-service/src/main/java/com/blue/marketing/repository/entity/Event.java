@@ -1,35 +1,36 @@
 package com.blue.marketing.repository.entity;
 
 /**
- * 营销事件表
+ * marketing event
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public final class Event {
 
-    /**
-     * 主键
-     */
     private Long id;
 
     /**
-     * 事件类型
+     * event type
+     *
+     * @see com.blue.base.constant.marketing.MarketingEventType
      */
     private Integer type;
 
     /**
-     * json格式事件数据
+     * event json
      */
     private String data;
 
     /**
-     * 事件状态 0未处理 1已处理
+     * handling status
+     *
+     * @see com.blue.base.constant.marketing.HandleStatus
      */
     private Integer status;
 
     /**
-     * 创建时间
+     * event time
      */
     private Long createTime;
 

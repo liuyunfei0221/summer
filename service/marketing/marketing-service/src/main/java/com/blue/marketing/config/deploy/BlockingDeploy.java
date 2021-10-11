@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 业务阻塞超时配置参数类
+ * blocking config deploy
  *
  * @author DarkBlue
  */

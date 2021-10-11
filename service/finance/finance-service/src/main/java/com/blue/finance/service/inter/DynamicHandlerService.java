@@ -5,7 +5,7 @@ import com.blue.finance.repository.entity.DynamicHandler;
 import java.util.List;
 
 /**
- * 动态处理器业务接口
+ * dynamic handler service
  *
  * @author liuyunfei
  * @date 2021/9/14
@@ -15,7 +15,7 @@ import java.util.List;
 public interface DynamicHandlerService {
 
     /**
-     * 获取全部动态处理器
+     * list all dynamic handlers
      *
      * @return
      */

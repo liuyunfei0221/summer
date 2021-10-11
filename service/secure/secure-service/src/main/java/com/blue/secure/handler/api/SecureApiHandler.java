@@ -15,8 +15,7 @@ import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.SECRET;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.OK;
-import static com.blue.base.constant.base.ResponseMessage.EMPTY_REQUEST_BODY;
-import static com.blue.base.constant.base.ResponseMessage.GENERIC_SUCCESS;
+import static com.blue.base.constant.base.ResponseMessage.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
@@ -45,7 +44,7 @@ public final class SecureApiHandler {
     public Mono<ServerResponse> loginByClient(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(ClientLoginParam.class)
                 .switchIfEmpty(
-                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_REQUEST_BODY.message)))
+                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
                 .flatMap(secureService::loginByClient)
                 .flatMap(ma ->
                         ok().contentType(APPLICATION_JSON)

@@ -4,7 +4,7 @@ import com.blue.marketing.api.model.EventHandleResult;
 import com.blue.marketing.api.model.MarketingEvent;
 
 /**
- * 营销事件处理接口
+ * marketing event handle service
  *
  * @author DarkBlue
  */
@@ -12,7 +12,7 @@ import com.blue.marketing.api.model.MarketingEvent;
 public interface MarketingEventHandleService {
 
     /**
-     * 消费营销事件
+     * handle marketing event
      *
      * @param marketingEvent
      * @return

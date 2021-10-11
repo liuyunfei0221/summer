@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
+ * dynamic resource service
+ *
  * @author liuyunfei
  * @date 2021/9/13
  * @apiNote
@@ -23,7 +25,7 @@ public class DynamicResourceServiceImpl implements DynamicResourceService {
     }
 
     /**
-     * 获取全部动态资源
+     * list all dynamic resources
      *
      * @return
      */

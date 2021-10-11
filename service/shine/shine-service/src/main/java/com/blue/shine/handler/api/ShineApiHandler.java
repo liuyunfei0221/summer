@@ -16,7 +16,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 公益功能控制器
+ * shine api handler
  *
  * @author DarkBlue
  */
@@ -33,7 +33,7 @@ public final class ShineApiHandler {
     }
 
     /**
-     * 获取公益信息
+     * get shine info
      *
      * @param serverRequest
      * @return
@@ -41,7 +41,7 @@ public final class ShineApiHandler {
     public Mono<ServerResponse> getShineInfo(ServerRequest serverRequest) {
         String ip = ReactiveCommonFunctions.getIp(serverRequest);
         LOGGER.warn("client ip = {}", ip);
-        return shineService.getShineInfo(ip)
+        return shineService.listShineInfo(ip)
                 .flatMap(shineInfo ->
                         ok()
                                 .contentType(APPLICATION_JSON)

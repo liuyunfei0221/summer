@@ -42,7 +42,7 @@ import static org.apache.commons.lang3.StringUtils.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 动态端点处理
+ * dynamic handler
  *
  * @author DarkBlue
  */
@@ -62,19 +62,10 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
 
     private Map<String, DynamicEndPointHandler> clzWithHandlerMapping;
 
-    /**
-     * 占位符与对应处理器映射
-     */
     private Map<String, DynamicEndPointHandler> placeHolderHandlerMapping;
 
-    /**
-     * 动态端点信息更新标记位
-     */
     private static volatile boolean dynamicInfoRefreshing = true;
 
-    /**
-     * 资源刷新最大等待时间
-     */
     private long maxWaitingForRefresh;
 
     private static final String[] SCAN_PACKAGES = new String[]{"com.blue.finance.component.dynamic.impl"};
@@ -106,9 +97,6 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
         ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);
     }
 
-    /**
-     * 动态端点信息刷新时的阻塞器
-     */
     private final Supplier<Boolean> DYNAMIC_INFO_REFRESH_BLOCKER = () -> {
         if (dynamicInfoRefreshing) {
             long start = currentTimeMillis();
@@ -121,9 +109,6 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
         return true;
     };
 
-    /**
-     * 端点key构建
-     */
     private static final BinaryOperator<String> DYNAMIC_KEY_GENERATOR = (placeholder, method) -> {
         if (isBlank(placeholder) || isBlank(method))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "placeholder or method can't be blank");
@@ -131,9 +116,6 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
         return placeholder + PAR_CONCATENATION + method.toUpperCase();
     };
 
-    /**
-     * 根据资源标识获取处理器
-     */
     private final Function<ServerRequest, DynamicEndPointHandler> DYNAMIC_HANDLER_GETTER = serverRequest -> {
         String path = serverRequest.path();
 
@@ -177,10 +159,6 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
         LOGGER.info("refreshHandlers(), placeHolderHandlerMapping = {}", placeHolderHandlerMapping);
     }
 
-
-    /**
-     * 初始化
-     */
     @PostConstruct
     public void init() {
         Map<String, DynamicHandlerService> beansOfDynamicHandlerService = applicationContext.getBeansOfType(DynamicHandlerService.class);
@@ -210,7 +188,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
 
 
     /**
-     * 处理请求
+     * handle request
      *
      * @param serverRequest
      * @return

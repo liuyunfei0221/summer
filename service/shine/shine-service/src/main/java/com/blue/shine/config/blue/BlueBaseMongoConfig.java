@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * mongo配置参数类
+ * mongo config
  *
  * @author DarkBlue
  */

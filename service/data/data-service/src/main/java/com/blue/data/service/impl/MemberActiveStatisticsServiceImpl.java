@@ -3,7 +3,7 @@ package com.blue.data.service.impl;
 import com.blue.base.constant.data.StatisticsRange;
 import com.blue.base.model.exps.BlueException;
 import com.blue.data.common.marker.StatisticsMarker;
-import com.blue.data.service.inter.ActiveMemberStatisticsService;
+import com.blue.data.service.inter.MemberActiveStatisticsService;
 import org.springframework.stereotype.Service;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
@@ -11,7 +11,7 @@ import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.data.StatisticsType.MEMBER_ACTIVE;
 
 /**
- * 统计业务实现
+ * member active statistics service impl
  *
  * @author liuyunfei
  * @date 2021/9/3
@@ -19,11 +19,11 @@ import static com.blue.base.constant.data.StatisticsType.MEMBER_ACTIVE;
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 @Service
-public class ActiveMemberStatisticsServiceImpl implements ActiveMemberStatisticsService {
+public class MemberActiveStatisticsServiceImpl implements MemberActiveStatisticsService {
 
     private final StatisticsMarker statisticsMarker;
 
-    public ActiveMemberStatisticsServiceImpl(StatisticsMarker statisticsMarker) {
+    public MemberActiveStatisticsServiceImpl(StatisticsMarker statisticsMarker) {
         this.statisticsMarker = statisticsMarker;
     }
 

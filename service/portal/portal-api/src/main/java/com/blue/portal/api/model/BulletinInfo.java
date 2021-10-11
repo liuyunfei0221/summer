@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 
 /**
- * 公告信息封装
+ * test entity
  *
  * @author DarkBlue
  */
@@ -13,29 +13,14 @@ public final class BulletinInfo implements Serializable {
 
     private static final long serialVersionUID = -2248462404325218989L;
 
-    /**
-     * 主键
-     */
     private Long id;
 
-    /**
-     * 公告标题
-     */
     private String title;
 
-    /**
-     * 公告内容
-     */
     private String content;
 
-    /**
-     * 公告图片链接
-     */
     private String link;
 
-    /**
-     * 公告类型 1热门
-     */
     private Integer type;
 
     public BulletinInfo() {

@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * rest配置参数类
+ * reactive rest config
  *
  * @author DarkBlue
  */
