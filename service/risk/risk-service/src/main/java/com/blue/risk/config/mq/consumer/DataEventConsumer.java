@@ -27,7 +27,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"unused"})
 public final class DataEventConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(DataEventConsumer.class);
@@ -46,14 +46,11 @@ public final class DataEventConsumer implements BlueLifecycle {
     @PostConstruct
     private void init() {
         Consumer<DataEvent> dataEventDataConsumer = dataEvent ->
+                //TODO 风控分析
                 ofNullable(dataEvent)
-                        .ifPresent(de -> {
-                            //TODO 风控分析
-                            ofNullable(de.getData(BlueDataAttrKey.ACCESS.key))
-                                    .map(AuthProcessor::jsonToAccess)
-                                    .map(Access::getId)
-                                    .ifPresent(access -> LOGGER.warn("access = {}", access));
-                        });
+                        .flatMap(de -> ofNullable(de.getData(BlueDataAttrKey.ACCESS.key))
+                                .map(AuthProcessor::jsonToAccess)
+                                .map(Access::getId)).ifPresent(access -> LOGGER.warn("access = {}", access));
 
         ConsumerConfParams dataEventDeploy = blueConsumerConfig.getByKey(BlueTopic.REQUEST_EVENT.name);
         this.dataEventConsumer = generateConsumer(dataEventDeploy, dataEventDataConsumer);
