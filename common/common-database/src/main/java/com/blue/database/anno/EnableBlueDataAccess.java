@@ -25,6 +25,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Import({BlueMapperScannerRegistrar.class, BlueDataAccessConfiguration.class})
 public @interface EnableBlueDataAccess {
 
+    String[] typeHandlerPackages() default {};
+
     String[] basePackages();
 
     Class<?>[] basePackageClasses() default {};

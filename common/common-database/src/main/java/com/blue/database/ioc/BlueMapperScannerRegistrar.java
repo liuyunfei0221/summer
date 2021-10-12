@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -80,9 +81,9 @@ public class BlueMapperScannerRegistrar implements ImportBeanDefinitionRegistrar
             builder.addPropertyValue("sqlSessionFactoryBeanName", annoAttrs.getString("sqlSessionFactoryRef"));
 
         List<String> basePackages = new ArrayList<>();
+        basePackages.addAll(stream(annoAttrs.getStringArray("typeHandlerPackages")).filter(StringUtils::hasText).collect(toList()));
         basePackages.addAll(stream(annoAttrs.getStringArray("basePackages")).filter(StringUtils::hasText).collect(toList()));
-
-        basePackages.addAll(stream(annoAttrs.getClassArray("basePackageClasses")).map(ClassUtils::getPackageName).collect(toList()));
+        basePackages.addAll(stream(annoAttrs.getClassArray("basePackageClasses")).filter(Objects::nonNull).map(ClassUtils::getPackageName).collect(toList()));
 
         String lazyInitialization = annoAttrs.getString("lazyInitialization");
         if (hasText(lazyInitialization))
@@ -95,7 +96,6 @@ public class BlueMapperScannerRegistrar implements ImportBeanDefinitionRegistrar
         builder.addPropertyValue("basePackage", collectionToCommaDelimitedString(basePackages));
 
         registry.registerBeanDefinition(beanName, builder.getBeanDefinition());
-
     }
 
     private static String generateBaseBeanName(AnnotationMetadata importingClassMetadata) {

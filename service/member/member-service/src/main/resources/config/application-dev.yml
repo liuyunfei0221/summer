@@ -192,6 +192,10 @@ seata:
     exception-rate: 100
 
 
+secret:
+  salt: I'm a salt :)
+
+
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]

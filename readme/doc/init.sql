@@ -1148,14 +1148,16 @@ VALUES (13739721721151490, 'blue_post dynamic endpoint handler', 'blue_post dyna
 INSERT INTO `finance_1`.`dynamic_resource_1`(`id`, `organization_id`, `handler_id`, `request_method`, `uri_placeholder`,
                                              `content_type`, `name`,
                                              description, `create_time`, `update_time`, `creator`, `updater`)
-VALUES (13739721721151489, 13739721721151489, 13739721721151489, 'GET', 1, 'application/json', 'blue_get dynamic resource',
+VALUES (13739721721151489, 13739721721151489, 13739721721151489, 'GET', 1, 'application/json',
+        'blue_get dynamic resource',
         'blue_get dynamic resource',
         UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `finance_1`.`dynamic_resource_1`(`id`, `organization_id`, `handler_id`, `request_method`, `uri_placeholder`,
                                              `content_type`, `name`,
                                              description, `create_time`, `update_time`, `creator`, `updater`)
-VALUES (13739721721151490, 13739721721151490, 13739721721151490, 'POST', 1, 'application/json', 'blue_post dynamic resource',
+VALUES (13739721721151490, 13739721721151490, 13739721721151490, 'POST', 1, 'application/json',
+        'blue_post dynamic resource',
         'blue_post dynamic resource',
         UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
@@ -1393,127 +1395,158 @@ CREATE TABLE `undo_log`
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (185757335558, '1th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (185757335558, '1th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (151397629954, '2th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (151397629954, '2th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (235157848067, '3th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (235157848067, '3th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (127783698434, '4th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783698434, '4th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (185757335559, '5th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (185757335559, '5th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (151397629959, '6th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (151397629959, '6th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (235157848072, '7th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (235157848072, '7th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (127783698440, '8th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783698440, '8th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (185757335554, '9th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (185757335554, '9th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (151397629957, '10th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (151397629957, '10th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (235157848065, '11th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (235157848065, '11th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (127783698439, '12th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783698439, '12th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (185757335553, '13th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (185757335553, '13th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (151397629953, '14th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (151397629953, '14th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (235157848068, '15th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (235157848068, '15th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (127783698438, '16th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783698438, '16th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (185757335561, '17th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (185757335561, '17th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (151397629955, '18th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (151397629955, '18th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (235157848066, '19th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (235157848066, '19th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (127783698437, '20th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783698437, '20th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_0`.`reward_0`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (185757335556, '21th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (185757335556, '21th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_1`.`reward_1`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (151397629960, '22th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (151397629960, '22th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_1`.`reward_1`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (235157848069, '23th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (235157848069, '23th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_1`.`reward_1`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (127783698436, '24th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783698436, '24th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_1`.`reward_1`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (185757335560, '25th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (185757335560, '25th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_1`.`reward_1`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (151397629956, '26th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (151397629956, '26th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_1`.`reward_1`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (235157848071, '27th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (235157848071, '27th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_1`.`reward_1`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (127783698442, '28th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783698442, '28th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_1`.`reward_1`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (185757335555, '29th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (185757335555, '29th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_1`.`reward_1`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (151397629958, '30th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (151397629958, '30th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `marketing_1`.`reward_1`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
                                      `update_time`, `creator`, `updater`)
-VALUES (151397629962, '31th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (151397629962, '31th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 
 
@@ -1640,10 +1673,10 @@ member_0;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(16)  NOT NULL COMMENT 'phone number',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone number',
     `email`       varchar(256) NOT NULL COMMENT 'email',
     `password`    varchar(256) DEFAULT NULL COMMENT 'password',
-    `name`        varchar(128) DEFAULT NULL COMMENT 'name',
+    `name`        varchar(256) DEFAULT NULL COMMENT 'name',
     `icon`        varchar(255) DEFAULT NULL COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
@@ -1658,10 +1691,10 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(16)  NOT NULL COMMENT 'phone number',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone number',
     `email`       varchar(256) NOT NULL COMMENT 'email',
     `password`    varchar(256) DEFAULT NULL COMMENT 'password',
-    `name`        varchar(128) DEFAULT NULL COMMENT 'name',
+    `name`        varchar(256) DEFAULT NULL COMMENT 'name',
     `icon`        varchar(255) DEFAULT NULL COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
@@ -1756,10 +1789,10 @@ member_1;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(16)  NOT NULL COMMENT 'phone number',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone number',
     `email`       varchar(256) NOT NULL COMMENT 'email',
     `password`    varchar(256) DEFAULT NULL COMMENT 'password',
-    `name`        varchar(128) DEFAULT NULL COMMENT 'name',
+    `name`        varchar(256) DEFAULT NULL COMMENT 'name',
     `icon`        varchar(255) DEFAULT NULL COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
@@ -1774,10 +1807,10 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(16)  NOT NULL COMMENT 'phone number',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone number',
     `email`       varchar(256) NOT NULL COMMENT 'email',
     `password`    varchar(256) DEFAULT NULL COMMENT 'password',
-    `name`        varchar(128) DEFAULT NULL COMMENT 'name',
+    `name`        varchar(256) DEFAULT NULL COMMENT 'name',
     `icon`        varchar(255) DEFAULT NULL COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
@@ -1983,27 +2016,33 @@ CREATE TABLE `undo_log`
 
 INSERT INTO `portal_0`.`bulletin_0`(`id`, `title`, `content`, `link`, `type`, `status`, `priority`, `create_time`,
                                     `update_time`, `creator`, `updater`)
-VALUES (159987531779, 'popular bulletin 2', 'test data', 'www.baidu.com', 1, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (159987531779, 'popular bulletin 2', 'test data', 'www.baidu.com', 1, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `portal_0`.`bulletin_1`(`id`, `title`, `content`, `link`, `type`, `status`, `priority`, `create_time`,
                                     `update_time`, `creator`, `updater`)
-VALUES (172872466433, 'popular bulletin 1', 'test data', 'cn.bing.com', 1, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (172872466433, 'popular bulletin 1', 'test data', 'cn.bing.com', 1, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1);
 
 INSERT INTO `portal_1`.`bulletin_0`(`id`, `title`, `content`, `link`, `type`, `status`, `priority`, `create_time`,
                                     `update_time`, `creator`, `updater`)
-VALUES (127783665667, 'newest bulletin 2', 'test data', 'www.baidu.com', 2, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665667, 'newest bulletin 2', 'test data', 'www.baidu.com', 2, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1);
 
 INSERT INTO `portal_1`.`bulletin_1`(`id`, `title`, `content`, `link`, `type`, `status`, `priority`, `create_time`,
                                     `update_time`, `creator`, `updater`)
-VALUES (162143436801, 'newest bulletin 1', 'test data', 'cn.bing.com', 2, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (162143436801, 'newest bulletin 1', 'test data', 'cn.bing.com', 2, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1);
 
 INSERT INTO `portal_0`.`bulletin_0`(`id`, `title`, `content`, `link`, `type`, `status`, `priority`, `create_time`,
                                     `update_time`, `creator`, `updater`)
-VALUES (159987531778, 'recommend bulletin 2', 'test data', 'www.baidu.com', 3, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (159987531778, 'recommend bulletin 2', 'test data', 'www.baidu.com', 3, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 INSERT INTO `portal_1`.`bulletin_1`(`id`, `title`, `content`, `link`, `type`, `status`, `priority`, `create_time`,
                                     `update_time`, `creator`, `updater`)
-VALUES (162143436802, 'recommend bulletin 1', 'test data', 'cn.bing.com', 3, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (162143436802, 'recommend bulletin 1', 'test data', 'cn.bing.com', 3, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
+        1, 1);
 
 
 -- business0
