@@ -46,9 +46,9 @@ summer
 │       └── file                         // 文件网关
 │       └── gateway                      // 业务网关
 │   
-├── readme                               //  帮助
-│       └── doc                          //  文档
-│       └── tools                        //  工具
+├── readme
+│       └── doc                          // 文档
+│       └── tools                        // 工具
 │
 ├── registry                             // 注册中心
 │   
@@ -167,8 +167,8 @@ summer
 │       └── gateway                      // Business gateway
 │   
 ├── readme                              
-│       └── doc                          //  Documentation
-│       └── tools                        //  Tools
+│       └── doc                          // Documentation
+│       └── tools                        // Tools
 │
 ├── registry                             // Registry
 │   
