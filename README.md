@@ -225,7 +225,7 @@ summer
 14. Public benefit service.
 
 
-## If useful, remember to star
+## If useful, click the star
 
 
 
