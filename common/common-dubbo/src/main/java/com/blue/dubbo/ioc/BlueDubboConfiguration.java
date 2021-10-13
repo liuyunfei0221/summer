@@ -22,6 +22,7 @@ public class BlueDubboConfiguration {
     }
 
     @Bean
+
     MetadataReportConfig metadataReportConfig() {
         return generateMetadataReportConfig(dubboConf);
     }

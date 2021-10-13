@@ -23,9 +23,10 @@ public class RpcSecureServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcSecureServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-secure"}, methods = {
-            @Method(name = "assertAuth", async = true)
-    })
+    @DubboReference(version = "1.0",
+            providedBy = {"summer-secure"},
+            methods = {@Method(name = "assertAuth", async = true)}
+    )
     private RpcSecureService rpcSecureService;
 
     /**

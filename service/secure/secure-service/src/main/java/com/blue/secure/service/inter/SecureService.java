@@ -17,14 +17,7 @@ public interface SecureService {
      *
      * @return
      */
-    boolean refreshResourceKeyOrRelation();
-
-    /**
-     * refresh role info
-     *
-     * @return
-     */
-    boolean refreshRoleInfo();
+    boolean refreshAuthorityInfos();
 
     /**
      * login by client

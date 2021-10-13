@@ -167,15 +167,15 @@ public class SecureServiceImpl implements SecureService {
             NOT_FOUND_EXP = new BlueException(NOT_FOUND.status, NOT_FOUND.code, NOT_FOUND.message),
             INTERNAL_SERVER_ERROR_EXP = new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
 
-    private volatile boolean resourceOrRelationRefreshing = true;
+    private volatile boolean authorityInfosRefreshing = true;
 
     /**
-     * role id -> resource key
+     * role id -> resource keys
      */
     private volatile Map<Long, Set<String>> roleAndResourcesKeyMapping = emptyMap();
 
     /**
-     * role -> role info
+     * role id -> role info
      */
     private volatile Map<Long, RoleInfo> idAndRoleInfoMapping = emptyMap();
 
@@ -188,8 +188,6 @@ public class SecureServiceImpl implements SecureService {
      * resource key -> resource
      */
     private volatile Map<String, Resource> keyAndResourceMapping = emptyMap();
-
-    private volatile boolean roleRefreshing = false;
 
     /**
      * jwt parser
@@ -221,9 +219,9 @@ public class SecureServiceImpl implements SecureService {
      * blocker when resource or relation refreshing
      */
     private final Supplier<Boolean> RESOURCE_OR_REL_REFRESHING_BLOCKER = () -> {
-        if (resourceOrRelationRefreshing) {
+        if (authorityInfosRefreshing) {
             long start = currentTimeMillis();
-            while (resourceOrRelationRefreshing) {
+            while (authorityInfosRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
                     throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "waiting resource refresh timeout");
                 onSpinWait();
@@ -236,9 +234,9 @@ public class SecureServiceImpl implements SecureService {
      * blocker when role info refreshing
      */
     private final Supplier<Boolean> ROLE_REFRESHING_BLOCKER = () -> {
-        if (roleRefreshing) {
+        if (authorityInfosRefreshing) {
             long start = currentTimeMillis();
-            while (roleRefreshing) {
+            while (authorityInfosRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
                     throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "waiting role refresh timeout");
                 onSpinWait();
@@ -561,8 +559,7 @@ public class SecureServiceImpl implements SecureService {
         MAX_WAITING_FOR_REFRESH = blockingDeploy.getBlockingMillis();
         RANDOM_ID_LENGTH = sessionKeyDeploy.getRanLen();
 
-        refreshResourceKeyOrRelation();
-        refreshRoleInfo();
+        refreshAuthorityInfos();
         initLoginHandler();
     }
 
@@ -572,7 +569,7 @@ public class SecureServiceImpl implements SecureService {
      * @return
      */
     @Override
-    public boolean refreshResourceKeyOrRelation() {
+    public boolean refreshAuthorityInfos() {
         LOGGER.info("refreshResourceKeyOrRelation()");
 
         CompletableFuture<List<Resource>> resourceListCf =
@@ -619,35 +616,20 @@ public class SecureServiceImpl implements SecureService {
                 .collect(toMap(r -> INIT_RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
                         REAL_URI_GETTER.apply(r).intern()), r -> r, (a, b) -> a));
 
-        resourceOrRelationRefreshing = true;
-
-        keyAndResourceMapping = tempKeyAndResourceMapping;
-        roleAndResourcesKeyMapping = tempRoleAndResourcesKeyMapping;
-        roleAndResourceInfosMapping = tempRoleAndResourceInfosMapping;
-
-        resourceOrRelationRefreshing = false;
-
-        return true;
-    }
-
-    /**
-     * refresh role info
-     *
-     * @return
-     */
-    @Override
-    public boolean refreshRoleInfo() {
-        LOGGER.info("refreshRoleInfo()");
-
         List<Role> roles = roleService.listRoles();
         Map<Long, RoleInfo> tempIdAndRoleInfoMapping = roles
                 .parallelStream()
                 .map(ROLE_2_ROLE_INFO_CONVERTER)
                 .collect(toMap(RoleInfo::getId, r -> r, (a, b) -> a));
 
-        roleRefreshing = true;
+        authorityInfosRefreshing = true;
+
+        keyAndResourceMapping = tempKeyAndResourceMapping;
+        roleAndResourcesKeyMapping = tempRoleAndResourcesKeyMapping;
+        roleAndResourceInfosMapping = tempRoleAndResourceInfosMapping;
         idAndRoleInfoMapping = tempIdAndRoleInfoMapping;
-        roleRefreshing = false;
+
+        authorityInfosRefreshing = false;
 
         return true;
     }
