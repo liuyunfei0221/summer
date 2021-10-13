@@ -536,7 +536,7 @@ consumers:
       proxyProtocol: SNI
       topics: [ invalidLocalAuth ]
       topicsPattern:
-      subscriptionName: invalidLocalAuthSubscription
+      subscriptionName: invalidLocalAuthSubscription000
       ackTimeoutMillis: 2000
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000
@@ -613,7 +613,7 @@ consumers:
       proxyProtocol: SNI
       topics: [ authorityInfosRefresh ]
       topicsPattern:
-      subscriptionName: authorityInfosRefreshSubscription
+      subscriptionName: authorityInfosRefreshSubscription000
       ackTimeoutMillis: 2000
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000
