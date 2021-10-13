@@ -1,6 +1,6 @@
 package com.blue.gateway.component;
 
-import com.blue.base.model.event.data.DataEvent;
+import com.blue.base.model.base.DataEvent;
 import com.blue.gateway.config.mq.producer.RequestEventProducer;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;

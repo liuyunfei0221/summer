@@ -1,7 +1,7 @@
 package com.blue.file.config.mq.producer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.event.data.DataEvent;
+import com.blue.base.model.base.DataEvent;
 import com.blue.file.config.blue.BlueProducerConfig;
 import com.blue.pulsar.common.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;

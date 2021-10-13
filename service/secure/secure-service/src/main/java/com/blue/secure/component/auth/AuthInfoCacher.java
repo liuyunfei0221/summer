@@ -1,7 +1,7 @@
 package com.blue.secure.component.auth;
 
+import com.blue.base.model.base.KeyExpireParam;
 import com.blue.base.model.exps.BlueException;
-import com.blue.base.model.redis.KeyExpireParam;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.secure.config.mq.producer.AuthExpireProducer;
@@ -32,7 +32,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
 public final class AuthInfoCacher {
 
     private static final Logger LOGGER = getLogger(AuthInfoCacher.class);

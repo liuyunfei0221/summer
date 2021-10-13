@@ -1,8 +1,7 @@
 package com.blue.secure.config.mq.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.constant.base.BlueTopic;
-import com.blue.base.model.redis.KeyExpireParam;
+import com.blue.base.model.base.KeyExpireParam;
 import com.blue.pulsar.api.conf.ConsumerConfParams;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import com.blue.secure.component.auth.AuthBatchExpireProcessor;
@@ -12,6 +11,7 @@ import reactor.util.Logger;
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
+import static com.blue.base.constant.base.BlueTopic.AUTH_EXPIRE;
 import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
@@ -48,7 +48,7 @@ public final class AuthExpireConsumer implements BlueLifecycle {
                             authBatchExpireProcessor.expireKey(kep);
                         });
 
-        ConsumerConfParams authExpireDeploy = blueConsumerConfig.getByKey(BlueTopic.AUTH_EXPIRE.name);
+        ConsumerConfParams authExpireDeploy = blueConsumerConfig.getByKey(AUTH_EXPIRE.name);
         this.authExpireConsumer = generateConsumer(authExpireDeploy, authExpireDataConsumer);
     }
 

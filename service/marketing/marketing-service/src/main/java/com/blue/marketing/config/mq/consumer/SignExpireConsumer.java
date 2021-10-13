@@ -2,7 +2,7 @@ package com.blue.marketing.config.mq.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.constant.base.BlueTopic;
-import com.blue.base.model.redis.KeyExpireParam;
+import com.blue.base.model.base.KeyExpireParam;
 import com.blue.marketing.config.blue.BlueConsumerConfig;
 import com.blue.pulsar.api.conf.ConsumerConfParams;
 import com.blue.pulsar.common.BluePulsarConsumer;

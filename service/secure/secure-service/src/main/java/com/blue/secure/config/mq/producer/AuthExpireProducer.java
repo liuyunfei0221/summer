@@ -1,8 +1,7 @@
 package com.blue.secure.config.mq.producer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.constant.base.BlueTopic;
-import com.blue.base.model.redis.KeyExpireParam;
+import com.blue.base.model.base.KeyExpireParam;
 import com.blue.pulsar.common.BluePulsarProducer;
 import com.blue.secure.config.blue.BlueProducerConfig;
 import org.apache.pulsar.client.api.MessageId;
@@ -12,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
+import static com.blue.base.constant.base.BlueTopic.AUTH_EXPIRE;
 import static com.blue.pulsar.api.generator.BluePulsarProducerGenerator.generateProducer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
@@ -34,7 +34,7 @@ public final class AuthExpireProducer implements BlueLifecycle {
 
     public AuthExpireProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.authExpireProducer = generateProducer(blueProducerConfig.getByKey(BlueTopic.AUTH_EXPIRE.name), KeyExpireParam.class);
+        this.authExpireProducer = generateProducer(blueProducerConfig.getByKey(AUTH_EXPIRE.name), KeyExpireParam.class);
     }
 
     @Override

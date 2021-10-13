@@ -1,4 +1,4 @@
-package com.blue.base.model.event.mark;
+package com.blue.base.model.base;
 
 import com.blue.base.constant.base.IllegalReason;
 

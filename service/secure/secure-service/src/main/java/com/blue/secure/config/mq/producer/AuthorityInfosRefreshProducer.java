@@ -1,8 +1,8 @@
 package com.blue.secure.config.mq.producer;//package com.blue.secure.config.mq.api.producer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
+import com.blue.base.model.base.NonValueParam;
 import com.blue.pulsar.common.BluePulsarProducer;
-import com.blue.secure.api.model.InvalidLocalAuthParam;
 import com.blue.secure.config.blue.BlueProducerConfig;
 import org.apache.pulsar.client.api.MessageId;
 import reactor.util.Logger;
@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.base.BlueTopic.INVALID_LOCAL_AUTH;
+import static com.blue.base.constant.base.BlueTopic.AUTHORITY_INFOS_REFRESH;
 import static com.blue.pulsar.api.generator.BluePulsarProducerGenerator.generateProducer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
@@ -23,17 +23,17 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @SuppressWarnings("JavaDoc")
-public final class InvalidLocalAuthProducer implements BlueLifecycle {
+public final class AuthorityInfosRefreshProducer implements BlueLifecycle {
 
-    private static final Logger LOGGER = getLogger(InvalidLocalAuthProducer.class);
+    private static final Logger LOGGER = getLogger(AuthorityInfosRefreshProducer.class);
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<InvalidLocalAuthParam> invalidLocalAuthProducer;
+    private final BluePulsarProducer<NonValueParam> authorityInfosRefreshProducer;
 
-    public InvalidLocalAuthProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public AuthorityInfosRefreshProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.invalidLocalAuthProducer = generateProducer(blueProducerConfig.getByKey(INVALID_LOCAL_AUTH.name), InvalidLocalAuthParam.class);
+        this.authorityInfosRefreshProducer = generateProducer(blueProducerConfig.getByKey(AUTHORITY_INFOS_REFRESH.name), NonValueParam.class);
     }
 
     @Override
@@ -53,20 +53,20 @@ public final class InvalidLocalAuthProducer implements BlueLifecycle {
 
     @Override
     public void stop() {
-        this.invalidLocalAuthProducer.shutdown();
-        LOGGER.warn("invalidLocalAuthProducer shutdown...");
+        this.authorityInfosRefreshProducer.shutdown();
+        LOGGER.warn("authorityInfosRefreshProducer shutdown...");
     }
 
     /**
      * send message
      *
-     * @param invalidLocalAuthParam
+     * @param nonValueParam
      */
-    public void send(InvalidLocalAuthParam invalidLocalAuthParam) {
-        CompletableFuture<MessageId> future = invalidLocalAuthProducer.sendAsync(invalidLocalAuthParam);
-        LOGGER.info("invalidLocalAuthProducer send, invalidLocalAuthParam = {}", invalidLocalAuthParam);
+    public void send(NonValueParam nonValueParam) {
+        CompletableFuture<MessageId> future = authorityInfosRefreshProducer.sendAsync(nonValueParam);
+        LOGGER.info("authorityInfosRefreshProducer send, nonValueParam = {}", nonValueParam);
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("invalidLocalAuthProducer send success, invalidLocalAuthParam = {}, messageId = {}", invalidLocalAuthParam, messageId);
+                LOGGER.info("authorityInfosRefreshProducer send success, nonValueParam = {}, messageId = {}", nonValueParam, messageId);
         future.thenAcceptAsync(c, executorService);
     }
 

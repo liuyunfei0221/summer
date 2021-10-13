@@ -1,7 +1,7 @@
 package com.blue.file.config.mq.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.event.mark.IllegalMarkEvent;
+import com.blue.base.model.base.IllegalMarkEvent;
 import com.blue.file.config.blue.BlueConsumerConfig;
 import com.blue.file.config.filter.global.BlueIllegalInterceptFilter;
 import com.blue.pulsar.api.conf.ConsumerConfParams;

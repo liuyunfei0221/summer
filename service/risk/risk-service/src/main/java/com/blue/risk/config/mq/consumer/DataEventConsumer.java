@@ -5,7 +5,7 @@ import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.constant.base.BlueTopic;
 import com.blue.base.model.base.Access;
-import com.blue.base.model.event.data.DataEvent;
+import com.blue.base.model.base.DataEvent;
 import com.blue.jwt.common.JwtProcessor;
 import com.blue.pulsar.api.conf.ConsumerConfParams;
 import com.blue.pulsar.common.BluePulsarConsumer;

@@ -1,6 +1,6 @@
 package com.blue.file.common.request.body;
 
-import com.blue.base.model.event.data.DataEvent;
+import com.blue.base.model.base.DataEvent;
 import com.blue.file.component.RequestEventReporter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;

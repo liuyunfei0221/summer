@@ -134,7 +134,7 @@ public final class VerificationCodeProcessor {
                             ofNullable(expireMillis).map(MILLIS_DURATION_GENERATOR).orElse(DEFAULT_EXPIRE_DURATION));
             return code;
         }
-        throw new RuntimeException("key can't null or less than 1");
+        throw new RuntimeException("key can't be blank");
     }
 
     /**

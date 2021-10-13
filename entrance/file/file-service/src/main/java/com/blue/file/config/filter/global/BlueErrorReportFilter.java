@@ -3,7 +3,7 @@ package com.blue.file.config.filter.global;
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.BlueHeader;
-import com.blue.base.model.event.data.DataEvent;
+import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.exps.BlueException;
 import com.blue.file.common.FluxCommonFactory;
 import com.blue.file.common.request.body.RequestBodyGetter;

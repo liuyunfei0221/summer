@@ -1,6 +1,6 @@
 package com.blue.secure.component.auth;
 
-import com.blue.base.model.redis.KeyExpireParam;
+import com.blue.base.model.base.KeyExpireParam;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;

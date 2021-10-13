@@ -1,4 +1,4 @@
-package com.blue.base.model.redis;
+package com.blue.base.model.base;
 
 import java.io.Serializable;
 import java.time.temporal.ChronoUnit;

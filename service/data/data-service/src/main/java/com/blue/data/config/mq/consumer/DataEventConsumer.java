@@ -1,7 +1,7 @@
 package com.blue.data.config.mq.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.event.data.DataEvent;
+import com.blue.base.model.base.DataEvent;
 import com.blue.data.common.statistics.StatisticsProcessor;
 import com.blue.data.config.blue.BlueConsumerConfig;
 import com.blue.pulsar.api.conf.ConsumerConfParams;

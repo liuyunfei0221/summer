@@ -1,7 +1,6 @@
 package com.blue.secure.config.mq.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.constant.base.BlueTopic;
 import com.blue.pulsar.api.conf.ConsumerConfParams;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import com.blue.secure.api.model.InvalidLocalAuthParam;
@@ -12,6 +11,7 @@ import reactor.util.Logger;
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
+import static com.blue.base.constant.base.BlueTopic.INVALID_LOCAL_AUTH;
 import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
@@ -54,7 +54,7 @@ public final class InvalidLocalAuthConsumer implements BlueLifecycle {
                                     );
                         });
 
-        ConsumerConfParams invalidClusterLocalAuthDeploy = blueConsumerConfig.getByKey(BlueTopic.INVALID_LOCAL_AUTH.name);
+        ConsumerConfParams invalidClusterLocalAuthDeploy = blueConsumerConfig.getByKey(INVALID_LOCAL_AUTH.name);
         this.invalidClusterLocalAuthConsumer = generateConsumer(invalidClusterLocalAuthDeploy, invalidClusterLocalAuthDataConsumer);
     }
 
