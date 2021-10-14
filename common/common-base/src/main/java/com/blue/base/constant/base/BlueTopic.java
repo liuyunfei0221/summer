@@ -28,9 +28,9 @@ public enum BlueTopic {
     INVALID_LOCAL_AUTH("invalidLocalAuth"),
 
     /**
-     * Authority Infos Refresh
+     * System authority Infos Refresh
      */
-    AUTHORITY_INFOS_REFRESH("authorityInfosRefresh"),
+    SYSTEM_AUTHORITY_INFOS_REFRESH("systemAuthorityInfosRefresh"),
 
     /**
      * Refresh the sign-in data expiration time

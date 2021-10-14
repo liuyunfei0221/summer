@@ -14,7 +14,7 @@ import static org.springframework.boot.SpringApplication.run;
  */
 @SummerSpringBootApplication
 @EnableDiscoveryClient
-@EnableBlueLifecycle(basePackages = "com.blue.gateway.config.mq")
+@EnableBlueLifecycle(basePackages = "com.blue.gateway.event")
 @EnableBlueDubbo(basePackages = "com.blue.gateway.remote")
 public class GatewayApplication {
 

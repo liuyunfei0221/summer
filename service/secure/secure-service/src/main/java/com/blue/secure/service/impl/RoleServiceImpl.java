@@ -3,7 +3,6 @@ package com.blue.secure.service.impl;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.secure.config.deploy.BlockingDeploy;
-import com.blue.secure.config.mq.producer.AuthorityInfosRefreshProducer;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.mapper.RoleMapper;
 import com.blue.secure.service.inter.MemberRoleRelationService;
@@ -50,18 +49,15 @@ public class RoleServiceImpl implements RoleService {
 
     private final BlockingDeploy blockingDeploy;
 
-    private final AuthorityInfosRefreshProducer authorityInfosRefreshProducer;
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public RoleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RoleMapper roleMapper,
                            MemberRoleRelationService memberRoleRelationService, ExecutorService executorService,
-                           BlockingDeploy blockingDeploy, AuthorityInfosRefreshProducer authorityInfosRefreshProducer) {
+                           BlockingDeploy blockingDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.roleMapper = roleMapper;
         this.memberRoleRelationService = memberRoleRelationService;
         this.executorService = executorService;
         this.blockingDeploy = blockingDeploy;
-        this.authorityInfosRefreshProducer = authorityInfosRefreshProducer;
     }
 
     private static long MAX_WAITING_FOR_REFRESH;

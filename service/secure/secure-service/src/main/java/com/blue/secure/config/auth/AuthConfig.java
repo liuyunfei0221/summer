@@ -5,8 +5,7 @@ import com.blue.secure.component.auth.AuthInfoCacher;
 import com.blue.secure.component.auth.api.MemberJwtConf;
 import com.blue.secure.component.auth.api.MemberJwtConfParams;
 import com.blue.secure.config.deploy.AuthDeploy;
-import com.blue.secure.config.mq.producer.AuthExpireProducer;
-
+import com.blue.secure.event.producer.AuthExpireProducer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;

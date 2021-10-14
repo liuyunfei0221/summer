@@ -1,6 +1,6 @@
 package com.blue.secure.service.impl;
 
-import com.blue.secure.config.mq.producer.AuthorityInfosRefreshProducer;
+import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.mapper.ResourceMapper;
 import com.blue.secure.service.inter.ResourceService;
@@ -26,18 +26,17 @@ public class ResourceServiceImpl implements ResourceService {
 
     private static final Logger LOGGER = getLogger(ResourceServiceImpl.class);
 
+    private final BlueIdentityProcessor blueIdentityProcessor;
+
     private final ResourceMapper resourceMapper;
 
     private final RoleResRelationService roleResRelationService;
 
-    private final AuthorityInfosRefreshProducer authorityInfosRefreshProducer;
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ResourceServiceImpl(ResourceMapper resourceMapper, RoleResRelationService roleResRelationService,
-                               AuthorityInfosRefreshProducer authorityInfosRefreshProducer) {
+    public ResourceServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ResourceMapper resourceMapper, RoleResRelationService roleResRelationService) {
+        this.blueIdentityProcessor = blueIdentityProcessor;
         this.resourceMapper = resourceMapper;
         this.roleResRelationService = roleResRelationService;
-        this.authorityInfosRefreshProducer = authorityInfosRefreshProducer;
     }
 
     /**

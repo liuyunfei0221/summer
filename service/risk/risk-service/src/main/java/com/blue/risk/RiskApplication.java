@@ -13,7 +13,7 @@ import static org.springframework.boot.SpringApplication.run;
  */
 @SummerSpringBootApplication
 @EnableDiscoveryClient
-@EnableBlueLifecycle(basePackages = "com.blue.risk.config.mq")
+@EnableBlueLifecycle(basePackages = "com.blue.risk.event")
 @EnableBlueDataAccess(basePackages = "com.blue.risk.repository.mapper")
 @EnableBlueDubbo(basePackages = "com.blue.risk.remote")
 public class RiskApplication {

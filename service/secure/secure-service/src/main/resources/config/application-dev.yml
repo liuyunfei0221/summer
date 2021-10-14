@@ -371,7 +371,7 @@ producers:
       enableEncrypt: false
       encryptionKey:
       producerCryptoFailureAction: FAIL
-    authorityInfosRefresh:
+    systemAuthorityInfosRefresh:
       services: [ 172.30.129.50:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
@@ -401,8 +401,8 @@ producers:
       enableProxy: false
       proxyServiceUrl:
       proxyProtocol: SNI
-      topic: authorityInfosRefresh
-      producerName: authorityInfosRefreshProducer000
+      topic: systemAuthorityInfosRefresh
+      producerName: systemAuthorityInfosRefreshProducer000
       accessMode: Shared
       sendTimeoutMillis: 30000
       maxPendingMessages: 1000
@@ -581,7 +581,7 @@ consumers:
       pollDurationMills: 1000
       workingThreads: 2
       enableNegativeAcknowledge: true
-    authorityInfosRefresh:
+    systemAuthorityInfosRefresh:
       services: [ 172.30.129.50:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
@@ -611,9 +611,9 @@ consumers:
       enableProxy: false
       proxyServiceUrl:
       proxyProtocol: SNI
-      topics: [ authorityInfosRefresh ]
+      topics: [ systemAuthorityInfosRefresh ]
       topicsPattern:
-      subscriptionName: authorityInfosRefreshSubscription000
+      subscriptionName: systemAuthorityInfosRefreshSubscription000
       ackTimeoutMillis: 2000
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000
@@ -624,7 +624,7 @@ consumers:
       acknowledgementsGroupTimeMillis: 100
       replicateSubscriptionState: false
       maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: authorityInfosRefresh000
+      consumerName: systemAuthorityInfosRefreshConsumer000
       readCompacted: false
       patternAutoDiscoveryPeriodMillis: 1
       priorityLevel: 0
@@ -647,8 +647,8 @@ consumers:
       encryptionKey:
       consumerCryptoFailureAction: FAIL
       enableDeadLetter: true
-      deadLetterTopic: authorityInfosRefresh
-      retryLetterTopic: authorityInfosRefresh
+      deadLetterTopic: systemAuthorityInfosRefresh
+      retryLetterTopic: systemAuthorityInfosRefresh
       maxRedeliverCount: 1000
       startMessageIdInclusive: false
       enableBatchReceive: false

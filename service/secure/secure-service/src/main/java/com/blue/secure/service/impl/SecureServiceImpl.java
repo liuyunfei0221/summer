@@ -16,7 +16,7 @@ import com.blue.secure.api.model.*;
 import com.blue.secure.component.auth.AuthInfoCacher;
 import com.blue.secure.config.deploy.BlockingDeploy;
 import com.blue.secure.config.deploy.SessionKeyDeploy;
-import com.blue.secure.config.mq.producer.InvalidLocalAuthProducer;
+import com.blue.secure.event.producer.InvalidLocalAuthProducer;
 import com.blue.secure.repository.entity.MemberRoleRelation;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.entity.Role;
@@ -83,7 +83,7 @@ public class SecureServiceImpl implements SecureService {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    private final MemberAuthService memberAuthService;
+    private final MemberService memberService;
 
     private final MemberRoleRelationService memberRoleRelationService;
 
@@ -105,13 +105,13 @@ public class SecureServiceImpl implements SecureService {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public SecureServiceImpl(JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCacher authInfoCacher, StringRedisTemplate stringRedisTemplate,
-                             MemberAuthService memberAuthService, MemberRoleRelationService memberRoleRelationService, RoleService roleService,
+                             MemberService memberService, MemberRoleRelationService memberRoleRelationService, RoleService roleService,
                              RoleResRelationService roleResRelationService, ResourceService resourceService, InvalidLocalAuthProducer invalidLocalAuthProducer,
                              ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
         this.jwtProcessor = jwtProcessor;
         this.authInfoCacher = authInfoCacher;
         this.stringRedisTemplate = stringRedisTemplate;
-        this.memberAuthService = memberAuthService;
+        this.memberService = memberService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.roleService = roleService;
         this.roleResRelationService = roleResRelationService;
@@ -312,9 +312,9 @@ public class SecureServiceImpl implements SecureService {
      */
     private void initLoginHandler() {
         clientLoginHandlers = new HashMap<>(16, 1.0f);
-        clientLoginHandlers.put(SMS_VERIGY.identity, memberAuthService::getMemberByPhoneWithAssertVerify);
-        clientLoginHandlers.put(PHONE_PWD.identity, memberAuthService::getMemberByPhoneWithAssertPwd);
-        clientLoginHandlers.put(EMAIL_PWD.identity, memberAuthService::getMemberByEmailWithAssertPwd);
+        clientLoginHandlers.put(SMS_VERIGY.identity, memberService::getMemberByPhoneWithAssertVerify);
+        clientLoginHandlers.put(PHONE_PWD.identity, memberService::getMemberByPhoneWithAssertPwd);
+        clientLoginHandlers.put(EMAIL_PWD.identity, memberService::getMemberByEmailWithAssertPwd);
 
         LOGGER.info("generateLoginHandler(), clientLoginHandlers = {}", clientLoginHandlers);
     }
@@ -559,7 +559,7 @@ public class SecureServiceImpl implements SecureService {
         MAX_WAITING_FOR_REFRESH = blockingDeploy.getBlockingMillis();
         RANDOM_ID_LENGTH = sessionKeyDeploy.getRanLen();
 
-        refreshAuthorityInfos();
+        refreshSystemAuthorityInfos();
         initLoginHandler();
     }
 
@@ -569,7 +569,7 @@ public class SecureServiceImpl implements SecureService {
      * @return
      */
     @Override
-    public boolean refreshAuthorityInfos() {
+    public boolean refreshSystemAuthorityInfos() {
         LOGGER.info("refreshResourceKeyOrRelation()");
 
         CompletableFuture<List<Resource>> resourceListCf =

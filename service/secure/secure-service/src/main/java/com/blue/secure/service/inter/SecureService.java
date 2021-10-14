@@ -17,7 +17,7 @@ public interface SecureService {
      *
      * @return
      */
-    boolean refreshAuthorityInfos();
+    boolean refreshSystemAuthorityInfos();
 
     /**
      * login by client

@@ -4,7 +4,7 @@ import com.blue.base.model.base.KeyExpireParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
-import com.blue.secure.config.mq.producer.AuthExpireProducer;
+import com.blue.secure.event.producer.AuthExpireProducer;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;

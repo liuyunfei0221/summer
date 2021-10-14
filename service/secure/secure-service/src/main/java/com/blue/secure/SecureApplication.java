@@ -13,7 +13,7 @@ import static org.springframework.boot.SpringApplication.run;
  */
 @SummerSpringBootApplication
 @EnableDiscoveryClient
-@EnableBlueLifecycle(basePackages = "com.blue.secure.config.mq")
+@EnableBlueLifecycle(basePackages = "com.blue.secure.event")
 @EnableBlueDataAccess(basePackages = "com.blue.secure.repository.mapper")
 @EnableBlueDubbo(basePackages = "com.blue.secure.remote")
 public class SecureApplication {

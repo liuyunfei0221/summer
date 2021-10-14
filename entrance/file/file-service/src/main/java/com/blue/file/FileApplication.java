@@ -13,7 +13,7 @@ import static org.springframework.boot.SpringApplication.run;
  * @author DarkBlue
  */
 @SummerSpringBootApplication
-@EnableBlueLifecycle(basePackages = "com.blue.file.config.mq")
+@EnableBlueLifecycle(basePackages = "com.blue.file.event")
 @EnableBlueDataAccess(basePackages = "com.blue.file.repository.mapper")
 @EnableBlueDubbo(basePackages = "com.blue.file.remote")
 public class FileApplication {

@@ -13,7 +13,7 @@ import static org.springframework.boot.SpringApplication.run;
  */
 @SummerSpringBootApplication
 @EnableDiscoveryClient
-@EnableBlueLifecycle(basePackages = "com.blue.marketing.config.mq")
+@EnableBlueLifecycle(basePackages = "com.blue.marketing.event")
 @EnableBlueDataAccess(basePackages = "com.blue.marketing.repository.mapper")
 @EnableBlueDubbo(basePackages = "com.blue.marketing.remote")
 public class MarketingApplication {
