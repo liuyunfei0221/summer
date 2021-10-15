@@ -6,7 +6,6 @@ import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.rpc.*;
 import org.apache.dubbo.rpc.service.GenericService;
 
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static org.apache.dubbo.common.logger.LoggerFactory.getLogger;
 import static org.apache.dubbo.rpc.RpcContext.getServiceContext;
 
@@ -15,7 +14,7 @@ import static org.apache.dubbo.rpc.RpcContext.getServiceContext;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AlibabaClassNamingShouldBeCamel", "unused", "AlibabaUndefineMagicConstant"})
+@SuppressWarnings({"AlibabaClassNamingShouldBeCamel", "unused", "AlibabaUndefineMagicConstant", "AliControlFlowStatementWithoutBraces"})
 @Activate(group = {"provider"})
 public final class BlueExceptionFilter implements Filter, Filter.Listener {
     private static final Logger LOGGER = getLogger(BlueExceptionFilter.class);
@@ -30,10 +29,10 @@ public final class BlueExceptionFilter implements Filter, Filter.Listener {
         if (appResponse.hasException() && GenericService.class != invoker.getInterface()) {
             Throwable exception = appResponse.getException();
             LOGGER.error("dubbo catch exception,exception = {}", exception);
+            if (exception instanceof BlueException)
+                return;
 
-            appResponse.setException(
-                    exception instanceof BlueException ? exception :
-                            new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message));
+            appResponse.setException(new RuntimeException(exception));
         }
     }
 

@@ -215,11 +215,11 @@ dubbo:
   protocolPort: 16000
   protocolAccesslog: D:/locallogs/dubbo/file/access.log
 
-  providerRetries: 1
+  providerRetries: 0
   providerTimeout: 5000
   providerLoadbalance: random
 
-  consumerRetries: 1
+  consumerRetries: 0
   consumerTimeout: 5000
   consumerLoadbalance: random
   consumerCheck: false

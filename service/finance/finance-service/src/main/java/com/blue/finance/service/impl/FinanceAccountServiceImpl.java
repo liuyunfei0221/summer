@@ -56,9 +56,15 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
     public void insertFinanceAccount(FinanceAccount financeAccount) {
         LOGGER.info("insertFinanceAccount(FinanceAccount financeAccount), financeAccount = {}", financeAccount);
         financeAccountMapper.insert(financeAccount);
-//        if (1 == 1) {
-//            throw new BlueException(500, 500, "test rollback");
-//        }
+
+        //test business exp
+        //if (1 == 1) {
+        //    throw new BlueException(500, 999, "test rollback");
+        //}
+        //test runtime exp
+        //if (1 == 1) {
+        //    throw new RuntimeException("test rollback");
+        //}
     }
 
     /**

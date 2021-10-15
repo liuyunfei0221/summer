@@ -323,11 +323,11 @@ dubbo:
   protocolPort: 26000
   protocolAccesslog: D:/locallogs/dubbo/finance/access.log
 
-  providerRetries: 1
+  providerRetries: 0
   providerTimeout: 5000
   providerLoadbalance: random
 
-  consumerRetries: 1
+  consumerRetries: 0
   consumerTimeout: 5000
   consumerLoadbalance: random
   consumerCheck: false

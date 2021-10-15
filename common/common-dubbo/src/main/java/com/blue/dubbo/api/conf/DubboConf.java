@@ -11,6 +11,8 @@ import java.util.Map;
 public interface DubboConf {
 
     //<editor-fold desc="metadataReport conf">
+    Boolean getMetadataReportEnable();
+
     String getMetadataReportId();
 
     String getMetadataReportProtocol();
