@@ -10,8 +10,6 @@ import java.util.Map;
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 public class DubboConfParams implements DubboConf {
 
-    protected Boolean metadataReportEnable;
-
     protected String metadataReportId;
 
     protected String metadataReportProtocol;
@@ -477,7 +475,7 @@ public class DubboConfParams implements DubboConf {
     public DubboConfParams() {
     }
 
-    public DubboConfParams(Boolean metadataReportEnable, String metadataReportId, String metadataReportProtocol, String metadataReportAddress,
+    public DubboConfParams(String metadataReportId, String metadataReportProtocol, String metadataReportAddress,
                            Integer metadataReportPort, String metadataReportUsername, String metadataReportPassword,
                            Integer metadataReportTimeout, String metadataReportGroup, Integer metadataReportRetryTimes,
                            Integer metadataReportRetryPeriod, Boolean metadataReportCycleReport,
@@ -543,7 +541,6 @@ public class DubboConfParams implements DubboConf {
                            String consumerClient, String consumerThreadpool, Integer consumerCorethreads, Integer consumerThreads,
                            Integer consumerQueues, Integer consumerShareconnections, String consumerUrlMergeProcessor,
                            Integer consumerReferThreadNum, Boolean consumerReferBackground) {
-        this.metadataReportEnable = metadataReportEnable;
         this.metadataReportId = metadataReportId;
         this.metadataReportProtocol = metadataReportProtocol;
         this.metadataReportAddress = metadataReportAddress;
@@ -775,11 +772,6 @@ public class DubboConfParams implements DubboConf {
         this.consumerUrlMergeProcessor = consumerUrlMergeProcessor;
         this.consumerReferThreadNum = consumerReferThreadNum;
         this.consumerReferBackground = consumerReferBackground;
-    }
-
-    @Override
-    public Boolean getMetadataReportEnable() {
-        return metadataReportEnable;
     }
 
     @Override
@@ -1937,10 +1929,6 @@ public class DubboConfParams implements DubboConf {
         return consumerReferBackground;
     }
 
-    public void setMetadataReportEnable(Boolean metadataReportEnable) {
-        this.metadataReportEnable = metadataReportEnable;
-    }
-
     public void setMetadataReportId(String metadataReportId) {
         this.metadataReportId = metadataReportId;
     }
@@ -2868,8 +2856,7 @@ public class DubboConfParams implements DubboConf {
     @Override
     public String toString() {
         return "DubboConfParams{" +
-                "metadataReportEnable=" + metadataReportEnable +
-                ", metadataReportId='" + metadataReportId + '\'' +
+                "metadataReportId='" + metadataReportId + '\'' +
                 ", metadataReportProtocol='" + metadataReportProtocol + '\'' +
                 ", metadataReportAddress='" + metadataReportAddress + '\'' +
                 ", metadataReportPort=" + metadataReportPort +

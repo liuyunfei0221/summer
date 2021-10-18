@@ -1,6 +1,9 @@
 package com.blue.secure.api.inter;
 
 import com.blue.base.model.base.Access;
+import com.blue.secure.api.model.RoleInfo;
+
+import java.util.List;
 
 /**
  * rpc role interface
@@ -35,5 +38,21 @@ public interface RpcRoleService {
      * @return
      */
     void updateMemberRoleById(Long memberId, Long roleId, Long operatorId);
+
+    /**
+     * get member's role info by member id
+     *
+     * @param memberId
+     * @return
+     */
+    RoleInfo getRoleInfoByMemberId(Long memberId);
+
+    /**
+     * get member's roles info by member ids
+     *
+     * @param memberIds
+     * @return
+     */
+    List<RoleInfo> selectRoleInfoByMemberIds(List<Long> memberIds);
 
 }

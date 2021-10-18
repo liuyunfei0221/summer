@@ -27,40 +27,38 @@ public final class BlueDubboGenerator {
 
         MetadataReportConfig metadataReportConfig = new MetadataReportConfig();
 
-        if (ofNullable(dubboConf.getMetadataReportEnable()).orElse(false)) {
-            ofNullable(dubboConf.getMetadataReportId())
-                    .ifPresent(metadataReportConfig::setId);
-            ofNullable(dubboConf.getMetadataReportAddress())
-                    .ifPresent(metadataReportConfig::setAddress);
-            ofNullable(dubboConf.getMetadataReportProtocol())
-                    .ifPresent(metadataReportConfig::setProtocol);
-            ofNullable(dubboConf.getMetadataReportPort())
-                    .ifPresent(metadataReportConfig::setPort);
-            ofNullable(dubboConf.getMetadataReportUsername())
-                    .ifPresent(metadataReportConfig::setUsername);
-            ofNullable(dubboConf.getMetadataReportPassword())
-                    .ifPresent(metadataReportConfig::setPassword);
-            ofNullable(dubboConf.getMetadataReportTimeout())
-                    .ifPresent(metadataReportConfig::setTimeout);
-            ofNullable(dubboConf.getMetadataReportGroup())
-                    .ifPresent(metadataReportConfig::setGroup);
-            ofNullable(dubboConf.getMetadataReportRetryTimes())
-                    .ifPresent(metadataReportConfig::setRetryTimes);
-            ofNullable(dubboConf.getMetadataReportRetryPeriod())
-                    .ifPresent(metadataReportConfig::setRetryPeriod);
-            ofNullable(dubboConf.getMetadataReportCycleReport())
-                    .ifPresent(metadataReportConfig::setCycleReport);
-            ofNullable(dubboConf.getMetadataReportSyncReport())
-                    .ifPresent(metadataReportConfig::setSyncReport);
-            ofNullable(dubboConf.getMetadataReportCluster())
-                    .ifPresent(metadataReportConfig::setCluster);
-            ofNullable(dubboConf.getMetadataReportRegistry())
-                    .ifPresent(metadataReportConfig::setRegistry);
-            ofNullable(dubboConf.getMetadataReportFile())
-                    .ifPresent(metadataReportConfig::setFile);
-            ofNullable(dubboConf.getMetadataReportParameters())
-                    .ifPresent(metadataReportConfig::setParameters);
-        }
+        ofNullable(dubboConf.getMetadataReportId())
+                .ifPresent(metadataReportConfig::setId);
+        ofNullable(dubboConf.getMetadataReportAddress())
+                .ifPresent(metadataReportConfig::setAddress);
+        ofNullable(dubboConf.getMetadataReportProtocol())
+                .ifPresent(metadataReportConfig::setProtocol);
+        ofNullable(dubboConf.getMetadataReportPort())
+                .ifPresent(metadataReportConfig::setPort);
+        ofNullable(dubboConf.getMetadataReportUsername())
+                .ifPresent(metadataReportConfig::setUsername);
+        ofNullable(dubboConf.getMetadataReportPassword())
+                .ifPresent(metadataReportConfig::setPassword);
+        ofNullable(dubboConf.getMetadataReportTimeout())
+                .ifPresent(metadataReportConfig::setTimeout);
+        ofNullable(dubboConf.getMetadataReportGroup())
+                .ifPresent(metadataReportConfig::setGroup);
+        ofNullable(dubboConf.getMetadataReportRetryTimes())
+                .ifPresent(metadataReportConfig::setRetryTimes);
+        ofNullable(dubboConf.getMetadataReportRetryPeriod())
+                .ifPresent(metadataReportConfig::setRetryPeriod);
+        ofNullable(dubboConf.getMetadataReportCycleReport())
+                .ifPresent(metadataReportConfig::setCycleReport);
+        ofNullable(dubboConf.getMetadataReportSyncReport())
+                .ifPresent(metadataReportConfig::setSyncReport);
+        ofNullable(dubboConf.getMetadataReportCluster())
+                .ifPresent(metadataReportConfig::setCluster);
+        ofNullable(dubboConf.getMetadataReportRegistry())
+                .ifPresent(metadataReportConfig::setRegistry);
+        ofNullable(dubboConf.getMetadataReportFile())
+                .ifPresent(metadataReportConfig::setFile);
+        ofNullable(dubboConf.getMetadataReportParameters())
+                .ifPresent(metadataReportConfig::setParameters);
 
         return metadataReportConfig;
     }
