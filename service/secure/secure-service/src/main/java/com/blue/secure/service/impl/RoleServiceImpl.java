@@ -17,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
 
+import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
@@ -82,7 +83,7 @@ public class RoleServiceImpl implements RoleService {
     private boolean generateDefaultRoleInfo() {
         try {
             CompletableFuture<List<Role>> roleListCf =
-                    supplyAsync(roleMapper::listRoles, executorService);
+                    supplyAsync(roleMapper::selectRole, executorService);
 
             List<Role> roleList = roleListCf.join();
             List<Role> defaultRoles = roleList.stream().filter(Role::getIsDefault)
@@ -176,9 +177,27 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public List<Role> listRoles() {
-        LOGGER.info("listRoles()");
-        return roleMapper.listRoles();
+    public List<Role> selectRole() {
+        LOGGER.info("List<Role> selectRoles()");
+        return roleMapper.selectRole();
+    }
+
+    /**
+     * select roles by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<Role> selectRoleByIds(List<Long> ids) {
+        LOGGER.info("List<Role> selectRolesByIds(List<Long> ids), ids = {}", ids);
+
+        if (isEmpty(ids))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids can't be empty");
+        if (ids.size() > DB_SELECT.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids size can't be greater than " + DB_SELECT.value);
+
+        return roleMapper.selectRoleByIds(ids);
     }
 
     /**

@@ -19,7 +19,6 @@ import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.just;
 
 /**
  * attachment api handler
@@ -49,7 +48,7 @@ public final class AttachmentApiHandler {
                 .switchIfEmpty(
                         error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
                 .flatMap(page ->
-                        just(attachmentService.listAttachment(page, access.getId())))
+                        attachmentService.selectAttachmentByPageAndMemberId(page, access.getId()))
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, vo, OK.message), BlueResponse.class));

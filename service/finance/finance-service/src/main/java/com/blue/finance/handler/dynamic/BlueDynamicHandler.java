@@ -137,8 +137,8 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
 
 
     public void refreshHandlers() {
-        List<DynamicHandler> dynamicHandlers = dynamicHandlerService.listDynamicHandler();
-        List<DynamicResource> dynamicResources = dynamicResourceService.listDynamicResource();
+        List<DynamicHandler> dynamicHandlers = dynamicHandlerService.selectDynamicHandler();
+        List<DynamicResource> dynamicResources = dynamicResourceService.selectDynamicResource();
 
         Map<Long, String> handlerIdWithBeanNameMapping = dynamicHandlers.stream()
                 .collect(toMap(DynamicHandler::getId, DynamicHandler::getHandlerBean, (a, b) -> a));

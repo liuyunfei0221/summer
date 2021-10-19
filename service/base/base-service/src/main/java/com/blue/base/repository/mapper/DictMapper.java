@@ -30,12 +30,12 @@ public interface DictMapper {
      *
      * @return
      */
-    List<Dict> listDict();
+    List<Dict> selectDict();
 
     /**
      * select dict by dict type code
      *
      * @return
      */
-    List<Dict> listDictByDictTypeId(@Param("dictTypeId") Long dictTypeId);
+    List<Dict> selectDictByDictTypeId(@Param("dictTypeId") Long dictTypeId);
 }

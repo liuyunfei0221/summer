@@ -18,13 +18,13 @@ public interface RoleResRelationMapper {
      *
      * @return
      */
-    List<RoleResRelation> listRoleResRelation();
+    List<RoleResRelation> selectRoleResRelation();
 
     /**
      * select resources ids by role id
      *
      * @return
      */
-    List<Long> listResIdsByRoleId(@Param("roleId") Long roleId);
+    List<Long> selectResIdsByRoleId(@Param("roleId") Long roleId);
 
 }

@@ -24,17 +24,12 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     /**
      * tables to be sharding
      */
-    protected List<String> shardingTables;
+    protected List<ShardingTableAttr> shardingTables;
 
     /**
      * table sharding size per db
      */
     protected Integer shardingTableSizePerDataBase;
-
-    /**
-     * column name for sharding
-     */
-    protected String shardingColumn;
 
     /**
      * broadcast tables in shard, now supply for seata undolog
@@ -110,18 +105,13 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     }
 
     @Override
-    public List<String> getShardingTables() {
+    public List<ShardingTableAttr> getShardingTables() {
         return shardingTables;
     }
 
     @Override
     public Integer getShardingTableSizePerDataBase() {
         return shardingTableSizePerDataBase;
-    }
-
-    @Override
-    public String getShardingColumn() {
-        return shardingColumn;
     }
 
     @Override
@@ -193,16 +183,12 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
         this.shardingDatabases = shardingDatabases;
     }
 
-    public void setShardingTables(List<String> shardingTables) {
+    public void setShardingTables(List<ShardingTableAttr> shardingTables) {
         this.shardingTables = shardingTables;
     }
 
     public void setShardingTableSizePerDataBase(Integer shardingTableSizePerDataBase) {
         this.shardingTableSizePerDataBase = shardingTableSizePerDataBase;
-    }
-
-    public void setShardingColumn(String shardingColumn) {
-        this.shardingColumn = shardingColumn;
     }
 
     public void setShardingBroadcastTables(List<String> shardingBroadcastTables) {
@@ -263,7 +249,6 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
                 "shardingDatabases=" + shardingDatabases +
                 ", shardingTables=" + shardingTables +
                 ", shardingTableSizePerDataBase=" + shardingTableSizePerDataBase +
-                ", shardingColumn='" + shardingColumn + '\'' +
                 ", shardingBroadcastTables=" + shardingBroadcastTables +
                 ", singleDatabasesWithTables=" + singleDatabasesWithTables +
                 ", cacheEnabled=" + cacheEnabled +

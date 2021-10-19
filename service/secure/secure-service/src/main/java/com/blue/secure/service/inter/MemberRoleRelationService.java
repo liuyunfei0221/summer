@@ -3,6 +3,7 @@ package com.blue.secure.service.inter;
 
 import com.blue.secure.repository.entity.MemberRoleRelation;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,6 +21,14 @@ public interface MemberRoleRelationService {
      * @return
      */
     Optional<Long> getRoleIdByMemberId(Long memberId);
+
+    /**
+     * select member-role-relation by member ids
+     *
+     * @param memberIds
+     * @return
+     */
+    List<MemberRoleRelation> selectRelationByMemberIds(List<Long> memberIds);
 
     /**
      * update member role relation

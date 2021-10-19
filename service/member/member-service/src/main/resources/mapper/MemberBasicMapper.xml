@@ -161,7 +161,7 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
-    <select id="selectByPhone" resultMap="BaseResultMap">
+    <select id="getByPhone" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -170,7 +170,7 @@
         `phone` = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler};
     </select>
 
-    <select id="selectByEmail" resultMap="BaseResultMap">
+    <select id="getByEmail" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -179,7 +179,7 @@
         `email` = #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler};
     </select>
 
-    <select id="selectByName" resultMap="BaseResultMap">
+    <select id="getByName" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -188,11 +188,36 @@
         `name` = #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler};
     </select>
 
-    <select id="selectByCondition" resultMap="BaseResultMap" parameterType="com.blue.member.model.MemberCondition">
+    <select id="select" resultMap="BaseResultMap" parameterType="com.blue.member.model.MemberCondition">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
         member_basic;
+    </select>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
+            parameterType="com.blue.member.model.MemberCondition">
+        <if test="limit != null and limit >= 0 and rows != null and rows > 0">
+            SELECT
+            <include refid="Base_Column_List"/>
+            FROM
+            member_basic
+
+            <where>
+                <if test="type != null">
+                    AND
+                    type = #{type,jdbcType=TINYINT}
+                </if>
+                <if test="status != null">
+                    AND
+                    status = #{status,jdbcType=TINYINT}
+                </if>
+            </where>
+
+            ORDER BY
+            id DESC
+            LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT};
+        </if>
     </select>
 
 </mapper>

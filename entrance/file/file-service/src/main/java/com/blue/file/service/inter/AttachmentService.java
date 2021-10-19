@@ -4,6 +4,7 @@ import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.file.api.model.AttachmentInfo;
 import com.blue.file.repository.entity.Attachment;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public interface AttachmentService {
      * @param id
      * @return
      */
-    Attachment getAttachment(Long id);
+    Mono<Attachment> getAttachment(Long id);
 
     /**
      * select attachment by page and member id
@@ -46,6 +47,6 @@ public interface AttachmentService {
      * @param memberId
      * @return
      */
-    PageModelResponse<AttachmentInfo> listAttachment(PageModelRequest<Void> pageModelRequest, Long memberId);
+    Mono<PageModelResponse<AttachmentInfo>> selectAttachmentByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId);
 
 }

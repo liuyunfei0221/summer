@@ -45,9 +45,9 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public List<Resource> listResource() {
-        LOGGER.info("listResource()");
-        return resourceMapper.listResource();
+    public List<Resource> selectResource() {
+        LOGGER.info("selectResource()");
+        return resourceMapper.selectResource();
     }
 
     /**
@@ -57,9 +57,9 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public List<Resource> listResourceByIds(List<Long> ids) {
+    public List<Resource> selectResourceByIds(List<Long> ids) {
         LOGGER.info("listResourceByIds(List<Long> ids), ids = {}", ids);
-        return resourceMapper.listResourceByIds(ids);
+        return resourceMapper.selectResourceByIds(ids);
     }
 
     /**
@@ -69,14 +69,14 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public List<Resource> listResourceByRoleId(Long roleId) {
+    public List<Resource> selectResourceByRoleId(Long roleId) {
         LOGGER.info("listResourceByRoleId(Long roleId), roleId = {}", roleId);
 
-        List<Long> ids = roleResRelationService.listResourceIdsByRoleId(roleId);
+        List<Long> ids = roleResRelationService.selectResourceIdsByRoleId(roleId);
 
         if (isEmpty(ids))
             return emptyList();
 
-        return resourceMapper.listResourceByIds(ids);
+        return resourceMapper.selectResourceByIds(ids);
     }
 }

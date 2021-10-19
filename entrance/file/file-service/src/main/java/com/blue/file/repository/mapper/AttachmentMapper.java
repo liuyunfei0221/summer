@@ -40,13 +40,13 @@ public interface AttachmentMapper {
      * @param rows
      * @return
      */
-    List<Attachment> listAttachmentByLimit(@Param("memberId") Long memberId, @Param("limit") long limit, @Param("rows") long rows);
+    List<Attachment> selectAttachmentByLimitAndMemberId(@Param("memberId") Long memberId, @Param("limit") long limit, @Param("rows") long rows);
 
     /**
      * count attachment by member id
      *
      * @return
      */
-    Long countAttachment(@Param("memberId") Long memberId);
+    Long countAttachmentByMemberId(@Param("memberId") Long memberId);
 
 }

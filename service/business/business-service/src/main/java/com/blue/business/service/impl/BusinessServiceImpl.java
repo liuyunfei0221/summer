@@ -76,7 +76,7 @@ public class BusinessServiceImpl implements BusinessService {
                 .supplyAsync(() -> articleService.getByPrimaryKey(id), executorService);
 
         CompletableFuture<List<Link>> linksCf = CompletableFuture
-                .supplyAsync(() -> linkService.listBySubIdAndSubType(id, SubjectType.ARTICLE.identity), executorService);
+                .supplyAsync(() -> linkService.selectBySubIdAndSubType(id, SubjectType.ARTICLE.identity), executorService);
 
         return
                 just(articleOptCf)

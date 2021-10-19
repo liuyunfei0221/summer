@@ -30,7 +30,7 @@ public interface LinkMapper {
      * @param subType
      * @return
      */
-    List<Link> listBySubIdAndSubType(@Param("subId") Long subId, @Param("subType") Integer subType);
+    List<Link> selectBySubIdAndSubType(@Param("subId") Long subId, @Param("subType") Integer subType);
 
     /**
      * @param list

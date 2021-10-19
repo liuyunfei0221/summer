@@ -32,6 +32,6 @@ public interface SignRewardTodayRelationMapper {
      * @param month
      * @return
      */
-    List<SignRewardTodayRelation> listRelationByYearAndMonth(@Param("year") Integer year, @Param("month") Integer month);
+    List<SignRewardTodayRelation> selectRelationByYearAndMonth(@Param("year") Integer year, @Param("month") Integer month);
 
 }

@@ -22,12 +22,14 @@ public interface MemberBasicMapper {
 
     MemberBasic selectByPrimaryKey(Long id);
 
-    MemberBasic selectByPhone(@Param("phone") String phone);
+    MemberBasic getByPhone(@Param("phone") String phone);
 
-    MemberBasic selectByEmail(@Param("email") String email);
+    MemberBasic getByEmail(@Param("email") String email);
 
-    MemberBasic selectByName(@Param("name") String name);
+    MemberBasic getByName(@Param("name") String name);
 
-    List<MemberBasic> selectByCondition(@Param("memberCondition") MemberCondition memberCondition);
+    List<MemberBasic> select();
+
+    List<MemberBasic> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("memberCondition") MemberCondition memberCondition);
 
 }

@@ -148,7 +148,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public Mono<Attachment> getAttachmentForDownload(Long attachmentId, Long memberId) {
         LOGGER.info("getAttachmentForDownload(Long attachmentId, Long memberId), attachmentId = {}, memberId = {}", attachmentId, memberId);
-        return just(attachmentService.getAttachment(attachmentId))
+        return attachmentService.getAttachment(attachmentId)
                 .flatMap(attachment -> {
 
                     DownloadHistory downloadHistory = new DownloadHistory();

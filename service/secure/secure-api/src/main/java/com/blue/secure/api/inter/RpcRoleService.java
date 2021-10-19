@@ -1,9 +1,11 @@
 package com.blue.secure.api.inter;
 
 import com.blue.base.model.base.Access;
+import com.blue.secure.api.model.MemberRoleRelationInfo;
 import com.blue.secure.api.model.RoleInfo;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * rpc role interface
@@ -45,7 +47,7 @@ public interface RpcRoleService {
      * @param memberId
      * @return
      */
-    RoleInfo getRoleInfoByMemberId(Long memberId);
+    CompletableFuture<RoleInfo> getRoleInfoByMemberId(Long memberId);
 
     /**
      * get member's roles info by member ids
@@ -53,6 +55,6 @@ public interface RpcRoleService {
      * @param memberIds
      * @return
      */
-    List<RoleInfo> selectRoleInfoByMemberIds(List<Long> memberIds);
+    CompletableFuture<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds);
 
 }

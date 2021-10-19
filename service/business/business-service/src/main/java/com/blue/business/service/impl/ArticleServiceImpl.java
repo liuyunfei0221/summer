@@ -67,7 +67,7 @@ public class ArticleServiceImpl implements ArticleService {
      * @return
      */
     @Override
-    public List<Article> listByIds(List<Long> ids) {
+    public List<Article> selectByIds(List<Long> ids) {
         return null;
     }
 

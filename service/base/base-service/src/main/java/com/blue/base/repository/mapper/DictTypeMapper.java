@@ -1,6 +1,7 @@
 package com.blue.base.repository.mapper;
 
 import com.blue.base.repository.entity.DictType;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -29,5 +30,13 @@ public interface DictTypeMapper {
      *
      * @return
      */
-    List<DictType> listDictType();
+    List<DictType> selectDictType();
+
+    /**
+     * get dict type by code
+     *
+     * @param code
+     * @return
+     */
+    DictType getDictTypeByCode(@Param("code") String code);
 }

@@ -63,9 +63,10 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-  shardingTables: [ bulletin ]
+  shardingTables:
+    - tableName: bulletin
+      shardingColumn: id
   shardingTableSizePerDataBase: 2
-  shardingColumn: id
   shardingBroadcastTables: [ ]
   singleDatabasesWithTables:
   cacheEnabled: false

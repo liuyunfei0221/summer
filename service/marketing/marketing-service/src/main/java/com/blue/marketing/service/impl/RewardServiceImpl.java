@@ -62,12 +62,12 @@ public class RewardServiceImpl implements RewardService {
      * @return
      */
     @Override
-    public List<Reward> listRewardByIds(List<Long> ids) {
+    public List<Reward> selectRewardByIds(List<Long> ids) {
         LOGGER.info("listRewardByIds(List<Long> ids), ids = {}", ids);
         if (CollectionUtils.isEmpty(ids))
             return emptyList();
 
-        return rewardMapper.listRewardByIds(ids);
+        return rewardMapper.selectRewardByIds(ids);
     }
 
     /**
@@ -78,12 +78,12 @@ public class RewardServiceImpl implements RewardService {
      * @return
      */
     @Override
-    public List<SignRewardTodayRelation> listRelationByYearAndMonth(Integer year, Integer month) {
+    public List<SignRewardTodayRelation> selectRelationByYearAndMonth(Integer year, Integer month) {
         LOGGER.info("listRelationByYearAndMonth(Integer year, Integer month), year = {}, month = {}", year, month);
         if (year == null || month == null || year < 1 || month < 1)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "year or month can't be null or less than 1");
 
-        return signRewardTodayRelationMapper.listRelationByYearAndMonth(year, month);
+        return signRewardTodayRelationMapper.selectRelationByYearAndMonth(year, month);
     }
 
 }

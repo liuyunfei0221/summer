@@ -19,7 +19,7 @@ public interface BulletinService {
      * @param bulletinType
      * @return
      */
-    List<Bulletin> listBulletin(BulletinType bulletinType);
+    List<Bulletin> selectBulletin(BulletinType bulletinType);
 
 
 }

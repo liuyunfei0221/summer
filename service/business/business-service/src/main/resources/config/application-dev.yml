@@ -63,9 +63,19 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-  shardingTables: [ article,link,comment,reply ]
+  shardingTables:
+    - tableName: article
+      shardingColumn: id
+
+    - tableName: link
+      shardingColumn: id
+
+    - tableName: comment
+      shardingColumn: id
+
+    - tableName: reply
+      shardingColumn: id
   shardingTableSizePerDataBase: 2
-  shardingColumn: id
   shardingBroadcastTables: [ ]
   singleDatabasesWithTables:
   cacheEnabled: false

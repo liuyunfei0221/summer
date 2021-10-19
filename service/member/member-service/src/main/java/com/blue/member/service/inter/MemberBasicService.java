@@ -2,6 +2,7 @@ package com.blue.member.service.inter;
 
 import com.blue.member.api.model.MemberInfo;
 import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.model.MemberCondition;
 import com.blue.member.repository.entity.MemberBasic;
 import reactor.core.publisher.Mono;
 
@@ -62,5 +63,14 @@ public interface MemberBasicService {
      * @return
      */
     Mono<List<MemberBasic>> selectMember();
+
+    /**
+     * select member by condition
+     * @param limit
+     * @param rows
+     * @param memberCondition
+     * @return
+     */
+    Mono<List<MemberBasic>> selectMemberByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition);
 
 }

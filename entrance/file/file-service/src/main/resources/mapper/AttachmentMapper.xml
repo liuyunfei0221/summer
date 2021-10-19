@@ -157,15 +157,16 @@
         </if>
     </insert>
 
-    <select id="listAttachmentByLimit" resultMap="BaseResultMap">
-        SELECT *
+    <select id="selectAttachmentByLimitAndMemberId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
         FROM attachment
         WHERE creator = #{memberId,jdbcType=BIGINT}
         ORDER BY id DESC
-            LIMIT #{limit,jdbcType=BIGINT}, #{rows,jdbcType=BIGINT}
+        LIMIT #{limit,jdbcType=BIGINT}, #{rows,jdbcType=BIGINT}
     </select>
 
-    <select id="countAttachment" resultType="java.lang.Long">
+    <select id="countAttachmentByMemberId" resultType="java.lang.Long">
         SELECT COUNT(*)
         FROM attachment
         WHERE creator = #{memberId,jdbcType=BIGINT}

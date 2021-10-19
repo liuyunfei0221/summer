@@ -18,7 +18,7 @@ public interface ResourceMapper {
      *
      * @return
      */
-    List<Resource> listResource();
+    List<Resource> selectResource();
 
     /**
      * select resources by ids
@@ -26,6 +26,6 @@ public interface ResourceMapper {
      * @param ids
      * @return
      */
-    List<Resource> listResourceByIds(@Param("ids") List<Long> ids);
+    List<Resource> selectResourceByIds(@Param("ids") List<Long> ids);
 
 }

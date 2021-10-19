@@ -39,9 +39,9 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    public List<RoleResRelation> listRoleResRelation() {
+    public List<RoleResRelation> selectRoleResRelation() {
         LOGGER.info("listRoleResRelation()");
-        return roleResRelationMapper.listRoleResRelation();
+        return roleResRelationMapper.selectRoleResRelation();
     }
 
     /**
@@ -50,8 +50,8 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    public List<Long> listResourceIdsByRoleId(Long roleId) {
+    public List<Long> selectResourceIdsByRoleId(Long roleId) {
         LOGGER.info("listResourceIdsByRoleId(Long roleId), roleId = {}", roleId);
-        return roleResRelationMapper.listResIdsByRoleId(roleId);
+        return roleResRelationMapper.selectResIdsByRoleId(roleId);
     }
 }

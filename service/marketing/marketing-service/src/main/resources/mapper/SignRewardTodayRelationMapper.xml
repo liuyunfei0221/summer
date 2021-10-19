@@ -141,11 +141,11 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="listRelationByYearAndMonth" resultMap="BaseResultMap">
+    <select id="selectRelationByYearAndMonth" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        sign_reward_today_relation FORCE INDEX(`idx_date_reward`)
+        sign_reward_today_relation FORCE INDEX(idx_date_reward)
         WHERE
         year = #{year, jdbcType=SMALLINT}
         AND

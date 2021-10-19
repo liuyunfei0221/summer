@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.just;
 
 /**
- * 门户业务实现
+ * test impl
  *
  * @author DarkBlue
  */
@@ -72,10 +72,10 @@ public class PortalServiceImpl implements PortalService {
      * @return
      */
     @Override
-    public Mono<List<BulletinInfo>> listBulletin(String bulletinType) {
+    public Mono<List<BulletinInfo>> selectBulletin(String bulletinType) {
         LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
 
-        List<BulletinInfo> vos = VO_LIST_CONVERTER.apply(ofNullable(bulletinService.listBulletin(TYPE_CONVERTER.apply(bulletinType))).orElse(emptyList()));
+        List<BulletinInfo> vos = VO_LIST_CONVERTER.apply(ofNullable(bulletinService.selectBulletin(TYPE_CONVERTER.apply(bulletinType))).orElse(emptyList()));
         LOGGER.info("vos = {}", vos);
         return just(vos);
     }

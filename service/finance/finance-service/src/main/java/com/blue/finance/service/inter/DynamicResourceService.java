@@ -19,6 +19,6 @@ public interface DynamicResourceService {
      *
      * @return
      */
-    List<DynamicResource> listDynamicResource();
+    List<DynamicResource> selectDynamicResource();
 
 }

@@ -13,7 +13,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, member_id, role_id, create_time, update_time, creator, updater
+        id
+        , member_id, role_id, create_time, update_time, creator, updater
     </sql>
 
     <insert id="insertSelective" parameterType="com.blue.secure.repository.entity.MemberRoleRelation">
@@ -110,6 +111,20 @@
             member_role_relation FORCE INDEX(idx_member_role)
             WHERE
             member_id = #{memberId,jdbcType=BIGINT};
+        </if>
+    </select>
+
+    <select id="selectMemberRoleRelationByMemberIds" resultMap="BaseResultMap">
+        <if test="memberIds != null and memberIds.size > 0">
+            SELECT
+            <include refid="Base_Column_List"/>
+            FROM
+            member_role_relation FORCE INDEX(idx_member_role)
+            WHERE
+            member_id IN
+            <foreach collection="memberIds" open="(" close=")" separator="," item="memberId" index="index">
+                #{memberId,jdbcType=BIGINT}
+            </foreach>
         </if>
     </select>
 

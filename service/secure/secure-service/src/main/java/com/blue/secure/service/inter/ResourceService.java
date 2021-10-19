@@ -17,7 +17,7 @@ public interface ResourceService {
      *
      * @return
      */
-    List<Resource> listResource();
+    List<Resource> selectResource();
 
     /**
      * select resources by ids
@@ -25,7 +25,7 @@ public interface ResourceService {
      * @param ids
      * @return
      */
-    List<Resource> listResourceByIds(List<Long> ids);
+    List<Resource> selectResourceByIds(List<Long> ids);
 
     /**
      * select resources by role id
@@ -33,6 +33,6 @@ public interface ResourceService {
      * @param roleId
      * @return
      */
-    List<Resource> listResourceByRoleId(Long roleId);
+    List<Resource> selectResourceByRoleId(Long roleId);
 
 }

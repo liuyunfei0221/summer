@@ -25,8 +25,9 @@ public class RpcSecureServiceConsumer {
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-secure"},
-            methods = {@Method(name = "assertAuth", async = true, retries = 2)}
-    )
+            methods = {
+                    @Method(name = "assertAuth", async = true, retries = 2)
+            })
     private RpcSecureService rpcSecureService;
 
     /**

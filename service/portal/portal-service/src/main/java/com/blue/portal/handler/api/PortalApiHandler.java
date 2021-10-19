@@ -49,7 +49,7 @@ public final class PortalApiHandler {
         Map<String, String> metadata = MetadataGetterForReactive.getMetadata(serverRequest);
         LOGGER.warn("metadata = {}", metadata);
 
-        return portalService.listBulletinInfo(serverRequest.pathVariable(TYPE_PAR))
+        return portalService.selectBulletinInfo(serverRequest.pathVariable(TYPE_PAR))
                 .flatMap(bl -> ok()
                         .contentType(APPLICATION_JSON)
                         .body(generate(OK.code, bl, OK.message), BlueResponse.class)

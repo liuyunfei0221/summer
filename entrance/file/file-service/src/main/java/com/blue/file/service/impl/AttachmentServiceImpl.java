@@ -8,6 +8,7 @@ import com.blue.file.repository.entity.Attachment;
 import com.blue.file.repository.mapper.AttachmentMapper;
 import com.blue.file.service.inter.AttachmentService;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -72,7 +74,7 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Attachment getAttachment(Long id) {
+    public Mono<Attachment> getAttachment(Long id) {
         LOGGER.info("getAttachment(Long id), id = {}", id);
 
         if (id == null || id < 1L)
@@ -83,7 +85,7 @@ public class AttachmentServiceImpl implements AttachmentService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, FILE_NOT_EXIST.message);
 
         LOGGER.info("attachment = {}", attachment);
-        return attachment;
+        return just(attachment);
     }
 
     /**
@@ -94,7 +96,7 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public PageModelResponse<AttachmentInfo> listAttachment(PageModelRequest<Void> pageModelRequest, Long memberId) {
+    public Mono<PageModelResponse<AttachmentInfo>> selectAttachmentByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId) {
         LOGGER.info("listAttachment(PageModelParam<Void> pageModelParam, Long memberId), pageModelDTO = {},memberId = {}", pageModelRequest, memberId);
 
         if (memberId == null || memberId < 1L)
@@ -103,19 +105,20 @@ public class AttachmentServiceImpl implements AttachmentService {
         Long page = pageModelRequest.getPage();
         Long rows = pageModelRequest.getRows();
 
-        Long count = ofNullable(attachmentMapper.countAttachment(memberId)).orElse(0L);
+        return just(ofNullable(attachmentMapper.countAttachmentByMemberId(memberId)).orElse(0L))
+                .flatMap(count -> {
+                    PageModelResponse<AttachmentInfo> pageModelResponse = new PageModelResponse<>();
+                    pageModelResponse.setCount(count);
+                    pageModelResponse.setList(count > 0L ?
+                            ofNullable(attachmentMapper.selectAttachmentByLimitAndMemberId(memberId, (page - 1L) * rows, rows))
+                                    .orElse(emptyList()).stream().map(a ->
+                                            new AttachmentInfo(a.getId(), a.getName(), a.getSize(), a.getCreateTime(), "")
+                                    ).collect(toList())
+                            : emptyList()
+                    );
 
-        PageModelResponse<AttachmentInfo> pageModelResponse = new PageModelResponse<>();
-        pageModelResponse.setCount(count);
-        pageModelResponse.setList(0L < count ?
-                ofNullable(attachmentMapper.listAttachmentByLimit(memberId, (page - 1L) * rows, rows))
-                        .orElse(emptyList()).stream().map(a ->
-                                new AttachmentInfo(a.getId(), a.getName(), a.getSize(), a.getCreateTime(), "")
-                        ).collect(toList())
-                : emptyList()
-        );
-
-        LOGGER.info("pageModelVO = {}", pageModelResponse);
-        return pageModelResponse;
+                    LOGGER.info("pageModelResponse = {}", pageModelResponse);
+                    return just(pageModelResponse);
+                });
     }
 }

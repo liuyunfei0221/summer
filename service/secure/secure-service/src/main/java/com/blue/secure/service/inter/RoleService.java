@@ -42,7 +42,15 @@ public interface RoleService {
      *
      * @return
      */
-    List<Role> listRoles();
+    List<Role> selectRole();
+
+    /**
+     * select roles by ids
+     *
+     * @param ids
+     * @return
+     */
+    List<Role> selectRoleByIds(List<Long> ids);
 
     /**
      * get default role

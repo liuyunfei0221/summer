@@ -172,12 +172,12 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="listBulletin" resultMap="BaseResultMap">
+    <select id="selectBulletin" resultMap="BaseResultMap">
         <if test="limit != null and limit > 0">
             SELECT
             <include refid="Base_Column_List"/>
             FROM
-            bulletin FORCE INDEX(`idx_stat_pri`)
+            bulletin FORCE INDEX(idx_stat_pri)
 
             <where>
                 <if test="type != null">

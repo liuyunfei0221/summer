@@ -41,7 +41,7 @@ public final class ShineApiHandler {
     public Mono<ServerResponse> getShineInfo(ServerRequest serverRequest) {
         String ip = ReactiveCommonFunctions.getIp(serverRequest);
         LOGGER.warn("client ip = {}", ip);
-        return shineService.listShineInfo(ip)
+        return shineService.selectShineInfo(ip)
                 .flatMap(shineInfo ->
                         ok()
                                 .contentType(APPLICATION_JSON)

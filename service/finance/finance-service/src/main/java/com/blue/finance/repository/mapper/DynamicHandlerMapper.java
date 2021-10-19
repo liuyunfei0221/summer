@@ -29,6 +29,6 @@ public interface DynamicHandlerMapper {
      *
      * @return
      */
-    List<DynamicHandler> listDynamicHandler();
+    List<DynamicHandler> selectDynamicHandler();
 
 }

@@ -4,6 +4,7 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberInfo;
 import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.model.MemberCondition;
 import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
 import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
@@ -67,15 +68,15 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * 成员校验器
      */
     private final Consumer<MemberBasic> MEMBER_EXIST_VALIDATOR = mb -> {
-        MemberBasic exist = memberBasicMapper.selectByPhone(mb.getPhone());
+        MemberBasic exist = memberBasicMapper.getByPhone(mb.getPhone());
         if (exist != null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The phone number already exists");
 
-        exist = memberBasicMapper.selectByEmail(mb.getEmail());
+        exist = memberBasicMapper.getByEmail(mb.getEmail());
         if (exist != null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The email already exists");
 
-        exist = memberBasicMapper.selectByName(mb.getName());
+        exist = memberBasicMapper.getByName(mb.getName());
         if (exist != null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists");
     };
@@ -92,7 +93,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         if (isBlank(phone))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
         LOGGER.info("phone = {}", phone);
-        return just(ofNullable(memberBasicMapper.selectByPhone(phone)));
+        return just(ofNullable(memberBasicMapper.getByPhone(phone)));
     }
 
     /**
@@ -107,7 +108,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         if (email == null || "".equals(email))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank''");
         LOGGER.info("email = {}", email);
-        return just(ofNullable(memberBasicMapper.selectByEmail(email)));
+        return just(ofNullable(memberBasicMapper.getByEmail(email)));
     }
 
     /**
@@ -199,6 +200,17 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      */
     @Override
     public Mono<List<MemberBasic>> selectMember() {
-        return just(memberBasicMapper.selectByCondition(null));
+        return just(memberBasicMapper.select());
+    }
+
+    /**
+     * select member by condition
+     *
+     * @param memberCondition
+     * @return
+     */
+    @Override
+    public Mono<List<MemberBasic>> selectMemberByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition) {
+        return null;
     }
 }

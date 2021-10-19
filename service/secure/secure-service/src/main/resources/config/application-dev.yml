@@ -63,9 +63,19 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-  shardingTables: [ resource,role,role_res_relation,member_role_relation ]
+  shardingTables:
+    - tableName: resource
+      shardingColumn: id
+
+    - tableName: role
+      shardingColumn: id
+
+    - tableName: role_res_relation
+      shardingColumn: id
+
+    - tableName: member_role_relation
+      shardingColumn: id
   shardingTableSizePerDataBase: 2
-  shardingColumn: id
   shardingBroadcastTables: [ undo_log ]
   singleDatabasesWithTables:
   cacheEnabled: false

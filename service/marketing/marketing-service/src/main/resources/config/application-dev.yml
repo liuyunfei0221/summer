@@ -63,9 +63,16 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-  shardingTables: [ event,reward,sign_reward_today_relation ]
+  shardingTables:
+    - tableName: event
+      shardingColumn: id
+
+    - tableName: reward
+      shardingColumn: id
+
+    - tableName: sign_reward_today_relation
+      shardingColumn: id
   shardingTableSizePerDataBase: 2
-  shardingColumn: id
   shardingBroadcastTables: [ ]
   singleDatabasesWithTables:
   cacheEnabled: false

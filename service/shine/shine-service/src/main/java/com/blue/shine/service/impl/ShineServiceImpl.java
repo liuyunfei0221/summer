@@ -42,7 +42,7 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<List<ShineInfo>> listShineInfo(String ip) {
+    public Mono<List<ShineInfo>> selectShineInfo(String ip) {
 
         LOGGER.warn("ip = {}", ip);
 

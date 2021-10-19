@@ -19,6 +19,6 @@ public interface DynamicHandlerService {
      *
      * @return
      */
-    List<DynamicHandler> listDynamicHandler();
+    List<DynamicHandler> selectDynamicHandler();
 
 }

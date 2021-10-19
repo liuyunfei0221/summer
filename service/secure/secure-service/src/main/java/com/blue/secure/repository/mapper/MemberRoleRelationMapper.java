@@ -3,6 +3,8 @@ package com.blue.secure.repository.mapper;
 import com.blue.secure.repository.entity.MemberRoleRelation;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * member role relation mapper
  *
@@ -42,5 +44,13 @@ public interface MemberRoleRelationMapper {
      * @return
      */
     MemberRoleRelation getMemberRoleRelationByMemberId(@Param("memberId") Long memberId);
+
+    /**
+     * select member-role-relation by member ids
+     *
+     * @param memberIds
+     * @return
+     */
+    List<MemberRoleRelation> selectMemberRoleRelationByMemberIds(@Param("memberIds") List<Long> memberIds);
 
 }

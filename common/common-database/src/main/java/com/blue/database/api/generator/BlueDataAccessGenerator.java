@@ -3,6 +3,7 @@ package com.blue.database.api.generator;
 import com.blue.base.common.base.MathProcessor;
 import com.blue.database.api.conf.DataAccessConf;
 import com.blue.database.api.conf.ShardingDatabaseAttr;
+import com.blue.database.api.conf.ShardingTableAttr;
 import com.blue.database.api.conf.SingleDatabaseWithTablesAttr;
 import com.blue.database.common.DatabaseShardingAlgorithm;
 import com.blue.database.common.TableShardingAlgorithm;
@@ -291,23 +292,26 @@ public final class BlueDataAccessGenerator {
         if (worker == null || worker < 0 || worker > maxTableIndex)
             throw new RuntimeException("worker can't be less than 0 or greater than maxTableIndex");
 
-        List<String> shardingTables = dataAccessConf.getShardingTables();
+        List<ShardingTableAttr> shardingTables = dataAccessConf.getShardingTables();
         if (isEmpty(shardingTables))
-            throw new RuntimeException("tables cannot be null, and should contains all tables that need to be fragmented, otherwise data fragmentation cannot be defined");
+            throw new RuntimeException("shardingTables cannot be null, and should contains all tables that need to be fragmented, otherwise data fragmentation cannot be defined");
 
-        String shardingColumn = dataAccessConf.getShardingColumn();
-        if (shardingColumn == null || "".equals(shardingColumn))
-            throw new RuntimeException("shardingColumn can't be blank");
-
-        ShardingStrategyConfiguration dataBaseShardingStrategyConfiguration = new StandardShardingStrategyConfiguration(shardingColumn, new DatabaseShardingAlgorithm(logicDataBaseName, shardingSize));
         String shardingLogicDataBaseName = logicDataBaseName;
 
         shardingRuleConfiguration.getTableRuleConfigs().addAll(
-                shardingTables.stream().distinct().map(logicTableName -> {
+                shardingTables.stream().distinct().map(tableAttr -> {
+                    String logicTableName = tableAttr.getTableName();
+                    if (logicTableName == null || "".equals(logicTableName))
+                        throw new RuntimeException("logicTableName can't be blank");
+
+                    String shardingColumn = tableAttr.getShardingColumn();
+                    if (shardingColumn == null || "".equals(shardingColumn))
+                        throw new RuntimeException("shardingColumn can't be blank");
+
                     String expression = shardingLogicDataBaseName + "_$->{0.." + maxDataBaseIndex + "}." + logicTableName + "_$->{0.." + maxTableIndex + "}";
 
                     TableRuleConfiguration conf = new TableRuleConfiguration(logicTableName, expression);
-                    conf.setDatabaseShardingStrategyConfig(dataBaseShardingStrategyConfiguration);
+                    conf.setDatabaseShardingStrategyConfig(new StandardShardingStrategyConfiguration(shardingColumn, new DatabaseShardingAlgorithm(shardingLogicDataBaseName, shardingSize)));
                     conf.setTableShardingStrategyConfig(new StandardShardingStrategyConfiguration(shardingColumn, new TableShardingAlgorithm(logicTableName, shardingTableSizePerDataBase)));
 
                     return conf;

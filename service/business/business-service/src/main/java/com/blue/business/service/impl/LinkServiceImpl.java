@@ -56,7 +56,7 @@ public class LinkServiceImpl implements LinkService {
      * @return
      */
     @Override
-    public List<Link> listByIds(List<Long> ids) {
+    public List<Link> selectByIds(List<Long> ids) {
         return null;
     }
 
@@ -68,7 +68,7 @@ public class LinkServiceImpl implements LinkService {
      * @return
      */
     @Override
-    public List<Link> listBySubIdAndSubType(Long subId, Integer subType) {
+    public List<Link> selectBySubIdAndSubType(Long subId, Integer subType) {
         if (subId == null || subId < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
@@ -78,7 +78,7 @@ public class LinkServiceImpl implements LinkService {
         ConstantProcessor.assertSubjectType(subType);
         LOGGER.info("subId = {},subType = {}", subId, subType);
 
-        return linkMapper.listBySubIdAndSubType(subId, subType);
+        return linkMapper.selectBySubIdAndSubType(subId, subType);
     }
 
     /**

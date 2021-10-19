@@ -31,6 +31,6 @@ public interface RewardMapper {
      * @param ids
      * @return
      */
-    List<Reward> listRewardByIds(@Param("ids") List<Long> ids);
+    List<Reward> selectRewardByIds(@Param("ids") List<Long> ids);
 
 }

@@ -14,7 +14,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, name, description, is_default, create_time, update_time, creator, updater
+        id
+        , name, description, is_default, create_time, update_time, creator, updater
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -24,11 +25,25 @@
         WHERE id = #{id,jdbcType=BIGINT}
     </select>
 
-    <select id="listRoles" resultMap="BaseResultMap">
+    <select id="selectRole" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
         role;
+    </select>
+
+    <select id="selectRoleByIds" resultMap="BaseResultMap">
+        <if test="ids != null and ids.size > 0">
+            SELECT
+            <include refid="Base_Column_List"/>
+            FROM
+            role
+            WHERE
+            id IN
+            <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+                #{id,jdbcType=BIGINT}
+            </foreach>
+        </if>
     </select>
 
 </mapper>

@@ -30,7 +30,7 @@ public class DynamicResourceServiceImpl implements DynamicResourceService {
      * @return
      */
     @Override
-    public List<DynamicResource> listDynamicResource() {
-        return dynamicResourceMapper.listDynamicResource();
+    public List<DynamicResource> selectDynamicResource() {
+        return dynamicResourceMapper.selectDynamicResource();
     }
 }

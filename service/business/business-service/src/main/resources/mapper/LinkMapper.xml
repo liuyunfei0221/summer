@@ -196,11 +196,11 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="listBySubIdAndSubType" resultMap="BaseResultMap">
+    <select id="selectBySubIdAndSubType" resultMap="BaseResultMap">
         <if test="subId != null and subType != null">
             select
             <include refid="Base_Column_List"/>
-            from link force index(`idx_sid_stype`)
+            from link force index(idx_sid_stype)
             where sub_id = #{subId}
             and sub_type = #{subType};
         </if>

@@ -73,9 +73,13 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-  shardingTables: [ attachment,download_history ]
+  shardingTables:
+    - tableName: attachment
+      shardingColumn: id
+
+    - tableName: download_history
+      shardingColumn: id
   shardingTableSizePerDataBase: 2
-  shardingColumn: id
   shardingBroadcastTables: [ ]
   singleDatabasesWithTables:
   cacheEnabled: false

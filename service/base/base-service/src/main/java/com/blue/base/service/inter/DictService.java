@@ -7,31 +7,31 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 /**
- * 字典服务业务接口
+ * dict service
  *
  * @author liuyunfei
  * @date 2021/9/27
  * @apiNote
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface DictService {
 
     /**
-     * 查询所有字典类型
+     * select all dict type
      *
      * @return
      */
     Mono<List<DictType>> selectDictType();
 
     /**
-     * 查询所有字典数据
+     * select all dict
      *
      * @return
      */
     Mono<List<Dict>> selectDict();
 
     /**
-     * 根据字典类型code查询字典数据
+     * select dict by dict type code
      *
      * @param code
      * @return

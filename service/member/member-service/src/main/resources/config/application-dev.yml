@@ -63,9 +63,16 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-  shardingTables: [ member_basic,member_business,member_detail ]
+  shardingTables:
+    - tableName: member_basic
+      shardingColumn: id
+
+    - tableName: member_business
+      shardingColumn: id
+
+    - tableName: member_detail
+      shardingColumn: id
   shardingTableSizePerDataBase: 2
-  shardingColumn: id
   shardingBroadcastTables: [ undo_log ]
   singleDatabasesWithTables:
   cacheEnabled: false

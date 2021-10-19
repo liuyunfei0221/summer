@@ -12,7 +12,7 @@ import java.util.Optional;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface RewardService {
 
     /**
@@ -29,7 +29,7 @@ public interface RewardService {
      * @param ids
      * @return
      */
-    List<Reward> listRewardByIds(List<Long> ids);
+    List<Reward> selectRewardByIds(List<Long> ids);
 
     /**
      * select reward-date-relation by date
@@ -38,6 +38,6 @@ public interface RewardService {
      * @param month
      * @return
      */
-    List<SignRewardTodayRelation> listRelationByYearAndMonth(Integer year, Integer month);
+    List<SignRewardTodayRelation> selectRelationByYearAndMonth(Integer year, Integer month);
 
 }

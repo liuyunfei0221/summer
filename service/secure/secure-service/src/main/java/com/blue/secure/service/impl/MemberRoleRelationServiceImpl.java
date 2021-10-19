@@ -10,17 +10,20 @@ import io.seata.spring.annotation.GlobalLock;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
+import java.util.List;
 import java.util.Optional;
 
+import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.base.constant.base.SyncKey.MEMBER_ROLE_REL_UPDATE_PRE;
 import static java.util.Optional.ofNullable;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
+import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -68,6 +71,24 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     }
 
     /**
+     * select member-role-relation by member ids
+     *
+     * @param memberIds
+     * @return
+     */
+    @Override
+    public List<MemberRoleRelation> selectRelationByMemberIds(List<Long> memberIds) {
+        LOGGER.info("List<MemberRoleRelation> selectRelationByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
+
+        if (isEmpty(memberIds))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberIds can't be empty");
+        if (memberIds.size() > DB_SELECT.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberIds size can't be greater than " + DB_SELECT.value);
+
+        return memberRoleRelationMapper.selectMemberRoleRelationByMemberIds(memberIds);
+    }
+
+    /**
      * update member role relation
      *
      * @param memberId
@@ -75,8 +96,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      * @param operatorId
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
         if (memberId == null || memberId < 1L || roleId == null || roleId < 1L || operatorId == null || operatorId < 1L)
@@ -99,8 +119,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      * @param memberRoleRelation
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     @GlobalLock
     public void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) {
         LOGGER.info("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation), memberRoleRelation = {}", memberRoleRelation);

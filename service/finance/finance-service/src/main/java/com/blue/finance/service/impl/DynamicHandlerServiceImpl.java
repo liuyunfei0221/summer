@@ -30,8 +30,8 @@ public class DynamicHandlerServiceImpl implements DynamicHandlerService {
      * @return
      */
     @Override
-    public List<DynamicHandler> listDynamicHandler() {
-        return dynamicHandlerMapper.listDynamicHandler();
+    public List<DynamicHandler> selectDynamicHandler() {
+        return dynamicHandlerMapper.selectDynamicHandler();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.blue.secure.repository.mapper;
 
 import com.blue.secure.repository.entity.Role;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -25,6 +26,14 @@ public interface RoleMapper {
      *
      * @return
      */
-    List<Role> listRoles();
+    List<Role> selectRole();
+
+    /**
+     * select role by ids
+     *
+     * @param ids
+     * @return
+     */
+    List<Role> selectRoleByIds(@Param("ids") List<Long> ids);
 
 }

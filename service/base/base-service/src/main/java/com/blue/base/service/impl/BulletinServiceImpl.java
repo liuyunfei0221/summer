@@ -40,12 +40,12 @@ public class BulletinServiceImpl implements BulletinService {
      * @return
      */
     @Override
-    public List<Bulletin> listBulletin(BulletinType bulletinType) {
+    public List<Bulletin> selectBulletin(BulletinType bulletinType) {
         LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
         if (bulletinType == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "公告类型不能为空");
 
-        List<Bulletin> bulletins = bulletinMapper.listBulletin(bulletinType.identity, Status.VALID.status, ROWS.value);
+        List<Bulletin> bulletins = bulletinMapper.selectBulletin(bulletinType.identity, Status.VALID.status, ROWS.value);
         LOGGER.info("bulletins = {}", bulletins);
 
         return bulletins;

@@ -170,7 +170,7 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="listBulletin" resultMap="BaseResultMap">
+    <select id="selectBulletin" resultMap="BaseResultMap">
         <if test="limit != null and limit > 0">
             SELECT
             a.*
@@ -180,7 +180,7 @@
             (SELECT
             id
             FROM
-            bulletin FORCE INDEX(`idx_stat_ord`)
+            bulletin FORCE INDEX(idx_stat_ord)
 
             <where>
                 <if test="type != null">

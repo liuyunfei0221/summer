@@ -27,7 +27,7 @@ public interface ArticleService {
      * @param ids
      * @return
      */
-    public List<Article> listByIds(List<Long> ids);
+    public List<Article> selectByIds(List<Long> ids);
 
     /**
      * insert article

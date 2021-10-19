@@ -33,7 +33,7 @@ public interface BulletinMapper {
      * @param limit
      * @return
      */
-    List<Bulletin> listBulletin(@Param("type") Integer type,
+    List<Bulletin> selectBulletin(@Param("type") Integer type,
                                 @Param("status") Integer status, @Param("limit") Long limit);
 
 }

@@ -28,7 +28,7 @@ public interface DataAccessConf {
      *
      * @return
      */
-    List<String> getShardingTables();
+    List<ShardingTableAttr> getShardingTables();
 
     /**
      * table sharding size per db
@@ -36,13 +36,6 @@ public interface DataAccessConf {
      * @return
      */
     Integer getShardingTableSizePerDataBase();
-
-    /**
-     * column name for sharding
-     *
-     * @return
-     */
-    String getShardingColumn();
 
     /**
      * broadcast tables in shard

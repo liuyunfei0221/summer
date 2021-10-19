@@ -165,7 +165,7 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="listRewardByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+    <select id="selectRewardByIds" parameterType="java.util.List" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM

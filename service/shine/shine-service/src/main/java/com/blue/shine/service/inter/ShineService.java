@@ -19,6 +19,6 @@ public interface ShineService {
      * @param ip
      * @return
      */
-    Mono<List<ShineInfo>> listShineInfo(String ip);
+    Mono<List<ShineInfo>> selectShineInfo(String ip);
 
 }

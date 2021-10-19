@@ -27,7 +27,7 @@ public interface LinkService {
      * @param ids
      * @return
      */
-    public List<Link> listByIds(List<Long> ids);
+    public List<Link> selectByIds(List<Long> ids);
 
     /**
      * list link by subject id and subject type
@@ -36,7 +36,7 @@ public interface LinkService {
      * @param subType
      * @return
      */
-    public List<Link> listBySubIdAndSubType(Long subId, Integer subType);
+    public List<Link> selectBySubIdAndSubType(Long subId, Integer subType);
 
     /**
      * insert link

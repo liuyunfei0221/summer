@@ -25,9 +25,9 @@ public interface DynamicResourceMapper {
     int updateByPrimaryKey(DynamicResource record);
 
     /**
-     * 获取全部动态资源
+     * select all dynamic resource
      *
      * @return
      */
-    List<DynamicResource> listDynamicResource();
+    List<DynamicResource> selectDynamicResource();
 }

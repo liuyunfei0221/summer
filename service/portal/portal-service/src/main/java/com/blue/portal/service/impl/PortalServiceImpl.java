@@ -139,7 +139,7 @@ public class PortalServiceImpl implements PortalService {
      * @return
      */
     private List<BulletinInfo> getBulletinFromDataBase(BulletinType bulletinType) {
-        List<Bulletin> bulletins = bulletinService.listBulletin(bulletinType);
+        List<Bulletin> bulletins = bulletinService.selectBulletin(bulletinType);
         LOGGER.info("getBulletinFromDataBase(BulletinType bulletinType), bulletins = {}", bulletins);
         return VO_LIST_CONVERTER.apply(bulletins);
     }
@@ -233,7 +233,7 @@ public class PortalServiceImpl implements PortalService {
      * @return
      */
     @Override
-    public Mono<List<BulletinInfo>> listBulletinInfo(String bulletinType) {
+    public Mono<List<BulletinInfo>> selectBulletinInfo(String bulletinType) {
         LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
 
         List<BulletinInfo> vos = ofNullable(getBulletinFromLocalCache(TYPE_CONVERTER.apply(bulletinType))).orElse(emptyList());

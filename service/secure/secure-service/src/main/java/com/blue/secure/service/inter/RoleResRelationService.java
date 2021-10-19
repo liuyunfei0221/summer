@@ -17,7 +17,7 @@ public interface RoleResRelationService {
      *
      * @return
      */
-    List<RoleResRelation> listRoleResRelation();
+    List<RoleResRelation> selectRoleResRelation();
 
     /**
      * select resources ids by role id
@@ -25,6 +25,6 @@ public interface RoleResRelationService {
      * @param roleId
      * @return
      */
-    List<Long> listResourceIdsByRoleId(Long roleId);
+    List<Long> selectResourceIdsByRoleId(Long roleId);
 
 }

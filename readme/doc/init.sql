@@ -2511,7 +2511,8 @@ CREATE TABLE `dict_type`
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     `updater`     bigint       NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_code_name`(`code`,`name` ) USING BTREE
+    UNIQUE KEY `idx_code`(`code`) USING BTREE,
+    UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dict type';
 
 CREATE TABLE `dict`
@@ -2525,5 +2526,5 @@ CREATE TABLE `dict`
     `creator`      bigint       NOT NULL COMMENT 'creator id',
     `updater`      bigint       NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `type_name_value`(`dict_type_id`,`name`,`value` ) USING BTREE
+    UNIQUE KEY `idx_type_name_value`(`dict_type_id`,`name`,`value` ) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dict';

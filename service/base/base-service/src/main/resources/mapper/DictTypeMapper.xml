@@ -126,11 +126,19 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="listDictType" resultMap="BaseResultMap">
+    <select id="selectDictType" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
         dict_type;
+    </select>
+
+    <select id="getDictTypeByCode" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        dict_type FORCE INDEX(idx_code)
+        WHERE id = #{code,jdbcType=VARCHAR};
     </select>
 
 </mapper>

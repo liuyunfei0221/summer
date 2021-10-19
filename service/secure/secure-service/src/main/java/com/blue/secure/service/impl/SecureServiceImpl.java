@@ -573,9 +573,9 @@ public class SecureServiceImpl implements SecureService {
         LOGGER.info("refreshResourceKeyOrRelation()");
 
         CompletableFuture<List<Resource>> resourceListCf =
-                supplyAsync(resourceService::listResource, executorService);
+                supplyAsync(resourceService::selectResource, executorService);
         CompletableFuture<List<RoleResRelation>> roleResRelationListCf =
-                supplyAsync(roleResRelationService::listRoleResRelation, executorService);
+                supplyAsync(roleResRelationService::selectRoleResRelation, executorService);
 
         List<Resource> resources = resourceListCf.join();
         Map<Long, Resource> idAndResourceMapping = resources
@@ -616,7 +616,7 @@ public class SecureServiceImpl implements SecureService {
                 .collect(toMap(r -> INIT_RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
                         REAL_URI_GETTER.apply(r).intern()), r -> r, (a, b) -> a));
 
-        List<Role> roles = roleService.listRoles();
+        List<Role> roles = roleService.selectRole();
         Map<Long, RoleInfo> tempIdAndRoleInfoMapping = roles
                 .parallelStream()
                 .map(ROLE_2_ROLE_INFO_CONVERTER)

@@ -1,7 +1,7 @@
 package com.blue.database.api.conf;
 
 /**
- * 分片参数封装
+ * sharding database attributes
  *
  * @author DarkBlue
  */
