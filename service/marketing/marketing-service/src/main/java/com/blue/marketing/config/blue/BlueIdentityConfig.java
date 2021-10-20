@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static java.time.Instant.now;
 
@@ -18,8 +19,8 @@ import static java.time.Instant.now;
 public class BlueIdentityConfig extends BaseIdentityConfParams {
 
     @Override
-    public Long getLastSeconds() {
-        return now().getEpochSecond();
+    public Supplier<Long> getLastSecondsGetter() {
+        return () -> now().getEpochSecond();
     }
 
     @Override

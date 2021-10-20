@@ -494,6 +494,17 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (14989734363267073, 'GET', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'test endpoint', 'test endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (14989734363267073, 'POST', 'blue-member', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
+        'test endpoint', 'test endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+
+
+
 -- 动态端点
 
 INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,

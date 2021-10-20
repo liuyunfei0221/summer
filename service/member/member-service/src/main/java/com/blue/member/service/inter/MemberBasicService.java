@@ -65,12 +65,21 @@ public interface MemberBasicService {
     Mono<List<MemberBasic>> selectMember();
 
     /**
-     * select member by condition
+     * select member by page and condition
+     *
      * @param limit
      * @param rows
      * @param memberCondition
      * @return
      */
     Mono<List<MemberBasic>> selectMemberByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition);
+
+    /**
+     * count member by condition
+     *
+     * @param memberCondition
+     * @return
+     */
+    Mono<Long> countMemberByPageAndCondition(MemberCondition memberCondition);
 
 }

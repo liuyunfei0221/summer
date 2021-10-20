@@ -38,8 +38,8 @@ public final class AesProcessor {
     private static final Base64.Decoder DECODER = getDecoder();
 
     public AesProcessor(String salt) {
-        if (salt == null || "".equals(salt))
-            throw new RuntimeException("salt can't be null or ''");
+        if (isBlank(salt))
+            throw new RuntimeException("salt can't be blank");
 
         try {
             SecureRandom secureRandom = SecureRandom.getInstance(RAN_ALGORITHM);

@@ -5,6 +5,7 @@ import com.blue.identity.core.exp.IdentityException;
 import reactor.util.Logger;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static com.blue.identity.constant.SnowflakeBits.*;
 import static com.blue.identity.constant.SnowflakeBufferThreshold.MAX_PADDING_FACTOR;
@@ -73,7 +74,8 @@ public final class ConfAsserter {
 
         long currentSecond = MILLISECONDS.toSeconds(currentTimeMillis());
         Long bootSeconds = identityConf.getBootSeconds();
-        long lastSeconds = ofNullable(identityConf.getLastSeconds())
+        long lastSeconds = ofNullable(identityConf.getLastSecondsGetter())
+                .map(Supplier::get)
                 .filter(ls -> ls > 0)
                 .orElse(now().getEpochSecond());
 

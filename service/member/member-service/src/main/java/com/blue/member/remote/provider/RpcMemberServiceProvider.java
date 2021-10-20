@@ -3,8 +3,6 @@ package com.blue.member.remote.provider;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.inter.RpcMemberService;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.member.converter.MemberModelConverters;
-import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberBasicService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
@@ -12,10 +10,10 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
+import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -37,8 +35,6 @@ public class RpcMemberServiceProvider implements RpcMemberService {
     public RpcMemberServiceProvider(MemberBasicService memberBasicService) {
         this.memberBasicService = memberBasicService;
     }
-
-    private static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 
     /**
      * query member basic by phone

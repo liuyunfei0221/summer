@@ -25,17 +25,17 @@ public final class PageModelRequest<T> implements Serializable {
     private static final long MAX_ROWS_PER_REQ = MAX_ROWS.value;
 
     /**
-     * 当前页
+     * current page
      */
     private Long page;
 
     /**
-     * 每页条数
+     * nums per page
      */
     private Long rows;
 
     /**
-     * 差异化参数封装
+     * differentiated parameter package
      */
     private T param;
 
@@ -57,15 +57,19 @@ public final class PageModelRequest<T> implements Serializable {
         return ofNullable(page).orElse(DEFAULT_PAGE);
     }
 
+    public Long getRows() {
+        return ofNullable(rows).orElse(DEFAULT_ROWS);
+    }
+
+    public Long getLimit() {
+        return (getPage() - 1L) * getRows();
+    }
+
     public void setPage(Long page) {
         if (page == null || page < 1L)
             throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "page can't be less than 1");
 
         this.page = page;
-    }
-
-    public Long getRows() {
-        return ofNullable(rows).orElse(DEFAULT_ROWS);
     }
 
     public void setRows(Long rows) {

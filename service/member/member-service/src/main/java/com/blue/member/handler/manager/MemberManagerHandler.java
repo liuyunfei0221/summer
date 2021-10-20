@@ -21,7 +21,7 @@ import static reactor.core.publisher.Mono.just;
  * @date 2021/8/31
  * @apiNote
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc"})
 @Component
 public class MemberManagerHandler {
 
@@ -38,7 +38,6 @@ public class MemberManagerHandler {
      * @return
      */
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
-
         return memberBasicService.selectMember()
                 .flatMap(ml -> {
                     for (MemberBasic mb : ml) {
@@ -50,5 +49,6 @@ public class MemberManagerHandler {
                                 .body(generate(OK.code, ml, OK.message), BlueResponse.class)
                 );
     }
+
 
 }

@@ -32,4 +32,6 @@ public interface MemberBasicMapper {
 
     List<MemberBasic> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("memberCondition") MemberCondition memberCondition);
 
+    Long countByCondition(@Param("memberCondition") MemberCondition memberCondition);
+
 }

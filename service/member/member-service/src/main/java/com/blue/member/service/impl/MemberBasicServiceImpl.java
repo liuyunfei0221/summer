@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.base.constant.base.Status.VALID;
+import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -65,7 +66,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder();
 
     /**
-     * 成员校验器
+     * is a number exist?
      */
     private final Consumer<MemberBasic> MEMBER_EXIST_VALIDATOR = mb -> {
         MemberBasic exist = memberBasicMapper.getByPhone(mb.getPhone());
@@ -133,7 +134,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      */
     @Override
     public Mono<MemberInfo> getMemberInfoByPrimaryKeyWithAssert(Long id) {
-        LOGGER.info("getVoByPrimaryKeyWithAssert(Long id), id = {}", id);
+        LOGGER.info("Mono<MemberInfo> getMemberInfoByPrimaryKeyWithAssert(Long id), id = {}", id);
         if (id == null || id < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
@@ -149,7 +150,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                     LOGGER.info("mb = {}", mb);
                     return just(mb);
                 }).flatMap(mb ->
-                        just(new MemberInfo(mb.getId(), mb.getName(), mb.getIcon(), mb.getGender()))
+                        just(MEMBER_BASIC_2_MEMBER_INFO.apply(mb))
                 );
     }
 
@@ -161,13 +162,13 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      */
     @SuppressWarnings("CommentedOutCode")
     @Override
-    @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED, rollbackFor = Exception.class,
-            lockRetryInternal = 3, lockRetryTimes = 2, timeoutMills = 15000)
+    @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
+            rollbackFor = Exception.class, lockRetryInternal = 3, lockRetryTimes = 2, timeoutMills = 15000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 150000)
     @GlobalLock
     public void insert(MemberRegistryParam memberRegistryParam) {
-        LOGGER.info("memberRegistryDTO = {}", memberRegistryParam);
+        LOGGER.info("void insert(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
         if (memberRegistryParam == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
@@ -204,13 +205,27 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     }
 
     /**
-     * select member by condition
+     * select member by page and condition
      *
+     * @param limit
+     * @param rows
      * @param memberCondition
      * @return
      */
     @Override
     public Mono<List<MemberBasic>> selectMemberByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition) {
-        return null;
+        LOGGER.info("Mono<List<MemberBasic>>selectMemberByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition), limit = {}, rows = {}, pageModelRequest = {}", limit, rows, memberCondition);
+        return just(memberBasicMapper.selectByLimitAndCondition(limit, rows, memberCondition));
+    }
+
+    /**
+     * count member by condition
+     *
+     * @param memberCondition
+     * @return
+     */
+    @Override
+    public Mono<Long> countMemberByPageAndCondition(MemberCondition memberCondition) {
+        return just(ofNullable(memberBasicMapper.countByCondition(memberCondition)).orElse(0L));
     }
 }

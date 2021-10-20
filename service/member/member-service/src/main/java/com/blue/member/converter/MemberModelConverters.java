@@ -5,6 +5,7 @@ import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.base.Status;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
+import com.blue.member.api.model.MemberInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.repository.entity.MemberBasic;
 
@@ -86,5 +87,11 @@ public final class MemberModelConverters {
                             memberBasic.getGender(), memberBasic.getStatus(),
                             memberBasic.getCreateTime(), memberBasic.getUpdateTime())
                     : null;
+
+    public static final Function<MemberBasic, MemberInfo> MEMBER_BASIC_2_MEMBER_INFO = memberBasic ->
+            memberBasic != null ?
+                    new MemberInfo(memberBasic.getId(), memberBasic.getName(), memberBasic.getIcon(), memberBasic.getGender())
+                    : null;
+
 
 }

@@ -14,8 +14,7 @@ import reactor.util.Logger;
 import java.util.List;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.FILE_NOT_EXIST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseMessage.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -99,18 +98,17 @@ public class AttachmentServiceImpl implements AttachmentService {
     public Mono<PageModelResponse<AttachmentInfo>> selectAttachmentByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId) {
         LOGGER.info("listAttachment(PageModelParam<Void> pageModelParam, Long memberId), pageModelDTO = {},memberId = {}", pageModelRequest, memberId);
 
+        if (pageModelRequest == null)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
         if (memberId == null || memberId < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
-
-        Long page = pageModelRequest.getPage();
-        Long rows = pageModelRequest.getRows();
 
         return just(ofNullable(attachmentMapper.countAttachmentByMemberId(memberId)).orElse(0L))
                 .flatMap(count -> {
                     PageModelResponse<AttachmentInfo> pageModelResponse = new PageModelResponse<>();
                     pageModelResponse.setCount(count);
                     pageModelResponse.setList(count > 0L ?
-                            ofNullable(attachmentMapper.selectAttachmentByLimitAndMemberId(memberId, (page - 1L) * rows, rows))
+                            ofNullable(attachmentMapper.selectAttachmentByLimitAndMemberId(memberId, pageModelRequest.getLimit(), pageModelRequest.getRows()))
                                     .orElse(emptyList()).stream().map(a ->
                                             new AttachmentInfo(a.getId(), a.getName(), a.getSize(), a.getCreateTime(), "")
                                     ).collect(toList())

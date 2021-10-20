@@ -12,8 +12,10 @@ import reactor.util.Logger;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.blue.identity.core.ConfAsserter.assertConf;
+import static java.time.Instant.now;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -74,8 +76,8 @@ public final class BlueIdentityProcessor {
         };
 
         Boolean paddingScheduled = identityConf.getPaddingScheduled();
-        idGenParam = new IdGenParam(identityConf.getDataCenter(), identityConf.getWorker(), identityConf.getLastSeconds(), identityConf.getBootSeconds(),
-                identityConf.getMaximumTimeAlarm(), identityConf.getSecondsRecorder(), identityConf.getBufferPower(), identityConf.getPaddingFactor(),
+        idGenParam = new IdGenParam(identityConf.getDataCenter(), identityConf.getWorker(), ofNullable(identityConf.getLastSecondsGetter()).map(Supplier::get).filter(ls -> ls > 0).orElse(now().getEpochSecond()),
+                identityConf.getBootSeconds(), identityConf.getMaximumTimeAlarm(), identityConf.getSecondsRecorder(), identityConf.getBufferPower(), identityConf.getPaddingFactor(),
                 new ThreadPoolExecutor(identityConf.getPaddingCorePoolSize(), identityConf.getPaddingMaximumPoolSize(),
                         identityConf.getKeepAliveSeconds(), SECONDS, new ArrayBlockingQueue<>(identityConf.getPaddingBlockingQueueSize()),
                         threadFactory, (r, executor) -> {

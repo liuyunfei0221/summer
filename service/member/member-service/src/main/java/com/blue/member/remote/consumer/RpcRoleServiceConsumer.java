@@ -61,7 +61,7 @@ public class RpcRoleServiceConsumer {
      * @param memberId
      * @return
      */
-    Mono<RoleInfo> getRoleInfoByMemberId(Long memberId) {
+    public Mono<RoleInfo> getRoleInfoByMemberId(Long memberId) {
         LOGGER.info("RoleInfo getRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
         if (memberId == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberId can't be null");
@@ -74,7 +74,7 @@ public class RpcRoleServiceConsumer {
      * @param memberIds
      * @return
      */
-    Mono<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
+    public Mono<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
         LOGGER.info("List<MemberRoleRelationInfo> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
         if (isEmpty(memberIds))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberIds can't be empty");

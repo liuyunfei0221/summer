@@ -40,15 +40,14 @@ public class MemberAuthorityManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> selectMemberAuthority(ServerRequest serverRequest) {
+    public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PageModelRequest.class)
                 .switchIfEmpty(
                         error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
                 .flatMap(memberAuthorityService::selectMemberAuthorityByPageAndCondition)
-                .flatMap(page ->
+                .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, page, OK.message), BlueResponse.class)
-                );
+                                .body(generate(OK.code, vo, OK.message), BlueResponse.class));
     }
 
 }

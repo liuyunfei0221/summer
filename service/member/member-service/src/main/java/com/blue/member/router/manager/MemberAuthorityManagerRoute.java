@@ -30,7 +30,7 @@ public class MemberAuthorityManagerRoute {
         RequestPredicate pathPredicate = path("/blue-member/manager/authority");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/list", accept(APPLICATION_JSON), memberAuthorityManagerHandler::selectMemberAuthority)
+                .POST("/list", accept(APPLICATION_JSON), memberAuthorityManagerHandler::selectAuthority)
                 .build();
 
         return nest(pathPredicate, routerFunction);

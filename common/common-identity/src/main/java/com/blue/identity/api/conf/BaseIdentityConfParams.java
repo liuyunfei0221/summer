@@ -1,6 +1,7 @@
 package com.blue.identity.api.conf;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * identity params
@@ -81,18 +82,18 @@ public abstract class BaseIdentityConfParams implements IdentityConf {
     }
 
     @Override
-    public abstract Long getLastSeconds();
-
-    @Override
     public Long getBootSeconds() {
         return bootSeconds;
     }
 
     @Override
-    public abstract Consumer<Long> getMaximumTimeAlarm();
+    public abstract Supplier<Long> getLastSecondsGetter();
 
     @Override
     public abstract Consumer<Long> getSecondsRecorder();
+
+    @Override
+    public abstract Consumer<Long> getMaximumTimeAlarm();
 
     @Override
     public Integer getBufferPower() {

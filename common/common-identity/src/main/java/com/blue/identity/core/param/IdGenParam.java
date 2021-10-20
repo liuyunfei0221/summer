@@ -15,7 +15,7 @@ public final class IdGenParam {
 
     private final int worker;
 
-    private final Long lastSeconds;
+    private final long lastSeconds;
 
     private final long bootSeconds;
 
@@ -37,7 +37,7 @@ public final class IdGenParam {
 
     private final Long paddingScheduledDelayMillis;
 
-    public IdGenParam(int dataCenter, int worker, Long lastSeconds, long bootSeconds, Consumer<Long> maximumTimeAlarm,
+    public IdGenParam(int dataCenter, int worker, long lastSeconds, long bootSeconds, Consumer<Long> maximumTimeAlarm,
                       Consumer<Long> secondsRecorder, Integer bufferPower, Integer paddingFactor, ExecutorService executorService,
                       Boolean paddingScheduled, ScheduledExecutorService scheduledExecutorService, Long paddingScheduledInitialDelayMillis,
                       Long paddingScheduledDelayMillis) {

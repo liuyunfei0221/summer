@@ -1,6 +1,7 @@
 package com.blue.identity.api.conf;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * identity conf
@@ -33,13 +34,6 @@ public interface IdentityConf {
     String getServiceName();
 
     /**
-     * last id generated seconds
-     *
-     * @return
-     */
-    Long getLastSeconds();
-
-    /**
      * online seconds
      *
      * @return
@@ -47,11 +41,11 @@ public interface IdentityConf {
     Long getBootSeconds();
 
     /**
-     * alarm for timestamp reach max
+     * last id generated seconds
      *
      * @return
      */
-    Consumer<Long> getMaximumTimeAlarm();
+    Supplier<Long> getLastSecondsGetter();
 
     /**
      * last id generated seconds recorder
@@ -59,6 +53,13 @@ public interface IdentityConf {
      * @return
      */
     Consumer<Long> getSecondsRecorder();
+
+    /**
+     * alarm for timestamp reach max
+     *
+     * @return
+     */
+    Consumer<Long> getMaximumTimeAlarm();
 
     /**
      * buffer size (power of 2)
