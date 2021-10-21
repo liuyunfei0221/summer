@@ -2,6 +2,7 @@ package com.blue.secure.service.inter;
 
 
 import com.blue.secure.repository.entity.MemberRoleRelation;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +21,7 @@ public interface MemberRoleRelationService {
      * @param memberId
      * @return
      */
-    Optional<Long> getRoleIdByMemberId(Long memberId);
+    Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId);
 
     /**
      * select member-role-relation by member ids
@@ -28,7 +29,7 @@ public interface MemberRoleRelationService {
      * @param memberIds
      * @return
      */
-    List<MemberRoleRelation> selectRelationByMemberIds(List<Long> memberIds);
+    Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds);
 
     /**
      * update member role relation

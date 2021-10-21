@@ -30,6 +30,8 @@ public interface MemberBasicMapper {
 
     List<MemberBasic> select();
 
+    List<MemberBasic> selectByIds(@Param("ids") List<Long> ids);
+
     List<MemberBasic> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("memberCondition") MemberCondition memberCondition);
 
     Long countByCondition(@Param("memberCondition") MemberCondition memberCondition);

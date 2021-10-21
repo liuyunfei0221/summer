@@ -104,9 +104,9 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     @Override
     public CompletableFuture<RoleInfo> getRoleInfoByMemberId(Long memberId) {
         LOGGER.info("RoleInfo getRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
-        return just(memberRoleRelationService.getRoleIdByMemberId(memberId))
+        return memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
                 .flatMap(roleIdOpt ->
-                        roleIdOpt.map(aLong -> just(roleService.getRoleById(aLong))).orElseGet(() -> error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "roleId can't be null")))
+                        roleIdOpt.map(roleService::getRoleMonoById).orElseGet(() -> error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "roleId can't be null")))
                 )
                 .flatMap(roleOpt ->
                         roleOpt.map(role -> just(ROLE_2_ROLE_INFO_CONVERTER.apply(role))).orElseGet(() -> error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role can't be null")))
@@ -123,24 +123,23 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     public CompletableFuture<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
         LOGGER.info("List<RoleInfo> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
 
-        return just(memberRoleRelationService.selectRelationByMemberIds(memberIds))
-                .flatMap(relations -> {
+        return memberRoleRelationService.selectRelationMonoByMemberIds(memberIds)
+                .flatMap(relations ->
+                        roleService.selectRoleMonoByIds(relations.stream().map(MemberRoleRelation::getRoleId).collect(toList()))
+                                .flatMap(roles -> {
+                                    Map<Long, Role> idAndRoleMapping = roles.stream().collect(toMap(Role::getId, r -> r, (a, b) -> a));
+                                    return just(relations.stream()
+                                            .map(rel -> {
+                                                MemberRoleRelationInfo memberRoleRelationInfo = new MemberRoleRelationInfo();
+                                                memberRoleRelationInfo.setMemberId(rel.getMemberId());
 
-                    Map<Long, Role> idAndRoleMapping = roleService.selectRoleByIds(relations.stream().map(MemberRoleRelation::getRoleId).collect(toList()))
-                            .stream().collect(toMap(Role::getId, r -> r, (a, b) -> a));
+                                                Role role = idAndRoleMapping.get(rel.getRoleId());
+                                                if (role == null)
+                                                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, " the role with id " + rel.getRoleId() + " can't be null");
 
-                    return just(relations.stream()
-                            .map(rel -> {
-                                MemberRoleRelationInfo memberRoleRelationInfo = new MemberRoleRelationInfo();
-                                memberRoleRelationInfo.setMemberId(rel.getMemberId());
-
-                                Role role = idAndRoleMapping.get(rel.getRoleId());
-                                if (role == null)
-                                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, " the role with id " + rel.getRoleId() + " can't be null");
-
-                                memberRoleRelationInfo.setRoleInfo(new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getIsDefault()));
-                                return memberRoleRelationInfo;
-                            }).collect(toList()));
-                }).toFuture();
+                                                memberRoleRelationInfo.setRoleInfo(new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getIsDefault()));
+                                                return memberRoleRelationInfo;
+                                            }).collect(toList()));
+                                })).toFuture();
     }
 }

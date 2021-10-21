@@ -56,8 +56,8 @@ public class MemberServiceImpl implements MemberService {
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> getMemberByPhoneWithAssertVerify(ClientLoginParam clientLoginParam) {
-        LOGGER.info("getMemberByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
+    public Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam) {
+        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
         if (clientLoginParam == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
@@ -67,7 +67,7 @@ public class MemberServiceImpl implements MemberService {
         return rpcMemberServiceConsumer.getMemberBasicByPhone(clientLoginParam.getIdentity())
                 .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message))
                 .flatMap(memberBasicInfo -> {
-                    LOGGER.info("memberBasicInfo = {}", memberBasicInfo);
+                    LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
                     MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
 
                     memberBasicInfo.setPassword("");
@@ -82,8 +82,8 @@ public class MemberServiceImpl implements MemberService {
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> getMemberByPhoneWithAssertPwd(ClientLoginParam clientLoginParam) {
-        LOGGER.info("getMemberByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
+    public Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam) {
+        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
         if (clientLoginParam == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
@@ -92,7 +92,7 @@ public class MemberServiceImpl implements MemberService {
         return rpcMemberServiceConsumer.getMemberBasicByPhone(clientLoginParam.getIdentity())
                 .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message))
                 .flatMap(memberBasicInfo -> {
-                    LOGGER.info("memberBasicInfo = {}", memberBasicInfo);
+                    LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
                     PWD_ASSERTER.accept(clientLoginParam.getAccess(), memberBasicInfo);
                     MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
 
@@ -108,8 +108,8 @@ public class MemberServiceImpl implements MemberService {
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> getMemberByEmailWithAssertPwd(ClientLoginParam clientLoginParam) {
-        LOGGER.info("getMemberByEmailWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
+    public Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam) {
+        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
         if (clientLoginParam == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
@@ -118,7 +118,7 @@ public class MemberServiceImpl implements MemberService {
         return rpcMemberServiceConsumer.getMemberBasicByEmail(clientLoginParam.getIdentity())
                 .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message))
                 .flatMap(memberBasicInfo -> {
-                    LOGGER.info("memberBasicInfo = {}", memberBasicInfo);
+                    LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
                     PWD_ASSERTER.accept(clientLoginParam.getAccess(), memberBasicInfo);
                     MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
 

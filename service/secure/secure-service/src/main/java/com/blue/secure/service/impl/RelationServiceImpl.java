@@ -3,6 +3,9 @@ package com.blue.secure.service.impl;
 import com.blue.secure.event.producer.SystemAuthorityInfosRefreshProducer;
 import com.blue.secure.service.inter.*;
 import org.springframework.stereotype.Service;
+import reactor.util.Logger;
+
+import static reactor.util.Loggers.getLogger;
 
 /**
  * Business interface impl used to configure role-resource permissions and user-role associations
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RelationServiceImpl implements RelationService {
+
+    private static final Logger LOGGER = getLogger(RelationServiceImpl.class);
 
     private final ResourceService resourceService;
 
@@ -46,7 +51,7 @@ public class RelationServiceImpl implements RelationService {
      */
     @Override
     public void refreshSystemAuthorityInfos() {
-        boolean success = secureService.refreshSystemAuthorityInfos();
-
+        LOGGER.info("void refreshSystemAuthorityInfos()");
+        secureService.refreshSystemAuthorityInfos();
     }
 }

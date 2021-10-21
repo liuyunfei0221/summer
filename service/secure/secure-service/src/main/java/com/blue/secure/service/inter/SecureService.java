@@ -49,7 +49,7 @@ public interface SecureService {
      * @param assertAuth
      * @return
      */
-    Mono<AuthAsserted> assertAuth(AssertAuth assertAuth);
+    Mono<AuthAsserted> assertAuthMono(AssertAuth assertAuth);
 
     /**
      * generate member auth
@@ -57,7 +57,7 @@ public interface SecureService {
      * @param authGenParam
      * @return
      */
-    Mono<MemberAuth> generateAuth(AuthGenParam authGenParam);
+    Mono<MemberAuth> generateAuthMono(AuthGenParam authGenParam);
 
     /**
      * invalid auth by access
@@ -123,7 +123,7 @@ public interface SecureService {
      * @param access
      * @return
      */
-    Mono<Authority> getAuthorityByAccess(Access access);
+    Mono<Authority> getAuthorityMonoByAccess(Access access);
 
     /**
      * get member's authority by member id
@@ -131,6 +131,6 @@ public interface SecureService {
      * @param memberId
      * @return
      */
-    Mono<Authority> getAuthorityByMemberId(Long memberId);
+    Mono<Authority> getAuthorityMonoByMemberId(Long memberId);
 
 }

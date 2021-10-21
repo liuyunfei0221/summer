@@ -5,10 +5,12 @@ import com.blue.secure.repository.entity.RoleResRelation;
 import com.blue.secure.repository.mapper.RoleResRelationMapper;
 import com.blue.secure.service.inter.RoleResRelationService;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
 
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 
@@ -40,7 +42,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public List<RoleResRelation> selectRoleResRelation() {
-        LOGGER.info("listRoleResRelation()");
+        LOGGER.info("List<RoleResRelation> selectRoleResRelation()");
         return roleResRelationMapper.selectRoleResRelation();
     }
 
@@ -50,8 +52,8 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    public List<Long> selectResourceIdsByRoleId(Long roleId) {
-        LOGGER.info("listResourceIdsByRoleId(Long roleId), roleId = {}", roleId);
-        return roleResRelationMapper.selectResIdsByRoleId(roleId);
+    public Mono<List<Long>> selectResourceIdsMonoByRoleId(Long roleId) {
+        LOGGER.info("Mono<List<Long>> selectResourceIdsMonoByRoleId(Long roleId), roleId = {}", roleId);
+        return just(roleResRelationMapper.selectResIdsByRoleId(roleId));
     }
 }

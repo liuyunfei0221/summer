@@ -2,6 +2,7 @@ package com.blue.base.common.base;
 
 import com.blue.base.constant.base.BlueMediaType;
 import com.blue.base.constant.base.ResponseElement;
+import com.blue.base.constant.base.SortType;
 import com.blue.base.constant.base.Status;
 import com.blue.base.constant.business.ArticleType;
 import com.blue.base.constant.business.SubjectType;
@@ -75,6 +76,12 @@ public final class ConstantProcessor {
      */
     private static final Map<Integer, Status> STATUS_MAPPING =
             of(Status.values()).collect(toMap(s -> s.status, s -> s, (a, b) -> a));
+
+    /**
+     * valid sort type identity and type mapping
+     */
+    private static final Map<String, SortType> SORT_TYPE_MAPPING =
+            of(SortType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
 
     /**
      * valid bulletin type identity and type mapping
@@ -168,6 +175,16 @@ public final class ConstantProcessor {
     public static void assertStatus(Integer identity) {
         if (identity == null || !STATUS_MAPPING.containsKey(identity))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid status type identity");
+    }
+
+    /**
+     * assert sort type
+     *
+     * @param identity
+     */
+    public static void assertSortType(String identity) {
+        if (isBlank(identity) || !SORT_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid sort type identity");
     }
 
     /**
@@ -337,6 +354,23 @@ public final class ConstantProcessor {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid status identity");
 
         return status;
+    }
+
+    /**
+     * get sort type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static SortType getSortTypeByIdentity(String identity) {
+        if (isBlank(identity))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+
+        SortType sortType = SORT_TYPE_MAPPING.get(identity);
+        if (sortType == null)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid sort Type identity");
+
+        return sortType;
     }
 
     /**

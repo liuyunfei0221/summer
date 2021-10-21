@@ -1,5 +1,7 @@
 package com.blue.member.service.inter;
 
+import com.blue.base.model.base.PageModelRequest;
+import com.blue.base.model.base.PageModelResponse;
 import com.blue.member.api.model.MemberInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.model.MemberCondition;
@@ -23,7 +25,7 @@ public interface MemberBasicService {
      * @param phone
      * @return
      */
-    Mono<Optional<MemberBasic>> getByPhone(String phone);
+    Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone);
 
     /**
      * query member by email
@@ -31,7 +33,7 @@ public interface MemberBasicService {
      * @param email
      * @return
      */
-    Mono<Optional<MemberBasic>> getByEmail(String email);
+    Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email);
 
     /**
      * query member by id
@@ -39,7 +41,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    Mono<Optional<MemberBasic>> getByPrimaryKey(Long id);
+    Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id);
 
     /**
      * query member by id with assert
@@ -47,7 +49,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    Mono<MemberInfo> getMemberInfoByPrimaryKeyWithAssert(Long id);
+    Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id);
 
     /**
      * member registry
@@ -58,11 +60,12 @@ public interface MemberBasicService {
     void insert(MemberRegistryParam memberRegistryParam);
 
     /**
-     * select member
+     * select members by ids
      *
+     * @param ids
      * @return
      */
-    Mono<List<MemberBasic>> selectMember();
+    Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids);
 
     /**
      * select member by page and condition
@@ -72,7 +75,7 @@ public interface MemberBasicService {
      * @param memberCondition
      * @return
      */
-    Mono<List<MemberBasic>> selectMemberByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition);
+    Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition);
 
     /**
      * count member by condition
@@ -80,6 +83,14 @@ public interface MemberBasicService {
      * @param memberCondition
      * @return
      */
-    Mono<Long> countMemberByPageAndCondition(MemberCondition memberCondition);
+    Mono<Long> countMemberBasicMonoByCondition(MemberCondition memberCondition);
+
+    /**
+     * select member info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest);
 
 }

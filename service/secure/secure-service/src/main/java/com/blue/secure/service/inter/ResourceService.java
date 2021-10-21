@@ -1,6 +1,7 @@
 package com.blue.secure.service.inter;
 
 import com.blue.secure.repository.entity.Resource;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public interface ResourceService {
      * @param ids
      * @return
      */
-    List<Resource> selectResourceByIds(List<Long> ids);
+    Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids);
 
     /**
      * select resources by role id
@@ -33,6 +34,6 @@ public interface ResourceService {
      * @param roleId
      * @return
      */
-    List<Resource> selectResourceByRoleId(Long roleId);
+    Mono<List<Resource>> selectResourceMonoByRoleId(Long roleId);
 
 }

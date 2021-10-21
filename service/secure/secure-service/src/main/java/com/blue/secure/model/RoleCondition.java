@@ -1,4 +1,4 @@
-package com.blue.member.model;
+package com.blue.secure.model;
 
 import java.io.Serializable;
 
@@ -10,29 +10,13 @@ import java.io.Serializable;
  * @apiNote
  */
 @SuppressWarnings("unused")
-public final class MemberCondition implements Serializable {
+public final class RoleCondition implements Serializable {
 
-    private static final long serialVersionUID = -5396181043246902442L;
+    private static final long serialVersionUID = -2623160339413516868L;
 
     private Long id;
 
-    private String phone;
-
-    private String email;
-
     private String name;
-
-    private String icon;
-
-    /**
-     * @see com.blue.base.constant.member.Gender
-     */
-    private Integer gender;
-
-    /**
-     * @see com.blue.base.constant.base.Status
-     */
-    private Integer status;
 
     private Long createTimeBegin;
 
@@ -46,18 +30,12 @@ public final class MemberCondition implements Serializable {
 
     private String sortType;
 
-    public MemberCondition() {
+    public RoleCondition() {
     }
 
-    public MemberCondition(Long id, String phone, String email, String name, String icon, Integer gender,
-                           Integer status, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+    public RoleCondition(Long id, String name, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         this.id = id;
-        this.phone = phone;
-        this.email = email;
         this.name = name;
-        this.icon = icon;
-        this.gender = gender;
-        this.status = status;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
         this.updateTimeBegin = updateTimeBegin;
@@ -74,52 +52,12 @@ public final class MemberCondition implements Serializable {
         this.id = id;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public Integer getGender() {
-        return gender;
-    }
-
-    public void setGender(Integer gender) {
-        this.gender = gender;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public Long getCreateTimeBegin() {
@@ -172,14 +110,9 @@ public final class MemberCondition implements Serializable {
 
     @Override
     public String toString() {
-        return "MemberCondition{" +
+        return "RoleCondition{" +
                 "id=" + id +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
-                ", icon='" + icon + '\'' +
-                ", gender=" + gender +
-                ", status=" + status +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +

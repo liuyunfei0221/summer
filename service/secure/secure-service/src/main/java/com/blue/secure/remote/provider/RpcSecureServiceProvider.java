@@ -47,7 +47,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<AuthAsserted> assertAuth(AssertAuth assertAuth) {
         LOGGER.info("CompletableFuture<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", assertAuth);
-        return secureService.assertAuth(assertAuth).toFuture();
+        return secureService.assertAuthMono(assertAuth).toFuture();
     }
 
     /**
@@ -83,7 +83,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<Authority> getAuthorityByAccess(Access access) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByAccess(Access access), access = {}", access);
-        return secureService.getAuthorityByAccess(access).toFuture();
+        return secureService.getAuthorityMonoByAccess(access).toFuture();
     }
 
     /**
@@ -95,7 +95,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<Authority> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
-        return secureService.getAuthorityByMemberId(memberId).toFuture();
+        return secureService.getAuthorityMonoByMemberId(memberId).toFuture();
     }
 
 }

@@ -1,9 +1,13 @@
 package com.blue.member.service.impl;
 
+import com.blue.base.common.base.ConstantProcessor;
+import com.blue.base.model.base.PageModelRequest;
+import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberInfo;
 import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.model.MemberCondition;
 import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
 import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
@@ -16,22 +20,30 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
+import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.just;
+import static org.springframework.util.CollectionUtils.isEmpty;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -83,17 +95,39 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     };
 
     /**
+     * sort attr - sort column mapping
+     */
+    private static final Map<String, String> MEMBER_BASIC_SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())
+            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
+
+    /**
+     * sort attr -> sort column
+     */
+    private static final UnaryOperator<String> MEMBER_BASIC_SORT_ATTRIBUTE_CONVERTER = attr ->
+            ofNullable(attr)
+                    .map(MEMBER_BASIC_SORT_ATTRIBUTE_MAPPING::get)
+                    .filter(StringUtils::hasText)
+                    .orElse("");
+
+    /**
+     * is a valid sort attr
+     */
+    private static final Consumer<String> MEMBER_BASIC_SORT_TYPE_ASSERTER = identity ->
+            ofNullable(identity)
+                    .filter(StringUtils::hasText)
+                    .ifPresent(ConstantProcessor::assertSortType);
+
+    /**
      * query member by phone
      *
      * @param phone
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> getByPhone(String phone) {
-        LOGGER.info("getByPhone(String phone), phone = {}", phone);
+    public Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone) {
+        LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone), phone = {}", phone);
         if (isBlank(phone))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
-        LOGGER.info("phone = {}", phone);
         return just(ofNullable(memberBasicMapper.getByPhone(phone)));
     }
 
@@ -104,11 +138,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> getByEmail(String email) {
-        LOGGER.info("getByEmail(String email), email = {}", email);
+    public Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email) {
+        LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email), email = {}", email);
         if (email == null || "".equals(email))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank''");
-        LOGGER.info("email = {}", email);
         return just(ofNullable(memberBasicMapper.getByEmail(email)));
     }
 
@@ -119,8 +152,8 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> getByPrimaryKey(Long id) {
-        LOGGER.info("getByPrimaryKey(Long id), id = {}", id);
+    public Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id) {
+        LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
         if (id == null || id < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
         return just(ofNullable(memberBasicMapper.selectByPrimaryKey(id)));
@@ -133,13 +166,13 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<MemberInfo> getMemberInfoByPrimaryKeyWithAssert(Long id) {
-        LOGGER.info("Mono<MemberInfo> getMemberInfoByPrimaryKeyWithAssert(Long id), id = {}", id);
+    public Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id) {
+        LOGGER.info("Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         if (id == null || id < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return just(id)
-                .flatMap(this::getByPrimaryKey)
+                .flatMap(this::getMemberBasicMonoByPrimaryKey)
                 .flatMap(mbOpt ->
                         mbOpt.map(Mono::just)
                                 .orElseGet(() ->
@@ -195,13 +228,21 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     }
 
     /**
-     * select member
+     * select members by ids
      *
+     * @param ids
      * @return
      */
     @Override
-    public Mono<List<MemberBasic>> selectMember() {
-        return just(memberBasicMapper.select());
+    public Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids) {
+        LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids), ids = {}", ids);
+
+        if (isEmpty(ids))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids can't be empty");
+        if (ids.size() > DB_SELECT.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids size can't be greater than " + DB_SELECT.value);
+
+        return just(memberBasicMapper.selectByIds(ids));
     }
 
     /**
@@ -213,8 +254,13 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<List<MemberBasic>> selectMemberByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition) {
-        LOGGER.info("Mono<List<MemberBasic>>selectMemberByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition), limit = {}, rows = {}, pageModelRequest = {}", limit, rows, memberCondition);
+    public Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition) {
+        LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition), " +
+                "limit = {}, rows = {}, pageModelRequest = {}", limit, rows, memberCondition);
+
+        memberCondition.setSortAttribute(MEMBER_BASIC_SORT_ATTRIBUTE_CONVERTER.apply(memberCondition.getSortAttribute()));
+        MEMBER_BASIC_SORT_TYPE_ASSERTER.accept(memberCondition.getSortType());
+
         return just(memberBasicMapper.selectByLimitAndCondition(limit, rows, memberCondition));
     }
 
@@ -225,7 +271,41 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Long> countMemberByPageAndCondition(MemberCondition memberCondition) {
+    public Mono<Long> countMemberBasicMonoByCondition(MemberCondition memberCondition) {
+        LOGGER.info("Mono<Long> countMemberBasicMonoByCondition(MemberCondition memberCondition), memberCondition = {}", memberCondition);
         return just(ofNullable(memberBasicMapper.countByCondition(memberCondition)).orElse(0L));
     }
+
+    /**
+     * select member info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    @Override
+    public Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest) {
+        LOGGER.info("Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
+                "pageModelRequest = {}", pageModelRequest);
+
+        MemberCondition memberCondition = pageModelRequest.getParam();
+
+        return this.countMemberBasicMonoByCondition(memberCondition)
+                .flatMap(memberCount -> {
+                    Mono<List<MemberBasic>> listMono = memberCount > 0L ? this.selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberCondition) : just(emptyList());
+                    return zip(listMono, just(memberCount));
+                })
+                .flatMap(tuple2 -> {
+                    List<MemberBasic> members = tuple2.getT1();
+                    Mono<List<MemberInfo>> memberInfosMono = members.size() > 0 ?
+                            just(members.stream()
+                                    .map(MEMBER_BASIC_2_MEMBER_INFO).collect(toList()))
+                            :
+                            just(emptyList());
+
+                    return memberInfosMono
+                            .flatMap(memberInfos ->
+                                    just(new PageModelResponse<>(memberInfos, tuple2.getT2())));
+                });
+    }
+
 }

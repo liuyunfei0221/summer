@@ -45,7 +45,7 @@ public class RpcMemberServiceProvider implements RpcMemberService {
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicByPhone(String phone) {
         LOGGER.info("CompletableFuture<MemberBasicInfo> getMemberBasicByPhone(String phone), phone = {},", phone);
-        return memberBasicService.getByPhone(phone)
+        return memberBasicService.getMemberBasicMonoByPhone(phone)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
@@ -61,7 +61,7 @@ public class RpcMemberServiceProvider implements RpcMemberService {
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicByEmail(String email) {
         LOGGER.info("CompletableFuture<MemberBasicInfo> getMemberBasicByEmail(String email), email = {},", email);
-        return memberBasicService.getByEmail(email)
+        return memberBasicService.getMemberBasicMonoByEmail(email)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))

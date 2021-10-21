@@ -195,6 +195,20 @@
         member_basic;
     </select>
 
+    <select id="selectByIds" resultMap="BaseResultMap">
+        <if test="ids != null and ids.size > 0">
+            SELECT
+            <include refid="Base_Column_List"/>
+            FROM
+            member_basic
+            WHERE
+            id IN
+            <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+                #{id,jdbcType=BIGINT}
+            </foreach>
+        </if>
+    </select>
+
     <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
             parameterType="com.blue.member.model.MemberCondition">
         <if test="limit != null and limit >= 0 and rows != null and rows > 0">
@@ -253,8 +267,10 @@
                     </if>
                 </where>
             </if>
-            ORDER BY
-            id DESC
+            <if test="memberCondition.sortAttribute != null and memberCondition.sortAttribute != '' and memberCondition.sortType != null and memberCondition.sortType != ''">
+                ORDER BY
+                ${memberCondition.sortAttribute,jdbcType=VARCHAR} ${memberCondition.sortType,jdbcType=VARCHAR}
+            </if>
             LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT};
         </if>
     </select>
@@ -267,61 +283,61 @@
 
     <select id="countByCondition" resultType="java.lang.Long"
             parameterType="com.blue.member.model.MemberCondition">
-            SELECT COUNT(*)
-            FROM
-            member_basic
-            <if test="memberCondition != null">
-                <where>
-                    <if test="memberCondition.id != null">
-                        AND
-                        id = #{memberCondition.id,jdbcType=BIGINT}
-                    </if>
-                    <if test="memberCondition.phone != null">
-                        AND
-                        phone =
-                        #{memberCondition.phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
-                    </if>
-                    <if test="memberCondition.email != null">
-                        AND
-                        email =
-                        #{memberCondition.email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
-                    </if>
-                    <if test="memberCondition.name != null">
-                        AND
-                        name =
-                        #{memberCondition.name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
-                    </if>
-                    <if test="memberCondition.icon != null">
-                        AND
-                        icon = #{memberCondition.icon,jdbcType=VARCHAR}
-                    </if>
-                    <if test="memberCondition.gender != null">
-                        AND
-                        gender = #{memberCondition.gender,jdbcType=TINYINT}
-                    </if>
-                    <if test="memberCondition.status != null">
-                        AND
-                        status = #{memberCondition.status,jdbcType=TINYINT}
-                    </if>
-                    <if test="memberCondition.createTimeBegin != null">
-                        AND
-                        create_time &gt;= #{memberCondition.createTimeBegin,jdbcType=BIGINT}
-                    </if>
-                    <if test="memberCondition.createTimeEnd != null">
-                        AND
-                        create_time &lt;= #{memberCondition.createTimeEnd,jdbcType=BIGINT}
-                    </if>
-                    <if test="memberCondition.updateTimeBegin != null">
-                        AND
-                        update_time &gt;= #{memberCondition.updateTimeBegin,jdbcType=BIGINT}
-                    </if>
-                    <if test="memberCondition.updateTimeEnd != null">
-                        AND
-                        update_time &lt;= #{memberCondition.updateTimeEnd,jdbcType=BIGINT}
-                    </if>
-                </where>
-            </if>
-            ;
+        SELECT COUNT(*)
+        FROM
+        member_basic
+        <if test="memberCondition != null">
+            <where>
+                <if test="memberCondition.id != null">
+                    AND
+                    id = #{memberCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="memberCondition.phone != null">
+                    AND
+                    phone =
+                    #{memberCondition.phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
+                </if>
+                <if test="memberCondition.email != null">
+                    AND
+                    email =
+                    #{memberCondition.email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
+                </if>
+                <if test="memberCondition.name != null">
+                    AND
+                    name =
+                    #{memberCondition.name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
+                </if>
+                <if test="memberCondition.icon != null">
+                    AND
+                    icon = #{memberCondition.icon,jdbcType=VARCHAR}
+                </if>
+                <if test="memberCondition.gender != null">
+                    AND
+                    gender = #{memberCondition.gender,jdbcType=TINYINT}
+                </if>
+                <if test="memberCondition.status != null">
+                    AND
+                    status = #{memberCondition.status,jdbcType=TINYINT}
+                </if>
+                <if test="memberCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{memberCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="memberCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{memberCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="memberCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{memberCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="memberCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{memberCondition.updateTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+        ;
     </select>
 
 </mapper>

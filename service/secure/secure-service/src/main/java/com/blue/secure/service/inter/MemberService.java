@@ -19,7 +19,7 @@ public interface MemberService {
      * @param clientLoginParam
      * @return
      */
-    Mono<MemberBasicInfo> getMemberByPhoneWithAssertVerify(ClientLoginParam clientLoginParam);
+    Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam);
 
     /**
      * get member by phone and check password
@@ -27,7 +27,7 @@ public interface MemberService {
      * @param clientLoginParam
      * @return
      */
-    Mono<MemberBasicInfo> getMemberByPhoneWithAssertPwd(ClientLoginParam clientLoginParam);
+    Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam);
 
     /**
      * get member by email and check password
@@ -35,6 +35,6 @@ public interface MemberService {
      * @param clientLoginParam
      * @return
      */
-    Mono<MemberBasicInfo> getMemberByEmailWithAssertPwd(ClientLoginParam clientLoginParam);
+    Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam);
 
 }

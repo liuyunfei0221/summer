@@ -1,13 +1,18 @@
 package com.blue.secure.service.impl;
 
+import com.blue.base.model.base.PageModelRequest;
+import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.config.deploy.BlockingDeploy;
+import com.blue.secure.model.RoleCondition;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.mapper.RoleMapper;
 import com.blue.secure.service.inter.MemberRoleRelationService;
 import com.blue.secure.service.inter.RoleService;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +32,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.util.CollectionUtils.isEmpty;
+import static reactor.core.publisher.Mono.error;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -127,13 +134,12 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Optional<Role> getRoleById(Long id) {
-        LOGGER.info("getRoleById(Long id), id = {}", id);
+    public Mono<Optional<Role>> getRoleMonoById(Long id) {
+        LOGGER.info("ono<Optional<Role>> getRoleMonoById(Long id), id = {}", id);
         if (id == null || id < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        Role role = roleMapper.selectByPrimaryKey(id);
-        return ofNullable(role);
+        return just(ofNullable(roleMapper.selectByPrimaryKey(id)));
     }
 
     /**
@@ -143,13 +149,13 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Optional<Long> getRoleIdByMemberId(Long memberId) {
-        LOGGER.info("getRoleIdByMemberId(Long memberId), memberId = {}", memberId);
+    public Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId) {
+        LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (memberId == null || memberId < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         LOGGER.info("memberId = {}", memberId);
-        return memberRoleRelationService.getRoleIdByMemberId(memberId);
+        return memberRoleRelationService.getRoleIdMonoByMemberId(memberId);
     }
 
     /**
@@ -159,16 +165,17 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Optional<Role> getRoleByMemberId(Long memberId) {
-        LOGGER.info("getRoleByMemberId(Long memberId), memberId = {}", memberId);
+    public Mono<Optional<Role>> getRoleMonoByMemberId(Long memberId) {
+        LOGGER.info(" Mono<Optional<Role>> getRoleMonoByMemberId(Long memberId), memberId = {}", memberId);
 
-        Optional<Long> roleIdOpt = this.getRoleIdByMemberId(memberId);
-        if (roleIdOpt.isEmpty()) {
-            LOGGER.error("the member that id is " + memberId + " not have a role");
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
-        }
-
-        return ofNullable(roleMapper.selectByPrimaryKey(roleIdOpt.get()));
+        return this.getRoleIdMonoByMemberId(memberId)
+                .flatMap(roleIdOpt -> {
+                    if (roleIdOpt.isEmpty()) {
+                        LOGGER.error("the member that id is " + memberId + " not have a role");
+                        return error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message));
+                    }
+                    return just(ofNullable(roleMapper.selectByPrimaryKey(roleIdOpt.get())));
+                });
     }
 
     /**
@@ -189,15 +196,15 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public List<Role> selectRoleByIds(List<Long> ids) {
-        LOGGER.info("List<Role> selectRolesByIds(List<Long> ids), ids = {}", ids);
+    public Mono<List<Role>> selectRoleMonoByIds(List<Long> ids) {
+        LOGGER.info("Mono<List<Role>> selectRoleMonoByIds(List<Long> ids), ids = {}", ids);
 
         if (isEmpty(ids))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids can't be empty");
         if (ids.size() > DB_SELECT.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids size can't be greater than " + DB_SELECT.value);
 
-        return roleMapper.selectRoleByIds(ids);
+        return just(roleMapper.selectRoleByIds(ids));
     }
 
     /**
@@ -220,5 +227,38 @@ public class RoleServiceImpl implements RoleService {
         return role;
     }
 
+    /**
+     * select role by page and condition
+     *
+     * @param limit
+     * @param rows
+     * @param roleCondition
+     * @return
+     */
+    @Override
+    public Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition) {
+        return null;
+    }
 
+    /**
+     * count role by condition
+     *
+     * @param roleCondition
+     * @return
+     */
+    @Override
+    public Mono<Long> countRoleMonoByCondition(RoleCondition roleCondition) {
+        return null;
+    }
+
+    /**
+     * select role info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    @Override
+    public Mono<PageModelResponse<RoleInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest) {
+        return null;
+    }
 }

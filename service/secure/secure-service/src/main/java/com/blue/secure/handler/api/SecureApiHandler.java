@@ -80,7 +80,7 @@ public final class SecureApiHandler {
     public Mono<ServerResponse> getAuthority(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        secureService.getAuthorityByAccess(acc)
+                        secureService.getAuthorityMonoByAccess(acc)
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(generate(OK.code, authority, GENERIC_SUCCESS.message)

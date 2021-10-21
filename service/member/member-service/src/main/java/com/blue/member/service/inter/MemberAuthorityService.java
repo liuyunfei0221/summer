@@ -22,6 +22,6 @@ public interface MemberAuthorityService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest);
+    Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest);
 
 }

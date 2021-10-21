@@ -1,6 +1,7 @@
 package com.blue.secure.service.inter;
 
 import com.blue.secure.repository.entity.RoleResRelation;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -25,6 +26,6 @@ public interface RoleResRelationService {
      * @param roleId
      * @return
      */
-    List<Long> selectResourceIdsByRoleId(Long roleId);
+    Mono<List<Long>> selectResourceIdsMonoByRoleId(Long roleId);
 
 }

@@ -312,9 +312,9 @@ public class SecureServiceImpl implements SecureService {
      */
     private void initLoginHandler() {
         clientLoginHandlers = new HashMap<>(16, 1.0f);
-        clientLoginHandlers.put(SMS_VERIGY.identity, memberService::getMemberByPhoneWithAssertVerify);
-        clientLoginHandlers.put(PHONE_PWD.identity, memberService::getMemberByPhoneWithAssertPwd);
-        clientLoginHandlers.put(EMAIL_PWD.identity, memberService::getMemberByEmailWithAssertPwd);
+        clientLoginHandlers.put(SMS_VERIGY.identity, memberService::getMemberBasicInfoMonoByPhoneWithAssertVerify);
+        clientLoginHandlers.put(PHONE_PWD.identity, memberService::getMemberBasicInfoMonoByPhoneWithAssertPwd);
+        clientLoginHandlers.put(EMAIL_PWD.identity, memberService::getMemberBasicInfoMonoByEmailWithAssertPwd);
 
         LOGGER.info("generateLoginHandler(), clientLoginHandlers = {}", clientLoginHandlers);
     }
@@ -541,14 +541,14 @@ public class SecureServiceImpl implements SecureService {
      * @param roleId
      * @return
      */
-    private Authority getAuthorityByRoleId(Long roleId) {
+    private Mono<Authority> getAuthorityMonoByRoleId(Long roleId) {
         LOGGER.info("getAuthorityByRoleOpt(Long roleId), roleId = {}", roleId);
-        return ROLE_INFO_BY_ID_GETTER.apply(roleId)
+        return just(ROLE_INFO_BY_ID_GETTER.apply(roleId)
                 .map(role ->
                         new Authority(role,
                                 RESOURCE_INFOS_BY_ROLE_ID_GETTER.apply(roleId)))
                 .orElseThrow(() ->
-                        new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role info doesn't exist, roleId = " + roleId));
+                        new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role info doesn't exist, roleId = " + roleId)));
     }
 
     /**
@@ -656,7 +656,7 @@ public class SecureServiceImpl implements SecureService {
                     LOGGER.info("memberBasicInfo = {}", memberBasicInfo);
                     Long mid = memberBasicInfo.getId();
 
-                    return just(roleService.getRoleIdByMemberId(mid))
+                    return roleService.getRoleIdMonoByMemberId(mid)
                             .flatMap(ridOpt ->
                                     ridOpt.map(rid ->
                                                     just(new AuthGenParam(mid, rid, t3.getT2(), t3.getT3())))
@@ -664,7 +664,7 @@ public class SecureServiceImpl implements SecureService {
                                                 LOGGER.error("loginByClient(ClientLoginParam clientLoginParam) failed, member has no role, memberId = {}", mid);
                                                 return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message));
                                             }));
-                }).flatMap(this::generateAuth);
+                }).flatMap(this::generateAuthMono);
     }
 
     /**
@@ -706,7 +706,7 @@ public class SecureServiceImpl implements SecureService {
      * @return
      */
     @Override
-    public Mono<AuthAsserted> assertAuth(AssertAuth assertAuth) {
+    public Mono<AuthAsserted> assertAuthMono(AssertAuth assertAuth) {
         LOGGER.info("assertAuth(AssertAuth assertAuth), assertAuth = {}", assertAuth);
         return just(assertAuth)
                 .switchIfEmpty(error(UNAUTHORIZED_EXP))
@@ -758,8 +758,8 @@ public class SecureServiceImpl implements SecureService {
      * @return
      */
     @Override
-    public Mono<MemberAuth> generateAuth(AuthGenParam authGenParam) {
-        LOGGER.info("generateAuth(AuthGenParam authGenParam), authGenParam = {}", authGenParam);
+    public Mono<MemberAuth> generateAuthMono(AuthGenParam authGenParam) {
+        LOGGER.info("Mono<MemberAuth> generateAuthMono(AuthGenParam authGenParam), authGenParam = {}", authGenParam);
         if (authGenParam == null)
             return error(INTERNAL_SERVER_ERROR_EXP);
 
@@ -939,12 +939,12 @@ public class SecureServiceImpl implements SecureService {
      * @return
      */
     @Override
-    public Mono<Authority> getAuthorityByAccess(Access access) {
-        LOGGER.info("getAuthorityByAccess(Access access), access = {}", access);
+    public Mono<Authority> getAuthorityMonoByAccess(Access access) {
+        LOGGER.info("Mono<Authority> getAuthorityMonoByAccess(Access access), access = {}", access);
         if (access == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "access can't be null");
 
-        return just(getAuthorityByRoleId(access.getRoleId()));
+        return getAuthorityMonoByRoleId(access.getRoleId());
     }
 
     /**
@@ -954,15 +954,16 @@ public class SecureServiceImpl implements SecureService {
      * @return
      */
     @Override
-    public Mono<Authority> getAuthorityByMemberId(Long memberId) {
-        LOGGER.info("getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
+    public Mono<Authority> getAuthorityMonoByMemberId(Long memberId) {
+        LOGGER.info("Mono<Authority> getAuthorityMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (memberId == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INVALID_IDENTITY.message);
 
-        return just(getAuthorityByRoleId(
-                memberRoleRelationService.getRoleIdByMemberId(memberId)
-                        .orElseThrow(() ->
-                                new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "role id of the member id -> " + memberId + " not found"))));
+        return memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
+                .flatMap(roleIdOpt ->
+                        roleIdOpt.map(this::getAuthorityMonoByRoleId)
+                                .orElseThrow(() ->
+                                        new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "role id of the member id -> " + memberId + " not found")));
     }
 
     /**

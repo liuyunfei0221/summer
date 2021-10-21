@@ -11,6 +11,7 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -24,6 +25,7 @@ import static java.util.Optional.ofNullable;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static org.springframework.util.CollectionUtils.isEmpty;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -59,15 +61,15 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      * @return
      */
     @Override
-    public Optional<Long> getRoleIdByMemberId(Long memberId) {
-        LOGGER.info("getRoleIdByMemberId(Long memberId), memberId = {}", memberId);
+    public Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId) {
+        LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (memberId == null || memberId < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         Long roleId = memberRoleRelationMapper.getRoleIdByMemberId(memberId);
-        LOGGER.info("memberId = {},roleId = {}", memberId, roleId);
+        LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}, roleId = {}", memberId, roleId);
 
-        return ofNullable(roleId);
+        return just(ofNullable(roleId));
     }
 
     /**
@@ -77,15 +79,15 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      * @return
      */
     @Override
-    public List<MemberRoleRelation> selectRelationByMemberIds(List<Long> memberIds) {
-        LOGGER.info("List<MemberRoleRelation> selectRelationByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
+    public Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds) {
+        LOGGER.info("Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
 
         if (isEmpty(memberIds))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberIds can't be empty");
         if (memberIds.size() > DB_SELECT.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberIds size can't be greater than " + DB_SELECT.value);
 
-        return memberRoleRelationMapper.selectMemberRoleRelationByMemberIds(memberIds);
+        return just(memberRoleRelationMapper.selectMemberRoleRelationByMemberIds(memberIds));
     }
 
     /**

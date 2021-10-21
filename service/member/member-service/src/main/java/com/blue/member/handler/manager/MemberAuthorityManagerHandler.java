@@ -44,7 +44,7 @@ public class MemberAuthorityManagerHandler {
         return serverRequest.bodyToMono(PageModelRequest.class)
                 .switchIfEmpty(
                         error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
-                .flatMap(memberAuthorityService::selectMemberAuthorityByPageAndCondition)
+                .flatMap(memberAuthorityService::selectMemberAuthorityPageMonoByPageAndCondition)
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, vo, OK.message), BlueResponse.class));

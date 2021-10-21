@@ -1724,14 +1724,12 @@ CREATE TABLE `member_detail_0`
     `real_name`   varchar(50)  DEFAULT NULL COMMENT 'read name',
     `id_card_no`  varchar(50)  DEFAULT NULL COMMENT 'id card number',
     `address`     varchar(256) DEFAULT NULL COMMENT 'address',
-    `email`       varchar(128) DEFAULT NULL COMMENT 'email',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_name`(`real_name`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE,
-    UNIQUE KEY `idx_email`(`email`) USING BTREE
+    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member detail 0';
 
 CREATE TABLE `member_detail_1`
@@ -1741,14 +1739,12 @@ CREATE TABLE `member_detail_1`
     `real_name`   varchar(50)  DEFAULT NULL COMMENT 'read name',
     `id_card_no`  varchar(50)  DEFAULT NULL COMMENT 'id card number',
     `address`     varchar(256) DEFAULT NULL COMMENT 'address',
-    `email`       varchar(128) DEFAULT NULL COMMENT 'email',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_name`(`real_name`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE,
-    UNIQUE KEY `idx_email`(`email`) USING BTREE
+    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member detail 1';
 
 CREATE TABLE `member_business_0`
@@ -1840,14 +1836,12 @@ CREATE TABLE `member_detail_0`
     `real_name`   varchar(50)  DEFAULT NULL COMMENT 'read name',
     `id_card_no`  varchar(50)  DEFAULT NULL COMMENT 'id card number',
     `address`     varchar(256) DEFAULT NULL COMMENT 'address',
-    `email`       varchar(128) DEFAULT NULL COMMENT 'email',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_name`(`real_name`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE,
-    UNIQUE KEY `idx_email`(`email`) USING BTREE
+    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member detail 0';
 
 CREATE TABLE `member_detail_1`
@@ -1857,14 +1851,12 @@ CREATE TABLE `member_detail_1`
     `real_name`   varchar(50)  DEFAULT NULL COMMENT 'read name',
     `id_card_no`  varchar(50)  DEFAULT NULL COMMENT 'id card number',
     `address`     varchar(256) DEFAULT NULL COMMENT 'address',
-    `email`       varchar(128) DEFAULT NULL COMMENT 'email',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_name`(`real_name`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE,
-    UNIQUE KEY `idx_email`(`email`) USING BTREE
+    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member detail 1';
 
 CREATE TABLE `member_business_0`

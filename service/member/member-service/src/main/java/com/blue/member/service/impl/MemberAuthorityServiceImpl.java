@@ -54,30 +54,34 @@ public class MemberAuthorityServiceImpl implements MemberAuthorityService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), pageModelRequest = {}", pageModelRequest);
+    public Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest) {
+        LOGGER.info("Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
+                "pageModelRequest = {}", pageModelRequest);
 
         MemberCondition memberCondition = pageModelRequest.getParam();
 
-        return zip(
-                memberBasicService.selectMemberByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberCondition),
-                memberBasicService.countMemberByPageAndCondition(memberCondition)
-        )
+        return memberBasicService.countMemberBasicMonoByCondition(memberCondition)
+                .flatMap(memberCount -> {
+                    Mono<List<MemberBasic>> listMono = memberCount > 0L ? memberBasicService.selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberCondition) : just(emptyList());
+                    return zip(listMono, just(memberCount));
+                })
                 .flatMap(tuple2 -> {
-                    List<MemberBasic> memberList = tuple2.getT1();
-                    Long memberCount = tuple2.getT2();
-
-                    return memberCount > 0L ?
-                            rpcRoleServiceConsumer.selectRoleInfoByMemberIds(memberList.stream().map(MemberBasic::getId).collect(toList()))
+                    List<MemberBasic> members = tuple2.getT1();
+                    Mono<List<MemberAuthorityInfo>> memberAuthorityInfosMono = members.size() > 0 ?
+                            rpcRoleServiceConsumer.selectRoleInfoByMemberIds(members.stream().map(MemberBasic::getId).collect(toList()))
                                     .flatMap(relationInfos -> {
                                         Map<Long, RoleInfo> memberIdAndRoleInfoMapping = relationInfos.stream().collect(toMap(MemberRoleRelationInfo::getMemberId, MemberRoleRelationInfo::getRoleInfo, (a, b) -> b));
-                                        return just(new PageModelResponse<>(memberList.stream()
+                                        return just(members.stream()
                                                 .map(memberBasic ->
                                                         new MemberAuthorityInfo(MEMBER_BASIC_2_MEMBER_INFO.apply(memberBasic), memberIdAndRoleInfoMapping.get(memberBasic.getId()))
-                                                ).collect(toList()), memberCount));
+                                                ).collect(toList()));
                                     })
                             :
-                            just(new PageModelResponse<>(emptyList(), 0L));
+                            just(emptyList());
+
+                    return memberAuthorityInfosMono
+                            .flatMap(memberAuthorityInfos ->
+                                    just(new PageModelResponse<>(memberAuthorityInfos, tuple2.getT2())));
                 });
     }
 
