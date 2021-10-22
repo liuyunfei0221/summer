@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc", "unused"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface AttachmentMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -25,28 +25,10 @@ public interface AttachmentMapper {
 
     int updateByPrimaryKey(Attachment record);
 
-    /**
-     * insert batch
-     *
-     * @param list
-     */
     void insertBatch(@Param("list") List<Attachment> list);
 
-    /**
-     * select attachment page by member id
-     *
-     * @param memberId
-     * @param limit
-     * @param rows
-     * @return
-     */
-    List<Attachment> selectAttachmentByLimitAndMemberId(@Param("memberId") Long memberId, @Param("limit") long limit, @Param("rows") long rows);
+    List<Attachment> selectByLimitAndMemberId(@Param("memberId") Long memberId, @Param("limit") long limit, @Param("rows") long rows);
 
-    /**
-     * count attachment by member id
-     *
-     * @return
-     */
-    Long countAttachmentByMemberId(@Param("memberId") Long memberId);
+    Long countByMemberId(@Param("memberId") Long memberId);
 
 }

@@ -1,11 +1,12 @@
 package com.blue.secure.api.model;
 
-import com.blue.base.common.base.ConstantProcessor;
 import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.ConstantProcessor.assertDeviceType;
+import static com.blue.base.common.base.ConstantProcessor.assertLoginType;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
@@ -40,11 +41,15 @@ public final class ClientLoginParam implements Serializable {
 
     /**
      * login type
+     *
+     * @see com.blue.base.constant.secure.LoginType
      */
     private String loginType;
 
     /**
      * device type
+     *
+     * @see com.blue.base.constant.secure.DeviceType
      */
     private String deviceType;
 
@@ -61,18 +66,9 @@ public final class ClientLoginParam implements Serializable {
         if (access.length() > ACS_LEN_MAX)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access too long");
 
-        if (verificationCode == null || "".equals(verificationCode))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verificationCode can't be blank");
-        if (access.length() > VFC_LEN_MAX)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verificationCode too long");
+        assertLoginType(loginType, false);
 
-        if (loginType == null || "".equals(loginType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "loginType can't be blank");
-        ConstantProcessor.assertLoginType(loginType);
-
-        if (deviceType == null || "".equals(deviceType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "deviceType can't be blank");
-        ConstantProcessor.assertDeviceType(deviceType);
+        assertDeviceType(deviceType, false);
 
         this.identity = identity;
         this.access = access;
@@ -82,9 +78,6 @@ public final class ClientLoginParam implements Serializable {
     }
 
     public String getIdentity() {
-        if (identity == null || "".equals(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity can't be blank");
-
         return identity;
     }
 
@@ -98,9 +91,6 @@ public final class ClientLoginParam implements Serializable {
     }
 
     public String getAccess() {
-        if (access == null || "".equals(access))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
-
         return access;
     }
 
@@ -114,49 +104,28 @@ public final class ClientLoginParam implements Serializable {
     }
 
     public String getVerificationCode() {
-        if (verificationCode == null || "".equals(verificationCode))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verificationCode can't be blank");
-
         return verificationCode;
     }
 
     public void setVerificationCode(String verificationCode) {
-        if (verificationCode == null || "".equals(verificationCode))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verificationCode can't be blank");
-        if (access.length() > VFC_LEN_MAX)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verificationCode too long");
-
         this.verificationCode = verificationCode;
     }
 
     public String getLoginType() {
-        if (loginType == null || "".equals(loginType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "loginType can't be blank");
-
-        ConstantProcessor.assertLoginType(loginType);
         return loginType;
     }
 
     public void setLoginType(String loginType) {
-        if (loginType == null || "".equals(loginType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "loginType can't be blank");
-
-        ConstantProcessor.assertLoginType(loginType);
+        assertLoginType(loginType, false);
         this.loginType = loginType;
     }
 
     public String getDeviceType() {
-        if (deviceType == null || "".equals(deviceType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "deviceType can't be blank");
-
         return deviceType;
     }
 
     public void setDeviceType(String deviceType) {
-        if (deviceType == null || "".equals(deviceType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "deviceType can't be blank");
-
-        ConstantProcessor.assertDeviceType(deviceType);
+        assertDeviceType(deviceType, false);
         this.deviceType = deviceType;
     }
 

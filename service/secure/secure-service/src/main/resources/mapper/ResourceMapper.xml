@@ -26,14 +26,14 @@
         , `request_method`,`module`, `uri`, `authenticate`, `request_un_decryption`, `response_un_encryption`, `existence_request_body`, `existence_response_body`, `type`, `name`, `description`, `create_time`, `update_time`, `creator`, `updater`
     </sql>
 
-    <select id="selectResource" resultMap="BaseResultMap">
+    <select id="select" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        resource;
+        resource
     </select>
 
-    <select id="selectResourceByIds" resultMap="BaseResultMap">
+    <select id="selectByIds" resultMap="BaseResultMap">
         <if test="ids != null and ids.size > 0">
             SELECT
             <include refid="Base_Column_List"/>

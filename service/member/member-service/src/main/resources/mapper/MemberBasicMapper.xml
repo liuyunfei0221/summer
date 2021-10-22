@@ -167,7 +167,7 @@
         FROM
         member_basic FORCE INDEX(idx_phone)
         WHERE
-        `phone` = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler};
+        `phone` = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
     </select>
 
     <select id="getByEmail" resultMap="BaseResultMap">
@@ -176,7 +176,7 @@
         FROM
         member_basic FORCE INDEX(idx_email)
         WHERE
-        `email` = #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler};
+        `email` = #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
     </select>
 
     <select id="getByName" resultMap="BaseResultMap">
@@ -185,14 +185,14 @@
         FROM
         member_basic FORCE INDEX(idx_name)
         WHERE
-        `name` = #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler};
+        `name` = #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
     </select>
 
     <select id="select" resultMap="BaseResultMap" parameterType="com.blue.member.model.MemberCondition">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        member_basic;
+        member_basic
     </select>
 
     <select id="selectByIds" resultMap="BaseResultMap">
@@ -209,83 +209,7 @@
         </if>
     </select>
 
-    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
-            parameterType="com.blue.member.model.MemberCondition">
-        <if test="limit != null and limit >= 0 and rows != null and rows > 0">
-            SELECT
-            <include refid="Base_Column_List"/>
-            FROM
-            member_basic
-            <if test="memberCondition != null">
-                <where>
-                    <if test="memberCondition.id != null">
-                        AND
-                        id = #{memberCondition.id,jdbcType=BIGINT}
-                    </if>
-                    <if test="memberCondition.phone != null">
-                        AND
-                        phone =
-                        #{memberCondition.phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
-                    </if>
-                    <if test="memberCondition.email != null">
-                        AND
-                        email =
-                        #{memberCondition.email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
-                    </if>
-                    <if test="memberCondition.name != null">
-                        AND
-                        name =
-                        #{memberCondition.name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
-                    </if>
-                    <if test="memberCondition.icon != null">
-                        AND
-                        icon = #{memberCondition.icon,jdbcType=VARCHAR}
-                    </if>
-                    <if test="memberCondition.gender != null">
-                        AND
-                        gender = #{memberCondition.gender,jdbcType=TINYINT}
-                    </if>
-                    <if test="memberCondition.status != null">
-                        AND
-                        status = #{memberCondition.status,jdbcType=TINYINT}
-                    </if>
-                    <if test="memberCondition.createTimeBegin != null">
-                        AND
-                        create_time &gt;= #{memberCondition.createTimeBegin,jdbcType=BIGINT}
-                    </if>
-                    <if test="memberCondition.createTimeEnd != null">
-                        AND
-                        create_time &lt;= #{memberCondition.createTimeEnd,jdbcType=BIGINT}
-                    </if>
-                    <if test="memberCondition.updateTimeBegin != null">
-                        AND
-                        update_time &gt;= #{memberCondition.updateTimeBegin,jdbcType=BIGINT}
-                    </if>
-                    <if test="memberCondition.updateTimeEnd != null">
-                        AND
-                        update_time &lt;= #{memberCondition.updateTimeEnd,jdbcType=BIGINT}
-                    </if>
-                </where>
-            </if>
-            <if test="memberCondition.sortAttribute != null and memberCondition.sortAttribute != '' and memberCondition.sortType != null and memberCondition.sortType != ''">
-                ORDER BY
-                ${memberCondition.sortAttribute,jdbcType=VARCHAR} ${memberCondition.sortType,jdbcType=VARCHAR}
-            </if>
-            LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT};
-        </if>
-    </select>
-
-    <select id="countAttachmentByMemberId" resultType="java.lang.Long">
-        SELECT COUNT(*)
-        FROM attachment
-        WHERE creator = #{memberId,jdbcType=BIGINT}
-    </select>
-
-    <select id="countByCondition" resultType="java.lang.Long"
-            parameterType="com.blue.member.model.MemberCondition">
-        SELECT COUNT(*)
-        FROM
-        member_basic
+    <sql id="Member_Conditions">
         <if test="memberCondition != null">
             <where>
                 <if test="memberCondition.id != null">
@@ -337,7 +261,30 @@
                 </if>
             </where>
         </if>
-        ;
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
+            parameterType="com.blue.member.model.MemberCondition">
+        <if test="limit != null and limit >= 0 and rows != null and rows > 0">
+            SELECT
+            <include refid="Base_Column_List"/>
+            FROM
+            member_basic
+            <include refid="Member_Conditions"/>
+            <if test="memberCondition.sortAttribute != null and memberCondition.sortAttribute != '' and memberCondition.sortType != null and memberCondition.sortType != ''">
+                ORDER BY
+                ${memberCondition.sortAttribute,jdbcType=VARCHAR} ${memberCondition.sortType,jdbcType=VARCHAR}
+            </if>
+            LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long"
+            parameterType="com.blue.member.model.MemberCondition">
+        SELECT COUNT(*)
+        FROM
+        member_basic
+        <include refid="Member_Conditions"/>
     </select>
 
 </mapper>

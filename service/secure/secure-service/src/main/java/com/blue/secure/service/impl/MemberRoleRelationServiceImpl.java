@@ -87,7 +87,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         if (memberIds.size() > DB_SELECT.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberIds size can't be greater than " + DB_SELECT.value);
 
-        return just(memberRoleRelationMapper.selectMemberRoleRelationByMemberIds(memberIds));
+        return just(memberRoleRelationMapper.selectByMemberIds(memberIds));
     }
 
     /**
@@ -104,7 +104,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         if (memberId == null || memberId < 1L || roleId == null || roleId < 1L || operatorId == null || operatorId < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getMemberRoleRelationByMemberId(memberId);
+        MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getByMemberId(memberId);
         if (memberRoleRelation == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message);
 
@@ -137,7 +137,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         lock.lock();
 
         try {
-            MemberRoleRelation existRelation = memberRoleRelationMapper.getMemberRoleRelationByMemberId(memberId);
+            MemberRoleRelation existRelation = memberRoleRelationMapper.getByMemberId(memberId);
             if (existRelation != null)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_ALREADY_HAS_A_ROLE.message);
 

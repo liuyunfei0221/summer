@@ -1,6 +1,5 @@
 package com.blue.gateway.config.filter.global;
 
-import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.model.base.DataEvent;
@@ -64,7 +63,7 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
 
     private static final Supplier<Long> TIME_STAMP_GETTER = GatewayCommonFactory.TIME_STAMP_GETTER;
 
-    private static final Gson GSON = CommonFunctions.GSON;
+    private static final Gson GSON = GatewayCommonFactory.GSON;
 
     private static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = GatewayCommonFactory.THROWABLE_CONVERTER;
 

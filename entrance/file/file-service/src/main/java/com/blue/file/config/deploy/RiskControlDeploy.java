@@ -14,9 +14,7 @@ public class RiskControlDeploy {
 
     private Long illegalExpireSeconds;
 
-
     private Integer illegalCapacity;
-
 
     public RiskControlDeploy() {
     }

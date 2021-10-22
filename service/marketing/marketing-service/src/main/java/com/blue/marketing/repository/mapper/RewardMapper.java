@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
+@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface RewardMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -25,12 +25,6 @@ public interface RewardMapper {
 
     int updateByPrimaryKey(Reward record);
 
-    /**
-     * 根据主键集合批量查询奖励信息
-     *
-     * @param ids
-     * @return
-     */
-    List<Reward> selectRewardByIds(@Param("ids") List<Long> ids);
+    List<Reward> selectByIds(@Param("ids") List<Long> ids);
 
 }

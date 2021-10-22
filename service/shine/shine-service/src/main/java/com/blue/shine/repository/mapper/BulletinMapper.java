@@ -25,7 +25,7 @@ public interface BulletinMapper {
 
     int updateByPrimaryKey(Bulletin record);
 
-    List<Bulletin> selectBulletin(@Param("type") Integer type,
+    List<Bulletin> select(@Param("type") Integer type,
                                 @Param("status") Integer status, @Param("limit") Long limit);
 
 }

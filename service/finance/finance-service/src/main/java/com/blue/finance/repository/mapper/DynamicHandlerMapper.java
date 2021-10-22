@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface DynamicHandlerMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -24,11 +24,6 @@ public interface DynamicHandlerMapper {
 
     int updateByPrimaryKey(DynamicHandler record);
 
-    /**
-     * list all dynamic handler
-     *
-     * @return
-     */
-    List<DynamicHandler> selectDynamicHandler();
+    List<DynamicHandler> select();
 
 }

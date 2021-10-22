@@ -1,6 +1,5 @@
 package com.blue.file.config.filter.global;
 
-import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.model.base.DataEvent;
@@ -76,7 +75,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
 
     private static final Supplier<Long> TIME_STAMP_GETTER = FluxCommonFactory.TIME_STAMP_GETTER;
 
-    private static final Gson GSON = CommonFunctions.GSON;
+    private static final Gson GSON = FluxCommonFactory.GSON;
 
     private static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = FluxCommonFactory.THROWABLE_CONVERTER;
 

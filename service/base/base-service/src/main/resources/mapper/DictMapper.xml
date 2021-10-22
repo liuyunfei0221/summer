@@ -140,7 +140,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        dict;
+        dict
     </select>
 
     <select id="selectDictByDictTypeId" resultMap="BaseResultMap">
@@ -150,7 +150,7 @@
             FROM
             dict
             WHERE
-            dict_type_id = #{dictTypeId,jdbcType=BIGINT};
+            dict_type_id = #{dictTypeId,jdbcType=BIGINT}
         </if>
     </select>
 

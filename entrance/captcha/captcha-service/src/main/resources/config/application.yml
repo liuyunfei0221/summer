@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: blue-captcha
+  aop:
+    proxy-target-class: true
+  profiles:
+    active: dev
+  messages:
+    basename: i18n.messages
+  webflux:
+    static-path-pattern: /*
+  web:
+    resources:
+      static-locations: classpath:static
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+
+  main:
+    allow-bean-definition-overriding: true
+
+  cloud:
+    loadbalancer:
+      enabled: true
+      eureka:
+        approximate-zone-from-hostname: false
+      service-discovery:
+        timeout: 5s
+      sticky-session:
+        add-service-instance-cookie: false
+      zone: summer
+      retry:
+        enabled: true
+        avoid-previous-instance: true
+        max-retries-on-next-service-instance: 1
+        max-retries-on-same-service-instance: 0
+        retry-on-all-operations: false
+        retryable-status-codes: [ 203,500,408,504 ]
+        backoff:
+          enabled: true
+          jitter: 0.5
+          min-backoff: 5ms
+          max-backoff: 10ms
+      cache:
+        enabled: true
+        caffeine:
+          spec: initialCapacity=1024,expireAfterWrite=5s
+        capacity: 1024
+        ttl: 5s
+
+server:
+  shutdown: graceful
+
+logging:
+  config: classpath:config/log4j2.xml

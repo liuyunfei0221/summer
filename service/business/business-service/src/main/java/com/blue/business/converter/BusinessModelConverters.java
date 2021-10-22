@@ -1,6 +1,5 @@
 package com.blue.business.converter;
 
-import com.blue.base.common.base.ConstantProcessor;
 import com.blue.base.model.exps.BlueException;
 import com.blue.business.api.model.ArticleInsertParam;
 import com.blue.business.api.model.LinkInsertParam;
@@ -10,6 +9,7 @@ import com.blue.business.repository.entity.Link;
 import java.time.Instant;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.ConstantProcessor.assertArticleType;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Optional.ofNullable;
@@ -28,7 +28,7 @@ public final class BusinessModelConverters {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "title can't be blank");
 
         Integer type = articleInsertParam.getType();
-        ConstantProcessor.assertArticleType(type);
+        assertArticleType(type, false);
 
         String content = articleInsertParam.getContent();
         if (content == null || "".equals(content))

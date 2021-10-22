@@ -1,6 +1,5 @@
 package com.blue.member.converter;
 
-import com.blue.base.common.base.ConstantProcessor;
 import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.base.Status;
 import com.blue.base.model.exps.BlueException;
@@ -12,6 +11,7 @@ import com.blue.member.repository.entity.MemberBasic;
 import java.time.Instant;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -56,10 +56,7 @@ public final class MemberModelConverters {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
         Integer gender = memberRegistryParam.getGender();
-        if (gender == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "gender can't be null");
-
-        ConstantProcessor.assertGenderIdentity(gender);
+        assertGenderIdentity(gender,false);
 
         String icon = memberRegistryParam.getIcon();
 

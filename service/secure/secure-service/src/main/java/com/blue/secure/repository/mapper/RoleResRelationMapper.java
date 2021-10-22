@@ -10,21 +10,11 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface RoleResRelationMapper {
 
-    /**
-     * select all role resource relation
-     *
-     * @return
-     */
-    List<RoleResRelation> selectRoleResRelation();
+    List<RoleResRelation> select();
 
-    /**
-     * select resources ids by role id
-     *
-     * @return
-     */
     List<Long> selectResIdsByRoleId(@Param("roleId") Long roleId);
 
 }

@@ -63,10 +63,10 @@ public final class AttachmentApiHandler {
      */
     public Mono<ServerResponse> withdraw(ServerRequest serverRequest) {
         Access access = AccessGetterForReactive.getAccess(serverRequest);
-
         return serverRequest.bodyToMono(WithdrawInfo.class)
+                .switchIfEmpty(
+                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
                 .flatMap(withdrawInfo -> {
-
                     System.err.println(access);
                     System.err.println();
                     System.err.println(withdrawInfo);

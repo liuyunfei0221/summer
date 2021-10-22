@@ -1,6 +1,5 @@
 package com.blue.member.service.impl;
 
-import com.blue.base.common.base.ConstantProcessor;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -31,6 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import static com.blue.base.common.base.ConstantProcessor.assertSortType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.ResponseMessage.*;
@@ -108,14 +108,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                     .map(MEMBER_BASIC_SORT_ATTRIBUTE_MAPPING::get)
                     .filter(StringUtils::hasText)
                     .orElse("");
-
-    /**
-     * is a valid sort attr
-     */
-    private static final Consumer<String> MEMBER_BASIC_SORT_TYPE_ASSERTER = identity ->
-            ofNullable(identity)
-                    .filter(StringUtils::hasText)
-                    .ifPresent(ConstantProcessor::assertSortType);
 
     /**
      * query member by phone
@@ -256,10 +248,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition) {
         LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition), " +
-                "limit = {}, rows = {}, pageModelRequest = {}", limit, rows, memberCondition);
+                "limit = {}, rows = {}, memberCondition = {}", limit, rows, memberCondition);
 
         memberCondition.setSortAttribute(MEMBER_BASIC_SORT_ATTRIBUTE_CONVERTER.apply(memberCondition.getSortAttribute()));
-        MEMBER_BASIC_SORT_TYPE_ASSERTER.accept(memberCondition.getSortType());
+        assertSortType(memberCondition.getSortType(), true);
 
         return just(memberBasicMapper.selectByLimitAndCondition(limit, rows, memberCondition));
     }

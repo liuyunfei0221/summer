@@ -147,10 +147,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         LOGGER.info("packageRequestParam(), dataEvent = {}", dataEvent);
     }
 
-    private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, ServerHttpResponse response, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
-        HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
-
+    private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, ServerHttpResponse response, HttpStatus httpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         return ClientResponse
                 .create(httpStatus)
                 .headers(hs ->
@@ -172,12 +169,16 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
     private ServerHttpResponse getResponseAndReport(ServerWebExchange exchange, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
+
+        HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
+        dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
+
         if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
                 .map(b -> (boolean) b).orElse(true)) {
             return new ServerHttpResponseDecorator(response) {
                 @Override
                 public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                    return getResponseBodyAndReport(exchange, response, body, dataEvent).flatMap(data -> {
+                    return getResponseBodyAndReport(exchange, response, httpStatus, body, dataEvent).flatMap(data -> {
                         byte[] bytes = data.getBytes(UTF_8);
                         DataBuffer resBuffer = DATA_BUFFER_FACTORY.allocateBuffer(bytes.length);
                         resBuffer.write(bytes);

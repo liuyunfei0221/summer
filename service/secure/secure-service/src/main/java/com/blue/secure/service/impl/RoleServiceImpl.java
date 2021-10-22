@@ -6,34 +6,42 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.config.deploy.BlockingDeploy;
+import com.blue.secure.constant.RoleSortAttribute;
 import com.blue.secure.model.RoleCondition;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.mapper.RoleMapper;
 import com.blue.secure.service.inter.MemberRoleRelationService;
 import com.blue.secure.service.inter.RoleService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
+import static com.blue.base.common.base.ConstantProcessor.assertSortType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.secure.converter.SecureModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -55,8 +63,6 @@ public class RoleServiceImpl implements RoleService {
 
     private final ExecutorService executorService;
 
-    private final BlockingDeploy blockingDeploy;
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public RoleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RoleMapper roleMapper,
                            MemberRoleRelationService memberRoleRelationService, ExecutorService executorService,
@@ -65,7 +71,8 @@ public class RoleServiceImpl implements RoleService {
         this.roleMapper = roleMapper;
         this.memberRoleRelationService = memberRoleRelationService;
         this.executorService = executorService;
-        this.blockingDeploy = blockingDeploy;
+
+        MAX_WAITING_FOR_REFRESH = blockingDeploy.getBlockingMillis();
     }
 
     private static long MAX_WAITING_FOR_REFRESH;
@@ -90,7 +97,7 @@ public class RoleServiceImpl implements RoleService {
     private boolean generateDefaultRoleInfo() {
         try {
             CompletableFuture<List<Role>> roleListCf =
-                    supplyAsync(roleMapper::selectRole, executorService);
+                    supplyAsync(roleMapper::select, executorService);
 
             List<Role> roleList = roleListCf.join();
             List<Role> defaultRoles = roleList.stream().filter(Role::getIsDefault)
@@ -123,9 +130,23 @@ public class RoleServiceImpl implements RoleService {
 
     @PostConstruct
     public void init() {
-        MAX_WAITING_FOR_REFRESH = blockingDeploy.getBlockingMillis();
         generateDefaultRoleInfo();
     }
+
+    /**
+     * sort attr - sort column mapping
+     */
+    private static final Map<String, String> ROLE_SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
+            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
+
+    /**
+     * sort attr -> sort column
+     */
+    private static final UnaryOperator<String> ROLE_SORT_ATTRIBUTE_CONVERTER = attr ->
+            ofNullable(attr)
+                    .map(ROLE_SORT_ATTRIBUTE_MAPPING::get)
+                    .filter(StringUtils::hasText)
+                    .orElse("");
 
     /**
      * get role by role id
@@ -140,53 +161,6 @@ public class RoleServiceImpl implements RoleService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return just(ofNullable(roleMapper.selectByPrimaryKey(id)));
-    }
-
-    /**
-     * get role id by member id
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId) {
-        LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}", memberId);
-        if (memberId == null || memberId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
-
-        LOGGER.info("memberId = {}", memberId);
-        return memberRoleRelationService.getRoleIdMonoByMemberId(memberId);
-    }
-
-    /**
-     * get role by member id
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Mono<Optional<Role>> getRoleMonoByMemberId(Long memberId) {
-        LOGGER.info(" Mono<Optional<Role>> getRoleMonoByMemberId(Long memberId), memberId = {}", memberId);
-
-        return this.getRoleIdMonoByMemberId(memberId)
-                .flatMap(roleIdOpt -> {
-                    if (roleIdOpt.isEmpty()) {
-                        LOGGER.error("the member that id is " + memberId + " not have a role");
-                        return error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message));
-                    }
-                    return just(ofNullable(roleMapper.selectByPrimaryKey(roleIdOpt.get())));
-                });
-    }
-
-    /**
-     * select all roles
-     *
-     * @return
-     */
-    @Override
-    public List<Role> selectRole() {
-        LOGGER.info("List<Role> selectRoles()");
-        return roleMapper.selectRole();
     }
 
     /**
@@ -205,6 +179,17 @@ public class RoleServiceImpl implements RoleService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids size can't be greater than " + DB_SELECT.value);
 
         return just(roleMapper.selectRoleByIds(ids));
+    }
+
+    /**
+     * select all roles
+     *
+     * @return
+     */
+    @Override
+    public Mono<List<Role>> selectRole() {
+        LOGGER.info("List<Role> selectRoles()");
+        return just(roleMapper.select());
     }
 
     /**
@@ -237,7 +222,13 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition) {
-        return null;
+        LOGGER.info("Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition), " +
+                "limit = {}, rows = {}, roleCondition = {}", limit, rows, roleCondition);
+
+        roleCondition.setSortAttribute(ROLE_SORT_ATTRIBUTE_CONVERTER.apply(roleCondition.getSortAttribute()));
+        assertSortType(roleCondition.getSortType(), true);
+
+        return just(roleMapper.selectByLimitAndCondition(limit, rows, roleCondition));
     }
 
     /**
@@ -248,7 +239,8 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Mono<Long> countRoleMonoByCondition(RoleCondition roleCondition) {
-        return null;
+        LOGGER.info("Mono<Long> countRoleMonoByCondition(RoleCondition roleCondition), roleCondition = {}", roleCondition);
+        return just(ofNullable(roleMapper.countByCondition(roleCondition)).orElse(0L));
     }
 
     /**
@@ -259,6 +251,28 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Mono<PageModelResponse<RoleInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest) {
-        return null;
+        LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest), " +
+                "pageModelRequest = {}", pageModelRequest);
+
+        RoleCondition roleCondition = pageModelRequest.getParam();
+
+        return this.countRoleMonoByCondition(roleCondition)
+                .flatMap(roleCount -> {
+                    Mono<List<Role>> listMono = roleCount > 0L ? this.selectRoleMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), roleCondition) : just(emptyList());
+                    return zip(listMono, just(roleCount));
+                })
+                .flatMap(tuple2 -> {
+                    List<Role> roles = tuple2.getT1();
+                    Mono<List<RoleInfo>> roleInfosMono = roles.size() > 0 ?
+                            just(roles.stream()
+                                    .map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList()))
+                            :
+                            just(emptyList());
+
+                    return roleInfosMono
+                            .flatMap(roleInfos ->
+                                    just(new PageModelResponse<>(roleInfos, tuple2.getT2())));
+                });
     }
+
 }

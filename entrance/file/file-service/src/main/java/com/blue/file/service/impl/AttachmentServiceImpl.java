@@ -103,12 +103,12 @@ public class AttachmentServiceImpl implements AttachmentService {
         if (memberId == null || memberId < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        return just(ofNullable(attachmentMapper.countAttachmentByMemberId(memberId)).orElse(0L))
+        return just(ofNullable(attachmentMapper.countByMemberId(memberId)).orElse(0L))
                 .flatMap(count -> {
                     PageModelResponse<AttachmentInfo> pageModelResponse = new PageModelResponse<>();
                     pageModelResponse.setCount(count);
                     pageModelResponse.setList(count > 0L ?
-                            ofNullable(attachmentMapper.selectAttachmentByLimitAndMemberId(memberId, pageModelRequest.getLimit(), pageModelRequest.getRows()))
+                            ofNullable(attachmentMapper.selectByLimitAndMemberId(memberId, pageModelRequest.getLimit(), pageModelRequest.getRows()))
                                     .orElse(emptyList()).stream().map(a ->
                                             new AttachmentInfo(a.getId(), a.getName(), a.getSize(), a.getCreateTime(), "")
                                     ).collect(toList())

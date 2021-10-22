@@ -1,9 +1,7 @@
 package com.blue.gateway.common;
 
-import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.common.reactive.ReactiveCommonFunctions;
 import com.blue.base.model.exps.BlueException;
-import com.google.gson.Gson;
 import org.springframework.cloud.gateway.filter.factory.rewrite.CachedBodyOutputMessage;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
@@ -32,8 +30,6 @@ import static reactor.util.Loggers.getLogger;
 public final class GatewayCommonFactory extends ReactiveCommonFunctions {
 
     private static final Logger LOGGER = getLogger(GatewayCommonFactory.class);
-
-    private static final Gson GSON = CommonFunctions.GSON;
 
     public static final List<HttpMessageReader<?>> MESSAGE_READERS = withDefaults().messageReaders();
 

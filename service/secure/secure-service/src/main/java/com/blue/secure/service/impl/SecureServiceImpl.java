@@ -57,7 +57,6 @@ import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.of;
@@ -83,15 +82,15 @@ public class SecureServiceImpl implements SecureService {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    private final MemberService memberService;
-
-    private final MemberRoleRelationService memberRoleRelationService;
-
     private final RoleService roleService;
+
+    private final ResourceService resourceService;
+
+    private final MemberService memberService;
 
     private final RoleResRelationService roleResRelationService;
 
-    private final ResourceService resourceService;
+    private final MemberRoleRelationService memberRoleRelationService;
 
     private final InvalidLocalAuthProducer invalidLocalAuthProducer;
 
@@ -105,17 +104,17 @@ public class SecureServiceImpl implements SecureService {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public SecureServiceImpl(JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCacher authInfoCacher, StringRedisTemplate stringRedisTemplate,
-                             MemberService memberService, MemberRoleRelationService memberRoleRelationService, RoleService roleService,
-                             RoleResRelationService roleResRelationService, ResourceService resourceService, InvalidLocalAuthProducer invalidLocalAuthProducer,
+                             RoleService roleService, ResourceService resourceService, MemberService memberService,
+                             RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService, InvalidLocalAuthProducer invalidLocalAuthProducer,
                              ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
         this.jwtProcessor = jwtProcessor;
         this.authInfoCacher = authInfoCacher;
         this.stringRedisTemplate = stringRedisTemplate;
-        this.memberService = memberService;
-        this.memberRoleRelationService = memberRoleRelationService;
         this.roleService = roleService;
-        this.roleResRelationService = roleResRelationService;
         this.resourceService = resourceService;
+        this.memberService = memberService;
+        this.roleResRelationService = roleResRelationService;
+        this.memberRoleRelationService = memberRoleRelationService;
         this.invalidLocalAuthProducer = invalidLocalAuthProducer;
         this.executorService = executorService;
         this.redissonClient = redissonClient;
@@ -573,9 +572,11 @@ public class SecureServiceImpl implements SecureService {
         LOGGER.info("refreshResourceKeyOrRelation()");
 
         CompletableFuture<List<Resource>> resourceListCf =
-                supplyAsync(resourceService::selectResource, executorService);
+                resourceService.selectResource().toFuture();
         CompletableFuture<List<RoleResRelation>> roleResRelationListCf =
-                supplyAsync(roleResRelationService::selectRoleResRelation, executorService);
+                roleResRelationService.selectRoleResRelation().toFuture();
+        CompletableFuture<List<Role>> roleListCf =
+                roleService.selectRole().toFuture();
 
         List<Resource> resources = resourceListCf.join();
         Map<Long, Resource> idAndResourceMapping = resources
@@ -616,7 +617,7 @@ public class SecureServiceImpl implements SecureService {
                 .collect(toMap(r -> INIT_RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
                         REAL_URI_GETTER.apply(r).intern()), r -> r, (a, b) -> a));
 
-        List<Role> roles = roleService.selectRole();
+        List<Role> roles = roleListCf.join();
         Map<Long, RoleInfo> tempIdAndRoleInfoMapping = roles
                 .parallelStream()
                 .map(ROLE_2_ROLE_INFO_CONVERTER)
@@ -656,7 +657,7 @@ public class SecureServiceImpl implements SecureService {
                     LOGGER.info("memberBasicInfo = {}", memberBasicInfo);
                     Long mid = memberBasicInfo.getId();
 
-                    return roleService.getRoleIdMonoByMemberId(mid)
+                    return memberRoleRelationService.getRoleIdMonoByMemberId(mid)
                             .flatMap(ridOpt ->
                                     ridOpt.map(rid ->
                                                     just(new AuthGenParam(mid, rid, t3.getT2(), t3.getT3())))

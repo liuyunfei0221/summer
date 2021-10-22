@@ -320,7 +320,7 @@ consumers:
       proxyProtocol: SNI
       topics: [ illegalMark ]
       topicsPattern:
-      subscriptionName: fileIllegalMarkSubscription000
+      subscriptionName: fileIllegalMarkSubscription
       ackTimeoutMillis: 2000
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000

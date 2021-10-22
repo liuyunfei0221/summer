@@ -45,7 +45,7 @@ public class BulletinServiceImpl implements BulletinService {
         if (bulletinType == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "bulletinType can't be null");
 
-        List<Bulletin> bulletins = bulletinMapper.selectBulletin(bulletinType.identity, Status.VALID.status, ROWS.value);
+        List<Bulletin> bulletins = bulletinMapper.select(bulletinType.identity, Status.VALID.status, ROWS.value);
         LOGGER.info("bulletins = {}", bulletins);
 
         return bulletins;

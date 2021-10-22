@@ -17,11 +17,11 @@
         , role_id, res_id, create_time, update_time, creator, updater
     </sql>
 
-    <select id="selectRoleResRelation" resultMap="BaseResultMap">
+    <select id="select" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        role_res_relation;
+        role_res_relation
     </select>
 
     <select id="selectResIdsByRoleId" parameterType="java.lang.Long" resultType="java.lang.Long">

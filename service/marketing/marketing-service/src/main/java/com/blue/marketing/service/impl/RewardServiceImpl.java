@@ -67,7 +67,7 @@ public class RewardServiceImpl implements RewardService {
         if (CollectionUtils.isEmpty(ids))
             return emptyList();
 
-        return rewardMapper.selectRewardByIds(ids);
+        return rewardMapper.selectByIds(ids);
     }
 
     /**
@@ -83,7 +83,7 @@ public class RewardServiceImpl implements RewardService {
         if (year == null || month == null || year < 1 || month < 1)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "year or month can't be null or less than 1");
 
-        return signRewardTodayRelationMapper.selectRelationByYearAndMonth(year, month);
+        return signRewardTodayRelationMapper.selectByYearAndMonth(year, month);
     }
 
 }

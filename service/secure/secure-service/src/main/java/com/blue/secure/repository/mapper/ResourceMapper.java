@@ -10,22 +10,11 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface ResourceMapper {
 
-    /**
-     * select all resources
-     *
-     * @return
-     */
-    List<Resource> selectResource();
+    List<Resource> select();
 
-    /**
-     * select resources by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<Resource> selectResourceByIds(@Param("ids") List<Long> ids);
+    List<Resource> selectByIds(@Param("ids") List<Long> ids);
 
 }

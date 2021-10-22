@@ -1,5 +1,6 @@
 package com.blue.secure.repository.mapper;
 
+import com.blue.secure.model.RoleCondition;
 import com.blue.secure.repository.entity.Role;
 import org.apache.ibatis.annotations.Param;
 
@@ -10,30 +11,17 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc", "unused"})
+@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface RoleMapper {
 
-    /**
-     * get role by id
-     *
-     * @param id
-     * @return
-     */
     Role selectByPrimaryKey(Long id);
 
-    /**
-     * select all roles
-     *
-     * @return
-     */
-    List<Role> selectRole();
+    List<Role> select();
 
-    /**
-     * select role by ids
-     *
-     * @param ids
-     * @return
-     */
     List<Role> selectRoleByIds(@Param("ids") List<Long> ids);
+
+    List<Role> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("roleCondition") RoleCondition roleCondition);
+
+    Long countByCondition(@Param("roleCondition") RoleCondition roleCondition);
 
 }

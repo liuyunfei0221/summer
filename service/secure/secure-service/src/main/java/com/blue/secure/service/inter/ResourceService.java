@@ -4,6 +4,7 @@ import com.blue.secure.repository.entity.Resource;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * resource service interface
@@ -14,11 +15,19 @@ import java.util.List;
 public interface ResourceService {
 
     /**
+     * get resource by role id
+     *
+     * @param id
+     * @return
+     */
+    Mono<Optional<Resource>> getResourceMonoById(Long id);
+
+    /**
      * select all resources
      *
      * @return
      */
-    List<Resource> selectResource();
+    Mono<List<Resource>> selectResource();
 
     /**
      * select resources by ids
@@ -27,13 +36,5 @@ public interface ResourceService {
      * @return
      */
     Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids);
-
-    /**
-     * select resources by role id
-     *
-     * @param roleId
-     * @return
-     */
-    Mono<List<Resource>> selectResourceMonoByRoleId(Long roleId);
 
 }

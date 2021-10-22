@@ -10,9 +10,8 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
+import java.util.Optional;
 
-import static java.util.Collections.emptyList;
-import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -47,9 +46,9 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public List<Resource> selectResource() {
-        LOGGER.info("List<Resource> selectResource()");
-        return resourceMapper.selectResource();
+    public Mono<List<Resource>> selectResource() {
+        LOGGER.info("Mono<List<Resource>> selectResource()");
+        return just(resourceMapper.select());
     }
 
     /**
@@ -61,23 +60,17 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids), ids = {}", ids);
-        return just(resourceMapper.selectResourceByIds(ids));
+        return just(resourceMapper.selectByIds(ids));
     }
 
     /**
-     * select resources by role id
+     * select resources by ids
      *
-     * @param roleId
+     * @param id
      * @return
      */
     @Override
-    public Mono<List<Resource>> selectResourceMonoByRoleId(Long roleId) {
-        LOGGER.info("listResourceByRoleId(Long roleId), roleId = {}", roleId);
-
-        return roleResRelationService.selectResourceIdsMonoByRoleId(roleId)
-                .flatMap(ids -> {
-                    LOGGER.info("Mono<List<Resource>> selectResourceMonoByRoleId(Long roleId), ids = {}", ids);
-                    return isEmpty(ids) ? just(emptyList()) : just(resourceMapper.selectResourceByIds(ids));
-                });
+    public Mono<Optional<Resource>> getResourceMonoById(Long id) {
+        return null;
     }
 }

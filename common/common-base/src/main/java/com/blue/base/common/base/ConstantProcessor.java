@@ -121,8 +121,11 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertResourceType(Integer identity) {
-        if (identity == null || !RESOURCE_TYPE_MAPPING.containsKey(identity))
+    public static void assertResourceType(Integer identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
+        if (!RESOURCE_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resource type identity");
     }
 
@@ -132,7 +135,10 @@ public final class ConstantProcessor {
      * @param identity
      * @return
      */
-    public static void assertMediaType(String identity) {
+    public static void assertMediaType(String identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
         if (isBlank(identity) || !MEDIA_TYPE_MAPPING.containsKey(identity.toLowerCase()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid media type identity");
     }
@@ -142,7 +148,10 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertLoginType(String identity) {
+    public static void assertLoginType(String identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
         if (isBlank(identity) || !LOGIN_TYPE_MAPPING.containsKey(identity.toUpperCase()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid login type identity");
     }
@@ -152,7 +161,10 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertDeviceType(String identity) {
+    public static void assertDeviceType(String identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
         if (isBlank(identity) || !DEVICE_TYPE_MAPPING.containsKey(identity.toUpperCase()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid device type identity");
     }
@@ -162,8 +174,11 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertGenderIdentity(Integer identity) {
-        if (identity == null || !GENDER_MAPPING.containsKey(identity))
+    public static void assertGenderIdentity(Integer identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
+        if (!GENDER_MAPPING.containsKey(identity))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid gender type identity");
     }
 
@@ -172,8 +187,11 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertStatus(Integer identity) {
-        if (identity == null || !STATUS_MAPPING.containsKey(identity))
+    public static void assertStatus(Integer identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
+        if (!STATUS_MAPPING.containsKey(identity))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid status type identity");
     }
 
@@ -182,7 +200,10 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertSortType(String identity) {
+    public static void assertSortType(String identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
         if (isBlank(identity) || !SORT_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid sort type identity");
     }
@@ -192,8 +213,11 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertBulletinType(Integer identity) {
-        if (identity == null || !BULLETIN_TYPE_MAPPING.containsKey(identity))
+    public static void assertBulletinType(Integer identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
+        if (!BULLETIN_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid bulletin type identity");
     }
 
@@ -202,7 +226,10 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertStatisticsRange(String identity) {
+    public static void assertStatisticsRange(String identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
         if (isBlank(identity) || !STATISTICS_RANGE_MAPPING.containsKey(identity.toUpperCase()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid statistics range identity");
     }
@@ -212,7 +239,10 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertStatisticsType(String identity) {
+    public static void assertStatisticsType(String identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
         if (isBlank(identity) || !STATISTICS_TYPE_MAPPING.containsKey(identity.toUpperCase()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid statistics type identity");
     }
@@ -222,8 +252,11 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertSubjectType(Integer identity) {
-        if (identity == null || !SUBJECT_TYPE_MAPPING.containsKey(identity))
+    public static void assertSubjectType(Integer identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
+        if (!SUBJECT_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid subject type identity");
     }
 
@@ -232,8 +265,11 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertArticleType(Integer identity) {
-        if (identity == null || !ARTICLE_TYPE_MAPPING.containsKey(identity))
+    public static void assertArticleType(Integer identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
+        if (!ARTICLE_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid article type identity");
     }
     //</editor-fold>

@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface LinkMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -25,15 +25,7 @@ public interface LinkMapper {
 
     int updateByPrimaryKey(Link record);
 
-    /**
-     * @param subId
-     * @param subType
-     * @return
-     */
     List<Link> selectBySubIdAndSubType(@Param("subId") Long subId, @Param("subType") Integer subType);
 
-    /**
-     * @param list
-     */
     void insertBatch(@Param("list") List<Link> list);
 }

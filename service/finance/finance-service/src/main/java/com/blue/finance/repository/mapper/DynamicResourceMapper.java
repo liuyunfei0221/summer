@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface DynamicResourceMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -24,10 +24,5 @@ public interface DynamicResourceMapper {
 
     int updateByPrimaryKey(DynamicResource record);
 
-    /**
-     * select all dynamic resource
-     *
-     * @return
-     */
-    List<DynamicResource> selectDynamicResource();
+    List<DynamicResource> select();
 }

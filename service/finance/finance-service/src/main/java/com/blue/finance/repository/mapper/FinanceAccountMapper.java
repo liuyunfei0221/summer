@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused", "JavaDoc"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface FinanceAccountMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -23,12 +23,6 @@ public interface FinanceAccountMapper {
 
     int updateByPrimaryKey(FinanceAccount record);
 
-    /**
-     * get finance account by member id
-     *
-     * @param memberId
-     * @return
-     */
     FinanceAccount getByMemberId(@Param("memberId") Long memberId);
 
 }

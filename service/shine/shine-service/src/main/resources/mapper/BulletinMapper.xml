@@ -172,7 +172,7 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="selectBulletin" resultMap="BaseResultMap">
+    <select id="select" resultMap="BaseResultMap">
         <if test="limit != null and limit > 0">
             SELECT
             a.*
@@ -199,7 +199,7 @@
             `order` DESC
             LIMIT #{limit,jdbcType=BIGINT}) AS b
             ON
-            a.id = b.id;
+            a.id = b.id
         </if>
     </select>
 

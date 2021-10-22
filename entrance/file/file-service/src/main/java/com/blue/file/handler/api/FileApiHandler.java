@@ -21,6 +21,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.OK;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseMessage.FILE_NOT_EXIST;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -87,6 +88,8 @@ public final class FileApiHandler {
     public Mono<ServerResponse> download(ServerRequest serverRequest) {
         Access access = getAccess(serverRequest);
         return serverRequest.bodyToMono(IdentityWrapper.class)
+                .switchIfEmpty(
+                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
                 .flatMap(dto ->
                         fileService.getAttachmentForDownload(dto.getId(), access.getId())
                                 .switchIfEmpty(error(FILE_NOT_EXIST_EXP))

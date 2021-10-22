@@ -27,35 +27,19 @@ public interface RoleService {
     Mono<Optional<Role>> getRoleMonoById(Long id);
 
     /**
-     * get role id by member id
-     *
-     * @param memberId
-     * @return
-     */
-    Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId);
-
-    /**
-     * get role by member id
-     *
-     * @param memberId
-     * @return
-     */
-    Mono<Optional<Role>> getRoleMonoByMemberId(Long memberId);
-
-    /**
-     * select all roles
-     *
-     * @return
-     */
-    List<Role> selectRole();
-
-    /**
      * select roles by ids
      *
      * @param ids
      * @return
      */
     Mono<List<Role>> selectRoleMonoByIds(List<Long> ids);
+
+    /**
+     * select all roles
+     *
+     * @return
+     */
+    Mono<List<Role>> selectRole();
 
     /**
      * get default role
@@ -89,6 +73,5 @@ public interface RoleService {
      * @return
      */
     Mono<PageModelResponse<RoleInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest);
-
 
 }

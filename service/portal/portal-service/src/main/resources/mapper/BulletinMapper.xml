@@ -172,7 +172,7 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="selectBulletin" resultMap="BaseResultMap">
+    <select id="select" resultMap="BaseResultMap">
         <if test="rows != null and rows > 0">
             SELECT
             <include refid="Base_Column_List"/>
@@ -192,7 +192,7 @@
 
             ORDER BY
             priority DESC
-            LIMIT 0,#{rows,jdbcType=BIGINT};
+            LIMIT 0,#{rows,jdbcType=BIGINT}
         </if>
     </select>
 

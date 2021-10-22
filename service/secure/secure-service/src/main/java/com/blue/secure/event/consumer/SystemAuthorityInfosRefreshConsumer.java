@@ -4,7 +4,7 @@ import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.model.base.NonValueParam;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import com.blue.secure.config.blue.BlueConsumerConfig;
-import com.blue.secure.service.inter.RelationService;
+import com.blue.secure.service.inter.SecureService;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -28,13 +28,13 @@ public class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final RelationService relationService;
+    private final SecureService secureService;
 
     private BluePulsarConsumer<NonValueParam> systemAuthorityInfosRefreshConsumer;
 
-    public SystemAuthorityInfosRefreshConsumer(BlueConsumerConfig blueConsumerConfig, RelationService relationService) {
+    public SystemAuthorityInfosRefreshConsumer(BlueConsumerConfig blueConsumerConfig, SecureService secureService) {
         this.blueConsumerConfig = blueConsumerConfig;
-        this.relationService = relationService;
+        this.secureService = secureService;
     }
 
     @PostConstruct
@@ -43,7 +43,7 @@ public class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle {
                 ofNullable(nonValueParam)
                         .ifPresent(nvp -> {
                             LOGGER.info("authExpireDataConsumer received");
-                            relationService.refreshSystemAuthorityInfos();
+                            secureService.refreshSystemAuthorityInfos();
                         });
 
         this.systemAuthorityInfosRefreshConsumer = generateConsumer(blueConsumerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), systemAuthorityInfosRefreshDataConsumer);

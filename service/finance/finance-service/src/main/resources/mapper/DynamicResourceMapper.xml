@@ -176,11 +176,11 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="selectDynamicResource" resultMap="BaseResultMap">
+    <select id="select" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        dynamic_resource;
+        dynamic_resource
     </select>
 
 </mapper>

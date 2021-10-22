@@ -25,11 +25,11 @@
         WHERE id = #{id,jdbcType=BIGINT}
     </select>
 
-    <select id="selectRole" resultMap="BaseResultMap">
+    <select id="select" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        role;
+        role
     </select>
 
     <select id="selectRoleByIds" resultMap="BaseResultMap">
@@ -44,6 +44,62 @@
                 #{id,jdbcType=BIGINT}
             </foreach>
         </if>
+    </select>
+
+    <sql id="Role_Conditions">
+        <if test="roleCondition != null">
+            <where>
+                <if test="roleCondition.id != null">
+                    AND
+                    id = #{roleCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="roleCondition.name != null">
+                    AND
+                    name =
+                    #{roleCondition.name,jdbcType=VARCHAR}
+                </if>
+                <if test="roleCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{roleCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="roleCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{roleCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="roleCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{roleCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="roleCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{roleCondition.updateTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
+            parameterType="com.blue.secure.model.RoleCondition">
+        <if test="limit != null and limit >= 0 and rows != null and rows > 0">
+            SELECT
+            <include refid="Base_Column_List"/>
+            FROM
+            role
+            <include refid="Role_Conditions"/>
+            <if test="roleCondition.sortAttribute != null and roleCondition.sortAttribute != '' and roleCondition.sortType != null and roleCondition.sortType != ''">
+                ORDER BY
+                ${roleCondition.sortAttribute,jdbcType=VARCHAR} ${roleCondition.sortType,jdbcType=VARCHAR}
+            </if>
+            LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long"
+            parameterType="com.blue.secure.model.RoleCondition">
+        SELECT COUNT(*)
+        FROM
+        role
+        <include refid="Role_Conditions"/>
     </select>
 
 </mapper>

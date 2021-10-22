@@ -129,11 +129,11 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="selectDynamicHandler" resultMap="BaseResultMap">
+    <select id="select" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        dynamic_handler;
+        dynamic_handler
     </select>
 
 </mapper>

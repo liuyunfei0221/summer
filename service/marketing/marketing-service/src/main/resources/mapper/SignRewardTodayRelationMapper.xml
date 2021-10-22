@@ -141,7 +141,7 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="selectRelationByYearAndMonth" resultMap="BaseResultMap">
+    <select id="selectByYearAndMonth" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -149,7 +149,7 @@
         WHERE
         year = #{year, jdbcType=SMALLINT}
         AND
-        month = #{month, jdbcType=TINYINT};
+        month = #{month, jdbcType=TINYINT}
     </select>
 
 </mapper>

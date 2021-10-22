@@ -1,6 +1,5 @@
 package com.blue.business.service.impl;
 
-import com.blue.base.common.base.ConstantProcessor;
 import com.blue.base.model.exps.BlueException;
 import com.blue.business.repository.entity.Link;
 import com.blue.business.repository.mapper.LinkMapper;
@@ -11,6 +10,7 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Optional;
 
+import static com.blue.base.common.base.ConstantProcessor.assertSubjectType;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
@@ -72,10 +72,7 @@ public class LinkServiceImpl implements LinkService {
         if (subId == null || subId < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        if (subType == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "subType不能为空或小于1");
-
-        ConstantProcessor.assertSubjectType(subType);
+        assertSubjectType(subType, false);
         LOGGER.info("subId = {},subType = {}", subId, subType);
 
         return linkMapper.selectBySubIdAndSubType(subId, subType);

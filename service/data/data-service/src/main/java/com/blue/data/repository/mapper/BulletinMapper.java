@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface BulletinMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -25,15 +25,7 @@ public interface BulletinMapper {
 
     int updateByPrimaryKey(Bulletin record);
 
-    /**
-     * list bulletin by condition
-     *
-     * @param type
-     * @param status
-     * @param limit
-     * @return
-     */
-    List<Bulletin> selectBulletin(@Param("type") Integer type,
-                                @Param("status") Integer status, @Param("limit") Long limit);
+    List<Bulletin> select(@Param("type") Integer type,
+                          @Param("status") Integer status, @Param("limit") Long limit);
 
 }

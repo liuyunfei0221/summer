@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
+@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface SignRewardTodayRelationMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -25,13 +25,6 @@ public interface SignRewardTodayRelationMapper {
 
     int updateByPrimaryKey(SignRewardTodayRelation record);
 
-    /**
-     * query relation by year and month
-     *
-     * @param year
-     * @param month
-     * @return
-     */
-    List<SignRewardTodayRelation> selectRelationByYearAndMonth(@Param("year") Integer year, @Param("month") Integer month);
+    List<SignRewardTodayRelation> selectByYearAndMonth(@Param("year") Integer year, @Param("month") Integer month);
 
 }

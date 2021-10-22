@@ -197,7 +197,7 @@
             `order` DESC
             LIMIT #{limit,jdbcType=BIGINT}) AS b
             ON
-            a.id = b.id;
+            a.id = b.id
         </if>
     </select>
 

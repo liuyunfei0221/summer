@@ -192,7 +192,7 @@
 
             ORDER BY
             priority DESC
-            LIMIT 0,#{limit,jdbcType=BIGINT};
+            LIMIT 0,#{limit,jdbcType=BIGINT}
         </if>
     </select>
 
