@@ -17,6 +17,15 @@
         , member_id, role_id, create_time, update_time, creator, updater
     </sql>
 
+    <insert id="insert" parameterType="com.blue.secure.repository.entity.MemberRoleRelation">
+        insert into member_role_relation (id, member_id, role_id,
+                                          create_time, update_time, creator,
+                                          updater)
+        values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT},
+                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT},
+                #{updater,jdbcType=BIGINT})
+    </insert>
+
     <insert id="insertSelective" parameterType="com.blue.secure.repository.entity.MemberRoleRelation">
         insert into member_role_relation
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -67,6 +76,17 @@
         </trim>
     </insert>
 
+    <update id="updateByPrimaryKey" parameterType="com.blue.secure.repository.entity.MemberRoleRelation">
+        update member_role_relation
+        set member_id   = #{memberId,jdbcType=BIGINT},
+            role_id     = #{roleId,jdbcType=BIGINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT},
+            updater     = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.secure.repository.entity.MemberRoleRelation">
         update member_role_relation
         <set>
@@ -91,6 +111,19 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from member_role_relation
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from member_role_relation
+        where id = #{id,jdbcType=BIGINT}
+    </select>
 
     <select id="getRoleIdByMemberId" parameterType="java.lang.Long" resultType="java.lang.Long">
         <if test="memberId != null and memberId > 0">

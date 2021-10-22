@@ -11,17 +11,17 @@ import org.apache.ibatis.annotations.Param;
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface FinanceAccountMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(FinanceAccount record);
 
     int insertSelective(FinanceAccount record);
 
-    FinanceAccount selectByPrimaryKey(Long id);
-
     int updateByPrimaryKeySelective(FinanceAccount record);
 
     int updateByPrimaryKey(FinanceAccount record);
+
+    int deleteByPrimaryKey(Long id);
+
+    FinanceAccount selectByPrimaryKey(Long id);
 
     FinanceAccount getByMemberId(@Param("memberId") Long memberId);
 

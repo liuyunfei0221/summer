@@ -17,6 +17,114 @@
         , role_id, res_id, create_time, update_time, creator, updater
     </sql>
 
+    <insert id="insert" parameterType="com.blue.secure.repository.entity.RoleResRelation">
+        insert into role_res_relation (id, role_id, res_id,
+                                       create_time, update_time, creater,
+                                       updater)
+        values (#{id,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{resId,jdbcType=BIGINT},
+                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{creater,jdbcType=BIGINT},
+                #{updater,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.secure.repository.entity.RoleResRelation">
+        insert into role_res_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="resId != null">
+                res_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="creater != null">
+                creater,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="resId != null">
+                #{resId,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                #{creater,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.secure.repository.entity.RoleResRelation">
+        update role_res_relation
+        set role_id     = #{roleId,jdbcType=BIGINT},
+            res_id      = #{resId,jdbcType=BIGINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            creater     = #{creater,jdbcType=BIGINT},
+            updater     = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.secure.repository.entity.RoleResRelation">
+        update role_res_relation
+        <set>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="resId != null">
+                res_id = #{resId,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creater != null">
+                creater = #{creater,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from role_res_relation
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from role_res_relation
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
     <select id="select" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
@@ -25,12 +133,9 @@
     </select>
 
     <select id="selectResIdsByRoleId" parameterType="java.lang.Long" resultType="java.lang.Long">
-        SELECT
-        res_id
-        FROM
-        role_res_relation
-        WHERE
-        role_id = #{roleId,jdbcType=BIGINT}
+        SELECT res_id
+        FROM role_res_relation
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
     </select>
 
 </mapper>

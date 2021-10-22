@@ -13,9 +13,17 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "UnusedReturnValue"})
 public interface MemberRoleRelationMapper {
 
+    int insert(MemberRoleRelation record);
+
     int insertSelective(MemberRoleRelation record);
 
+    int updateByPrimaryKey(MemberRoleRelation record);
+
     int updateByPrimaryKeySelective(MemberRoleRelation record);
+
+    int deleteByPrimaryKey(Long id);
+
+    MemberRoleRelation selectByPrimaryKey(Long id);
 
     Long getRoleIdByMemberId(@Param("memberId") Long memberId);
 

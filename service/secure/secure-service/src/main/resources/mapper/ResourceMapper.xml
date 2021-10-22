@@ -26,6 +26,211 @@
         , `request_method`,`module`, `uri`, `authenticate`, `request_un_decryption`, `response_un_encryption`, `existence_request_body`, `existence_response_body`, `type`, `name`, `description`, `create_time`, `update_time`, `creator`, `updater`
     </sql>
 
+    <insert id="insert" parameterType="com.blue.secure.repository.entity.Resource">
+        insert into resource (id, request_method, module,
+                              uri, authenticate, request_un_decryption,
+                              response_un_encryption, existence_request_body, existence_response_body,
+                              type, name, description,
+                              create_time, update_time, creator,
+                              updater)
+        values (#{id,jdbcType=BIGINT}, #{requestMethod,jdbcType=VARCHAR}, #{module,jdbcType=VARCHAR},
+                #{uri,jdbcType=VARCHAR}, #{authenticate,jdbcType=BIT}, #{requestUnDecryption,jdbcType=BIT},
+                #{responseUnEncryption,jdbcType=BIT}, #{existenceRequestBody,jdbcType=BIT},
+                #{existenceResponseBody,jdbcType=BIT},
+                #{type,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT},
+                #{updater,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.secure.repository.entity.Resource">
+        insert into resource
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="requestMethod != null">
+                request_method,
+            </if>
+            <if test="module != null">
+                module,
+            </if>
+            <if test="uri != null">
+                uri,
+            </if>
+            <if test="authenticate != null">
+                authenticate,
+            </if>
+            <if test="requestUnDecryption != null">
+                request_un_decryption,
+            </if>
+            <if test="responseUnEncryption != null">
+                response_un_encryption,
+            </if>
+            <if test="existenceRequestBody != null">
+                existence_request_body,
+            </if>
+            <if test="existenceResponseBody != null">
+                existence_response_body,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="requestMethod != null">
+                #{requestMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="module != null">
+                #{module,jdbcType=VARCHAR},
+            </if>
+            <if test="uri != null">
+                #{uri,jdbcType=VARCHAR},
+            </if>
+            <if test="authenticate != null">
+                #{authenticate,jdbcType=BIT},
+            </if>
+            <if test="requestUnDecryption != null">
+                #{requestUnDecryption,jdbcType=BIT},
+            </if>
+            <if test="responseUnEncryption != null">
+                #{responseUnEncryption,jdbcType=BIT},
+            </if>
+            <if test="existenceRequestBody != null">
+                #{existenceRequestBody,jdbcType=BIT},
+            </if>
+            <if test="existenceResponseBody != null">
+                #{existenceResponseBody,jdbcType=BIT},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=TINYINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.secure.repository.entity.Resource">
+        update resource
+        <set>
+            <if test="requestMethod != null">
+                request_method = #{requestMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="module != null">
+                module = #{module,jdbcType=VARCHAR},
+            </if>
+            <if test="uri != null">
+                uri = #{uri,jdbcType=VARCHAR},
+            </if>
+            <if test="authenticate != null">
+                authenticate = #{authenticate,jdbcType=BIT},
+            </if>
+            <if test="requestUnDecryption != null">
+                request_un_decryption = #{requestUnDecryption,jdbcType=BIT},
+            </if>
+            <if test="responseUnEncryption != null">
+                response_un_encryption = #{responseUnEncryption,jdbcType=BIT},
+            </if>
+            <if test="existenceRequestBody != null">
+                existence_request_body = #{existenceRequestBody,jdbcType=BIT},
+            </if>
+            <if test="existenceResponseBody != null">
+                existence_response_body = #{existenceResponseBody,jdbcType=BIT},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.secure.repository.entity.Resource">
+        update resource
+        set request_method          = #{requestMethod,jdbcType=VARCHAR},
+            module                  = #{module,jdbcType=VARCHAR},
+            uri                     = #{uri,jdbcType=VARCHAR},
+            authenticate            = #{authenticate,jdbcType=BIT},
+            request_un_decryption   = #{requestUnDecryption,jdbcType=BIT},
+            response_un_encryption  = #{responseUnEncryption,jdbcType=BIT},
+            existence_request_body  = #{existenceRequestBody,jdbcType=BIT},
+            existence_response_body = #{existenceResponseBody,jdbcType=BIT},
+            type                    = #{type,jdbcType=TINYINT},
+            name                    = #{name,jdbcType=VARCHAR},
+            description             = #{description,jdbcType=VARCHAR},
+            create_time             = #{createTime,jdbcType=BIGINT},
+            update_time             = #{updateTime,jdbcType=BIGINT},
+            creator                 = #{creator,jdbcType=BIGINT},
+            updater                 = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from resource
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from resource
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
     <select id="select" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>

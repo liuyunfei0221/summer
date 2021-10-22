@@ -14,6 +14,16 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface RoleMapper {
 
+    int insert(Role record);
+
+    int insertSelective(Role record);
+
+    int updateByPrimaryKey(Role record);
+
+    int updateByPrimaryKeySelective(Role record);
+
+    int deleteByPrimaryKey(Long id);
+
     Role selectByPrimaryKey(Long id);
 
     List<Role> select();

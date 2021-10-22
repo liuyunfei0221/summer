@@ -13,6 +13,18 @@ import java.util.List;
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface ResourceMapper {
 
+    int insert(Resource record);
+
+    int insertSelective(Resource record);
+
+    int updateByPrimaryKeySelective(Resource record);
+
+    int updateByPrimaryKey(Resource record);
+
+    int deleteByPrimaryKey(Long id);
+
+    Resource selectByPrimaryKey(Long id);
+
     List<Resource> select();
 
     List<Resource> selectByIds(@Param("ids") List<Long> ids);

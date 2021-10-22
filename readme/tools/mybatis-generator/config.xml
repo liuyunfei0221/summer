@@ -42,11 +42,8 @@
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
-
-        <!-- 表 -->
-        <table tableName="dict_type" domainObjectName="DictType"/>
-        <table tableName="dict" domainObjectName="Dict"/>
-
+        <!-- tables -->
+        <table tableName="resource" domainObjectName="Resource"/>
 
     </context>
 </generatorConfiguration>

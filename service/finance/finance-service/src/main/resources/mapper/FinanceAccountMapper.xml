@@ -13,21 +13,12 @@
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id
         , member_id, balance, frozen, income, outlay, status, create_time, update_time
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from finance_account
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from finance_account
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
+
     <insert id="insert" parameterType="com.blue.finance.repository.entity.FinanceAccount">
         insert into finance_account (id, member_id, balance,
                                      frozen, income, outlay,
@@ -36,6 +27,7 @@
                 #{frozen,jdbcType=BIGINT}, #{income,jdbcType=BIGINT}, #{outlay,jdbcType=BIGINT},
                 #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
     </insert>
+
     <insert id="insertSelective" parameterType="com.blue.finance.repository.entity.FinanceAccount">
         insert into finance_account
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -97,6 +89,20 @@
             </if>
         </trim>
     </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.finance.repository.entity.FinanceAccount">
+        update finance_account
+        set member_id   = #{memberId,jdbcType=BIGINT},
+            balance     = #{balance,jdbcType=BIGINT},
+            frozen      = #{frozen,jdbcType=BIGINT},
+            income      = #{income,jdbcType=BIGINT},
+            outlay      = #{outlay,jdbcType=BIGINT},
+            status      = #{status,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.finance.repository.entity.FinanceAccount">
         update finance_account
         <set>
@@ -127,18 +133,19 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.blue.finance.repository.entity.FinanceAccount">
-        update finance_account
-        set member_id   = #{memberId,jdbcType=BIGINT},
-            balance     = #{balance,jdbcType=BIGINT},
-            frozen      = #{frozen,jdbcType=BIGINT},
-            income      = #{income,jdbcType=BIGINT},
-            outlay      = #{outlay,jdbcType=BIGINT},
-            status      = #{status,jdbcType=TINYINT},
-            create_time = #{createTime,jdbcType=BIGINT},
-            update_time = #{updateTime,jdbcType=BIGINT}
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from finance_account
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from finance_account
+        where id = #{id,jdbcType=BIGINT}
+    </select>
 
     <select id="getByMemberId" resultMap="BaseResultMap">
         <if test="memberId != null and memberId > 0">
