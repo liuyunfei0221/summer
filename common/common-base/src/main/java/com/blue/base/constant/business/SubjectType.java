@@ -8,7 +8,7 @@ package com.blue.base.constant.business;
 public enum SubjectType {
 
     /**
-     * 文章
+     * ARTICLE
      */
     ARTICLE(1, "article"),
 

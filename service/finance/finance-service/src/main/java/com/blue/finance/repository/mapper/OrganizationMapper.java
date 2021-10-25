@@ -10,15 +10,16 @@ import com.blue.finance.repository.entity.Organization;
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface OrganizationMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(Organization record);
 
     int insertSelective(Organization record);
 
-    Organization selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(Organization record);
 
     int updateByPrimaryKeySelective(Organization record);
 
-    int updateByPrimaryKey(Organization record);
+    int deleteByPrimaryKey(Long id);
+
+    Organization selectByPrimaryKey(Long id);
+
 }

@@ -12,17 +12,17 @@ import java.util.List;
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface DynamicResourceMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(DynamicResource record);
 
     int insertSelective(DynamicResource record);
 
-    DynamicResource selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(DynamicResource record);
 
     int updateByPrimaryKeySelective(DynamicResource record);
 
-    int updateByPrimaryKey(DynamicResource record);
+    int deleteByPrimaryKey(Long id);
+
+    DynamicResource selectByPrimaryKey(Long id);
 
     List<DynamicResource> select();
 }

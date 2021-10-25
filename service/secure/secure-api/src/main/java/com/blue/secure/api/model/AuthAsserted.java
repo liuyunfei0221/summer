@@ -64,7 +64,7 @@ public final class AuthAsserted implements Serializable {
 
     public AuthAsserted(boolean certificate, boolean requestUnDecryption, boolean responseUnEncryption, boolean existenceRequestBody, boolean existenceResponseBody, String secKey, Access access, String message) {
         if (secKey == null || access == null)
-            throw new RuntimeException("secKey,accessInfo均不能为空");
+            throw new RuntimeException("secKey or accessInfo can't be null");
 
         this.certificate = certificate;
         this.requestUnDecryption = requestUnDecryption;

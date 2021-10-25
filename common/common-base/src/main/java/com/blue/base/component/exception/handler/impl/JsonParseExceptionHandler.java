@@ -28,6 +28,6 @@ public final class JsonParseExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("jsonParseExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, "json数据解析失败"));
+        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, "json data parsed failed"));
     }
 }

@@ -12,21 +12,12 @@
         <result column="creator" jdbcType="BIGINT" property="creator"/>
         <result column="updater" jdbcType="BIGINT" property="updater"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id
         , name, description, handler_bean, create_time, update_time, creator, updater
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from dynamic_handler
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from dynamic_handler
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
+
     <insert id="insert" parameterType="com.blue.finance.repository.entity.DynamicHandler">
         insert into dynamic_handler (id, name, description,
                                      handler_bean, create_time, update_time,
@@ -35,6 +26,7 @@
                 #{handlerBean,jdbcType=VARCHAR}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
                 #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
     </insert>
+
     <insert id="insertSelective" parameterType="com.blue.finance.repository.entity.DynamicHandler">
         insert into dynamic_handler
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -90,6 +82,19 @@
             </if>
         </trim>
     </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.finance.repository.entity.DynamicHandler">
+        update dynamic_handler
+        set name         = #{name,jdbcType=VARCHAR},
+            description  = #{description,jdbcType=VARCHAR},
+            handler_bean = #{handlerBean,jdbcType=VARCHAR},
+            create_time  = #{createTime,jdbcType=BIGINT},
+            update_time  = #{updateTime,jdbcType=BIGINT},
+            creator      = #{creator,jdbcType=BIGINT},
+            updater      = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.finance.repository.entity.DynamicHandler">
         update dynamic_handler
         <set>
@@ -117,17 +122,19 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.blue.finance.repository.entity.DynamicHandler">
-        update dynamic_handler
-        set name         = #{name,jdbcType=VARCHAR},
-            description  = #{description,jdbcType=VARCHAR},
-            handler_bean = #{handlerBean,jdbcType=VARCHAR},
-            create_time  = #{createTime,jdbcType=BIGINT},
-            update_time  = #{updateTime,jdbcType=BIGINT},
-            creator      = #{creator,jdbcType=BIGINT},
-            updater      = #{updater,jdbcType=BIGINT}
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from dynamic_handler
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from dynamic_handler
+        where id = #{id,jdbcType=BIGINT}
+    </select>
 
     <select id="select" resultMap="BaseResultMap">
         SELECT

@@ -39,34 +39,28 @@ public class PortalServiceImpl implements PortalService {
         this.bulletinService = bulletinService;
     }
 
-    /**
-     * po -> vo 转换器
-     */
     private static final Function<List<Bulletin>, List<BulletinInfo>> VO_LIST_CONVERTER = bl ->
             bl != null && bl.size() > 0 ? bl.stream()
                     .map(b -> new BulletinInfo(b.getId(), b.getTitle(), b.getContent(), b.getLink(), b.getType()))
                     .collect(toList()) : emptyList();
 
-    /**
-     * 公告类型转换
-     */
     private static final Function<String, BulletinType> TYPE_CONVERTER = typeStr -> {
         if (StringUtils.isBlank(typeStr)) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "公告类型不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "bulletinType can't be null");
         }
 
         int type;
         try {
             type = Integer.parseInt(typeStr);
         } catch (NumberFormatException e) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "公告类型不合法");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid bulletinType");
         }
 
         return getBulletinTypeByIdentity(type);
     };
 
     /**
-     * 获取公告信息
+     * select bulletin
      *
      * @param bulletinType
      * @return

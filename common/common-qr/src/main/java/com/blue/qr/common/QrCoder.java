@@ -105,7 +105,6 @@ public final class QrCoder {
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(qrData);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream)) {
 
-            //解析二维码
             BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(read(bufferedInputStream))));
             Result result = new MultiFormatReader().decode(binaryBitmap, DECODE_CODE_PARAMS);
 

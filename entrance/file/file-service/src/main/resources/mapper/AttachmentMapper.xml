@@ -19,19 +19,6 @@
         , link, name, file_type, size, status, create_time, creator
     </sql>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from attachment
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from attachment
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
-
     <insert id="insert" parameterType="com.blue.file.repository.entity.Attachment">
         insert into attachment (id, link, name, file_type,
                                 size, status, create_time,
@@ -97,6 +84,18 @@
         </trim>
     </insert>
 
+    <update id="updateByPrimaryKey" parameterType="com.blue.file.repository.entity.Attachment">
+        update attachment
+        set link        = #{link,jdbcType=VARCHAR},
+            name        = #{name,jdbcType=VARCHAR},
+            file_type   = #{fileType,jdbcType=VARCHAR},
+            size        = #{size,jdbcType=BIGINT},
+            status      = #{status,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.file.repository.entity.Attachment">
         update attachment
         <set>
@@ -125,17 +124,18 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.file.repository.entity.Attachment">
-        update attachment
-        set link        = #{link,jdbcType=VARCHAR},
-            name        = #{name,jdbcType=VARCHAR},
-            file_type   = #{fileType,jdbcType=VARCHAR},
-            size        = #{size,jdbcType=BIGINT},
-            status      = #{status,jdbcType=TINYINT},
-            create_time = #{createTime,jdbcType=BIGINT},
-            creator     = #{creator,jdbcType=BIGINT}
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from attachment
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from attachment
+        where id = #{id,jdbcType=BIGINT}
+    </select>
 
     <insert id="insertBatch" parameterType="java.util.List">
         <if test="list != null and list.size > 0">

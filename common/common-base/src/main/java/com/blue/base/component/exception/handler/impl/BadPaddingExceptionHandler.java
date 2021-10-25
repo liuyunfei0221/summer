@@ -27,8 +27,8 @@ public final class BadPaddingExceptionHandler implements ExceptionHandler {
 
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
-        LOGGER.info("badPaddingExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, "数据加解密失败"));
+        LOGGER.info("ExceptionHandleInfo handle(Throwable throwable), throwable = {0}", throwable);
+        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, "encrypt or decrypt failed"));
     }
 
 }

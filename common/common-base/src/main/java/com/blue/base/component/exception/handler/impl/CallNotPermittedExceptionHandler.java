@@ -28,7 +28,7 @@ public final class CallNotPermittedExceptionHandler implements ExceptionHandler 
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("callNotPermittedExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(INTERNAL_SERVER_ERROR.status, new BlueResponse<>(INTERNAL_SERVER_ERROR.code, null, "服务繁忙,请刷新重试"));
+        return new ExceptionHandleInfo(INTERNAL_SERVER_ERROR.status, new BlueResponse<>(INTERNAL_SERVER_ERROR.code, null, INTERNAL_SERVER_ERROR.message));
     }
 
 }

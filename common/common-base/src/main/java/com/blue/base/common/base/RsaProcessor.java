@@ -83,7 +83,7 @@ public final class RsaProcessor {
     };
 
     /**
-     * 加解密参数校验
+     * params asserter
      */
     private static final BiConsumer<String, String> PAR_ASSERT = (data, secKey) -> {
         if (data == null || "".equals(data))

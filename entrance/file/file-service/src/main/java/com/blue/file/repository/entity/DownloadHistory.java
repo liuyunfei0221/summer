@@ -1,7 +1,7 @@
 package com.blue.file.repository.entity;
 
 /**
- * 下载历史表
+ * download history
  *
  * @author DarkBlue
  */

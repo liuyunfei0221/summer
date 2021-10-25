@@ -31,13 +31,13 @@ public final class AuthGenParam {
 
     public AuthGenParam(Long memberId, Long roleId, String loginType, String deviceType) {
         if (memberId == null || memberId < 1L)
-            throw new RuntimeException("memberId不能为空或小于1");
+            throw new RuntimeException("memberId can't be null or less than 1");
         if (roleId == null || roleId < 1L)
-            throw new RuntimeException("roleId不能为空或小于1");
+            throw new RuntimeException("roleId can't be null or less than 1");
         if (loginType == null || "".equals(loginType))
-            throw new RuntimeException("loginType不能为空");
+            throw new RuntimeException("loginType can't be blank");
         if (deviceType == null || "".equals(deviceType))
-            throw new RuntimeException("deviceType不能为空");
+            throw new RuntimeException("deviceType can't be blank");
 
         this.memberId = memberId;
         this.roleId = roleId;

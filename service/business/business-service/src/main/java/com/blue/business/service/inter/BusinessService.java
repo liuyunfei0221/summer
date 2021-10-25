@@ -1,8 +1,8 @@
 package com.blue.business.service.inter;
 
 import com.blue.business.api.model.ArticleInfo;
-import com.blue.business.api.model.ArticleInsertParam;
-import com.blue.business.api.model.ArticleUpdateParam;
+import com.blue.business.model.ArticleInsertParam;
+import com.blue.business.model.ArticleUpdateParam;
 import reactor.core.publisher.Mono;
 
 /**

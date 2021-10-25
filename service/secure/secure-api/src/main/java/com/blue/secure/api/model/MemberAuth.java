@@ -24,9 +24,9 @@ public final class MemberAuth implements Serializable {
 
     public MemberAuth(String auth, String secKey) {
         if (auth == null || "".equals(auth))
-            throw new RuntimeException("auth不能为空或''");
+            throw new RuntimeException("auth can't be blank");
         if (secKey == null || "".equals(secKey))
-            throw new RuntimeException("secKey不能为空或''");
+            throw new RuntimeException("secKey can't be blank");
 
         this.auth = auth;
         this.secKey = secKey;

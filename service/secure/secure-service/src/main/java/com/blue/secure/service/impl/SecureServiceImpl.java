@@ -968,7 +968,7 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * 刷新其他登录或设备类型auth任务
+     * refresh auth for other login type and device type
      */
     private final class OtherTypesAuthRefreshTask implements Runnable {
 

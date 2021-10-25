@@ -3,7 +3,7 @@ package com.blue.business.handler.api;
 import com.blue.base.model.base.Access;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.business.api.model.ArticleInsertParam;
+import com.blue.business.model.ArticleInsertParam;
 import com.blue.business.service.inter.BusinessService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;

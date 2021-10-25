@@ -45,7 +45,7 @@ public final class DataEventConsumer implements BlueLifecycle {
     @PostConstruct
     private void init() {
         Consumer<DataEvent> dataEventDataConsumer = dataEvent ->
-                //TODO 风控分析
+                //TODO risk control
                 ofNullable(dataEvent)
                         .flatMap(de -> ofNullable(de.getData(BlueDataAttrKey.ACCESS.key))
                                 .map(AuthProcessor::jsonToAccess)

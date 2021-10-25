@@ -13,7 +13,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * 降级
+ * fallback
  *
  * @author DarkBlue
  */

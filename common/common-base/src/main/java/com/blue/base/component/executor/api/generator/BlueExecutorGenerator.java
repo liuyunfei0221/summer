@@ -49,7 +49,7 @@ public final class BlueExecutorGenerator {
     }
 
     /**
-     * 校验
+     * assert conf
      *
      * @param executorConf
      */

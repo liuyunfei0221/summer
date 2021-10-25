@@ -106,6 +106,20 @@
         </trim>
     </insert>
 
+    <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.MemberBasic">
+        update member_basic
+        set phone       = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
+            email       = #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
+            password    = #{password,jdbcType=VARCHAR},
+            name        = #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
+            icon        = #{icon,jdbcType=VARCHAR},
+            gender      = #{gender,jdbcType=TINYINT},
+            status      = #{status,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.member.repository.entity.MemberBasic">
         update member_basic
         <set>
@@ -140,19 +154,11 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.MemberBasic">
-        update member_basic
-        set phone       = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
-            email       = #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
-            password    = #{password,jdbcType=VARCHAR},
-            name        = #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
-            icon        = #{icon,jdbcType=VARCHAR},
-            gender      = #{gender,jdbcType=TINYINT},
-            status      = #{status,jdbcType=TINYINT},
-            create_time = #{createTime,jdbcType=BIGINT},
-            update_time = #{updateTime,jdbcType=BIGINT}
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from member_basic
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select

@@ -299,6 +299,7 @@ CREATE TABLE `undo_log`
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 -- init
+-- resources
 
 INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
@@ -364,13 +365,6 @@ INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (9506557930799111, 'GET', 'blue-portal', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'bulletin list of api', 'bulletin list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
-VALUES (9505726846205961, 'POST', 'blue-manager', '/member/list', b'1', b'1', b'1', b'1', b'1', 1,
-        'member list of manager0', 'member list of manager0', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
@@ -468,15 +462,6 @@ INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (9506557930799114, 'GET', 'blue-shine', '/shine', b'0', b'1', b'1', b'0', b'1', 1,
         'commonweal information', 'commonweal information', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
-VALUES (12445673836249089, 'POST', 'blue-member', '/manager/member/list', b'1', b'1', b'1', b'0', b'1', 2,
-        'member list of manager1', 'member list of manager1', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
-
 INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
                                     `name`,
@@ -502,10 +487,7 @@ INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (14989734363267073, 'POST', 'blue-member', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'test endpoint', 'test endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-
-
-
--- 动态端点
+-- dynamic resources
 
 INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
@@ -570,14 +552,29 @@ VALUES (13739721721151496, 'OPTIONS', 'blue-finance', '/dynamic/{placeholder}', 
         b'1', 3,
         'OPTIONS dynamic endpoint', 'OPTIONS dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+-- manage resources
 
---
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (12445673836249089, 'POST', 'blue-member', '/manager/member/list', b'1', b'1', b'1', b'0', b'1', 2,
+        'member list of manager1', 'member list of manager1', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+
+
+-- role
 
 INSERT INTO `secure_1`.`role_1`(`id`, `name`, `description`, `is_default`, `create_time`, `update_time`, `creator`,
                                 `updater`)
-VALUES (9507591944175638, 'normal member', 'normal member', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507591944175638, 'normal', 'normal', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_0`.`role_0`(`id`, `name`, `description`, `is_default`, `create_time`, `update_time`, `creator`,
+                                `updater`)
+VALUES (17558421159018501, 'summer admin', 'summer admin', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+-- role resource relations
 
 INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)

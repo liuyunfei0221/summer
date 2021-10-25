@@ -115,7 +115,7 @@ public class CommonFunctions {
 
         int schemaIdx = lastIndexOf(maybePathVariable, SCHEME_SEPARATOR);
         String schema;
-        if (schemaIdx != -1 && VALID_TAILS.contains(schema = maybePathVariable.substring(schemaIdx).intern()))
+        if (schemaIdx != -1 && VALID_TAILS.contains(schema = maybePathVariable.substring(schemaIdx)))
             return (uri.substring(0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD + schema.intern()).intern();
 
         return uri.intern();

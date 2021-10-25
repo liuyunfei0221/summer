@@ -12,24 +12,10 @@
         <result column="updater" jdbcType="BIGINT" property="updater"/>
     </resultMap>
 
-
     <sql id="Base_Column_List">
         id
         , code, name, create_time, update_time, creator, updater
     </sql>
-
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from dict_type
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from dict_type
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
 
     <insert id="insert" parameterType="com.blue.base.repository.entity.DictType">
         insert into dict_type (id, code, name,
@@ -90,6 +76,17 @@
         </trim>
     </insert>
 
+    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.DictType">
+        update dict_type
+        set code        = #{code,jdbcType=VARCHAR},
+            name        = #{name,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT},
+            updater     = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.base.repository.entity.DictType">
         update dict_type
         <set>
@@ -115,25 +112,27 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.DictType">
-        update dict_type
-        set code        = #{code,jdbcType=VARCHAR},
-            name        = #{name,jdbcType=VARCHAR},
-            create_time = #{createTime,jdbcType=BIGINT},
-            update_time = #{updateTime,jdbcType=BIGINT},
-            creator     = #{creator,jdbcType=BIGINT},
-            updater     = #{updater,jdbcType=BIGINT}
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from dict_type
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
 
-    <select id="selectDictType" resultMap="BaseResultMap">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from dict_type
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="select" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
         dict_type
     </select>
 
-    <select id="getDictTypeByCode" resultMap="BaseResultMap">
+    <select id="getByCode" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM

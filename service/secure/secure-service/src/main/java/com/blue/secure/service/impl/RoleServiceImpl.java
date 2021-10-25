@@ -10,7 +10,6 @@ import com.blue.secure.constant.RoleSortAttribute;
 import com.blue.secure.model.RoleCondition;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.mapper.RoleMapper;
-import com.blue.secure.service.inter.MemberRoleRelationService;
 import com.blue.secure.service.inter.RoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -23,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -40,8 +40,10 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static reactor.core.publisher.Mono.*;
+import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -59,17 +61,14 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleMapper roleMapper;
 
-    private final MemberRoleRelationService memberRoleRelationService;
-
     private final ExecutorService executorService;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public RoleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RoleMapper roleMapper,
-                           MemberRoleRelationService memberRoleRelationService, ExecutorService executorService,
+                           ExecutorService executorService,
                            BlockingDeploy blockingDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.roleMapper = roleMapper;
-        this.memberRoleRelationService = memberRoleRelationService;
         this.executorService = executorService;
 
         MAX_WAITING_FOR_REFRESH = blockingDeploy.getBlockingMillis();
@@ -128,11 +127,6 @@ public class RoleServiceImpl implements RoleService {
         return defaultRole;
     };
 
-    @PostConstruct
-    public void init() {
-        generateDefaultRoleInfo();
-    }
-
     /**
      * sort attr - sort column mapping
      */
@@ -147,6 +141,24 @@ public class RoleServiceImpl implements RoleService {
                     .map(ROLE_SORT_ATTRIBUTE_MAPPING::get)
                     .filter(StringUtils::hasText)
                     .orElse("");
+
+    /**
+     * process columns
+     */
+    private static final Consumer<RoleCondition> ROLE_COLUMN_REPACKAGER = condition -> {
+        if (condition != null) {
+            condition.setSortAttribute(ROLE_SORT_ATTRIBUTE_CONVERTER.apply(condition.getSortAttribute()));
+            assertSortType(condition.getSortType(), true);
+
+            ofNullable(condition.getName())
+                    .filter(n -> !isBlank(n)).map(String::toLowerCase).ifPresent(n -> condition.setName("%" + n + "%"));
+        }
+    };
+
+    @PostConstruct
+    public void init() {
+        generateDefaultRoleInfo();
+    }
 
     /**
      * get role by role id
@@ -224,10 +236,6 @@ public class RoleServiceImpl implements RoleService {
     public Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition) {
         LOGGER.info("Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition), " +
                 "limit = {}, rows = {}, roleCondition = {}", limit, rows, roleCondition);
-
-        roleCondition.setSortAttribute(ROLE_SORT_ATTRIBUTE_CONVERTER.apply(roleCondition.getSortAttribute()));
-        assertSortType(roleCondition.getSortType(), true);
-
         return just(roleMapper.selectByLimitAndCondition(limit, rows, roleCondition));
     }
 
@@ -255,6 +263,7 @@ public class RoleServiceImpl implements RoleService {
                 "pageModelRequest = {}", pageModelRequest);
 
         RoleCondition roleCondition = pageModelRequest.getParam();
+        ROLE_COLUMN_REPACKAGER.accept(roleCondition);
 
         return this.countRoleMonoByCondition(roleCondition)
                 .flatMap(roleCount -> {

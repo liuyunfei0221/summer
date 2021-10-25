@@ -18,19 +18,6 @@
         , dict_type_id, name, value, create_time, update_time, creator, updater
     </sql>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from dict
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from dict
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
-
     <insert id="insert" parameterType="com.blue.base.repository.entity.Dict">
         insert into dict (id, dict_type_id, name,
                           value, create_time, update_time,
@@ -96,6 +83,18 @@
         </trim>
     </insert>
 
+    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.Dict">
+        update dict
+        set dict_type_id = #{dictTypeId,jdbcType=BIGINT},
+            name         = #{name,jdbcType=VARCHAR},
+            value        = #{value,jdbcType=VARCHAR},
+            create_time  = #{createTime,jdbcType=BIGINT},
+            update_time  = #{updateTime,jdbcType=BIGINT},
+            creator      = #{creator,jdbcType=BIGINT},
+            updater      = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.base.repository.entity.Dict">
         update dict
         <set>
@@ -124,26 +123,27 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.Dict">
-        update dict
-        set dict_type_id = #{dictTypeId,jdbcType=BIGINT},
-            name         = #{name,jdbcType=VARCHAR},
-            value        = #{value,jdbcType=VARCHAR},
-            create_time  = #{createTime,jdbcType=BIGINT},
-            update_time  = #{updateTime,jdbcType=BIGINT},
-            creator      = #{creator,jdbcType=BIGINT},
-            updater      = #{updater,jdbcType=BIGINT}
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from dict
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
 
-    <select id="selectDict" resultMap="BaseResultMap">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from dict
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="select" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
         dict
     </select>
 
-    <select id="selectDictByDictTypeId" resultMap="BaseResultMap">
+    <select id="selectByDictTypeId" resultMap="BaseResultMap">
         <if test="dictTypeId != null and dictTypeId > 0">
             SELECT
             <include refid="Base_Column_List"/>

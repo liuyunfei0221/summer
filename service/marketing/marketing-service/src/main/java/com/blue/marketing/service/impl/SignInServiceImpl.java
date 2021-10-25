@@ -142,7 +142,7 @@ public class SignInServiceImpl implements SignInService {
             long start = currentTimeMillis();
             while (rewardInfoRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "资源信息刷新超时");
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "waiting reward info refresh timeout");
                 onSpinWait();
             }
         }
@@ -206,7 +206,7 @@ public class SignInServiceImpl implements SignInService {
     private static final BiFunction<Integer, Boolean, SignInRewardRecord> DAY_REWARD_RECORD_GENERATOR = (day, sign) ->
             new SignInRewardRecord(TODAY_REWARD_MAPPING.get(day), sign);
 
-    private static final BiFunction<Long, Integer, MonthRewardRecord> MONTH_REWARD_RECORD_GENERATOR = (record, lengthOfMonth) -> {
+    private static final BiFunction<Long, Integer, MonthSignInRewardRecord> MONTH_REWARD_RECORD_GENERATOR = (record, lengthOfMonth) -> {
         Map<Integer, SignInRewardRecord> recordInfo = new TreeMap<>();
         int total = 0;
 
@@ -222,7 +222,7 @@ public class SignInServiceImpl implements SignInService {
                 total++;
         }
 
-        return new MonthRewardRecord(recordInfo, total);
+        return new MonthSignInRewardRecord(recordInfo, total);
     };
 
     @PostConstruct
@@ -293,7 +293,7 @@ public class SignInServiceImpl implements SignInService {
      * @return
      */
     @Override
-    public Mono<MonthRewardRecord> getSignInRecord(Long memberId) {
+    public Mono<MonthSignInRewardRecord> getSignInRecord(Long memberId) {
         LOGGER.info("getSignInRecord(Long memberId), memberId = {}", memberId);
 
         LocalDate now = LocalDate.now();
@@ -303,9 +303,9 @@ public class SignInServiceImpl implements SignInService {
 
         return BITMAP_LIMIT_GETTER.apply(generateSignKey(memberId, now.getYear(), now.getMonthValue()), lengthOfMonth)
                 .flatMap(record -> {
-                            MonthRewardRecord monthRewardRecord = MONTH_REWARD_RECORD_GENERATOR.apply(record, lengthOfMonth);
-                            LOGGER.info("memberId = {}, monthRecordDTO = {}", memberId, monthRewardRecord);
-                            return just(monthRewardRecord);
+                            MonthSignInRewardRecord monthSignInRewardRecord = MONTH_REWARD_RECORD_GENERATOR.apply(record, lengthOfMonth);
+                            LOGGER.info("memberId = {}, monthRecordDTO = {}", memberId, monthSignInRewardRecord);
+                            return just(monthSignInRewardRecord);
                         }
                 );
     }

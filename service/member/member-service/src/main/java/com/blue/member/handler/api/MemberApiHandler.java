@@ -35,7 +35,7 @@ public final class MemberApiHandler {
     }
 
     /**
-     * 根据用户session信息获取用户
+     * get member info by access
      *
      * @param serverRequest
      * @return
@@ -52,7 +52,7 @@ public final class MemberApiHandler {
     }
 
     /**
-     * 注册
+     * registry member
      *
      * @param serverRequest
      * @return

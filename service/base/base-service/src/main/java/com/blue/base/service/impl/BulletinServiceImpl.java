@@ -16,7 +16,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.BlueNumericalValue.ROWS;
 
 /**
- * 公告相关业务实现
+ * bulletin service
  *
  * @author DarkBlue
  */
@@ -34,7 +34,7 @@ public class BulletinServiceImpl implements BulletinService {
     }
 
     /**
-     * 获取公告信息
+     * select bulletins
      *
      * @param bulletinType
      * @return
@@ -43,7 +43,7 @@ public class BulletinServiceImpl implements BulletinService {
     public List<Bulletin> selectBulletin(BulletinType bulletinType) {
         LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
         if (bulletinType == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "公告类型不能为空");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "bulletinType can't be null");
 
         List<Bulletin> bulletins = bulletinMapper.selectBulletin(bulletinType.identity, Status.VALID.status, ROWS.value);
         LOGGER.info("bulletins = {}", bulletins);

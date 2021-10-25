@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 
 /**
- * 数据分片配置类
+ * data access conf
  *
  * @author DarkBlue
  */

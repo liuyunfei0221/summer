@@ -252,4 +252,95 @@
         </if>
     </select>
 
+    <sql id="Resource_Conditions">
+        <if test="resourceCondition != null">
+            <where>
+                <if test="resourceCondition.id != null">
+                    AND
+                    id = #{resourceCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="resourceCondition.requestMethod != null and resourceCondition.sortAttribute != ''">
+                    AND
+                    requestMethod = #{resourceCondition.requestMethod,jdbcType=VARCHAR}
+                </if>
+                <if test="resourceCondition.module != null and resourceCondition.sortAttribute != ''">
+                    AND
+                    module LIKE #{resourceCondition.module,jdbcType=VARCHAR}
+                </if>
+                <if test="resourceCondition.uri != null and resourceCondition.sortAttribute != ''">
+                    AND
+                    uri LIKE #{resourceCondition.uri,jdbcType=VARCHAR}
+                </if>
+                <if test="resourceCondition.authenticate != null">
+                    AND
+                    authenticate = #{resourceCondition.authenticate,jdbcType=BIT}
+                </if>
+                <if test="resourceCondition.requestUnDecryption != null">
+                    AND
+                    requestUnDecryption = #{resourceCondition.requestUnDecryption,jdbcType=BIT}
+                </if>
+                <if test="resourceCondition.responseUnEncryption != null">
+                    AND
+                    responseUnEncryption = #{resourceCondition.responseUnEncryption,jdbcType=BIT}
+                </if>
+                <if test="resourceCondition.existenceRequestBody != null">
+                    AND
+                    existenceRequestBody = #{resourceCondition.existenceRequestBody,jdbcType=BIT}
+                </if>
+                <if test="resourceCondition.existenceResponseBody != null">
+                    AND
+                    existenceResponseBody = #{resourceCondition.existenceResponseBody,jdbcType=BIT}
+                </if>
+                <if test="resourceCondition.type != null">
+                    AND
+                    type = #{resourceCondition.type,jdbcType=TINYINT}
+                </if>
+                <if test="resourceCondition.name != null and resourceCondition.sortAttribute != ''">
+                    AND
+                    name LIKE #{resourceCondition.name,jdbcType=VARCHAR}
+                </if>
+                <if test="resourceCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{resourceCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="resourceCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{resourceCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="resourceCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{resourceCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="resourceCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{resourceCondition.updateTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
+            parameterType="com.blue.secure.model.ResourceCondition">
+        <if test="limit != null and limit >= 0 and rows != null and rows > 0">
+            SELECT
+            <include refid="Base_Column_List"/>
+            FROM
+            role
+            <include refid="Resource_Conditions"/>
+            <if test="resourceCondition.sortAttribute != null and resourceCondition.sortAttribute != '' and resourceCondition.sortType != null and resourceCondition.sortType != ''">
+                ORDER BY
+                ${resourceCondition.sortAttribute,jdbcType=VARCHAR} ${resourceCondition.sortType,jdbcType=VARCHAR}
+            </if>
+            LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+        </if>
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long"
+            parameterType="com.blue.secure.model.ResourceCondition">
+        SELECT COUNT(*)
+        FROM
+        role
+        <include refid="Resource_Conditions"/>
+    </select>
+
 </mapper>

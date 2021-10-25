@@ -1,8 +1,8 @@
 package com.blue.business.converter;
 
 import com.blue.base.model.exps.BlueException;
-import com.blue.business.api.model.ArticleInsertParam;
-import com.blue.business.api.model.LinkInsertParam;
+import com.blue.business.model.ArticleInsertParam;
+import com.blue.business.model.LinkInsertParam;
 import com.blue.business.repository.entity.Article;
 import com.blue.business.repository.entity.Link;
 

@@ -188,7 +188,7 @@ public final class AuthBatchExpireProcessor {
             expireData.expireSeconds = SECONDS_CONVERTER.apply(keyExpireParam.getExpire(), keyExpireParam.getUnit());
             BLOCKING_ELEMENT_PUTTER.accept(expireData, QUEUE_FOR_HANDLE);
         } catch (Exception e) {
-            LOGGER.error("DATA_EXPIRE_HANDLER failed, keyExpireParam 未能完成刷新, keyExpireParam = {}, e = {}", keyExpireParam, e);
+            LOGGER.error("DATA_EXPIRE_HANDLER failed, keyExpireParam = {}, e = {}", keyExpireParam, e);
         }
     };
 

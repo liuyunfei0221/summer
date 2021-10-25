@@ -1,7 +1,7 @@
 package com.blue.marketing.service.inter;
 
 import com.blue.marketing.api.model.SignInReward;
-import com.blue.marketing.api.model.MonthRewardRecord;
+import com.blue.marketing.api.model.MonthSignInRewardRecord;
 import reactor.core.publisher.Mono;
 
 /**
@@ -26,7 +26,7 @@ public interface SignInService {
      * @param memberId
      * @return
      */
-    Mono<MonthRewardRecord> getSignInRecord(Long memberId);
+    Mono<MonthSignInRewardRecord> getSignInRecord(Long memberId);
 
 
 }

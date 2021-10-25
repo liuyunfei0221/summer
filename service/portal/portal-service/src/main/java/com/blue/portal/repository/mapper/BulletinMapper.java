@@ -13,19 +13,19 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface BulletinMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(Bulletin record);
 
     int insertSelective(Bulletin record);
 
-    Bulletin selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(Bulletin record);
 
     int updateByPrimaryKeySelective(Bulletin record);
 
-    int updateByPrimaryKey(Bulletin record);
+    int deleteByPrimaryKey(Long id);
+
+    Bulletin selectByPrimaryKey(Long id);
 
     List<Bulletin> select(@Param("type") Integer type,
-                                @Param("status") Integer status, @Param("rows") Long rows);
+                          @Param("status") Integer status, @Param("rows") Long rows);
 
 }

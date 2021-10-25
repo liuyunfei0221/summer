@@ -102,7 +102,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
             long start = currentTimeMillis();
             while (dynamicInfoRefreshing) {
                 if (currentTimeMillis() - start > maxWaitingForRefresh)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "动态端点信息刷新超时");
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "waiting dynamic info refresh timeout");
                 onSpinWait();
             }
         }
@@ -130,7 +130,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
         DynamicEndPointHandler dynamicEndPointHandler = placeHolderHandlerMapping.get(DYNAMIC_KEY_GENERATOR.apply(maybePlaceholder, serverRequest.methodName()));
 
         if (dynamicEndPointHandler == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "占位符对应的处理器不存在");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dynamicEndPointHandler not exist");
 
         return dynamicEndPointHandler;
     };
@@ -148,7 +148,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
                         ofNullable(r.getHandlerId())
                                 .map(handlerIdWithBeanNameMapping::get)
                                 .map(clzWithHandlerMapping::get)
-                                .orElseThrow(() -> new RuntimeException("handlerId 对应的 handler不存在, r = " + r)), (a, b) -> a));
+                                .orElseThrow(() -> new RuntimeException("the handler with resource = {} not exist, r = " + r)), (a, b) -> a));
 
         dynamicInfoRefreshing = true;
 

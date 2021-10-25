@@ -13,17 +13,17 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface RewardMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(Reward record);
 
     int insertSelective(Reward record);
 
-    Reward selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(Reward record);
 
     int updateByPrimaryKeySelective(Reward record);
 
-    int updateByPrimaryKey(Reward record);
+    int deleteByPrimaryKey(Long id);
+
+    Reward selectByPrimaryKey(Long id);
 
     List<Reward> selectByIds(@Param("ids") List<Long> ids);
 

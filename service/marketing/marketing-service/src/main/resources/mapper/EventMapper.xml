@@ -10,27 +10,19 @@
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="creator" jdbcType="BIGINT" property="creator"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id
         , type, data, status, create_time, creator
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from event
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from event
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
+
     <insert id="insert" parameterType="com.blue.marketing.repository.entity.Event">
         insert into event (id, type, data,
                            status, create_time, creator)
         values (#{id,jdbcType=BIGINT}, #{type,jdbcType=TINYINT}, #{data,jdbcType=VARCHAR},
                 #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT})
     </insert>
+
     <insert id="insertSelective" parameterType="com.blue.marketing.repository.entity.Event">
         insert into event
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -74,6 +66,17 @@
             </if>
         </trim>
     </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.marketing.repository.entity.Event">
+        update event
+        set type        = #{type,jdbcType=TINYINT},
+            data        = #{data,jdbcType=VARCHAR},
+            status      = #{status,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.marketing.repository.entity.Event">
         update event
         <set>
@@ -95,14 +98,18 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.blue.marketing.repository.entity.Event">
-        update event
-        set type        = #{type,jdbcType=TINYINT},
-            data        = #{data,jdbcType=VARCHAR},
-            status      = #{status,jdbcType=TINYINT},
-            create_time = #{createTime,jdbcType=BIGINT},
-            creator     = #{creator,jdbcType=BIGINT}
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from event
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from event
+        where id = #{id,jdbcType=BIGINT}
+    </select>
 
 </mapper>

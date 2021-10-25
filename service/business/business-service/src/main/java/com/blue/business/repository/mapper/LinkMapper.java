@@ -13,19 +13,19 @@ import java.util.List;
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface LinkMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(Link record);
 
     int insertSelective(Link record);
 
-    Link selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(Link record);
 
     int updateByPrimaryKeySelective(Link record);
 
-    int updateByPrimaryKey(Link record);
+    int deleteByPrimaryKey(Long id);
 
-    List<Link> selectBySubIdAndSubType(@Param("subId") Long subId, @Param("subType") Integer subType);
+    Link selectByPrimaryKey(Long id);
 
     void insertBatch(@Param("list") List<Link> list);
+
+    List<Link> selectBySubIdAndSubType(@Param("subId") Long subId, @Param("subType") Integer subType);
 }

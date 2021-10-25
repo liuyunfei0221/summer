@@ -13,17 +13,17 @@ import java.util.List;
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface AttachmentMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(Attachment record);
 
     int insertSelective(Attachment record);
 
-    Attachment selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(Attachment record);
 
     int updateByPrimaryKeySelective(Attachment record);
 
-    int updateByPrimaryKey(Attachment record);
+    int deleteByPrimaryKey(Long id);
+
+    Attachment selectByPrimaryKey(Long id);
 
     void insertBatch(@Param("list") List<Attachment> list);
 

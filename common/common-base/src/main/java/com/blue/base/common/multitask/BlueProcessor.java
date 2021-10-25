@@ -16,7 +16,7 @@ public interface BlueProcessor<T, R> {
      * success process
      * T -> resource ,R -> success result
      *
-     * @return 资源处理函数
+     * @return processor
      */
     Function<T, R> processor();
 
@@ -24,7 +24,7 @@ public interface BlueProcessor<T, R> {
      * fail processor
      * T -> resource ,R -> fail result
      *
-     * @return 失败处理函数
+     * @return callback
      */
     BiFunction<T, Throwable, R> failProcessor();
 

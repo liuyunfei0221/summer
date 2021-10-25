@@ -13,17 +13,17 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface SignRewardTodayRelationMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(SignRewardTodayRelation record);
 
     int insertSelective(SignRewardTodayRelation record);
 
-    SignRewardTodayRelation selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(SignRewardTodayRelation record);
 
     int updateByPrimaryKeySelective(SignRewardTodayRelation record);
 
-    int updateByPrimaryKey(SignRewardTodayRelation record);
+    int deleteByPrimaryKey(Long id);
+
+    SignRewardTodayRelation selectByPrimaryKey(Long id);
 
     List<SignRewardTodayRelation> selectByYearAndMonth(@Param("year") Integer year, @Param("month") Integer month);
 

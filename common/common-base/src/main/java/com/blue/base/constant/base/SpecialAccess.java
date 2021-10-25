@@ -7,7 +7,7 @@ import static com.blue.base.constant.secure.DeviceType.UNKNOWN;
 import static com.blue.base.constant.secure.LoginType.NOT_LOGGED_IN;
 
 /**
- * 特殊身份
+ * special access info
  *
  * @author liuyunfei
  * @date 2021/9/2

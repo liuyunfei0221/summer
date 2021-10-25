@@ -8,7 +8,7 @@ package com.blue.dubbo.constant;
 public enum BlueDubboScanConf {
 
     /**
-     * dubbo扫描路径
+     * dubbo scan packages
      */
     BLUE_DUBBO_SCAN_PACKAGE("basePackages", "basePackageClasses", new String[]{"com"}, "dubbo conf for scan");
 

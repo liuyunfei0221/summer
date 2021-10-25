@@ -59,7 +59,7 @@ public class MarketingEventProducer implements BlueLifecycle {
     }
 
     /**
-     * 发送消息
+     * send event
      *
      * @param marketingEvent
      */

@@ -3,7 +3,7 @@ package com.blue.qr.api.conf;
 import java.awt.*;
 
 /**
- * 默认二维码配置参数封装
+ * default qr conf params
  *
  * @author DarkBlue
  */

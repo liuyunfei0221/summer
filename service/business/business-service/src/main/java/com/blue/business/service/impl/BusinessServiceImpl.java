@@ -1,10 +1,12 @@
 package com.blue.business.service.impl;
 
 import com.blue.base.common.base.ConstantProcessor;
-import com.blue.base.constant.business.SubjectType;
 import com.blue.base.model.exps.BlueException;
-import com.blue.business.api.model.*;
-import com.blue.business.converter.BusinessModelConverters;
+import com.blue.business.api.model.ArticleInfo;
+import com.blue.business.api.model.LinkInfo;
+import com.blue.business.api.model.ReadingInfo;
+import com.blue.business.model.ArticleInsertParam;
+import com.blue.business.model.ArticleUpdateParam;
 import com.blue.business.repository.entity.Article;
 import com.blue.business.repository.entity.Link;
 import com.blue.business.service.inter.*;
@@ -21,8 +23,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.base.Status.VALID;
+import static com.blue.base.constant.business.SubjectType.ARTICLE;
+import static com.blue.business.converter.BusinessModelConverters.ARTICLE_INSERT_PARAM_2_ARTICLE;
+import static com.blue.business.converter.BusinessModelConverters.LINK_INSERT_PARAM_2_LINK;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.error;
@@ -71,12 +77,12 @@ public class BusinessServiceImpl implements BusinessService {
         if (id == null || id < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        //TODO 查询es
+        //TODO es
         CompletableFuture<Optional<Article>> articleOptCf = CompletableFuture
                 .supplyAsync(() -> articleService.getByPrimaryKey(id), executorService);
 
         CompletableFuture<List<Link>> linksCf = CompletableFuture
-                .supplyAsync(() -> linkService.selectBySubIdAndSubType(id, SubjectType.ARTICLE.identity), executorService);
+                .supplyAsync(() -> linkService.selectBySubIdAndSubType(id, ARTICLE.identity), executorService);
 
         return
                 just(articleOptCf)
@@ -86,7 +92,7 @@ public class BusinessServiceImpl implements BusinessService {
                                 articleOpt
                                         .map(Mono::just)
                                         .orElseGet(() ->
-                                                error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "文章不存在")))
+                                                error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
                         )
                         .flatMap(article ->
                                 {
@@ -117,7 +123,7 @@ public class BusinessServiceImpl implements BusinessService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 15)
     public void insertArticle(ArticleInsertParam articleInsertParam, Long memberId) {
-        Article article = BusinessModelConverters.ARTICLE_INSERT_PARAM_2_ARTICLE.apply(articleInsertParam);
+        Article article = ARTICLE_INSERT_PARAM_2_ARTICLE.apply(articleInsertParam);
 
         long articleId = blueIdentityProcessor.generate(Article.class);
         article.setId(articleId);
@@ -126,10 +132,10 @@ public class BusinessServiceImpl implements BusinessService {
         ofNullable(articleInsertParam.getLinks())
                 .map(lks -> lks.stream()
                         .map(lk -> {
-                            Link link = BusinessModelConverters.LINK_INSERT_PARAM_2_LINK.apply(lk);
+                            Link link = LINK_INSERT_PARAM_2_LINK.apply(lk);
                             link.setId(blueIdentityProcessor.generate(Link.class));
                             link.setSubId(articleId);
-                            link.setSubType(SubjectType.ARTICLE.identity);
+                            link.setSubType(ARTICLE.identity);
                             link.setSubAuthorId(memberId);
 
                             return link;
@@ -138,7 +144,7 @@ public class BusinessServiceImpl implements BusinessService {
 
         articleService.insert(article);
 
-        //TODO 同步es
+        //TODO es
     }
 
     /**

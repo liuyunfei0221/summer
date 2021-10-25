@@ -129,7 +129,7 @@ public enum BlueNumericalValue {
 
 
     /**
-     * 数值
+     * number
      */
     public final long value;
 

@@ -18,7 +18,7 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 字典服务业务实现
+ * dict service
  *
  * @author liuyunfei
  * @date 2021/9/27
@@ -47,7 +47,7 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public Mono<List<DictType>> selectDictType() {
-        return just(dictTypeMapper.selectDictType());
+        return just(dictTypeMapper.select());
     }
 
     /**
@@ -57,7 +57,7 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public Mono<List<Dict>> selectDict() {
-        return just(dictMapper.selectDict());
+        return just(dictMapper.select());
     }
 
     /**
@@ -73,10 +73,10 @@ public class DictServiceImpl implements DictService {
         if (isBlank(code))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "code can't be blank");
 
-        DictType dictType = dictTypeMapper.getDictTypeByCode(code);
+        DictType dictType = dictTypeMapper.getByCode(code);
         if (dictType == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid code, dictType not exist");
 
-        return just(dictMapper.selectDictByDictTypeId(dictType.getId()));
+        return just(dictMapper.selectByDictTypeId(dictType.getId()));
     }
 }

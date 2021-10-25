@@ -22,7 +22,7 @@ import static java.util.Collections.singletonList;
 public class BlueDataAccessConfig extends BaseDataAccessConfParams {
 
     /**
-     * 添加seata代理
+     * seata proxy
      *
      * @return
      */

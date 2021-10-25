@@ -4,26 +4,26 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * 月签到信息记录汇总
+ * month sign record
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class MonthRewardRecord implements Serializable {
+public final class MonthSignInRewardRecord implements Serializable {
 
     private static final long serialVersionUID = -5165788568293880953L;
 
     /**
-     * 月签到记录
+     * records info of current month
      */
     private final Map<Integer, SignInRewardRecord> record;
 
     /**
-     * 当月总签到次数
+     * sign total
      */
     private final Integer total;
 
-    public MonthRewardRecord(Map<Integer, SignInRewardRecord> record, Integer total) {
+    public MonthSignInRewardRecord(Map<Integer, SignInRewardRecord> record, Integer total) {
         this.record = record;
         this.total = total;
     }

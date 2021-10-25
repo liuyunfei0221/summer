@@ -69,7 +69,7 @@ public final class StatisticsProcessor implements ResourceLoaderAware, ImportBea
     }
 
     /**
-     * 处理并封装数据
+     * process and package data
      *
      * @param data
      */

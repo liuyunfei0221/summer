@@ -60,7 +60,7 @@ public class RequestAttributeDeploy {
     private Integer maxParts;
 
     /**
-     * 日志
+     * logging details?
      */
     private Boolean enableLoggingRequestDetails;
 

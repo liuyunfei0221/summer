@@ -24,19 +24,6 @@
     likes, boring, status, create_time
     </sql>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from link
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from link
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
-
     <insert id="insert" parameterType="com.blue.business.repository.entity.Link">
         insert into link (id, sub_id, sub_type,
                           sub_author_id, link_url, content,
@@ -136,6 +123,23 @@
         </trim>
     </insert>
 
+    <update id="updateByPrimaryKey" parameterType="com.blue.business.repository.entity.Link">
+        update link
+        set sub_id        = #{subId,jdbcType=BIGINT},
+            sub_type      = #{subType,jdbcType=TINYINT},
+            sub_author_id = #{subAuthorId,jdbcType=BIGINT},
+            link_url      = #{linkUrl,jdbcType=VARCHAR},
+            content       = #{content,jdbcType=VARCHAR},
+            favorites     = #{favorites,jdbcType=BIGINT},
+            readings      = #{readings,jdbcType=BIGINT},
+            comments      = #{comments,jdbcType=BIGINT},
+            likes         = #{likes,jdbcType=BIGINT},
+            boring        = #{boring,jdbcType=BIGINT},
+            status        = #{status,jdbcType=TINYINT},
+            create_time   = #{createTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.business.repository.entity.Link">
         update link
         <set>
@@ -179,31 +183,17 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.business.repository.entity.Link">
-        update link
-        set sub_id        = #{subId,jdbcType=BIGINT},
-            sub_type      = #{subType,jdbcType=TINYINT},
-            sub_author_id = #{subAuthorId,jdbcType=BIGINT},
-            link_url      = #{linkUrl,jdbcType=VARCHAR},
-            content       = #{content,jdbcType=VARCHAR},
-            favorites     = #{favorites,jdbcType=BIGINT},
-            readings      = #{readings,jdbcType=BIGINT},
-            comments      = #{comments,jdbcType=BIGINT},
-            likes         = #{likes,jdbcType=BIGINT},
-            boring        = #{boring,jdbcType=BIGINT},
-            status        = #{status,jdbcType=TINYINT},
-            create_time   = #{createTime,jdbcType=BIGINT}
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from link
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
 
-    <select id="selectBySubIdAndSubType" resultMap="BaseResultMap">
-        <if test="subId != null and subType != null">
-            select
-            <include refid="Base_Column_List"/>
-            from link force index(idx_sid_stype)
-            where sub_id = #{subId}
-            and sub_type = #{subType};
-        </if>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from link
+        where id = #{id,jdbcType=BIGINT}
     </select>
 
     <insert id="insertBatch" parameterType="java.util.List">
@@ -234,5 +224,15 @@
             </foreach>
         </if>
     </insert>
+
+    <select id="selectBySubIdAndSubType" resultMap="BaseResultMap">
+        <if test="subId != null and subType != null">
+            select
+            <include refid="Base_Column_List"/>
+            from link force index(idx_sid_stype)
+            where sub_id = #{subId}
+            and sub_type = #{subType};
+        </if>
+    </select>
 
 </mapper>

@@ -10,7 +10,7 @@ import java.util.concurrent.RejectedExecutionHandler;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * 通用线程池配置参数类
+ * executor config
  *
  * @author DarkBlue
  */

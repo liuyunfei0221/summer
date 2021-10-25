@@ -1,48 +1,34 @@
-package com.blue.business.api.model;
+package com.blue.business.model;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * 修改文章信息数据封装
+ * article insert param
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class ArticleUpdateParam implements Serializable {
+public final class ArticleInsertParam implements Serializable {
 
-    private static final long serialVersionUID = 3538413339258696917L;
-
-    private Long id;
+    private static final long serialVersionUID = 40217575295999511L;
 
     private String title;
-
-    private String author;
 
     private Integer type;
 
     private String content;
 
-    private List<String> links;
+    private List<LinkInsertParam> links;
 
-    public ArticleUpdateParam() {
+    public ArticleInsertParam() {
     }
 
-    public ArticleUpdateParam(Long id, String title, String author, Integer type, String content, List<String> links) {
-        this.id = id;
+    public ArticleInsertParam(String title, Integer type, String content, List<LinkInsertParam> links) {
         this.title = title;
-        this.author = author;
         this.type = type;
         this.content = content;
         this.links = links;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -51,14 +37,6 @@ public final class ArticleUpdateParam implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public Integer getType() {
@@ -77,20 +55,18 @@ public final class ArticleUpdateParam implements Serializable {
         this.content = content;
     }
 
-    public List<String> getLinks() {
+    public List<LinkInsertParam> getLinks() {
         return links;
     }
 
-    public void setLinks(List<String> links) {
+    public void setLinks(List<LinkInsertParam> links) {
         this.links = links;
     }
 
     @Override
     public String toString() {
-        return "ArticleUpdateDTO{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", author='" + author + '\'' +
+        return "ArticleInsertInfo{" +
+                "title='" + title + '\'' +
                 ", type=" + type +
                 ", content='" + content + '\'' +
                 ", links=" + links +

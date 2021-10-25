@@ -12,17 +12,17 @@ import java.util.List;
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface DynamicHandlerMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(DynamicHandler record);
 
     int insertSelective(DynamicHandler record);
 
-    DynamicHandler selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(DynamicHandler record);
 
     int updateByPrimaryKeySelective(DynamicHandler record);
 
-    int updateByPrimaryKey(DynamicHandler record);
+    int deleteByPrimaryKey(Long id);
+
+    DynamicHandler selectByPrimaryKey(Long id);
 
     List<DynamicHandler> select();
 

@@ -44,7 +44,7 @@ public enum BlueTopic {
 
 
     /**
-     * topic名称
+     * topic name
      */
     public final String name;
 

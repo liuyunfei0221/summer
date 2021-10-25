@@ -15,21 +15,12 @@
         <result column="creator" jdbcType="BIGINT" property="creator"/>
         <result column="updater" jdbcType="BIGINT" property="updater"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id
         , name, detail, link, type, data, status, create_time, update_time, creator, updater
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from reward
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from reward
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
+
     <insert id="insert" parameterType="com.blue.marketing.repository.entity.Reward">
         insert into reward (id, name, detail,
                             link, type, data, status,
@@ -41,6 +32,7 @@
                 #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT},
                 #{updater,jdbcType=BIGINT})
     </insert>
+
     <insert id="insertSelective" parameterType="com.blue.marketing.repository.entity.Reward">
         insert into reward
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -114,6 +106,22 @@
             </if>
         </trim>
     </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.marketing.repository.entity.Reward">
+        update reward
+        set name        = #{name,jdbcType=VARCHAR},
+            detail      = #{detail,jdbcType=VARCHAR},
+            link        = #{link,jdbcType=VARCHAR},
+            type        = #{type,jdbcType=TINYINT},
+            data        = #{data,jdbcType=VARCHAR},
+            status      = #{status,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT},
+            updater     = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.marketing.repository.entity.Reward">
         update reward
         <set>
@@ -150,20 +158,19 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.blue.marketing.repository.entity.Reward">
-        update reward
-        set name        = #{name,jdbcType=VARCHAR},
-            detail      = #{detail,jdbcType=VARCHAR},
-            link        = #{link,jdbcType=VARCHAR},
-            type        = #{type,jdbcType=TINYINT},
-            data        = #{data,jdbcType=VARCHAR},
-            status      = #{status,jdbcType=TINYINT},
-            create_time = #{createTime,jdbcType=BIGINT},
-            update_time = #{updateTime,jdbcType=BIGINT},
-            creator     = #{creator,jdbcType=BIGINT},
-            updater     = #{updater,jdbcType=BIGINT}
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from reward
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from reward
+        where id = #{id,jdbcType=BIGINT}
+    </select>
 
     <select id="selectByIds" parameterType="java.util.List" resultMap="BaseResultMap">
         SELECT

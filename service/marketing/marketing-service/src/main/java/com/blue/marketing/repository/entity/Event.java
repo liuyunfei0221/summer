@@ -35,7 +35,7 @@ public final class Event {
     private Long createTime;
 
     /**
-     * 创建人
+     * creator
      */
     private Long creator;
 

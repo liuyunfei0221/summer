@@ -22,19 +22,6 @@
         updater
     </sql>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from bulletin
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from bulletin
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
-
     <insert id="insert" parameterType="com.blue.portal.repository.entity.Bulletin">
         insert into bulletin (id, title, content,
                               link, type, status,
@@ -120,6 +107,21 @@
         </trim>
     </insert>
 
+    <update id="updateByPrimaryKey" parameterType="com.blue.portal.repository.entity.Bulletin">
+        update bulletin
+        set title       = #{title,jdbcType=VARCHAR},
+            content     = #{content,jdbcType=VARCHAR},
+            link        = #{link,jdbcType=VARCHAR},
+            type        = #{type,jdbcType=TINYINT},
+            status      = #{status,jdbcType=TINYINT},
+            priority    = #{priority,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT},
+            updater     = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.portal.repository.entity.Bulletin">
         update bulletin
         <set>
@@ -157,20 +159,18 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.portal.repository.entity.Bulletin">
-        update bulletin
-        set title       = #{title,jdbcType=VARCHAR},
-            content     = #{content,jdbcType=VARCHAR},
-            link        = #{link,jdbcType=VARCHAR},
-            type        = #{type,jdbcType=TINYINT},
-            status      = #{status,jdbcType=TINYINT},
-            priority    = #{priority,jdbcType=INTEGER},
-            create_time = #{createTime,jdbcType=BIGINT},
-            update_time = #{updateTime,jdbcType=BIGINT},
-            creator     = #{creator,jdbcType=BIGINT},
-            updater     = #{updater,jdbcType=BIGINT}
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from bulletin
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bulletin
+        where id = #{id,jdbcType=BIGINT}
+    </select>
 
     <select id="select" resultMap="BaseResultMap">
         <if test="rows != null and rows > 0">

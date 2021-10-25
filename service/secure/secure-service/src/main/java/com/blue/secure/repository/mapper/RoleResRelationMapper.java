@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 角色资源关联关系持久层
+ * role - resource mapping mapper
  *
  * @author DarkBlue
  */

@@ -36,7 +36,7 @@ public class ShineServiceImpl implements ShineService {
 
 
     /**
-     * 获取公益信息
+     * select shine info
      *
      * @param ip
      * @return

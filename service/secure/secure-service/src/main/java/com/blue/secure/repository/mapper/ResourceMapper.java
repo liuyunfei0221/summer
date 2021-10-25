@@ -1,5 +1,6 @@
 package com.blue.secure.repository.mapper;
 
+import com.blue.secure.model.ResourceCondition;
 import com.blue.secure.repository.entity.Resource;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,5 +29,9 @@ public interface ResourceMapper {
     List<Resource> select();
 
     List<Resource> selectByIds(@Param("ids") List<Long> ids);
+
+    List<Resource> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("resourceCondition") ResourceCondition resourceCondition);
+
+    Long countByCondition(@Param("resourceCondition") ResourceCondition resourceCondition);
 
 }

@@ -18,7 +18,11 @@ public interface MemberBasicMapper {
 
     int insertSelective(MemberBasic record);
 
+    int updateByPrimaryKey(MemberBasic record);
+
     int updateByPrimaryKeySelective(MemberBasic record);
+
+    int deleteByPrimaryKey(Long id);
 
     MemberBasic selectByPrimaryKey(Long id);
 

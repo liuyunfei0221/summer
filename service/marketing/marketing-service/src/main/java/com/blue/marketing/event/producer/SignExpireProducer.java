@@ -57,7 +57,7 @@ public class SignExpireProducer implements BlueLifecycle {
     }
 
     /**
-     * 发送消息
+     * send event
      *
      * @param keyExpireParam
      */

@@ -40,7 +40,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
 
     private static final Logger LOGGER = getLogger(BlueJwtProcessor.class);
 
-    //<editor-fold desc="jwt配置信息">
+    //<editor-fold desc="jwt configs">
     /**
      * header info
      */
@@ -58,7 +58,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     }
 
     /**
-     * 常量配置
+     * constants
      */
     private static final int
             RANDOM_JWT_ID_LEN = RANDOM_JWT_ID.len,
@@ -215,7 +215,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     @Override
     public String create(T t) {
         if (t == null) {
-            LOGGER.error("create(T t), t不能为空");
+            LOGGER.error("String create(T t), t can't be null");
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
         }
 
@@ -238,7 +238,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
 
             return builder.sign(ALGORITHM);
         } catch (Exception e) {
-            LOGGER.error("create(T t), 创建jwt失败, t = {}, e = {}", t, e);
+            LOGGER.error("String create(T t), failed, t = {}, e = {}", t, e);
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
         }
     }

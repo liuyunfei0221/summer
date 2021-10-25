@@ -1,4 +1,4 @@
-package com.blue.business.api.model;
+package com.blue.business.model;
 
 import java.io.Serializable;
 

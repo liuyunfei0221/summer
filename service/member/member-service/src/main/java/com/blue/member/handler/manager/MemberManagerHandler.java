@@ -35,7 +35,7 @@ public class MemberManagerHandler {
     }
 
     /**
-     * test select members
+     * select members
      *
      * @param serverRequest
      * @return

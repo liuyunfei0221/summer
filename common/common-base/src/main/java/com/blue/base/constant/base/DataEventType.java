@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 import java.io.Serializable;
 
 /**
- * 数据上报事件类型
+ * data event
  *
  * @author DarkBlue
  */
@@ -21,7 +21,7 @@ public enum DataEventType implements Serializable {
     BURIED_POINT("buriedPoint");
 
     /**
-     * 标识
+     * identity
      */
     public final String identity;
 

@@ -15,9 +15,9 @@ public interface FinanceAccountMapper {
 
     int insertSelective(FinanceAccount record);
 
-    int updateByPrimaryKeySelective(FinanceAccount record);
-
     int updateByPrimaryKey(FinanceAccount record);
+
+    int updateByPrimaryKeySelective(FinanceAccount record);
 
     int deleteByPrimaryKey(Long id);
 

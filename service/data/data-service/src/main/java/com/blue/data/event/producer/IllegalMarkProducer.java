@@ -59,7 +59,7 @@ public final class IllegalMarkProducer implements BlueLifecycle {
     }
 
     /**
-     * 发送消息
+     * send event
      *
      * @param illegalMarkEvent
      */

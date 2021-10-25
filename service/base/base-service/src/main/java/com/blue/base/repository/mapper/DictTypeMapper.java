@@ -13,24 +13,24 @@ import java.util.List;
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
 public interface DictTypeMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(DictType record);
 
     int insertSelective(DictType record);
 
-    DictType selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(DictType record);
 
     int updateByPrimaryKeySelective(DictType record);
 
-    int updateByPrimaryKey(DictType record);
+    int deleteByPrimaryKey(Long id);
+
+    DictType selectByPrimaryKey(Long id);
 
     /**
      * select all dict type
      *
      * @return
      */
-    List<DictType> selectDictType();
+    List<DictType> select();
 
     /**
      * get dict type by code
@@ -38,5 +38,5 @@ public interface DictTypeMapper {
      * @param code
      * @return
      */
-    DictType getDictTypeByCode(@Param("code") String code);
+    DictType getByCode(@Param("code") String code);
 }

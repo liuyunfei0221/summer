@@ -32,7 +32,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class AuthInfoCacher {
 
     private static final Logger LOGGER = getLogger(AuthInfoCacher.class);
@@ -201,31 +201,31 @@ public final class AuthInfoCacher {
                                    Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveTime,
                                    Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
         if (reactiveStringRedisTemplate == null)
-            throw new RuntimeException("reactiveStringRedisTemplate不能为空");
+            throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
         if (authExpireProducer == null)
-            throw new RuntimeException("authExpireProducer不能为空");
+            throw new RuntimeException("authExpireProducer can't be null");
 
         if (refresherCorePoolSize == null || refresherCorePoolSize < 1)
-            throw new RuntimeException("refresherCorePoolSize不能为空或小于1");
+            throw new RuntimeException("refresherCorePoolSize can't be null or less than 1");
 
         if (refresherMaximumPoolSize == null || refresherMaximumPoolSize < 1)
-            throw new RuntimeException("refresherMaximumPoolSize能为空或小于1");
+            throw new RuntimeException("refresherMaximumPoolSize can't be null or less than 1");
 
         if (refresherKeepAliveTime == null || refresherKeepAliveTime < 1)
-            throw new RuntimeException("refresherKeepAliveTime不能为空或小于1");
+            throw new RuntimeException("refresherKeepAliveTime can't be null or less than 1");
 
         if (refresherBlockingQueueCapacity == null || refresherBlockingQueueCapacity < 1)
-            throw new RuntimeException("refresherBlockingQueueCapacity不能为空或小于1");
+            throw new RuntimeException("refresherBlockingQueueCapacity can't be null or less than 1");
 
         if (globalExpireMillis == null || globalExpireMillis < 1L)
-            throw new RuntimeException("globalExpireSeconds不能为空或小于1");
+            throw new RuntimeException("globalExpireSeconds can't be null or less than 1");
 
         if (localExpireMillis == null || localExpireMillis < 1L)
-            throw new RuntimeException("localExpireSeconds不能为空或小于1");
+            throw new RuntimeException("localExpireSeconds can't be null or less than 1");
 
         if (localExpireMillis > globalExpireMillis)
-            throw new RuntimeException("localExpireSeconds不能大于globalExpireSeconds");
+            throw new RuntimeException("localExpireSeconds can't be null or greater than globalExpireSeconds");
 
         if (capacity == null || capacity < 1)
             throw new RuntimeException("capacity can't be null or less than 1");

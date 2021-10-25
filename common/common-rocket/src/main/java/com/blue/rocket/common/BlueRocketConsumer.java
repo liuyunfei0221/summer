@@ -169,7 +169,7 @@ public final class BlueRocketConsumer<T> {
     }
 
     /**
-     * 开始消费
+     * run
      */
     public void run() {
         try {
@@ -181,7 +181,7 @@ public final class BlueRocketConsumer<T> {
     }
 
     /**
-     * 关闭资源
+     * shutdown
      */
     public void shutdown() {
         try {

@@ -89,22 +89,13 @@ public class PortalServiceImpl implements PortalService {
     private static final long WAIT_MILLIS_FOR_THREAD_SLEEP = BlueNumericalValue.WAIT_MILLIS_FOR_THREAD_SLEEP.value;
     private static final long MAX_WAIT_MILLIS_FOR_REDISSON_SYNC = BlueNumericalValue.MAX_WAIT_MILLIS_FOR_REDISSON_SYNC.value;
 
-    /**
-     * po -> vo 转换器
-     */
     private static final Function<List<Bulletin>, List<BulletinInfo>> VO_LIST_CONVERTER = bl ->
             bl != null && bl.size() > 0 ? bl.stream()
                     .map(b -> new BulletinInfo(b.getId(), b.getTitle(), b.getContent(), b.getLink(), b.getType()))
                     .collect(toList()) : emptyList();
 
-    /**
-     * 本地缓存器
-     */
     private static Cache<BulletinType, List<BulletinInfo>> LOCAL_CACHE;
 
-    /**
-     * 公告类型转换
-     */
     private static final Function<String, BulletinType> TYPE_CONVERTER = typeStr -> {
         if (isBlank(typeStr)) {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "typeStr can't be blank");

@@ -10,16 +10,16 @@ import com.blue.file.repository.entity.DownloadHistory;
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface DownloadHistoryMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(DownloadHistory record);
 
     int insertSelective(DownloadHistory record);
 
-    DownloadHistory selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(DownloadHistory record);
 
     int updateByPrimaryKeySelective(DownloadHistory record);
 
-    int updateByPrimaryKey(DownloadHistory record);
+    int deleteByPrimaryKey(Long id);
+
+    DownloadHistory selectByPrimaryKey(Long id);
 
 }

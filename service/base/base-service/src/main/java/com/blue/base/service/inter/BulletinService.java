@@ -6,7 +6,7 @@ import com.blue.base.repository.entity.Bulletin;
 import java.util.List;
 
 /**
- * 公告相关业务接口
+ * bulletin service
  *
  * @author DarkBlue
  */
@@ -14,7 +14,7 @@ import java.util.List;
 public interface BulletinService {
 
     /**
-     * 获取公告信息
+     * select bulletin
      *
      * @param bulletinType
      * @return
