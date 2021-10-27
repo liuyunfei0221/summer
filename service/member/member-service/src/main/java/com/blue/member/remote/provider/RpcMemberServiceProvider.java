@@ -9,11 +9,14 @@ import org.apache.dubbo.config.annotation.Method;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
+import static java.util.stream.Collectors.toList;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -23,6 +26,8 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @DubboService(interfaceClass = RpcMemberService.class, version = "1.0", methods = {
+        @Method(name = "getMemberBasicMonoByPrimaryKey", async = true),
+        @Method(name = "selectMemberBasicMonoByIds", async = true),
         @Method(name = "getMemberBasicByPhone", async = true),
         @Method(name = "getMemberBasicByEmail", async = true)
 })
@@ -34,6 +39,37 @@ public class RpcMemberServiceProvider implements RpcMemberService {
 
     public RpcMemberServiceProvider(MemberBasicService memberBasicService) {
         this.memberBasicService = memberBasicService;
+    }
+
+    /**
+     * query member by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public CompletableFuture<MemberBasicInfo> getMemberBasicMonoByPrimaryKey(Long id) {
+        LOGGER.info("CompletableFuture<Optional<MemberBasicInfo>> getMemberBasicMonoByPrimaryKey(Long id), id = {},", id);
+        return memberBasicService.getMemberBasicMonoByPrimaryKey(id)
+                .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
+                        .map(Mono::just)
+                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
+                .toFuture();
+    }
+
+    /**
+     * select member basic by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids) {
+        LOGGER.info("CompletableFuture<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids), ids = {},", ids);
+        return memberBasicService.selectMemberBasicMonoByIds(ids)
+                .flatMap(l -> just(l.stream().map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
+                        .collect(toList())))
+                .toFuture();
     }
 
     /**

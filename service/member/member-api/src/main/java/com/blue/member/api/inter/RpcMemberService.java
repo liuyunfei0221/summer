@@ -2,6 +2,7 @@ package com.blue.member.api.inter;
 
 import com.blue.member.api.model.MemberBasicInfo;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -9,8 +10,24 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface RpcMemberService {
+
+    /**
+     * query member by id
+     *
+     * @param id
+     * @return
+     */
+    CompletableFuture<MemberBasicInfo> getMemberBasicMonoByPrimaryKey(Long id);
+
+    /**
+     * select member basic by ids
+     *
+     * @param ids
+     * @return
+     */
+    CompletableFuture<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids);
 
     /**
      * query member basic by phone

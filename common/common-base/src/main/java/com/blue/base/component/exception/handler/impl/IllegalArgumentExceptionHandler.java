@@ -30,9 +30,8 @@ public final class IllegalArgumentExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("illegalArgumentExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        IllegalArgumentException ex = (IllegalArgumentException) throwable;
-        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, ofNullable(ex.getMessage())
-                .filter(StringUtils::hasText).orElse(BAD_REQUEST.message)));
+        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null,
+                ofNullable(throwable.getMessage()).filter(StringUtils::hasText).orElse(BAD_REQUEST.message)));
     }
 
 }
