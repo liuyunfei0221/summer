@@ -30,10 +30,7 @@ public final class ResponseStatusExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("responseStatusExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-
-        ResponseStatusException ex = (ResponseStatusException) throwable;
-        ResponseElement responseElement = getResponseElementByStatus(ex.getStatus().value());
-
+        ResponseElement responseElement = getResponseElementByStatus(((ResponseStatusException) throwable).getStatus().value());
         return new ExceptionHandleInfo(responseElement.status, new BlueResponse<>(responseElement.code, null, responseElement.message));
     }
 }

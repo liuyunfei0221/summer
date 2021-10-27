@@ -53,7 +53,6 @@ public class DataBufferLimitExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("dataBufferLimitExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-
         DataBufferLimitException exception = (DataBufferLimitException) throwable;
         return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, MESSAGE_CONVERTER.apply(exception)));
     }

@@ -32,10 +32,11 @@ public final class UnsupportedMediaTypeStatusExceptionHandler implements Excepti
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("unsupportedMediaTypeStatusExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-
-        UnsupportedMediaTypeStatusException ex = (UnsupportedMediaTypeStatusException) throwable;
         return new ExceptionHandleInfo(UNSUPPORTED_MEDIA_TYPE.status,
                 new BlueResponse<>(UNSUPPORTED_MEDIA_TYPE.code, null,
-                        "not support media type -> " + ofNullable(ex.getContentType()).map(c -> c.getType() + PATH_SEPARATOR + c.getSubtype()).orElse(UNKNOWN.identity)));
+                        "not support media type -> " +
+                                ofNullable(((UnsupportedMediaTypeStatusException) throwable).getContentType())
+                                        .map(c -> c.getType() + PATH_SEPARATOR + c.getSubtype())
+                                        .orElse(UNKNOWN.identity)));
     }
 }

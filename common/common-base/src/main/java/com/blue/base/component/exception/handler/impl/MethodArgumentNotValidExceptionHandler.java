@@ -33,15 +33,12 @@ public final class MethodArgumentNotValidExceptionHandler implements ExceptionHa
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("methodArgumentNotValidExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-
         MethodArgumentNotValidException ex = (MethodArgumentNotValidException) throwable;
-        String message = of(ex.getBindingResult())
+        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, of(ex.getBindingResult())
                 .map(BindingResult::getAllErrors)
                 .filter(l -> !isEmpty(l))
                 .map(l -> l.get(0))
                 .map(ObjectError::getDefaultMessage)
-                .orElse(BAD_REQUEST.message);
-
-        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, message));
+                .orElse(BAD_REQUEST.message)));
     }
 }
