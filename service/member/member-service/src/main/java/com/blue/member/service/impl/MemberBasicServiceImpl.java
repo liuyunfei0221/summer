@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
@@ -94,20 +93,23 @@ public class MemberBasicServiceImpl implements MemberBasicService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists");
     };
 
-    /**
-     * sort attr - sort column mapping
-     */
-    private static final Map<String, String> MEMBER_BASIC_SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    /**
-     * sort attr -> sort column
-     */
-    private static final UnaryOperator<String> MEMBER_BASIC_SORT_ATTRIBUTE_CONVERTER = attr ->
-            ofNullable(attr)
-                    .map(MEMBER_BASIC_SORT_ATTRIBUTE_MAPPING::get)
+    private static final Consumer<MemberCondition> CONDITION_REPACKAGER = condition -> {
+        if (condition != null) {
+            ofNullable(condition.getSortAttribute())
                     .filter(StringUtils::hasText)
-                    .orElse("");
+                    .map(SORT_ATTRIBUTE_MAPPING::get)
+                    .filter(StringUtils::hasText)
+                    .ifPresent(condition::setSortAttribute);
+
+            assertSortType(condition.getSortType(), true);
+
+            ofNullable(condition.getName())
+                    .filter(n -> !isBlank(n)).ifPresent(n -> condition.setName("%" + n + "%"));
+        }
+    };
 
     /**
      * query member by phone
@@ -249,10 +251,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     public Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition) {
         LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition), " +
                 "limit = {}, rows = {}, memberCondition = {}", limit, rows, memberCondition);
-
-        memberCondition.setSortAttribute(MEMBER_BASIC_SORT_ATTRIBUTE_CONVERTER.apply(memberCondition.getSortAttribute()));
-        assertSortType(memberCondition.getSortType(), true);
-
         return just(memberBasicMapper.selectByLimitAndCondition(limit, rows, memberCondition));
     }
 
@@ -280,6 +278,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                 "pageModelRequest = {}", pageModelRequest);
 
         MemberCondition memberCondition = pageModelRequest.getParam();
+        CONDITION_REPACKAGER.accept(memberCondition);
 
         return this.countMemberBasicMonoByCondition(memberCondition)
                 .flatMap(memberCount -> {

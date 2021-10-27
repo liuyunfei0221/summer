@@ -37,8 +37,10 @@ import static com.blue.base.common.base.ConstantProcessor.getBulletinTypeByIdent
 import static com.blue.base.constant.base.CacheKey.PORTALS_PRE;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.SyncKey.PORTALS_REFRESH_PRE;
+import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
+import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -111,6 +113,8 @@ public class PortalServiceImpl implements PortalService {
         return getBulletinTypeByIdentity(type);
     };
 
+    private static final Function<BulletinType, String> BULLETIN_CACHE_KEY_GENERATOR = type -> PORTALS_PRE.key + type.identity;
+
     @PostConstruct
     public void init() {
         redisExpire = blueRedisConfig.getEntryTtl();
@@ -124,13 +128,27 @@ public class PortalServiceImpl implements PortalService {
     }
 
     /**
+     * refresh bulletin infos
+     *
+     * @return
+     */
+    @Override
+    public void invalidBulletinInfosCache() {
+        Stream.of(BulletinType.values())
+                .forEach(type -> stringRedisTemplate.delete(BULLETIN_CACHE_KEY_GENERATOR.apply(type)));
+
+        Stream.of(BulletinType.values())
+                .forEach(LOCAL_CACHE::invalidate);
+    }
+
+    /**
      * list bulletin infos from db
      *
      * @param bulletinType
      * @return
      */
     private List<BulletinInfo> getBulletinFromDataBase(BulletinType bulletinType) {
-        List<Bulletin> bulletins = bulletinService.selectBulletin(bulletinType);
+        List<Bulletin> bulletins = bulletinService.selectActiveBulletinByType(bulletinType);
         LOGGER.info("getBulletinFromDataBase(BulletinType bulletinType), bulletins = {}", bulletins);
         return VO_LIST_CONVERTER.apply(bulletins);
     }
@@ -140,20 +158,21 @@ public class PortalServiceImpl implements PortalService {
      */
     private final Function<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_FUNC = type -> {
         List<String> bulletins = ofNullable(stringRedisTemplate.opsForList().range(ofNullable(type)
-                .map(t -> PORTALS_PRE.key + t.identity)
-                .orElse(PORTALS_PRE.key + BulletinType.POPULAR.identity), 0, -1))
+                .map(BULLETIN_CACHE_KEY_GENERATOR)
+                .orElse(PORTALS_PRE.key + POPULAR.identity), 0, -1))
                 .orElse(emptyList());
         LOGGER.info("REDIS_CACHE_PORTAL_FUNC, type = {}, bulletins = {}", type, bulletins);
         return bulletins
                 .stream().map(s -> GSON.fromJson(s, BulletinInfo.class)).collect(toList());
     };
 
+
     /**
      * set bulletin info to redis
      */
     private final BiConsumer<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_CACHER = (type, list) -> {
         if (type != null && !CollectionUtils.isEmpty(list)) {
-            String key = PORTALS_PRE.key + type.identity;
+            String key = BULLETIN_CACHE_KEY_GENERATOR.apply(type);
             stringRedisTemplate.opsForList().rightPushAll(key, list.stream().map(GSON::toJson).collect(toList()));
             stringRedisTemplate.expire(key, redisExpire, EXPIRE_UNIT);
             LOGGER.info("REDIS_CACHE_PORTAL_CACHER, key = {},list = {}", key, list);
@@ -181,8 +200,8 @@ public class PortalServiceImpl implements PortalService {
                             return vos;
                         }
 
-                        long start = System.currentTimeMillis();
-                        while (!(tryLock = lock.tryLock()) && System.currentTimeMillis() - start <= MAX_WAIT_MILLIS_FOR_REDISSON_SYNC)
+                        long start = currentTimeMillis();
+                        while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= MAX_WAIT_MILLIS_FOR_REDISSON_SYNC)
                             onSpinWait();
 
                         return tryLock ? REDIS_CACHE_PORTAL_FUNC.apply(bulletinType) : emptyList();

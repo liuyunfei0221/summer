@@ -20,7 +20,6 @@ summer建立的初衷是探寻高性能，高吞吐，高并发，高可扩展�
 
 summer将会持续维护、迭代，提供更好的服务及解决方案。
 
-* 用户隐私数据处理。
 * 集成k8s。
 * shardingsphere混合模式。
 * 服务网格。
@@ -132,7 +131,6 @@ realization are optimized, iterated, and completely open source.
 
 Summer will continue to maintain, iterate, and provide better services and solutions.
 
-* User privacy data processing.
 * Integrated k8s.
 * Shardingsphere mixed mode.
 * Service mesh。

@@ -14,6 +14,13 @@ import java.util.List;
 public interface PortalService {
 
     /**
+     * expire bulletin infos
+     *
+     * @return
+     */
+    void invalidBulletinInfosCache();
+
+    /**
      * list bulletin infos
      *
      * @param bulletinType

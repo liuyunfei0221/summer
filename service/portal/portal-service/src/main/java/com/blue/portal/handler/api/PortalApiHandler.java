@@ -1,6 +1,5 @@
 package com.blue.portal.handler.api;
 
-import com.blue.base.common.reactive.MetadataGetterForReactive;
 import com.blue.base.common.reactive.ReactiveCommonFunctions;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.portal.service.inter.PortalService;
@@ -13,6 +12,7 @@ import reactor.util.Loggers;
 
 import java.util.Map;
 
+import static com.blue.base.common.reactive.MetadataGetterForReactive.getMetadata;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -46,7 +46,7 @@ public final class PortalApiHandler {
     public Mono<ServerResponse> getBulletin(ServerRequest serverRequest) {
         String ip = ReactiveCommonFunctions.getIp(serverRequest);
         LOGGER.warn("client ip = {}", ip);
-        Map<String, String> metadata = MetadataGetterForReactive.getMetadata(serverRequest);
+        Map<String, String> metadata = getMetadata(serverRequest);
         LOGGER.warn("metadata = {}", metadata);
 
         return portalService.selectBulletinInfo(serverRequest.pathVariable(TYPE_PAR))

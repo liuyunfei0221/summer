@@ -559,10 +559,32 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (12445673836249089, 'POST', 'blue-member', '/manager/member/list', b'1', b'1', b'1', b'0', b'1', 2,
-        'member list of manager1', 'member list of manager1', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (17727588109647875, 'POST', 'blue-secure', '/manager/resource/list', b'1', b'1', b'1', b'1', b'1', 2,
+        'resource list', 'resource list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (17727698705088515, 'POST', 'blue-secure', '/manager/role/list', b'1', b'1', b'1', b'1', b'1', 2,
+        'role list', 'role list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (17727756695502851, 'POST', 'blue-member', '/manager/member/list', b'1', b'1', b'1', b'1', b'1', 2,
+        'member list', 'member list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (17727776022888453, 'POST', 'blue-member', '/manager/authority/list', b'1', b'1', b'1', b'1', b'1', 2,
+        'authority list', 'authority list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role
 
@@ -572,7 +594,7 @@ VALUES (9507591944175638, 'normal', 'normal', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAM
 
 INSERT INTO `secure_0`.`role_0`(`id`, `name`, `description`, `is_default`, `create_time`, `update_time`, `creator`,
                                 `updater`)
-VALUES (17558421159018501, 'summer admin', 'summer admin', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (17558421159018501, 'summer admin', 'summer admin', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role resource relations
 
@@ -670,7 +692,21 @@ VALUES (12445829528846376, 9507591944175638, 9507591944175638, UNIX_TIMESTAMP(),
 
 INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (13031107951853608, 9507591944175638, 12445673836249089, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (17727873733361666, 9507591944175638, 17727588109647875, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (17727823267528708, 9507591944175638, 17727698705088515, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (17727870503747586, 9507591944175638, 17727756695502851, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (17727973582995466, 9507591944175638, 17727776022888453, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+
 
 -- noinspection SqlDialectInspectionForFile
 

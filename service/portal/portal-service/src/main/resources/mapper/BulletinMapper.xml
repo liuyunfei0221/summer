@@ -173,6 +173,27 @@
     </select>
 
     <select id="select" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        bulletin
+    </select>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        <if test="ids != null and ids.size > 0">
+            SELECT
+            <include refid="Base_Column_List"/>
+            FROM
+            bulletin
+            WHERE
+            id IN
+            <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+                #{id,jdbcType=BIGINT}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectByRowsAndCondition" resultMap="BaseResultMap">
         <if test="rows != null and rows > 0">
             SELECT
             <include refid="Base_Column_List"/>

@@ -28,7 +28,7 @@ public interface RoleMapper {
 
     List<Role> select();
 
-    List<Role> selectRoleByIds(@Param("ids") List<Long> ids);
+    List<Role> selectByIds(@Param("ids") List<Long> ids);
 
     List<Role> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("roleCondition") RoleCondition roleCondition);
 

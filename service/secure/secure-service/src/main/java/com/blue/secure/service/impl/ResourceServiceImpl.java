@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
@@ -63,27 +62,16 @@ public class ResourceServiceImpl implements ResourceService {
         this.redissonClient = redissonClient;
     }
 
-    /**
-     * sort attr - sort column mapping
-     */
-    private static final Map<String, String> RESOURCE_SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    /**
-     * sort attr -> sort column
-     */
-    private static final UnaryOperator<String> RESOURCE_SORT_ATTRIBUTE_CONVERTER = attr ->
-            ofNullable(attr)
-                    .map(RESOURCE_SORT_ATTRIBUTE_MAPPING::get)
-                    .filter(StringUtils::hasText)
-                    .orElse("");
-
-    /**
-     * process columns
-     */
-    private static final Consumer<ResourceCondition> RESOURCE_COLUMN_REPACKAGER = condition -> {
+    private static final Consumer<ResourceCondition> CONDITION_REPACKAGER = condition -> {
         if (condition != null) {
-            condition.setSortAttribute(RESOURCE_SORT_ATTRIBUTE_CONVERTER.apply(condition.getSortAttribute()));
+            ofNullable(condition.getSortAttribute())
+                    .filter(StringUtils::hasText)
+                    .map(SORT_ATTRIBUTE_MAPPING::get)
+                    .ifPresent(condition::setSortAttribute);
+
             assertSortType(condition.getSortType(), true);
 
             ofNullable(condition.getRequestMethod())
@@ -97,7 +85,7 @@ public class ResourceServiceImpl implements ResourceService {
         }
     };
 
-    private static final String RESOURCE_INSERT_SYNC_KEY = "INSERT_RESROUCE";
+    private static final String RESOURCE_INSERT_SYNC_KEY = "INSERT_RESOURCE";
 
     /**
      * insert resource
@@ -203,7 +191,7 @@ public class ResourceServiceImpl implements ResourceService {
                 "pageModelRequest = {}", pageModelRequest);
 
         ResourceCondition resourceCondition = pageModelRequest.getParam();
-        RESOURCE_COLUMN_REPACKAGER.accept(resourceCondition);
+        CONDITION_REPACKAGER.accept(resourceCondition);
 
         return this.countResourceMonoByCondition(resourceCondition)
                 .flatMap(roleCount -> {

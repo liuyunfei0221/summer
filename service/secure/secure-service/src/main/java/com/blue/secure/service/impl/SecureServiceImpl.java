@@ -568,7 +568,7 @@ public class SecureServiceImpl implements SecureService {
      * @return
      */
     @Override
-    public boolean refreshSystemAuthorityInfos() {
+    public void refreshSystemAuthorityInfos() {
         LOGGER.info("refreshResourceKeyOrRelation()");
 
         CompletableFuture<List<Resource>> resourceListCf =
@@ -631,8 +631,6 @@ public class SecureServiceImpl implements SecureService {
         idAndRoleInfoMapping = tempIdAndRoleInfoMapping;
 
         authorityInfosRefreshing = false;
-
-        return true;
     }
 
     /**
@@ -997,4 +995,5 @@ public class SecureServiceImpl implements SecureService {
             refreshAuthElementMultiTypes(authInfoRefreshParam);
         }
     }
+
 }

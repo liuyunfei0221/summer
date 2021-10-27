@@ -19,6 +19,20 @@ import java.util.Optional;
 public interface RoleService {
 
     /**
+     * refresh default role
+     *
+     * @return
+     */
+    void refreshDefaultRole();
+
+    /**
+     * get default role
+     *
+     * @return
+     */
+    Role getDefaultRole();
+
+    /**
      * get role by role id
      *
      * @param id
@@ -40,13 +54,6 @@ public interface RoleService {
      * @return
      */
     Mono<List<Role>> selectRole();
-
-    /**
-     * get default role
-     *
-     * @return
-     */
-    Role getDefaultRole();
 
     /**
      * select role by page and condition

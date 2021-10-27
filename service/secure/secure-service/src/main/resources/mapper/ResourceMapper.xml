@@ -259,15 +259,15 @@
                     AND
                     id = #{resourceCondition.id,jdbcType=BIGINT}
                 </if>
-                <if test="resourceCondition.requestMethod != null and resourceCondition.sortAttribute != ''">
+                <if test="resourceCondition.requestMethod != null and resourceCondition.requestMethod != ''">
                     AND
-                    requestMethod = #{resourceCondition.requestMethod,jdbcType=VARCHAR}
+                    request_method = #{resourceCondition.requestMethod,jdbcType=VARCHAR}
                 </if>
-                <if test="resourceCondition.module != null and resourceCondition.sortAttribute != ''">
+                <if test="resourceCondition.module != null and resourceCondition.module != ''">
                     AND
                     module LIKE #{resourceCondition.module,jdbcType=VARCHAR}
                 </if>
-                <if test="resourceCondition.uri != null and resourceCondition.sortAttribute != ''">
+                <if test="resourceCondition.uri != null and resourceCondition.uri != ''">
                     AND
                     uri LIKE #{resourceCondition.uri,jdbcType=VARCHAR}
                 </if>
@@ -277,25 +277,25 @@
                 </if>
                 <if test="resourceCondition.requestUnDecryption != null">
                     AND
-                    requestUnDecryption = #{resourceCondition.requestUnDecryption,jdbcType=BIT}
+                    request_un_decryption = #{resourceCondition.requestUnDecryption,jdbcType=BIT}
                 </if>
                 <if test="resourceCondition.responseUnEncryption != null">
                     AND
-                    responseUnEncryption = #{resourceCondition.responseUnEncryption,jdbcType=BIT}
+                    response_un_encryption = #{resourceCondition.responseUnEncryption,jdbcType=BIT}
                 </if>
                 <if test="resourceCondition.existenceRequestBody != null">
                     AND
-                    existenceRequestBody = #{resourceCondition.existenceRequestBody,jdbcType=BIT}
+                    existence_request_body = #{resourceCondition.existenceRequestBody,jdbcType=BIT}
                 </if>
                 <if test="resourceCondition.existenceResponseBody != null">
                     AND
-                    existenceResponseBody = #{resourceCondition.existenceResponseBody,jdbcType=BIT}
+                    existence_response_body = #{resourceCondition.existenceResponseBody,jdbcType=BIT}
                 </if>
                 <if test="resourceCondition.type != null">
                     AND
                     type = #{resourceCondition.type,jdbcType=TINYINT}
                 </if>
-                <if test="resourceCondition.name != null and resourceCondition.sortAttribute != ''">
+                <if test="resourceCondition.name != null and resourceCondition.name != ''">
                     AND
                     name LIKE #{resourceCondition.name,jdbcType=VARCHAR}
                 </if>
@@ -325,9 +325,9 @@
             SELECT
             <include refid="Base_Column_List"/>
             FROM
-            role
+            resource
             <include refid="Resource_Conditions"/>
-            <if test="resourceCondition.sortAttribute != null and resourceCondition.sortAttribute != '' and resourceCondition.sortType != null and resourceCondition.sortType != ''">
+            <if test="resourceCondition != null and resourceCondition.sortAttribute != null and resourceCondition.sortAttribute != '' and resourceCondition.sortType != null and resourceCondition.sortType != ''">
                 ORDER BY
                 ${resourceCondition.sortAttribute,jdbcType=VARCHAR} ${resourceCondition.sortType,jdbcType=VARCHAR}
             </if>
@@ -339,7 +339,7 @@
             parameterType="com.blue.secure.model.ResourceCondition">
         SELECT COUNT(*)
         FROM
-        role
+        resource
         <include refid="Resource_Conditions"/>
     </select>
 

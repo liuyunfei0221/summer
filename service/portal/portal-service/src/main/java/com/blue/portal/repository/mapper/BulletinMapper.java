@@ -25,7 +25,11 @@ public interface BulletinMapper {
 
     Bulletin selectByPrimaryKey(Long id);
 
-    List<Bulletin> select(@Param("type") Integer type,
-                          @Param("status") Integer status, @Param("rows") Long rows);
+    List<Bulletin> select();
+
+    List<Bulletin> selectByIds(@Param("ids") List<Long> ids);
+
+    List<Bulletin> selectByRowsAndCondition(@Param("type") Integer type,
+                                            @Param("status") Integer status, @Param("rows") Long rows);
 
 }

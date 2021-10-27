@@ -24,7 +24,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
@@ -76,7 +75,7 @@ public class RoleServiceImpl implements RoleService {
 
     private static long MAX_WAITING_FOR_REFRESH;
 
-    private static Role defaultRole;
+    private volatile Role defaultRole;
 
     private static volatile boolean defaultRoleRefreshing = false;
 
@@ -92,62 +91,22 @@ public class RoleServiceImpl implements RoleService {
         return "refreshed";
     };
 
-    @SuppressWarnings("UnusedReturnValue")
-    private boolean generateDefaultRoleInfo() {
-        try {
-            CompletableFuture<List<Role>> roleListCf =
-                    supplyAsync(roleMapper::select, executorService);
-
-            List<Role> roleList = roleListCf.join();
-            List<Role> defaultRoles = roleList.stream().filter(Role::getIsDefault)
-                    .collect(toList());
-
-            if (isEmpty(defaultRoles) || defaultRoles.size() > 1) {
-                LOGGER.error("default role not exist or more than 1");
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
-            }
-
-            Role tempDefaultRole = defaultRoles.get(0);
-
-            defaultRoleRefreshing = true;
-            defaultRole = tempDefaultRole;
-            defaultRoleRefreshing = false;
-
-            LOGGER.info("generateDefaultRoleInfo() -> SUCCESS");
-        } catch (Exception e) {
-            LOGGER.error("generateDefaultRoleInfo() -> FAILED,error = " + e);
-            return false;
-        }
-
-        return true;
-    }
-
-    private static final Supplier<Role> DEFAULT_ROLE_GETTER = () -> {
+    private final Supplier<Role> DEFAULT_ROLE_GETTER = () -> {
         DEFAULT_ROLE_REFRESHING_BLOCKER.get();
         return defaultRole;
     };
 
-    /**
-     * sort attr - sort column mapping
-     */
-    private static final Map<String, String> ROLE_SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    /**
-     * sort attr -> sort column
-     */
-    private static final UnaryOperator<String> ROLE_SORT_ATTRIBUTE_CONVERTER = attr ->
-            ofNullable(attr)
-                    .map(ROLE_SORT_ATTRIBUTE_MAPPING::get)
-                    .filter(StringUtils::hasText)
-                    .orElse("");
-
-    /**
-     * process columns
-     */
-    private static final Consumer<RoleCondition> ROLE_COLUMN_REPACKAGER = condition -> {
+    private static final Consumer<RoleCondition> CONDITION_REPACKAGER = condition -> {
         if (condition != null) {
-            condition.setSortAttribute(ROLE_SORT_ATTRIBUTE_CONVERTER.apply(condition.getSortAttribute()));
+            ofNullable(condition.getSortAttribute())
+                    .filter(StringUtils::hasText)
+                    .map(SORT_ATTRIBUTE_MAPPING::get)
+                    .filter(StringUtils::hasText)
+                    .ifPresent(condition::setSortAttribute);
+
             assertSortType(condition.getSortType(), true);
 
             ofNullable(condition.getName())
@@ -157,7 +116,55 @@ public class RoleServiceImpl implements RoleService {
 
     @PostConstruct
     public void init() {
-        generateDefaultRoleInfo();
+        refreshDefaultRole();
+    }
+
+    /**
+     * refresh default role
+     *
+     * @return
+     */
+    @Override
+    public void refreshDefaultRole() {
+        CompletableFuture<List<Role>> roleListCf =
+                supplyAsync(roleMapper::select, executorService);
+
+        List<Role> roleList = roleListCf.join();
+        List<Role> defaultRoles = roleList.stream().filter(Role::getIsDefault)
+                .collect(toList());
+
+        if (isEmpty(defaultRoles) || defaultRoles.size() > 1) {
+            LOGGER.error("default role not exist or more than 1");
+            throw new RuntimeException("default role not exist or more than 1");
+        }
+
+        Role tempDefaultRole = defaultRoles.get(0);
+
+        defaultRoleRefreshing = true;
+        defaultRole = tempDefaultRole;
+        defaultRoleRefreshing = false;
+
+        LOGGER.info("generateDefaultRoleInfo() -> SUCCESS");
+    }
+
+    /**
+     * get default role
+     *
+     * @return
+     */
+    @Override
+    public Role getDefaultRole() {
+        LOGGER.info("getDefaultRole()");
+
+        Role role = DEFAULT_ROLE_GETTER.get();
+
+        LOGGER.info("role = {}", role);
+        if (role == null) {
+            LOGGER.error("Role getDefaultRole(), default role not exist");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+        }
+
+        return role;
     }
 
     /**
@@ -190,7 +197,7 @@ public class RoleServiceImpl implements RoleService {
         if (ids.size() > DB_SELECT.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids size can't be greater than " + DB_SELECT.value);
 
-        return just(roleMapper.selectRoleByIds(ids));
+        return just(roleMapper.selectByIds(ids));
     }
 
     /**
@@ -202,26 +209,6 @@ public class RoleServiceImpl implements RoleService {
     public Mono<List<Role>> selectRole() {
         LOGGER.info("List<Role> selectRoles()");
         return just(roleMapper.select());
-    }
-
-    /**
-     * get default role
-     *
-     * @return
-     */
-    @Override
-    public Role getDefaultRole() {
-        LOGGER.info("getDefaultRole()");
-
-        Role role = DEFAULT_ROLE_GETTER.get();
-
-        LOGGER.info("role = {}", role);
-        if (role == null) {
-            LOGGER.error("Role getDefaultRole(), default role not exist");
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
-        }
-
-        return role;
     }
 
     /**
@@ -263,7 +250,7 @@ public class RoleServiceImpl implements RoleService {
                 "pageModelRequest = {}", pageModelRequest);
 
         RoleCondition roleCondition = pageModelRequest.getParam();
-        ROLE_COLUMN_REPACKAGER.accept(roleCondition);
+        CONDITION_REPACKAGER.accept(roleCondition);
 
         return this.countRoleMonoByCondition(roleCondition)
                 .flatMap(roleCount -> {

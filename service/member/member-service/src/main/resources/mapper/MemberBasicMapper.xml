@@ -277,7 +277,7 @@
             FROM
             member_basic
             <include refid="Member_Conditions"/>
-            <if test="memberCondition.sortAttribute != null and memberCondition.sortAttribute != '' and memberCondition.sortType != null and memberCondition.sortType != ''">
+            <if test="memberCondition != null and memberCondition.sortAttribute != null and memberCondition.sortAttribute != '' and memberCondition.sortType != null and memberCondition.sortType != ''">
                 ORDER BY
                 ${memberCondition.sortAttribute,jdbcType=VARCHAR} ${memberCondition.sortType,jdbcType=VARCHAR}
             </if>
