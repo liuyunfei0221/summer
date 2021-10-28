@@ -18,7 +18,6 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 import reactor.util.Loggers;
@@ -40,12 +39,15 @@ import static com.blue.base.constant.base.SyncKey.PORTALS_REFRESH_PRE;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
+import static java.lang.Integer.parseInt;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.just;
 
 /**
@@ -105,7 +107,7 @@ public class PortalServiceImpl implements PortalService {
 
         int type;
         try {
-            type = Integer.parseInt(typeStr);
+            type = parseInt(typeStr);
         } catch (NumberFormatException e) {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid bulletin type");
         }
@@ -134,10 +136,10 @@ public class PortalServiceImpl implements PortalService {
      */
     @Override
     public void invalidBulletinInfosCache() {
-        Stream.of(BulletinType.values())
+        of(BulletinType.values())
                 .forEach(type -> stringRedisTemplate.delete(BULLETIN_CACHE_KEY_GENERATOR.apply(type)));
 
-        Stream.of(BulletinType.values())
+        of(BulletinType.values())
                 .forEach(LOCAL_CACHE::invalidate);
     }
 
@@ -148,7 +150,7 @@ public class PortalServiceImpl implements PortalService {
      * @return
      */
     private List<BulletinInfo> getBulletinFromDataBase(BulletinType bulletinType) {
-        List<Bulletin> bulletins = bulletinService.selectActiveBulletinByType(bulletinType);
+        List<Bulletin> bulletins = bulletinService.selectTargetActiveBulletinByType(bulletinType);
         LOGGER.info("getBulletinFromDataBase(BulletinType bulletinType), bulletins = {}", bulletins);
         return VO_LIST_CONVERTER.apply(bulletins);
     }
@@ -171,7 +173,7 @@ public class PortalServiceImpl implements PortalService {
      * set bulletin info to redis
      */
     private final BiConsumer<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_CACHER = (type, list) -> {
-        if (type != null && !CollectionUtils.isEmpty(list)) {
+        if (type != null && !isEmpty(list)) {
             String key = BULLETIN_CACHE_KEY_GENERATOR.apply(type);
             stringRedisTemplate.opsForList().rightPushAll(key, list.stream().map(GSON::toJson).collect(toList()));
             stringRedisTemplate.expire(key, redisExpire, EXPIRE_UNIT);

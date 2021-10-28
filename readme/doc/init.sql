@@ -93,7 +93,8 @@ CREATE TABLE `role_res_relation_0`
     `creator`     bigint NOT NULL COMMENT 'creator id',
     `updater`     bigint NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE
+    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE,
+    UNIQUE KEY `idx_res_role`(`res_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role and resource relation 0';
 
 CREATE TABLE `role_res_relation_1`
@@ -106,7 +107,8 @@ CREATE TABLE `role_res_relation_1`
     `creator`     bigint NOT NULL COMMENT 'creator id',
     `updater`     bigint NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE
+    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE,
+    UNIQUE KEY `idx_res_role`(`res_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role and resource relation 1';
 
 CREATE TABLE `member_role_relation_0`
@@ -241,7 +243,8 @@ CREATE TABLE `role_res_relation_0`
     `creator`     bigint NOT NULL COMMENT 'creator id',
     `updater`     bigint NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE
+    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE,
+    UNIQUE KEY `idx_res_role`(`res_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role and resource relation 0';
 
 CREATE TABLE `role_res_relation_1`
@@ -254,7 +257,8 @@ CREATE TABLE `role_res_relation_1`
     `creator`     bigint NOT NULL COMMENT 'creator id',
     `updater`     bigint NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE
+    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE,
+    UNIQUE KEY `idx_res_role`(`res_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role and resource relation 1';
 
 CREATE TABLE `member_role_relation_0`

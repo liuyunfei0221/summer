@@ -1,6 +1,7 @@
 package com.blue.secure.service.inter;
 
 import com.blue.secure.repository.entity.Resource;
+import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.entity.RoleResRelation;
 import reactor.core.publisher.Mono;
 
@@ -19,7 +20,7 @@ public interface RoleResRelationService {
      *
      * @return
      */
-    Mono<List<RoleResRelation>> selectRoleResRelation();
+    Mono<List<RoleResRelation>> selectRelation();
 
     /**
      * select resources ids by role id
@@ -27,7 +28,7 @@ public interface RoleResRelationService {
      * @param roleId
      * @return
      */
-    Mono<List<Long>> selectResourceIdsMonoByRoleId(Long roleId);
+    Mono<List<Long>> selectResIdsMonoByRoleId(Long roleId);
 
     /**
      * select resources by role id
@@ -35,14 +36,54 @@ public interface RoleResRelationService {
      * @param roleId
      * @return
      */
-    Mono<List<Resource>> selectResourceMonoByRoleId(Long roleId);
+    Mono<List<Resource>> selectResMonoByRoleId(Long roleId);
 
     /**
-     * select relation by ids
+     * select role ids by resource id
+     *
+     * @param resId
+     * @return
+     */
+    Mono<List<Long>> selectRoleIdsMonoByResId(Long resId);
+
+    /**
+     * select role by resource id
+     *
+     * @param resId
+     * @return
+     */
+    Mono<List<Role>> selectRoleMonoByResId(Long resId);
+
+    /**
+     * select relation by role id
+     *
+     * @param roleId
+     * @return
+     */
+    Mono<List<RoleResRelation>> selectRelationByRoleId(Long roleId);
+
+    /**
+     * select relation by resource id
+     *
+     * @param resId
+     * @return
+     */
+    Mono<List<RoleResRelation>> selectRelationByResId(Long resId);
+
+    /**
+     * select relation by role ids
      *
      * @param roleIds
      * @return
      */
-    Mono<List<RoleResRelation>> selectRoleResRelationByRoleIds(List<Long> roleIds);
+    Mono<List<RoleResRelation>> selectRelationByRoleIds(List<Long> roleIds);
+
+    /**
+     * select relation by resource ids
+     *
+     * @param resIds
+     * @return
+     */
+    Mono<List<RoleResRelation>> selectRelationByResIds(List<Long> resIds);
 
 }

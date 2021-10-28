@@ -1,5 +1,6 @@
 package com.blue.secure.service.impl;
 
+import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -11,6 +12,10 @@ import com.blue.secure.model.RoleCondition;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.mapper.RoleMapper;
 import com.blue.secure.service.inter.RoleService;
+import com.google.gson.Gson;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
@@ -20,11 +25,8 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
@@ -36,9 +38,9 @@ import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.just;
@@ -50,7 +52,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "CatchMayIgnoreException"})
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -60,43 +62,100 @@ public class RoleServiceImpl implements RoleService {
 
     private final RoleMapper roleMapper;
 
-    private final ExecutorService executorService;
+    private StringRedisTemplate stringRedisTemplate;
+
+    private final RedissonClient redissonClient;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public RoleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RoleMapper roleMapper,
-                           ExecutorService executorService,
-                           BlockingDeploy blockingDeploy) {
+    public RoleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RoleMapper roleMapper, StringRedisTemplate stringRedisTemplate,
+                           RedissonClient redissonClient, BlockingDeploy blockingDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.roleMapper = roleMapper;
-        this.executorService = executorService;
+        this.stringRedisTemplate = stringRedisTemplate;
+        this.redissonClient = redissonClient;
 
         MAX_WAITING_FOR_REFRESH = blockingDeploy.getBlockingMillis();
     }
 
     private static long MAX_WAITING_FOR_REFRESH;
 
+    private static final String DEFAULT_ROLE_KEY = "SUMMER_DEFAULT_ROLE",
+            DEFAULT_ROLE_REFRESH_KEY = "SUMMER_DEFAULT_ROLE_REFRESHING";
+
+    private static final Gson GSON = CommonFunctions.GSON;
+
     private volatile Role defaultRole;
 
-    private static volatile boolean defaultRoleRefreshing = false;
+    private final Consumer<Role> REDIS_DEFAULT_ROLE_CACHER = role ->
+            ofNullable(role)
+                    .ifPresent(r -> {
+                        stringRedisTemplate.opsForValue().set(DEFAULT_ROLE_KEY, GSON.toJson(r));
+                        LOGGER.info("REDIS_CACHE_DEFAULT_ROLE_CACHER, r = {}", r);
+                    });
 
-    private static final Supplier<String> DEFAULT_ROLE_REFRESHING_BLOCKER = () -> {
-        if (defaultRoleRefreshing) {
-            long start = currentTimeMillis();
-            while (defaultRoleRefreshing) {
-                if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "waiting default role refresh timeout");
-                onSpinWait();
-            }
-        }
-        return "refreshed";
-    };
+    private final Supplier<Optional<Role>> REDIS_DEFAULT_ROLE_GETTER = () ->
+            ofNullable(stringRedisTemplate.opsForValue().get(DEFAULT_ROLE_KEY))
+                    .filter(StringUtils::hasText)
+                    .map(v -> {
+                        LOGGER.info("REDIS_DEFAULT_ROLE_GETTER, v = {}", v);
+                        return GSON.fromJson(v, Role.class);
+                    });
 
-    private final Supplier<Role> DEFAULT_ROLE_GETTER = () -> {
-        DEFAULT_ROLE_REFRESHING_BLOCKER.get();
+    /**
+     * select default role from database
+     *
+     * @return
+     */
+    private Role getDefaultRoleFromDb() {
+        List<Role> defaultRoles = roleMapper.selectDefault();
+        if (isEmpty(defaultRoles))
+            throw new RuntimeException("defaultRoles can't be empty");
+        if (defaultRoles.size() > 1)
+            throw new RuntimeException("defaultRoles can't be more than 1");
+
+        Role defaultRole = defaultRoles.get(0);
+        this.defaultRole = defaultRole;
+
+        LOGGER.info("Role getDefaultRoleFromDb(), defaultRole = {]", defaultRole);
         return defaultRole;
-    };
+    }
 
-    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
+    /**
+     * select default role or set to redis
+     *
+     * @return
+     */
+    private Role getDefaultRoleFromCache() {
+        return REDIS_DEFAULT_ROLE_GETTER.get()
+                .orElseGet(() -> {
+                    RLock lock = redissonClient.getLock(DEFAULT_ROLE_REFRESH_KEY);
+                    boolean tryLock = true;
+                    try {
+                        tryLock = lock.tryLock();
+                        if (tryLock) {
+                            Role defaultRole = getDefaultRoleFromDb();
+                            REDIS_DEFAULT_ROLE_CACHER.accept(defaultRole);
+                            return defaultRole;
+                        }
+
+                        long start = currentTimeMillis();
+                        while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= MAX_WAITING_FOR_REFRESH)
+                            onSpinWait();
+
+                        return tryLock ? REDIS_DEFAULT_ROLE_GETTER.get().orElse(defaultRole) : defaultRole;
+                    } catch (Exception e) {
+                        return getDefaultRoleFromDb();
+                    } finally {
+                        if (tryLock)
+                            try {
+                                lock.unlock();
+                            } catch (Exception e) {
+                            }
+                    }
+                });
+    }
+
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = of(RoleSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Consumer<RoleCondition> CONDITION_REPACKAGER = condition -> {
@@ -126,25 +185,8 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public void refreshDefaultRole() {
-        CompletableFuture<List<Role>> roleListCf =
-                supplyAsync(roleMapper::select, executorService);
-
-        List<Role> roleList = roleListCf.join();
-        List<Role> defaultRoles = roleList.stream().filter(Role::getIsDefault)
-                .collect(toList());
-
-        if (isEmpty(defaultRoles) || defaultRoles.size() > 1) {
-            LOGGER.error("default role not exist or more than 1");
-            throw new RuntimeException("default role not exist or more than 1");
-        }
-
-        Role tempDefaultRole = defaultRoles.get(0);
-
-        defaultRoleRefreshing = true;
-        defaultRole = tempDefaultRole;
-        defaultRoleRefreshing = false;
-
-        LOGGER.info("generateDefaultRoleInfo() -> SUCCESS");
+        REDIS_DEFAULT_ROLE_CACHER.accept(getDefaultRoleFromCache());
+        LOGGER.info("void refreshDefaultRole() -> SUCCESS");
     }
 
     /**
@@ -156,7 +198,7 @@ public class RoleServiceImpl implements RoleService {
     public Role getDefaultRole() {
         LOGGER.info("getDefaultRole()");
 
-        Role role = DEFAULT_ROLE_GETTER.get();
+        Role role = getDefaultRoleFromCache();
 
         LOGGER.info("role = {}", role);
         if (role == null) {

@@ -53,7 +53,7 @@ public class BulletinServiceImpl implements BulletinService {
      * @return
      */
     @Override
-    public List<Bulletin> selectActiveBulletinByType(BulletinType bulletinType) {
+    public List<Bulletin> selectTargetActiveBulletinByType(BulletinType bulletinType) {
         LOGGER.info("List<Bulletin> selectActiveBulletinByType(BulletinType bulletinType), bulletinType = {}", bulletinType);
         if (bulletinType == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "bulletinType can't be null");

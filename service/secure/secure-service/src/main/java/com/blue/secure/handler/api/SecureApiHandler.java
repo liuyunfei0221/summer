@@ -97,12 +97,12 @@ public final class SecureApiHandler {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
                         secureService.invalidAuthByAccess(acc)
-                                .then()
-                                .flatMap(aVoid -> ok().contentType(APPLICATION_JSON)
-                                        .header(AUTHORIZATION.name, "")
-                                        .body(
-                                                generate(OK.code, GENERIC_SUCCESS.message, GENERIC_SUCCESS.message)
-                                                , BlueResponse.class)));
+                                .flatMap(success ->
+                                        ok().contentType(APPLICATION_JSON)
+                                                .header(AUTHORIZATION.name, "")
+                                                .body(
+                                                        generate(OK.code, GENERIC_SUCCESS.message, GENERIC_SUCCESS.message)
+                                                        , BlueResponse.class)));
     }
 
 }

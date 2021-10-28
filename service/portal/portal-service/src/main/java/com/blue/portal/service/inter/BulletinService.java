@@ -27,6 +27,6 @@ public interface BulletinService {
      * @param bulletinType
      * @return
      */
-    List<Bulletin> selectActiveBulletinByType(BulletinType bulletinType);
+    List<Bulletin> selectTargetActiveBulletinByType(BulletinType bulletinType);
 
 }

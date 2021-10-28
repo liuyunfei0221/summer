@@ -34,4 +34,6 @@ public interface RoleMapper {
 
     Long countByCondition(@Param("roleCondition") RoleCondition roleCondition);
 
+    List<Role> selectDefault();
+
 }

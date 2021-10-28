@@ -212,4 +212,13 @@
         <include refid="Role_Conditions"/>
     </select>
 
+    <select id="selectDefault" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role
+        WHERE
+        is_default = 1
+    </select>
+
 </mapper>

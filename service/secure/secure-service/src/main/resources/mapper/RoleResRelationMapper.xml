@@ -134,8 +134,56 @@
 
     <select id="selectResIdsByRoleId" parameterType="java.lang.Long" resultType="java.lang.Long">
         SELECT res_id
-        FROM role_res_relation
+        FROM role_res_relation FORCE INDEX(idx_role_res)
         WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectRoleIdsByResId" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT role_id
+        FROM role_res_relation FORCE INDEX(idx_res_role)
+        WHERE res_id = #{resId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByRoleId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM role_res_relation FORCE INDEX(idx_role_res)
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByResId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM role_res_relation FORCE INDEX(idx_res_role)
+        WHERE res_id = #{resId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByRoleIds" resultMap="BaseResultMap">
+        <if test="roleIds != null and roleIds.size > 0">
+            SELECT
+            <include refid="Base_Column_List"/>
+            FROM
+            role_res_relation FORCE INDEX(idx_role_res)
+            WHERE
+            role_id IN
+            <foreach collection="roleIds" open="(" close=")" separator="," item="id" index="index">
+                #{id,jdbcType=BIGINT}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectByResIds" resultMap="BaseResultMap">
+        <if test="resIds != null and resIds.size > 0">
+            SELECT
+            <include refid="Base_Column_List"/>
+            FROM
+            role_res_relation FORCE INDEX(idx_res_role)
+            WHERE
+            res_id IN
+            <foreach collection="resIds" open="(" close=")" separator="," item="id" index="index">
+                #{id,jdbcType=BIGINT}
+            </foreach>
+        </if>
     </select>
 
 </mapper>

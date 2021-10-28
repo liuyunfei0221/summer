@@ -574,7 +574,7 @@ public class SecureServiceImpl implements SecureService {
         CompletableFuture<List<Resource>> resourceListCf =
                 resourceService.selectResource().toFuture();
         CompletableFuture<List<RoleResRelation>> roleResRelationListCf =
-                roleResRelationService.selectRoleResRelation().toFuture();
+                roleResRelationService.selectRelation().toFuture();
         CompletableFuture<List<Role>> roleListCf =
                 roleService.selectRole().toFuture();
 
