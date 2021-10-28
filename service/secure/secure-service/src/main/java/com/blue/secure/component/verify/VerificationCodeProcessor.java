@@ -2,7 +2,6 @@ package com.blue.secure.component.verify;
 
 import com.blue.base.constant.base.CacheKey;
 import com.blue.base.constant.base.RandomType;
-import com.blue.secure.component.auth.AuthInfoCacher;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import reactor.util.Logger;
@@ -31,7 +30,7 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc", "FieldCanBeLocal", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class VerificationCodeProcessor {
 
-    private static final Logger LOGGER = getLogger(AuthInfoCacher.class);
+    private static final Logger LOGGER = getLogger(VerificationCodeProcessor.class);
 
     private final StringRedisTemplate stringRedisTemplate;
 

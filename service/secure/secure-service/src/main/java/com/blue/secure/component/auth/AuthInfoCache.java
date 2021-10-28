@@ -28,14 +28,14 @@ import static reactor.core.publisher.Mono.justOrEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * authInfo cacher
+ * authInfo cache
  *
  * @author DarkBlue
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
-public final class AuthInfoCacher {
+public final class AuthInfoCache {
 
-    private static final Logger LOGGER = getLogger(AuthInfoCacher.class);
+    private static final Logger LOGGER = getLogger(AuthInfoCache.class);
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
@@ -59,16 +59,16 @@ public final class AuthInfoCacher {
     private final Duration globalExpireDuration;
 
     /**
-     * local cacher
+     * local cache
      */
-    private final Cache<String, String> cacher;
+    private final Cache<String, String> cache;
 
-    private static final String THREAD_NAME_PRE = "JwtCacher-thread- ";
+    private static final String THREAD_NAME_PRE = "JwtCache-thread- ";
     private static final int RANDOM_LEN = 4;
 
-    public AuthInfoCacher(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer,
-                          Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveTime,
-                          Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
+    public AuthInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer,
+                         Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveTime,
+                         Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
 
         assertConf(reactiveStringRedisTemplate, authExpireProducer,
                 refresherCorePoolSize, refresherMaximumPoolSize, refresherKeepAliveTime,
@@ -97,7 +97,7 @@ public final class AuthInfoCacher {
         CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpireMillis, MILLIS),
                 AFTER_WRITE, executorService);
 
-        this.cacher = generateCache(caffeineConf);
+        this.cache = generateCache(caffeineConf);
     }
 
     /**
@@ -143,7 +143,7 @@ public final class AuthInfoCacher {
         if (keyId == null || "".equals(keyId))
             throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
 
-        return justOrEmpty(cacher.getIfPresent(keyId))
+        return justOrEmpty(cache.getIfPresent(keyId))
                 .switchIfEmpty(REDIS_AUTH_GETTER.apply(keyId));
     }
 
@@ -173,7 +173,7 @@ public final class AuthInfoCacher {
         LOGGER.info("invalidAuthInfo(), keyId = {}", keyId);
         return reactiveStringRedisTemplate.delete(keyId)
                 .flatMap(l -> {
-                    cacher.invalidate(keyId);
+                    cache.invalidate(keyId);
                     return just(l > 0L);
                 });
     }
@@ -187,7 +187,7 @@ public final class AuthInfoCacher {
         LOGGER.info("invalidLocalAuthInfo(), keyId = {}", keyId);
         try {
             if (keyId != null && !"".equals(keyId))
-                cacher.invalidate(keyId);
+                cache.invalidate(keyId);
             return just(true);
         } catch (Exception e) {
             return just(false);

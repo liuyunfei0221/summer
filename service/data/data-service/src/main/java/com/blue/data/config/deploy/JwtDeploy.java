@@ -18,7 +18,7 @@ public class JwtDeploy {
 
     private Long globalMinExpireMillis;
 
-    private Integer localCacherCapacity;
+    private Integer localCacheCapacity;
 
     private Long localExpireMillis;
 
@@ -59,12 +59,12 @@ public class JwtDeploy {
         this.globalMinExpireMillis = globalMinExpireMillis;
     }
 
-    public Integer getLocalCacherCapacity() {
-        return localCacherCapacity;
+    public Integer getLocalCacheCapacity() {
+        return localCacheCapacity;
     }
 
-    public void setLocalCacherCapacity(Integer localCacherCapacity) {
-        this.localCacherCapacity = localCacherCapacity;
+    public void setLocalCacheCapacity(Integer localCacheCapacity) {
+        this.localCacheCapacity = localCacheCapacity;
     }
 
     public Long getLocalExpireMillis() {
@@ -152,7 +152,7 @@ public class JwtDeploy {
         return "JwtDeploy{" +
                 "globalMaxExpireMillis=" + globalMaxExpireMillis +
                 ", globalMinExpireMillis=" + globalMinExpireMillis +
-                ", localCacherCapacity=" + localCacherCapacity +
+                ", localCacheCapacity=" + localCacheCapacity +
                 ", localExpireMillis=" + localExpireMillis +
                 ", refresherCorePoolSize=" + refresherCorePoolSize +
                 ", refresherMaximumPoolSize=" + refresherMaximumPoolSize +

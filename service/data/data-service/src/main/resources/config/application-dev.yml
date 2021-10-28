@@ -357,7 +357,7 @@ dubbo:
 jwt:
   globalMaxExpireMillis: 2678400000
   globalMinExpireMillis: 18000000
-  localCacherCapacity: 16384
+  localCacheCapacity: 16384
   localExpireMillis: 60
   refresherCorePoolSize: 2
   refresherMaximumPoolSize: 4

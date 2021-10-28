@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
+import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.secure.converter.SecureModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER;
@@ -34,6 +35,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
@@ -149,6 +151,12 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids), ids = {}", ids);
+
+        if (isEmpty(ids))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids can't be empty");
+        if (ids.size() > DB_SELECT.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids size can't be greater than " + DB_SELECT.value);
+
         return just(resourceMapper.selectByIds(ids));
     }
 

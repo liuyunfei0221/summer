@@ -86,11 +86,11 @@ public class RoleServiceImpl implements RoleService {
 
     private volatile Role defaultRole;
 
-    private final Consumer<Role> REDIS_DEFAULT_ROLE_CACHER = role ->
+    private final Consumer<Role> REDIS_DEFAULT_ROLE_CACHE = role ->
             ofNullable(role)
                     .ifPresent(r -> {
                         stringRedisTemplate.opsForValue().set(DEFAULT_ROLE_KEY, GSON.toJson(r));
-                        LOGGER.info("REDIS_CACHE_DEFAULT_ROLE_CACHER, r = {}", r);
+                        LOGGER.info("REDIS_CACHE_DEFAULT_ROLE_CACHE, r = {}", r);
                     });
 
     private final Supplier<Optional<Role>> REDIS_DEFAULT_ROLE_GETTER = () ->
@@ -134,7 +134,7 @@ public class RoleServiceImpl implements RoleService {
                         tryLock = lock.tryLock();
                         if (tryLock) {
                             Role defaultRole = getDefaultRoleFromDb();
-                            REDIS_DEFAULT_ROLE_CACHER.accept(defaultRole);
+                            REDIS_DEFAULT_ROLE_CACHE.accept(defaultRole);
                             return defaultRole;
                         }
 
@@ -185,7 +185,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public void refreshDefaultRole() {
-        REDIS_DEFAULT_ROLE_CACHER.accept(getDefaultRoleFromCache());
+        REDIS_DEFAULT_ROLE_CACHE.accept(getDefaultRoleFromCache());
         LOGGER.info("void refreshDefaultRole() -> SUCCESS");
     }
 
@@ -265,6 +265,7 @@ public class RoleServiceImpl implements RoleService {
     public Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition) {
         LOGGER.info("Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition), " +
                 "limit = {}, rows = {}, roleCondition = {}", limit, rows, roleCondition);
+
         return just(roleMapper.selectByLimitAndCondition(limit, rows, roleCondition));
     }
 

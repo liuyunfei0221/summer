@@ -172,12 +172,12 @@ public class PortalServiceImpl implements PortalService {
     /**
      * set bulletin info to redis
      */
-    private final BiConsumer<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_CACHER = (type, list) -> {
+    private final BiConsumer<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_CACHE = (type, list) -> {
         if (type != null && !isEmpty(list)) {
             String key = BULLETIN_CACHE_KEY_GENERATOR.apply(type);
             stringRedisTemplate.opsForList().rightPushAll(key, list.stream().map(GSON::toJson).collect(toList()));
             stringRedisTemplate.expire(key, redisExpire, EXPIRE_UNIT);
-            LOGGER.info("REDIS_CACHE_PORTAL_CACHER, key = {},list = {}", key, list);
+            LOGGER.info("REDIS_CACHE_PORTAL_CACHE, key = {},list = {}", key, list);
         }
     };
 
@@ -198,7 +198,7 @@ public class PortalServiceImpl implements PortalService {
                         tryLock = lock.tryLock();
                         if (tryLock) {
                             List<BulletinInfo> vos = getBulletinFromDataBase(bulletinType);
-                            REDIS_CACHE_PORTAL_CACHER.accept(bulletinType, vos);
+                            REDIS_CACHE_PORTAL_CACHE.accept(bulletinType, vos);
                             return vos;
                         }
 

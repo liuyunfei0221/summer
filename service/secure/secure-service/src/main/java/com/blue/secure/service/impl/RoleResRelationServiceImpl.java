@@ -1,5 +1,6 @@
 package com.blue.secure.service.impl;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.entity.Role;
@@ -14,6 +15,9 @@ import reactor.util.Logger;
 
 import java.util.List;
 
+import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.util.Collections.emptyList;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.just;
@@ -25,7 +29,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class RoleResRelationServiceImpl implements RoleResRelationService {
 
@@ -54,7 +58,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<RoleResRelation>> selectRelation() {
-        LOGGER.info("Mono<List<RoleResRelation>> selectRoleResRelation()");
+        LOGGER.info("Mono<List<RoleResRelation>> selectRelation()");
         return just(roleResRelationMapper.select());
     }
 
@@ -65,7 +69,10 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<Long>> selectResIdsMonoByRoleId(Long roleId) {
-        LOGGER.info("Mono<List<Long>> selectResourceIdsMonoByRoleId(Long roleId), roleId = {}", roleId);
+        LOGGER.info("Mono<List<Long>> selectResIdsMonoByRoleId(Long roleId), roleId = {}", roleId);
+        if (roleId == null || roleId < 1L)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
         return just(roleResRelationMapper.selectResIdsByRoleId(roleId));
     }
 
@@ -78,9 +85,12 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     @Override
     public Mono<List<Resource>> selectResMonoByRoleId(Long roleId) {
         LOGGER.info("Mono<List<Resource>> selectResMonoByRoleId(Long roleId), roleId = {}", roleId);
+        if (roleId == null || roleId < 1L)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
         return this.selectResIdsMonoByRoleId(roleId)
                 .flatMap(ids -> {
-                    LOGGER.info("Mono<List<Resource>> selectResourceMonoByRoleId(Long roleId), ids = {}", ids);
+                    LOGGER.info("Mono<List<Resource>> selectResMonoByRoleId(Long roleId), ids = {}", ids);
                     return isEmpty(ids) ? just(emptyList()) : resourceService.selectResourceMonoByIds(ids);
                 });
     }
@@ -93,7 +103,11 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<Long>> selectRoleIdsMonoByResId(Long resId) {
-        return null;
+        LOGGER.info("Mono<List<Long>> selectRoleIdsMonoByResId(Long resId), resId = {}", resId);
+        if (resId == null || resId < 1L)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        return just(roleResRelationMapper.selectRoleIdsByResId(resId));
     }
 
     /**
@@ -104,7 +118,15 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<Role>> selectRoleMonoByResId(Long resId) {
-        return null;
+        LOGGER.info("Mono<List<Role>> selectRoleMonoByResId(Long resId), resId = {}", resId);
+        if (resId == null || resId < 1L)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        return this.selectRoleIdsMonoByResId(resId)
+                .flatMap(ids -> {
+                    LOGGER.info("Mono<List<Role>> selectRoleMonoByResId(Long resId), resId = {}, ids = {}", ids);
+                    return isEmpty(ids) ? just(emptyList()) : roleService.selectRoleMonoByIds(ids);
+                });
     }
 
     /**
@@ -115,7 +137,11 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<RoleResRelation>> selectRelationByRoleId(Long roleId) {
-        return null;
+        LOGGER.info("Mono<List<RoleResRelation>> selectRelationByRoleId(Long roleId), roleId = {}", roleId);
+        if (roleId == null || roleId < 1L)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        return just(roleResRelationMapper.selectByRoleId(roleId));
     }
 
     /**
@@ -126,7 +152,11 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<RoleResRelation>> selectRelationByResId(Long resId) {
-        return null;
+        LOGGER.info("Mono<List<RoleResRelation>> selectRelationByResId(Long resId), resId = {}", resId);
+        if (resId == null || resId < 1L)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        return just(roleResRelationMapper.selectByResId(resId));
     }
 
     /**
@@ -138,6 +168,12 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     @Override
     public Mono<List<RoleResRelation>> selectRelationByRoleIds(List<Long> roleIds) {
         LOGGER.info("Mono<List<RoleResRelation>> selectRelationByRoleIds(List<Long> roleIds), roleIds = {}", roleIds);
+
+        if (isEmpty(roleIds))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "roleIds can't be empty");
+        if (roleIds.size() > DB_SELECT.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "roleIds size can't be greater than " + DB_SELECT.value);
+
         return just(roleResRelationMapper.selectByRoleIds(roleIds));
     }
 
@@ -149,7 +185,14 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<RoleResRelation>> selectRelationByResIds(List<Long> resIds) {
-        return null;
+        LOGGER.info("Mono<List<RoleResRelation>> selectRelationByResIds(List<Long> resIds), resIds = {}", resIds);
+
+        if (isEmpty(resIds))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "resIds can't be empty");
+        if (resIds.size() > DB_SELECT.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "resIds size can't be greater than " + DB_SELECT.value);
+
+        return just(roleResRelationMapper.selectByResIds(resIds));
     }
 
 }

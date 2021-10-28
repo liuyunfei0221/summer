@@ -13,7 +13,7 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.jwt.common.JwtProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.secure.api.model.*;
-import com.blue.secure.component.auth.AuthInfoCacher;
+import com.blue.secure.component.auth.AuthInfoCache;
 import com.blue.secure.config.deploy.BlockingDeploy;
 import com.blue.secure.config.deploy.SessionKeyDeploy;
 import com.blue.secure.event.producer.InvalidLocalAuthProducer;
@@ -78,7 +78,7 @@ public class SecureServiceImpl implements SecureService {
 
     private JwtProcessor<MemberPayload> jwtProcessor;
 
-    private final AuthInfoCacher authInfoCacher;
+    private final AuthInfoCache authInfoCache;
 
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -103,12 +103,12 @@ public class SecureServiceImpl implements SecureService {
     private final BlockingDeploy blockingDeploy;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public SecureServiceImpl(JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCacher authInfoCacher, StringRedisTemplate stringRedisTemplate,
+    public SecureServiceImpl(JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCache authInfoCache, StringRedisTemplate stringRedisTemplate,
                              RoleService roleService, ResourceService resourceService, MemberService memberService,
                              RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService, InvalidLocalAuthProducer invalidLocalAuthProducer,
                              ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
         this.jwtProcessor = jwtProcessor;
-        this.authInfoCacher = authInfoCacher;
+        this.authInfoCache = authInfoCache;
         this.stringRedisTemplate = stringRedisTemplate;
         this.roleService = roleService;
         this.resourceService = resourceService;
@@ -724,7 +724,7 @@ public class SecureServiceImpl implements SecureService {
                     String jwt = aa.getAuthentication();
                     MemberPayload memberPayload = JWT_PARSER.apply(jwt);
 
-                    return authInfoCacher.getAuthInfo(memberPayload.getKeyId())
+                    return authInfoCache.getAuthInfo(memberPayload.getKeyId())
                             .flatMap(v -> {
                                 if (v == null || "".equals(v))
                                     return error(UNAUTHORIZED_EXP);
@@ -779,13 +779,13 @@ public class SecureServiceImpl implements SecureService {
                         String jwt = jwtProcessor.create(mp);
                         String authInfoJson = GSON.toJson(new AuthInfo(jwt, authGenParam.getRoleId(), keyPair.getPubKey()));
 
-                        return authInfoCacher.setAuthInfo(mp.getKeyId(), authInfoJson)
+                        return authInfoCache.setAuthInfo(mp.getKeyId(), authInfoJson)
                                 .flatMap(b -> {
                                     LOGGER.info("authInfoJson = {}, keyPairDTO = {}", authInfoJson, keyPair);
                                     if (b)
                                         return just(new MemberAuth(jwt, keyPair.getPriKey()));
 
-                                    LOGGER.error("authInfoCacher.setAuthInfo(mp.getKeyId(), authInfoJson), failed");
+                                    LOGGER.error("authInfoCache.setAuthInfo(mp.getKeyId(), authInfoJson), failed");
                                     return error(INTERNAL_SERVER_ERROR_EXP);
                                 });
                     });
@@ -802,7 +802,7 @@ public class SecureServiceImpl implements SecureService {
     public Mono<Boolean> invalidAuthByAccess(Access access) {
         LOGGER.info("invalidAuthByAccess(Access access), access = {}", access);
         if (access != null)
-            return authInfoCacher.invalidAuthInfo(genSessionKey(access.getId(), access.getLoginType().intern(), access.getDeviceType().intern()));
+            return authInfoCache.invalidAuthInfo(genSessionKey(access.getId(), access.getLoginType().intern(), access.getDeviceType().intern()));
 
         return error(UNAUTHORIZED_EXP);
     }
@@ -818,7 +818,7 @@ public class SecureServiceImpl implements SecureService {
         LOGGER.info("invalidAuthByJwt(String jwt), jwt = {}", jwt);
         try {
             MemberPayload memberPayload = JWT_PARSER.apply(jwt);
-            return authInfoCacher.invalidAuthInfo(memberPayload.getKeyId());
+            return authInfoCache.invalidAuthInfo(memberPayload.getKeyId());
         } catch (Exception e) {
             LOGGER.info("invalidAuthByJwt(String jwt) failed, jwt = {}, e = {}", jwt, e);
             return just(false);
@@ -833,7 +833,7 @@ public class SecureServiceImpl implements SecureService {
     @Override
     public Mono<Boolean> invalidLocalAuthByKeyId(String keyId) {
         LOGGER.info("invalidLocalAuthByKeyId(String keyId), keyId = {}", keyId);
-        return authInfoCacher.invalidLocalAuthInfo(keyId);
+        return authInfoCache.invalidLocalAuthInfo(keyId);
     }
 
     /**

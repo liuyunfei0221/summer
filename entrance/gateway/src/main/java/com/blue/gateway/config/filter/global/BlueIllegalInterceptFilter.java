@@ -33,7 +33,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"UnusedReturnValue", "unused", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
+@SuppressWarnings({"UnusedReturnValue", "unused", "AliControlFlowStatementWithoutBraces"})
 @Component
 public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
 
@@ -49,12 +49,12 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
         this.executorService = executorService;
     }
 
-    private static Cache<String, String> illegalIpCacher;
+    private static Cache<String, String> illegalIpCache;
 
-    private static Cache<String, String> illegalJwtCacher;
+    private static Cache<String, String> illegalJwtCache;
 
     private static final Consumer<String> ILLEGAL_IP_ASSERTER = ip -> {
-        String illegalReason = illegalIpCacher.getIfPresent(ip);
+        String illegalReason = illegalIpCache.getIfPresent(ip);
         if (illegalReason == null)
             return;
 
@@ -63,7 +63,7 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
     };
 
     private static final Consumer<String> ILLEGAL_JWT_ASSERTER = jwt -> {
-        String illegalReason = illegalJwtCacher.getIfPresent(jwt);
+        String illegalReason = illegalJwtCache.getIfPresent(jwt);
         if (illegalReason == null)
             return;
 
@@ -96,12 +96,12 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
         if (illegalCapacity == null || illegalCapacity < 1)
             throw new RuntimeException("illegalCapacity can't be null or less than 1");
 
-        illegalIpCacher = newBuilder()
+        illegalIpCache = newBuilder()
                 .expireAfterAccess(of(illegalExpireSeconds, SECONDS))
                 .executor(this.executorService)
                 .maximumSize(illegalCapacity).build();
 
-        illegalJwtCacher = newBuilder()
+        illegalJwtCache = newBuilder()
                 .expireAfterAccess(of(illegalExpireSeconds, SECONDS))
                 .executor(this.executorService)
                 .maximumSize(illegalCapacity).build();
@@ -121,7 +121,7 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
     public boolean markIllegalIp(String ip, IllegalReason illegalReason) {
         LOGGER.info("markIllegalIp(String ip, IllegalReason illegalReason), ip = {}, illegalReason = {}", ip, illegalReason);
         try {
-            illegalIpCacher.put(ip, ofNullable(illegalReason).orElse(UNKNOWN).reason.intern());
+            illegalIpCache.put(ip, ofNullable(illegalReason).orElse(UNKNOWN).reason.intern());
         } catch (Exception e) {
             LOGGER.error("markIllegalIp(String ip, IllegalReason illegalReason) failed, ip = {}, e = {}", ip, e);
             return false;
@@ -132,7 +132,7 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
     public boolean markIllegalJwt(String jwt, IllegalReason illegalReason) {
         LOGGER.info("markIllegalJwt(String jwt, IllegalReason illegalReason), jwt = {}, active = {}, illegalReason = {}", jwt, illegalReason);
         try {
-            illegalJwtCacher.put(jwt, ofNullable(illegalReason).orElse(UNKNOWN).reason.intern());
+            illegalJwtCache.put(jwt, ofNullable(illegalReason).orElse(UNKNOWN).reason.intern());
         } catch (Exception e) {
             LOGGER.error("markIllegalJwt(String jwt, IllegalReason illegalReason) failed, jwt = {},  e = {}", jwt, e);
             return false;
@@ -143,7 +143,7 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
     public boolean clearMarkIllegalIp(String ip) {
         LOGGER.info("clearMarkIllegalIp(String ip), ip = {}", ip);
         try {
-            illegalIpCacher.invalidate(ip);
+            illegalIpCache.invalidate(ip);
         } catch (Exception e) {
             LOGGER.error("clearMarkIllegalIp(String ip) failed, ip = {}, e = {}", ip, e);
             return false;
@@ -154,7 +154,7 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
     public boolean clearMarkIllegalJwt(String jwt) {
         LOGGER.info("clearMarkIllegalJwt(String jwt), jwt = {}", jwt);
         try {
-            illegalJwtCacher.invalidate(jwt);
+            illegalJwtCache.invalidate(jwt);
         } catch (Exception e) {
             LOGGER.error("clearMarkIllegalJwt(String jwt) failed, jwt = {},  e = {}", jwt, e);
             return false;

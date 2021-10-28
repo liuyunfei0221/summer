@@ -100,7 +100,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
-        LOGGER.info("updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
+        LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
         if (memberId == null || memberId < 1L || roleId == null || roleId < 1L || operatorId == null || operatorId < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
@@ -125,6 +125,9 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @GlobalLock
     public void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) {
         LOGGER.info("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation), memberRoleRelation = {}", memberRoleRelation);
+
+        if (memberRoleRelation == null)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberRoleRelation can't be null");
 
         Long memberId = memberRoleRelation.getMemberId();
         if (memberId == null || memberId < 1L)

@@ -48,12 +48,12 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
         this.executorService = executorService;
     }
 
-    private static Cache<String, String> illegalIpCacher;
+    private static Cache<String, String> illegalIpCache;
 
-    private static Cache<String, String> illegalJwtCacher;
+    private static Cache<String, String> illegalJwtCache;
 
     private static final Consumer<String> ILLEGAL_IP_ASSERTER = ip -> {
-        String illegalReason = illegalIpCacher.getIfPresent(ip);
+        String illegalReason = illegalIpCache.getIfPresent(ip);
         if (illegalReason == null)
             return;
 
@@ -62,7 +62,7 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
     };
 
     private static final Consumer<String> ILLEGAL_JWT_ASSERTER = jwt -> {
-        String illegalReason = illegalJwtCacher.getIfPresent(jwt);
+        String illegalReason = illegalJwtCache.getIfPresent(jwt);
         if (illegalReason == null)
             return;
 
@@ -95,12 +95,12 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
         if (illegalCapacity == null || illegalCapacity < 1)
             throw new RuntimeException("illegalCapacity can't be null or less than 1");
 
-        illegalIpCacher = newBuilder()
+        illegalIpCache = newBuilder()
                 .expireAfterAccess(of(illegalExpireSeconds, SECONDS))
                 .executor(this.executorService)
                 .maximumSize(illegalCapacity).build();
 
-        illegalJwtCacher = newBuilder()
+        illegalJwtCache = newBuilder()
                 .expireAfterAccess(of(illegalExpireSeconds, SECONDS))
                 .executor(this.executorService)
                 .maximumSize(illegalCapacity).build();
@@ -121,7 +121,7 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
     public boolean markIllegalIp(String ip, IllegalReason illegalReason) {
         LOGGER.info("ip = {}, illegalReason = {}", ip, illegalReason);
         try {
-            illegalIpCacher.put(ip, ofNullable(illegalReason).orElse(UNKNOWN).reason.intern());
+            illegalIpCache.put(ip, ofNullable(illegalReason).orElse(UNKNOWN).reason.intern());
         } catch (Exception e) {
             LOGGER.error("ip = {}, e = {}", ip, e);
             return false;
@@ -132,7 +132,7 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
     public boolean markIllegalJwt(String jwt, IllegalReason illegalReason) {
         LOGGER.info("jwt = {}, active = {}, illegalReason = {}", jwt, illegalReason);
         try {
-            illegalJwtCacher.put(jwt, ofNullable(illegalReason).orElse(UNKNOWN).reason.intern());
+            illegalJwtCache.put(jwt, ofNullable(illegalReason).orElse(UNKNOWN).reason.intern());
         } catch (Exception e) {
             LOGGER.error("jwt = {},  e = {}", jwt, e);
             return false;
@@ -143,7 +143,7 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
     public boolean clearMarkIllegalIp(String ip) {
         LOGGER.info("ip = {}", ip);
         try {
-            illegalIpCacher.invalidate(ip);
+            illegalIpCache.invalidate(ip);
         } catch (Exception e) {
             LOGGER.error("ip = {}, e = {}", ip, e);
             return false;
@@ -154,7 +154,7 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
     public boolean clearMarkIllegalJwt(String jwt) {
         LOGGER.info("jwt = {}", jwt);
         try {
-            illegalJwtCacher.invalidate(jwt);
+            illegalJwtCache.invalidate(jwt);
         } catch (Exception e) {
             LOGGER.error("jwt = {},  e = {}", jwt, e);
             return false;
