@@ -1,4 +1,4 @@
-package com.blue.secure.api.model;
+package com.blue.secure.model;
 
 /**
  * member, role, login infos for generate member auth

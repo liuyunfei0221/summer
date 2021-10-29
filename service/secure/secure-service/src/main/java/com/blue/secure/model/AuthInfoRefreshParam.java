@@ -1,4 +1,4 @@
-package com.blue.secure.api.model;
+package com.blue.secure.model;
 
 import com.blue.base.constant.secure.AuthInfoRefreshElementType;
 import com.blue.base.constant.secure.DeviceType;

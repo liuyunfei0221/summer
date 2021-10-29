@@ -197,42 +197,38 @@
     </select>
 
     <insert id="insertBatch" parameterType="java.util.List">
-        <if test="list != null and list.size > 0">
-            INSERT INTO link
-            (id, sub_id, sub_type,
-            sub_author_id, link_url, content,
-            favorites, readings, comments,
-            likes, boring, status,
-            create_time)
-            VALUES
-            <foreach collection="list" index="index" item="item" separator=",">
-                (
-                #{item.id,jdbcType=BIGINT},
-                #{item.subId,jdbcType=BIGINT},
-                #{item.subType,jdbcType=TINYINT},
-                #{item.subAuthorId,jdbcType=BIGINT},
-                #{item.linkUrl,jdbcType=VARCHAR},
-                #{item.content,jdbcType=VARCHAR},
-                #{item.favorites,jdbcType=BIGINT},
-                #{item.readings,jdbcType=BIGINT},
-                #{item.comments,jdbcType=BIGINT},
-                #{item.likes,jdbcType=BIGINT},
-                #{item.boring,jdbcType=BIGINT},
-                #{item.status,jdbcType=TINYINT},
-                #{item.createTime,jdbcType=BIGINT}
-                )
-            </foreach>
-        </if>
+        INSERT INTO link
+        (id, sub_id, sub_type,
+        sub_author_id, link_url, content,
+        favorites, readings, comments,
+        likes, boring, status,
+        create_time)
+        VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.id,jdbcType=BIGINT},
+            #{item.subId,jdbcType=BIGINT},
+            #{item.subType,jdbcType=TINYINT},
+            #{item.subAuthorId,jdbcType=BIGINT},
+            #{item.linkUrl,jdbcType=VARCHAR},
+            #{item.content,jdbcType=VARCHAR},
+            #{item.favorites,jdbcType=BIGINT},
+            #{item.readings,jdbcType=BIGINT},
+            #{item.comments,jdbcType=BIGINT},
+            #{item.likes,jdbcType=BIGINT},
+            #{item.boring,jdbcType=BIGINT},
+            #{item.status,jdbcType=TINYINT},
+            #{item.createTime,jdbcType=BIGINT}
+            )
+        </foreach>
     </insert>
 
     <select id="selectBySubIdAndSubType" resultMap="BaseResultMap">
-        <if test="subId != null and subType != null">
-            select
-            <include refid="Base_Column_List"/>
-            from link force index(idx_sid_stype)
-            where sub_id = #{subId}
-            and sub_type = #{subType};
-        </if>
+        select
+        <include refid="Base_Column_List"/>
+        from link force index(idx_sid_stype)
+        where sub_id = #{subId}
+        and sub_type = #{subType};
     </select>
 
 </mapper>

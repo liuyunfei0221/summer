@@ -3,7 +3,7 @@ package com.blue.secure.api.inter;
 import com.blue.base.model.base.Access;
 import com.blue.secure.api.model.AssertAuth;
 import com.blue.secure.api.model.AuthAsserted;
-import com.blue.secure.api.model.Authority;
+import com.blue.secure.api.model.AuthorityBaseOnRole;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -45,7 +45,7 @@ public interface RpcSecureService {
      * @param access
      * @return
      */
-    CompletableFuture<Authority> getAuthorityByAccess(Access access);
+    CompletableFuture<AuthorityBaseOnRole> getAuthorityByAccess(Access access);
 
     /**
      * query authority by member id
@@ -53,6 +53,6 @@ public interface RpcSecureService {
      * @param memberId
      * @return
      */
-    CompletableFuture<Authority> getAuthorityByMemberId(Long memberId);
+    CompletableFuture<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId);
 
 }

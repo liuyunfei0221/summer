@@ -22,7 +22,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
-import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -34,16 +33,18 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.Asserter.isEmpty;
+import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
+import static java.nio.ByteBuffer.wrap;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
@@ -190,7 +191,7 @@ public class SignInServiceImpl implements SignInService {
     private final BiFunction<String, Integer, Mono<Long>> BITMAP_LIMIT_GETTER = (key, limit) ->
             reactiveStringRedisTemplate.execute(con ->
                             con.stringCommands()
-                                    .bitField(ByteBuffer.wrap(key.getBytes()),
+                                    .bitField(wrap(key.getBytes()),
                                             BitFieldSubCommands.create()
                                                     .get(BitFieldSubCommands.BitFieldType.signed(limit))
                                                     .valueAt(MARK_BIT)))
@@ -241,7 +242,7 @@ public class SignInServiceImpl implements SignInService {
     @Override
     public Mono<SignInReward> insertSignIn(Long memberId) {
         LOGGER.info("insertSignIn(Long memberId), memberId = {}", memberId);
-        if (memberId == null || memberId < 1L)
+        if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         LocalDate now = LocalDate.now();

@@ -1,9 +1,11 @@
 package com.blue.secure.handler.manager;
 
 import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.base.IdentityWrapper;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.exps.BlueException;
 import com.blue.secure.service.inter.ResourceService;
+import com.blue.secure.service.inter.RoleResRelationService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -28,8 +30,11 @@ public final class ResourceManagerHandler {
 
     private final ResourceService resourceService;
 
-    public ResourceManagerHandler(ResourceService resourceService) {
+    private final RoleResRelationService roleResRelationService;
+
+    public ResourceManagerHandler(ResourceService resourceService, RoleResRelationService roleResRelationService) {
         this.resourceService = resourceService;
+        this.roleResRelationService = roleResRelationService;
     }
 
     /**
@@ -46,6 +51,24 @@ public final class ResourceManagerHandler {
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, vo, OK.message), BlueResponse.class));
+    }
+
+    /**
+     * get authority base on resource by res id
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(IdentityWrapper.class)
+                .switchIfEmpty(
+                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
+                .flatMap(wrapper ->
+                        roleResRelationService.selectAuthorityMonoByResId(wrapper.getId()))
+                .flatMap(auth ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, auth, OK.message), BlueResponse.class));
+
     }
 
 }

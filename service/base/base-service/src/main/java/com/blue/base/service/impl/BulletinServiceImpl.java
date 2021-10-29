@@ -12,6 +12,7 @@ import reactor.util.Loggers;
 
 import java.util.List;
 
+import static com.blue.base.common.base.Asserter.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.BlueNumericalValue.ROWS;
 
@@ -42,7 +43,7 @@ public class BulletinServiceImpl implements BulletinService {
     @Override
     public List<Bulletin> selectBulletin(BulletinType bulletinType) {
         LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
-        if (bulletinType == null)
+        if (isNull(bulletinType))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "bulletinType can't be null");
 
         List<Bulletin> bulletins = bulletinMapper.selectBulletin(bulletinType.identity, Status.VALID.status, ROWS.value);

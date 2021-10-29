@@ -17,6 +17,7 @@ import reactor.util.Logger;
 import java.time.Instant;
 import java.util.Optional;
 
+import static com.blue.base.common.base.Asserter.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
@@ -79,8 +80,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
     @Override
     public void insertInitFinanceAccount(Long memberId) {
         LOGGER.info("insertInitFinanceAccount(Long memberId), memberId = {}", memberId);
-
-        if (memberId == null || memberId < 1L) {
+        if (isValidIdentity(memberId)) {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
         }
 
@@ -113,7 +113,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
     public Optional<FinanceAccount> getFinanceAccountByMemberId(Long memberId) {
         LOGGER.info("getFinanceAccountByMemberId(Long memberId), memberId = {}", memberId);
 
-        if (memberId == null || memberId < 1L)
+        if (isValidIdentity(memberId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return ofNullable(financeAccountMapper.getByMemberId(memberId));

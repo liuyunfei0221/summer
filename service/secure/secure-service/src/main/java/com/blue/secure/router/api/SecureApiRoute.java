@@ -29,7 +29,7 @@ public class SecureApiRoute {
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/loginByAcctAndPwd", accept(APPLICATION_JSON), secureApiHandler::loginByClient)
                 .PUT("/updateSecret", accept(APPLICATION_JSON), secureApiHandler::updateSecret)
-                .GET("/authority", secureApiHandler::getAuthority)
+                .GET("/authority", secureApiHandler::selectAuthority)
                 .DELETE("/logout", secureApiHandler::logout)
                 .build();
 

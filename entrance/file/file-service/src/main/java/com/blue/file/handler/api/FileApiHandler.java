@@ -90,8 +90,8 @@ public final class FileApiHandler {
         return serverRequest.bodyToMono(IdentityWrapper.class)
                 .switchIfEmpty(
                         error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
-                .flatMap(dto ->
-                        fileService.getAttachmentForDownload(dto.getId(), access.getId())
+                .flatMap(wrapper ->
+                        fileService.getAttachmentForDownload(wrapper.getId(), access.getId())
                                 .switchIfEmpty(error(FILE_NOT_EXIST_EXP))
                                 .flatMap(attachment -> {
                                     String link = attachment.getLink();

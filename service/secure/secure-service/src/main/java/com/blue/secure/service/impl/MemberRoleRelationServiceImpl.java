@@ -17,14 +17,17 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Optional;
 
+import static com.blue.base.common.base.ArrayAllocator.allotByMax;
+import static com.blue.base.common.base.Asserter.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.base.constant.base.SyncKey.MEMBER_ROLE_REL_UPDATE_PRE;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -63,7 +66,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @Override
     public Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}", memberId);
-        if (memberId == null || memberId < 1L)
+        if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         Long roleId = memberRoleRelationMapper.getRoleIdByMemberId(memberId);
@@ -82,12 +85,12 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     public Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds) {
         LOGGER.info("Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
 
-        if (isEmpty(memberIds))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberIds can't be empty");
-        if (memberIds.size() > DB_SELECT.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberIds size can't be greater than " + DB_SELECT.value);
-
-        return just(memberRoleRelationMapper.selectByMemberIds(memberIds));
+        return isValidIdentities(memberIds) ? just(allotByMax(memberIds, (int) DB_SELECT.value, false)
+                .stream().map(memberRoleRelationMapper::selectByMemberIds)
+                .flatMap(List::stream)
+                .collect(toList()))
+                :
+                just(emptyList());
     }
 
     /**
@@ -101,11 +104,11 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
-        if (memberId == null || memberId < 1L || roleId == null || roleId < 1L || operatorId == null || operatorId < 1L)
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getByMemberId(memberId);
-        if (memberRoleRelation == null)
+        if (isNull(memberRoleRelation))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message);
 
         memberRoleRelation.setRoleId(roleId);
@@ -125,12 +128,11 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @GlobalLock
     public void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) {
         LOGGER.info("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation), memberRoleRelation = {}", memberRoleRelation);
-
-        if (memberRoleRelation == null)
+        if (isNull(memberRoleRelation))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberRoleRelation can't be null");
 
         Long memberId = memberRoleRelation.getMemberId();
-        if (memberId == null || memberId < 1L)
+        if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
@@ -141,7 +143,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
 
         try {
             MemberRoleRelation existRelation = memberRoleRelationMapper.getByMemberId(memberId);
-            if (existRelation != null)
+            if (isNotNull(existRelation))
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_ALREADY_HAS_A_ROLE.message);
 
             memberRoleRelationMapper.insertSelective(memberRoleRelation);

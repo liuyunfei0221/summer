@@ -29,6 +29,7 @@ public class ResourceManagerRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/list", accept(APPLICATION_JSON), resourceManagerHandler::select)
+                .POST("/auth", accept(APPLICATION_JSON), resourceManagerHandler::selectAuthority)
                 .build();
 
         return nest(pathPredicate, routerFunction);

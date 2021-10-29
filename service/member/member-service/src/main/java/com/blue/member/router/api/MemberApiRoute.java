@@ -28,7 +28,7 @@ public class MemberApiRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/registry", accept(APPLICATION_JSON), memberApiHandler::registry)
-                .GET("", memberApiHandler::getMemberInfo)
+                .GET("", memberApiHandler::selectMemberInfo)
                 .build();
 
         return nest(pathPredicate, routerFunction);

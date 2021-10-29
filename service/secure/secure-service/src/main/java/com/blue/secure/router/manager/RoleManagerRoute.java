@@ -29,6 +29,7 @@ public class RoleManagerRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/list", accept(APPLICATION_JSON), roleManagerHandler::select)
+                .POST("/auth", accept(APPLICATION_JSON), roleManagerHandler::selectAuthority)
                 .build();
 
         return nest(pathPredicate, routerFunction);

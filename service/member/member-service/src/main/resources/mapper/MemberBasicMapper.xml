@@ -202,17 +202,15 @@
     </select>
 
     <select id="selectByIds" resultMap="BaseResultMap">
-        <if test="ids != null and ids.size > 0">
-            SELECT
-            <include refid="Base_Column_List"/>
-            FROM
-            member_basic
-            WHERE
-            id IN
-            <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
-                #{id,jdbcType=BIGINT}
-            </foreach>
-        </if>
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        member_basic
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
     </select>
 
     <sql id="Member_Conditions">
@@ -271,18 +269,16 @@
 
     <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
             parameterType="com.blue.member.model.MemberCondition">
-        <if test="limit != null and limit >= 0 and rows != null and rows > 0">
-            SELECT
-            <include refid="Base_Column_List"/>
-            FROM
-            member_basic
-            <include refid="Member_Conditions"/>
-            <if test="memberCondition != null and memberCondition.sortAttribute != null and memberCondition.sortAttribute != '' and memberCondition.sortType != null and memberCondition.sortType != ''">
-                ORDER BY
-                ${memberCondition.sortAttribute,jdbcType=VARCHAR} ${memberCondition.sortType,jdbcType=VARCHAR}
-            </if>
-            LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        member_basic
+        <include refid="Member_Conditions"/>
+        <if test="memberCondition != null and memberCondition.sortAttribute != null and memberCondition.sortAttribute != '' and memberCondition.sortType != null and memberCondition.sortType != ''">
+            ORDER BY
+            ${memberCondition.sortAttribute,jdbcType=VARCHAR} ${memberCondition.sortType,jdbcType=VARCHAR}
         </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>
 
     <select id="countByCondition" resultType="java.lang.Long"

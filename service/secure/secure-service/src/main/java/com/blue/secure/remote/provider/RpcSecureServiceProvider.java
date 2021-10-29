@@ -4,7 +4,7 @@ import com.blue.base.model.base.Access;
 import com.blue.secure.api.inter.RpcSecureService;
 import com.blue.secure.api.model.AssertAuth;
 import com.blue.secure.api.model.AuthAsserted;
-import com.blue.secure.api.model.Authority;
+import com.blue.secure.api.model.AuthorityBaseOnRole;
 import com.blue.secure.service.inter.SecureService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
@@ -81,7 +81,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
      * @return
      */
     @Override
-    public CompletableFuture<Authority> getAuthorityByAccess(Access access) {
+    public CompletableFuture<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByAccess(Access access), access = {}", access);
         return secureService.getAuthorityMonoByAccess(access).toFuture();
     }
@@ -93,7 +93,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
      * @return
      */
     @Override
-    public CompletableFuture<Authority> getAuthorityByMemberId(Long memberId) {
+    public CompletableFuture<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
         return secureService.getAuthorityMonoByMemberId(memberId).toFuture();
     }

@@ -15,7 +15,8 @@ import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.SECRET;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.OK;
-import static com.blue.base.constant.base.ResponseMessage.*;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseMessage.GENERIC_SUCCESS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
@@ -77,7 +78,7 @@ public final class SecureApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> getAuthority(ServerRequest serverRequest) {
+    public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
                         secureService.getAuthorityMonoByAccess(acc)

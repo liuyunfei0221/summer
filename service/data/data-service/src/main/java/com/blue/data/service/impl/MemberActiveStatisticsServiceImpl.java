@@ -6,6 +6,7 @@ import com.blue.data.common.marker.StatisticsMarker;
 import com.blue.data.service.inter.MemberActiveStatisticsService;
 import org.springframework.stereotype.Service;
 
+import static com.blue.base.common.base.Asserter.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.data.StatisticsType.MEMBER_ACTIVE;
@@ -29,7 +30,7 @@ public class MemberActiveStatisticsServiceImpl implements MemberActiveStatistics
 
     @Override
     public Boolean markActive(Long memberId, StatisticsRange statisticsRange) {
-        if (memberId == null)
+        if (isValidIdentity(memberId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return statisticsMarker.mark(MEMBER_ACTIVE, statisticsRange, memberId.toString());

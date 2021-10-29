@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Authority
+ * Authority base on role
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class Authority implements Serializable {
+public final class AuthorityBaseOnRole implements Serializable {
 
     private static final long serialVersionUID = -6642630151271066692L;
 
@@ -23,7 +23,10 @@ public final class Authority implements Serializable {
      */
     private List<ResourceInfo> resources;
 
-    public Authority(RoleInfo role, List<ResourceInfo> resources) {
+    public AuthorityBaseOnRole() {
+    }
+
+    public AuthorityBaseOnRole(RoleInfo role, List<ResourceInfo> resources) {
         this.role = role;
         this.resources = resources;
     }

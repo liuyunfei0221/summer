@@ -126,39 +126,31 @@
     </select>
 
     <select id="getRoleIdByMemberId" parameterType="java.lang.Long" resultType="java.lang.Long">
-        <if test="memberId != null and memberId > 0">
-            SELECT
-            role_id
-            FROM
-            member_role_relation FORCE INDEX(idx_member_role)
-            WHERE
+        SELECT role_id
+        FROM member_role_relation FORCE INDEX(idx_member_role)
+        WHERE
             member_id = #{memberId,jdbcType=BIGINT}
-        </if>
     </select>
 
     <select id="getByMemberId" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        <if test="memberId != null and memberId > 0">
-            SELECT
-            <include refid="Base_Column_List"/>
-            FROM
-            member_role_relation FORCE INDEX(idx_member_role)
-            WHERE
-            member_id = #{memberId,jdbcType=BIGINT}
-        </if>
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        member_role_relation FORCE INDEX(idx_member_role)
+        WHERE
+        member_id = #{memberId,jdbcType=BIGINT}
     </select>
 
     <select id="selectByMemberIds" resultMap="BaseResultMap">
-        <if test="memberIds != null and memberIds.size > 0">
-            SELECT
-            <include refid="Base_Column_List"/>
-            FROM
-            member_role_relation FORCE INDEX(idx_member_role)
-            WHERE
-            member_id IN
-            <foreach collection="memberIds" open="(" close=")" separator="," item="memberId" index="index">
-                #{memberId,jdbcType=BIGINT}
-            </foreach>
-        </if>
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        member_role_relation FORCE INDEX(idx_member_role)
+        WHERE
+        member_id IN
+        <foreach collection="memberIds" open="(" close=")" separator="," item="memberId" index="index">
+            #{memberId,jdbcType=BIGINT}
+        </foreach>
     </select>
 
 </mapper>

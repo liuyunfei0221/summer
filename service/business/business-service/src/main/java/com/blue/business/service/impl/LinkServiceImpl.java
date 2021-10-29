@@ -10,6 +10,7 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Optional;
 
+import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.common.base.ConstantProcessor.assertSubjectType;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
@@ -42,7 +43,7 @@ public class LinkServiceImpl implements LinkService {
      */
     @Override
     public Optional<Link> getByPrimaryKey(Long id) {
-        if (id == null || id < 1L)
+        if (isInvalidIdentity(id))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         LOGGER.info("id = {}", id);
@@ -69,7 +70,7 @@ public class LinkServiceImpl implements LinkService {
      */
     @Override
     public List<Link> selectBySubIdAndSubType(Long subId, Integer subType) {
-        if (subId == null || subId < 1L)
+        if (isInvalidIdentity(subId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         assertSubjectType(subType, false);

@@ -239,17 +239,15 @@
     </select>
 
     <select id="selectByIds" resultMap="BaseResultMap">
-        <if test="ids != null and ids.size > 0">
-            SELECT
-            <include refid="Base_Column_List"/>
-            FROM
-            resource
-            WHERE
-            id IN
-            <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
-                #{id,jdbcType=BIGINT}
-            </foreach>
-        </if>
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        resource
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
     </select>
 
     <sql id="Resource_Conditions">
@@ -321,18 +319,16 @@
 
     <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
             parameterType="com.blue.secure.model.ResourceCondition">
-        <if test="limit != null and limit >= 0 and rows != null and rows > 0">
-            SELECT
-            <include refid="Base_Column_List"/>
-            FROM
-            resource
-            <include refid="Resource_Conditions"/>
-            <if test="resourceCondition != null and resourceCondition.sortAttribute != null and resourceCondition.sortAttribute != '' and resourceCondition.sortType != null and resourceCondition.sortType != ''">
-                ORDER BY
-                ${resourceCondition.sortAttribute,jdbcType=VARCHAR} ${resourceCondition.sortType,jdbcType=VARCHAR}
-            </if>
-            LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        resource
+        <include refid="Resource_Conditions"/>
+        <if test="resourceCondition != null and resourceCondition.sortAttribute != null and resourceCondition.sortAttribute != '' and resourceCondition.sortType != null and resourceCondition.sortType != ''">
+            ORDER BY
+            ${resourceCondition.sortAttribute,jdbcType=VARCHAR} ${resourceCondition.sortType,jdbcType=VARCHAR}
         </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>
 
     <select id="countByCondition" resultType="java.lang.Long"

@@ -1,6 +1,5 @@
 package com.blue.secure.service.impl;
 
-import com.blue.base.constant.base.Status;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.secure.api.model.ClientLoginParam;
@@ -15,6 +14,8 @@ import reactor.util.Logger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static com.blue.base.common.base.Asserter.isInvalidStatus;
+import static com.blue.base.common.base.Asserter.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.*;
 import static reactor.core.publisher.Mono.just;
@@ -40,12 +41,12 @@ public class MemberServiceImpl implements MemberService {
     private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
 
     private static final BiConsumer<String, MemberBasicInfo> PWD_ASSERTER = (access, mb) -> {
-        if (access == null || mb == null || !ENCODER.matches(access, mb.getPassword()))
+        if (isNull(access) || isNull(mb) || !ENCODER.matches(access, mb.getPassword()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message);
     };
 
     private static final Consumer<MemberBasicInfo> MEMBER_STATUS_ASSERTER = memberBasicInfo -> {
-        if (Status.VALID.status != memberBasicInfo.getStatus())
+        if (isInvalidStatus(memberBasicInfo.getStatus()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, ACCOUNT_HAS_BEEN_FROZEN.message);
     };
 
@@ -58,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam) {
         LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
-        if (clientLoginParam == null)
+        if (isNull(clientLoginParam))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         //TODO check verify
@@ -84,7 +85,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam) {
         LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
-        if (clientLoginParam == null)
+        if (isNull(clientLoginParam))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         //TODO check verify
@@ -110,7 +111,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam) {
         LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
-        if (clientLoginParam == null)
+        if (isNull(clientLoginParam))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         //TODO check verify

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "cee5fa55-f3c3-462d-9b59-629a18afd93b",
+		"_postman_id": "1235e739-1ec8-4de5-a118-64164357c062",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -805,6 +805,68 @@
 						"manager",
 						"role",
 						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "根据角色查询相关资源",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":9507591944175638\r\n}"
+				},
+				"url": {
+					"raw": "localhost:11000/blue-secure/manager/role/auth",
+					"host": [
+						"localhost"
+					],
+					"port": "11000",
+					"path": [
+						"blue-secure",
+						"manager",
+						"role",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "根据资源查询相关角色",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":9506121983229956\r\n}"
+				},
+				"url": {
+					"raw": "localhost:11000/blue-secure/manager/resource/auth",
+					"host": [
+						"localhost"
+					],
+					"port": "11000",
+					"path": [
+						"blue-secure",
+						"manager",
+						"resource",
+						"auth"
 					]
 				}
 			},

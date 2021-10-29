@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import static com.blue.base.common.base.ArrayAllocator.allotByMax;
+import static com.blue.base.common.base.Asserter.*;
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
@@ -35,7 +37,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
@@ -68,7 +69,7 @@ public class ResourceServiceImpl implements ResourceService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Consumer<ResourceCondition> CONDITION_REPACKAGER = condition -> {
-        if (condition != null) {
+        if (isNotNull(condition)) {
             ofNullable(condition.getSortAttribute())
                     .filter(StringUtils::hasText)
                     .map(SORT_ATTRIBUTE_MAPPING::get)
@@ -103,7 +104,6 @@ public class ResourceServiceImpl implements ResourceService {
             //TODO
             resourceInsertLock.lock(10L, TimeUnit.SECONDS);
 
-
         } catch (Exception exception) {
             LOGGER.error("lock on business failed, e = {}", exception);
         } finally {
@@ -125,7 +125,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Mono<Optional<Resource>> getResourceMonoById(Long id) {
         LOGGER.info("Mono<Optional<Resource>> getResourceMonoById(Long id), id = {}", id);
-        if (id == null || id < 1L)
+        if (isInvalidIdentity(id))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return just(ofNullable(resourceMapper.selectByPrimaryKey(id)));
@@ -152,12 +152,12 @@ public class ResourceServiceImpl implements ResourceService {
     public Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids), ids = {}", ids);
 
-        if (isEmpty(ids))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids can't be empty");
-        if (ids.size() > DB_SELECT.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids size can't be greater than " + DB_SELECT.value);
-
-        return just(resourceMapper.selectByIds(ids));
+        return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(resourceMapper::selectByIds)
+                .flatMap(List::stream)
+                .collect(toList()))
+                :
+                just(emptyList());
     }
 
     /**

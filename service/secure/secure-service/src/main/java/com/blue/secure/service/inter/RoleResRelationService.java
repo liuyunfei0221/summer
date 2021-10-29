@@ -1,5 +1,7 @@
 package com.blue.secure.service.inter;
 
+import com.blue.secure.api.model.AuthorityBaseOnRole;
+import com.blue.secure.model.AuthorityBaseOnResource;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.entity.RoleResRelation;
@@ -85,5 +87,21 @@ public interface RoleResRelationService {
      * @return
      */
     Mono<List<RoleResRelation>> selectRelationByResIds(List<Long> resIds);
+
+    /**
+     * get authority base on role by role id
+     *
+     * @param roleId
+     * @return
+     */
+    Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId);
+
+    /**
+     * get authority base on resource by res id
+     *
+     * @param resId
+     * @return
+     */
+    Mono<AuthorityBaseOnResource> selectAuthorityMonoByResId(Long resId);
 
 }

@@ -6,7 +6,6 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Bulletin;
 import com.blue.base.service.inter.BulletinService;
 import com.blue.base.service.inter.PortalService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -15,8 +14,10 @@ import reactor.util.Loggers;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.Asserter.isBlank;
 import static com.blue.base.common.base.ConstantProcessor.getBulletinTypeByIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static java.lang.Integer.parseInt;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -45,15 +46,15 @@ public class PortalServiceImpl implements PortalService {
                     .collect(toList()) : emptyList();
 
     private static final Function<String, BulletinType> TYPE_CONVERTER = typeStr -> {
-        if (StringUtils.isBlank(typeStr)) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "bulletinType can't be null");
+        if (isBlank(typeStr)) {
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "bulletin type can't be null");
         }
 
         int type;
         try {
-            type = Integer.parseInt(typeStr);
+            type = parseInt(typeStr);
         } catch (NumberFormatException e) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid bulletinType");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid bulletin type");
         }
 
         return getBulletinTypeByIdentity(type);
@@ -67,7 +68,7 @@ public class PortalServiceImpl implements PortalService {
      */
     @Override
     public Mono<List<BulletinInfo>> selectBulletin(String bulletinType) {
-        LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
+        LOGGER.info("Mono<List<BulletinInfo>> selectBulletin(String bulletinType), bulletinType = {}", bulletinType);
 
         List<BulletinInfo> vos = VO_LIST_CONVERTER.apply(ofNullable(bulletinService.selectBulletin(TYPE_CONVERTER.apply(bulletinType))).orElse(emptyList()));
         LOGGER.info("vos = {}", vos);

@@ -28,6 +28,8 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.ArrayAllocator.allotByMax;
+import static com.blue.base.common.base.Asserter.*;
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
@@ -42,7 +44,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
@@ -198,15 +199,15 @@ public class RoleServiceImpl implements RoleService {
     public Role getDefaultRole() {
         LOGGER.info("getDefaultRole()");
 
-        Role role = getDefaultRoleFromCache();
+        Role defaultRole = getDefaultRoleFromCache();
 
-        LOGGER.info("role = {}", role);
-        if (role == null) {
+        LOGGER.info("defaultRole = {}", defaultRole);
+        if (isNull(defaultRole)) {
             LOGGER.error("Role getDefaultRole(), default role not exist");
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
         }
 
-        return role;
+        return defaultRole;
     }
 
     /**
@@ -217,8 +218,8 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Mono<Optional<Role>> getRoleMonoById(Long id) {
-        LOGGER.info("ono<Optional<Role>> getRoleMonoById(Long id), id = {}", id);
-        if (id == null || id < 1L)
+        LOGGER.info("Mono<Optional<Role>> getRoleMonoById(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return just(ofNullable(roleMapper.selectByPrimaryKey(id)));
@@ -234,12 +235,12 @@ public class RoleServiceImpl implements RoleService {
     public Mono<List<Role>> selectRoleMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Role>> selectRoleMonoByIds(List<Long> ids), ids = {}", ids);
 
-        if (isEmpty(ids))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids can't be empty");
-        if (ids.size() > DB_SELECT.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids size can't be greater than " + DB_SELECT.value);
-
-        return just(roleMapper.selectByIds(ids));
+        return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(roleMapper::selectByIds)
+                .flatMap(List::stream)
+                .collect(toList()))
+                :
+                just(emptyList());
     }
 
     /**
@@ -265,7 +266,6 @@ public class RoleServiceImpl implements RoleService {
     public Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition) {
         LOGGER.info("Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition), " +
                 "limit = {}, rows = {}, roleCondition = {}", limit, rows, roleCondition);
-
         return just(roleMapper.selectByLimitAndCondition(limit, rows, roleCondition));
     }
 

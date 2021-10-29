@@ -7,15 +7,15 @@ import com.blue.marketing.repository.mapper.RewardMapper;
 import com.blue.marketing.repository.mapper.SignRewardTodayRelationMapper;
 import com.blue.marketing.service.inter.RewardService;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.blue.base.common.base.Asserter.*;
+import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
-import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -49,7 +49,7 @@ public class RewardServiceImpl implements RewardService {
     @Override
     public Optional<Reward> getRewardByPrimaryKey(Long id) {
         LOGGER.info("getRewardByPrimaryKey(Long id), id = {}", id);
-        if (id == null || id < 1L)
+        if (isInvalidIdentity(id))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return ofNullable(rewardMapper.selectByPrimaryKey(id));
@@ -64,8 +64,8 @@ public class RewardServiceImpl implements RewardService {
     @Override
     public List<Reward> selectRewardByIds(List<Long> ids) {
         LOGGER.info("listRewardByIds(List<Long> ids), ids = {}", ids);
-        if (CollectionUtils.isEmpty(ids))
-            return emptyList();
+        if (isInvalidIdentitiesWithMaxRows(ids, DB_SELECT.value))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids can't be empty or size can't be greater than " + DB_SELECT.value);
 
         return rewardMapper.selectByIds(ids);
     }
@@ -80,7 +80,7 @@ public class RewardServiceImpl implements RewardService {
     @Override
     public List<SignRewardTodayRelation> selectRelationByYearAndMonth(Integer year, Integer month) {
         LOGGER.info("listRelationByYearAndMonth(Integer year, Integer month), year = {}, month = {}", year, month);
-        if (year == null || month == null || year < 1 || month < 1)
+        if (isNull(year) || isNull(month) || year < 1 || month < 1)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "year or month can't be null or less than 1");
 
         return signRewardTodayRelationMapper.selectByYearAndMonth(year, month);

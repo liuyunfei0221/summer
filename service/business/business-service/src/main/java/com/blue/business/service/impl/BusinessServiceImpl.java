@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
+import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
@@ -74,7 +75,7 @@ public class BusinessServiceImpl implements BusinessService {
      */
     @Override
     public Mono<ArticleInfo> getArticle(Long id) {
-        if (id == null || id < 1L)
+        if (isInvalidIdentity(id))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         //TODO es

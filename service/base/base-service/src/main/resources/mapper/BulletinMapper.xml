@@ -173,27 +173,25 @@
     </update>
 
     <select id="selectBulletin" resultMap="BaseResultMap">
-        <if test="limit != null and limit > 0">
-            SELECT
-            <include refid="Base_Column_List"/>
-            FROM
-            bulletin FORCE INDEX(idx_stat_pri)
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        bulletin FORCE INDEX(idx_stat_pri)
 
-            <where>
-                <if test="type != null">
-                    AND
-                    type = #{type,jdbcType=TINYINT}
-                </if>
-                <if test="status != null">
-                    AND
-                    status = #{status,jdbcType=TINYINT}
-                </if>
-            </where>
+        <where>
+            <if test="type != null">
+                AND
+                type = #{type,jdbcType=TINYINT}
+            </if>
+            <if test="status != null">
+                AND
+                status = #{status,jdbcType=TINYINT}
+            </if>
+        </where>
 
-            ORDER BY
-            priority DESC
-            LIMIT 0,#{limit,jdbcType=BIGINT}
-        </if>
+        ORDER BY
+        priority DESC
+        LIMIT 0,#{limit,jdbcType=BIGINT}
     </select>
 
 

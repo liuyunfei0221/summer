@@ -144,17 +144,15 @@
     </select>
 
     <select id="selectByIds" resultMap="BaseResultMap">
-        <if test="ids != null and ids.size > 0">
-            SELECT
-            <include refid="Base_Column_List"/>
-            FROM
-            role
-            WHERE
-            id IN
-            <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
-                #{id,jdbcType=BIGINT}
-            </foreach>
-        </if>
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
     </select>
 
     <sql id="Role_Conditions">
@@ -190,18 +188,16 @@
 
     <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
             parameterType="com.blue.secure.model.RoleCondition">
-        <if test="limit != null and limit >= 0 and rows != null and rows > 0">
-            SELECT
-            <include refid="Base_Column_List"/>
-            FROM
-            role
-            <include refid="Role_Conditions"/>
-            <if test="roleCondition != null and roleCondition.sortAttribute != null and roleCondition.sortAttribute != '' and roleCondition.sortType != null and roleCondition.sortType != ''">
-                ORDER BY
-                ${roleCondition.sortAttribute,jdbcType=VARCHAR} ${roleCondition.sortType,jdbcType=VARCHAR}
-            </if>
-            LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role
+        <include refid="Role_Conditions"/>
+        <if test="roleCondition != null and roleCondition.sortAttribute != null and roleCondition.sortAttribute != '' and roleCondition.sortType != null and roleCondition.sortType != ''">
+            ORDER BY
+            ${roleCondition.sortAttribute,jdbcType=VARCHAR} ${roleCondition.sortType,jdbcType=VARCHAR}
         </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>
 
     <select id="countByCondition" resultType="java.lang.Long"

@@ -17,6 +17,7 @@ import com.blue.secure.component.auth.AuthInfoCache;
 import com.blue.secure.config.deploy.BlockingDeploy;
 import com.blue.secure.config.deploy.SessionKeyDeploy;
 import com.blue.secure.event.producer.InvalidLocalAuthProducer;
+import com.blue.secure.model.*;
 import com.blue.secure.repository.entity.MemberRoleRelation;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.entity.Role;
@@ -289,17 +290,19 @@ public class SecureServiceImpl implements SecureService {
     };
 
     /**
+     * UN_AUTH
+     */
+    private static final Access NO_AUTH_ACCESS = new Access(NOT_LOGGED_IN_MEMBER_ID.value,
+            NOT_LOGGED_IN_ROLE_ID.value, NOT_LOGGED_IN.identity, UNKNOWN.identity, NOT_LOGGED_IN_TIME.value);
+
+    /**
      * Resources do not require authentication access
      */
     private final Function<Resource, Mono<AuthAsserted>> NO_AUTH_REQUIRED_RES_GEN = resource ->
             just(new AuthAsserted(
                     false, true, true,
-                    resource.getExistenceRequestBody(),
-                    resource.getExistenceResponseBody(),
-                    NOT_LOGGED_IN_SEC_KEY.value,
-                    new Access(NOT_LOGGED_IN_MEMBER_ID.value,
-                            NOT_LOGGED_IN_ROLE_ID.value, NOT_LOGGED_IN.identity, UNKNOWN.identity,
-                            NOT_LOGGED_IN_TIME.value), NO_AUTH_REQUIRED_RESOURCE.message));
+                    resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
+                    NOT_LOGGED_IN_SEC_KEY.value, NO_AUTH_ACCESS, NO_AUTH_REQUIRED_RESOURCE.message));
 
     /**
      * login func
@@ -540,11 +543,11 @@ public class SecureServiceImpl implements SecureService {
      * @param roleId
      * @return
      */
-    private Mono<Authority> getAuthorityMonoByRoleId(Long roleId) {
+    private Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId) {
         LOGGER.info("getAuthorityByRoleOpt(Long roleId), roleId = {}", roleId);
         return just(ROLE_INFO_BY_ID_GETTER.apply(roleId)
                 .map(role ->
-                        new Authority(role,
+                        new AuthorityBaseOnRole(role,
                                 RESOURCE_INFOS_BY_ROLE_ID_GETTER.apply(roleId)))
                 .orElseThrow(() ->
                         new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role info doesn't exist, roleId = " + roleId)));
@@ -712,7 +715,6 @@ public class SecureServiceImpl implements SecureService {
                 .flatMap(aa -> {
                     String resourceKey = REQ_RES_KEY_GENERATOR.apply(
                             aa.getMethod().intern(), aa.getUri());
-                    LOGGER.warn("resourceKey = {}", resourceKey);
 
                     Resource resource = RESOURCE_GETTER.apply(resourceKey);
                     if (resource == null)
@@ -738,14 +740,10 @@ public class SecureServiceImpl implements SecureService {
                                 boolean reqUnDecryption = resource.getRequestUnDecryption();
                                 boolean resUnEncryption = resource.getResponseUnEncryption();
 
-                                AuthAsserted assertResult = new AuthAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
+                                return just(new AuthAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                                         reqUnDecryption && resUnEncryption ? "" : authInfo.getPubKey(),
                                         new Access(parseLong(memberPayload.getId()), authInfo.getRoleId(), memberPayload.getLoginType().intern(),
-                                                memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), ACCESS.message);
-
-                                LOGGER.info("assertResult = {}", assertResult);
-
-                                return just(assertResult);
+                                                memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), ACCESS.message));
                             });
                 });
     }
@@ -938,7 +936,7 @@ public class SecureServiceImpl implements SecureService {
      * @return
      */
     @Override
-    public Mono<Authority> getAuthorityMonoByAccess(Access access) {
+    public Mono<AuthorityBaseOnRole> getAuthorityMonoByAccess(Access access) {
         LOGGER.info("Mono<Authority> getAuthorityMonoByAccess(Access access), access = {}", access);
         if (access == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "access can't be null");
@@ -953,7 +951,7 @@ public class SecureServiceImpl implements SecureService {
      * @return
      */
     @Override
-    public Mono<Authority> getAuthorityMonoByMemberId(Long memberId) {
+    public Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Authority> getAuthorityMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (memberId == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INVALID_IDENTITY.message);

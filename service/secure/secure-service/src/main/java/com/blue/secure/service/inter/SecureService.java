@@ -2,6 +2,8 @@ package com.blue.secure.service.inter;
 
 import com.blue.base.model.base.Access;
 import com.blue.secure.api.model.*;
+import com.blue.secure.model.AuthGenParam;
+import com.blue.secure.model.MemberAuth;
 import reactor.core.publisher.Mono;
 
 /**
@@ -123,7 +125,7 @@ public interface SecureService {
      * @param access
      * @return
      */
-    Mono<Authority> getAuthorityMonoByAccess(Access access);
+    Mono<AuthorityBaseOnRole> getAuthorityMonoByAccess(Access access);
 
     /**
      * get member's authority by member id
@@ -131,6 +133,6 @@ public interface SecureService {
      * @param memberId
      * @return
      */
-    Mono<Authority> getAuthorityMonoByMemberId(Long memberId);
+    Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId);
 
 }
