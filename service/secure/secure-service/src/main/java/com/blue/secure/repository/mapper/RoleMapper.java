@@ -36,4 +36,6 @@ public interface RoleMapper {
 
     List<Role> selectDefault();
 
+    Role selectByName(@Param("name") String name);
+
 }

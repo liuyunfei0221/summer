@@ -274,7 +274,7 @@ dubbo:
   metadataReportAddress: zookeeper://127.0.0.1:2181
 
   registryId: zookeeper-registry
-  registryZone: summer-member
+  registryZone: summer-member0
   registryProtocol: zookeeper
   registryAddress: zookeeper://127.0.0.1:2181
   registryFile: D:/locallogs/dubbo/member/registry.properties

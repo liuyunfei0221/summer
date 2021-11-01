@@ -1,12 +1,16 @@
 package com.blue.secure.repository.entity;
 
+import java.io.Serializable;
+
 /**
  * role resource relation
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class RoleResRelation {
+public final class RoleResRelation implements Serializable {
+
+    private static final long serialVersionUID = -806383752202349629L;
 
     private Long id;
 

@@ -63,7 +63,7 @@ public class RewardServiceImpl implements RewardService {
      */
     @Override
     public List<Reward> selectRewardByIds(List<Long> ids) {
-        LOGGER.info("listRewardByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("List<Reward> listRewardByIds(List<Long> ids), ids = {}", ids);
         if (isInvalidIdentitiesWithMaxRows(ids, DB_SELECT.value))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids can't be empty or size can't be greater than " + DB_SELECT.value);
 

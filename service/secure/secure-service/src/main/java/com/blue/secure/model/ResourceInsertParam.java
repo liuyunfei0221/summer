@@ -3,12 +3,16 @@ package com.blue.secure.model;
 import java.io.Serializable;
 
 /**
+ * params for insert a new resource
+ *
  * @author liuyunfei
  * @date 2021/10/25
  * @apiNote
  */
 @SuppressWarnings("unused")
 public class ResourceInsertParam implements Serializable {
+
+    private static final long serialVersionUID = -5770146088678172629L;
 
     /**
      * request method str/upper

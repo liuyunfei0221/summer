@@ -152,7 +152,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
 //            }
             LOGGER.info("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) success, memberRoleRelation = {}", memberRoleRelation);
         } catch (Exception e) {
-            LOGGER.error("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) failed, memberRoleRelation = {},e = {}", memberRoleRelation, e);
+            LOGGER.error("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) failed, memberRoleRelation = {}, e = {}", memberRoleRelation, e);
             throw e;
         } finally {
             try {

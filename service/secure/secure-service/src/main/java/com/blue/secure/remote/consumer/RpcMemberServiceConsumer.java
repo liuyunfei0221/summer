@@ -25,10 +25,10 @@ public class RpcMemberServiceConsumer {
     private static final Logger LOGGER = getLogger(RpcMemberServiceConsumer.class);
 
     @DubboReference(version = "1.0", providedBy = {"summer-member"}, methods = {
-            @Method(name = "getMemberBasicMonoByPrimaryKey", async = true),
+            @Method(name = "selectMemberBasicMonoByPrimaryKey", async = true),
             @Method(name = "selectMemberBasicMonoByIds", async = true),
-            @Method(name = "getMemberBasicByPhone", async = true),
-            @Method(name = "getMemberBasicByEmail", async = true)
+            @Method(name = "selectMemberBasicByPhone", async = true),
+            @Method(name = "selectMemberBasicByEmail", async = true)
     })
     private RpcMemberService rpcMemberService;
 
@@ -38,9 +38,9 @@ public class RpcMemberServiceConsumer {
      * @param id
      * @return
      */
-    Mono<MemberBasicInfo> getMemberBasicMonoByPrimaryKey(Long id) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
-        return fromFuture(rpcMemberService.getMemberBasicMonoByPrimaryKey(id));
+    Mono<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id) {
+        LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
+        return fromFuture(rpcMemberService.selectMemberBasicMonoByPrimaryKey(id));
     }
 
     /**
@@ -60,9 +60,9 @@ public class RpcMemberServiceConsumer {
      * @param phone
      * @return
      */
-    public Mono<MemberBasicInfo> getMemberBasicByPhone(String phone) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicByPhone(String phone), phone = {}", phone);
-        return fromFuture(rpcMemberService.getMemberBasicByPhone(phone));
+    public Mono<MemberBasicInfo> selectMemberBasicByPhone(String phone) {
+        LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicByPhone(String phone), phone = {}", phone);
+        return fromFuture(rpcMemberService.selectMemberBasicByPhone(phone));
     }
 
 
@@ -72,9 +72,9 @@ public class RpcMemberServiceConsumer {
      * @param email
      * @return
      */
-    public Mono<MemberBasicInfo> getMemberBasicByEmail(String email) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicByEmail(String email), email = {}", email);
-        return fromFuture(rpcMemberService.getMemberBasicByEmail(email));
+    public Mono<MemberBasicInfo> selectMemberBasicByEmail(String email) {
+        LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicByEmail(String email), email = {}", email);
+        return fromFuture(rpcMemberService.selectMemberBasicByEmail(email));
     }
 
 }

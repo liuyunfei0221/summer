@@ -315,7 +315,7 @@ dubbo:
   metadataReportAddress: zookeeper://127.0.0.1:2181
 
   registryId: zookeeper-registry
-  registryZone: summer-finance
+  registryZone: summer-finance0
   registryProtocol: zookeeper
   registryAddress: zookeeper://127.0.0.1:2181
   registryFile: D:/locallogs/dubbo/finance/registry.properties

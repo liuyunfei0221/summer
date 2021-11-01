@@ -25,7 +25,7 @@ public interface MemberBasicService {
      * @param phone
      * @return
      */
-    Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone);
+    Mono<Optional<MemberBasic>> selectMemberBasicMonoByPhone(String phone);
 
     /**
      * query member by email
@@ -33,7 +33,7 @@ public interface MemberBasicService {
      * @param email
      * @return
      */
-    Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email);
+    Mono<Optional<MemberBasic>> selectMemberBasicMonoByEmail(String email);
 
     /**
      * query member by id
@@ -41,7 +41,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id);
+    Mono<Optional<MemberBasic>> selectMemberBasicMonoByPrimaryKey(Long id);
 
     /**
      * query member by id with assert
@@ -49,7 +49,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id);
+    Mono<MemberInfo> selectMemberInfoMonoByPrimaryKeyWithAssert(Long id);
 
     /**
      * member registry
@@ -57,7 +57,7 @@ public interface MemberBasicService {
      * @param memberRegistryParam
      * @return
      */
-    void insert(MemberRegistryParam memberRegistryParam);
+    MemberInfo insertMemberBasic(MemberRegistryParam memberRegistryParam);
 
     /**
      * select members by ids

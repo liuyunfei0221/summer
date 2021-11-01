@@ -3,6 +3,7 @@ package com.blue.base.common.base;
 import com.blue.base.component.exception.common.ExceptionProcessor;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.BlueHeader;
+import com.blue.base.constant.base.SummerAttr;
 import com.blue.base.constant.base.Symbol;
 import com.blue.base.constant.base.ValidResourceFormatters;
 import com.blue.base.model.base.DataWrapper;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpMethod;
 import reactor.util.Logger;
 
 import java.time.Clock;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Set;
 import java.util.function.*;
@@ -24,11 +24,10 @@ import java.util.function.*;
 import static com.blue.base.common.base.RsaProcessor.*;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseMessage.*;
-import static com.blue.base.constant.base.SummerAttr.TIME_ZONE;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_REQUEST_METHOD;
+import static com.blue.base.constant.base.ResponseMessage.RSA_FAILED;
 import static com.blue.base.constant.base.Symbol.PAIR_SEPARATOR;
 import static java.lang.System.currentTimeMillis;
-import static java.time.Clock.system;
 import static java.time.Instant.now;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
@@ -84,7 +83,7 @@ public class CommonFunctions {
     /**
      * clock
      */
-    private static final Clock CLOCK = system(ZoneId.of(TIME_ZONE));
+    private static final Clock CLOCK = SummerAttr.CLOCK;
 
     /**
      * limiter script keys prefix and suffix

@@ -8,15 +8,19 @@ package com.blue.base.constant.base;
 @SuppressWarnings("unused")
 public enum SyncKey {
 
+    //prefix
     /**
      * portal cache sync key prefix
      */
-    PORTALS_REFRESH_PRE("SYNC_PORTALS_REFRESH_PRE:"),
+    PORTALS_REFRESH_PRE("SYNC_PORTALS_REFRESHing_PRE:"),
 
     /**
      * member role relation update sync key prefix
      */
-    MEMBER_ROLE_REL_UPDATE_PRE("MEMBER_ROLE_REL_UPDATE_PRE:");
+    MEMBER_ROLE_REL_UPDATE_PRE("MEMBER_ROLE_REL_UPDATING_PRE:"),
+
+    //key
+    DEFAULT_ROLE_UPDATE_KEY("DEFAULT_ROLE_UPDATING");
 
     public final String key;
 

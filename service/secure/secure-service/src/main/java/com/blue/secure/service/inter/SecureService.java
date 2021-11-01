@@ -92,7 +92,7 @@ public interface SecureService {
      * @param roleId
      * @return
      */
-    void updateMemberRoleByAccess(Access access, Long roleId);
+    void refreshMemberRoleByAccess(Access access, Long roleId);
 
     /**
      * update member role info by member id
@@ -102,7 +102,7 @@ public interface SecureService {
      * @param operatorId
      * @return
      */
-    void updateMemberRoleById(Long memberId, Long roleId, Long operatorId);
+    void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId);
 
     /**
      * update member sec key by access
@@ -111,13 +111,6 @@ public interface SecureService {
      * @return
      */
     Mono<String> updateSecKeyByAccess(Access access);
-
-    /**
-     * set a default role to member
-     *
-     * @param memberId
-     */
-    void insertDefaultMemberRoleRelation(Long memberId);
 
     /**
      * get member's authority by access

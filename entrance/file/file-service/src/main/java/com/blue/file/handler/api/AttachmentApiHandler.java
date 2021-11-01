@@ -1,7 +1,5 @@
 package com.blue.file.handler.api;
 
-import com.blue.base.common.reactive.AccessGetterForReactive;
-import com.blue.base.model.base.Access;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.exps.BlueException;
@@ -12,6 +10,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.OK;
@@ -19,6 +18,7 @@ import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
+import static reactor.core.publisher.Mono.zip;
 
 /**
  * attachment api handler
@@ -43,12 +43,11 @@ public final class AttachmentApiHandler {
      */
     @SuppressWarnings("unchecked")
     public Mono<ServerResponse> listAttachment(ServerRequest serverRequest) {
-        Access access = AccessGetterForReactive.getAccess(serverRequest);
-        return serverRequest.bodyToMono(PageModelRequest.class)
-                .switchIfEmpty(
-                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
-                .flatMap(page ->
-                        attachmentService.selectAttachmentByPageAndMemberId(page, access.getId()))
+        return zip(serverRequest.bodyToMono(PageModelRequest.class)
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 ->
+                        attachmentService.selectAttachmentByPageAndMemberId(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, vo, OK.message), BlueResponse.class));
@@ -62,21 +61,19 @@ public final class AttachmentApiHandler {
      * @return
      */
     public Mono<ServerResponse> withdraw(ServerRequest serverRequest) {
-        Access access = AccessGetterForReactive.getAccess(serverRequest);
-        return serverRequest.bodyToMono(WithdrawInfo.class)
-                .switchIfEmpty(
-                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
-                .flatMap(withdrawInfo -> {
-                    System.err.println(access);
+        return zip(serverRequest.bodyToMono(WithdrawInfo.class)
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 -> {
+                    System.err.println(tuple2.getT2());
                     System.err.println();
-                    System.err.println(withdrawInfo);
+                    System.err.println(tuple2.getT1());
 
                     return Mono.just("OK");
                 }).flatMap(
                         rs ->
                                 ok().contentType(APPLICATION_JSON)
                                         .body(generate(OK.code, rs, OK.message), BlueResponse.class));
-
     }
 
 

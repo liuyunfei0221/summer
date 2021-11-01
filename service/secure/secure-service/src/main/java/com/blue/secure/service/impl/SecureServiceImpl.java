@@ -17,8 +17,10 @@ import com.blue.secure.component.auth.AuthInfoCache;
 import com.blue.secure.config.deploy.BlockingDeploy;
 import com.blue.secure.config.deploy.SessionKeyDeploy;
 import com.blue.secure.event.producer.InvalidLocalAuthProducer;
-import com.blue.secure.model.*;
-import com.blue.secure.repository.entity.MemberRoleRelation;
+import com.blue.secure.model.AuthGenParam;
+import com.blue.secure.model.AuthInfo;
+import com.blue.secure.model.AuthInfoRefreshParam;
+import com.blue.secure.model.MemberAuth;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.entity.RoleResRelation;
@@ -314,9 +316,9 @@ public class SecureServiceImpl implements SecureService {
      */
     private void initLoginHandler() {
         clientLoginHandlers = new HashMap<>(16, 1.0f);
-        clientLoginHandlers.put(SMS_VERIGY.identity, memberService::getMemberBasicInfoMonoByPhoneWithAssertVerify);
-        clientLoginHandlers.put(PHONE_PWD.identity, memberService::getMemberBasicInfoMonoByPhoneWithAssertPwd);
-        clientLoginHandlers.put(EMAIL_PWD.identity, memberService::getMemberBasicInfoMonoByEmailWithAssertPwd);
+        clientLoginHandlers.put(SMS_VERIGY.identity, memberService::selectMemberBasicInfoMonoByPhoneWithAssertVerify);
+        clientLoginHandlers.put(PHONE_PWD.identity, memberService::selectMemberBasicInfoMonoByPhoneWithAssertPwd);
+        clientLoginHandlers.put(EMAIL_PWD.identity, memberService::selectMemberBasicInfoMonoByEmailWithAssertPwd);
 
         LOGGER.info("generateLoginHandler(), clientLoginHandlers = {}", clientLoginHandlers);
     }
@@ -572,7 +574,7 @@ public class SecureServiceImpl implements SecureService {
      */
     @Override
     public void refreshSystemAuthorityInfos() {
-        LOGGER.info("refreshResourceKeyOrRelation()");
+        LOGGER.info("void refreshResourceKeyOrRelation()");
 
         CompletableFuture<List<Resource>> resourceListCf =
                 resourceService.selectResource().toFuture();
@@ -842,13 +844,12 @@ public class SecureServiceImpl implements SecureService {
      * @return
      */
     @Override
-    public void updateMemberRoleByAccess(Access access, Long roleId) {
-        LOGGER.info("updateMemberRoleByAccess(Access access, Long roleId), access = {}, roleId = {}", access, roleId);
+    public void refreshMemberRoleByAccess(Access access, Long roleId) {
+        LOGGER.info("void updateMemberRoleByAccess(Access access, Long roleId), access = {}, roleId = {}", access, roleId);
         if (access == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "access can't be null");
 
         long memberId = access.getId();
-        memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, memberId);
         AuthInfoRefreshElementType elementType = ROLE;
         String elementValue = valueOf(roleId);
 
@@ -871,9 +872,8 @@ public class SecureServiceImpl implements SecureService {
      * @return
      */
     @Override
-    public void updateMemberRoleById(Long memberId, Long roleId, Long operatorId) {
+    public void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("updateMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
-        memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
         AuthInfoRefreshParam authInfoRefreshParam = new AuthInfoRefreshParam(memberId,
                 LOGIN_TYPES.stream().filter(lt -> !lt.identity.intern().equals(NOT_LOGGED_IN.identity)).collect(toList()),
                 DEVICE_TYPES.stream().filter(dt -> !dt.identity.intern().equals(UNKNOWN.identity)).collect(toList()),
@@ -900,33 +900,6 @@ public class SecureServiceImpl implements SecureService {
                             PUB_KEY, keyPair.getPubKey());
                     return just(keyPair.getPriKey());
                 });
-    }
-
-    /**
-     * set a default role to member
-     *
-     * @param memberId
-     */
-    @Override
-    public void insertDefaultMemberRoleRelation(Long memberId) {
-        LOGGER.info("insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
-        if (memberId == null || memberId < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INVALID_IDENTITY.message);
-
-        Role role = roleService.getDefaultRole();
-        if (role == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "default role not found");
-
-        MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
-        long epochSecond = TIME_STAMP_GETTER.get();
-        memberRoleRelation.setMemberId(memberId);
-        memberRoleRelation.setRoleId(role.getId());
-        memberRoleRelation.setCreateTime(epochSecond);
-        memberRoleRelation.setUpdateTime(epochSecond);
-        memberRoleRelation.setCreator(memberId);
-        memberRoleRelation.setUpdater(memberId);
-
-        memberRoleRelationService.insertMemberRoleRelation(memberRoleRelation);
     }
 
     /**

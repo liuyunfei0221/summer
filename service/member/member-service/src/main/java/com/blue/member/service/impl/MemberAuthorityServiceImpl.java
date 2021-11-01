@@ -4,6 +4,7 @@ import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.member.model.MemberAuthorityInfo;
 import com.blue.member.model.MemberCondition;
+import com.blue.member.remote.consumer.RpcControlServiceConsumer;
 import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberAuthorityService;
@@ -40,10 +41,13 @@ public class MemberAuthorityServiceImpl implements MemberAuthorityService {
 
     private final MemberBasicService memberBasicService;
 
+    private final RpcControlServiceConsumer rpcControlServiceConsumer;
+
     private final RpcRoleServiceConsumer rpcRoleServiceConsumer;
 
-    public MemberAuthorityServiceImpl(MemberBasicService memberBasicService, RpcRoleServiceConsumer rpcRoleServiceConsumer) {
+    public MemberAuthorityServiceImpl(MemberBasicService memberBasicService, RpcControlServiceConsumer rpcControlServiceConsumer, RpcRoleServiceConsumer rpcRoleServiceConsumer) {
         this.memberBasicService = memberBasicService;
+        this.rpcControlServiceConsumer = rpcControlServiceConsumer;
         this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
     }
 
@@ -60,11 +64,7 @@ public class MemberAuthorityServiceImpl implements MemberAuthorityService {
 
         MemberCondition memberCondition = pageModelRequest.getParam();
 
-        return memberBasicService.countMemberBasicMonoByCondition(memberCondition)
-                .flatMap(memberCount -> {
-                    Mono<List<MemberBasic>> listMono = memberCount > 0L ? memberBasicService.selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberCondition) : just(emptyList());
-                    return zip(listMono, just(memberCount));
-                })
+        return zip(memberBasicService.selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberCondition), memberBasicService.countMemberBasicMonoByCondition(memberCondition))
                 .flatMap(tuple2 -> {
                     List<MemberBasic> members = tuple2.getT1();
                     Mono<List<MemberAuthorityInfo>> memberAuthorityInfosMono = members.size() > 0 ?

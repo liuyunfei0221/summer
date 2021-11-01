@@ -17,6 +17,7 @@ import reactor.util.Logger;
 import java.time.Instant;
 import java.util.Optional;
 
+import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.common.base.Asserter.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
@@ -80,7 +81,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
     @Override
     public void insertInitFinanceAccount(Long memberId) {
         LOGGER.info("insertInitFinanceAccount(Long memberId), memberId = {}", memberId);
-        if (isValidIdentity(memberId)) {
+        if (isInvalidIdentity(memberId)) {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
         }
 

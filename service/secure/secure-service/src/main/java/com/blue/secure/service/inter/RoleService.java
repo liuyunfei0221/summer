@@ -4,6 +4,7 @@ import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.model.RoleCondition;
+import com.blue.secure.model.RoleInsertParam;
 import com.blue.secure.repository.entity.Role;
 import reactor.core.publisher.Mono;
 
@@ -19,6 +20,15 @@ import java.util.Optional;
 public interface RoleService {
 
     /**
+     * insert a new role
+     *
+     * @param roleInsertParam
+     * @param operatorId
+     * @return
+     */
+    RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId);
+
+    /**
      * refresh default role
      *
      * @return
@@ -31,6 +41,14 @@ public interface RoleService {
      * @return
      */
     Role getDefaultRole();
+
+    /**
+     * update default role by role id
+     *
+     * @param id
+     * @param operatorId
+     */
+    void updateDefaultRole(Long id, Long operatorId);
 
     /**
      * get role by role id

@@ -11,7 +11,7 @@ import static com.blue.base.constant.base.Status.VALID;
  * @date 2021/10/29
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
 public final class Asserter {
 
     /**
@@ -72,6 +72,47 @@ public final class Asserter {
      */
     public static <T> boolean isNotEmpty(List<T> list) {
         return list != null && list.size() > 0;
+    }
+
+
+    /**
+     * a num is greater than 0?
+     *
+     * @param arg
+     * @return
+     */
+    public static boolean isGreaterThanZero(Long arg) {
+        return arg != null && arg > 0L;
+    }
+
+    /**
+     * a num is greater than 0?
+     *
+     * @param arg
+     * @return
+     */
+    public static boolean isGreaterThanZero(Integer arg) {
+        return arg != null && arg > 0;
+    }
+
+    /**
+     * a num is greater or equals than 0?
+     *
+     * @param arg
+     * @return
+     */
+    public static boolean isGreaterThanOrEqualsZero(Long arg) {
+        return arg != null && arg >= 0L;
+    }
+
+    /**
+     * a num is greater or equals than 0?
+     *
+     * @param arg
+     * @return
+     */
+    public static boolean isGreaterThanOrEqualsZero(Integer arg) {
+        return arg != null && arg >= 0;
     }
 
     /**

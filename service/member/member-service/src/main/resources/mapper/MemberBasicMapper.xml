@@ -167,7 +167,7 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
-    <select id="getByPhone" resultMap="BaseResultMap">
+    <select id="selectByPhone" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -176,7 +176,7 @@
         `phone` = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
     </select>
 
-    <select id="getByEmail" resultMap="BaseResultMap">
+    <select id="selectByEmail" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -185,7 +185,7 @@
         `email` = #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
     </select>
 
-    <select id="getByName" resultMap="BaseResultMap">
+    <select id="selectByName" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM

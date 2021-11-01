@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class Role implements Serializable {
+public final class Role implements Serializable {
 
     private static final long serialVersionUID = 1559136579322763468L;
 
@@ -18,6 +18,9 @@ public class Role implements Serializable {
 
     private String description;
 
+    /**
+     * is the default role?
+     */
     private Boolean isDefault;
 
     private Long createTime;

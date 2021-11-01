@@ -201,16 +201,11 @@ public class ResourceServiceImpl implements ResourceService {
         ResourceCondition resourceCondition = pageModelRequest.getParam();
         CONDITION_REPACKAGER.accept(resourceCondition);
 
-        return this.countResourceMonoByCondition(resourceCondition)
-                .flatMap(roleCount -> {
-                    Mono<List<Resource>> listMono = roleCount > 0L ? this.selectResourceMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), resourceCondition) : just(emptyList());
-                    return zip(listMono, just(roleCount));
-                })
+        return zip(selectResourceMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), resourceCondition), countResourceMonoByCondition(resourceCondition))
                 .flatMap(tuple2 -> {
                     List<Resource> resources = tuple2.getT1();
                     Mono<List<ResourceInfo>> resourceInfosMono = resources.size() > 0 ?
-                            just(resources.stream()
-                                    .map(RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList()))
+                            just(resources.stream().map(RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList()))
                             :
                             just(emptyList());
 

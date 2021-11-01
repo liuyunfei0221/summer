@@ -26,11 +26,11 @@ public interface MemberBasicMapper {
 
     MemberBasic selectByPrimaryKey(Long id);
 
-    MemberBasic getByPhone(@Param("phone") String phone);
+    MemberBasic selectByPhone(@Param("phone") String phone);
 
-    MemberBasic getByEmail(@Param("email") String email);
+    MemberBasic selectByEmail(@Param("email") String email);
 
-    MemberBasic getByName(@Param("name") String name);
+    MemberBasic selectByName(@Param("name") String name);
 
     List<MemberBasic> select();
 

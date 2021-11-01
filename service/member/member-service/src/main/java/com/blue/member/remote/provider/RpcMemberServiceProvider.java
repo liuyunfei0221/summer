@@ -26,10 +26,10 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @DubboService(interfaceClass = RpcMemberService.class, version = "1.0", methods = {
-        @Method(name = "getMemberBasicMonoByPrimaryKey", async = true),
+        @Method(name = "selectMemberBasicMonoByPrimaryKey", async = true),
         @Method(name = "selectMemberBasicMonoByIds", async = true),
-        @Method(name = "getMemberBasicByPhone", async = true),
-        @Method(name = "getMemberBasicByEmail", async = true)
+        @Method(name = "selectMemberBasicByPhone", async = true),
+        @Method(name = "selectMemberBasicByEmail", async = true)
 })
 public class RpcMemberServiceProvider implements RpcMemberService {
 
@@ -48,9 +48,9 @@ public class RpcMemberServiceProvider implements RpcMemberService {
      * @return
      */
     @Override
-    public CompletableFuture<MemberBasicInfo> getMemberBasicMonoByPrimaryKey(Long id) {
-        LOGGER.info("CompletableFuture<Optional<MemberBasicInfo>> getMemberBasicMonoByPrimaryKey(Long id), id = {},", id);
-        return memberBasicService.getMemberBasicMonoByPrimaryKey(id)
+    public CompletableFuture<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id) {
+        LOGGER.info("CompletableFuture<Optional<MemberBasicInfo>> selectMemberBasicMonoByPrimaryKey(Long id), id = {},", id);
+        return memberBasicService.selectMemberBasicMonoByPrimaryKey(id)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
@@ -79,9 +79,9 @@ public class RpcMemberServiceProvider implements RpcMemberService {
      * @return
      */
     @Override
-    public CompletableFuture<MemberBasicInfo> getMemberBasicByPhone(String phone) {
-        LOGGER.info("CompletableFuture<MemberBasicInfo> getMemberBasicByPhone(String phone), phone = {},", phone);
-        return memberBasicService.getMemberBasicMonoByPhone(phone)
+    public CompletableFuture<MemberBasicInfo> selectMemberBasicByPhone(String phone) {
+        LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicByPhone(String phone), phone = {},", phone);
+        return memberBasicService.selectMemberBasicMonoByPhone(phone)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
@@ -95,9 +95,9 @@ public class RpcMemberServiceProvider implements RpcMemberService {
      * @return
      */
     @Override
-    public CompletableFuture<MemberBasicInfo> getMemberBasicByEmail(String email) {
-        LOGGER.info("CompletableFuture<MemberBasicInfo> getMemberBasicByEmail(String email), email = {},", email);
-        return memberBasicService.getMemberBasicMonoByEmail(email)
+    public CompletableFuture<MemberBasicInfo> selectMemberBasicByEmail(String email) {
+        LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicByEmail(String email), email = {},", email);
+        return memberBasicService.selectMemberBasicMonoByEmail(email)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))

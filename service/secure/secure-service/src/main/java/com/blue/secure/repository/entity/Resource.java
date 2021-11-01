@@ -1,12 +1,16 @@
 package com.blue.secure.repository.entity;
 
+import java.io.Serializable;
+
 /**
  * resource
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class Resource {
+public final class Resource implements Serializable {
+
+    private static final long serialVersionUID = 8750741847963349400L;
 
     private Long id;
 

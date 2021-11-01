@@ -217,4 +217,13 @@
         is_default = 1
     </select>
 
+    <select id="selectByName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role FORCE INDEX(idx_name)
+        WHERE
+        `name` = #{name,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

@@ -11,20 +11,21 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
+import static com.blue.base.common.base.Asserter.isInvalidIdentities;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.util.Loggers.getLogger;
-
 
 /**
  * rpc role consumer
  *
- * @author DarkBlue
+ * @author liuyunfei
+ * @date 2021/11/1
+ * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam", "FieldCanBeLocal", "SpringJavaInjectionPointsAutowiringInspection", "AliControlFlowStatementWithoutBraces"})
+
+@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 @Component
 public class RpcRoleServiceConsumer {
 
@@ -33,27 +34,10 @@ public class RpcRoleServiceConsumer {
     @DubboReference(version = "1.0",
             providedBy = {"summer-member"},
             methods = {
-                    @Method(name = "insertDefaultMemberRoleRelation", async = false),
-                    @Method(name = "getRoleInfoByMemberId", async = true),
+                    @Method(name = "selectRoleInfoByMemberId", async = true),
                     @Method(name = "selectRoleInfoByMemberIds", async = true)
             })
     private RpcRoleService rpcRoleService;
-
-    private final ExecutorService executorService;
-
-    public RpcRoleServiceConsumer(ExecutorService executorService) {
-        this.executorService = executorService;
-    }
-
-    /**
-     * assign default roles to member
-     *
-     * @param memberId
-     */
-    public void insertDefaultMemberRoleRelation(Long memberId) {
-        LOGGER.info("void insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
-        rpcRoleService.insertDefaultMemberRoleRelation(memberId);
-    }
 
     /**
      * get member's role info by member id
@@ -61,11 +45,11 @@ public class RpcRoleServiceConsumer {
      * @param memberId
      * @return
      */
-    public Mono<RoleInfo> getRoleInfoByMemberId(Long memberId) {
+    public Mono<RoleInfo> selectRoleInfoByMemberId(Long memberId) {
         LOGGER.info("RoleInfo getRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
         if (memberId == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberId can't be null");
-        return fromFuture(rpcRoleService.getRoleInfoByMemberId(memberId));
+        return fromFuture(rpcRoleService.selectRoleInfoByMemberId(memberId));
     }
 
     /**
@@ -76,7 +60,7 @@ public class RpcRoleServiceConsumer {
      */
     public Mono<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
         LOGGER.info("List<MemberRoleRelationInfo> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
-        if (isEmpty(memberIds))
+        if (isInvalidIdentities(memberIds))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberIds can't be empty");
 
         return fromFuture(rpcRoleService.selectRoleInfoByMemberIds(memberIds));

@@ -1,6 +1,5 @@
 package com.blue.file.handler.api;
 
-import com.blue.base.model.base.Access;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.base.IdentityWrapper;
 import com.blue.base.model.exps.BlueException;
@@ -16,7 +15,7 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.net.URLEncoder;
 
-import static com.blue.base.common.reactive.AccessGetterForReactive.getAccess;
+import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
@@ -29,6 +28,7 @@ import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 import static org.springframework.web.reactive.function.BodyInserters.fromResource;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
+import static reactor.core.publisher.Mono.zip;
 
 
 /**
@@ -69,10 +69,11 @@ public final class FileApiHandler {
         if (0L == allFileSize || allFileSize > allFileSizeThreshold)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "total file size can't greater than " + allFileSizeThreshold);
 
-        Access access = getAccess(serverRequest);
-        return serverRequest.multipartData()
-                .flatMap(mm ->
-                        fileService.uploadAttachment(mm, access.getId()))
+        return zip(serverRequest.multipartData()
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 ->
+                        fileService.uploadAttachment(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(rl ->
                         ok()
                                 .contentType(APPLICATION_JSON)
@@ -86,12 +87,11 @@ public final class FileApiHandler {
      * @return
      */
     public Mono<ServerResponse> download(ServerRequest serverRequest) {
-        Access access = getAccess(serverRequest);
-        return serverRequest.bodyToMono(IdentityWrapper.class)
-                .switchIfEmpty(
-                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
-                .flatMap(wrapper ->
-                        fileService.getAttachmentForDownload(wrapper.getId(), access.getId())
+        return zip(serverRequest.bodyToMono(IdentityWrapper.class)
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 ->
+                        fileService.getAttachmentForDownload(tuple2.getT1().getId(), tuple2.getT2().getId())
                                 .switchIfEmpty(error(FILE_NOT_EXIST_EXP))
                                 .flatMap(attachment -> {
                                     String link = attachment.getLink();

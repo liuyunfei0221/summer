@@ -1,7 +1,12 @@
 package com.blue.base.constant.base;
 
+import com.blue.base.model.base.NonValueParam;
+
+import java.time.Clock;
 import java.time.format.DateTimeFormatter;
 
+import static java.time.Clock.system;
+import static java.time.ZoneId.of;
 import static java.time.format.DateTimeFormatter.ofPattern;
 
 /**
@@ -28,5 +33,15 @@ public class SummerAttr {
      * base time zone
      */
     public static final String TIME_ZONE = "Asia/Shanghai";
+
+    /**
+     * clock
+     */
+    public static final Clock CLOCK = system(of(TIME_ZONE));
+
+    /**
+     * non value param
+     */
+    public static final NonValueParam NON_VALUE_PARAM = new NonValueParam();
 
 }

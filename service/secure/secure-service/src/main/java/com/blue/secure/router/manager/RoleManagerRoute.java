@@ -28,6 +28,7 @@ public class RoleManagerRoute {
         RequestPredicate pathPredicate = path("/blue-secure/manager/role");
 
         RouterFunction<ServerResponse> routerFunction = route()
+                .POST("", accept(APPLICATION_JSON), roleManagerHandler::insert)
                 .POST("/list", accept(APPLICATION_JSON), roleManagerHandler::select)
                 .POST("/auth", accept(APPLICATION_JSON), roleManagerHandler::selectAuthority)
                 .build();

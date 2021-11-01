@@ -9,6 +9,7 @@ import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.config.deploy.BlockingDeploy;
 import com.blue.secure.constant.RoleSortAttribute;
 import com.blue.secure.model.RoleCondition;
+import com.blue.secure.model.RoleInsertParam;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.mapper.RoleMapper;
 import com.blue.secure.service.inter.RoleService;
@@ -17,6 +18,7 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -32,10 +34,15 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.Asserter.*;
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.base.Default.DEFAULT;
+import static com.blue.base.constant.base.Default.NOT_DEFAULT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.SyncKey.DEFAULT_ROLE_UPDATE_KEY;
 import static com.blue.secure.converter.SecureModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
+import static com.blue.secure.converter.SecureModelConverters.ROLE_INSERT_PARAM_2_ROLE_CONVERTER;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.emptyList;
@@ -44,6 +51,8 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
@@ -61,7 +70,7 @@ public class RoleServiceImpl implements RoleService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private final RoleMapper roleMapper;
+    private RoleMapper roleMapper;
 
     private StringRedisTemplate stringRedisTemplate;
 
@@ -101,6 +110,10 @@ public class RoleServiceImpl implements RoleService {
                         LOGGER.info("REDIS_DEFAULT_ROLE_GETTER, v = {}", v);
                         return GSON.fromJson(v, Role.class);
                     });
+
+    private void deleteDefaultRoleFromCache() {
+        stringRedisTemplate.delete(DEFAULT_ROLE_KEY);
+    }
 
     /**
      * select default role from database
@@ -174,9 +187,49 @@ public class RoleServiceImpl implements RoleService {
         }
     };
 
+
+    private static final Supplier<Long> TIME_STAMP_GETTER = CommonFunctions.TIME_STAMP_GETTER;
+    /**
+     * is a role exist?
+     */
+    private final Consumer<RoleInsertParam> ROLE_EXIST_VALIDATOR = rip -> {
+        if (isNotNull(roleMapper.selectByName(rip.getName())))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists");
+    };
+
+
     @PostConstruct
     public void init() {
         refreshDefaultRole();
+    }
+
+    /**
+     * insert a new role
+     *
+     * @param roleInsertParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
+        LOGGER.info("void insertRole(RoleInsertParam roleInsertParam), roleInsertParam = {}", roleInsertParam);
+        if (isNull(roleInsertParam))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "operatorId is invalid");
+
+        ROLE_EXIST_VALIDATOR.accept(roleInsertParam);
+
+        Role role = ROLE_INSERT_PARAM_2_ROLE_CONVERTER.apply(roleInsertParam);
+
+        long id = blueIdentityProcessor.generate(Role.class);
+        role.setId(id);
+        role.setCreator(operatorId);
+        role.setUpdater(operatorId);
+
+        roleMapper.insert(role);
+
+        return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
     }
 
     /**
@@ -186,7 +239,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public void refreshDefaultRole() {
-        REDIS_DEFAULT_ROLE_CACHE.accept(getDefaultRoleFromCache());
+        REDIS_DEFAULT_ROLE_CACHE.accept(getDefaultRoleFromDb());
         LOGGER.info("void refreshDefaultRole() -> SUCCESS");
     }
 
@@ -197,7 +250,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Role getDefaultRole() {
-        LOGGER.info("getDefaultRole()");
+        LOGGER.info("Role getDefaultRole()");
 
         Role defaultRole = getDefaultRoleFromCache();
 
@@ -208,6 +261,55 @@ public class RoleServiceImpl implements RoleService {
         }
 
         return defaultRole;
+    }
+
+    /**
+     * update default role by role id
+     *
+     * @param id
+     * @param operatorId
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    public void updateDefaultRole(Long id, Long operatorId) {
+        LOGGER.info("void updateDefaultRole(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        RLock lock = redissonClient.getLock(DEFAULT_ROLE_UPDATE_KEY.key);
+        lock.lock();
+
+        try {
+            Role role = roleMapper.selectByPrimaryKey(id);
+            Role defaultRole = getDefaultRoleFromDb();
+
+            if (role.getId().equals(defaultRole.getId()))
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is already default");
+
+            Long stamp = TIME_STAMP_GETTER.get();
+
+            role.setIsDefault(DEFAULT.status);
+            role.setUpdater(operatorId);
+            role.setUpdateTime(stamp);
+
+            defaultRole.setIsDefault(NOT_DEFAULT.status);
+            defaultRole.setUpdater(operatorId);
+            defaultRole.setUpdateTime(stamp);
+
+            deleteDefaultRoleFromCache();
+            roleMapper.updateByPrimaryKey(role);
+            roleMapper.updateByPrimaryKey(defaultRole);
+            deleteDefaultRoleFromCache();
+        } catch (Exception e) {
+            LOGGER.error("void updateDefaultRole(Long id) failed, id = {}, e = {}", id, e);
+            throw e;
+        } finally {
+            try {
+                lock.unlock();
+            } catch (Exception e) {
+                LOGGER.error("lock.unlock() fail, e = {0}", e);
+            }
+        }
     }
 
     /**
@@ -234,7 +336,6 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Mono<List<Role>> selectRoleMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Role>> selectRoleMonoByIds(List<Long> ids), ids = {}", ids);
-
         return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(roleMapper::selectByIds)
                 .flatMap(List::stream)
@@ -295,16 +396,11 @@ public class RoleServiceImpl implements RoleService {
         RoleCondition roleCondition = pageModelRequest.getParam();
         CONDITION_REPACKAGER.accept(roleCondition);
 
-        return this.countRoleMonoByCondition(roleCondition)
-                .flatMap(roleCount -> {
-                    Mono<List<Role>> listMono = roleCount > 0L ? this.selectRoleMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), roleCondition) : just(emptyList());
-                    return zip(listMono, just(roleCount));
-                })
+        return zip(selectRoleMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), roleCondition), countRoleMonoByCondition(roleCondition))
                 .flatMap(tuple2 -> {
                     List<Role> roles = tuple2.getT1();
                     Mono<List<RoleInfo>> roleInfosMono = roles.size() > 0 ?
-                            just(roles.stream()
-                                    .map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList()))
+                            just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList()))
                             :
                             just(emptyList());
 

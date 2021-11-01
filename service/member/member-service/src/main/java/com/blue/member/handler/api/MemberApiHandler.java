@@ -43,7 +43,7 @@ public final class MemberApiHandler {
     public Mono<ServerResponse> selectMemberInfo(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(ai ->
-                        memberBasicService.getMemberInfoMonoByPrimaryKeyWithAssert(ai.getId())
+                        memberBasicService.selectMemberInfoMonoByPrimaryKeyWithAssert(ai.getId())
                                 .flatMap(mv ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
@@ -61,15 +61,13 @@ public final class MemberApiHandler {
         return serverRequest.bodyToMono(MemberRegistryParam.class)
                 .switchIfEmpty(
                         error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
-                .flatMap(mr -> {
-                    memberBasicService.insert(mr);
-                    return just(true);
-                })
-                .flatMap(b ->
+                .flatMap(mr ->
+                        just(memberBasicService.insertMemberBasic(mr))
+                )
+                .flatMap(mi ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, b, OK.message), BlueResponse.class)
-                );
+                                .body(generate(OK.code, mi, OK.message), BlueResponse.class));
     }
 
 

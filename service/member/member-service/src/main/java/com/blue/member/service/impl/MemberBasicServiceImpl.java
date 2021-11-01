@@ -10,7 +10,7 @@ import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.model.MemberCondition;
 import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
-import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
+import com.blue.member.remote.consumer.RpcControlServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.repository.mapper.MemberBasicMapper;
 import com.blue.member.service.inter.MemberBasicService;
@@ -59,17 +59,17 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private final RpcRoleServiceConsumer rpcRoleServiceConsumer;
+    private final RpcControlServiceConsumer rpcControlServiceConsumer;
 
     private final RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MemberBasicServiceImpl(MemberBasicMapper memberBasicMapper, BlueIdentityProcessor blueIdentityProcessor,
-                                  RpcRoleServiceConsumer rpcRoleServiceConsumer,
+                                  RpcControlServiceConsumer rpcControlServiceConsumer,
                                   RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer) {
         this.memberBasicMapper = memberBasicMapper;
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
+        this.rpcControlServiceConsumer = rpcControlServiceConsumer;
         this.rpcFinanceAccountServiceConsumer = rpcFinanceAccountServiceConsumer;
     }
 
@@ -78,16 +78,16 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     /**
      * is a number exist?
      */
-    private final Consumer<MemberBasic> MEMBER_EXIST_VALIDATOR = mb -> {
-        MemberBasic exist = memberBasicMapper.getByPhone(mb.getPhone());
+    private final Consumer<MemberRegistryParam> MEMBER_EXIST_VALIDATOR = mrp -> {
+        MemberBasic exist = memberBasicMapper.selectByPhone(mrp.getPhone());
         if (isNotNull(exist))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The phone number already exists");
 
-        exist = memberBasicMapper.getByEmail(mb.getEmail());
+        exist = memberBasicMapper.selectByEmail(mrp.getEmail());
         if (isNotNull(exist))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The email already exists");
 
-        exist = memberBasicMapper.getByName(mb.getName());
+        exist = memberBasicMapper.selectByName(mrp.getName());
         if (isNotNull(exist))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists");
     };
@@ -117,11 +117,11 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone) {
+    public Mono<Optional<MemberBasic>> selectMemberBasicMonoByPhone(String phone) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone), phone = {}", phone);
         if (isBlank(phone))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
-        return just(ofNullable(memberBasicMapper.getByPhone(phone)));
+        return just(ofNullable(memberBasicMapper.selectByPhone(phone)));
     }
 
     /**
@@ -131,11 +131,11 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email) {
+    public Mono<Optional<MemberBasic>> selectMemberBasicMonoByEmail(String email) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email), email = {}", email);
         if (isBlank(email))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank''");
-        return just(ofNullable(memberBasicMapper.getByEmail(email)));
+        return just(ofNullable(memberBasicMapper.selectByEmail(email)));
     }
 
     /**
@@ -145,7 +145,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id) {
+    public Mono<Optional<MemberBasic>> selectMemberBasicMonoByPrimaryKey(Long id) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
@@ -159,13 +159,13 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id) {
+    public Mono<MemberInfo> selectMemberInfoMonoByPrimaryKeyWithAssert(Long id) {
         LOGGER.info("Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return just(id)
-                .flatMap(this::getMemberBasicMonoByPrimaryKey)
+                .flatMap(this::selectMemberBasicMonoByPrimaryKey)
                 .flatMap(mbOpt ->
                         mbOpt.map(Mono::just)
                                 .orElseGet(() ->
@@ -193,21 +193,21 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 150000)
     @GlobalLock
-    public void insert(MemberRegistryParam memberRegistryParam) {
+    public MemberInfo insertMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("void insert(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
         if (isNull(memberRegistryParam))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
-        MemberBasic memberBasic = MEMBER_REGISTRY_INFO_2_MEMBER_BASIC.apply(memberRegistryParam);
-        MEMBER_EXIST_VALIDATOR.accept(memberBasic);
+        MEMBER_EXIST_VALIDATOR.accept(memberRegistryParam);
 
+        MemberBasic memberBasic = MEMBER_REGISTRY_INFO_2_MEMBER_BASIC.apply(memberRegistryParam);
         long id = blueIdentityProcessor.generate(MemberBasic.class);
 
         memberBasic.setId(id);
         memberBasic.setPassword(ENCODER.encode(memberBasic.getPassword()));
 
         //init default role
-        rpcRoleServiceConsumer.insertDefaultMemberRoleRelation(id);
+        rpcControlServiceConsumer.insertDefaultMemberRoleRelation(id);
 
         //init finance account
         rpcFinanceAccountServiceConsumer.insertInitFinanceAccount(id);
@@ -217,6 +217,8 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         /*if (1 == 1) {
             throw new BlueException(500, 500, "test rollback");
         }*/
+
+        return MEMBER_BASIC_2_MEMBER_INFO.apply(memberBasic);
     }
 
     /**
@@ -278,11 +280,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         MemberCondition memberCondition = pageModelRequest.getParam();
         CONDITION_REPACKAGER.accept(memberCondition);
 
-        return this.countMemberBasicMonoByCondition(memberCondition)
-                .flatMap(memberCount -> {
-                    Mono<List<MemberBasic>> listMono = memberCount > 0L ? this.selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberCondition) : just(emptyList());
-                    return zip(listMono, just(memberCount));
-                })
+        return zip(selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberCondition), countMemberBasicMonoByCondition(memberCondition))
                 .flatMap(tuple2 -> {
                     List<MemberBasic> members = tuple2.getT1();
                     Mono<List<MemberInfo>> memberInfosMono = members.size() > 0 ?
