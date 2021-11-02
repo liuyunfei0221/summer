@@ -1,6 +1,6 @@
 server:
   #  address: 172.30.128.25
-  port: 15000
+  port: 13000
   netty:
     connection-timeout: 16s
     h2c-max-content-length: 0B
@@ -30,7 +30,7 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
   client:
     service-url:
-      defaultZone: http://localhost:7777/eureka/
+      defaultZone: http://localhost:3000/eureka/
     registry-fetch-interval-seconds: 16
 
 
@@ -198,35 +198,35 @@ encrypt:
 
 
 dubbo:
-  metadataReportAddress: zookeeper://127.0.0.1:2181
-
-  registryId: zookeeper-registry
-  registryZone: summer-file
-  registryProtocol: zookeeper
-  registryAddress: zookeeper://127.0.0.1:2181
-  registryFile: D:/locallogs/dubbo/file/registry.properties
-  registryCheck: false
-  registryTimeout: 60000
-
-  applicationId: summer-file
-  applicationName: summer-file
-  applicationOwner: blue
-  applicationOrganization: summer
-  applicationShutWait: 20s
-
-  protocolName: dubbo
-  protocolHost: localhost
-  protocolPort: 16000
-  protocolAccesslog: D:/locallogs/dubbo/file/access.log
-
-  providerRetries: 0
-  providerTimeout: 5000
-  providerLoadbalance: random
-
-  consumerRetries: 0
-  consumerTimeout: 5000
-  consumerLoadbalance: random
-  consumerCheck: false
+  registry:
+    id: summer-registry
+    zone: summer
+    protocol: zookeeper
+    address: zookeeper://127.0.0.1:2181
+    file: D:/locallogs/dubbo/file/registry.properties
+    check: false
+    timeout: 60000
+  application:
+    id: summer-file
+    name: summer-file
+    owner: blue
+    organization: blue
+    shutwait: 20s
+  protocol:
+    name: dubbo
+    host: localhost
+    port: 14000
+    accesslog: D:/locallogs/dubbo/file/access.log
+  provider:
+    retries: 0
+    timeout: 5000
+    loadbalance: random
+    filter: -exception,blueException
+  consumer:
+    retries: 0
+    timeout: 5000
+    loadbalance: random
+    check: false
 
 
 producers:

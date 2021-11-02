@@ -1,5 +1,5 @@
 server:
-  port: 7777
+  port: 3000
   undertow:
     max-http-post-size: -1B
     buffer-size: 256

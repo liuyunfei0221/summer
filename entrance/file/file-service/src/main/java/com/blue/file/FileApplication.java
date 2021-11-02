@@ -3,7 +3,7 @@ package com.blue.file;
 import com.blue.base.anno.EnableBlueLifecycle;
 import com.blue.base.anno.SummerSpringBootApplication;
 import com.blue.database.anno.EnableBlueDataAccess;
-import com.blue.dubbo.anno.EnableBlueDubbo;
+import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
 
 import static org.springframework.boot.SpringApplication.run;
 
@@ -15,7 +15,7 @@ import static org.springframework.boot.SpringApplication.run;
 @SummerSpringBootApplication
 @EnableBlueLifecycle(basePackages = "com.blue.file.event")
 @EnableBlueDataAccess(basePackages = "com.blue.file.repository.mapper")
-@EnableBlueDubbo(basePackages = "com.blue.file.remote")
+@DubboComponentScan(basePackages = "com.blue.file.remote")
 public class FileApplication {
 
     public static void main(String[] args) {

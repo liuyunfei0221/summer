@@ -112,7 +112,7 @@ public class SignInServiceImpl implements SignInService {
     private final BiConsumer<Integer, Integer> DAY_REWARD_INITIALIZER = (year, month) -> {
         List<SignRewardTodayRelation> relations = rewardService.selectRelationByYearAndMonth(year, month);
         if (isEmpty(relations))
-            LOGGER.error("Sign-in bonus information at is not configured");
+            throw new RuntimeException("The reward information of the current month is not configured");
 
         List<Reward> rewards = rewardService.selectRewardByIds(relations.stream()
                 .map(SignRewardTodayRelation::getRewardId).collect(toList()));

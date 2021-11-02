@@ -60,9 +60,6 @@ public @interface SummerSpringBootApplication {
             "org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRestClientAutoConfiguration",
 
 
-            "org.apache.dubbo.spring.boot.autoconfigure.DubboAutoConfiguration",
-
-
             "org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration",
 
 

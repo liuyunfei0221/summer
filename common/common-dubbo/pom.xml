@@ -22,10 +22,11 @@
             <groupId>com.blue</groupId>
             <artifactId>common-base</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo</artifactId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
             <version>${spring-dubbo.version}</version>
         </dependency>
         <dependency>
