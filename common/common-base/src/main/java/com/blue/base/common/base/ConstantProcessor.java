@@ -13,14 +13,12 @@ import com.blue.base.constant.portal.BulletinType;
 import com.blue.base.constant.secure.DeviceType;
 import com.blue.base.constant.secure.LoginType;
 import com.blue.base.constant.secure.ResourceType;
-import com.blue.base.model.exps.BlueException;
 import org.springframework.http.MediaType;
 
 import java.util.Map;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_CONSTANT_IDENTITY;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -126,7 +124,7 @@ public final class ConstantProcessor {
             return;
 
         if (!RESOURCE_TYPE_MAPPING.containsKey(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resource type identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -140,7 +138,7 @@ public final class ConstantProcessor {
             return;
 
         if (isBlank(identity) || !MEDIA_TYPE_MAPPING.containsKey(identity.toLowerCase()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid media type identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -153,7 +151,7 @@ public final class ConstantProcessor {
             return;
 
         if (isBlank(identity) || !LOGIN_TYPE_MAPPING.containsKey(identity.toUpperCase()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid login type identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -166,7 +164,7 @@ public final class ConstantProcessor {
             return;
 
         if (isBlank(identity) || !DEVICE_TYPE_MAPPING.containsKey(identity.toUpperCase()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid device type identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -179,7 +177,7 @@ public final class ConstantProcessor {
             return;
 
         if (!GENDER_MAPPING.containsKey(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid gender type identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -192,7 +190,7 @@ public final class ConstantProcessor {
             return;
 
         if (!STATUS_MAPPING.containsKey(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid status type identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -205,7 +203,7 @@ public final class ConstantProcessor {
             return;
 
         if (isBlank(identity) || !SORT_TYPE_MAPPING.containsKey(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid sort type identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -218,7 +216,7 @@ public final class ConstantProcessor {
             return;
 
         if (!BULLETIN_TYPE_MAPPING.containsKey(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid bulletin type identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -231,7 +229,7 @@ public final class ConstantProcessor {
             return;
 
         if (isBlank(identity) || !STATISTICS_RANGE_MAPPING.containsKey(identity.toUpperCase()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid statistics range identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -244,7 +242,7 @@ public final class ConstantProcessor {
             return;
 
         if (isBlank(identity) || !STATISTICS_TYPE_MAPPING.containsKey(identity.toUpperCase()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid statistics type identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -257,7 +255,7 @@ public final class ConstantProcessor {
             return;
 
         if (!SUBJECT_TYPE_MAPPING.containsKey(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid subject type identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -270,7 +268,7 @@ public final class ConstantProcessor {
             return;
 
         if (!ARTICLE_TYPE_MAPPING.containsKey(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid article type identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
     //</editor-fold>
 
@@ -284,7 +282,7 @@ public final class ConstantProcessor {
      */
     public static ResponseElement getResponseElementByStatus(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         ResponseElement responseElement = RESPONSE_ELEMENT_MAPPING.get(identity);
         return responseElement != null ? responseElement : INTERNAL_SERVER_ERROR;
@@ -298,11 +296,11 @@ public final class ConstantProcessor {
      */
     public static ResourceType getResourceTypeByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         ResourceType resourceType = RESOURCE_TYPE_MAPPING.get(identity);
         if (resourceType == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resource type identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return resourceType;
     }
@@ -315,11 +313,11 @@ public final class ConstantProcessor {
      */
     public static MediaType getMediaTypeByIdentity(String identity) {
         if (isBlank(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         MediaType mediaType = MEDIA_TYPE_MAPPING.get(identity.toLowerCase());
         if (mediaType == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid media type identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return mediaType;
     }
@@ -332,11 +330,11 @@ public final class ConstantProcessor {
      */
     public static LoginType getLoginTypeByIdentity(String identity) {
         if (isBlank(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         LoginType loginType = LOGIN_TYPE_MAPPING.get(identity.toUpperCase());
         if (loginType == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid login type identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return loginType;
     }
@@ -349,11 +347,11 @@ public final class ConstantProcessor {
      */
     public static DeviceType getDeviceTypeByIdentity(String identity) {
         if (isBlank(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         DeviceType deviceType = DEVICE_TYPE_MAPPING.get(identity.toUpperCase());
         if (deviceType == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid device type identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return deviceType;
     }
@@ -366,11 +364,11 @@ public final class ConstantProcessor {
      */
     public static Gender getGenderTypeByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         Gender gender = GENDER_MAPPING.get(identity);
         if (gender == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid gender type identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return gender;
     }
@@ -383,11 +381,11 @@ public final class ConstantProcessor {
      */
     public static Status getStatusByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         Status status = STATUS_MAPPING.get(identity);
         if (status == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid status identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return status;
     }
@@ -400,11 +398,11 @@ public final class ConstantProcessor {
      */
     public static SortType getSortTypeByIdentity(String identity) {
         if (isBlank(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         SortType sortType = SORT_TYPE_MAPPING.get(identity);
         if (sortType == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid sort Type identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return sortType;
     }
@@ -417,11 +415,11 @@ public final class ConstantProcessor {
      */
     public static BulletinType getBulletinTypeByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         BulletinType type = BULLETIN_TYPE_MAPPING.get(identity);
         if (type == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid bulletin type identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return type;
     }
@@ -434,11 +432,11 @@ public final class ConstantProcessor {
      */
     public static StatisticsRange getStatisticsRangeByIdentity(String identity) {
         if (isBlank(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         StatisticsRange range = STATISTICS_RANGE_MAPPING.get(identity.toUpperCase());
         if (range == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid statistics range identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return range;
     }
@@ -451,11 +449,11 @@ public final class ConstantProcessor {
      */
     public static StatisticsType getStatisticsTypeByIdentity(String identity) {
         if (isBlank(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         StatisticsType type = STATISTICS_TYPE_MAPPING.get(identity.toUpperCase());
         if (type == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid statistics type identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return type;
     }
@@ -468,11 +466,11 @@ public final class ConstantProcessor {
      */
     public static SubjectType getSubjectTypeByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         SubjectType type = SUBJECT_TYPE_MAPPING.get(identity);
         if (type == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid subject type identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return type;
     }
@@ -485,11 +483,11 @@ public final class ConstantProcessor {
      */
     public static ArticleType getArticleTypeByIdentity(Integer identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_CONSTANT_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         ArticleType type = ARTICLE_TYPE_MAPPING.get(identity);
         if (type == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid article type identity");
+            throw INVALID_IDENTITY_EXP.exp;
 
         return type;
     }

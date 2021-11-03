@@ -3,7 +3,6 @@ package com.blue.portal.service.impl;
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.portal.BulletinType;
-import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.portal.api.model.BulletinInfo;
@@ -30,11 +29,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ConstantProcessor.getBulletinTypeByIdentity;
 import static com.blue.base.constant.base.CacheKey.PORTALS_PRE;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static com.blue.base.constant.base.SyncKey.PORTALS_REFRESH_PRE;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
@@ -101,15 +100,14 @@ public class PortalServiceImpl implements PortalService {
     private static Cache<BulletinType, List<BulletinInfo>> LOCAL_CACHE;
 
     private static final Function<String, BulletinType> TYPE_CONVERTER = typeStr -> {
-        if (isBlank(typeStr)) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "typeStr can't be blank");
-        }
+        if (isBlank(typeStr))
+            throw BAD_REQUEST_EXP.exp;
 
         int type;
         try {
             type = parseInt(typeStr);
         } catch (NumberFormatException e) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid bulletin type");
+            throw INVALID_IDENTITY_EXP.exp;
         }
 
         return getBulletinTypeByIdentity(type);
@@ -125,7 +123,7 @@ public class PortalServiceImpl implements PortalService {
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);
-        Stream.of(BulletinType.values())
+        of(BulletinType.values())
                 .forEach(this::getBulletinFromLocalCache);
     }
 
@@ -247,7 +245,6 @@ public class PortalServiceImpl implements PortalService {
     @Override
     public Mono<List<BulletinInfo>> selectBulletinInfo(String bulletinType) {
         LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
-
         List<BulletinInfo> vos = ofNullable(getBulletinFromLocalCache(TYPE_CONVERTER.apply(bulletinType))).orElse(emptyList());
         LOGGER.info("vos = {}", vos);
         return just(vos);

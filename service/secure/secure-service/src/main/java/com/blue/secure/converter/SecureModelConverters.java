@@ -1,7 +1,6 @@
 package com.blue.secure.converter;
 
 import com.blue.base.common.base.CommonFunctions;
-import com.blue.base.model.exps.BlueException;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.model.RoleInsertParam;
@@ -13,10 +12,11 @@ import java.util.function.Supplier;
 
 import static com.blue.base.common.base.Asserter.isBlank;
 import static com.blue.base.common.base.ConstantProcessor.getResourceTypeByIdentity;
+import static com.blue.base.constant.base.CommonException.EMPTY_PARAM_EXP;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
+import static com.blue.secure.constant.SecureCommonException.BLANK_DESC_EXP;
+import static com.blue.secure.constant.SecureCommonException.BLANK_NAME_EXP;
 
 /**
  * model converters in secure project
@@ -33,17 +33,17 @@ public final class SecureModelConverters {
      */
     public static final Function<RoleInsertParam, Role> ROLE_INSERT_PARAM_2_ROLE_CONVERTER = param -> {
         if (param == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "param can't be null");
+            throw EMPTY_PARAM_EXP.exp;
 
         Role role = new Role();
 
         String name = param.getName();
         if (isBlank(name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
+            throw BLANK_NAME_EXP.exp;
 
         String description = param.getDescription();
         if (isBlank(description))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
+            throw BLANK_DESC_EXP.exp;
 
         role.setName(name);
         role.setDescription(description);
@@ -61,7 +61,7 @@ public final class SecureModelConverters {
      */
     public static final Function<Role, RoleInfo> ROLE_2_ROLE_INFO_CONVERTER = role -> {
         if (role == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "role can't be null");
+            throw EMPTY_PARAM_EXP.exp;
 
         return new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getIsDefault());
     };
@@ -71,7 +71,7 @@ public final class SecureModelConverters {
      */
     public static final Function<Resource, ResourceInfo> RESOURCE_2_RESOURCE_INFO_CONVERTER = resource -> {
         if (resource == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "resource can't be null");
+            throw EMPTY_PARAM_EXP.exp;
 
         String module = resource.getModule().intern();
         String relativeUri = resource.getUri().intern();

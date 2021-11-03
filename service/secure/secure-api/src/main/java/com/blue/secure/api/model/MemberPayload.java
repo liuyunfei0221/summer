@@ -2,6 +2,8 @@ package com.blue.secure.api.model;
 
 import java.io.Serializable;
 
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+
 /**
  * member payload in jwt
  *
@@ -44,17 +46,17 @@ public final class MemberPayload implements Serializable {
 
     public MemberPayload(String gamma, String keyId, String id, String loginType, String deviceType, String loginTime) {
         if (gamma == null || "".equals(gamma))
-            throw new RuntimeException("gamma can't be blank");
+            throw BAD_REQUEST_EXP.exp;
         if (keyId == null || "".equals(keyId))
-            throw new RuntimeException("keyId can't be blank");
+            throw BAD_REQUEST_EXP.exp;
         if (id == null || "".equals(id))
-            throw new RuntimeException("id can't be blank");
+            throw BAD_REQUEST_EXP.exp;
         if (loginType == null || "".equals(loginType))
-            throw new RuntimeException("loginType can't be blank");
+            throw BAD_REQUEST_EXP.exp;
         if (deviceType == null || "".equals(deviceType))
-            throw new RuntimeException("deviceType can't be blank");
+            throw BAD_REQUEST_EXP.exp;
         if (loginTime == null || "".equals(loginTime))
-            throw new RuntimeException("loginTime can't be blank");
+            throw BAD_REQUEST_EXP.exp;
 
         this.gamma = gamma;
         this.keyId = keyId;

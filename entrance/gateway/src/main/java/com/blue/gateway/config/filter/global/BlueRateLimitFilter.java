@@ -2,7 +2,6 @@ package com.blue.gateway.config.filter.global;
 
 import com.blue.base.common.reactive.ReactiveCommonFunctions;
 import com.blue.base.constant.base.BlueDataAttrKey;
-import com.blue.base.model.exps.BlueException;
 import com.blue.gateway.common.GatewayCommonFactory;
 import com.blue.gateway.config.deploy.RateLimiterDeploy;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -23,7 +22,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.blue.base.constant.base.ResponseElement.TOO_MANY_REQUESTS;
+import static com.blue.base.constant.base.CommonException.TOO_MANY_REQUESTS_EXP;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_RATE_LIMIT;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.RATE_LIMITER;
@@ -97,7 +96,7 @@ public final class BlueRateLimitFilter implements GlobalFilter, Ordered {
                     if (a)
                         return chain.filter(exchange);
                     LOGGER.error("has been limited -> requestId = {}, limitKey = {}", requestId, limitKey);
-                    return error(new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, TOO_MANY_REQUESTS.message));
+                    return error(TOO_MANY_REQUESTS_EXP.exp);
                 });
     }
 

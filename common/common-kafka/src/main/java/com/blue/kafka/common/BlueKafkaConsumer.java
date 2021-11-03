@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -24,6 +23,7 @@ import static com.blue.kafka.utils.GsonFactory.getGson;
 import static java.lang.String.valueOf;
 import static java.lang.Thread.onSpinWait;
 import static java.time.Duration.ofMillis;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -102,7 +102,7 @@ public final class BlueKafkaConsumer<T extends Serializable> {
         Deserializer<String> stringDeserializer = new StringDeserializer();
 
         org.apache.kafka.clients.consumer.KafkaConsumer consumer = new org.apache.kafka.clients.consumer.KafkaConsumer(configs, stringDeserializer, stringDeserializer);
-        consumer.subscribe(Collections.singletonList(consumerConf.getTopic()));
+        consumer.subscribe(singletonList(consumerConf.getTopic()));
 
         return consumer;
     };
@@ -117,9 +117,7 @@ public final class BlueKafkaConsumer<T extends Serializable> {
         Consumer<ConsumerRecords<String, String>> recordsConsumer = generateRecordsConsumer(recordConsumer, kafkaConsumer, consumerConf.getTopic(), consumerConf.getEnableAutoCommit());
 
         this.task = new KafkaConsumerTask(kafkaConsumer, recordsConsumer, consumerConf.getPollDurationMills());
-
         Integer workingThreads = consumerConf.getWorkingThreads();
-
         workingThreadHolder = new ArrayList<>(workingThreads);
 
         Thread thread;

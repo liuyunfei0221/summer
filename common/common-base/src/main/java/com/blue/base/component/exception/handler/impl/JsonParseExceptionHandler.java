@@ -20,6 +20,8 @@ public final class JsonParseExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "com.fasterxml.jackson.core.JsonParseException";
 
+    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, "json data parsed failed"));
+
     @Override
     public String exceptionName() {
         return EXP_NAME;
@@ -28,6 +30,6 @@ public final class JsonParseExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("jsonParseExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, "json data parsed failed"));
+        return EXP_HANDLE_INFO;
     }
 }

@@ -22,7 +22,7 @@ public enum ResponseMessage {
     /**
      * EMPTY_PARAM
      */
-    EMPTY_PARAM("Empty request param"),
+    EMPTY_PARAM("Empty param"),
 
     /**
      * TOO_MANY_HEADERS
@@ -45,6 +45,11 @@ public enum ResponseMessage {
     TOO_LARGE_URI("Uri is too long"),
 
     /**
+     * INVALID_METADATA_PARAM
+     */
+    INVALID_METADATA_PARAM("metadata can't be null"),
+
+    /**
      * RSA_FAILED
      */
     RSA_FAILED("Encryption/decryption or signature/verification failed"),
@@ -63,11 +68,6 @@ public enum ResponseMessage {
      * DATA_NOT_EXIST
      */
     DATA_NOT_EXIST("Data not exist"),
-
-    /**
-     * INVALID_CONSTANT_IDENTITY
-     */
-    INVALID_CONSTANT_IDENTITY("Invalid or empty identity element"),
 
     /**
      * INVALID_ACCT_OR_PWD

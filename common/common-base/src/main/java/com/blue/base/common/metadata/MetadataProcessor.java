@@ -1,7 +1,6 @@
 package com.blue.base.common.metadata;
 
 import com.blue.base.common.base.CommonFunctions;
-import com.blue.base.model.exps.BlueException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -10,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.CommonException.INVALID_METADATA_PARAM_EXP;
 import static com.google.gson.reflect.TypeToken.getParameterized;
 
 /**
@@ -40,7 +39,7 @@ public final class MetadataProcessor {
         if (metadata != null)
             return GSON.toJson(metadata);
 
-        throw new RuntimeException("metadata can't be null");
+        throw INVALID_METADATA_PARAM_EXP.exp;
     }
 
     /**
@@ -54,7 +53,7 @@ public final class MetadataProcessor {
             try {
                 return GSON.fromJson(json, METADATA_TYPE);
             } catch (JsonSyntaxException e) {
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "metadata is invalid");
+                throw INVALID_METADATA_PARAM_EXP.exp;
             }
 
         return EMPTY_METADATA_SUP.get();

@@ -34,7 +34,7 @@ public class ResourceUpdateParam extends ResourceInsertParam {
     public String toString() {
         return "ResourceUpdateParam{" +
                 "id='" + id + '\'' +
-                "requestMethod='" + super.getRequestMethod() + '\'' +
+                ", requestMethod='" + super.getRequestMethod() + '\'' +
                 ", module='" + super.getModule() + '\'' +
                 ", uri='" + super.getUri() + '\'' +
                 ", authenticate=" + super.getAuthenticate() +

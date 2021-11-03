@@ -20,6 +20,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.CommonException.DATA_PARSED_EXP;
 import static com.google.zxing.BarcodeFormat.QR_CODE;
 import static com.google.zxing.DecodeHintType.PURE_BARCODE;
 import static com.google.zxing.EncodeHintType.ERROR_CORRECTION;
@@ -100,7 +102,7 @@ public final class QrCoder {
      */
     public static String parseCode(byte[] qrData) {
         if (qrData == null || qrData.length < 1)
-            throw new RuntimeException("qrData can't be empty");
+            throw BAD_REQUEST_EXP.exp;
 
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(qrData);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream)) {
@@ -111,9 +113,8 @@ public final class QrCoder {
             return result.getText();
         } catch (Exception e) {
             LOGGER.error("parseCode(byte[] qrData), e = {}", e);
-            throw new RuntimeException("parseCode(byte[] qrData), e = " + e);
+            throw DATA_PARSED_EXP.exp;
         }
-
     }
 
     /**
@@ -124,7 +125,7 @@ public final class QrCoder {
      */
     public byte[] generateCodeWithoutLogo(String content) {
         if (content == null || "".equals(content))
-            throw new RuntimeException("content can't be null or ''");
+            throw BAD_REQUEST_EXP.exp;
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
              BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream)) {
@@ -135,7 +136,7 @@ public final class QrCoder {
             return byteArrayOutputStream.toByteArray();
         } catch (Exception e) {
             LOGGER.error("generateCodeWithoutLogo(String content), e = {}", e);
-            throw new RuntimeException("generateCodeWithoutLogo(String content), e = " + e);
+            throw DATA_PARSED_EXP.exp;
         }
 
     }
@@ -149,10 +150,10 @@ public final class QrCoder {
      */
     public byte[] generateCodeWithLogo(String content, byte[] logoData) {
         if (content == null || "".equals(content))
-            throw new RuntimeException("content can't be null or ''");
+            throw BAD_REQUEST_EXP.exp;
 
         if (logoData == null || logoData.length < 1)
-            throw new RuntimeException("logoData can't be null");
+            throw BAD_REQUEST_EXP.exp;
 
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(logoData);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
@@ -184,7 +185,7 @@ public final class QrCoder {
             return byteArrayOutputStream.toByteArray();
         } catch (Exception e) {
             LOGGER.error("generateCodeWithLogo(String content, byte[] logoData), e = ", e);
-            throw new RuntimeException("generateCodeWithLogo(String content, byte[] logoData), e = " + e);
+            throw DATA_PARSED_EXP.exp;
         }
 
     }

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.toList;
@@ -89,7 +90,7 @@ public final class MathProcessor {
      */
     public static long getGreatestCommonDivisor(long a, long b) {
         if (a < 0L || b < 0L)
-            throw new UnsupportedOperationException();
+            throw BAD_REQUEST_EXP.exp;
 
         if (a == 0L || b == 0L)
             return 0L;

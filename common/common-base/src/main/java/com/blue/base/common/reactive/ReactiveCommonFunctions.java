@@ -13,7 +13,6 @@ import java.net.InetSocketAddress;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
 
@@ -40,17 +39,16 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * request identity getter func
      */
     public static final Function<ServerHttpRequest, String> REQUEST_IDENTITY_GETTER = request ->
-            RATE_LIMIT_KEY_PREFIX + of(request)
+            RATE_LIMIT_KEY_PREFIX + ofNullable(request)
                     .map(ServerHttpRequest::getHeaders)
                     .map(h -> h.getFirst(AUTHORIZATION))
                     .filter(StringUtils::hasText)
                     .map(String::hashCode)
                     .map(String::valueOf)
-                    .orElse(of(request)
+                    .orElse(ofNullable(request)
                             .map(ServerHttpRequest::getRemoteAddress)
                             .map(InetSocketAddress::getHostString)
                             .orElse(UNKNOWN)).hashCode();
-
 
     /**
      * package response result for reactive

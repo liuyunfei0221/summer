@@ -1,12 +1,9 @@
 package com.blue.base.model.base;
 
-import com.blue.base.constant.base.ResponseElement;
-import com.blue.base.model.exps.BlueException;
-
 import java.io.Serializable;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.BlueNumericalValue.*;
+import static com.blue.base.constant.base.CommonException.INVALID_PAGE_PARAM_EXP;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -18,8 +15,6 @@ import static java.util.Optional.ofNullable;
 public final class PageModelRequest<T> implements Serializable {
 
     private static final long serialVersionUID = -59225648928098772L;
-
-    private static final ResponseElement RESPONSE_ELEMENT = BAD_REQUEST;
 
     private static final long DEFAULT_PAGE = PAGE.value, DEFAULT_ROWS = ROWS.value;
     private static final long MAX_ROWS_PER_REQ = MAX_ROWS.value;
@@ -44,9 +39,9 @@ public final class PageModelRequest<T> implements Serializable {
 
     public PageModelRequest(Long page, Long rows, T param) {
         if (page == null || page < 1L)
-            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "page can't be less than 1");
+            throw INVALID_PAGE_PARAM_EXP.exp;
         if (rows == null || rows < 1L || rows > MAX_ROWS_PER_REQ)
-            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "max rows per page can't be greater than " + MAX_ROWS_PER_REQ);
+            throw INVALID_PAGE_PARAM_EXP.exp;
 
         this.page = page;
         this.rows = rows;
@@ -67,14 +62,14 @@ public final class PageModelRequest<T> implements Serializable {
 
     public void setPage(Long page) {
         if (page == null || page < 1L)
-            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "page can't be less than 1");
+            throw INVALID_PAGE_PARAM_EXP.exp;
 
         this.page = page;
     }
 
     public void setRows(Long rows) {
         if (rows == null || rows < 1L || rows > MAX_ROWS_PER_REQ)
-            throw new BlueException(RESPONSE_ELEMENT.status, RESPONSE_ELEMENT.code, "max rows per page can't be greater than " + MAX_ROWS_PER_REQ);
+            throw INVALID_PAGE_PARAM_EXP.exp;
 
         this.rows = rows;
     }

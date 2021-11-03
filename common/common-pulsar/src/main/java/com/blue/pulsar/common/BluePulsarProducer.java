@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import static com.blue.pulsar.constant.CommonException.*;
 import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateClient;
 import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateProducer;
 import static java.lang.System.currentTimeMillis;
@@ -56,10 +57,10 @@ public final class BluePulsarProducer<T extends Serializable> {
                 return pulsarProducer.send(data);
             } catch (PulsarClientException e) {
                 LOGGER.error("send failed, data = {}, e = {}", data, e);
-                throw new RuntimeException("producer send failed, cause e = {}", e);
+                throw SEND_FAILED_EXP.exp;
             }
 
-        throw new RuntimeException("data can't be null");
+        throw NON_PARAM_EXP.exp;
     }
 
     /**
@@ -72,7 +73,7 @@ public final class BluePulsarProducer<T extends Serializable> {
         if (data != null)
             return pulsarProducer.sendAsync(data);
 
-        throw new RuntimeException("data can't be null");
+        throw NON_PARAM_EXP.exp;
     }
 
     /**
@@ -90,10 +91,10 @@ public final class BluePulsarProducer<T extends Serializable> {
                 return pulsarProducer.newMessage().value(data).deliverAfter(delay, unit).send();
             } catch (PulsarClientException e) {
                 LOGGER.error("send failed, data = {}, delay = {}, unit = {} , e = {}", data, delay, unit, e);
-                throw new RuntimeException("producer sendDeliverAfter failed, cause e = {}", e);
+                throw SEND_FAILED_EXP.exp;
             }
 
-        throw new RuntimeException("data or unit can't be null, delay can't be null or less than 1");
+        throw NON_PARAM_EXP.exp;
     }
 
     /**
@@ -109,7 +110,7 @@ public final class BluePulsarProducer<T extends Serializable> {
         if (data != null && delay != null && delay > 0L && unit != null)
             return pulsarProducer.newMessage().value(data).deliverAfter(delay, unit).sendAsync();
 
-        throw new RuntimeException("data or unit can't be null, delay can't be null or less than 1");
+        throw NON_PARAM_EXP.exp;
     }
 
     /**
@@ -126,10 +127,10 @@ public final class BluePulsarProducer<T extends Serializable> {
                 return pulsarProducer.newMessage().value(data).deliverAt(timestamp).send();
             } catch (PulsarClientException e) {
                 LOGGER.error("send failed, data = {}, timestamp = {}, e = {}", data, timestamp, e);
-                throw new RuntimeException("producer sendDeliverAt failed, cause e = {}", e);
+                throw SEND_FAILED_EXP.exp;
             }
 
-        throw new RuntimeException("data can't be null, timestamp can't be null or less than currentTimeMillis()");
+        throw NON_PARAM_EXP.exp;
     }
 
     /**
@@ -144,7 +145,7 @@ public final class BluePulsarProducer<T extends Serializable> {
         if (data != null && timestamp != null && timestamp > currentTimeMillis())
             return pulsarProducer.newMessage().value(data).deliverAt(timestamp).sendAsync();
 
-        throw new RuntimeException("data can't be null, timestamp can't be null or less than currentTimeMillis()");
+        throw NON_PARAM_EXP.exp;
     }
 
 
@@ -202,7 +203,7 @@ public final class BluePulsarProducer<T extends Serializable> {
             LOGGER.warn("producer shutdown ...");
         } catch (PulsarClientException e) {
             LOGGER.error("producer shutdown failed, cause e = {0}", e);
-            throw new RuntimeException("producer shutdown failed, cause e = {}", e);
+            throw new RuntimeException("producer shutdown failed, cause e = " + e);
         }
     }
 
@@ -217,7 +218,7 @@ public final class BluePulsarProducer<T extends Serializable> {
                 )
                 .exceptionally(e -> {
                     LOGGER.error("producer shutdownAsync failed, cause e = {0}", e);
-                    return null;
+                    throw new RuntimeException("producer shutdownAsync failed, cause e = " + e);
                 });
     }
 

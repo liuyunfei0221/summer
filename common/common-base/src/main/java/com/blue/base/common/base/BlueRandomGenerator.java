@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static com.blue.base.constant.base.RandomType.*;
 
 /**
@@ -40,11 +42,11 @@ public final class BlueRandomGenerator {
      */
     public static String generateRandom(RandomType type, int length) {
         if (type == null || length < 1)
-            throw new RuntimeException("type can't be null, length can't be less than 1");
+            throw BAD_REQUEST_EXP.exp;
 
         Function<Integer, String> generator = GENERATOR_MAPPING.get(type);
         if (generator == null)
-            throw new RuntimeException("invalid type" + type);
+            throw INVALID_IDENTITY_EXP.exp;
 
         return generator.apply(length);
     }

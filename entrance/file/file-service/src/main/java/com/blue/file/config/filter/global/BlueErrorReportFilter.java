@@ -3,7 +3,6 @@ package com.blue.file.config.filter.global;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.model.base.DataEvent;
-import com.blue.base.model.exps.BlueException;
 import com.blue.file.common.FluxCommonFactory;
 import com.blue.file.common.request.body.RequestBodyGetter;
 import com.blue.file.component.RequestEventReporter;
@@ -28,8 +27,8 @@ import java.util.function.*;
 
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
+import static com.blue.base.constant.base.CommonException.UNSUPPORTED_MEDIA_TYPE_EXP;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
-import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
 import static com.blue.file.common.FluxCommonFactory.extractValuesToBind;
 import static com.blue.file.config.filter.BlueFilterOrder.BLUE_ERROR_REPORT;
 import static java.lang.String.valueOf;
@@ -89,7 +88,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
         RequestBodyGetter processor = REQUEST_BODY_GETTER_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, HttpHeaders.CONTENT_TYPE));
 
         if (processor == null)
-            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message);
+            throw UNSUPPORTED_MEDIA_TYPE_EXP.exp;
 
         return processor;
     };

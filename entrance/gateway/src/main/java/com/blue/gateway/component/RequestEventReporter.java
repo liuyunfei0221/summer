@@ -40,7 +40,7 @@ public final class RequestEventReporter {
             executorService.submit(() ->
                     requestEventProducer.send(event));
         } catch (Exception e) {
-            LOGGER.error("MESSAGE_SENDER send failed, event = {},e = {}", event, e);
+            LOGGER.error("MESSAGE_SENDER send failed, event = {}, e = {}", event, e);
         }
     };
 

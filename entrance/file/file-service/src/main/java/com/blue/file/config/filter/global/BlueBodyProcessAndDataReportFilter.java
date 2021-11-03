@@ -4,7 +4,6 @@ import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.common.content.common.RequestBodyProcessor;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.model.base.DataEvent;
-import com.blue.base.model.exps.BlueException;
 import com.blue.file.common.FluxCommonFactory;
 import com.blue.file.common.request.body.ReportWithRequestBodyProcessor;
 import com.blue.file.component.RequestEventReporter;
@@ -46,8 +45,8 @@ import java.util.function.Supplier;
 import static com.blue.base.common.base.CommonFunctions.decryptRequestBody;
 import static com.blue.base.common.base.CommonFunctions.encryptResponseBody;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
+import static com.blue.base.constant.base.CommonException.UNSUPPORTED_MEDIA_TYPE_EXP;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
-import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
 import static com.blue.file.common.FluxCommonFactory.extractValuesToBind;
 import static com.blue.file.config.filter.BlueFilterOrder.BLUE_BODY_PROCESS_AND_DATA_REPORT;
 import static java.lang.String.valueOf;
@@ -219,7 +218,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         ReportWithRequestBodyProcessor processor = REQUEST_BODY_PROCESSOR_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE));
 
         if (processor == null)
-            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message);
+            throw UNSUPPORTED_MEDIA_TYPE_EXP.exp;
 
         return processor;
     };

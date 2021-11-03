@@ -9,8 +9,8 @@ import com.blue.member.api.model.MemberInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.model.MemberCondition;
-import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
 import com.blue.member.remote.consumer.RpcControlServiceConsumer;
+import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.repository.mapper.MemberBasicMapper;
 import com.blue.member.service.inter.MemberBasicService;
@@ -33,8 +33,9 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.Asserter.*;
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.ResponseMessage.*;
+import static com.blue.base.constant.base.CommonException.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.member.constant.MemberCommonException.ACCOUNT_HAS_BEEN_FROZEN_EXP;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static java.util.Collections.emptyList;
@@ -119,9 +120,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<Optional<MemberBasic>> selectMemberBasicMonoByPhone(String phone) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone), phone = {}", phone);
-        if (isBlank(phone))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
-        return just(ofNullable(memberBasicMapper.selectByPhone(phone)));
+        if (isNotBlank(phone))
+            return just(ofNullable(memberBasicMapper.selectByPhone(phone)));
+        throw BAD_REQUEST_EXP.exp;
     }
 
     /**
@@ -133,9 +134,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<Optional<MemberBasic>> selectMemberBasicMonoByEmail(String email) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email), email = {}", email);
-        if (isBlank(email))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank''");
-        return just(ofNullable(memberBasicMapper.selectByEmail(email)));
+        if (isNotBlank(email))
+            return just(ofNullable(memberBasicMapper.selectByEmail(email)));
+        throw BAD_REQUEST_EXP.exp;
     }
 
     /**
@@ -147,9 +148,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<Optional<MemberBasic>> selectMemberBasicMonoByPrimaryKey(Long id) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
-        return just(ofNullable(memberBasicMapper.selectByPrimaryKey(id)));
+        if (isValidIdentity(id))
+            return just(ofNullable(memberBasicMapper.selectByPrimaryKey(id)));
+        throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -161,23 +162,23 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<MemberInfo> selectMemberInfoMonoByPrimaryKeyWithAssert(Long id) {
         LOGGER.info("Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        if (isValidIdentity(id))
+            return just(id)
+                    .flatMap(this::selectMemberBasicMonoByPrimaryKey)
+                    .flatMap(mbOpt ->
+                            mbOpt.map(Mono::just)
+                                    .orElseGet(() ->
+                                            error(UNAUTHORIZED_EXP.exp))
+                    ).flatMap(mb -> {
+                        if (isInvalidStatus(mb.getStatus()))
+                            return error(ACCOUNT_HAS_BEEN_FROZEN_EXP.exp);
+                        LOGGER.info("mb = {}", mb);
+                        return just(mb);
+                    }).flatMap(mb ->
+                            just(MEMBER_BASIC_2_MEMBER_INFO.apply(mb))
+                    );
 
-        return just(id)
-                .flatMap(this::selectMemberBasicMonoByPrimaryKey)
-                .flatMap(mbOpt ->
-                        mbOpt.map(Mono::just)
-                                .orElseGet(() ->
-                                        error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message)))
-                ).flatMap(mb -> {
-                    if (isInvalidStatus(mb.getStatus()))
-                        return error(new BlueException(FORBIDDEN.status, FORBIDDEN.code, ACCOUNT_HAS_BEEN_FROZEN.message));
-                    LOGGER.info("mb = {}", mb);
-                    return just(mb);
-                }).flatMap(mb ->
-                        just(MEMBER_BASIC_2_MEMBER_INFO.apply(mb))
-                );
+        throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -196,7 +197,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     public MemberInfo insertMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("void insert(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
         if (isNull(memberRegistryParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw EMPTY_PARAM_EXP.exp;
 
         MEMBER_EXIST_VALIDATOR.accept(memberRegistryParam);
 
@@ -217,7 +218,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         /*if (1 == 1) {
             throw new BlueException(500, 500, "test rollback");
         }*/
-
         return MEMBER_BASIC_2_MEMBER_INFO.apply(memberBasic);
     }
 
@@ -230,7 +230,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids), ids = {}", ids);
-
         return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(memberBasicMapper::selectByIds)
                 .flatMap(List::stream)

@@ -22,6 +22,8 @@ public class AuthenticationExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "com.blue.jwt.exception.AuthenticationException";
 
+    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(UNAUTHORIZED.status, new BlueResponse<>(UNAUTHORIZED.code, null, UNAUTHORIZED.message));
+
     @Override
     public String exceptionName() {
         return EXP_NAME;
@@ -30,7 +32,7 @@ public class AuthenticationExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("authenticationExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(UNAUTHORIZED.status, new BlueResponse<>(UNAUTHORIZED.code, null, UNAUTHORIZED.message));
+        return EXP_HANDLE_INFO;
     }
 
 }

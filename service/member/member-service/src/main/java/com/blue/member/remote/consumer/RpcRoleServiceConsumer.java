@@ -1,6 +1,5 @@
 package com.blue.member.remote.consumer;
 
-import com.blue.base.model.exps.BlueException;
 import com.blue.secure.api.inter.RpcRoleService;
 import com.blue.secure.api.model.MemberRoleRelationInfo;
 import com.blue.secure.api.model.RoleInfo;
@@ -12,8 +11,6 @@ import reactor.util.Logger;
 
 import java.util.List;
 
-import static com.blue.base.common.base.Asserter.isInvalidIdentities;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.util.Loggers.getLogger;
 
@@ -25,7 +22,7 @@ import static reactor.util.Loggers.getLogger;
  * @apiNote
  */
 
-@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "unused"})
 @Component
 public class RpcRoleServiceConsumer {
 
@@ -47,8 +44,6 @@ public class RpcRoleServiceConsumer {
      */
     public Mono<RoleInfo> selectRoleInfoByMemberId(Long memberId) {
         LOGGER.info("RoleInfo getRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
-        if (memberId == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberId can't be null");
         return fromFuture(rpcRoleService.selectRoleInfoByMemberId(memberId));
     }
 
@@ -60,9 +55,6 @@ public class RpcRoleServiceConsumer {
      */
     public Mono<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
         LOGGER.info("List<MemberRoleRelationInfo> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
-        if (isInvalidIdentities(memberIds))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberIds can't be empty");
-
         return fromFuture(rpcRoleService.selectRoleInfoByMemberIds(memberIds));
     }
 

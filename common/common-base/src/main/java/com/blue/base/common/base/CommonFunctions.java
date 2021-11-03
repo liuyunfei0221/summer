@@ -9,7 +9,6 @@ import com.blue.base.constant.base.ValidResourceFormatters;
 import com.blue.base.model.base.DataWrapper;
 import com.blue.base.model.base.EncryptedRequest;
 import com.blue.base.model.base.EncryptedResponse;
-import com.blue.base.model.exps.BlueException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.http.HttpHeaders;
@@ -22,10 +21,7 @@ import java.util.Set;
 import java.util.function.*;
 
 import static com.blue.base.common.base.RsaProcessor.*;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_REQUEST_METHOD;
-import static com.blue.base.constant.base.ResponseMessage.RSA_FAILED;
+import static com.blue.base.constant.base.CommonException.*;
 import static com.blue.base.constant.base.Symbol.PAIR_SEPARATOR;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Instant.now;
@@ -204,7 +200,7 @@ public class CommonFunctions {
         if (VALID_SCHEMAS.contains(schema))
             return;
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);
+        throw INVALID_REQUEST_METHOD_EXP.exp;
     };
 
     /**
@@ -214,7 +210,7 @@ public class CommonFunctions {
         if (VALID_METHODS.contains(method.toUpperCase()))
             return;
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);
+        throw INVALID_REQUEST_METHOD_EXP.exp;
     };
 
     /**
@@ -245,7 +241,7 @@ public class CommonFunctions {
         if (TIME_STAMP_GETTER.get() - ofNullable(dataWrapper.getTimeStamp()).orElse(0L) <= expire)
             return ofNullable(dataWrapper.getOriginal()).orElse("");
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+        throw CRYPT_FAILED_EXP.exp;
     };
 
     /**
@@ -258,16 +254,16 @@ public class CommonFunctions {
      */
     public static String decryptRequestBody(String requestBody, String secKey, long expire) {
         if (requestBody == null || "".equals(requestBody))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestBody can't be blank");
+            throw BAD_REQUEST_EXP.exp;
 
         if (secKey == null || "".equals(secKey))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "secKey can't be blank");
+            throw BAD_REQUEST_EXP.exp;
 
         EncryptedRequest encryptedRequest = GSON.fromJson(requestBody, EncryptedRequest.class);
         String encrypted = encryptedRequest.getEncrypted();
 
         if (!verify(encrypted, encryptedRequest.getSignature(), secKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+            throw CRYPT_FAILED_EXP.exp;
 
         return DATA_CONVERTER.apply(GSON.fromJson(decryptByPublicKey(encrypted, secKey), DataWrapper.class), expire);
     }
@@ -281,10 +277,10 @@ public class CommonFunctions {
      */
     public static String encryptResponseBody(String responseBody, String secKey) {
         if (responseBody == null || "".equals(responseBody))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "responseBody can't be blank");
+            throw  BAD_REQUEST_EXP.exp;
 
         if (secKey == null || "".equals(secKey))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "secKey can't be blank");
+            throw  BAD_REQUEST_EXP.exp;
 
         return GSON.toJson(new EncryptedResponse(encryptByPublicKey(GSON.toJson(new DataWrapper(responseBody, TIME_STAMP_GETTER.get())), secKey)));
     }

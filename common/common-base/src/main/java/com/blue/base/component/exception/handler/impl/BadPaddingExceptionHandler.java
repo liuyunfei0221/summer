@@ -20,6 +20,8 @@ public final class BadPaddingExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "javax.crypto.BadPaddingException";
 
+    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, "encrypt or decrypt failed"));
+
     @Override
     public String exceptionName() {
         return EXP_NAME;
@@ -28,7 +30,7 @@ public final class BadPaddingExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("ExceptionHandleInfo handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, "encrypt or decrypt failed"));
+        return EXP_HANDLE_INFO;
     }
 
 }

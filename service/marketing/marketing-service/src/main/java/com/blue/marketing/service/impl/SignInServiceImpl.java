@@ -5,7 +5,6 @@ import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.base.CacheKey;
 import com.blue.base.constant.base.Symbol;
 import com.blue.base.model.base.KeyExpireParam;
-import com.blue.base.model.exps.BlueException;
 import com.blue.marketing.api.model.*;
 import com.blue.marketing.config.deploy.BlockingDeploy;
 import com.blue.marketing.event.producer.MarketingEventProducer;
@@ -35,10 +34,10 @@ import java.util.function.Supplier;
 
 import static com.blue.base.common.base.Asserter.isEmpty;
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.CommonException.INTERNAL_SERVER_ERROR_EXP;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
+import static com.blue.marketing.constant.MarketingCommonException.REPEAT_SIGN_IN_EXP;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.nio.ByteBuffer.wrap;
@@ -143,7 +142,7 @@ public class SignInServiceImpl implements SignInService {
             long start = currentTimeMillis();
             while (rewardInfoRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "waiting reward info refresh timeout");
+                    throw INTERNAL_SERVER_ERROR_EXP.exp;
                 onSpinWait();
             }
         }
@@ -243,7 +242,7 @@ public class SignInServiceImpl implements SignInService {
     public Mono<SignInReward> insertSignIn(Long memberId) {
         LOGGER.info("insertSignIn(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         LocalDate now = LocalDate.now();
         int year = now.getYear();
@@ -257,12 +256,12 @@ public class SignInServiceImpl implements SignInService {
         return BITMAP_BIT_GETTER.apply(key, (long) dayOfMonth)
                 .flatMap(b -> {
                     if (b)
-                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "Please do not sign in again"));
+                        return error(REPEAT_SIGN_IN_EXP.exp);
 
                     return BITMAP_TRUE_BIT_SETTER.apply(key, (long) dayOfMonth)
                             .flatMap(f -> {
                                 if (f)
-                                    return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "Please do not sign in again"));
+                                    return error(REPEAT_SIGN_IN_EXP.exp);
 
                                 try {
                                     signExpireProducer.send(new KeyExpireParam(key, (long) (MAX_EXPIRE_DAYS_FOR_SIGN - dayOfMonth), EXPIRE_UNIT));

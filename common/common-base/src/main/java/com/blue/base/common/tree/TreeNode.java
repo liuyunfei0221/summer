@@ -3,6 +3,9 @@ package com.blue.base.common.tree;
 import java.io.Serializable;
 import java.util.List;
 
+import static com.blue.base.constant.base.CommonException.EMPTY_PARAM_EXP;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+
 /**
  * tree node
  *
@@ -36,12 +39,12 @@ public final class TreeNode<T> implements Serializable {
 
     private static void checkIdentity(Long identity) {
         if (identity == null)
-            throw new IllegalArgumentException("illegal identity");
+            throw INVALID_IDENTITY_EXP.exp;
     }
 
     private static <T> void checkData(T data) {
         if (data == null)
-            throw new IllegalArgumentException("illegal data");
+            throw EMPTY_PARAM_EXP.exp;
     }
 
     public TreeNode() {

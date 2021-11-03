@@ -4,6 +4,8 @@ import com.blue.base.model.base.Access;
 
 import java.io.Serializable;
 
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+
 /**
  * auth assert result
  *
@@ -64,7 +66,7 @@ public final class AuthAsserted implements Serializable {
 
     public AuthAsserted(boolean certificate, boolean requestUnDecryption, boolean responseUnEncryption, boolean existenceRequestBody, boolean existenceResponseBody, String secKey, Access access, String message) {
         if (secKey == null || access == null)
-            throw new RuntimeException("secKey or accessInfo can't be null");
+            throw BAD_REQUEST_EXP.exp;
 
         this.certificate = certificate;
         this.requestUnDecryption = requestUnDecryption;

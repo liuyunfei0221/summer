@@ -14,7 +14,6 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static org.springframework.core.io.buffer.DataBufferUtils.release;
 import static org.springframework.web.reactive.function.server.HandlerStrategies.withDefaults;
 import static reactor.core.publisher.Mono.empty;
@@ -49,10 +48,10 @@ public final class GatewayCommonFactory extends ReactiveCommonFunctions {
                 });
 
         LOGGER.info("throwable = {}", throwable);
-        if (throwable instanceof RuntimeException)
-            throw (RuntimeException) throwable;
+        if (throwable instanceof BlueException)
+            throw (BlueException) throwable;
 
-        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+        throw (RuntimeException) throwable;
     };
 
     /**

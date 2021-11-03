@@ -181,7 +181,7 @@ public final class BlueTransPulsarConsumer<T extends Serializable> {
                 )
                 .exceptionally(e -> {
                     LOGGER.error("consumer shutdownAsync failed, cause e = {0}", e);
-                    return null;
+                    throw new RuntimeException("consumer shutdownAsync failed, cause e = " + e);
                 });
     }
 

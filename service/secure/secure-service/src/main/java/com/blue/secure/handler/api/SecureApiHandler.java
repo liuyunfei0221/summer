@@ -1,7 +1,6 @@
 package com.blue.secure.handler.api;
 
 import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.exps.BlueException;
 import com.blue.secure.api.model.ClientLoginParam;
 import com.blue.secure.service.inter.SecureService;
 import org.springframework.stereotype.Component;
@@ -13,9 +12,8 @@ import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessRea
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.SECRET;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.CommonException.EMPTY_PARAM_EXP;
 import static com.blue.base.constant.base.ResponseElement.OK;
-import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseMessage.GENERIC_SUCCESS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -44,8 +42,7 @@ public final class SecureApiHandler {
      */
     public Mono<ServerResponse> loginByClient(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(ClientLoginParam.class)
-                .switchIfEmpty(
-                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
+                .switchIfEmpty(error(EMPTY_PARAM_EXP.exp))
                 .flatMap(secureService::loginByClient)
                 .flatMap(ma ->
                         ok().contentType(APPLICATION_JSON)

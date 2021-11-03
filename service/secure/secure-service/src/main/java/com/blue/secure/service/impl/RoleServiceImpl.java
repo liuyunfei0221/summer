@@ -3,13 +3,13 @@ package com.blue.secure.service.impl;
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
-import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.config.deploy.BlockingDeploy;
 import com.blue.secure.constant.RoleSortAttribute;
 import com.blue.secure.model.RoleCondition;
 import com.blue.secure.model.RoleInsertParam;
+import com.blue.secure.model.RoleUpdateParam;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.mapper.RoleMapper;
 import com.blue.secure.service.inter.RoleService;
@@ -34,13 +34,12 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.Asserter.*;
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.base.CommonException.*;
 import static com.blue.base.constant.base.Default.DEFAULT;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.base.SyncKey.DEFAULT_ROLE_UPDATE_KEY;
+import static com.blue.secure.constant.SecureCommonException.*;
+import static com.blue.secure.converter.SecureCompareAlterationWithPackageProcessor.ROLE_UPDATE_PARAM_AND_ROLE_COMPARER;
 import static com.blue.secure.converter.SecureModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
 import static com.blue.secure.converter.SecureModelConverters.ROLE_INSERT_PARAM_2_ROLE_CONVERTER;
 import static java.lang.System.currentTimeMillis;
@@ -123,9 +122,9 @@ public class RoleServiceImpl implements RoleService {
     private Role getDefaultRoleFromDb() {
         List<Role> defaultRoles = roleMapper.selectDefault();
         if (isEmpty(defaultRoles))
-            throw new RuntimeException("defaultRoles can't be empty");
+            throw INTERNAL_SERVER_ERROR_EXP.exp;
         if (defaultRoles.size() > 1)
-            throw new RuntimeException("defaultRoles can't be more than 1");
+            throw INTERNAL_SERVER_ERROR_EXP.exp;
 
         Role defaultRole = defaultRoles.get(0);
         this.defaultRole = defaultRole;
@@ -194,7 +193,7 @@ public class RoleServiceImpl implements RoleService {
      */
     private final Consumer<RoleInsertParam> ROLE_EXIST_VALIDATOR = rip -> {
         if (isNotNull(roleMapper.selectByName(rip.getName())))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists");
+            throw ROLE_NAME_ALREADY_EXIST_EXP.exp;
     };
 
 
@@ -211,12 +210,11 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
-        LOGGER.info("void insertRole(RoleInsertParam roleInsertParam), roleInsertParam = {}", roleInsertParam);
-        if (isNull(roleInsertParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
-        if (isInvalidIdentity(operatorId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "operatorId is invalid");
+        LOGGER.info("RoleInfo insertRole(RoleInsertParam roleInsertParam), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
+        if (isNull(roleInsertParam) || isInvalidIdentity(operatorId))
+            throw EMPTY_PARAM_EXP.exp;
 
         ROLE_EXIST_VALIDATOR.accept(roleInsertParam);
 
@@ -230,6 +228,35 @@ public class RoleServiceImpl implements RoleService {
         roleMapper.insert(role);
 
         return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
+    }
+
+    /**
+     * update a exist role
+     *
+     * @param roleUpdateParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    public RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId) {
+        LOGGER.info("RoleInfo updateRole(RoleInsertParam roleInsertParam), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
+        if (isNull(roleUpdateParam) || isInvalidIdentity(operatorId))
+            throw EMPTY_PARAM_EXP.exp;
+
+        Long id = roleUpdateParam.getId();
+        if (isInvalidIdentity(id))
+            throw BAD_REQUEST_EXP.exp;
+
+        return getRoleById(id)
+                .filter(role -> ROLE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(roleUpdateParam, role))
+                .map(role -> {
+                    role.setUpdateTime(TIME_STAMP_GETTER.get());
+                    role.setUpdater(operatorId);
+                    roleMapper.updateByPrimaryKey(role);
+
+                    return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
+                }).orElseThrow(() -> DATA_WITHOUT_ALTERATION_EXP.exp);
     }
 
     /**
@@ -257,7 +284,7 @@ public class RoleServiceImpl implements RoleService {
         LOGGER.info("defaultRole = {}", defaultRole);
         if (isNull(defaultRole)) {
             LOGGER.error("Role getDefaultRole(), default role not exist");
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+            throw INTERNAL_SERVER_ERROR_EXP.exp;
         }
 
         return defaultRole;
@@ -274,7 +301,7 @@ public class RoleServiceImpl implements RoleService {
     public void updateDefaultRole(Long id, Long operatorId) {
         LOGGER.info("void updateDefaultRole(Long id), id = {}", id);
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         RLock lock = redissonClient.getLock(DEFAULT_ROLE_UPDATE_KEY.key);
         lock.lock();
@@ -284,7 +311,7 @@ public class RoleServiceImpl implements RoleService {
             Role defaultRole = getDefaultRoleFromDb();
 
             if (role.getId().equals(defaultRole.getId()))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is already default");
+                throw ROLE_NAME_ALREADY_DEFAULT_EXP.exp;
 
             Long stamp = TIME_STAMP_GETTER.get();
 
@@ -319,10 +346,25 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
+    public Optional<Role> getRoleById(Long id) {
+        LOGGER.info("Optional<Role> getRoleById(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw INVALID_IDENTITY_EXP.exp;
+
+        return ofNullable(roleMapper.selectByPrimaryKey(id));
+    }
+
+    /**
+     * get role mono by role id
+     *
+     * @param id
+     * @return
+     */
+    @Override
     public Mono<Optional<Role>> getRoleMonoById(Long id) {
         LOGGER.info("Mono<Optional<Role>> getRoleMonoById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         return just(ofNullable(roleMapper.selectByPrimaryKey(id)));
     }

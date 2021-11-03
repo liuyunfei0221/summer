@@ -1,6 +1,7 @@
 package com.blue.base.common.base;
 
 import com.blue.base.constant.base.Status;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -41,7 +42,7 @@ public final class Asserter {
      * @return
      */
     public static boolean isBlank(String s) {
-        return s == null || "".equals(s);
+        return StringUtils.isBlank(s);
     }
 
     /**
@@ -49,7 +50,7 @@ public final class Asserter {
      * @return
      */
     public static boolean isNotBlank(String s) {
-        return s != null && !"".equals(s);
+        return !isBlank(s);
     }
 
     /**

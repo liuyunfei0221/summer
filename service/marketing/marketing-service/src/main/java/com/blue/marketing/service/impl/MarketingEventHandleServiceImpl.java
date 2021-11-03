@@ -1,8 +1,7 @@
 package com.blue.marketing.service.impl;
 
-import com.blue.base.constant.marketing.MarketingEventType;
 import com.blue.base.constant.marketing.HandleStatus;
-import com.blue.base.model.exps.BlueException;
+import com.blue.base.constant.marketing.MarketingEventType;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.marketing.api.model.EventHandleResult;
 import com.blue.marketing.api.model.MarketingEvent;
@@ -20,7 +19,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -66,18 +66,18 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
     private final Consumer<MarketingEvent> eventHandler = marketingEvent -> {
         MarketingEventType marketingEventType = marketingEvent.getEventType();
         if (marketingEventType == null)
-            throw new RuntimeException("eventType can't be null");
+            throw INVALID_IDENTITY_EXP.exp;
 
         EventHandler eventHandler = marketingEventHandlers.get(marketingEventType);
         if (eventHandler == null)
-            throw new RuntimeException("eventHandler of eventType " + marketingEventType + " doesn't exist");
+            throw BAD_REQUEST_EXP.exp;
 
         eventHandler.handleEvent(marketingEvent);
     };
 
     private static final Function<MarketingEvent, Event> EVENT_ENTITY_GEN = marketingEvent -> {
         if (marketingEvent == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "marketingEvent can't be null");
+            throw INVALID_IDENTITY_EXP.exp;
 
         Event event = new Event();
 

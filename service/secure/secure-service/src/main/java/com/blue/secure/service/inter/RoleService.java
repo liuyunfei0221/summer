@@ -5,6 +5,7 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.model.RoleCondition;
 import com.blue.secure.model.RoleInsertParam;
+import com.blue.secure.model.RoleUpdateParam;
 import com.blue.secure.repository.entity.Role;
 import reactor.core.publisher.Mono;
 
@@ -27,6 +28,15 @@ public interface RoleService {
      * @return
      */
     RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId);
+
+    /**
+     * update a exist role
+     *
+     * @param roleUpdateParam
+     * @param operatorId
+     * @return
+     */
+    RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId);
 
     /**
      * refresh default role
@@ -52,6 +62,14 @@ public interface RoleService {
 
     /**
      * get role by role id
+     *
+     * @param id
+     * @return
+     */
+    Optional<Role> getRoleById(Long id);
+
+    /**
+     * get role mono by role id
      *
      * @param id
      * @return

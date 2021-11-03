@@ -20,6 +20,8 @@ public final class ServerWebInputExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "org.springframework.web.server.ServerWebInputException";
 
+    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, "input data parsed failed"));
+
     @Override
     public String exceptionName() {
         return EXP_NAME;
@@ -28,7 +30,7 @@ public final class ServerWebInputExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("serverWebInputExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, "input data parsed failed"));
+        return EXP_HANDLE_INFO;
     }
 
 }

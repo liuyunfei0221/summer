@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
+import static com.blue.base.constant.base.CommonException.EMPTY_PARAM_EXP;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -25,7 +26,7 @@ public final class MemberModelConverters {
 
     public static final Function<MemberRegistryParam, MemberBasic> MEMBER_REGISTRY_INFO_2_MEMBER_BASIC = memberRegistryParam -> {
         if (memberRegistryParam == null)
-            throw new RuntimeException("memberRegistryInfo can't be null");
+            throw EMPTY_PARAM_EXP.exp;
 
         String phone = memberRegistryParam.getPhone();
         if (isBlank(phone))
@@ -56,7 +57,7 @@ public final class MemberModelConverters {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
         Integer gender = memberRegistryParam.getGender();
-        assertGenderIdentity(gender,false);
+        assertGenderIdentity(gender, false);
 
         String icon = memberRegistryParam.getIcon();
 

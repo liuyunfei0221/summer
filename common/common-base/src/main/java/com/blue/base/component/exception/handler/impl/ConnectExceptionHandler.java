@@ -20,6 +20,8 @@ public final class ConnectExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "java.net.ConnectException";
 
+    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(REQUEST_TIMEOUT.status, new BlueResponse<>(REQUEST_TIMEOUT.code, null, REQUEST_TIMEOUT.message));
+
     @Override
     public String exceptionName() {
         return EXP_NAME;
@@ -28,6 +30,6 @@ public final class ConnectExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("connectExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(REQUEST_TIMEOUT.status, new BlueResponse<>(REQUEST_TIMEOUT.code, null, REQUEST_TIMEOUT.message));
+        return EXP_HANDLE_INFO;
     }
 }

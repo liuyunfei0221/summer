@@ -2,7 +2,6 @@ package com.blue.file.service.impl;
 
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
-import com.blue.base.model.exps.BlueException;
 import com.blue.file.api.model.AttachmentInfo;
 import com.blue.file.repository.entity.Attachment;
 import com.blue.file.repository.mapper.AttachmentMapper;
@@ -15,8 +14,7 @@ import java.util.List;
 
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.common.base.Asserter.isNull;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.*;
+import static com.blue.base.constant.base.CommonException.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -79,11 +77,11 @@ public class AttachmentServiceImpl implements AttachmentService {
         LOGGER.info("getAttachment(Long id), id = {}", id);
 
         if (id == null || id < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         Attachment attachment = attachmentMapper.selectByPrimaryKey(id);
         if (attachment == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, FILE_NOT_EXIST.message);
+            throw DATA_NOT_EXIST_EXP.exp;
 
         LOGGER.info("attachment = {}", attachment);
         return just(attachment);
@@ -101,9 +99,9 @@ public class AttachmentServiceImpl implements AttachmentService {
         LOGGER.info("listAttachment(PageModelParam<Void> pageModelParam, Long memberId), pageModelDTO = {},memberId = {}", pageModelRequest, memberId);
 
         if (isNull(pageModelRequest))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw EMPTY_PARAM_EXP.exp;
         if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         return just(ofNullable(attachmentMapper.countByMemberId(memberId)).orElse(0L))
                 .flatMap(count -> {

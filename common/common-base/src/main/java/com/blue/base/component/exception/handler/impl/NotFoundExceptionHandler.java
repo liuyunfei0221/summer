@@ -20,6 +20,8 @@ public final class NotFoundExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "org.springframework.cloud.gateway.support.NotFoundException";
 
+    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(NOT_FOUND.status, new BlueResponse<>(NOT_FOUND.code, null, NOT_FOUND.message));
+
     @Override
     public String exceptionName() {
         return EXP_NAME;
@@ -28,6 +30,6 @@ public final class NotFoundExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("notFoundExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(NOT_FOUND.status, new BlueResponse<>(NOT_FOUND.code, null, NOT_FOUND.message));
+        return EXP_HANDLE_INFO;
     }
 }

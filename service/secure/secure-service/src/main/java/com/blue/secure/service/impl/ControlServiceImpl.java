@@ -2,10 +2,10 @@ package com.blue.secure.service.impl;
 
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.base.Access;
-import com.blue.base.model.exps.BlueException;
 import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.event.producer.SystemAuthorityInfosRefreshProducer;
 import com.blue.secure.model.RoleInsertParam;
+import com.blue.secure.model.RoleUpdateParam;
 import com.blue.secure.repository.entity.MemberRoleRelation;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.service.inter.*;
@@ -14,8 +14,8 @@ import reactor.util.Logger;
 
 import java.util.function.Supplier;
 
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.CommonException.DATA_NOT_EXIST_EXP;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
 import static reactor.util.Loggers.getLogger;
 
@@ -103,11 +103,11 @@ public class ControlServiceImpl implements ControlService {
     public void insertDefaultMemberRoleRelation(Long memberId) {
         LOGGER.info("void insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
         if (memberId == null || memberId < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INVALID_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         Role role = roleService.getDefaultRole();
         if (role == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "default role not found");
+            throw DATA_NOT_EXIST_EXP.exp;
 
         MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
         long epochSecond = TIME_STAMP_GETTER.get();
@@ -135,4 +135,18 @@ public class ControlServiceImpl implements ControlService {
         return roleInfo;
     }
 
+    /**
+     * update a exist role
+     *
+     * @param roleUpdateParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId) {
+        LOGGER.info("RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
+        RoleInfo roleInfo = roleService.updateRole(roleUpdateParam, operatorId);
+        systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
+        return roleInfo;
+    }
 }

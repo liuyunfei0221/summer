@@ -2,11 +2,10 @@ package com.blue.base.common.auth;
 
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.base.Access;
-import com.blue.base.model.exps.BlueException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
+import static com.blue.base.constant.base.CommonException.UNAUTHORIZED_EXP;
 
 /**
  * auth object and auth str converter
@@ -29,7 +28,7 @@ public final class AuthProcessor {
         if (access != null)
             return GSON.toJson(access);
 
-        throw new RuntimeException("access can't be null");
+        throw UNAUTHORIZED_EXP.exp;
     }
 
     /**
@@ -43,10 +42,10 @@ public final class AuthProcessor {
             try {
                 return GSON.fromJson(json, Access.class);
             } catch (JsonSyntaxException e) {
-                throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
+                throw UNAUTHORIZED_EXP.exp;
             }
 
-        throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
+        throw UNAUTHORIZED_EXP.exp;
     }
 
 }

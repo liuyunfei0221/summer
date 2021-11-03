@@ -1,6 +1,5 @@
 package com.blue.business.service.impl;
 
-import com.blue.base.model.exps.BlueException;
 import com.blue.business.repository.entity.Link;
 import com.blue.business.repository.mapper.LinkMapper;
 import com.blue.business.service.inter.LinkService;
@@ -11,9 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
+import static com.blue.base.common.base.Asserter.isValidIdentity;
 import static com.blue.base.common.base.ConstantProcessor.assertSubjectType;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -43,11 +42,11 @@ public class LinkServiceImpl implements LinkService {
      */
     @Override
     public Optional<Link> getByPrimaryKey(Long id) {
-        if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
-
         LOGGER.info("id = {}", id);
-        return ofNullable(linkMapper.selectByPrimaryKey(id));
+        if (isValidIdentity(id))
+            return ofNullable(linkMapper.selectByPrimaryKey(id));
+
+        throw INVALID_IDENTITY_EXP.exp;
     }
 
     /**
@@ -70,12 +69,11 @@ public class LinkServiceImpl implements LinkService {
      */
     @Override
     public List<Link> selectBySubIdAndSubType(Long subId, Integer subType) {
+        LOGGER.info("subId = {},subType = {}", subId, subType);
         if (isInvalidIdentity(subId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         assertSubjectType(subType, false);
-        LOGGER.info("subId = {},subType = {}", subId, subType);
-
         return linkMapper.selectBySubIdAndSubType(subId, subType);
     }
 

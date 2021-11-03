@@ -23,8 +23,8 @@ import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.CommonException.INTERNAL_SERVER_ERROR_EXP;
+import static com.blue.base.constant.base.CommonException.PAYLOAD_TOO_LARGE_EXP;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
 import static java.lang.System.currentTimeMillis;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -141,7 +141,7 @@ public final class LocalDiskFileUploader implements FileUploader {
             Runnable resourceCloser = () -> {
                 try {
                     bufferedOutputStream.close();
-                    bufferedOutputStream.close();
+                    descOutputStream.close();
                 } catch (IOException e) {
                     LOGGER.error("resources release failed, e = {}", e);
                 }
@@ -163,10 +163,10 @@ public final class LocalDiskFileUploader implements FileUploader {
                                 bufferedOutputStream.write(array);
                             } catch (IOException e) {
                                 LOGGER.error("upload failed, e -> " + e);
-                                error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "upload failed"));
+                                error(INTERNAL_SERVER_ERROR_EXP.exp);
                             }
                         } else {
-                            error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "file size can't greater than " + monitor.getMonitored()));
+                            error(PAYLOAD_TOO_LARGE_EXP.exp);
                         }
                         array = null;
                     }).collectList()

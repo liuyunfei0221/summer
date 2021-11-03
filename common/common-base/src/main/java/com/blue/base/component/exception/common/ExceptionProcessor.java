@@ -2,7 +2,6 @@ package com.blue.base.component.exception.common;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.constant.base.ResponseElement;
 import com.blue.base.model.base.BlueResponse;
 import reactor.util.Logger;
 
@@ -33,7 +32,8 @@ public final class ExceptionProcessor {
 
     private static final Map<String, ExceptionHandler> MAPPING = generatorMapping(DIR_NAME);
 
-    private static final ResponseElement INTERNAL_SERVER_ERROR_RES = INTERNAL_SERVER_ERROR;
+    private static final ExceptionHandleInfo UNKNOWN_EXP_HANDLE_INFO = new ExceptionHandleInfo(INTERNAL_SERVER_ERROR.status,
+            new BlueResponse<>(INTERNAL_SERVER_ERROR.code, null, INTERNAL_SERVER_ERROR.message));
 
     /**
      * init mapping
@@ -85,8 +85,7 @@ public final class ExceptionProcessor {
             }
 
         LOGGER.error("handle(Throwable throwable), unknown exception, t = {}", t);
-        return new ExceptionHandleInfo(INTERNAL_SERVER_ERROR_RES.status,
-                new BlueResponse<>(INTERNAL_SERVER_ERROR_RES.code, null, INTERNAL_SERVER_ERROR_RES.message));
+        return UNKNOWN_EXP_HANDLE_INFO;
     }
 
 }

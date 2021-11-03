@@ -20,6 +20,8 @@ public final class CallNotPermittedExceptionHandler implements ExceptionHandler 
 
     private static final String EXP_NAME = "io.github.resilience4j.circuitbreaker.CallNotPermittedException";
 
+    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(INTERNAL_SERVER_ERROR.status, new BlueResponse<>(INTERNAL_SERVER_ERROR.code, null, INTERNAL_SERVER_ERROR.message));
+
     @Override
     public String exceptionName() {
         return EXP_NAME;
@@ -28,7 +30,7 @@ public final class CallNotPermittedExceptionHandler implements ExceptionHandler 
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("callNotPermittedExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(INTERNAL_SERVER_ERROR.status, new BlueResponse<>(INTERNAL_SERVER_ERROR.code, null, INTERNAL_SERVER_ERROR.message));
+        return EXP_HANDLE_INFO;
     }
 
 }

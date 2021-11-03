@@ -2,7 +2,6 @@ package com.blue.data.common.marker;
 
 import com.blue.base.constant.data.StatisticsRange;
 import com.blue.base.constant.data.StatisticsType;
-import com.blue.base.model.exps.BlueException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
@@ -16,10 +15,11 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.common.base.Asserter.isNotBlank;
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
@@ -54,7 +54,7 @@ public final class StatisticsMarker {
 
     private static final BiConsumer<StatisticsType, StatisticsRange> PARAMS_ASSERTER = (type, range) -> {
         if (type == null || range == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null, range can't be null");
+            throw INVALID_IDENTITY_EXP.exp;
     };
 
     private static final BiFunction<StatisticsType, StatisticsRange, String> HOLDER_KEY_GENERATOR = (type, range) ->
@@ -108,11 +108,11 @@ public final class StatisticsMarker {
         LOGGER.info("mark(StatisticsType statisticsType, StatisticsRange statisticsRange, String value), statisticsType = {}, statisticsRange = {}, value = {}",
                 statisticsType, statisticsRange, value);
 
-        if (isBlank(value))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "value can't be blank");
+        if (isNotBlank(value))
+            return stringRedisTemplate.opsForHyperLogLog()
+                    .add(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange), value) > 0L;
 
-        return stringRedisTemplate.opsForHyperLogLog()
-                .add(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange), value) > 0L;
+        throw BAD_REQUEST_EXP.exp;
     }
 
     /**
@@ -124,7 +124,6 @@ public final class StatisticsMarker {
      */
     public long count(StatisticsType statisticsType, StatisticsRange statisticsRange) {
         LOGGER.info("count(StatisticsType statisticsType, StatisticsRange statisticsRange), statisticsType = {}, statisticsRange = {}", statisticsType, statisticsRange);
-
         return stringRedisTemplate.opsForHyperLogLog().size(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange));
     }
 

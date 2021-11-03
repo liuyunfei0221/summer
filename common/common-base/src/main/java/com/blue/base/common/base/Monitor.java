@@ -3,6 +3,9 @@ package com.blue.base.common.base;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.CommonException.EMPTY_PARAM_EXP;
+
 /**
  * monitor for value
  *
@@ -27,12 +30,8 @@ public final class Monitor<T> {
     private final Predicate<T> predicate;
 
     public Monitor(T monitored, BinaryOperator<T> combiner, Predicate<T> predicate) {
-        if (monitored == null)
-            throw new RuntimeException("monitored can't be null");
-        if (combiner == null)
-            throw new RuntimeException("combiner can't be null");
-        if (predicate == null)
-            throw new RuntimeException("predicate can't be null");
+        if (monitored == null || combiner == null || predicate == null)
+            throw BAD_REQUEST_EXP.exp;
 
         this.monitored = monitored;
         this.combiner = combiner;
@@ -56,7 +55,7 @@ public final class Monitor<T> {
      */
     public boolean operateWithAssert(T data) {
         if (data == null)
-            throw new RuntimeException("data can't be null");
+            throw EMPTY_PARAM_EXP.exp;
 
         synchronized (this) {
             monitored = combiner.apply(monitored, data);

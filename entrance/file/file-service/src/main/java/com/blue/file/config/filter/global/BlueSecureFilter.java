@@ -1,6 +1,5 @@
 package com.blue.file.config.filter.global;
 
-import com.blue.base.model.exps.BlueException;
 import com.blue.file.common.FluxCommonFactory;
 import com.blue.file.remote.consumer.RpcSecureServiceConsumer;
 import com.blue.secure.api.model.AssertAuth;
@@ -22,7 +21,7 @@ import java.util.function.BiFunction;
 import static com.blue.base.common.auth.AuthProcessor.accessToJson;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
+import static com.blue.base.constant.base.CommonException.UNAUTHORIZED_EXP;
 import static com.blue.base.constant.base.SpecialAccess.VISITOR;
 import static com.blue.file.config.filter.BlueFilterOrder.BLUE_SECURE;
 import static java.util.Optional.ofNullable;
@@ -52,7 +51,7 @@ public final class BlueSecureFilter implements WebFilter, Ordered {
 
     private static void authProcess(AuthAsserted authAsserted, ServerHttpRequest request, Map<String, Object> exchangeAttributes) {
         if (authAsserted == null || exchangeAttributes == null)
-            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
+            throw UNAUTHORIZED_EXP.exp;
 
         String accStr = accessToJson(ofNullable(authAsserted.getAccessInfo()).orElse(VISITOR.access));
         if (authAsserted.getCertificate())

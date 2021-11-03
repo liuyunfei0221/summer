@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import static com.blue.pulsar.constant.CommonException.NON_PARAM_EXP;
 import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateProducer;
 import static java.lang.System.currentTimeMillis;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -60,10 +61,10 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
                 return pulsarProducer.newMessage(transaction).value(data).send();
             } catch (PulsarClientException e) {
                 LOGGER.error("producer sendWithTrans failed, data = {}, transaction = {}, e = {}", data, transaction, e);
-                throw new RuntimeException("producer sendWithTrans failed, cause e = {}", e);
+                throw new RuntimeException("producer sendWithTrans failed, cause e = " + e);
             }
 
-        throw new RuntimeException("data or transaction can't be null");
+        throw NON_PARAM_EXP.exp;
     }
 
     /**
@@ -79,7 +80,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
             return pulsarProducer.newMessage(transaction)
                     .value(data).sendAsync();
 
-        throw new RuntimeException("data or transaction can't be null");
+        throw NON_PARAM_EXP.exp;
     }
 
     /**
@@ -101,7 +102,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
                 throw new RuntimeException("producer sendWithTransDeliverAfter failed, cause e = {}", e);
             }
 
-        throw new RuntimeException("data or transaction or unit can't be null, delay can't be null or less than 1");
+        throw NON_PARAM_EXP.exp;
     }
 
     /**
@@ -118,7 +119,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
         if (data != null && transaction != null && delay != null && delay > 0L && unit != null)
             return pulsarProducer.newMessage(transaction).value(data).deliverAfter(delay, unit).sendAsync();
 
-        throw new RuntimeException("data or transaction or unit can't be null, delay can't be null or less than 1");
+        throw NON_PARAM_EXP.exp;
     }
 
     /**
@@ -139,7 +140,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
                 throw new RuntimeException("producer sendWithTransDeliverAt failed, cause e = {}", e);
             }
 
-        throw new RuntimeException("data or transaction can't be null, timestamp can't be null or less than currentTimeMillis()");
+        throw NON_PARAM_EXP.exp;
     }
 
     /**
@@ -155,7 +156,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
         if (data != null && transaction != null && timestamp != null && timestamp > currentTimeMillis())
             return pulsarProducer.newMessage(transaction).value(data).deliverAt(timestamp).sendAsync();
 
-        throw new RuntimeException("data or transaction can't be null, timestamp can't be null or less than currentTimeMillis()");
+        throw NON_PARAM_EXP.exp;
     }
 
 
@@ -228,7 +229,7 @@ public final class BlueTransPulsarProducer<T extends Serializable> {
                 )
                 .exceptionally(e -> {
                     LOGGER.error("producer shutdownAsync failed, cause e = {0}", e);
-                    return null;
+                    throw new RuntimeException("producer shutdownAsync failed, cause e = " + e);
                 });
     }
 

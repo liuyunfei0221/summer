@@ -1,7 +1,6 @@
 package com.blue.secure.component.auth;
 
 import com.blue.base.model.base.KeyExpireParam;
-import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.secure.event.producer.AuthExpireProducer;
@@ -17,14 +16,14 @@ import java.util.concurrent.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
+import static com.blue.base.common.base.Asserter.isNotBlank;
+import static com.blue.base.constant.base.CommonException.UNAUTHORIZED_EXP;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.springframework.util.StringUtils.hasText;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.justOrEmpty;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -140,11 +139,10 @@ public final class AuthInfoCache {
      * @return
      */
     public Mono<String> getAuthInfo(String keyId) {
-        if (keyId == null || "".equals(keyId))
-            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
-
-        return justOrEmpty(cache.getIfPresent(keyId))
-                .switchIfEmpty(REDIS_AUTH_GETTER.apply(keyId));
+        return isNotBlank(keyId) ?
+                justOrEmpty(cache.getIfPresent(keyId)).switchIfEmpty(REDIS_AUTH_GETTER.apply(keyId))
+                :
+                error(UNAUTHORIZED_EXP.exp);
     }
 
     /**
@@ -155,7 +153,6 @@ public final class AuthInfoCache {
      */
     public Mono<Boolean> setAuthInfo(String keyId, String authInfo) {
         LOGGER.info("setAuthInfo(), keyId = {},authInfo = {}", keyId, authInfo);
-
         return reactiveStringRedisTemplate.opsForValue()
                 .set(keyId, authInfo, globalExpireDuration)
                 .onErrorResume(throwable -> {
@@ -186,7 +183,7 @@ public final class AuthInfoCache {
     public Mono<Boolean> invalidLocalAuthInfo(String keyId) {
         LOGGER.info("invalidLocalAuthInfo(), keyId = {}", keyId);
         try {
-            if (keyId != null && !"".equals(keyId))
+            if (isNotBlank(keyId))
                 cache.invalidate(keyId);
             return just(true);
         } catch (Exception e) {

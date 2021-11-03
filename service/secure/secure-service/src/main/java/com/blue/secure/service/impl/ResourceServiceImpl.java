@@ -2,7 +2,6 @@ package com.blue.secure.service.impl;
 
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
-import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.constant.RoleSortAttribute;
@@ -29,8 +28,7 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.Asserter.*;
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static com.blue.secure.converter.SecureModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -97,7 +95,6 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     public void insertResource(ResourceInsertParam resourceInsertParam) {
-
         RLock resourceInsertLock = redissonClient.getLock(RESOURCE_INSERT_SYNC_KEY);
 
         try {
@@ -126,7 +123,7 @@ public class ResourceServiceImpl implements ResourceService {
     public Mono<Optional<Resource>> getResourceMonoById(Long id) {
         LOGGER.info("Mono<Optional<Resource>> getResourceMonoById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         return just(ofNullable(resourceMapper.selectByPrimaryKey(id)));
     }

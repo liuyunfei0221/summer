@@ -2,6 +2,8 @@ package com.blue.secure.model;
 
 import java.io.Serializable;
 
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+
 /**
  * member auth with sec key used for wechat mini pro
  *
@@ -24,9 +26,9 @@ public final class MemberAuth implements Serializable {
 
     public MemberAuth(String auth, String secKey) {
         if (auth == null || "".equals(auth))
-            throw new RuntimeException("auth can't be blank");
+            throw BAD_REQUEST_EXP.exp;
         if (secKey == null || "".equals(secKey))
-            throw new RuntimeException("secKey can't be blank");
+            throw BAD_REQUEST_EXP.exp;
 
         this.auth = auth;
         this.secKey = secKey;

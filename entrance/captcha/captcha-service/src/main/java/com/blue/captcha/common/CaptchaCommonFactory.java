@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static io.netty.buffer.ByteBufAllocator.DEFAULT;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.core.io.buffer.DataBufferUtils.release;
@@ -57,12 +56,11 @@ public final class CaptchaCommonFactory extends ReactiveCommonFunctions {
                 }).doFinally(signalType ->
                         error(throwable));
 
-        LOGGER.info("throwable = {0}", throwable.getCause());
+        LOGGER.info("throwable = {}", throwable);
+        if (throwable instanceof BlueException)
+            throw (BlueException) throwable;
 
-        if (throwable instanceof RuntimeException)
-            throw (RuntimeException) throwable;
-
-        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+        throw (RuntimeException) throwable;
     };
 
     /**

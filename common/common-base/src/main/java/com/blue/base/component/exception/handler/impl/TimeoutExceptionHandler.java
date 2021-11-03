@@ -20,6 +20,8 @@ public final class TimeoutExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "org.springframework.cloud.gateway.support.TimeoutException";
 
+    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(GATEWAY_TIMEOUT.status, new BlueResponse<>(GATEWAY_TIMEOUT.code, null, GATEWAY_TIMEOUT.message));
+
     @Override
     public String exceptionName() {
         return EXP_NAME;
@@ -28,6 +30,6 @@ public final class TimeoutExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("timeoutExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(GATEWAY_TIMEOUT.status, new BlueResponse<>(GATEWAY_TIMEOUT.code, null, GATEWAY_TIMEOUT.message));
+        return EXP_HANDLE_INFO;
     }
 }

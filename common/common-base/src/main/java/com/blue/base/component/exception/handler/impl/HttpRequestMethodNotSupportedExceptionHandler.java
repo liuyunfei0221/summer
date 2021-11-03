@@ -20,6 +20,8 @@ public final class HttpRequestMethodNotSupportedExceptionHandler implements Exce
 
     private static final String EXP_NAME = "org.springframework.web.HttpRequestMethodNotSupportedException";
 
+    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(NOT_FOUND.status, new BlueResponse<>(NOT_FOUND.code, null, NOT_FOUND.message));
+
     @Override
     public String exceptionName() {
         return EXP_NAME;
@@ -31,6 +33,6 @@ public final class HttpRequestMethodNotSupportedExceptionHandler implements Exce
         //In the project, the resource operation is defined according to the request method + resource path,
         // and no separate request method verification is provided, because the authentication verification cannot be passed at all,
         // and only a 404 will be return.
-        return new ExceptionHandleInfo(NOT_FOUND.status, new BlueResponse<>(NOT_FOUND.code, null, NOT_FOUND.message));
+        return EXP_HANDLE_INFO;
     }
 }

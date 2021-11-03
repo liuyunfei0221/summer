@@ -1,7 +1,6 @@
 package com.blue.finance.service.impl;
 
 import com.blue.base.constant.base.Status;
-import com.blue.base.model.exps.BlueException;
 import com.blue.finance.repository.entity.FinanceAccount;
 import com.blue.finance.repository.mapper.FinanceAccountMapper;
 import com.blue.finance.service.inter.FinanceAccountService;
@@ -19,8 +18,7 @@ import java.util.Optional;
 
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.common.base.Asserter.isValidIdentity;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -63,6 +61,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
         //if (1 == 1) {
         //    throw new BlueException(500, 999, "test rollback");
         //}
+
         //test runtime exp
         //if (1 == 1) {
         //    throw new RuntimeException("test rollback");
@@ -82,7 +81,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
     public void insertInitFinanceAccount(Long memberId) {
         LOGGER.info("insertInitFinanceAccount(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId)) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
         }
 
         long epochSecond = Instant.now().getEpochSecond();
@@ -115,7 +114,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
         LOGGER.info("getFinanceAccountByMemberId(Long memberId), memberId = {}", memberId);
 
         if (isValidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         return ofNullable(financeAccountMapper.getByMemberId(memberId));
     }

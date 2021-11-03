@@ -2,7 +2,6 @@ package com.blue.base.service.impl;
 
 import com.blue.base.constant.base.Status;
 import com.blue.base.constant.portal.BulletinType;
-import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Bulletin;
 import com.blue.base.repository.mapper.BulletinMapper;
 import com.blue.base.service.inter.BulletinService;
@@ -13,8 +12,8 @@ import reactor.util.Loggers;
 import java.util.List;
 
 import static com.blue.base.common.base.Asserter.isNull;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.BlueNumericalValue.ROWS;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 
 /**
  * bulletin service
@@ -44,7 +43,7 @@ public class BulletinServiceImpl implements BulletinService {
     public List<Bulletin> selectBulletin(BulletinType bulletinType) {
         LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
         if (isNull(bulletinType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "bulletinType can't be null");
+            throw INVALID_IDENTITY_EXP.exp;
 
         List<Bulletin> bulletins = bulletinMapper.selectBulletin(bulletinType.identity, Status.VALID.status, ROWS.value);
         LOGGER.info("bulletins = {}", bulletins);

@@ -10,6 +10,8 @@ import java.security.Key;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+import static com.blue.base.constant.base.CommonException.CRYPT_FAILED_EXP;
+import static com.blue.base.constant.base.CommonException.EMPTY_PARAM_EXP;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getDecoder;
 import static java.util.Base64.getEncoder;
@@ -70,13 +72,13 @@ public final class AesProcessor {
      */
     public String encrypt(String originalData) {
         if (isBlank(originalData))
-            throw new RuntimeException("originalData can't be blank");
+            throw EMPTY_PARAM_EXP.exp;
 
         try {
             return ENCODER.encodeToString(ENCRYPT.doFinal(originalData.getBytes(UTF_8)));
         } catch (Exception e) {
             LOGGER.error("String encrypt(String originalData) failed, e = {}", e);
-            throw new RuntimeException("String encrypt(String originalData) failed, e = " + e);
+            throw CRYPT_FAILED_EXP.exp;
         }
     }
 
@@ -88,13 +90,13 @@ public final class AesProcessor {
      */
     public String decrypt(String encryptData) {
         if (isBlank(encryptData))
-            throw new RuntimeException("encryptData can't be blank");
+            throw EMPTY_PARAM_EXP.exp;
 
         try {
             return new String(DECRYPT.doFinal(DECODER.decode(encryptData.getBytes(UTF_8))), UTF_8);
         } catch (Exception e) {
             LOGGER.error("String decrypt(String encryptData) failed, e = {}", e);
-            throw new RuntimeException("String decrypt(String encryptData) failed, e = " + e);
+            throw CRYPT_FAILED_EXP.exp;
         }
     }
 
@@ -107,13 +109,13 @@ public final class AesProcessor {
      */
     public byte[] encrypt(byte[] originalData) {
         if (originalData == null)
-            throw new RuntimeException("encryptData bytes can't be null");
+            throw EMPTY_PARAM_EXP.exp;
 
         try {
             return ENCRYPT.doFinal(originalData);
         } catch (Exception e) {
             LOGGER.error("byte[] encrypt(byte[] originalData) failed, e = {}", e);
-            throw new RuntimeException("byte[] encrypt(byte[] originalData) failed, e = " + e);
+            throw CRYPT_FAILED_EXP.exp;
         }
     }
 
@@ -125,13 +127,13 @@ public final class AesProcessor {
      */
     public byte[] decrypt(byte[] encryptData) {
         if (encryptData == null)
-            throw new RuntimeException("encryptData bytes can't be null");
+            throw EMPTY_PARAM_EXP.exp;
 
         try {
             return DECRYPT.doFinal(encryptData);
         } catch (Exception e) {
             LOGGER.error("byte[] decrypt(byte[] encryptData) failed, e = {}", e);
-            throw new RuntimeException("byte[] decrypt(byte[] encryptData) failed, e = " + e);
+            throw CRYPT_FAILED_EXP.exp;
         }
     }
 

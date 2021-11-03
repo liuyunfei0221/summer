@@ -3,6 +3,10 @@ package com.blue.base.model.base;
 import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
 
+import static com.blue.base.common.base.Asserter.isBlank;
+import static com.blue.base.common.base.Asserter.isInvalidIdentity;
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+
 /**
  * redis key expire info
  *
@@ -32,12 +36,12 @@ public final class KeyExpireParam implements Serializable {
     }
 
     public KeyExpireParam(String key, Long expire, ChronoUnit unit) {
-        if (key == null || "".equals(key))
-            throw new RuntimeException("key can't be blank");
-        if (expire == null || expire < 1L)
-            throw new RuntimeException("expire can't be null or less than 1");
+        if (isBlank(key))
+            throw BAD_REQUEST_EXP.exp;
+        if (isInvalidIdentity(expire))
+            throw BAD_REQUEST_EXP.exp;
         if (unit == null)
-            throw new RuntimeException("unit can't be null");
+            throw BAD_REQUEST_EXP.exp;
 
         this.key = key;
         this.expire = expire;
@@ -49,8 +53,8 @@ public final class KeyExpireParam implements Serializable {
     }
 
     public void setKey(String key) {
-        if (key == null || "".equals(key))
-            throw new RuntimeException("key can't be blank");
+        if (isBlank(key))
+            throw BAD_REQUEST_EXP.exp;
         this.key = key;
     }
 
@@ -59,8 +63,8 @@ public final class KeyExpireParam implements Serializable {
     }
 
     public void setExpire(Long expire) {
-        if (expire == null || expire < 1L)
-            throw new RuntimeException("expire can't be null or less than 1");
+        if (isInvalidIdentity(expire))
+            throw BAD_REQUEST_EXP.exp;
         this.expire = expire;
     }
 
@@ -70,7 +74,7 @@ public final class KeyExpireParam implements Serializable {
 
     public void setUnit(ChronoUnit unit) {
         if (unit == null)
-            throw new RuntimeException("unit can't be null");
+            throw BAD_REQUEST_EXP.exp;
         this.unit = unit;
     }
 

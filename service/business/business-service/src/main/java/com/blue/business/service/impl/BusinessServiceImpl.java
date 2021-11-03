@@ -1,7 +1,6 @@
 package com.blue.business.service.impl;
 
 import com.blue.base.common.base.ConstantProcessor;
-import com.blue.base.model.exps.BlueException;
 import com.blue.business.api.model.ArticleInfo;
 import com.blue.business.api.model.LinkInfo;
 import com.blue.business.api.model.ReadingInfo;
@@ -23,9 +22,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.CommonException.DATA_NOT_EXIST_EXP;
+import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.business.SubjectType.ARTICLE;
 import static com.blue.business.converter.BusinessModelConverters.ARTICLE_INSERT_PARAM_2_ARTICLE;
@@ -76,7 +74,7 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     public Mono<ArticleInfo> getArticle(Long id) {
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw INVALID_IDENTITY_EXP.exp;
 
         //TODO es
         CompletableFuture<Optional<Article>> articleOptCf = CompletableFuture
@@ -93,7 +91,7 @@ public class BusinessServiceImpl implements BusinessService {
                                 articleOpt
                                         .map(Mono::just)
                                         .orElseGet(() ->
-                                                error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
+                                                error(DATA_NOT_EXIST_EXP.exp))
                         )
                         .flatMap(article ->
                                 {

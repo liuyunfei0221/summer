@@ -1,6 +1,5 @@
 package com.blue.business.converter;
 
-import com.blue.base.model.exps.BlueException;
 import com.blue.business.model.ArticleInsertParam;
 import com.blue.business.model.LinkInsertParam;
 import com.blue.business.repository.entity.Article;
@@ -10,7 +9,7 @@ import java.time.Instant;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.ConstantProcessor.assertArticleType;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
 import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Optional.ofNullable;
 
@@ -25,14 +24,14 @@ public final class BusinessModelConverters {
     public static final Function<ArticleInsertParam, Article> ARTICLE_INSERT_PARAM_2_ARTICLE = articleInsertParam -> {
         String title = articleInsertParam.getTitle();
         if (title == null || "".equals(title))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "title can't be blank");
+            throw BAD_REQUEST_EXP.exp;
 
         Integer type = articleInsertParam.getType();
         assertArticleType(type, false);
 
         String content = articleInsertParam.getContent();
         if (content == null || "".equals(content))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "content can't be blank");
+            throw BAD_REQUEST_EXP.exp;
 
         long epochSecond = Instant.now().getEpochSecond();
 
@@ -57,7 +56,7 @@ public final class BusinessModelConverters {
 
         String linkUrl = linkInsertParam.getLinkUrl();
         if (linkUrl == null || "".equals(linkUrl))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "linkUrl can't be blank");
+            throw BAD_REQUEST_EXP.exp;
 
         long epochSecond = Instant.now().getEpochSecond();
         Link link = new Link();

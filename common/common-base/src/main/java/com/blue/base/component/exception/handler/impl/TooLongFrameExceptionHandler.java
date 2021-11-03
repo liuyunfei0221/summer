@@ -20,6 +20,8 @@ public final class TooLongFrameExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "io.netty.handler.codec.TooLongFrameException";
 
+    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(PAYLOAD_TOO_LARGE.status, new BlueResponse<>(PAYLOAD_TOO_LARGE.code, null, PAYLOAD_TOO_LARGE.message));
+
     @Override
     public String exceptionName() {
         return EXP_NAME;
@@ -28,7 +30,7 @@ public final class TooLongFrameExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("tooLongFrameExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(PAYLOAD_TOO_LARGE.status, new BlueResponse<>(PAYLOAD_TOO_LARGE.code, null, PAYLOAD_TOO_LARGE.message));
+        return EXP_HANDLE_INFO;
     }
 
 }

@@ -14,6 +14,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.blue.pulsar.constant.CommonException.NON_PARAM_EXP;
 import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateClient;
 import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateConsumer;
 import static java.lang.Thread.onSpinWait;
@@ -52,15 +53,17 @@ public final class BluePulsarConsumer<T extends Serializable> {
      */
     private final Function<Boolean, BiFunction<Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
             Consumer<Message<T>>>> ACK_CONSUMER_GENERATOR = ackType -> {
-        if (ackType == null)
-            throw new RuntimeException("ackType can't be null");
-        return ACK_CONSUMER_GENERATOR_HOLDER.get(ackType);
+        if (ackType != null)
+            return ACK_CONSUMER_GENERATOR_HOLDER.get(ackType);
+
+        throw NON_PARAM_EXP.exp;
     };
     private final Function<Boolean, BiFunction<Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
             Consumer<Messages<T>>>> ACK_BATCH_CONSUMER_GENERATOR = ackType -> {
-        if (ackType == null)
-            throw new RuntimeException("ackType can't be null");
-        return ACK_BATCH_CONSUMER_GENERATOR_HOLDER.get(ackType);
+        if (ackType != null)
+            return ACK_BATCH_CONSUMER_GENERATOR_HOLDER.get(ackType);
+
+        throw NON_PARAM_EXP.exp;
     };
 
     /**

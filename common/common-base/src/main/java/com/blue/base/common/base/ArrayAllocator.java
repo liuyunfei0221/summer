@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
 import static java.lang.Long.valueOf;
 import static java.lang.Math.round;
 import static java.util.Collections.singletonList;
@@ -25,7 +26,7 @@ public final class ArrayAllocator {
 
     private static <T> void checkArgs(List<T> list, int par) {
         if (list == null || list.size() < 1 || par < 1)
-            throw new IllegalArgumentException("list can't be null or empty, par can't be null or less than 1");
+            throw BAD_REQUEST_EXP.exp;
     }
 
     /**

@@ -1,6 +1,5 @@
 package com.blue.member.remote.provider;
 
-import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.inter.RpcMemberService;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.service.inter.MemberBasicService;
@@ -12,8 +11,7 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
+import static com.blue.base.constant.base.CommonException.DATA_NOT_EXIST_EXP;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.just;
@@ -53,7 +51,7 @@ public class RpcMemberServiceProvider implements RpcMemberService {
         return memberBasicService.selectMemberBasicMonoByPrimaryKey(id)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
+                        .orElseThrow(() -> DATA_NOT_EXIST_EXP.exp))
                 .toFuture();
     }
 
@@ -84,7 +82,7 @@ public class RpcMemberServiceProvider implements RpcMemberService {
         return memberBasicService.selectMemberBasicMonoByPhone(phone)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
+                        .orElseThrow(() -> DATA_NOT_EXIST_EXP.exp))
                 .toFuture();
     }
 
@@ -100,7 +98,7 @@ public class RpcMemberServiceProvider implements RpcMemberService {
         return memberBasicService.selectMemberBasicMonoByEmail(email)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
+                        .orElseThrow(() -> DATA_NOT_EXIST_EXP.exp))
                 .toFuture();
     }
 
