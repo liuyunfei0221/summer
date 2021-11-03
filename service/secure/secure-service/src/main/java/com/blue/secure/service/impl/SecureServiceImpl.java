@@ -385,17 +385,16 @@ public class SecureServiceImpl implements SecureService {
      */
     private String genSessionKey(Long id, String loginTypeIdentity, String deviceTypeIdentity) {
         LOGGER.info("String genSessionKey(Long id, String loginTypeIdentity, String deviceTypeIdentity), id = {}, loginTypeIdentity = {}, deviceTypeIdentity = {}", id, loginTypeIdentity, deviceTypeIdentity);
-        if (id == null || id < 1L || deviceTypeIdentity == null || "".equals(deviceTypeIdentity))
-            throw BAD_REQUEST_EXP.exp;
+        if (id != null && id >= 0L && deviceTypeIdentity != null && !"".equals(deviceTypeIdentity))
+            return SESSION_KEY_PRE + id + PAR_CONCATENATION + LOGIN_TYPE_2_NATURE_CONVERTER.apply(loginTypeIdentity).intern() + PAR_CONCATENATION + deviceTypeIdentity;
 
-        return SESSION_KEY_PRE + id + PAR_CONCATENATION + LOGIN_TYPE_2_NATURE_CONVERTER.apply(loginTypeIdentity).intern() + PAR_CONCATENATION + deviceTypeIdentity;
+        throw BAD_REQUEST_EXP.exp;
     }
 
     /**
      * generate global sync key
      */
-    private static final UnaryOperator<String> GLOBAL_LOCK_KEY_GEN = keyId ->
-            valueOf(keyId.hashCode());
+    private static final UnaryOperator<String> GLOBAL_LOCK_KEY_GEN = keyId -> valueOf(keyId.hashCode());
 
     /**
      * generate auth refresh sync key
@@ -536,8 +535,7 @@ public class SecureServiceImpl implements SecureService {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByRoleOpt(Long roleId), roleId = {}", roleId);
         return just(ROLE_INFO_BY_ID_GETTER.apply(roleId)
                 .map(role ->
-                        new AuthorityBaseOnRole(role,
-                                RESOURCE_INFOS_BY_ROLE_ID_GETTER.apply(roleId)))
+                        new AuthorityBaseOnRole(role, RESOURCE_INFOS_BY_ROLE_ID_GETTER.apply(roleId)))
                 .orElseThrow(() -> {
                     LOGGER.error("role info doesn't exist, roleId = {}", roleId);
                     return BAD_REQUEST_EXP.exp;
@@ -639,19 +637,18 @@ public class SecureServiceImpl implements SecureService {
         if (clientLoginParam == null)
             throw EMPTY_PARAM_EXP.exp;
 
-        return zip(
-                LOGIN_HANDLER_GETTER.apply(clientLoginParam.getLoginType()).apply(clientLoginParam),
-                just(clientLoginParam.getLoginType().intern()),
-                just(clientLoginParam.getDeviceType().intern()))
-                .flatMap(t3 -> {
-                    MemberBasicInfo memberBasicInfo = t3.getT1();
-                    LOGGER.info("memberBasicInfo = {}", memberBasicInfo);
-                    Long mid = memberBasicInfo.getId();
+        String loginType = clientLoginParam.getLoginType().intern();
+        String deviceType = clientLoginParam.getDeviceType().intern();
+
+        return LOGIN_HANDLER_GETTER.apply(loginType).apply(clientLoginParam)
+                .flatMap(mbi -> {
+                    LOGGER.info("mbi = {}", mbi);
+                    Long mid = mbi.getId();
 
                     return memberRoleRelationService.getRoleIdMonoByMemberId(mid)
                             .flatMap(ridOpt ->
                                     ridOpt.map(rid ->
-                                                    just(new AuthGenParam(mid, rid, t3.getT2(), t3.getT3())))
+                                                    just(new AuthGenParam(mid, rid, loginType, deviceType)))
                                             .orElseGet(() -> {
                                                 LOGGER.error("Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam) failed, member has no role, memberId = {}", mid);
                                                 return error(MEMBER_NOT_HAS_A_ROLE_EXP.exp);

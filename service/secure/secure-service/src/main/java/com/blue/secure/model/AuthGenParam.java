@@ -1,5 +1,7 @@
 package com.blue.secure.model;
 
+import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+
 /**
  * member, role, login infos for generate member auth
  *
@@ -30,14 +32,14 @@ public final class AuthGenParam {
 
 
     public AuthGenParam(Long memberId, Long roleId, String loginType, String deviceType) {
-        if (memberId == null || memberId < 1L)
-            throw new RuntimeException("memberId can't be null or less than 1");
+        if (memberId == null || memberId < 0L)
+            throw BAD_REQUEST_EXP.exp;
         if (roleId == null || roleId < 1L)
-            throw new RuntimeException("roleId can't be null or less than 1");
+            throw BAD_REQUEST_EXP.exp;
         if (loginType == null || "".equals(loginType))
-            throw new RuntimeException("loginType can't be blank");
+            throw BAD_REQUEST_EXP.exp;
         if (deviceType == null || "".equals(deviceType))
-            throw new RuntimeException("deviceType can't be blank");
+            throw BAD_REQUEST_EXP.exp;
 
         this.memberId = memberId;
         this.roleId = roleId;

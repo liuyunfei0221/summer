@@ -70,10 +70,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         if (isInvalidIdentity(memberId))
             throw INVALID_IDENTITY_EXP.exp;
 
-        Long roleId = memberRoleRelationMapper.getRoleIdByMemberId(memberId);
-        LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}, roleId = {}", memberId, roleId);
-
-        return just(ofNullable(roleId));
+        return just(ofNullable(memberRoleRelationMapper.getRoleIdByMemberId(memberId)));
     }
 
     /**

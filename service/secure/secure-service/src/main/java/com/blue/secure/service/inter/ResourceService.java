@@ -32,6 +32,14 @@ public interface ResourceService {
      * @param id
      * @return
      */
+    Optional<Resource> getResourceById(Long id);
+
+    /**
+     * get resource mono by role id
+     *
+     * @param id
+     * @return
+     */
     Mono<Optional<Resource>> getResourceMonoById(Long id);
 
     /**

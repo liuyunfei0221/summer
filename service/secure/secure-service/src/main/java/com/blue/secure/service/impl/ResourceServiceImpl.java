@@ -95,26 +95,41 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     public void insertResource(ResourceInsertParam resourceInsertParam) {
+        LOGGER.info("void insertResource(ResourceInsertParam resourceInsertParam), resourceInsertParam = {}", resourceInsertParam);
+
         RLock resourceInsertLock = redissonClient.getLock(RESOURCE_INSERT_SYNC_KEY);
 
         try {
             //TODO
             resourceInsertLock.lock(10L, TimeUnit.SECONDS);
 
-        } catch (Exception exception) {
-            LOGGER.error("lock on business failed, e = {}", exception);
+        } catch (Exception e) {
+            LOGGER.error("lock on business failed, e = {}", e);
         } finally {
             try {
                 resourceInsertLock.unlock();
             } catch (Exception e) {
             }
         }
-
-
     }
 
     /**
-     * select resources by ids
+     * get resource by role id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Optional<Resource> getResourceById(Long id) {
+        LOGGER.info("Optional<Resource> getResourceById(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw INVALID_IDENTITY_EXP.exp;
+
+        return ofNullable(resourceMapper.selectByPrimaryKey(id));
+    }
+
+    /**
+     * select resources mono by ids
      *
      * @param id
      * @return
