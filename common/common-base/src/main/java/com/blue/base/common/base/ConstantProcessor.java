@@ -1,9 +1,6 @@
 package com.blue.base.common.base;
 
-import com.blue.base.constant.base.BlueMediaType;
-import com.blue.base.constant.base.ResponseElement;
-import com.blue.base.constant.base.SortType;
-import com.blue.base.constant.base.Status;
+import com.blue.base.constant.base.*;
 import com.blue.base.constant.business.ArticleType;
 import com.blue.base.constant.business.SubjectType;
 import com.blue.base.constant.data.StatisticsRange;
@@ -13,6 +10,7 @@ import com.blue.base.constant.portal.BulletinType;
 import com.blue.base.constant.secure.DeviceType;
 import com.blue.base.constant.secure.LoginType;
 import com.blue.base.constant.secure.ResourceType;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
 import java.util.Map;
@@ -38,6 +36,12 @@ public final class ConstantProcessor {
      */
     private static final Map<Integer, ResponseElement> RESPONSE_ELEMENT_MAPPING =
             of(ResponseElement.values()).collect(toMap(e -> e.status, e -> e, (a, b) -> a));
+
+    /**
+     * http method name and method mapping
+     */
+    private static final Map<String, HttpMethod> HTTP_METHOD_MAPPING =
+            of(BlueHttpMethod.values()).collect(toMap(bhm -> bhm.value.toUpperCase(), bhm -> bhm.method));
 
     /**
      * media type identity and media mapping
@@ -124,6 +128,20 @@ public final class ConstantProcessor {
             return;
 
         if (!RESOURCE_TYPE_MAPPING.containsKey(identity))
+            throw INVALID_IDENTITY_EXP.exp;
+    }
+
+    /**
+     * assert http method
+     *
+     * @param value
+     * @return
+     */
+    public static void assertHttpMethod(String value, boolean nullable) {
+        if (nullable && value == null)
+            return;
+
+        if (isBlank(value) || !HTTP_METHOD_MAPPING.containsKey(value.toUpperCase()))
             throw INVALID_IDENTITY_EXP.exp;
     }
 
@@ -303,6 +321,23 @@ public final class ConstantProcessor {
             throw INVALID_IDENTITY_EXP.exp;
 
         return resourceType;
+    }
+
+    /**
+     * get http method by value
+     *
+     * @param value
+     * @return
+     */
+    public static HttpMethod getHttpMethodByValue(String value) {
+        if (isBlank(value))
+            throw INVALID_IDENTITY_EXP.exp;
+
+        HttpMethod httpMethod = HTTP_METHOD_MAPPING.get(value.toUpperCase());
+        if (httpMethod == null)
+            throw INVALID_IDENTITY_EXP.exp;
+
+        return httpMethod;
     }
 
     /**

@@ -2,8 +2,11 @@ package com.blue.secure.service.impl;
 
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.base.Access;
+import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.event.producer.SystemAuthorityInfosRefreshProducer;
+import com.blue.secure.model.ResourceInsertParam;
+import com.blue.secure.model.ResourceUpdateParam;
 import com.blue.secure.model.RoleInsertParam;
 import com.blue.secure.model.RoleUpdateParam;
 import com.blue.secure.repository.entity.MemberRoleRelation;
@@ -36,6 +39,8 @@ public class ControlServiceImpl implements ControlService {
 
     private final RoleService roleService;
 
+    private final ResourceService resourceService;
+
     private final RoleResRelationService roleResRelationService;
 
     private final MemberRoleRelationService memberRoleRelationService;
@@ -43,9 +48,11 @@ public class ControlServiceImpl implements ControlService {
     private final SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ControlServiceImpl(SecureService secureService, RoleService roleService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService, SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer) {
+    public ControlServiceImpl(SecureService secureService, RoleService roleService, ResourceService resourceService, RoleResRelationService roleResRelationService,
+                              MemberRoleRelationService memberRoleRelationService, SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer) {
         this.secureService = secureService;
         this.roleService = roleService;
+        this.resourceService = resourceService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
@@ -131,6 +138,8 @@ public class ControlServiceImpl implements ControlService {
     public RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
         LOGGER.info("RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
         RoleInfo roleInfo = roleService.insertRole(roleInsertParam, operatorId);
+        LOGGER.info("roleInfo = {}", roleInfo);
+
         systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
         return roleInfo;
     }
@@ -146,7 +155,44 @@ public class ControlServiceImpl implements ControlService {
     public RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId) {
         LOGGER.info("RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
         RoleInfo roleInfo = roleService.updateRole(roleUpdateParam, operatorId);
+        LOGGER.info("roleInfo = {}", roleInfo);
+
         systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
         return roleInfo;
     }
+
+    /**
+     * insert resource
+     *
+     * @param resourceInsertParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
+        LOGGER.info("ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId), resourceInsertParam = {}, operatorId = {}", resourceInsertParam, operatorId);
+        ResourceInfo resourceInfo = resourceService.insertResource(resourceInsertParam, operatorId);
+        LOGGER.info("resourceInfo = {}", resourceInfo);
+
+        systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
+        return resourceInfo;
+    }
+
+    /**
+     * update a exist resource
+     *
+     * @param resourceUpdateParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId) {
+        LOGGER.info("ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}, operatorId = {}", resourceUpdateParam, operatorId);
+        ResourceInfo resourceInfo = resourceService.updateResource(resourceUpdateParam, operatorId);
+        LOGGER.info("resourceInfo = {}", resourceInfo);
+
+        systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
+        return resourceInfo;
+    }
+
 }

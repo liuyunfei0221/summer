@@ -34,4 +34,8 @@ public interface ResourceMapper {
 
     Long countByCondition(@Param("resourceCondition") ResourceCondition resourceCondition);
 
+    Resource selectByUnique(@Param("requestMethod") String requestMethod, @Param("module") String module, @Param("uri") String uri);
+
+    Resource selectByName(@Param("name") String name);
+
 }

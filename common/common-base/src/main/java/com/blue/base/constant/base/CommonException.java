@@ -106,6 +106,11 @@ public enum CommonException {
     DATA_NOT_EXIST_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)),
 
     /**
+     * DATA_NOT_EXIST_EXP
+     */
+    DATA_ALREADY_EXIST_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_ALREADY_EXIST.message)),
+
+    /**
      * INVALID_PAGE_PARAM_EXP
      */
     INVALID_PAGE_PARAM_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value)),

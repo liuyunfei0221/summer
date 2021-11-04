@@ -8,7 +8,7 @@ import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
  * @author DarkBlue
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public final class AuthGenParam {
+public final class AuthGenElement {
 
     /**
      * member id
@@ -31,7 +31,7 @@ public final class AuthGenParam {
     private final String deviceType;
 
 
-    public AuthGenParam(Long memberId, Long roleId, String loginType, String deviceType) {
+    public AuthGenElement(Long memberId, Long roleId, String loginType, String deviceType) {
         if (memberId == null || memberId < 0L)
             throw BAD_REQUEST_EXP.exp;
         if (roleId == null || roleId < 1L)

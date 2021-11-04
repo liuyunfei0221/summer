@@ -18,6 +18,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
  *
  * @author DarkBlue
  */
+@SuppressWarnings("DuplicatedCode")
 @Configuration
 public class ResourceManagerRoute {
 
@@ -28,6 +29,8 @@ public class ResourceManagerRoute {
         RequestPredicate pathPredicate = path("/blue-secure/manager/resource");
 
         RouterFunction<ServerResponse> routerFunction = route()
+                .POST("", accept(APPLICATION_JSON), resourceManagerHandler::insert)
+                .PUT("", accept(APPLICATION_JSON), resourceManagerHandler::update)
                 .POST("/list", accept(APPLICATION_JSON), resourceManagerHandler::select)
                 .POST("/auth", accept(APPLICATION_JSON), resourceManagerHandler::selectAuthority)
                 .build();

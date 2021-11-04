@@ -1,5 +1,6 @@
 package com.blue.secure.service.impl;
 
+import com.blue.base.common.base.Asserter;
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
@@ -27,6 +28,7 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -39,7 +41,6 @@ import static com.blue.base.constant.base.Default.DEFAULT;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
 import static com.blue.base.constant.base.SyncKey.DEFAULT_ROLE_UPDATE_KEY;
 import static com.blue.secure.constant.SecureCommonException.*;
-import static com.blue.secure.converter.SecureCompareAlterationWithPackageProcessor.ROLE_UPDATE_PARAM_AND_ROLE_COMPARER;
 import static com.blue.secure.converter.SecureModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
 import static com.blue.secure.converter.SecureModelConverters.ROLE_INSERT_PARAM_2_ROLE_CONVERTER;
 import static java.lang.System.currentTimeMillis;
@@ -49,7 +50,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.just;
@@ -186,16 +186,68 @@ public class RoleServiceImpl implements RoleService {
         }
     };
 
-
     private static final Supplier<Long> TIME_STAMP_GETTER = CommonFunctions.TIME_STAMP_GETTER;
+
     /**
      * is a role exist?
      */
-    private final Consumer<RoleInsertParam> ROLE_EXIST_VALIDATOR = rip -> {
+    private final Consumer<RoleInsertParam> INSERT_ROLE_VALIDATOR = rip -> {
+        if (rip == null)
+            throw EMPTY_PARAM_EXP.exp;
+
+        String name = rip.getName();
+        if (isBlank(name))
+            throw BLANK_NAME_EXP.exp;
+
+        String description = rip.getDescription();
+        if (isBlank(description))
+            throw BLANK_DESC_EXP.exp;
+
         if (isNotNull(roleMapper.selectByName(rip.getName())))
             throw ROLE_NAME_ALREADY_EXIST_EXP.exp;
     };
 
+    /**
+     * is a role exist?
+     */
+    private final Consumer<RoleUpdateParam> UPDATE_ROLE_VALIDATOR = rup -> {
+        Long id = rup.getId();
+        if (isInvalidIdentity(id))
+            throw INVALID_IDENTITY_EXP.exp;
+
+        ofNullable(rup.getName())
+                .filter(Asserter::isNotBlank)
+                .map(roleMapper::selectByName)
+                .map(Role::getId)
+                .ifPresent(eid -> {
+                    if (!id.equals(eid))
+                        throw ROLE_NAME_ALREADY_EXIST_EXP.exp;
+                });
+    };
+
+    /**
+     * for role
+     */
+    public static final BiFunction<RoleUpdateParam, Role, Boolean> ROLE_UPDATE_PARAM_AND_ROLE_COMPARER = (p, t) -> {
+        if (!p.getId().equals(t.getId()))
+            throw BAD_REQUEST_EXP.exp;
+
+        boolean alteration = false;
+
+        String name = p.getName();
+        if (isNotBlank(name) && !name.equals(t.getName())) {
+            t.setName(name);
+            alteration = true;
+        }
+
+        String description = p.getDescription();
+        if (isNotBlank(description) && !description.equals(t.getDescription())) {
+            t.setDescription(description);
+            alteration = true;
+        }
+
+        return alteration;
+    };
 
     @PostConstruct
     public void init() {
@@ -213,11 +265,10 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
         LOGGER.info("RoleInfo insertRole(RoleInsertParam roleInsertParam), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
-        if (isNull(roleInsertParam) || isInvalidIdentity(operatorId))
+        if (isInvalidIdentity(operatorId))
             throw EMPTY_PARAM_EXP.exp;
 
-        ROLE_EXIST_VALIDATOR.accept(roleInsertParam);
-
+        INSERT_ROLE_VALIDATOR.accept(roleInsertParam);
         Role role = ROLE_INSERT_PARAM_2_ROLE_CONVERTER.apply(roleInsertParam);
 
         long id = blueIdentityProcessor.generate(Role.class);
@@ -244,16 +295,14 @@ public class RoleServiceImpl implements RoleService {
         if (isNull(roleUpdateParam) || isInvalidIdentity(operatorId))
             throw EMPTY_PARAM_EXP.exp;
 
-        Long id = roleUpdateParam.getId();
-        if (isInvalidIdentity(id))
-            throw BAD_REQUEST_EXP.exp;
+        UPDATE_ROLE_VALIDATOR.accept(roleUpdateParam);
 
-        return getRoleById(id)
+        return getRoleById(roleUpdateParam.getId())
                 .filter(role -> ROLE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(roleUpdateParam, role))
                 .map(role -> {
                     role.setUpdateTime(TIME_STAMP_GETTER.get());
                     role.setUpdater(operatorId);
-                    roleMapper.updateByPrimaryKey(role);
+                    roleMapper.updateByPrimaryKeySelective(role);
 
                     return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
                 }).orElseThrow(() -> DATA_WITHOUT_ALTERATION_EXP.exp);

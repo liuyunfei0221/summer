@@ -1,5 +1,6 @@
 package com.blue.secure.service.impl;
 
+import com.blue.base.common.base.Asserter;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.identity.common.BlueIdentityProcessor;
@@ -7,12 +8,14 @@ import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.constant.RoleSortAttribute;
 import com.blue.secure.model.ResourceCondition;
 import com.blue.secure.model.ResourceInsertParam;
+import com.blue.secure.model.ResourceUpdateParam;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.mapper.ResourceMapper;
 import com.blue.secure.service.inter.ResourceService;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -20,21 +23,25 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.Asserter.*;
-import static com.blue.base.common.base.ConstantProcessor.assertSortType;
+import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.constant.base.CommonException.*;
+import static com.blue.secure.constant.SecureCommonException.*;
 import static com.blue.secure.converter.SecureModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER;
+import static com.blue.secure.converter.SecureModelConverters.RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
@@ -44,7 +51,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "CatchMayIgnoreException"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class ResourceServiceImpl implements ResourceService {
 
@@ -52,7 +59,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private final ResourceMapper resourceMapper;
+    private ResourceMapper resourceMapper;
 
     private final RedissonClient redissonClient;
 
@@ -86,29 +93,248 @@ public class ResourceServiceImpl implements ResourceService {
         }
     };
 
-    private static final String RESOURCE_INSERT_SYNC_KEY = "INSERT_RESOURCE";
+    private static final String RESOURCE_SYNC_KEY = "RESOURCE_SYNC";
+
+    /**
+     * is a resource exist?
+     */
+    private final Consumer<ResourceInsertParam> INSERT_RESOURCE_VALIDATOR = rip -> {
+        if (rip == null)
+            throw EMPTY_PARAM_EXP.exp;
+
+        String requestMethod = rip.getRequestMethod();
+        assertHttpMethod(requestMethod, false);
+
+        String module = rip.getModule();
+        if (isBlank(module))
+            throw BLANK_NAME_EXP.exp;
+
+        String uri = rip.getUri();
+        if (isBlank(uri))
+            throw BLANK_NAME_EXP.exp;
+
+        Boolean authenticate = rip.getAuthenticate();
+        if (authenticate == null)
+            throw BLANK_NAME_EXP.exp;
+
+        Boolean requestUnDecryption = rip.getRequestUnDecryption();
+        if (requestUnDecryption == null)
+            throw BLANK_NAME_EXP.exp;
+
+        Boolean responseUnEncryption = rip.getResponseUnEncryption();
+        if (responseUnEncryption == null)
+            throw BLANK_NAME_EXP.exp;
+
+        Boolean existenceRequestBody = rip.getExistenceRequestBody();
+        if (existenceRequestBody == null)
+            throw BLANK_NAME_EXP.exp;
+
+        Boolean existenceResponseBody = rip.getExistenceResponseBody();
+        if (existenceResponseBody == null)
+            throw BLANK_NAME_EXP.exp;
+
+        Integer type = rip.getType();
+        assertResourceType(type, false);
+
+        String name = rip.getName();
+        if (isBlank(name))
+            throw BLANK_NAME_EXP.exp;
+
+        String description = rip.getDescription();
+        if (isBlank(description))
+            throw BLANK_DESC_EXP.exp;
+
+        if (isNotNull(resourceMapper.selectByName(name)) || isNotNull(resourceMapper.selectByUnique(requestMethod.toUpperCase(), module.toLowerCase(), uri.toLowerCase())))
+            throw DATA_ALREADY_EXIST_EXP.exp;
+    };
+
+    /**
+     * is a resource exist?
+     */
+    private final Function<ResourceUpdateParam, Resource> UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
+        Long id = rup.getId();
+        if (isInvalidIdentity(id))
+            throw INVALID_IDENTITY_EXP.exp;
+
+        ofNullable(rup.getName())
+                .filter(Asserter::isNotBlank)
+                .map(resourceMapper::selectByName)
+                .map(Resource::getId)
+                .ifPresent(eid -> {
+                    if (!id.equals(eid))
+                        throw ROLE_NAME_ALREADY_EXIST_EXP.exp;
+                });
+
+        Resource resource = resourceMapper.selectByPrimaryKey(id);
+        if (resource == null)
+            throw DATA_NOT_EXIST_EXP.exp;
+
+        ofNullable(resourceMapper.selectByUnique(
+                ofNullable(rup.getRequestMethod()).map(String::toUpperCase).orElse(resource.getRequestMethod()),
+                ofNullable(rup.getModule()).map(String::toLowerCase).orElse(resource.getModule()),
+                ofNullable(rup.getUri()).map(String::toLowerCase).orElse(resource.getUri()))
+        )
+                .map(Resource::getId)
+                .ifPresent(eid -> {
+                    if (!id.equals(eid))
+                        throw DATA_ALREADY_EXIST_EXP.exp;
+                });
+
+        return resource;
+    };
+
+    /**
+     * for resource
+     */
+    public static final BiFunction<ResourceUpdateParam, Resource, Boolean> RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER = (p, t) -> {
+        if (!p.getId().equals(t.getId()))
+            throw BAD_REQUEST_EXP.exp;
+
+        boolean alteration = false;
+
+        String requestMethod = p.getRequestMethod();
+        if (isNotBlank(requestMethod) && !requestMethod.equals(t.getRequestMethod())) {
+            t.setRequestMethod(requestMethod);
+            alteration = true;
+        }
+
+        String module = p.getModule();
+        if (isNotBlank(module) && !module.equals(t.getModule())) {
+            t.setModule(module);
+            alteration = true;
+        }
+
+        String uri = p.getUri();
+        if (isNotBlank(uri) && !uri.equals(t.getUri())) {
+            t.setUri(uri);
+            alteration = true;
+        }
+
+        Boolean authenticate = p.getAuthenticate();
+        if (authenticate != null && !authenticate.equals(t.getAuthenticate())) {
+            t.setAuthenticate(authenticate);
+            alteration = true;
+        }
+
+        Boolean requestUnDecryption = p.getRequestUnDecryption();
+        if (requestUnDecryption != null && !requestUnDecryption.equals(t.getRequestUnDecryption())) {
+            t.setRequestUnDecryption(requestUnDecryption);
+            alteration = true;
+        }
+
+        Boolean responseUnEncryption = p.getResponseUnEncryption();
+        if (responseUnEncryption != null && !responseUnEncryption.equals(t.getResponseUnEncryption())) {
+            t.setResponseUnEncryption(responseUnEncryption);
+            alteration = true;
+        }
+
+        Boolean existenceRequestBody = p.getExistenceRequestBody();
+        if (existenceRequestBody != null && !existenceRequestBody.equals(t.getExistenceRequestBody())) {
+            t.setExistenceRequestBody(existenceRequestBody);
+            alteration = true;
+        }
+
+        Boolean existenceResponseBody = p.getExistenceResponseBody();
+        if (existenceResponseBody != null && !existenceResponseBody.equals(t.getExistenceResponseBody())) {
+            t.setExistenceResponseBody(existenceResponseBody);
+            alteration = true;
+        }
+
+        Integer type = p.getType();
+        assertResourceType(type, true);
+        if (type != null && !type.equals(t.getType())) {
+            t.setType(type);
+            alteration = true;
+        }
+
+        String name = p.getName();
+        if (isNotBlank(name) && !name.equals(t.getName())) {
+            t.setName(name);
+            alteration = true;
+        }
+
+        String description = p.getDescription();
+        if (isNotBlank(description) && !description.equals(t.getDescription())) {
+            t.setDescription(description);
+            alteration = true;
+        }
+
+        return alteration;
+    };
 
     /**
      * insert resource
      *
      * @param resourceInsertParam
+     * @param operatorId
      */
     @Override
-    public void insertResource(ResourceInsertParam resourceInsertParam) {
-        LOGGER.info("void insertResource(ResourceInsertParam resourceInsertParam), resourceInsertParam = {}", resourceInsertParam);
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    public ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
+        LOGGER.info("ResourceInfo insertResource(ResourceInsertParam resourceInsertParam), resourceInsertParam = {}", resourceInsertParam);
+        if (isNull(resourceInsertParam) || isInvalidIdentity(operatorId))
+            throw EMPTY_PARAM_EXP.exp;
 
-        RLock resourceInsertLock = redissonClient.getLock(RESOURCE_INSERT_SYNC_KEY);
-
+        RLock resourceLock = redissonClient.getLock(RESOURCE_SYNC_KEY);
         try {
-            //TODO
-            resourceInsertLock.lock(10L, TimeUnit.SECONDS);
+            resourceLock.lock();
 
+            INSERT_RESOURCE_VALIDATOR.accept(resourceInsertParam);
+            Resource resource = RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER.apply(resourceInsertParam);
+
+            long id = blueIdentityProcessor.generate(Resource.class);
+            resource.setId(id);
+            resource.setCreator(operatorId);
+            resource.setUpdater(operatorId);
+
+            resourceMapper.insert(resource);
+
+            return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
         } catch (Exception e) {
-            LOGGER.error("lock on business failed, e = {}", e);
+            LOGGER.error("lock on insertResource failed, e = {0}", e);
+            throw e;
         } finally {
             try {
-                resourceInsertLock.unlock();
+                resourceLock.unlock();
             } catch (Exception e) {
+                LOGGER.error("resourceLock.unlock() failed, e = {}", e);
+            }
+        }
+    }
+
+    /**
+     * update a exist resource
+     *
+     * @param resourceUpdateParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    public ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId) {
+        LOGGER.info("ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}", resourceUpdateParam);
+        if (isNull(resourceUpdateParam) || isInvalidIdentity(operatorId))
+            throw EMPTY_PARAM_EXP.exp;
+
+        RLock resourceLock = redissonClient.getLock(RESOURCE_SYNC_KEY);
+        try {
+            resourceLock.lock();
+
+            Resource resource = UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER.apply(resourceUpdateParam);
+            if (RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(resourceUpdateParam, resource)) {
+                resourceMapper.updateByPrimaryKeySelective(resource);
+                return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
+            }
+
+            throw DATA_WITHOUT_ALTERATION_EXP.exp;
+        } catch (Exception e) {
+            LOGGER.error("lock on updateResource failed, e = {}", e);
+            throw e;
+        } finally {
+            try {
+                resourceLock.unlock();
+            } catch (Exception e) {
+                LOGGER.error("resourceLock.unlock() failed, e = {}", e);
             }
         }
     }

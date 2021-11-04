@@ -5,6 +5,7 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.model.ResourceCondition;
 import com.blue.secure.model.ResourceInsertParam;
+import com.blue.secure.model.ResourceUpdateParam;
 import com.blue.secure.repository.entity.Resource;
 import reactor.core.publisher.Mono;
 
@@ -23,8 +24,19 @@ public interface ResourceService {
      * insert resource
      *
      * @param resourceInsertParam
+     * @param operatorId
+     * @return
      */
-    void insertResource(ResourceInsertParam resourceInsertParam);
+    ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId);
+
+    /**
+     * update a exist resource
+     *
+     * @param resourceUpdateParam
+     * @param operatorId
+     * @return
+     */
+    ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId);
 
     /**
      * get resource by role id

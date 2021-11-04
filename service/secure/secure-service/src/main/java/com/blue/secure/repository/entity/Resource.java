@@ -55,7 +55,7 @@ public final class Resource implements Serializable {
     private Boolean existenceResponseBody;
 
     /**
-     * resource type: 1.client api 2.manager api 3.open api
+     * @see com.blue.base.constant.secure.ResourceType
      */
     private Integer type;
 

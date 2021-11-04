@@ -339,4 +339,28 @@
         <include refid="Resource_Conditions"/>
     </select>
 
+    <select id="selectByUnique" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        resource FORCE INDEX(idx_method_module_uri)
+        WHERE
+        `request_method` = #{requestMethod,jdbcType=VARCHAR}
+        AND
+        `module` = #{module,jdbcType=VARCHAR}
+        AND
+        `uri` = #{uri,jdbcType=VARCHAR}
+        LIMIT 1;
+    </select>
+
+    <select id="selectByName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        resource FORCE INDEX(idx_name)
+        WHERE
+        `name` = #{name,jdbcType=VARCHAR}
+        LIMIT 1;
+    </select>
+
 </mapper>

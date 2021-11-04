@@ -1,7 +1,10 @@
 package com.blue.secure.service.inter;
 
 import com.blue.base.model.base.Access;
+import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.api.model.RoleInfo;
+import com.blue.secure.model.ResourceInsertParam;
+import com.blue.secure.model.ResourceUpdateParam;
 import com.blue.secure.model.RoleInsertParam;
 import com.blue.secure.model.RoleUpdateParam;
 
@@ -73,4 +76,23 @@ public interface ControlService {
      * @return
      */
     RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId);
+
+    /**
+     * insert resource
+     *
+     * @param resourceInsertParam
+     * @param operatorId
+     * @return
+     */
+    ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId);
+
+    /**
+     * update a exist resource
+     *
+     * @param resourceUpdateParam
+     * @param operatorId
+     * @return
+     */
+    ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId);
+
 }

@@ -33,7 +33,7 @@ public final class BlueExceptionFilter implements Filter, Filter.Listener {
             if (exception instanceof BlueException)
                 return;
 
-            appResponse.setException(new RuntimeException(exception));
+            appResponse.setException(exception);
         }
     }
 

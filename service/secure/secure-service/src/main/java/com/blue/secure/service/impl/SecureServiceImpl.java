@@ -15,9 +15,9 @@ import com.blue.secure.component.auth.AuthInfoCache;
 import com.blue.secure.config.deploy.BlockingDeploy;
 import com.blue.secure.config.deploy.SessionKeyDeploy;
 import com.blue.secure.event.producer.InvalidLocalAuthProducer;
-import com.blue.secure.model.AuthGenParam;
+import com.blue.secure.model.AuthGenElement;
 import com.blue.secure.model.AuthInfo;
-import com.blue.secure.model.AuthInfoRefreshParam;
+import com.blue.secure.model.AuthInfoRefreshElement;
 import com.blue.secure.model.MemberAuth;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.entity.Role;
@@ -479,23 +479,23 @@ public class SecureServiceImpl implements SecureService {
     /**
      * refresh auth elements
      *
-     * @param authInfoRefreshParam
+     * @param authInfoRefreshElement
      */
-    public void refreshAuthElementMultiTypes(AuthInfoRefreshParam authInfoRefreshParam) {
-        LOGGER.info("void refreshAuthElementMultiTypes(AuthInfoRefreshParam authInfoRefreshParam), authInfoRefreshParam = {}", authInfoRefreshParam);
-        Long memberId = authInfoRefreshParam.getMemberId();
+    public void refreshAuthElementMultiTypes(AuthInfoRefreshElement authInfoRefreshElement) {
+        LOGGER.info("void refreshAuthElementMultiTypes(AuthInfoRefreshParam authInfoRefreshParam), authInfoRefreshParam = {}", authInfoRefreshElement);
+        Long memberId = authInfoRefreshElement.getMemberId();
         if (isInvalidIdentity(memberId))
             throw BAD_REQUEST_EXP.exp;
 
-        AuthInfoRefreshElementType elementType = authInfoRefreshParam.getElementType();
+        AuthInfoRefreshElementType elementType = authInfoRefreshElement.getElementType();
         if (elementType == null)
             throw BAD_REQUEST_EXP.exp;
 
-        String elementValue = authInfoRefreshParam.getElementValue();
+        String elementValue = authInfoRefreshElement.getElementValue();
         if (isBlank(elementValue))
             throw BAD_REQUEST_EXP.exp;
 
-        List<String> loginTypes = ofNullable(authInfoRefreshParam.getLoginTypes())
+        List<String> loginTypes = ofNullable(authInfoRefreshElement.getLoginTypes())
                 .filter(lts -> lts.size() > 0)
                 .map(lts ->
                         lts.stream()
@@ -507,7 +507,7 @@ public class SecureServiceImpl implements SecureService {
         if (isEmpty(loginTypes))
             return;
 
-        List<String> deviceTypes = ofNullable(authInfoRefreshParam.getDeviceTypes())
+        List<String> deviceTypes = ofNullable(authInfoRefreshElement.getDeviceTypes())
                 .filter(dts -> dts.size() > 0)
                 .map(dts ->
                         dts.stream()
@@ -648,7 +648,7 @@ public class SecureServiceImpl implements SecureService {
                     return memberRoleRelationService.getRoleIdMonoByMemberId(mid)
                             .flatMap(ridOpt ->
                                     ridOpt.map(rid ->
-                                                    just(new AuthGenParam(mid, rid, loginType, deviceType)))
+                                                    just(new AuthGenElement(mid, rid, loginType, deviceType)))
                                             .orElseGet(() -> {
                                                 LOGGER.error("Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam) failed, member has no role, memberId = {}", mid);
                                                 return error(MEMBER_NOT_HAS_A_ROLE_EXP.exp);
@@ -736,14 +736,14 @@ public class SecureServiceImpl implements SecureService {
     /**
      * generate member auth
      *
-     * @param authGenParam
+     * @param authGenElement
      * @return
      */
     @Override
-    public Mono<MemberAuth> generateAuthMono(AuthGenParam authGenParam) {
-        LOGGER.info("Mono<MemberAuth> generateAuthMono(AuthGenParam authGenParam), authGenParam = {}", authGenParam);
-        return authGenParam != null ?
-                just(authGenParam)
+    public Mono<MemberAuth> generateAuthMono(AuthGenElement authGenElement) {
+        LOGGER.info("Mono<MemberAuth> generateAuthMono(AuthGenParam authGenParam), authGenParam = {}", authGenElement);
+        return authGenElement != null ?
+                just(authGenElement)
                         .flatMap(agp -> {
                             Long memberId = agp.getMemberId();
                             String loginType = agp.getLoginType().intern();
@@ -758,7 +758,7 @@ public class SecureServiceImpl implements SecureService {
                                     valueOf(TIME_STAMP_GETTER.get()))
                             ).flatMap(mp -> {
                                 String jwt = jwtProcessor.create(mp);
-                                String authInfoJson = GSON.toJson(new AuthInfo(jwt, authGenParam.getRoleId(), keyPair.getPubKey()));
+                                String authInfoJson = GSON.toJson(new AuthInfo(jwt, authGenElement.getRoleId(), keyPair.getPubKey()));
 
                                 return authInfoCache.setAuthInfo(mp.getKeyId(), authInfoJson)
                                         .flatMap(b -> {
@@ -854,11 +854,11 @@ public class SecureServiceImpl implements SecureService {
     @Override
     public void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
-        AuthInfoRefreshParam authInfoRefreshParam = new AuthInfoRefreshParam(memberId,
+        AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId,
                 LOGIN_TYPES.stream().filter(lt -> !lt.identity.intern().equals(NOT_LOGGED_IN.identity)).collect(toList()),
                 DEVICE_TYPES.stream().filter(dt -> !dt.identity.intern().equals(UNKNOWN.identity)).collect(toList()),
                 ROLE, valueOf(roleId).intern());
-        refreshAuthElementMultiTypes(authInfoRefreshParam);
+        refreshAuthElementMultiTypes(authInfoRefreshElement);
     }
 
     /**
@@ -944,8 +944,8 @@ public class SecureServiceImpl implements SecureService {
             List<DeviceType> deviceTypes = DEVICE_TYPES.stream()
                     .filter(dt -> !dt.identity.intern().equals(UNKNOWN.identity) && !dt.identity.intern().equals(exclusiveDeviceType)).collect(toList());
 
-            AuthInfoRefreshParam authInfoRefreshParam = new AuthInfoRefreshParam(memberId, loginTypes, deviceTypes, elementType, elementValue);
-            refreshAuthElementMultiTypes(authInfoRefreshParam);
+            AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId, loginTypes, deviceTypes, elementType, elementValue);
+            refreshAuthElementMultiTypes(authInfoRefreshElement);
         }
     }
 

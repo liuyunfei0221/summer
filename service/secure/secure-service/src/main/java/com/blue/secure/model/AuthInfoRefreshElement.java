@@ -13,7 +13,7 @@ import java.util.List;
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class AuthInfoRefreshParam implements Serializable {
+public final class AuthInfoRefreshElement implements Serializable {
 
     private static final long serialVersionUID = -8842596381325841676L;
 
@@ -23,10 +23,10 @@ public final class AuthInfoRefreshParam implements Serializable {
     private AuthInfoRefreshElementType elementType;
     private String elementValue;
 
-    public AuthInfoRefreshParam() {
+    public AuthInfoRefreshElement() {
     }
 
-    public AuthInfoRefreshParam(Long memberId, List<LoginType> loginTypes, List<DeviceType> deviceTypes, AuthInfoRefreshElementType elementType, String elementValue) {
+    public AuthInfoRefreshElement(Long memberId, List<LoginType> loginTypes, List<DeviceType> deviceTypes, AuthInfoRefreshElementType elementType, String elementValue) {
         this.memberId = memberId;
         this.loginTypes = loginTypes;
         this.deviceTypes = deviceTypes;

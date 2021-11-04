@@ -18,6 +18,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
  *
  * @author DarkBlue
  */
+@SuppressWarnings("DuplicatedCode")
 @Configuration
 public class RoleManagerRoute {
 

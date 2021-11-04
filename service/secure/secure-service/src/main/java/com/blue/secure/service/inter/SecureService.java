@@ -2,7 +2,7 @@ package com.blue.secure.service.inter;
 
 import com.blue.base.model.base.Access;
 import com.blue.secure.api.model.*;
-import com.blue.secure.model.AuthGenParam;
+import com.blue.secure.model.AuthGenElement;
 import com.blue.secure.model.MemberAuth;
 import reactor.core.publisher.Mono;
 
@@ -56,10 +56,10 @@ public interface SecureService {
     /**
      * generate member auth
      *
-     * @param authGenParam
+     * @param authGenElement
      * @return
      */
-    Mono<MemberAuth> generateAuthMono(AuthGenParam authGenParam);
+    Mono<MemberAuth> generateAuthMono(AuthGenElement authGenElement);
 
     /**
      * invalid auth by access

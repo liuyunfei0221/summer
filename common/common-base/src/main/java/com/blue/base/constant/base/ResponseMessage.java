@@ -70,6 +70,11 @@ public enum ResponseMessage {
     DATA_NOT_EXIST("Data not exist"),
 
     /**
+     * DATA_ALREADY_EXIST
+     */
+    DATA_ALREADY_EXIST("Data already exist"),
+
+    /**
      * INVALID_ACCT_OR_PWD
      */
     INVALID_ACCT_OR_PWD("Invalid account or password"),

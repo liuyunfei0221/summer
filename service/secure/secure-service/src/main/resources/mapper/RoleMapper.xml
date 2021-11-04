@@ -224,6 +224,7 @@
         role FORCE INDEX(idx_name)
         WHERE
         `name` = #{name,jdbcType=VARCHAR}
+        LIMIT 1;
     </select>
 
 </mapper>

@@ -590,6 +590,56 @@ INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (17727776022888453, 'POST', 'blue-member', '/manager/authority/list', b'1', b'1', b'1', b'1', b'1', 2,
         'authority list', 'authority list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (18497721916719105, 'POST', 'blue-secure', '/manager/role', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert role', 'insert role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (18497740170362881, 'PUT', 'blue-secure', '/manager/role', b'1', b'1', b'1', b'1', b'1', 2,
+        'update role', 'update role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (18497811045679105, 'POST', 'blue-secure', '/manager/resource', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert resource', 'insert resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (18497870101512195, 'PUT', 'blue-secure', '/manager/resource', b'1', b'1', b'1', b'1', b'1', 2,
+        'update resource', 'update resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (18500844357943298, 'POST', 'blue-secure', '/manager/role/auth', b'1', b'1', b'1', b'1', b'1', 2,
+        'role auth', 'role auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+
+INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (18501349016633350, 'POST', 'blue-secure', '/manager/resource/auth', b'1', b'1', b'1', b'1', b'1', 2,
+        'resource auth', 'resource auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+
 -- role
 
 INSERT INTO `secure_1`.`role_1`(`id`, `name`, `description`, `is_default`, `create_time`, `update_time`, `creator`,
@@ -710,7 +760,29 @@ INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_
                                              `updater`)
 VALUES (17727973582995466, 9507591944175638, 17727776022888453, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (18497811045679106, 9507591944175638, 18497721916719105, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (18497870101512196, 9507591944175638, 18497740170362881, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (18497721916719106, 9507591944175638, 18497811045679105, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (18497740170362882, 9507591944175638, 18497870101512195, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (18501196553650180, 9507591944175638, 18500844357943298, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (18501308222832650, 9507591944175638, 18501349016633350, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- noinspection SqlDialectInspectionForFile
 
