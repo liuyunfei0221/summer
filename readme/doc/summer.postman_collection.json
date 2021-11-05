@@ -678,7 +678,7 @@
 					},
 					{
 						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiN2NjYTcyMjQxZjQ3Mzg4NjA0NzgzM2I4ZDE0MDJhZDlkOWRmYjhkMDg1MjZkYzM5NDY4NTcwYzgwNjU2ZWM5YjEwNmZiOWQ0YjU2N2QwNzNlN2ZkM2Q5ZjUxMGVlMmYxNGMxNmU5MjhkYjBkOTMzYTcxYTM5ZTIyZmI5MjAwOTYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTc3MzQ3OTYxMzg1MTIzODhfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM3OTg3MTU5MzcxLCJpIjoiMTc3MzQ3OTYxMzg1MTIzODgiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM1MzA4NzU5IiwibmJmIjoxNjM1MzA4NzU5LCJ0Ijoia0RKTlBSQThPdmUiLCJleHAiOjE2Mzc5ODcxNTksImlhdCI6MTYzNTMwODc1OSwianRpIjoiM2Y2ZFB1eUdaVzZnZWo2OVFTcTI0dDVmZFdmdm9qbnoifQ.IKsRLZpUP6lX386Bj23LdshCnER0ecz4GEA-p7DlnvqaprrW6vEq3t5q_qrDT0c1tmsQrQfQhdE7RCqjBjhpYA",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMWU5ZjJkOWUwNmNhMzNjYjYyZTk4OWQxMzZkZjAwZDM0MzMyOGQzZGI1ZmVlMTcxZjZkMmZhYmM3MTFjNjliZmU1YTVjNTYyMDFiNGQ3YWE1YjMwYTczNjljNzkyYmQ0MGZhYzc2MzEyNTA3YmE4Y2QzMjg3MDM1MWU5MjQ0OTYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTg0OTk0NDYzNDYwODg0NDlfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM4Njk3ODk5OTk3LCJpIjoiMTg0OTk0NDYzNDYwODg0NDkiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2MDE5NDk5IiwibmJmIjoxNjM2MDE5NDk5LCJ0Ijoib29EOGxLSzhGZEgiLCJleHAiOjE2Mzg2OTc4OTksImlhdCI6MTYzNjAxOTQ5OSwianRpIjoiemtUNm9NeE9XMlhPTVRrN1pHUGUzUjU5YzB6ekQ1YmwifQ.lNyQX4HU8J7zBKoyhDU1pE07395BJ5vZwh3WwKsefwkY7maESuPWdcNKZ8c0i8FLrc0votLIqUg8TS5ctoGiDA",
 						"type": "text"
 					}
 				],
@@ -687,11 +687,11 @@
 					"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10\r\n}"
 				},
 				"url": {
-					"raw": "localhost:11000/blue-member/manager/member/list",
+					"raw": "localhost:10000/blue-member/manager/member/list",
 					"host": [
 						"localhost"
 					],
-					"port": "11000",
+					"port": "10000",
 					"path": [
 						"blue-member",
 						"manager",
@@ -714,7 +714,7 @@
 					},
 					{
 						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiN2NjYTcyMjQxZjQ3Mzg4NjA0NzgzM2I4ZDE0MDJhZDlkOWRmYjhkMDg1MjZkYzM5NDY4NTcwYzgwNjU2ZWM5YjEwNmZiOWQ0YjU2N2QwNzNlN2ZkM2Q5ZjUxMGVlMmYxNGMxNmU5MjhkYjBkOTMzYTcxYTM5ZTIyZmI5MjAwOTYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTc3MzQ3OTYxMzg1MTIzODhfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM3OTg3MTU5MzcxLCJpIjoiMTc3MzQ3OTYxMzg1MTIzODgiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM1MzA4NzU5IiwibmJmIjoxNjM1MzA4NzU5LCJ0Ijoia0RKTlBSQThPdmUiLCJleHAiOjE2Mzc5ODcxNTksImlhdCI6MTYzNTMwODc1OSwianRpIjoiM2Y2ZFB1eUdaVzZnZWo2OVFTcTI0dDVmZFdmdm9qbnoifQ.IKsRLZpUP6lX386Bj23LdshCnER0ecz4GEA-p7DlnvqaprrW6vEq3t5q_qrDT0c1tmsQrQfQhdE7RCqjBjhpYA",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMWU5ZjJkOWUwNmNhMzNjYjYyZTk4OWQxMzZkZjAwZDM0MzMyOGQzZGI1ZmVlMTcxZjZkMmZhYmM3MTFjNjliZmU1YTVjNTYyMDFiNGQ3YWE1YjMwYTczNjljNzkyYmQ0MGZhYzc2MzEyNTA3YmE4Y2QzMjg3MDM1MWU5MjQ0OTYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTg0OTk0NDYzNDYwODg0NDlfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM4Njk3ODk5OTk3LCJpIjoiMTg0OTk0NDYzNDYwODg0NDkiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2MDE5NDk5IiwibmJmIjoxNjM2MDE5NDk5LCJ0Ijoib29EOGxLSzhGZEgiLCJleHAiOjE2Mzg2OTc4OTksImlhdCI6MTYzNjAxOTQ5OSwianRpIjoiemtUNm9NeE9XMlhPTVRrN1pHUGUzUjU5YzB6ekQ1YmwifQ.lNyQX4HU8J7zBKoyhDU1pE07395BJ5vZwh3WwKsefwkY7maESuPWdcNKZ8c0i8FLrc0votLIqUg8TS5ctoGiDA",
 						"type": "text"
 					}
 				],
@@ -723,11 +723,11 @@
 					"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10\r\n}"
 				},
 				"url": {
-					"raw": "localhost:11000/blue-member/manager/authority/list",
+					"raw": "localhost:10000/blue-member/manager/authority/list",
 					"host": [
 						"localhost"
 					],
-					"port": "11000",
+					"port": "10000",
 					"path": [
 						"blue-member",
 						"manager",
@@ -750,7 +750,7 @@
 					},
 					{
 						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiN2NjYTcyMjQxZjQ3Mzg4NjA0NzgzM2I4ZDE0MDJhZDlkOWRmYjhkMDg1MjZkYzM5NDY4NTcwYzgwNjU2ZWM5YjEwNmZiOWQ0YjU2N2QwNzNlN2ZkM2Q5ZjUxMGVlMmYxNGMxNmU5MjhkYjBkOTMzYTcxYTM5ZTIyZmI5MjAwOTYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTc3MzQ3OTYxMzg1MTIzODhfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM3OTg3MTU5MzcxLCJpIjoiMTc3MzQ3OTYxMzg1MTIzODgiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM1MzA4NzU5IiwibmJmIjoxNjM1MzA4NzU5LCJ0Ijoia0RKTlBSQThPdmUiLCJleHAiOjE2Mzc5ODcxNTksImlhdCI6MTYzNTMwODc1OSwianRpIjoiM2Y2ZFB1eUdaVzZnZWo2OVFTcTI0dDVmZFdmdm9qbnoifQ.IKsRLZpUP6lX386Bj23LdshCnER0ecz4GEA-p7DlnvqaprrW6vEq3t5q_qrDT0c1tmsQrQfQhdE7RCqjBjhpYA",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMWU5ZjJkOWUwNmNhMzNjYjYyZTk4OWQxMzZkZjAwZDM0MzMyOGQzZGI1ZmVlMTcxZjZkMmZhYmM3MTFjNjliZmU1YTVjNTYyMDFiNGQ3YWE1YjMwYTczNjljNzkyYmQ0MGZhYzc2MzEyNTA3YmE4Y2QzMjg3MDM1MWU5MjQ0OTYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTg0OTk0NDYzNDYwODg0NDlfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM4Njk3ODk5OTk3LCJpIjoiMTg0OTk0NDYzNDYwODg0NDkiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2MDE5NDk5IiwibmJmIjoxNjM2MDE5NDk5LCJ0Ijoib29EOGxLSzhGZEgiLCJleHAiOjE2Mzg2OTc4OTksImlhdCI6MTYzNjAxOTQ5OSwianRpIjoiemtUNm9NeE9XMlhPTVRrN1pHUGUzUjU5YzB6ekQ1YmwifQ.lNyQX4HU8J7zBKoyhDU1pE07395BJ5vZwh3WwKsefwkY7maESuPWdcNKZ8c0i8FLrc0votLIqUg8TS5ctoGiDA",
 						"type": "text"
 					}
 				],
@@ -759,11 +759,11 @@
 					"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100\r\n}"
 				},
 				"url": {
-					"raw": "localhost:11000/blue-secure/manager/resource/list",
+					"raw": "localhost:10000/blue-secure/manager/resource/list",
 					"host": [
 						"localhost"
 					],
-					"port": "11000",
+					"port": "10000",
 					"path": [
 						"blue-secure",
 						"manager",
@@ -786,7 +786,7 @@
 					},
 					{
 						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiN2NjYTcyMjQxZjQ3Mzg4NjA0NzgzM2I4ZDE0MDJhZDlkOWRmYjhkMDg1MjZkYzM5NDY4NTcwYzgwNjU2ZWM5YjEwNmZiOWQ0YjU2N2QwNzNlN2ZkM2Q5ZjUxMGVlMmYxNGMxNmU5MjhkYjBkOTMzYTcxYTM5ZTIyZmI5MjAwOTYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTc3MzQ3OTYxMzg1MTIzODhfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM3OTg3MTU5MzcxLCJpIjoiMTc3MzQ3OTYxMzg1MTIzODgiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM1MzA4NzU5IiwibmJmIjoxNjM1MzA4NzU5LCJ0Ijoia0RKTlBSQThPdmUiLCJleHAiOjE2Mzc5ODcxNTksImlhdCI6MTYzNTMwODc1OSwianRpIjoiM2Y2ZFB1eUdaVzZnZWo2OVFTcTI0dDVmZFdmdm9qbnoifQ.IKsRLZpUP6lX386Bj23LdshCnER0ecz4GEA-p7DlnvqaprrW6vEq3t5q_qrDT0c1tmsQrQfQhdE7RCqjBjhpYA",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMWU5ZjJkOWUwNmNhMzNjYjYyZTk4OWQxMzZkZjAwZDM0MzMyOGQzZGI1ZmVlMTcxZjZkMmZhYmM3MTFjNjliZmU1YTVjNTYyMDFiNGQ3YWE1YjMwYTczNjljNzkyYmQ0MGZhYzc2MzEyNTA3YmE4Y2QzMjg3MDM1MWU5MjQ0OTYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTg0OTk0NDYzNDYwODg0NDlfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM4Njk3ODk5OTk3LCJpIjoiMTg0OTk0NDYzNDYwODg0NDkiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2MDE5NDk5IiwibmJmIjoxNjM2MDE5NDk5LCJ0Ijoib29EOGxLSzhGZEgiLCJleHAiOjE2Mzg2OTc4OTksImlhdCI6MTYzNjAxOTQ5OSwianRpIjoiemtUNm9NeE9XMlhPTVRrN1pHUGUzUjU5YzB6ekQ1YmwifQ.lNyQX4HU8J7zBKoyhDU1pE07395BJ5vZwh3WwKsefwkY7maESuPWdcNKZ8c0i8FLrc0votLIqUg8TS5ctoGiDA",
 						"type": "text"
 					}
 				],
@@ -795,11 +795,11 @@
 					"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100\r\n}"
 				},
 				"url": {
-					"raw": "localhost:11000/blue-secure/manager/role/list",
+					"raw": "localhost:10000/blue-secure/manager/role/list",
 					"host": [
 						"localhost"
 					],
-					"port": "11000",
+					"port": "10000",
 					"path": [
 						"blue-secure",
 						"manager",
@@ -819,6 +819,11 @@
 						"key": "Content-Type",
 						"value": "application/json",
 						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNzUwNGM0ZjU3NGY5ZDA4ZjQ2Y2MzZDJiNzBiZjRjYmJlYzJiY2Q0OTk4ODAxZDc5MTY4OWY1ZmJkZDAwNjBjNmEzYTg2YWFhYjE3M2VhYTNhMTZiNjIxZjMxYjFkM2FmOTM4MTVkODc4OGFkN2JiMmNhNjI3ZGI4YmU3M2UxYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTg1NjQ1MjU4MzgwNDEwODlfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM4NzU4OTMyMDY4LCJpIjoiMTg1NjQ1MjU4MzgwNDEwODkiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2MDgwNTMyIiwibmJmIjoxNjM2MDgwNTMyLCJ0IjoiVjdmdDVYMEdPejAiLCJleHAiOjE2Mzg3NTg5MzIsImlhdCI6MTYzNjA4MDUzMiwianRpIjoiZVBlbTVrdlpYYWJ6aXAzWnRBZXdycE0wNk82QjVBQncifQ.SEcSjlmnJ2pf9UTWpr4eSGVnvq19ZV6chif6magMwkndaV3O6lPSFZxAp_OTbZR4smkpAviZiacqNzo2yoOqgw",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -826,11 +831,11 @@
 					"raw": "{\r\n    \"id\":9507591944175638\r\n}"
 				},
 				"url": {
-					"raw": "localhost:11000/blue-secure/manager/role/auth",
+					"raw": "localhost:10000/blue-secure/manager/role/auth",
 					"host": [
 						"localhost"
 					],
-					"port": "11000",
+					"port": "10000",
 					"path": [
 						"blue-secure",
 						"manager",
@@ -850,6 +855,11 @@
 						"key": "Content-Type",
 						"value": "application/json",
 						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNzUwNGM0ZjU3NGY5ZDA4ZjQ2Y2MzZDJiNzBiZjRjYmJlYzJiY2Q0OTk4ODAxZDc5MTY4OWY1ZmJkZDAwNjBjNmEzYTg2YWFhYjE3M2VhYTNhMTZiNjIxZjMxYjFkM2FmOTM4MTVkODc4OGFkN2JiMmNhNjI3ZGI4YmU3M2UxYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTg1NjQ1MjU4MzgwNDEwODlfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM4NzU4OTMyMDY4LCJpIjoiMTg1NjQ1MjU4MzgwNDEwODkiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2MDgwNTMyIiwibmJmIjoxNjM2MDgwNTMyLCJ0IjoiVjdmdDVYMEdPejAiLCJleHAiOjE2Mzg3NTg5MzIsImlhdCI6MTYzNjA4MDUzMiwianRpIjoiZVBlbTVrdlpYYWJ6aXAzWnRBZXdycE0wNk82QjVBQncifQ.SEcSjlmnJ2pf9UTWpr4eSGVnvq19ZV6chif6magMwkndaV3O6lPSFZxAp_OTbZR4smkpAviZiacqNzo2yoOqgw",
+						"type": "text"
 					}
 				],
 				"body": {
@@ -857,16 +867,156 @@
 					"raw": "{\r\n    \"id\":9506121983229956\r\n}"
 				},
 				"url": {
-					"raw": "localhost:11000/blue-secure/manager/resource/auth",
+					"raw": "localhost:10000/blue-secure/manager/resource/auth",
 					"host": [
 						"localhost"
 					],
-					"port": "11000",
+					"port": "10000",
 					"path": [
 						"blue-secure",
 						"manager",
 						"resource",
 						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "新增角色",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNzUwNGM0ZjU3NGY5ZDA4ZjQ2Y2MzZDJiNzBiZjRjYmJlYzJiY2Q0OTk4ODAxZDc5MTY4OWY1ZmJkZDAwNjBjNmEzYTg2YWFhYjE3M2VhYTNhMTZiNjIxZjMxYjFkM2FmOTM4MTVkODc4OGFkN2JiMmNhNjI3ZGI4YmU3M2UxYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTg1NjQ1MjU4MzgwNDEwODlfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM4NzU4OTMyMDY4LCJpIjoiMTg1NjQ1MjU4MzgwNDEwODkiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2MDgwNTMyIiwibmJmIjoxNjM2MDgwNTMyLCJ0IjoiVjdmdDVYMEdPejAiLCJleHAiOjE2Mzg3NTg5MzIsImlhdCI6MTYzNjA4MDUzMiwianRpIjoiZVBlbTVrdlpYYWJ6aXAzWnRBZXdycE0wNk82QjVBQncifQ.SEcSjlmnJ2pf9UTWpr4eSGVnvq19ZV6chif6magMwkndaV3O6lPSFZxAp_OTbZR4smkpAviZiacqNzo2yoOqgw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"testaaa\",\r\n    \"description\":\"test aaaaaaa\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:10000/blue-secure/manager/role",
+					"host": [
+						"localhost"
+					],
+					"port": "10000",
+					"path": [
+						"blue-secure",
+						"manager",
+						"role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "修改角色",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNzUwNGM0ZjU3NGY5ZDA4ZjQ2Y2MzZDJiNzBiZjRjYmJlYzJiY2Q0OTk4ODAxZDc5MTY4OWY1ZmJkZDAwNjBjNmEzYTg2YWFhYjE3M2VhYTNhMTZiNjIxZjMxYjFkM2FmOTM4MTVkODc4OGFkN2JiMmNhNjI3ZGI4YmU3M2UxYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTg1NjQ1MjU4MzgwNDEwODlfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM4NzU4OTMyMDY4LCJpIjoiMTg1NjQ1MjU4MzgwNDEwODkiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2MDgwNTMyIiwibmJmIjoxNjM2MDgwNTMyLCJ0IjoiVjdmdDVYMEdPejAiLCJleHAiOjE2Mzg3NTg5MzIsImlhdCI6MTYzNjA4MDUzMiwianRpIjoiZVBlbTVrdlpYYWJ6aXAzWnRBZXdycE0wNk82QjVBQncifQ.SEcSjlmnJ2pf9UTWpr4eSGVnvq19ZV6chif6magMwkndaV3O6lPSFZxAp_OTbZR4smkpAviZiacqNzo2yoOqgw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":18601470072979457,\r\n    \"name\":\"testaa\",\r\n    \"description\":\"test aaaaaaa\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:10000/blue-secure/manager/role",
+					"host": [
+						"localhost"
+					],
+					"port": "10000",
+					"path": [
+						"blue-secure",
+						"manager",
+						"role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "新增资源",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNzUwNGM0ZjU3NGY5ZDA4ZjQ2Y2MzZDJiNzBiZjRjYmJlYzJiY2Q0OTk4ODAxZDc5MTY4OWY1ZmJkZDAwNjBjNmEzYTg2YWFhYjE3M2VhYTNhMTZiNjIxZjMxYjFkM2FmOTM4MTVkODc4OGFkN2JiMmNhNjI3ZGI4YmU3M2UxYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTg1NjQ1MjU4MzgwNDEwODlfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM4NzU4OTMyMDY4LCJpIjoiMTg1NjQ1MjU4MzgwNDEwODkiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2MDgwNTMyIiwibmJmIjoxNjM2MDgwNTMyLCJ0IjoiVjdmdDVYMEdPejAiLCJleHAiOjE2Mzg3NTg5MzIsImlhdCI6MTYzNjA4MDUzMiwianRpIjoiZVBlbTVrdlpYYWJ6aXAzWnRBZXdycE0wNk82QjVBQncifQ.SEcSjlmnJ2pf9UTWpr4eSGVnvq19ZV6chif6magMwkndaV3O6lPSFZxAp_OTbZR4smkpAviZiacqNzo2yoOqgw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue_secure\",\r\n    \"uri\":\"/test/test\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource\",\r\n    \"description\":\"a test resource\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:10000/blue-secure/manager/resource",
+					"host": [
+						"localhost"
+					],
+					"port": "10000",
+					"path": [
+						"blue-secure",
+						"manager",
+						"resource"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "修改资源",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNzUwNGM0ZjU3NGY5ZDA4ZjQ2Y2MzZDJiNzBiZjRjYmJlYzJiY2Q0OTk4ODAxZDc5MTY4OWY1ZmJkZDAwNjBjNmEzYTg2YWFhYjE3M2VhYTNhMTZiNjIxZjMxYjFkM2FmOTM4MTVkODc4OGFkN2JiMmNhNjI3ZGI4YmU3M2UxYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTg1NjQ1MjU4MzgwNDEwODlfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM4NzU4OTMyMDY4LCJpIjoiMTg1NjQ1MjU4MzgwNDEwODkiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2MDgwNTMyIiwibmJmIjoxNjM2MDgwNTMyLCJ0IjoiVjdmdDVYMEdPejAiLCJleHAiOjE2Mzg3NTg5MzIsImlhdCI6MTYzNjA4MDUzMiwianRpIjoiZVBlbTVrdlpYYWJ6aXAzWnRBZXdycE0wNk82QjVBQncifQ.SEcSjlmnJ2pf9UTWpr4eSGVnvq19ZV6chif6magMwkndaV3O6lPSFZxAp_OTbZR4smkpAviZiacqNzo2yoOqgw",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":18599154011865089,\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue-secure\",\r\n    \"uri\":\"/manager/role/auth2\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource111\",\r\n    \"description\":\"a test resource\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:10000/blue-secure/manager/resource",
+					"host": [
+						"localhost"
+					],
+					"port": "10000",
+					"path": [
+						"blue-secure",
+						"manager",
+						"resource"
 					]
 				}
 			},
