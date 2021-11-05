@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class NonValueParam implements Serializable {
     private static final long serialVersionUID = -3647476377407752861L;
 
-    private String value;
+    private String value = "";
 
     public NonValueParam() {
     }

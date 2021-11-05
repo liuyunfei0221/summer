@@ -48,7 +48,7 @@
         <elasticsearch.version>7.15.1</elasticsearch.version>
         <zxing.version>3.4.1</zxing.version>
         <caffeine.version>3.0.4</caffeine.version>
-        <apache.poi.version>5.0.0</apache.poi.version>
+        <apache.poi.version>5.1.0</apache.poi.version>
         <spring-kafka.version>2.7.8</spring-kafka.version>
         <pulsar.version>2.8.1</pulsar.version>
         <rocket.version>4.9.2</rocket.version>

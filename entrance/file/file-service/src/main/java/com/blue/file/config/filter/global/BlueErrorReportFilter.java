@@ -3,14 +3,12 @@ package com.blue.file.config.filter.global;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.model.base.DataEvent;
-import com.blue.file.common.FluxCommonFactory;
+import com.blue.base.model.exps.BlueException;
 import com.blue.file.common.request.body.RequestBodyGetter;
 import com.blue.file.component.RequestEventReporter;
 import com.blue.file.config.deploy.ErrorReportDeploy;
-import com.google.gson.Gson;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -21,14 +19,20 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.function.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
+import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.base.constant.base.CommonException.UNSUPPORTED_MEDIA_TYPE_EXP;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
+import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
+import static com.blue.file.common.FluxCommonFactory.MESSAGE_READERS;
 import static com.blue.file.common.FluxCommonFactory.extractValuesToBind;
 import static com.blue.file.config.filter.BlueFilterOrder.BLUE_ERROR_REPORT;
 import static java.lang.String.valueOf;
@@ -60,9 +64,6 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
         withRequestBodyContentTypes = new HashSet<>(errorReportDeploy.getErrorReportWithRequestBodyContentTypes());
     }
 
-    private static final Consumer<String> SCHEMA_ASSERTER = FluxCommonFactory.SCHEMA_ASSERTER;
-    private static final Consumer<String> METHOD_VALUE_ASSERTER = FluxCommonFactory.METHOD_VALUE_ASSERTER;
-
     private static final String AUTHORIZATION = BlueHeader.AUTHORIZATION.name;
 
     private static Set<String> withRequestBodyContentTypes;
@@ -70,25 +71,13 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
     private static final Predicate<String> WITH_REQUEST_BODY_PRE = contentType ->
             withRequestBodyContentTypes.contains(contentType);
 
-    private static final List<HttpMessageReader<?>> MESSAGE_READERS = FluxCommonFactory.MESSAGE_READERS;
-
-    private static final Supplier<Long> TIME_STAMP_GETTER = FluxCommonFactory.TIME_STAMP_GETTER;
-
-    private static final Gson GSON = FluxCommonFactory.GSON;
-
-    private static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = FluxCommonFactory.THROWABLE_CONVERTER;
-
-    private static final Supplier<String> RANDOM_KEY_GENERATOR = FluxCommonFactory.RANDOM_KEY_GETTER;
-
     private final Map<String, RequestBodyGetter> REQUEST_BODY_GETTER_HOLDER = new HashMap<>(4, 1.0f);
-
-    public static final BiFunction<HttpHeaders, String, String> HEADER_VALUE_GETTER = FluxCommonFactory.HEADER_VALUE_GETTER;
 
     private final Function<HttpHeaders, RequestBodyGetter> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
         RequestBodyGetter processor = REQUEST_BODY_GETTER_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, HttpHeaders.CONTENT_TYPE));
 
         if (processor == null)
-            throw UNSUPPORTED_MEDIA_TYPE_EXP.exp;
+            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message);
 
         return processor;
     };
@@ -129,7 +118,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
         String methodValue = request.getMethodValue();
         METHOD_VALUE_ASSERTER.accept(methodValue);
 
-        String requestId = RANDOM_KEY_GENERATOR.get();
+        String requestId = RANDOM_KEY_GETTER.get();
         String clientIp = getIp(request);
 
         LOGGER.info("blueErrorReportFilter -> requestId = {}, clientIp = {}", requestId, clientIp);

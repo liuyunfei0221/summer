@@ -1,12 +1,13 @@
 package com.blue.base.common.base;
 
+import com.blue.base.model.exps.BlueException;
 import reactor.util.Logger;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.toList;
@@ -90,7 +91,7 @@ public final class MathProcessor {
      */
     public static long getGreatestCommonDivisor(long a, long b) {
         if (a < 0L || b < 0L)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         if (a == 0L || b == 0L)
             return 0L;

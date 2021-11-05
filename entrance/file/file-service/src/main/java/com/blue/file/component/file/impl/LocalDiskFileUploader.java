@@ -23,8 +23,8 @@ import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
-import static com.blue.base.constant.base.CommonException.INTERNAL_SERVER_ERROR_EXP;
-import static com.blue.base.constant.base.CommonException.PAYLOAD_TOO_LARGE_EXP;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseElement.PAYLOAD_TOO_LARGE;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
 import static java.lang.System.currentTimeMillis;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -163,10 +163,10 @@ public final class LocalDiskFileUploader implements FileUploader {
                                 bufferedOutputStream.write(array);
                             } catch (IOException e) {
                                 LOGGER.error("upload failed, e -> " + e);
-                                error(INTERNAL_SERVER_ERROR_EXP.exp);
+                                error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message));
                             }
                         } else {
-                            error(PAYLOAD_TOO_LARGE_EXP.exp);
+                            error(new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message));
                         }
                         array = null;
                     }).collectList()

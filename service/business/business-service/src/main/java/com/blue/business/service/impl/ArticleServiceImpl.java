@@ -1,5 +1,6 @@
 package com.blue.business.service.impl;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.business.repository.entity.Article;
 import com.blue.business.repository.mapper.ArticleMapper;
 import com.blue.business.repository.template.ArticleRepository;
@@ -13,7 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.blue.base.common.base.Asserter.isValidIdentity;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -55,8 +57,8 @@ public class ArticleServiceImpl implements ArticleService {
         LOGGER.info("id = {}", id);
         if (isValidIdentity(id))
             return ofNullable(articleMapper.selectByPrimaryKey(id));
-        
-        throw INVALID_IDENTITY_EXP.exp;
+
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
     }
 
     /**

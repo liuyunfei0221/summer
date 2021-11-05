@@ -350,7 +350,6 @@
         `module` = #{module,jdbcType=VARCHAR}
         AND
         `uri` = #{uri,jdbcType=VARCHAR}
-        LIMIT 1;
     </select>
 
     <select id="selectByName" resultMap="BaseResultMap">
@@ -360,7 +359,6 @@
         resource FORCE INDEX(idx_name)
         WHERE
         `name` = #{name,jdbcType=VARCHAR}
-        LIMIT 1;
     </select>
 
 </mapper>

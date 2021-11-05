@@ -2,6 +2,7 @@ package com.blue.secure.component.verify;
 
 import com.blue.base.constant.base.CacheKey;
 import com.blue.base.constant.base.RandomType;
+import com.blue.base.model.exps.BlueException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import reactor.util.Logger;
@@ -12,6 +13,8 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.VALIDATION;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -52,13 +55,13 @@ public final class VerificationCodeProcessor {
 
     public VerificationCodeProcessor(StringRedisTemplate stringRedisTemplate, RandomType type, Integer length, Long expireMillis) {
         if (stringRedisTemplate == null)
-            throw new RuntimeException("stringRedisTemplate can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stringRedisTemplate can't be null");
         if (type == null)
-            throw new RuntimeException("type can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type can't be null");
         if (length == null || length < 1)
-            throw new RuntimeException("length can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "length can't be null or less than 1");
         if (expireMillis == null || expireMillis < 1L)
-            throw new RuntimeException("expireMillis can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "expireMillis can't be null or less than 1");
 
         this.stringRedisTemplate = stringRedisTemplate;
         this.DEFAULT_TYPE = type;
@@ -133,7 +136,7 @@ public final class VerificationCodeProcessor {
                             ofNullable(expireMillis).map(MILLIS_DURATION_GENERATOR).orElse(DEFAULT_EXPIRE_DURATION));
             return code;
         }
-        throw new RuntimeException("key can't be blank");
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "key can't be blank");
     }
 
     /**
@@ -147,7 +150,7 @@ public final class VerificationCodeProcessor {
         if (hasText(key) && hasText(code))
             return ofNullable(stringRedisTemplate.execute(SCRIPT, KEYS_GENERATOR.apply(key), code)).orElse(false);
 
-        throw new RuntimeException("key or code can't be blank");
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "key or code can't be blank");
     }
 
 }

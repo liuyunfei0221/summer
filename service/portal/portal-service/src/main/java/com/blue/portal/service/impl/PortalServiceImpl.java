@@ -1,8 +1,8 @@
 package com.blue.portal.service.impl;
 
-import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.portal.BulletinType;
+import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.portal.api.model.BulletinInfo;
@@ -12,7 +12,6 @@ import com.blue.portal.repository.entity.Bulletin;
 import com.blue.portal.service.inter.BulletinService;
 import com.blue.portal.service.inter.PortalService;
 import com.github.benmanes.caffeine.cache.Cache;
-import com.google.gson.Gson;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -30,10 +29,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.ConstantProcessor.getBulletinTypeByIdentity;
 import static com.blue.base.constant.base.CacheKey.PORTALS_PRE;
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.base.SyncKey.PORTALS_REFRESH_PRE;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
@@ -87,8 +87,6 @@ public class PortalServiceImpl implements PortalService {
         this.caffeineDeploy = caffeineDeploy;
     }
 
-    private static final Gson GSON = CommonFunctions.GSON;
-
     private static final long WAIT_MILLIS_FOR_THREAD_SLEEP = BlueNumericalValue.WAIT_MILLIS_FOR_THREAD_SLEEP.value;
     private static final long MAX_WAIT_MILLIS_FOR_REDISSON_SYNC = BlueNumericalValue.MAX_WAIT_MILLIS_FOR_REDISSON_SYNC.value;
 
@@ -101,13 +99,13 @@ public class PortalServiceImpl implements PortalService {
 
     private static final Function<String, BulletinType> TYPE_CONVERTER = typeStr -> {
         if (isBlank(typeStr))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         int type;
         try {
             type = parseInt(typeStr);
         } catch (NumberFormatException e) {
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
         }
 
         return getBulletinTypeByIdentity(type);

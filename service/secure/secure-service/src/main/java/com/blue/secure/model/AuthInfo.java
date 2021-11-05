@@ -1,8 +1,10 @@
 package com.blue.secure.model;
 
+import com.blue.base.model.exps.BlueException;
+
 import java.io.Serializable;
 
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
  * member auth info/json str in redis cache
@@ -34,11 +36,11 @@ public final class AuthInfo implements Serializable {
 
     public AuthInfo(String jwt, Long roleId, String pubKey) {
         if (jwt == null || "".equals(jwt))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (roleId == null || roleId < 1L)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (pubKey == null || "".equals(pubKey))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         this.jwt = jwt;
         this.roleId = roleId;
@@ -51,7 +53,7 @@ public final class AuthInfo implements Serializable {
 
     public void setJwt(String jwt) {
         if (jwt == null || "".equals(jwt))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         this.jwt = jwt;
     }
@@ -62,7 +64,7 @@ public final class AuthInfo implements Serializable {
 
     public void setRoleId(Long roleId) {
         if (roleId == null || roleId < 1L)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         this.roleId = roleId;
     }
@@ -73,7 +75,7 @@ public final class AuthInfo implements Serializable {
 
     public void setPubKey(String pubKey) {
         if (pubKey == null || "".equals(pubKey))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         this.pubKey = pubKey;
     }

@@ -1,5 +1,6 @@
 package com.blue.es.api.generator;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.es.api.conf.EsConf;
 import com.blue.es.api.conf.EsNode;
 import com.blue.es.api.conf.Server;
@@ -15,6 +16,7 @@ import reactor.util.Logger;
 
 import java.util.*;
 
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -48,14 +50,14 @@ public final class BlueEsGenerator {
 
                     Server server = esNode.getServer();
                     if (server == null)
-                        throw new RuntimeException("server can't be null");
+                        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "server can't be null");
 
                     String serverHost = server.getHost();
                     Integer serverPort = server.getPort();
                     String serverSchema = server.getSchema();
 
                     if (isBlank(serverHost) || isBlank(serverSchema) || serverPort == null || serverPort < 1)
-                        throw new RuntimeException("serverHost or serverSchema can't be blank, serverPort can't be null or less than 1");
+                        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverHost or serverSchema can't be blank, serverPort can't be null or less than 1");
 
                     HttpHost host = new HttpHost(serverHost, serverPort, serverSchema);
 
@@ -114,7 +116,7 @@ public final class BlueEsGenerator {
      */
     public static ElasticsearchRestTemplate generateElasticsearchTemplate(RestHighLevelClient restHighLevelClient) {
         if (restHighLevelClient == null)
-            throw new RuntimeException("restHighLevelClient can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "restHighLevelClient can't be null");
         return new ElasticsearchRestTemplate(restHighLevelClient);
     }
 
@@ -125,11 +127,11 @@ public final class BlueEsGenerator {
      */
     private static void confAsserter(EsConf conf) {
         if (conf == null)
-            throw new RuntimeException("conf can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         List<EsNode> esNodes = conf.getEsNodes();
         if (isEmpty(esNodes))
-            throw new RuntimeException("esNodes can't be empty");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "esNodes can't be empty");
     }
 
 }

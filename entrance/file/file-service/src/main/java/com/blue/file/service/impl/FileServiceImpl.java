@@ -1,6 +1,7 @@
 package com.blue.file.service.impl;
 
 import com.blue.base.constant.base.Status;
+import com.blue.base.model.exps.BlueException;
 import com.blue.file.api.model.FileUploadResult;
 import com.blue.file.component.file.inter.FileUploader;
 import com.blue.file.config.deploy.FileDeploy;
@@ -24,8 +25,9 @@ import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_WRITE;
-import static com.blue.base.constant.base.CommonException.EMPTY_PARAM_EXP;
-import static com.blue.base.constant.base.CommonException.PAYLOAD_TOO_LARGE_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.PAYLOAD_TOO_LARGE;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
@@ -103,14 +105,14 @@ public class FileServiceImpl implements FileService {
 
         List<Part> resources = valueMap.get(ATTR_NAME);
         if (isEmpty(resources))
-            throw EMPTY_PARAM_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         int size = resources.size();
         if (size == 1 && "".equals(((FilePart) (resources.get(0))).filename()))
-            throw EMPTY_PARAM_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         if (size > CURRENT_SIZE_THRESHOLD)
-            throw PAYLOAD_TOO_LARGE_EXP.exp;
+            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
 
         return fromIterable(resources)
                 .flatMap(localDiskFileUploader::upload)

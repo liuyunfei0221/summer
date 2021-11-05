@@ -1,8 +1,10 @@
 package com.blue.secure.api.model;
 
+import com.blue.base.model.exps.BlueException;
+
 import java.io.Serializable;
 
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
  * member payload in jwt
@@ -46,17 +48,17 @@ public final class MemberPayload implements Serializable {
 
     public MemberPayload(String gamma, String keyId, String id, String loginType, String deviceType, String loginTime) {
         if (gamma == null || "".equals(gamma))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (keyId == null || "".equals(keyId))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (id == null || "".equals(id))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (loginType == null || "".equals(loginType))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (deviceType == null || "".equals(deviceType))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (loginTime == null || "".equals(loginTime))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         this.gamma = gamma;
         this.keyId = keyId;

@@ -24,7 +24,7 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
  */
 @SuppressWarnings({"DefaultAnnotationParam"})
 @Configuration
-@EnableTransactionManagement(proxyTargetClass = false, mode = PROXY, order = LOWEST_PRECEDENCE)
+@EnableTransactionManagement(proxyTargetClass = true, mode = PROXY, order = LOWEST_PRECEDENCE)
 public class BlueDataAccessConfiguration {
 
     private final DataAccessConf dataAccessConf;

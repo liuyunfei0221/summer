@@ -1,24 +1,19 @@
 package com.blue.file.config.filter.global;
 
-import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.common.content.common.RequestBodyProcessor;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.model.base.DataEvent;
-import com.blue.file.common.FluxCommonFactory;
+import com.blue.base.model.exps.BlueException;
 import com.blue.file.common.request.body.ReportWithRequestBodyProcessor;
 import com.blue.file.component.RequestEventReporter;
 import com.blue.file.config.deploy.EncryptDeploy;
-import com.google.gson.Gson;
 import org.reactivestreams.Publisher;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;
@@ -35,19 +30,15 @@ import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import static com.blue.base.common.base.CommonFunctions.decryptRequestBody;
-import static com.blue.base.common.base.CommonFunctions.encryptResponseBody;
+import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.base.constant.base.CommonException.UNSUPPORTED_MEDIA_TYPE_EXP;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
-import static com.blue.file.common.FluxCommonFactory.extractValuesToBind;
+import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
+import static com.blue.file.common.FluxCommonFactory.*;
 import static com.blue.file.config.filter.BlueFilterOrder.BLUE_BODY_PROCESS_AND_DATA_REPORT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -83,18 +74,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         this.requestEventReporter = requestEventReporter;
         this.encryptDeploy = encryptDeploy;
     }
-
-    private static final List<HttpMessageReader<?>> MESSAGE_READERS = FluxCommonFactory.MESSAGE_READERS;
-
-    private static final BiConsumer<Throwable, ServerHttpRequestDecorator> ON_ERROR_CONSUMER = FluxCommonFactory.ON_ERROR_CONSUMER;
-
-    private static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = FluxCommonFactory.THROWABLE_CONVERTER;
-
-    private static final Gson GSON = CommonFunctions.GSON;
-
-    private static final Supplier<Long> TIME_STAMP_GETTER = FluxCommonFactory.TIME_STAMP_GETTER;
-
-    private static final DataBufferFactory DATA_BUFFER_FACTORY = FluxCommonFactory.DATA_BUFFER_FACTORY;
 
     private static long EXPIRED_SECONDS;
 
@@ -208,17 +187,13 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                 ).build());
     }
 
-    private static final BiFunction<ServerHttpRequest, Mono<String>, ServerHttpRequestDecorator> REQUEST_DECORATOR_GENERATOR = FluxCommonFactory.REQUEST_DECORATOR_GENERATOR;
-
     private final Map<String, ReportWithRequestBodyProcessor> REQUEST_BODY_PROCESSOR_HOLDER = new HashMap<>(4, 1.0f);
-
-    public static final BiFunction<HttpHeaders, String, String> HEADER_VALUE_GETTER = FluxCommonFactory.HEADER_VALUE_GETTER;
 
     private final Function<HttpHeaders, ReportWithRequestBodyProcessor> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
         ReportWithRequestBodyProcessor processor = REQUEST_BODY_PROCESSOR_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE));
 
         if (processor == null)
-            throw UNSUPPORTED_MEDIA_TYPE_EXP.exp;
+            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message);
 
         return processor;
     };

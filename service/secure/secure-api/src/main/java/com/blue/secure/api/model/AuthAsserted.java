@@ -1,10 +1,11 @@
 package com.blue.secure.api.model;
 
 import com.blue.base.model.base.Access;
+import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
  * auth assert result
@@ -66,7 +67,7 @@ public final class AuthAsserted implements Serializable {
 
     public AuthAsserted(boolean certificate, boolean requestUnDecryption, boolean responseUnEncryption, boolean existenceRequestBody, boolean existenceResponseBody, String secKey, Access access, String message) {
         if (secKey == null || access == null)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         this.certificate = certificate;
         this.requestUnDecryption = requestUnDecryption;

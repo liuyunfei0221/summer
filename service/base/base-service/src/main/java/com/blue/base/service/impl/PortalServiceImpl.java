@@ -2,6 +2,7 @@ package com.blue.base.service.impl;
 
 import com.blue.base.api.model.BulletinInfo;
 import com.blue.base.constant.portal.BulletinType;
+import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Bulletin;
 import com.blue.base.service.inter.BulletinService;
 import com.blue.base.service.inter.PortalService;
@@ -15,7 +16,7 @@ import java.util.function.Function;
 
 import static com.blue.base.common.base.Asserter.isBlank;
 import static com.blue.base.common.base.ConstantProcessor.getBulletinTypeByIdentity;
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static java.lang.Integer.parseInt;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -46,14 +47,14 @@ public class PortalServiceImpl implements PortalService {
 
     private static final Function<String, BulletinType> TYPE_CONVERTER = typeStr -> {
         if (isBlank(typeStr)) {
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         }
 
         int type;
         try {
             type = parseInt(typeStr);
         } catch (NumberFormatException e) {
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         }
 
         return getBulletinTypeByIdentity(type);

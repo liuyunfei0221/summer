@@ -1,7 +1,7 @@
 package com.blue.file.config.filter.global;
 
 import com.blue.base.constant.base.BlueDataAttrKey;
-import com.blue.file.common.FluxCommonFactory;
+import com.blue.base.model.exps.BlueException;
 import com.blue.file.config.deploy.RequestAttributeDeploy;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
@@ -18,11 +18,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.base.CommonException.PAYLOAD_TOO_LARGE_EXP;
-import static com.blue.base.constant.base.CommonException.UNSUPPORTED_MEDIA_TYPE_EXP;
+import static com.blue.base.common.base.CommonFunctions.HEADER_VALUE_GETTER;
+import static com.blue.base.constant.base.ResponseElement.PAYLOAD_TOO_LARGE;
+import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
 import static com.blue.file.config.filter.BlueFilterOrder.BLUE_REQUEST_ATTR;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
@@ -53,16 +53,14 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
 
     private static final Consumer<ServerHttpRequest> URI_ASSERTER = request -> {
         if (request.getURI().getRawPath().length() > MAX_URI_LENGTH)
-            throw PAYLOAD_TOO_LARGE_EXP.exp;
+            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
     };
-
-    public static final BiFunction<HttpHeaders, String, String> HEADER_VALUE_GETTER = FluxCommonFactory.HEADER_VALUE_GETTER;
 
     private static final Consumer<HttpHeaders> CONTENT_TYPE_ASSERTER = headers -> {
         if (VALID_CONTENT_TYPES.contains(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE)))
             return;
 
-        throw UNSUPPORTED_MEDIA_TYPE_EXP.exp;
+        throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message);
     };
 
     private static final Consumer<ServerHttpRequest> HEADER_ASSERTER = request -> {
@@ -76,13 +74,13 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
 
         for (Map.Entry<String, List<String>> headerEntry : headers.entrySet()) {
             if (++headerCount > MAX_HEADER_COUNT)
-                throw PAYLOAD_TOO_LARGE_EXP.exp;
+                throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
 
             headerValues = headerEntry.getValue();
             for (String value : headerValues) {
                 headerLength += value.getBytes().length;
                 if (headerLength > MAX_HEADER_LENGTH)
-                    throw PAYLOAD_TOO_LARGE_EXP.exp;
+                    throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
             }
         }
     };
@@ -90,7 +88,7 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
     private static final Consumer<ServerHttpRequest> CONTENT_ASSERTER = request -> {
         if (ofNullable(request.getHeaders().getFirst(CONTENT_LENGTH))
                 .map(Integer::valueOf).orElse(1) > MAX_CONTENT_LENGTH)
-            throw PAYLOAD_TOO_LARGE_EXP.exp;
+            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
     };
 
     @PostConstruct

@@ -1,5 +1,6 @@
 package com.blue.redis.api.generator;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.redis.api.conf.RedisConf;
 import com.blue.redis.constant.ServerMode;
 import io.lettuce.core.ClientOptions;
@@ -22,6 +23,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static io.lettuce.core.protocol.DecodeBufferPolicies.ratio;
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -58,7 +60,7 @@ public final class BlueRedisGenerator {
             case SINGLE:
                 return generateStandConfiguration(redisConf);
             default:
-                throw new RuntimeException("unknown serverMode -> " + serverMode);
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
         }
     }
 
@@ -225,7 +227,7 @@ public final class BlueRedisGenerator {
         confAsserter(redisConf);
 
         if (Stream.of(clz.getInterfaces()).noneMatch(inter -> Serializable.class.getName().equals(inter.getName())))
-            throw new RuntimeException("clz must be a implemented of serializable");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz must be a implemented of serializable");
 
         RedisSerializationContext.RedisSerializationContextBuilder<String, T> contextBuilder =
                 RedisSerializationContext.newSerializationContext();
@@ -261,7 +263,7 @@ public final class BlueRedisGenerator {
                 redisClusterConfiguration.addClusterNode(new RedisNode(hostAndPort[0], parseInt(hostAndPort[1])));
             }
         } catch (Exception e) {
-            throw new IllegalArgumentException("redis init error,check args, e = {}", e);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redis init error,check args, e = " + e);
         }
 
         ofNullable(redisConf.getMaxRedirects())
@@ -298,25 +300,25 @@ public final class BlueRedisGenerator {
      */
     private static void confAsserter(RedisConf conf) {
         if (conf == null)
-            throw new RuntimeException("conf can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         ServerMode serverMode = conf.getServerMode();
         if (serverMode == null)
-            throw new RuntimeException("serverMode can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
 
         switch (serverMode) {
             case CLUSTER:
                 List<String> nodes = conf.getNodes();
                 if (isEmpty(nodes))
-                    throw new RuntimeException("nodes can't be null or empty");
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty");
                 break;
             case SINGLE:
                 Integer port = conf.getPort();
                 if (isBlank(conf.getHost()) || port == null || port < 1)
-                    throw new RuntimeException("host can't be null or '', port can't be null or less than 1");
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1");
                 break;
             default:
-                throw new RuntimeException("unknown serverMode -> " + serverMode);
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
         }
     }
 

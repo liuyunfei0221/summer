@@ -1,7 +1,10 @@
 package com.blue.secure.model;
 
+import com.blue.base.model.exps.BlueException;
+
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 
 /**
  * params for update a exist role
@@ -23,14 +26,14 @@ public class RoleUpdateParam extends RoleInsertParam {
     public RoleUpdateParam(String name, String description, Long id) {
         super(name, description);
         if (isInvalidIdentity(id))
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         this.id = id;
     }
 
     public Long getId() {
         if (isInvalidIdentity(id))
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return id;
     }

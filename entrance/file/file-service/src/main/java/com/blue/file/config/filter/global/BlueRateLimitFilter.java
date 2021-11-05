@@ -1,13 +1,11 @@
 package com.blue.file.config.filter.global;
 
-import com.blue.base.common.reactive.ReactiveCommonFunctions;
 import com.blue.base.constant.base.BlueDataAttrKey;
-import com.blue.file.common.FluxCommonFactory;
+import com.blue.base.model.exps.BlueException;
 import com.blue.file.config.deploy.RateLimiterDeploy;
 import org.springframework.core.Ordered;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -22,7 +20,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.blue.base.constant.base.CommonException.TOO_MANY_REQUESTS_EXP;
+import static com.blue.base.common.base.CommonFunctions.LIMIT_KEYS_GENERATOR;
+import static com.blue.base.common.reactive.ReactiveCommonFunctions.REQUEST_IDENTITY_GETTER;
+import static com.blue.base.constant.base.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.file.config.filter.BlueFilterOrder.BLUE_RATE_LIMIT;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.RATE_LIMITER;
@@ -54,11 +54,7 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
 
     private static final String SCRIPT_STR = RATE_LIMITER.str;
 
-    private static final Function<ServerHttpRequest, String> REQUEST_IDENTITY_GETTER = ReactiveCommonFunctions.REQUEST_IDENTITY_GETTER;
-
     private static final RedisScript<Long> SCRIPT = generateScriptByScriptStr(SCRIPT_STR, Long.class);
-
-    private static final Function<String, List<String>> LIMIT_KEYS_GENERATOR = FluxCommonFactory.LIMIT_KEYS_GENERATOR;
 
     private static String REPLENISH_RATE, BURST_CAPACITY;
 
@@ -99,7 +95,7 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
                         return chain.filter(exchange);
 
                     LOGGER.error("has been limited -> requestId = {}, limitKey = {}", requestId, limitKey);
-                    return error(TOO_MANY_REQUESTS_EXP.exp);
+                    return error(new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, TOO_MANY_REQUESTS.message));
                 });
     }
 

@@ -2,6 +2,7 @@ package com.blue.data.common.marker;
 
 import com.blue.base.constant.data.StatisticsRange;
 import com.blue.base.constant.data.StatisticsType;
+import com.blue.base.model.exps.BlueException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
@@ -16,8 +17,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.blue.base.common.base.Asserter.isNotBlank;
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -54,7 +55,7 @@ public final class StatisticsMarker {
 
     private static final BiConsumer<StatisticsType, StatisticsRange> PARAMS_ASSERTER = (type, range) -> {
         if (type == null || range == null)
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
     };
 
     private static final BiFunction<StatisticsType, StatisticsRange, String> HOLDER_KEY_GENERATOR = (type, range) ->
@@ -112,7 +113,7 @@ public final class StatisticsMarker {
             return stringRedisTemplate.opsForHyperLogLog()
                     .add(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange), value) > 0L;
 
-        throw BAD_REQUEST_EXP.exp;
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
     }
 
     /**

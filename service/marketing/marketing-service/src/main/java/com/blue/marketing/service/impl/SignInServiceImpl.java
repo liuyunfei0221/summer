@@ -1,10 +1,10 @@
 package com.blue.marketing.service.impl;
 
-import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.base.CacheKey;
 import com.blue.base.constant.base.Symbol;
 import com.blue.base.model.base.KeyExpireParam;
+import com.blue.base.model.exps.BlueException;
 import com.blue.marketing.api.model.*;
 import com.blue.marketing.config.deploy.BlockingDeploy;
 import com.blue.marketing.event.producer.MarketingEventProducer;
@@ -13,7 +13,6 @@ import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.entity.SignRewardTodayRelation;
 import com.blue.marketing.service.inter.RewardService;
 import com.blue.marketing.service.inter.SignInService;
-import com.google.gson.Gson;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -34,8 +33,11 @@ import java.util.function.Supplier;
 
 import static com.blue.base.common.base.Asserter.isEmpty;
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
-import static com.blue.base.constant.base.CommonException.INTERNAL_SERVER_ERROR_EXP;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.common.base.CommonFunctions.GSON;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
 import static com.blue.marketing.constant.MarketingCommonException.REPEAT_SIGN_IN_EXP;
 import static java.lang.System.currentTimeMillis;
@@ -79,10 +81,6 @@ public class SignInServiceImpl implements SignInService {
         this.blockingDeploy = blockingDeploy;
     }
 
-    private static final Gson GSON = CommonFunctions.GSON;
-
-    private static final Supplier<Long> TIME_STAMP_GETTER = CommonFunctions.TIME_STAMP_GETTER;
-
     /**
      * sign in redis key expire/day
      */
@@ -111,7 +109,7 @@ public class SignInServiceImpl implements SignInService {
     private final BiConsumer<Integer, Integer> DAY_REWARD_INITIALIZER = (year, month) -> {
         List<SignRewardTodayRelation> relations = rewardService.selectRelationByYearAndMonth(year, month);
         if (isEmpty(relations))
-            throw new RuntimeException("The reward information of the current month is not configured");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "The reward information of the current month is not configured");
 
         List<Reward> rewards = rewardService.selectRewardByIds(relations.stream()
                 .map(SignRewardTodayRelation::getRewardId).collect(toList()));
@@ -142,7 +140,7 @@ public class SignInServiceImpl implements SignInService {
             long start = currentTimeMillis();
             while (rewardInfoRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw INTERNAL_SERVER_ERROR_EXP.exp;
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
                 onSpinWait();
             }
         }
@@ -242,7 +240,7 @@ public class SignInServiceImpl implements SignInService {
     public Mono<SignInReward> insertSignIn(Long memberId) {
         LOGGER.info("insertSignIn(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         LocalDate now = LocalDate.now();
         int year = now.getYear();

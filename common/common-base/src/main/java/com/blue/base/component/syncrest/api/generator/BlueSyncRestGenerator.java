@@ -1,6 +1,7 @@
 package com.blue.base.component.syncrest.api.generator;
 
 import com.blue.base.component.syncrest.api.conf.SyncRestConf;
+import com.blue.base.model.exps.BlueException;
 import io.netty.channel.ConnectTimeoutException;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -27,6 +28,7 @@ import reactor.util.Logger;
 
 import java.net.SocketTimeoutException;
 
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.nio.charset.CodingErrorAction.IGNORE;
 import static java.util.Optional.ofNullable;
 import static org.apache.http.client.config.CookieSpecs.STANDARD;
@@ -122,7 +124,7 @@ public class BlueSyncRestGenerator {
             return new RestTemplate(requestFactory);
         } catch (Exception e) {
             LOGGER.error("restTemplate init failed, e = {0}", e);
-            throw new RuntimeException("restTemplate init failed, e = " + e);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "restTemplate init failed, e = " + e);
         }
     }
 

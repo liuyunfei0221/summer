@@ -3,13 +3,10 @@ package com.blue.gateway.config.filter.global;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.model.base.DataEvent;
-import com.blue.gateway.common.GatewayCommonFactory;
 import com.blue.gateway.component.RequestEventReporter;
-import com.google.gson.Gson;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -17,16 +14,14 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
+import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
+import static com.blue.gateway.common.GatewayCommonFactory.MESSAGE_READERS;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_ERROR_REPORT;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
@@ -54,20 +49,7 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
         this.requestEventReporter = requestEventReporter;
     }
 
-    private static final Consumer<String> SCHEMA_ASSERTER = GatewayCommonFactory.SCHEMA_ASSERTER;
-    private static final Consumer<String> METHOD_VALUE_ASSERTER = GatewayCommonFactory.METHOD_VALUE_ASSERTER;
-
     private static final String AUTHORIZATION = BlueHeader.AUTHORIZATION.name;
-
-    private static final List<HttpMessageReader<?>> MESSAGE_READERS = GatewayCommonFactory.MESSAGE_READERS;
-
-    private static final Supplier<Long> TIME_STAMP_GETTER = GatewayCommonFactory.TIME_STAMP_GETTER;
-
-    private static final Gson GSON = GatewayCommonFactory.GSON;
-
-    private static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = GatewayCommonFactory.THROWABLE_CONVERTER;
-
-    private static final Supplier<String> RANDOM_KEY_GENERATOR = GatewayCommonFactory.RANDOM_KEY_GETTER;
 
     private void report(DataEvent dataEvent, Throwable throwable) {
         try {
@@ -95,7 +77,7 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
         String methodValue = request.getMethodValue();
         METHOD_VALUE_ASSERTER.accept(methodValue);
 
-        String requestId = RANDOM_KEY_GENERATOR.get();
+        String requestId = RANDOM_KEY_GETTER.get();
         String clientIp = getIp(request);
 
         Map<String, Object> attributes = exchange.getAttributes();

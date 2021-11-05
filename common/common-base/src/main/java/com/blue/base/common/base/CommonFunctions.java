@@ -9,6 +9,7 @@ import com.blue.base.constant.base.ValidResourceFormatters;
 import com.blue.base.model.base.DataWrapper;
 import com.blue.base.model.base.EncryptedRequest;
 import com.blue.base.model.base.EncryptedResponse;
+import com.blue.base.model.exps.BlueException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +22,10 @@ import java.util.Set;
 import java.util.function.*;
 
 import static com.blue.base.common.base.RsaProcessor.*;
-import static com.blue.base.constant.base.CommonException.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_REQUEST_METHOD;
+import static com.blue.base.constant.base.ResponseMessage.RSA_FAILED;
 import static com.blue.base.constant.base.Symbol.PAIR_SEPARATOR;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Instant.now;
@@ -69,40 +73,40 @@ public class CommonFunctions {
     /**
      * random key length
      */
-    private static final int RAN_KEY_STR_LEN = 8;
+    public static final int RAN_KEY_STR_LEN = 8;
 
     /**
      * index of non element
      */
-    private static final int NON_EXIST_INDEX = -1;
+    public static final int NON_EXIST_INDEX = -1;
 
     /**
      * clock
      */
-    private static final Clock CLOCK = SummerAttr.CLOCK;
+    public static final Clock CLOCK = SummerAttr.CLOCK;
 
     /**
      * limiter script keys prefix and suffix
      */
-    private static final String KEY_PREFIX = "r_r_li_";
-    private static final String TOKEN_SUFFIX = "_tks", STAMP_SUFFIX = "_tst";
+    public static final String KEY_PREFIX = "r_r_li_";
+    public static final String TOKEN_SUFFIX = "_tks", STAMP_SUFFIX = "_tst";
 
     /**
      * valid freemarker /.html/.js
      */
-    private static final Set<String> VALID_TAILS = of(ValidResourceFormatters.values())
+    public static final Set<String> VALID_TAILS = of(ValidResourceFormatters.values())
             .map(vrf -> vrf.identity).collect(toSet());
 
     /**
      * uri parser - for request
      */
-    private static final UnaryOperator<String> REST_URI_PROCESSOR = uri -> {
+    public static final UnaryOperator<String> REST_URI_PROCESSOR = uri -> {
         if (uri == null || "".equals(uri))
-            throw new RuntimeException("uri can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uri can't be null");
 
         int lastPartIdx = lastIndexOf(uri, PATH_SEPARATOR);
         if (lastPartIdx == -1 || lastPartIdx == length(uri))
-            throw new RuntimeException("invalid uri, not contains / -> " + uri);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
 
         String maybePathVariable = uri.substring(lastPartIdx + 1);
         if (isDigits(maybePathVariable))
@@ -117,15 +121,33 @@ public class CommonFunctions {
     };
 
     /**
+     * uri asserter
+     */
+    public static final Consumer<String> REST_URI_ASSERTER = uri -> {
+        if (uri == null || "".equals(uri))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uri can't be null");
+
+        String tar = uri.trim();
+
+        int idx = indexOf(tar, PATH_SEPARATOR);
+
+        if (idx == -1)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
+        if (idx != 0)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not start with / -> " + uri);
+        if (isBlank(substring(tar, idx)))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, non content but / -> " + uri);
+    };
+
+    /**
      * uri parser - for init
      */
-    private static final UnaryOperator<String> REST_URI_CONVERTER = uri -> {
-        if (uri == null || "".equals(uri))
-            throw new RuntimeException("uri can't be null");
+    public static final UnaryOperator<String> REST_URI_CONVERTER = uri -> {
+        REST_URI_ASSERTER.accept(uri);
 
         int lastPartIdx = lastIndexOf(uri, PATH_SEPARATOR);
         if (lastPartIdx == -1)
-            throw new RuntimeException("invalid uri, not contains / -> " + uri);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
 
         String maybePathVariable = uri.substring(lastPartIdx);
         int left = indexOf(maybePathVariable, "{");
@@ -142,7 +164,7 @@ public class CommonFunctions {
         if (VALID_TAILS.contains(schema))
             return (uri.substring(0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD + schema.intern()).intern();
 
-        throw new RuntimeException("invalid uri, freemarker unsupported -> " + uri);
+        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, freemarker unsupported -> " + uri);
     };
 
     /**
@@ -159,7 +181,7 @@ public class CommonFunctions {
     };
 
     /**
-     * request resource key generator
+     * resource key generator for request
      */
     public static final BinaryOperator<String> REQ_RES_KEY_GENERATOR = (method, uri) ->
             ((method.toUpperCase().intern() + PAR_CONCATENATION + REST_URI_PROCESSOR.apply(uri).intern()).intern()).intern();
@@ -173,7 +195,7 @@ public class CommonFunctions {
     /**
      * header value getter
      */
-    private static final UnaryOperator<String> HEADER_VALUE_CONVERTER = contentType -> {
+    public static final UnaryOperator<String> HEADER_VALUE_CONVERTER = contentType -> {
         int idx = indexOf(contentType, PAIR_SEPARATOR.identity);
         return idx == NON_EXIST_INDEX ? contentType : contentType.substring(0, idx);
     };
@@ -181,14 +203,14 @@ public class CommonFunctions {
     /**
      * valid schema
      */
-    private static final Set<String> VALID_SCHEMAS = of("https", "http")
+    public static final Set<String> VALID_SCHEMAS = of("https", "http")
             .map(String::toLowerCase)
             .collect(toSet());
 
     /**
      * valid method
      */
-    private static final Set<String> VALID_METHODS = of(HttpMethod.values())
+    public static final Set<String> VALID_METHODS = of(HttpMethod.values())
             .map(Enum::name)
             .map(String::toUpperCase)
             .collect(toSet());
@@ -200,7 +222,7 @@ public class CommonFunctions {
         if (VALID_SCHEMAS.contains(schema))
             return;
 
-        throw INVALID_REQUEST_METHOD_EXP.exp;
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);
     };
 
     /**
@@ -210,7 +232,7 @@ public class CommonFunctions {
         if (VALID_METHODS.contains(method.toUpperCase()))
             return;
 
-        throw INVALID_REQUEST_METHOD_EXP.exp;
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);
     };
 
     /**
@@ -237,11 +259,11 @@ public class CommonFunctions {
     /**
      * assert decrypted data and assert
      */
-    private static final BiFunction<DataWrapper, Long, String> DATA_CONVERTER = (dataWrapper, expire) -> {
+    public static final BiFunction<DataWrapper, Long, String> DATA_CONVERTER = (dataWrapper, expire) -> {
         if (TIME_STAMP_GETTER.get() - ofNullable(dataWrapper.getTimeStamp()).orElse(0L) <= expire)
             return ofNullable(dataWrapper.getOriginal()).orElse("");
 
-        throw CRYPT_FAILED_EXP.exp;
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
     };
 
     /**
@@ -254,16 +276,16 @@ public class CommonFunctions {
      */
     public static String decryptRequestBody(String requestBody, String secKey, long expire) {
         if (requestBody == null || "".equals(requestBody))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         if (secKey == null || "".equals(secKey))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         EncryptedRequest encryptedRequest = GSON.fromJson(requestBody, EncryptedRequest.class);
         String encrypted = encryptedRequest.getEncrypted();
 
         if (!verify(encrypted, encryptedRequest.getSignature(), secKey))
-            throw CRYPT_FAILED_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
 
         return DATA_CONVERTER.apply(GSON.fromJson(decryptByPublicKey(encrypted, secKey), DataWrapper.class), expire);
     }
@@ -277,10 +299,10 @@ public class CommonFunctions {
      */
     public static String encryptResponseBody(String responseBody, String secKey) {
         if (responseBody == null || "".equals(responseBody))
-            throw  BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         if (secKey == null || "".equals(secKey))
-            throw  BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         return GSON.toJson(new EncryptedResponse(encryptByPublicKey(GSON.toJson(new DataWrapper(responseBody, TIME_STAMP_GETTER.get())), secKey)));
     }

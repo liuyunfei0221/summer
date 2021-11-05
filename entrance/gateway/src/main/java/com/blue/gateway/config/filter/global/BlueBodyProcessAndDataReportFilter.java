@@ -1,13 +1,10 @@
 package com.blue.gateway.config.filter.global;
 
-import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.common.content.common.RequestBodyProcessor;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.model.base.DataEvent;
-import com.blue.gateway.common.GatewayCommonFactory;
 import com.blue.gateway.component.RequestEventReporter;
 import com.blue.gateway.config.deploy.EncryptDeploy;
-import com.google.gson.Gson;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -17,7 +14,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
@@ -29,18 +25,13 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-import static com.blue.base.common.base.CommonFunctions.decryptRequestBody;
-import static com.blue.base.common.base.CommonFunctions.encryptResponseBody;
+import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
-import static com.blue.gateway.common.GatewayCommonFactory.getRequestDecorator;
+import static com.blue.gateway.common.GatewayCommonFactory.*;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_BODY_PROCESS_AND_DATA_REPORT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -75,16 +66,6 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
         this.requestEventReporter = requestEventReporter;
         this.encryptDeploy = encryptDeploy;
     }
-
-    private static final List<HttpMessageReader<?>> MESSAGE_READERS = GatewayCommonFactory.MESSAGE_READERS;
-
-    public static final BiConsumer<Throwable, CachedBodyOutputMessage> ON_ERROR_CONSUMER_WITH_MESSAGE = GatewayCommonFactory.ON_ERROR_CONSUMER_WITH_MESSAGE;
-
-    private static final Supplier<Long> TIME_STAMP_GETTER = GatewayCommonFactory.TIME_STAMP_GETTER;
-
-    private static final Gson GSON = CommonFunctions.GSON;
-
-    private static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = GatewayCommonFactory.THROWABLE_CONVERTER;
 
     private static long EXPIRED_SECONDS;
 

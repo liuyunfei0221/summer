@@ -1,10 +1,12 @@
 package com.blue.base.common.base;
 
+import com.blue.base.model.exps.BlueException;
+
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
-import static com.blue.base.constant.base.CommonException.EMPTY_PARAM_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
 
 /**
  * monitor for value
@@ -31,7 +33,7 @@ public final class Monitor<T> {
 
     public Monitor(T monitored, BinaryOperator<T> combiner, Predicate<T> predicate) {
         if (monitored == null || combiner == null || predicate == null)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         this.monitored = monitored;
         this.combiner = combiner;
@@ -55,7 +57,7 @@ public final class Monitor<T> {
      */
     public boolean operateWithAssert(T data) {
         if (data == null)
-            throw EMPTY_PARAM_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         synchronized (this) {
             monitored = combiner.apply(monitored, data);

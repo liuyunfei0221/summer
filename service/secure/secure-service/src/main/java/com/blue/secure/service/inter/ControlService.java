@@ -1,12 +1,14 @@
 package com.blue.secure.service.inter;
 
 import com.blue.base.model.base.Access;
+import com.blue.base.model.base.IdentityParam;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.model.ResourceInsertParam;
 import com.blue.secure.model.ResourceUpdateParam;
 import com.blue.secure.model.RoleInsertParam;
 import com.blue.secure.model.RoleUpdateParam;
+import reactor.core.publisher.Mono;
 
 /**
  * config role,resource,relation
@@ -66,7 +68,7 @@ public interface ControlService {
      * @param operatorId
      * @return
      */
-    RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId);
+    Mono<RoleInfo> insertRole(RoleInsertParam roleInsertParam, Long operatorId);
 
     /**
      * update a exist role
@@ -75,7 +77,16 @@ public interface ControlService {
      * @param operatorId
      * @return
      */
-    RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId);
+    Mono<RoleInfo> updateRole(RoleUpdateParam roleUpdateParam, Long operatorId);
+
+    /**
+     * delete a exist role
+     *
+     * @param identityParam
+     * @param operatorId
+     * @return
+     */
+    RoleInfo deleteRole(IdentityParam identityParam, Long operatorId);
 
     /**
      * insert resource
@@ -84,7 +95,7 @@ public interface ControlService {
      * @param operatorId
      * @return
      */
-    ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId);
+    Mono<ResourceInfo> insertResource(ResourceInsertParam resourceInsertParam, Long operatorId);
 
     /**
      * update a exist resource
@@ -93,6 +104,6 @@ public interface ControlService {
      * @param operatorId
      * @return
      */
-    ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId);
+    Mono<ResourceInfo> updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId);
 
 }

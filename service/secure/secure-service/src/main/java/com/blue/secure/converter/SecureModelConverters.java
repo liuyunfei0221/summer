@@ -1,6 +1,6 @@
 package com.blue.secure.converter;
 
-import com.blue.base.common.base.CommonFunctions;
+import com.blue.base.model.exps.BlueException;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.model.ResourceInsertParam;
@@ -9,15 +9,14 @@ import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.entity.Role;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static com.blue.base.common.base.Asserter.isBlank;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.*;
-import static com.blue.base.constant.base.CommonException.EMPTY_PARAM_EXP;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
 import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
-import static com.blue.secure.constant.SecureCommonException.BLANK_DESC_EXP;
-import static com.blue.secure.constant.SecureCommonException.BLANK_NAME_EXP;
 
 /**
  * model converters in secure project
@@ -27,22 +26,20 @@ import static com.blue.secure.constant.SecureCommonException.BLANK_NAME_EXP;
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class SecureModelConverters {
 
-    private static final Supplier<Long> TIME_STAMP_GETTER = CommonFunctions.TIME_STAMP_GETTER;
-
     /**
      * role insert param -> role
      */
     public static final Function<RoleInsertParam, Role> ROLE_INSERT_PARAM_2_ROLE_CONVERTER = param -> {
         if (param == null)
-            throw EMPTY_PARAM_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         String name = param.getName();
         if (isBlank(name))
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
         String description = param.getDescription();
         if (isBlank(description))
-            throw BLANK_DESC_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
 
         Long stamp = TIME_STAMP_GETTER.get();
 
@@ -62,7 +59,7 @@ public final class SecureModelConverters {
      */
     public static final Function<Role, RoleInfo> ROLE_2_ROLE_INFO_CONVERTER = role -> {
         if (role == null)
-            throw EMPTY_PARAM_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         return new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getIsDefault());
     };
@@ -72,49 +69,49 @@ public final class SecureModelConverters {
      */
     public static final Function<ResourceInsertParam, Resource> RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER = param -> {
         if (param == null)
-            throw EMPTY_PARAM_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         String requestMethod = param.getRequestMethod();
         assertHttpMethod(requestMethod, false);
 
         String module = param.getModule();
         if (isBlank(module))
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "module can't be blank");
 
         String uri = param.getUri();
         if (isBlank(uri))
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be blank");
 
         Boolean authenticate = param.getAuthenticate();
         if (authenticate == null)
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "authenticate can't be null");
 
         Boolean requestUnDecryption = param.getRequestUnDecryption();
         if (requestUnDecryption == null)
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestUnDecryption can't be null");
 
         Boolean responseUnEncryption = param.getResponseUnEncryption();
         if (responseUnEncryption == null)
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "responseUnEncryption can't be null");
 
         Boolean existenceRequestBody = param.getExistenceRequestBody();
         if (existenceRequestBody == null)
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceRequestBody can't be null");
 
         Boolean existenceResponseBody = param.getExistenceResponseBody();
         if (existenceResponseBody == null)
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceResponseBody can't be null");
 
         Integer type = param.getType();
         assertResourceType(type, false);
 
         String name = param.getName();
         if (isBlank(name))
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
         String description = param.getDescription();
         if (isBlank(description))
-            throw BLANK_DESC_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
 
         Long stamp = TIME_STAMP_GETTER.get();
 
@@ -143,7 +140,7 @@ public final class SecureModelConverters {
      */
     public static final Function<Resource, ResourceInfo> RESOURCE_2_RESOURCE_INFO_CONVERTER = resource -> {
         if (resource == null)
-            throw EMPTY_PARAM_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         String module = resource.getModule().intern();
         String relativeUri = resource.getUri().intern();

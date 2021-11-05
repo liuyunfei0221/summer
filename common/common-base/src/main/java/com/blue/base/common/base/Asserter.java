@@ -1,10 +1,16 @@
 package com.blue.base.common.base;
 
 import com.blue.base.constant.base.Status;
+import com.blue.base.model.base.IdentityParam;
+import com.blue.base.model.exps.BlueException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.base.Status.VALID;
 
 /**
@@ -197,6 +203,60 @@ public final class Asserter {
     }
 
     /**
+     * check page is invalid
+     *
+     * @param page
+     */
+    public static boolean isInvalidPage(Long page) {
+        return page == null || page < 1L;
+    }
+
+    /**
+     * check page is valid
+     *
+     * @param page
+     */
+    public static boolean isValidPage(Long page) {
+        return page != null && page > 0L;
+    }
+
+    /**
+     * check limit is invalid
+     *
+     * @param limit
+     */
+    public static boolean isInvalidLimit(Long limit) {
+        return limit == null || limit < 0L;
+    }
+
+    /**
+     * check limit is valid
+     *
+     * @param limit
+     */
+    public static boolean isValidLimit(Long limit) {
+        return limit != null && limit >= 0L;
+    }
+
+    /**
+     * check rows is invalid
+     *
+     * @param rows
+     */
+    public static boolean isInvalidRows(Long rows) {
+        return rows == null || rows < 1L;
+    }
+
+    /**
+     * check rows is valid
+     *
+     * @param rows
+     */
+    public static boolean isValidRows(Long rows) {
+        return rows != null && rows > 0L;
+    }
+
+    /**
      * check status is valid
      *
      * @param status
@@ -212,6 +272,27 @@ public final class Asserter {
      */
     public static boolean isNotTargetStatus(Integer status, Status targetStatus) {
         return status == null || targetStatus.status != status;
+    }
+
+    /**
+     * assert params for delete data by data id and operator id
+     *
+     * @param identityParam
+     * @param operatorId
+     * @return data id
+     */
+    @SuppressWarnings("AlibabaMethodReturnWrapperType")
+    public static long assertIdentityParamsAndReturnIdForOperate(IdentityParam identityParam, Long operatorId) {
+        if (isNull(identityParam))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
+
+        Long id = identityParam.getId();
+        if (isInvalidIdentity(id))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        return id;
     }
 
 }

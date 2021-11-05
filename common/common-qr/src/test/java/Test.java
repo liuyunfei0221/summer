@@ -1,3 +1,4 @@
+import com.blue.base.model.exps.BlueException;
 import com.blue.qr.api.generator.BlueQrCoderGenerator;
 import com.blue.qr.common.QrCoder;
 
@@ -5,6 +6,8 @@ import java.io.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 
 @SuppressWarnings("JavaDoc")
 public class Test {
@@ -21,7 +24,7 @@ public class Test {
 
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(threads >>> 1, threads,
                 64L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(blockingQueueSize), Thread::new, (r, executor) -> {
-            throw new RuntimeException("线程池任务堆积: " + r.toString());
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "线程池任务堆积: " + r.toString());
         });
 
         for (int i = 0, end = blockingQueueSize >>> 1; i <= end; i++) {

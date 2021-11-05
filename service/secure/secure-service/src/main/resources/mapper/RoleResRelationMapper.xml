@@ -170,6 +170,25 @@
         </foreach>
     </select>
 
+    <select id="selectRelationByLimitAndRoleId" resultMap="BaseResultMap"
+            parameterType="com.blue.secure.model.RoleCondition">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        FROM role_res_relation FORCE INDEX(idx_role_res)
+        WHERE
+        role_id = #{roleId,jdbcType=BIGINT}
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByRoleId" resultType="java.lang.Long"
+            parameterType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM role_res_relation FORCE INDEX(idx_role_res)
+        WHERE
+            role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
     <select id="selectByResIds" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>

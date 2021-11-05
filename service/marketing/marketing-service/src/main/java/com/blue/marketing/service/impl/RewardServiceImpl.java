@@ -1,5 +1,6 @@
 package com.blue.marketing.service.impl;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.entity.SignRewardTodayRelation;
 import com.blue.marketing.repository.mapper.RewardMapper;
@@ -13,7 +14,8 @@ import java.util.Optional;
 
 import static com.blue.base.common.base.Asserter.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.CommonException.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -48,7 +50,7 @@ public class RewardServiceImpl implements RewardService {
     public Optional<Reward> getRewardByPrimaryKey(Long id) {
         LOGGER.info("getRewardByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return ofNullable(rewardMapper.selectByPrimaryKey(id));
     }
@@ -63,7 +65,7 @@ public class RewardServiceImpl implements RewardService {
     public List<Reward> selectRewardByIds(List<Long> ids) {
         LOGGER.info("List<Reward> listRewardByIds(List<Long> ids), ids = {}", ids);
         if (isInvalidIdentitiesWithMaxRows(ids, DB_SELECT.value))
-            throw INVALID_IDENTITIES_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids can't be empty or size can't be greater than " + DB_SELECT.value);
 
         return rewardMapper.selectByIds(ids);
     }
@@ -79,7 +81,7 @@ public class RewardServiceImpl implements RewardService {
     public List<SignRewardTodayRelation> selectRelationByYearAndMonth(Integer year, Integer month) {
         LOGGER.info("listRelationByYearAndMonth(Integer year, Integer month), year = {}, month = {}", year, month);
         if (isNull(year) || isNull(month) || year < 1 || month < 1)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         return signRewardTodayRelationMapper.selectByYearAndMonth(year, month);
     }

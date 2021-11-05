@@ -1,6 +1,7 @@
 package com.blue.secure.component.auth;
 
 import com.blue.base.model.base.KeyExpireParam;
+import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.secure.event.producer.AuthExpireProducer;
@@ -17,7 +18,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.Asserter.isNotBlank;
-import static com.blue.base.constant.base.CommonException.UNAUTHORIZED_EXP;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -142,7 +144,7 @@ public final class AuthInfoCache {
         return isNotBlank(keyId) ?
                 justOrEmpty(cache.getIfPresent(keyId)).switchIfEmpty(REDIS_AUTH_GETTER.apply(keyId))
                 :
-                error(UNAUTHORIZED_EXP.exp);
+                error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message));
     }
 
     /**
@@ -198,34 +200,34 @@ public final class AuthInfoCache {
                                    Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveTime,
                                    Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
         if (reactiveStringRedisTemplate == null)
-            throw new RuntimeException("reactiveStringRedisTemplate can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveStringRedisTemplate can't be null");
 
         if (authExpireProducer == null)
-            throw new RuntimeException("authExpireProducer can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "authExpireProducer can't be null");
 
         if (refresherCorePoolSize == null || refresherCorePoolSize < 1)
-            throw new RuntimeException("refresherCorePoolSize can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherCorePoolSize can't be null or less than 1");
 
         if (refresherMaximumPoolSize == null || refresherMaximumPoolSize < 1)
-            throw new RuntimeException("refresherMaximumPoolSize can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherMaximumPoolSize can't be null or less than 1");
 
         if (refresherKeepAliveTime == null || refresherKeepAliveTime < 1)
-            throw new RuntimeException("refresherKeepAliveTime can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherKeepAliveTime can't be null or less than 1");
 
         if (refresherBlockingQueueCapacity == null || refresherBlockingQueueCapacity < 1)
-            throw new RuntimeException("refresherBlockingQueueCapacity can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherBlockingQueueCapacity can't be null or less than 1");
 
         if (globalExpireMillis == null || globalExpireMillis < 1L)
-            throw new RuntimeException("globalExpireSeconds can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "globalExpireSeconds can't be null or less than 1");
 
         if (localExpireMillis == null || localExpireMillis < 1L)
-            throw new RuntimeException("localExpireSeconds can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "localExpireSeconds can't be null or less than 1");
 
         if (localExpireMillis > globalExpireMillis)
-            throw new RuntimeException("localExpireSeconds can't be null or greater than globalExpireSeconds");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "localExpireSeconds can't be null or greater than globalExpireSeconds");
 
         if (capacity == null || capacity < 1)
-            throw new RuntimeException("capacity can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "capacity can't be null or less than 1");
     }
 
 }

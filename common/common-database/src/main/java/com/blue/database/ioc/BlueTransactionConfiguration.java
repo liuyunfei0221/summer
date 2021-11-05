@@ -1,5 +1,6 @@
 package com.blue.database.ioc;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.database.api.conf.TransConf;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 
 import java.util.List;
 
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Collections.emptyList;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
@@ -83,23 +85,23 @@ public class BlueTransactionConfiguration {
     private static void assertConf(TransConf conf) {
         Isolation isolation = conf.getIsolation();
         if (isolation == null)
-            throw new RuntimeException("isolation can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "isolation can't be null");
 
         Propagation propagation = conf.getPropagation();
         if (propagation == null)
-            throw new RuntimeException("propagation can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "propagation can't be null");
 
         Integer transTimeout = conf.getTransTimeout();
         if (transTimeout == null || transTimeout < 1)
-            throw new RuntimeException("transTimeout can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "transTimeout can't be null or less than 1");
 
         List<String> methodPreWithTrans = conf.getMethodPreWithTrans();
         if (isEmpty(methodPreWithTrans))
-            throw new RuntimeException("corePoolSize can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "corePoolSize can't be null or less than 1");
 
         String pointCutExpression = conf.getPointCutExpression();
         if (isBlank(pointCutExpression))
-            throw new RuntimeException("pointCutExpression can't be null or ''");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "pointCutExpression can't be null or ''");
     }
 
 }

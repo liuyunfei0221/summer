@@ -1,5 +1,6 @@
 package com.blue.finance.service.impl;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.finance.api.model.FinanceInfo;
 import com.blue.finance.repository.entity.FinanceAccount;
 import com.blue.finance.service.inter.FinanceAccountService;
@@ -12,8 +13,9 @@ import java.util.Optional;
 
 import static com.blue.base.common.base.Asserter.isInvalidStatus;
 import static com.blue.base.common.base.Asserter.isValidIdentity;
-import static com.blue.base.constant.base.CommonException.DATA_NOT_EXIST_EXP;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.finance.constant.FinanceCommonException.ACCOUNT_HAS_BEEN_FROZEN_EXP;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
@@ -52,7 +54,7 @@ public class FinanceServiceImpl implements FinanceService {
                         Optional<FinanceAccount> faOpt = financeAccountService.getFinanceAccountByMemberId(mi);
                         if (faOpt.isEmpty()) {
                             LOGGER.error("A member did not allocate funds account, please repair data, memberId = {}", memberId);
-                            return error(DATA_NOT_EXIST_EXP.exp);
+                            return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message));
                         }
 
                         FinanceAccount financeAccount = faOpt.get();
@@ -64,7 +66,7 @@ public class FinanceServiceImpl implements FinanceService {
                     .flatMap(fa ->
                             just(new FinanceInfo(fa.getBalance())));
 
-        throw INVALID_IDENTITY_EXP.exp;
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
     }
 
 }

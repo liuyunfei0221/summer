@@ -65,6 +65,24 @@ public interface RoleResRelationService {
     Mono<List<RoleResRelation>> selectRelationByRoleId(Long roleId);
 
     /**
+     * select relation by limit and role id
+     *
+     * @param roleId
+     * @param limit
+     * @param rows
+     * @return
+     */
+    List<RoleResRelation> selectRelationByRowsAndRoleId(Long roleId, Long limit, Long rows);
+
+    /**
+     * count relation by role id
+     *
+     * @param roleId
+     * @return
+     */
+    long countRelationByRoleId(Long roleId);
+
+    /**
      * select relation by resource id
      *
      * @param resId

@@ -1,8 +1,10 @@
 package com.blue.secure.service.impl;
 
 import com.blue.base.common.base.Asserter;
+import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.constant.RoleSortAttribute;
@@ -30,10 +32,12 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.Asserter.*;
+import static com.blue.base.common.base.CommonFunctions.REST_URI_ASSERTER;
 import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.CommonException.*;
-import static com.blue.secure.constant.SecureCommonException.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
+import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.secure.converter.SecureModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER;
 import static com.blue.secure.converter.SecureModelConverters.RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER;
 import static java.util.Collections.emptyList;
@@ -100,52 +104,51 @@ public class ResourceServiceImpl implements ResourceService {
      */
     private final Consumer<ResourceInsertParam> INSERT_RESOURCE_VALIDATOR = rip -> {
         if (rip == null)
-            throw EMPTY_PARAM_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         String requestMethod = rip.getRequestMethod();
         assertHttpMethod(requestMethod, false);
 
         String module = rip.getModule();
         if (isBlank(module))
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "module can't be null");
 
         String uri = rip.getUri();
-        if (isBlank(uri))
-            throw BLANK_NAME_EXP.exp;
+        REST_URI_ASSERTER.accept(uri);
 
         Boolean authenticate = rip.getAuthenticate();
         if (authenticate == null)
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "authenticate can't be null");
 
         Boolean requestUnDecryption = rip.getRequestUnDecryption();
         if (requestUnDecryption == null)
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestUnDecryption can't be null");
 
         Boolean responseUnEncryption = rip.getResponseUnEncryption();
         if (responseUnEncryption == null)
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "responseUnEncryption can't be null");
 
         Boolean existenceRequestBody = rip.getExistenceRequestBody();
         if (existenceRequestBody == null)
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceRequestBody can't be null");
 
         Boolean existenceResponseBody = rip.getExistenceResponseBody();
         if (existenceResponseBody == null)
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceResponseBody can't be null");
 
         Integer type = rip.getType();
         assertResourceType(type, false);
 
         String name = rip.getName();
         if (isBlank(name))
-            throw BLANK_NAME_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
         String description = rip.getDescription();
         if (isBlank(description))
-            throw BLANK_DESC_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
 
         if (isNotNull(resourceMapper.selectByName(name)) || isNotNull(resourceMapper.selectByUnique(requestMethod.toUpperCase(), module.toLowerCase(), uri.toLowerCase())))
-            throw DATA_ALREADY_EXIST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_ALREADY_EXIST.message);
     };
 
     /**
@@ -154,7 +157,7 @@ public class ResourceServiceImpl implements ResourceService {
     private final Function<ResourceUpdateParam, Resource> UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
         Long id = rup.getId();
         if (isInvalidIdentity(id))
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         ofNullable(rup.getName())
                 .filter(Asserter::isNotBlank)
@@ -162,22 +165,25 @@ public class ResourceServiceImpl implements ResourceService {
                 .map(Resource::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw ROLE_NAME_ALREADY_EXIST_EXP.exp;
+                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exist");
                 });
 
         Resource resource = resourceMapper.selectByPrimaryKey(id);
         if (resource == null)
-            throw DATA_NOT_EXIST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
 
         ofNullable(resourceMapper.selectByUnique(
-                ofNullable(rup.getRequestMethod()).map(String::toUpperCase).orElse(resource.getRequestMethod()),
-                ofNullable(rup.getModule()).map(String::toLowerCase).orElse(resource.getModule()),
-                ofNullable(rup.getUri()).map(String::toLowerCase).orElse(resource.getUri()))
+                ofNullable(rup.getRequestMethod()).filter(Asserter::isNotBlank).map(String::trim).map(String::toUpperCase).orElse(resource.getRequestMethod()),
+                ofNullable(rup.getModule()).filter(Asserter::isNotBlank).map(String::trim).map(String::toLowerCase).orElse(resource.getModule()),
+                ofNullable(rup.getUri()).filter(Asserter::isNotBlank).map(String::trim).map(String::toLowerCase).map(uri -> {
+                    REST_URI_ASSERTER.accept(uri);
+                    return uri;
+                }).orElse(resource.getUri()))
         )
                 .map(Resource::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw DATA_ALREADY_EXIST_EXP.exp;
+                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_ALREADY_EXIST.message);
                 });
 
         return resource;
@@ -188,7 +194,7 @@ public class ResourceServiceImpl implements ResourceService {
      */
     public static final BiFunction<ResourceUpdateParam, Resource, Boolean> RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER = (p, t) -> {
         if (!p.getId().equals(t.getId()))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         boolean alteration = false;
 
@@ -206,6 +212,7 @@ public class ResourceServiceImpl implements ResourceService {
 
         String uri = p.getUri();
         if (isNotBlank(uri) && !uri.equals(t.getUri())) {
+            REST_URI_ASSERTER.accept(uri);
             t.setUri(uri);
             alteration = true;
         }
@@ -272,8 +279,10 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
         LOGGER.info("ResourceInfo insertResource(ResourceInsertParam resourceInsertParam), resourceInsertParam = {}", resourceInsertParam);
-        if (isNull(resourceInsertParam) || isInvalidIdentity(operatorId))
-            throw EMPTY_PARAM_EXP.exp;
+        if (isNull(resourceInsertParam))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
 
         RLock resourceLock = redissonClient.getLock(RESOURCE_SYNC_KEY);
         try {
@@ -313,8 +322,10 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId) {
         LOGGER.info("ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}", resourceUpdateParam);
-        if (isNull(resourceUpdateParam) || isInvalidIdentity(operatorId))
-            throw EMPTY_PARAM_EXP.exp;
+        if (isNull(resourceUpdateParam))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
 
         RLock resourceLock = redissonClient.getLock(RESOURCE_SYNC_KEY);
         try {
@@ -326,7 +337,7 @@ public class ResourceServiceImpl implements ResourceService {
                 return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
             }
 
-            throw DATA_WITHOUT_ALTERATION_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data has no change");
         } catch (Exception e) {
             LOGGER.error("lock on updateResource failed, e = {}", e);
             throw e;
@@ -335,6 +346,42 @@ public class ResourceServiceImpl implements ResourceService {
                 resourceLock.unlock();
             } catch (Exception e) {
                 LOGGER.error("resourceLock.unlock() failed, e = {}", e);
+            }
+        }
+    }
+
+    /**
+     * delete a exist resource
+     *
+     * @param identityParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    public ResourceInfo deleteResource(IdentityParam identityParam, Long operatorId) {
+        LOGGER.info("ResourceInfo deleteResource(IdentityParam identityParam, Long operatorId), identityParam = {}, operatorId = {}", identityParam, operatorId);
+        long id = assertIdentityParamsAndReturnIdForOperate(identityParam, operatorId);
+
+        RLock resourceLock = redissonClient.getLock(RESOURCE_SYNC_KEY);
+        try {
+            resourceLock.lock();
+
+            Resource resource = resourceMapper.selectByPrimaryKey(id);
+            if (resource != null) {
+                resourceMapper.deleteByPrimaryKey(id);
+                return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
+            }
+
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
+        } catch (Exception e) {
+            LOGGER.error("lock on deleteResource failed, e = {0}", e);
+            throw e;
+        } finally {
+            try {
+                resourceLock.unlock();
+            } catch (Exception e) {
+                LOGGER.error("roleLock.unlock() failed, e = {}", e);
             }
         }
     }
@@ -349,7 +396,7 @@ public class ResourceServiceImpl implements ResourceService {
     public Optional<Resource> getResourceById(Long id) {
         LOGGER.info("Optional<Resource> getResourceById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return ofNullable(resourceMapper.selectByPrimaryKey(id));
     }
@@ -364,7 +411,7 @@ public class ResourceServiceImpl implements ResourceService {
     public Mono<Optional<Resource>> getResourceMonoById(Long id) {
         LOGGER.info("Mono<Optional<Resource>> getResourceMonoById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return just(ofNullable(resourceMapper.selectByPrimaryKey(id)));
     }

@@ -1,12 +1,14 @@
 package com.blue.data.service.impl;
 
 import com.blue.base.constant.data.StatisticsRange;
+import com.blue.base.model.exps.BlueException;
 import com.blue.data.common.marker.StatisticsMarker;
 import com.blue.data.service.inter.MemberActiveStatisticsService;
 import org.springframework.stereotype.Service;
 
 import static com.blue.base.common.base.Asserter.isValidIdentity;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.data.StatisticsType.MEMBER_ACTIVE;
 
 /**
@@ -31,7 +33,7 @@ public class MemberActiveStatisticsServiceImpl implements MemberActiveStatistics
         if (isValidIdentity(memberId))
             return statisticsMarker.mark(MEMBER_ACTIVE, statisticsRange, memberId.toString());
 
-        throw INVALID_IDENTITY_EXP.exp;
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
     }
 
 

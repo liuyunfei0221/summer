@@ -1,5 +1,6 @@
 package com.blue.base.service.impl;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Dict;
 import com.blue.base.repository.entity.DictType;
 import com.blue.base.repository.mapper.DictMapper;
@@ -12,7 +13,7 @@ import reactor.util.Logger;
 import java.util.List;
 
 import static com.blue.base.common.base.Asserter.*;
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -70,15 +71,15 @@ public class DictServiceImpl implements DictService {
         LOGGER.info("Mono<List<Dict>> selectDictByTypeCode(String code), code = {}", code);
 
         if (isBlank(code))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         DictType dictType = dictTypeMapper.getByCode(code);
         if (isNull(dictType))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         Long dictTypeId = dictType.getId();
         if (isInvalidIdentity(dictTypeId))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         return just(dictMapper.selectByDictTypeId(dictTypeId));
     }

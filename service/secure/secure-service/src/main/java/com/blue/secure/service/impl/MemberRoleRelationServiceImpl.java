@@ -1,6 +1,7 @@
 package com.blue.secure.service.impl;
 
 import com.blue.base.common.base.CommonFunctions;
+import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.secure.repository.entity.MemberRoleRelation;
 import com.blue.secure.repository.mapper.MemberRoleRelationMapper;
@@ -19,11 +20,9 @@ import java.util.Optional;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.Asserter.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.CommonException.DATA_NOT_EXIST_EXP;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.base.constant.base.SyncKey.MEMBER_ROLE_REL_UPDATE_PRE;
-import static com.blue.secure.constant.SecureCommonException.MEMBER_ALREADY_HAS_A_ROLE_EXP;
-import static com.blue.secure.constant.SecureCommonException.MEMBER_NOT_HAS_A_ROLE_EXP;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -68,7 +67,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     public Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return just(ofNullable(memberRoleRelationMapper.getRoleIdByMemberId(memberId)));
     }
@@ -103,11 +102,11 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     public void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getByMemberId(memberId);
         if (isNull(memberRoleRelation))
-            throw MEMBER_NOT_HAS_A_ROLE_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message);
 
         memberRoleRelation.setRoleId(roleId);
         memberRoleRelation.setUpdateTime(CommonFunctions.TIME_STAMP_GETTER.get());
@@ -127,11 +126,11 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     public void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) {
         LOGGER.info("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation), memberRoleRelation = {}", memberRoleRelation);
         if (isNull(memberRoleRelation))
-            throw DATA_NOT_EXIST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
 
         Long memberId = memberRoleRelation.getMemberId();
         if (isInvalidIdentity(memberId))
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
         String syncKey = MEMBER_ROLE_REL_UPDATE_PRE_SYNC_KEY + memberId;
@@ -142,7 +141,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         try {
             MemberRoleRelation existRelation = memberRoleRelationMapper.getByMemberId(memberId);
             if (isNotNull(existRelation))
-                throw MEMBER_ALREADY_HAS_A_ROLE_EXP.exp;
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_ALREADY_HAS_A_ROLE.message);
 
             memberRoleRelationMapper.insertSelective(memberRoleRelation);
 //            if (1 == 1) {

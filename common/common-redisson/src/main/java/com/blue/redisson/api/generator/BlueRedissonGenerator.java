@@ -1,5 +1,6 @@
 package com.blue.redisson.api.generator;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.redisson.api.conf.RedissonConf;
 import com.blue.redisson.constant.ServerMode;
 import org.redisson.api.RedissonClient;
@@ -11,6 +12,7 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.concurrent.*;
 
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -146,7 +148,7 @@ public final class BlueRedissonGenerator {
                 configSingleServer(config, redissonConf);
                 break;
             default:
-                throw new RuntimeException("unknown serverMode -> " + serverMode);
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
         }
 
         ThreadFactory threadFactory = r -> {
@@ -175,26 +177,26 @@ public final class BlueRedissonGenerator {
      */
     private static void confAsserter(RedissonConf redissonConf) {
         if (redissonConf == null)
-            throw new RuntimeException("redissonConf can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redissonConf can't be null");
 
         ServerMode serverMode = redissonConf.getServerMode();
         if (serverMode == null)
-            throw new RuntimeException("serverMode can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
 
         switch (serverMode) {
             case CLUSTER:
                 List<String> nodes = redissonConf.getNodes();
                 if (isEmpty(nodes))
-                    throw new RuntimeException("nodes can't be null or empty");
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty");
                 break;
             case SINGLE:
                 String host = redissonConf.getHost();
                 Integer port = redissonConf.getPort();
                 if (isBlank(host) || port == null || port < 1)
-                    throw new RuntimeException("host can't be null or '', port can't be null or less than 1");
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1");
                 break;
             default:
-                throw new RuntimeException("unknown serverMode -> " + serverMode);
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
         }
     }
 

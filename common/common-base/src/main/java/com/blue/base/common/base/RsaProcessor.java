@@ -1,6 +1,7 @@
 package com.blue.base.common.base;
 
 import com.blue.base.model.base.KeyPair;
+import com.blue.base.model.exps.BlueException;
 import org.springframework.util.FastByteArrayOutputStream;
 import reactor.util.Logger;
 
@@ -17,7 +18,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import static com.blue.base.common.base.RsaProcessor.HandleMode.*;
-import static com.blue.base.constant.base.CommonException.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseMessage.RSA_FAILED;
 import static java.lang.Math.min;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getDecoder;
@@ -48,7 +52,7 @@ public final class RsaProcessor {
             return Cipher.getInstance(KEY_ALGORITHM);
         } catch (Exception e) {
             LOGGER.error("CIPHER_SUP get(), failed, e = {}", e);
-            throw INTERNAL_SERVER_ERROR_EXP.exp;
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
         }
     };
 
@@ -57,7 +61,7 @@ public final class RsaProcessor {
             return KeyFactory.getInstance(KEY_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("KEY_FACTORY_SUP get(), failed, e = {}", e);
-            throw INTERNAL_SERVER_ERROR_EXP.exp;
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
         }
     };
 
@@ -66,7 +70,7 @@ public final class RsaProcessor {
             return Signature.getInstance(SIGN_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("SIGNATURE_SUP get(), failed, e = {}", e);
-            throw INTERNAL_SERVER_ERROR_EXP.exp;
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
         }
     };
 
@@ -76,7 +80,7 @@ public final class RsaProcessor {
             return KeyPairGenerator.getInstance(KEY_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("KEY_PAIR_GEN_SUP get(), failed, e = {}", e);
-            throw INTERNAL_SERVER_ERROR_EXP.exp;
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
         }
     };
 
@@ -85,9 +89,9 @@ public final class RsaProcessor {
      */
     private static final BiConsumer<String, String> PAR_ASSERT = (data, secKey) -> {
         if (data == null || "".equals(data))
-            throw EMPTY_PARAM_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
         if (secKey == null || "".equals(secKey))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
     };
 
     /**
@@ -125,7 +129,7 @@ public final class RsaProcessor {
             return outputStream.toByteArray();
         } catch (Exception e) {
             LOGGER.error("byte[] handleBySegment(byte[] source, Cipher cipher, HandleMode handleMode) failed, e = {}", e);
-            throw CRYPT_FAILED_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
         }
     }
 
@@ -157,7 +161,7 @@ public final class RsaProcessor {
             return signature;
         } catch (Exception e) {
             LOGGER.error("Signature signBySegment(byte[] source, Signature signature, HandleMode handleMode) failed, e = {}", e);
-            throw CRYPT_FAILED_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
         }
     }
 
@@ -178,7 +182,7 @@ public final class RsaProcessor {
             return ENCODER.encodeToString(handleBySegment(data.getBytes(DEFAULT_CHARSET), cipher, ENCRYPT));
         } catch (Exception e) {
             LOGGER.error("String encryptByPrivateKey(String data, String priKey) failed, e = {}", e);
-            throw CRYPT_FAILED_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
         }
     }
 
@@ -199,7 +203,7 @@ public final class RsaProcessor {
             return new String(handleBySegment(DECODER.decode(secData), cipher, DECRYPT), DEFAULT_CHARSET);
         } catch (Exception e) {
             LOGGER.error("String decryptByPublicKey(String secData, String pubKey) failed, e = {}", e);
-            throw CRYPT_FAILED_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
         }
     }
 
@@ -220,7 +224,7 @@ public final class RsaProcessor {
             return ENCODER.encodeToString(handleBySegment(data.getBytes(DEFAULT_CHARSET), cipher, ENCRYPT));
         } catch (Exception e) {
             LOGGER.error("String encryptByPublicKey(String data, String pubKey) failed, e = {}", e);
-            throw CRYPT_FAILED_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
         }
     }
 
@@ -241,7 +245,7 @@ public final class RsaProcessor {
             return new String(handleBySegment(DECODER.decode(secData), cipher, DECRYPT), DEFAULT_CHARSET);
         } catch (Exception e) {
             LOGGER.error("String decryptByPrivateKey(String secData, String priKey) failed, e = {}", e);
-            throw CRYPT_FAILED_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
         }
     }
 
@@ -262,7 +266,7 @@ public final class RsaProcessor {
             return new String(ENCODER.encode(signBySegment(data.getBytes(DEFAULT_CHARSET), signature, SIGN).sign()), DEFAULT_CHARSET);
         } catch (Exception e) {
             LOGGER.error("String sign(String data, String priKey) failed, e = {}", e);
-            throw CRYPT_FAILED_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
         }
     }
 
@@ -276,7 +280,7 @@ public final class RsaProcessor {
      */
     public static boolean verify(String data, String sign, String pubKey) {
         if (sign == null || "".equals(sign))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         PAR_ASSERT.accept(data, pubKey);
 
         Signature signature = SIGNATURE_SUP.get();
@@ -287,7 +291,7 @@ public final class RsaProcessor {
             return signBySegment(data.getBytes(DEFAULT_CHARSET), signature, VERIFY).verify(DECODER.decode(sign.getBytes(DEFAULT_CHARSET)));
         } catch (Exception e) {
             LOGGER.error("boolean verify(String data, String sign, String pubKey) failed, e = {}", e);
-            throw CRYPT_FAILED_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.blue.secure.remote.provider;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.secure.api.inter.RpcRoleService;
 import com.blue.secure.api.model.MemberRoleRelationInfo;
 import com.blue.secure.api.model.RoleInfo;
@@ -15,7 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static com.blue.base.constant.base.CommonException.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.secure.converter.SecureModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -57,10 +61,10 @@ public class RpcRoleServiceProvider implements RpcRoleService {
         LOGGER.info("CompletableFuture<RoleInfo> selectRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
         return memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
                 .flatMap(roleIdOpt ->
-                        roleIdOpt.map(roleService::getRoleMonoById).orElseGet(() -> error(INVALID_IDENTITY_EXP.exp))
+                        roleIdOpt.map(roleService::getRoleMonoById).orElseGet(() -> error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message)))
                 )
                 .flatMap(roleOpt ->
-                        roleOpt.map(role -> just(ROLE_2_ROLE_INFO_CONVERTER.apply(role))).orElseGet(() -> error(DATA_NOT_EXIST_EXP.exp))
+                        roleOpt.map(role -> just(ROLE_2_ROLE_INFO_CONVERTER.apply(role))).orElseGet(() -> error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
                 ).toFuture();
     }
 
@@ -90,7 +94,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
                                                 }
 
                                                 LOGGER.error("the role with id {} can't be null", rel.getRoleId());
-                                                throw INTERNAL_SERVER_ERROR_EXP.exp;
+                                                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
                                             }).collect(toList()));
                                 })).toFuture();
     }

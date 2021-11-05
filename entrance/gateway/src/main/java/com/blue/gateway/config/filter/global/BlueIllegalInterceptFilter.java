@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.IllegalReason.UNKNOWN;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseElement.NOT_ACCEPTABLE;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_ILLEGAL_INTERCEPT;
 import static com.github.benmanes.caffeine.cache.Caffeine.newBuilder;
@@ -90,11 +91,11 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
     private void init() {
         Long illegalExpireSeconds = riskControlDeploy.getIllegalExpireSeconds();
         if (illegalExpireSeconds == null || illegalExpireSeconds < 1L)
-            throw new RuntimeException("illegalExpireSeconds can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalExpireSeconds can't be null or less than 1");
 
         Integer illegalCapacity = riskControlDeploy.getIllegalCapacity();
         if (illegalCapacity == null || illegalCapacity < 1)
-            throw new RuntimeException("illegalCapacity can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalCapacity can't be null or less than 1");
 
         illegalIpCache = newBuilder()
                 .expireAfterAccess(of(illegalExpireSeconds, SECONDS))

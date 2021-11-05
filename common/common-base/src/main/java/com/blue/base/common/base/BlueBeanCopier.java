@@ -1,13 +1,14 @@
 package com.blue.base.common.base;
 
 import com.blue.base.constant.base.Symbol;
+import com.blue.base.model.exps.BlueException;
 import org.springframework.cglib.beans.BeanCopier;
 import reactor.util.Logger;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -34,9 +35,9 @@ public final class BlueBeanCopier {
      */
     private static String generateKey(Class source, Class target, boolean useConverter) {
         if (source == null)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (target == null)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         return source.getName() + PAR_CONCATENATION + target.getName() + PAR_CONCATENATION + useConverter;
     }

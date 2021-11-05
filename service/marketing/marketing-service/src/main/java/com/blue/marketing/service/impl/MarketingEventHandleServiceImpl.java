@@ -2,6 +2,7 @@ package com.blue.marketing.service.impl;
 
 import com.blue.base.constant.marketing.HandleStatus;
 import com.blue.base.constant.marketing.MarketingEventType;
+import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.marketing.api.model.EventHandleResult;
 import com.blue.marketing.api.model.MarketingEvent;
@@ -19,8 +20,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -57,7 +59,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         Map<String, EventHandler> beansOfType = applicationContext.getBeansOfType(EventHandler.class);
         if (isEmpty(beansOfType))
-            throw new RuntimeException("marketingEventHandlers is empty");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "marketingEventHandlers is empty");
 
         marketingEventHandlers = beansOfType.values().stream()
                 .collect(toMap(EventHandler::targetType, eh -> eh, (a, b) -> a));
@@ -66,18 +68,18 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
     private final Consumer<MarketingEvent> eventHandler = marketingEvent -> {
         MarketingEventType marketingEventType = marketingEvent.getEventType();
         if (marketingEventType == null)
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         EventHandler eventHandler = marketingEventHandlers.get(marketingEventType);
         if (eventHandler == null)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         eventHandler.handleEvent(marketingEvent);
     };
 
     private static final Function<MarketingEvent, Event> EVENT_ENTITY_GEN = marketingEvent -> {
         if (marketingEvent == null)
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         Event event = new Event();
 

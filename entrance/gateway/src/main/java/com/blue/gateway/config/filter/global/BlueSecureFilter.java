@@ -1,13 +1,12 @@
 package com.blue.gateway.config.filter.global;
 
-import com.blue.gateway.common.GatewayCommonFactory;
+import com.blue.base.model.exps.BlueException;
 import com.blue.gateway.remote.consumer.RpcSecureServiceConsumer;
 import com.blue.secure.api.model.AssertAuth;
 import com.blue.secure.api.model.AuthAsserted;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -16,12 +15,12 @@ import reactor.util.Logger;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 import static com.blue.base.common.auth.AuthProcessor.accessToJson;
+import static com.blue.base.common.base.CommonFunctions.HEADER_VALUE_GETTER;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.base.CommonException.UNAUTHORIZED_EXP;
+import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
 import static com.blue.base.constant.base.SpecialAccess.VISITOR;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_SECURE;
 import static java.util.Optional.ofNullable;
@@ -44,14 +43,12 @@ public final class BlueSecureFilter implements GlobalFilter, Ordered {
         this.rpcSecureServiceConsumer = rpcSecureServiceConsumer;
     }
 
-    public static final BiFunction<HttpHeaders, String, String> HEADER_VALUE_GETTER = GatewayCommonFactory.HEADER_VALUE_GETTER;
-
     private static final BiConsumer<ServerHttpRequest, String> AUTHENTICATION_REPACKAGER =
             (request, accessInfo) -> request.mutate().headers(hs -> hs.set(AUTHORIZATION.name, accessInfo));
 
     private static void authProcess(AuthAsserted authAsserted, ServerHttpRequest request, Map<String, Object> exchangeAttributes) {
         if (authAsserted == null || exchangeAttributes == null)
-            throw UNAUTHORIZED_EXP.exp;
+            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
 
         String accStr = accessToJson(ofNullable(authAsserted.getAccessInfo()).orElse(VISITOR.access));
         if (authAsserted.getCertificate())

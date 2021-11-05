@@ -1,11 +1,11 @@
 package com.blue.base.common.auth;
 
-import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.base.Access;
-import com.google.gson.Gson;
+import com.blue.base.model.exps.BlueException;
 import com.google.gson.JsonSyntaxException;
 
-import static com.blue.base.constant.base.CommonException.UNAUTHORIZED_EXP;
+import static com.blue.base.common.base.CommonFunctions.GSON;
+import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
 
 /**
  * auth object and auth str converter
@@ -15,8 +15,6 @@ import static com.blue.base.constant.base.CommonException.UNAUTHORIZED_EXP;
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class AuthProcessor {
-
-    private static final Gson GSON = CommonFunctions.GSON;
 
     /**
      * access -> json
@@ -28,7 +26,7 @@ public final class AuthProcessor {
         if (access != null)
             return GSON.toJson(access);
 
-        throw UNAUTHORIZED_EXP.exp;
+        throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
     }
 
     /**
@@ -42,10 +40,10 @@ public final class AuthProcessor {
             try {
                 return GSON.fromJson(json, Access.class);
             } catch (JsonSyntaxException e) {
-                throw UNAUTHORIZED_EXP.exp;
+                throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
             }
 
-        throw UNAUTHORIZED_EXP.exp;
+        throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
     }
 
 }

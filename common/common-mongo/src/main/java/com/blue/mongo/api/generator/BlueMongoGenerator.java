@@ -1,5 +1,6 @@
 package com.blue.mongo.api.generator;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.mongo.api.conf.AddressAttr;
 import com.blue.mongo.api.conf.MongoConf;
 import com.mongodb.MongoClientSettings;
@@ -13,6 +14,7 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -117,11 +119,11 @@ public final class BlueMongoGenerator {
         try {
             MongoClientSettings mongoClientSettings = mongoClientSettingsFactoryBean.getObject();
             if (mongoClientSettings == null)
-                throw new RuntimeException("mongoClientSettings can't be null");
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "mongoClientSettings can't be null");
 
             return MongoClients.create(mongoClientSettings);
         } catch (Exception e) {
-            throw new RuntimeException("MongoClients.create() failed, e = {0}", e);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "MongoClients.create() failed, e = " + e);
         }
     }
 
@@ -146,15 +148,15 @@ public final class BlueMongoGenerator {
      */
     private static void confAsserter(MongoConf conf) {
         if (conf == null)
-            throw new RuntimeException("conf can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         List<AddressAttr> addressAttrs = conf.getAddressAttrs();
         if (isEmpty(addressAttrs))
-            throw new RuntimeException("addressAttrs can't be null or empty");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "addressAttrs can't be null or empty");
 
         String databaseName = conf.getDatabaseName();
         if (isBlank(databaseName))
-            throw new RuntimeException("databaseName can't be null or ''");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "databaseName can't be null or ''");
     }
 
 }

@@ -1,11 +1,13 @@
 package com.blue.base.model.base;
 
+import com.blue.base.model.exps.BlueException;
+
 import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
 
 import static com.blue.base.common.base.Asserter.isBlank;
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
  * redis key expire info
@@ -37,11 +39,11 @@ public final class KeyExpireParam implements Serializable {
 
     public KeyExpireParam(String key, Long expire, ChronoUnit unit) {
         if (isBlank(key))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (isInvalidIdentity(expire))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (unit == null)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         this.key = key;
         this.expire = expire;
@@ -54,7 +56,7 @@ public final class KeyExpireParam implements Serializable {
 
     public void setKey(String key) {
         if (isBlank(key))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         this.key = key;
     }
 
@@ -64,7 +66,7 @@ public final class KeyExpireParam implements Serializable {
 
     public void setExpire(Long expire) {
         if (isInvalidIdentity(expire))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         this.expire = expire;
     }
 
@@ -74,7 +76,7 @@ public final class KeyExpireParam implements Serializable {
 
     public void setUnit(ChronoUnit unit) {
         if (unit == null)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         this.unit = unit;
     }
 

@@ -1,5 +1,6 @@
 package com.blue.base.common.multitask;
 
+import com.blue.base.model.exps.BlueException;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static reactor.util.Loggers.getLogger;
 
@@ -74,7 +76,7 @@ public final class BlueExecutor<T, R> {
         this.processor = processor;
         this.executorService = executorService;
         if (threads == null || threads < 1) {
-            throw new RuntimeException("threads can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "threads can't be null or less than 1");
         }
         this.collector = new DefaultBlueCollector<>(threads, WRITE_TIME_OUT, READ_TIME_OUT, TIME_OUT_UNIT);
 
@@ -153,19 +155,19 @@ public final class BlueExecutor<T, R> {
      */
     private void argsAssert() {
         if (this.resources == null || this.resources.size() < 1)
-            throw new RuntimeException("resources can't be null or empty");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "resources can't be null or empty");
         if (this.resources.size() > MAX_TASK)
-            throw new RuntimeException("resources can't be more than " + MAX_TASK);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "resources can't be more than " + MAX_TASK);
         if (this.processor == null)
-            throw new RuntimeException("processor can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "processor can't be null");
         if (this.executorService == null || this.executorService.isShutdown())
-            throw new RuntimeException("executorService can't be null or shutdown");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "executorService can't be null or shutdown");
         if (BlueExecutor.MAX_TASK < 1)
-            throw new RuntimeException("MAX_TASK can't be less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "MAX_TASK can't be less than 1");
         if (BlueExecutor.WRITE_TIME_OUT < 1)
-            throw new RuntimeException("WRITE_TIME_OUT can't be less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "WRITE_TIME_OUT can't be less than 1");
         if (BlueExecutor.READ_TIME_OUT < 1L)
-            throw new RuntimeException("READ_TIME_OUT can't be less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "READ_TIME_OUT can't be less than 1");
     }
 
 }

@@ -3,19 +3,14 @@ package com.blue.captcha.config.filter.global;
 import com.blue.base.common.content.common.RequestBodyProcessor;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.model.base.DataEvent;
-import com.blue.captcha.common.CaptchaCommonFactory;
 import com.blue.captcha.component.RequestEventReporter;
 import com.blue.captcha.config.deploy.ResponseDeploy;
-import com.google.gson.Gson;
 import org.reactivestreams.Publisher;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;
@@ -29,16 +24,14 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
+import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
+import static com.blue.captcha.common.CaptchaCommonFactory.*;
 import static com.blue.captcha.config.filter.BlueFilterOrder.BLUE_BODY_PROCESS_AND_DATA_REPORT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -72,22 +65,8 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
     private Set<String> existenceBodyResponseContentTypes;
 
-    private final BiFunction<HttpHeaders, String, String> HEADER_VALUE_GETTER = CaptchaCommonFactory.HEADER_VALUE_GETTER;
-
     private final Function<HttpHeaders, Boolean> EXISTENCE_BODY_PREDICATE = httpHeaders ->
             existenceBodyResponseContentTypes.contains(HEADER_VALUE_GETTER.apply(httpHeaders, HttpHeaders.CONTENT_TYPE));
-
-    private static final List<HttpMessageReader<?>> MESSAGE_READERS = CaptchaCommonFactory.MESSAGE_READERS;
-
-    private static final BiConsumer<Throwable, ServerHttpRequestDecorator> ON_ERROR_CONSUMER = CaptchaCommonFactory.ON_ERROR_CONSUMER;
-
-    private static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = CaptchaCommonFactory.THROWABLE_CONVERTER;
-
-    private static final Gson GSON = CaptchaCommonFactory.GSON;
-
-    private static final Supplier<Long> TIME_STAMP_GETTER = CaptchaCommonFactory.TIME_STAMP_GETTER;
-
-    private static final DataBufferFactory DATA_BUFFER_FACTORY = CaptchaCommonFactory.DATA_BUFFER_FACTORY;
 
     private void reportError(Throwable throwable, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
         ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
@@ -168,8 +147,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
         return response;
     }
-
-    private static final BiFunction<ServerHttpRequest, Mono<String>, ServerHttpRequestDecorator> REQUEST_DECORATOR_GENERATOR = CaptchaCommonFactory.REQUEST_DECORATOR_GENERATOR;
 
     public Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
 

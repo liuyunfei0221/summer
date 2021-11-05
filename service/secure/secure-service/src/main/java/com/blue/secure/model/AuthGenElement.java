@@ -1,6 +1,8 @@
 package com.blue.secure.model;
 
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
+import com.blue.base.model.exps.BlueException;
+
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
  * member, role, login infos for generate member auth
@@ -33,13 +35,13 @@ public final class AuthGenElement {
 
     public AuthGenElement(Long memberId, Long roleId, String loginType, String deviceType) {
         if (memberId == null || memberId < 0L)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (roleId == null || roleId < 1L)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (loginType == null || "".equals(loginType))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (deviceType == null || "".equals(deviceType))
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         this.memberId = memberId;
         this.roleId = roleId;

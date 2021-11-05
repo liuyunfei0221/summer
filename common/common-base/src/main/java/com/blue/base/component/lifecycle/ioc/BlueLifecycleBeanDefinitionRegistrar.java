@@ -3,6 +3,7 @@ package com.blue.base.component.lifecycle.ioc;
 import com.blue.base.anno.EnableBlueLifecycle;
 import com.blue.base.component.common.BlueBeanDefinitionScanner;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
+import com.blue.base.model.exps.BlueException;
 import org.apache.logging.log4j.core.config.Order;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -25,6 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import static com.blue.base.component.lifecycle.constant.BlueLifecycleScanConf.BLUE_LIFECYCLE_SCAN_PACKAGE;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Comparator.comparingInt;
 import static java.util.Optional.ofNullable;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
@@ -77,7 +79,7 @@ public class BlueLifecycleBeanDefinitionRegistrar implements ResourceLoaderAware
             String beanName = entry.getKey();
             int precedence = blueLifecycle.startPrecedence();
             LOGGER.error("start() failed, {} start failed, precedence is {}, e = {}", beanName, precedence, e);
-            throw new RuntimeException("stop() failed, " + beanName + " start failed, precedence is " + precedence + ", e = " + e);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stop() failed, " + beanName + " start failed, precedence is " + precedence + ", e = " + e);
         }
     },
             ACTION_FOR_STOP = entry -> {
@@ -89,7 +91,7 @@ public class BlueLifecycleBeanDefinitionRegistrar implements ResourceLoaderAware
                     String beanName = entry.getKey();
                     int precedence = blueLifecycle.startPrecedence();
                     LOGGER.error("stop() failed, {} stop failed, precedence is {}, e = {}", beanName, precedence, e);
-                    throw new RuntimeException("stop() failed, " + beanName + " stop failed, precedence is " + precedence + ", e = " + e);
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stop() failed, " + beanName + " stop failed, precedence is " + precedence + ", e = " + e);
                 }
             };
 

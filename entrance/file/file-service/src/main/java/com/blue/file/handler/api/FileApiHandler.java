@@ -1,7 +1,8 @@
 package com.blue.file.handler.api;
 
 import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.base.IdentityWrapper;
+import com.blue.base.model.base.IdentityParam;
+import com.blue.base.model.exps.BlueException;
 import com.blue.file.config.deploy.FileDeploy;
 import com.blue.file.service.inter.FileService;
 import org.springframework.core.io.FileSystemResource;
@@ -17,8 +18,9 @@ import java.net.URLEncoder;
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.CONTENT_DISPOSITION;
-import static com.blue.base.constant.base.CommonException.*;
-import static com.blue.base.constant.base.ResponseElement.OK;
+import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
@@ -62,10 +64,10 @@ public final class FileApiHandler {
     public Mono<ServerResponse> upload(ServerRequest serverRequest) {
         long allFileSize = serverRequest.headers().contentLength().orElse(0L);
         if (0L == allFileSize || allFileSize > allFileSizeThreshold)
-            throw PAYLOAD_TOO_LARGE_EXP.exp;
+            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
 
         return zip(serverRequest.multipartData()
-                        .switchIfEmpty(error(EMPTY_PARAM_EXP.exp)),
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         fileService.uploadAttachment(tuple2.getT1(), tuple2.getT2().getId()))
@@ -82,20 +84,20 @@ public final class FileApiHandler {
      * @return
      */
     public Mono<ServerResponse> download(ServerRequest serverRequest) {
-        return zip(serverRequest.bodyToMono(IdentityWrapper.class)
-                        .switchIfEmpty(error(EMPTY_PARAM_EXP.exp)),
+        return zip(serverRequest.bodyToMono(IdentityParam.class)
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         fileService.getAttachmentForDownload(tuple2.getT1().getId(), tuple2.getT2().getId())
-                                .switchIfEmpty(error(DATA_NOT_EXIST_EXP.exp))
+                                .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
                                 .flatMap(attachment -> {
                                     String link = attachment.getLink();
                                     if (link == null || "".equals(link))
-                                        return error(DATA_NOT_EXIST_EXP.exp);
+                                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message));
 
                                     FileSystemResource resource = new FileSystemResource(new File(link));
                                     if (!resource.exists())
-                                        return error(DATA_NOT_EXIST_EXP.exp);
+                                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message));
 
                                     return ok().contentType(APPLICATION_OCTET_STREAM)
                                             .header(CONTENT_DISPOSITION.name,

@@ -1,10 +1,13 @@
 package com.blue.base.common.tree;
 
+import com.blue.base.model.exps.BlueException;
+
 import java.io.Serializable;
 import java.util.List;
 
-import static com.blue.base.constant.base.CommonException.EMPTY_PARAM_EXP;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 
 /**
  * tree node
@@ -39,12 +42,12 @@ public final class TreeNode<T> implements Serializable {
 
     private static void checkIdentity(Long identity) {
         if (identity == null)
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
     }
 
     private static <T> void checkData(T data) {
         if (data == null)
-            throw EMPTY_PARAM_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
     }
 
     public TreeNode() {

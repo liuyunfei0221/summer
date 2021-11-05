@@ -20,7 +20,7 @@ import java.net.URI;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import static com.blue.base.constant.base.CommonException.NOT_FOUND_EXP;
+import static com.blue.base.constant.base.ResponseElement.NOT_FOUND;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_LOAD_BALANCER_CLIENT;
 import static java.util.Optional.ofNullable;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.*;
@@ -42,7 +42,7 @@ public class BlueReactiveLoadBalancerClientFilter implements GlobalFilter, Order
         this.clientFactory = clientFactory;
     }
 
-    private static final Supplier<BlueException> NOT_FOUND_EXP_SUP = () -> NOT_FOUND_EXP.exp;
+    private static final Supplier<BlueException> NOT_FOUND_EXP_SUP = () -> new BlueException(NOT_FOUND.status, NOT_FOUND.code, NOT_FOUND.message);
 
     private static final String LOAD_BALANCE_SCHEME = "lb";
 
@@ -66,7 +66,7 @@ public class BlueReactiveLoadBalancerClientFilter implements GlobalFilter, Order
                             exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR,
                                     URI_RE_CONSTRUCTOR.apply(new DelegatingServiceInstance(retrievedInstance, schemePrefix == null ? retrievedInstance.isSecure() ? SECURE_PROTOCOL : PROTOCOL : urlSchema), uri));
                         } else {
-                            throw NOT_FOUND_EXP.exp;
+                            throw new BlueException(NOT_FOUND.status, NOT_FOUND.code, NOT_FOUND.message);
                         }
                     }).then(chain.filter(exchange));
         }

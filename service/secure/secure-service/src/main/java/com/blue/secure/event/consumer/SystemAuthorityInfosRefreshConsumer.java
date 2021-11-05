@@ -24,7 +24,7 @@ import static reactor.util.Loggers.getLogger;
  */
 public class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle {
 
-    private static final Logger LOGGER = getLogger(AuthExpireConsumer.class);
+    private static final Logger LOGGER = getLogger(SystemAuthorityInfosRefreshConsumer.class);
 
     private final BlueConsumerConfig blueConsumerConfig;
 

@@ -1,15 +1,16 @@
 package com.blue.base.common.base;
 
 import com.blue.base.constant.base.RandomType;
+import com.blue.base.model.exps.BlueException;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.blue.base.constant.base.CommonException.BAD_REQUEST_EXP;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
 import static com.blue.base.constant.base.RandomType.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 
 /**
  * random util base on commons-lang
@@ -42,11 +43,11 @@ public final class BlueRandomGenerator {
      */
     public static String generateRandom(RandomType type, int length) {
         if (type == null || length < 1)
-            throw BAD_REQUEST_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         Function<Integer, String> generator = GENERATOR_MAPPING.get(type);
         if (generator == null)
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return generator.apply(length);
     }

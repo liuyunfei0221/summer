@@ -5,12 +5,12 @@ import java.io.Serializable;
 import static java.util.Optional.ofNullable;
 
 /**
- * id wrapper
+ * id param
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class IdentityWrapper implements Serializable {
+public final class IdentityParam implements Serializable {
 
     private static final long serialVersionUID = 3631693809321831634L;
 
@@ -19,10 +19,10 @@ public final class IdentityWrapper implements Serializable {
      */
     private Long id;
 
-    public IdentityWrapper() {
+    public IdentityParam() {
     }
 
-    public IdentityWrapper(Long id) {
+    public IdentityParam(Long id) {
         this.id = id;
     }
 

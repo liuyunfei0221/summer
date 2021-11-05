@@ -1,5 +1,6 @@
 package com.blue.business.service.impl;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.business.repository.entity.Link;
 import com.blue.business.repository.mapper.LinkMapper;
 import com.blue.business.service.inter.LinkService;
@@ -12,7 +13,8 @@ import java.util.Optional;
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.common.base.Asserter.isValidIdentity;
 import static com.blue.base.common.base.ConstantProcessor.assertSubjectType;
-import static com.blue.base.constant.base.CommonException.INVALID_IDENTITY_EXP;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -46,7 +48,7 @@ public class LinkServiceImpl implements LinkService {
         if (isValidIdentity(id))
             return ofNullable(linkMapper.selectByPrimaryKey(id));
 
-        throw INVALID_IDENTITY_EXP.exp;
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
     }
 
     /**
@@ -71,7 +73,7 @@ public class LinkServiceImpl implements LinkService {
     public List<Link> selectBySubIdAndSubType(Long subId, Integer subType) {
         LOGGER.info("subId = {},subType = {}", subId, subType);
         if (isInvalidIdentity(subId))
-            throw INVALID_IDENTITY_EXP.exp;
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         assertSubjectType(subType, false);
         return linkMapper.selectBySubIdAndSubType(subId, subType);

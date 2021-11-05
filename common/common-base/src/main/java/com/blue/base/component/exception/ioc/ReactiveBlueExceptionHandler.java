@@ -1,9 +1,7 @@
 package com.blue.base.component.exception.ioc;
 
-import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.component.exception.common.ExceptionProcessor;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.google.gson.Gson;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -13,6 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.nio.charset.Charset;
 
+import static com.blue.base.common.base.CommonFunctions.GSON;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -27,8 +26,6 @@ import static reactor.core.publisher.Mono.just;
 @Component
 @Order(HIGHEST_PRECEDENCE)
 public final class ReactiveBlueExceptionHandler implements WebExceptionHandler {
-
-    private static final Gson GSON = CommonFunctions.GSON;
 
     private static final Charset CHARSET = UTF_8;
 

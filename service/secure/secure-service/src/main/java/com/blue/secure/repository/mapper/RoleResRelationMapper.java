@@ -37,6 +37,10 @@ public interface RoleResRelationMapper {
 
     List<RoleResRelation> selectByRoleIds(@Param("roleIds") List<Long> roleIds);
 
+    List<RoleResRelation> selectRelationByLimitAndRoleId(@Param("roleId") Long roleId, @Param("limit") Long limit, @Param("rows") Long rows);
+
+    Long countByRoleId(@Param("roleId") Long roleId);
+
     List<RoleResRelation> selectByResIds(@Param("resIds") List<Long> resIds);
 
 }
