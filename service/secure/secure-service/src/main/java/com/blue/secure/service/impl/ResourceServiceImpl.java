@@ -1,7 +1,6 @@
 package com.blue.secure.service.impl;
 
 import com.blue.base.common.base.Asserter;
-import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -14,8 +13,6 @@ import com.blue.secure.model.ResourceUpdateParam;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.mapper.ResourceMapper;
 import com.blue.secure.service.inter.ResourceService;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -65,13 +62,10 @@ public class ResourceServiceImpl implements ResourceService {
 
     private ResourceMapper resourceMapper;
 
-    private final RedissonClient redissonClient;
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ResourceServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ResourceMapper resourceMapper, RedissonClient redissonClient) {
+    public ResourceServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ResourceMapper resourceMapper) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.resourceMapper = resourceMapper;
-        this.redissonClient = redissonClient;
     }
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
@@ -96,8 +90,6 @@ public class ResourceServiceImpl implements ResourceService {
                     .filter(n -> !isBlank(n)).ifPresent(n -> condition.setName("%" + n + "%"));
         }
     };
-
-    private static final String RESOURCE_SYNC_KEY = "RESOURCE_SYNC";
 
     /**
      * is a resource exist?
@@ -284,31 +276,17 @@ public class ResourceServiceImpl implements ResourceService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
 
-        RLock resourceLock = redissonClient.getLock(RESOURCE_SYNC_KEY);
-        try {
-            resourceLock.lock();
+        INSERT_RESOURCE_VALIDATOR.accept(resourceInsertParam);
+        Resource resource = RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER.apply(resourceInsertParam);
 
-            INSERT_RESOURCE_VALIDATOR.accept(resourceInsertParam);
-            Resource resource = RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER.apply(resourceInsertParam);
+        long id = blueIdentityProcessor.generate(Resource.class);
+        resource.setId(id);
+        resource.setCreator(operatorId);
+        resource.setUpdater(operatorId);
 
-            long id = blueIdentityProcessor.generate(Resource.class);
-            resource.setId(id);
-            resource.setCreator(operatorId);
-            resource.setUpdater(operatorId);
+        resourceMapper.insert(resource);
 
-            resourceMapper.insert(resource);
-
-            return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
-        } catch (Exception e) {
-            LOGGER.error("lock on insertResource failed, e = {0}", e);
-            throw e;
-        } finally {
-            try {
-                resourceLock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("resourceLock.unlock() failed, e = {}", e);
-            }
-        }
+        return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
     }
 
     /**
@@ -327,63 +305,35 @@ public class ResourceServiceImpl implements ResourceService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
 
-        RLock resourceLock = redissonClient.getLock(RESOURCE_SYNC_KEY);
-        try {
-            resourceLock.lock();
-
-            Resource resource = UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER.apply(resourceUpdateParam);
-            if (RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(resourceUpdateParam, resource)) {
-                resourceMapper.updateByPrimaryKeySelective(resource);
-                return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
-            }
-
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data has no change");
-        } catch (Exception e) {
-            LOGGER.error("lock on updateResource failed, e = {}", e);
-            throw e;
-        } finally {
-            try {
-                resourceLock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("resourceLock.unlock() failed, e = {}", e);
-            }
+        Resource resource = UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER.apply(resourceUpdateParam);
+        if (RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(resourceUpdateParam, resource)) {
+            resourceMapper.updateByPrimaryKeySelective(resource);
+            return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
         }
+
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data has no change");
     }
 
     /**
-     * delete a exist resource
+     * delete resource
      *
-     * @param identityParam
-     * @param operatorId
+     * @param id
      * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
-    public ResourceInfo deleteResource(IdentityParam identityParam, Long operatorId) {
-        LOGGER.info("ResourceInfo deleteResource(IdentityParam identityParam, Long operatorId), identityParam = {}, operatorId = {}", identityParam, operatorId);
-        long id = assertIdentityParamsAndReturnIdForOperate(identityParam, operatorId);
+    public ResourceInfo deleteResourceById(Long id) {
+        LOGGER.info("ResourceInfo deleteResourceById(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        RLock resourceLock = redissonClient.getLock(RESOURCE_SYNC_KEY);
-        try {
-            resourceLock.lock();
-
-            Resource resource = resourceMapper.selectByPrimaryKey(id);
-            if (resource != null) {
-                resourceMapper.deleteByPrimaryKey(id);
-                return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
-            }
-
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
-        } catch (Exception e) {
-            LOGGER.error("lock on deleteResource failed, e = {0}", e);
-            throw e;
-        } finally {
-            try {
-                resourceLock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("roleLock.unlock() failed, e = {}", e);
-            }
+        Resource resource = resourceMapper.selectByPrimaryKey(id);
+        if (resource != null) {
+            resourceMapper.deleteByPrimaryKey(id);
+            return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
         }
+
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
     }
 
     /**

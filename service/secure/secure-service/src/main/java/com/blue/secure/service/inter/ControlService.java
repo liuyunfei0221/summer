@@ -25,7 +25,7 @@ public interface ControlService {
      *
      * @return
      */
-    void refreshSystemAuthorityInfos();
+    Mono<Void> refreshSystemAuthorityInfos();
 
     /**
      * update member role info by access
@@ -34,7 +34,7 @@ public interface ControlService {
      * @param roleId
      * @return
      */
-    void updateMemberRoleByAccess(Access access, Long roleId);
+    Mono<Void> updateMemberRoleByAccess(Access access, Long roleId);
 
     /**
      * update member role info by member id
@@ -58,8 +58,9 @@ public interface ControlService {
      *
      * @param id
      * @param operatorId
+     * @return
      */
-    void updateDefaultRole(Long id, Long operatorId);
+    Mono<Void> updateDefaultRole(Long id, Long operatorId);
 
     /**
      * insert a new role
@@ -86,7 +87,7 @@ public interface ControlService {
      * @param operatorId
      * @return
      */
-    RoleInfo deleteRole(IdentityParam identityParam, Long operatorId);
+    Mono<RoleInfo> deleteRole(IdentityParam identityParam, Long operatorId);
 
     /**
      * insert resource
@@ -105,5 +106,14 @@ public interface ControlService {
      * @return
      */
     Mono<ResourceInfo> updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId);
+
+    /**
+     * delete a exist resource
+     *
+     * @param identityParam
+     * @param operatorId
+     * @return
+     */
+    Mono<ResourceInfo> deleteResource(IdentityParam identityParam, Long operatorId);
 
 }

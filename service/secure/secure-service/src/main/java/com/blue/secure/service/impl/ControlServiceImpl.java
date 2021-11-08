@@ -12,19 +12,22 @@ import com.blue.secure.model.RoleInsertParam;
 import com.blue.secure.model.RoleUpdateParam;
 import com.blue.secure.repository.entity.MemberRoleRelation;
 import com.blue.secure.repository.entity.Role;
-import com.blue.secure.service.inter.*;
-import org.redisson.api.RedissonClient;
+import com.blue.secure.service.inter.ControlService;
+import com.blue.secure.service.inter.MemberRoleRelationService;
+import com.blue.secure.service.inter.RoleResRelationService;
+import com.blue.secure.service.inter.SecureService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import static com.blue.base.common.base.Asserter.assertIdentityParamsAndReturnIdForOperate;
+import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
 import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
+import static reactor.core.publisher.Mono.fromRunnable;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -42,31 +45,20 @@ public class ControlServiceImpl implements ControlService {
 
     private final SecureService secureService;
 
-    private final RoleService roleService;
-
-    private final ResourceService resourceService;
-
     private final RoleResRelationService roleResRelationService;
 
     private final MemberRoleRelationService memberRoleRelationService;
 
-    private final RedissonClient redissonClient;
-
     private final SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ControlServiceImpl(SecureService secureService, RoleService roleService, ResourceService resourceService, RoleResRelationService roleResRelationService,
-                              MemberRoleRelationService memberRoleRelationService, RedissonClient redissonClient, SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer) {
+    public ControlServiceImpl(SecureService secureService, RoleResRelationService roleResRelationService,
+                              MemberRoleRelationService memberRoleRelationService, SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer) {
         this.secureService = secureService;
-        this.roleService = roleService;
-        this.resourceService = resourceService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
-        this.redissonClient = redissonClient;
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
     }
-
-    private static final String ROLE_SYNC_KEY = "ROLE_SYNC";
 
     /**
      * refresh resource key/info or role-resource-relation
@@ -74,9 +66,11 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public void refreshSystemAuthorityInfos() {
-        LOGGER.info("void refreshResourceKeyOrRelation()");
+    public Mono<Void> refreshSystemAuthorityInfos() {
+        LOGGER.info("Mono<Void> refreshSystemAuthorityInfos()");
         secureService.refreshSystemAuthorityInfos();
+
+        return fromRunnable(secureService::refreshSystemAuthorityInfos).then();
     }
 
     /**
@@ -87,11 +81,12 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public void updateMemberRoleByAccess(Access access, Long roleId) {
+    public Mono<Void> updateMemberRoleByAccess(Access access, Long roleId) {
         LOGGER.info("void updateMemberRoleByAccess(Access access, Long roleId), access = {}, roleId = {}", access, roleId);
         long memberId = access.getId();
-        memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, memberId);
-        secureService.refreshMemberRoleByAccess(access, roleId);
+
+        Mono<Void> mono = fromRunnable(() -> memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, memberId));
+        return mono.doOnSuccess(v -> secureService.refreshMemberRoleByAccess(access, roleId)).then();
     }
 
     /**
@@ -117,10 +112,10 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public void insertDefaultMemberRoleRelation(Long memberId) {
         LOGGER.info("void insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
-        if (memberId == null || memberId < 1L)
+        if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        Role role = roleService.getDefaultRole();
+        Role role = roleResRelationService.getDefaultRole();
         if (role == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
 
@@ -136,19 +131,34 @@ public class ControlServiceImpl implements ControlService {
         memberRoleRelationService.insertMemberRoleRelation(memberRoleRelation);
     }
 
+    /**
+     * update default role by role id
+     *
+     * @param id
+     * @param operatorId
+     * @return
+     */
     @Override
-    public void updateDefaultRole(Long id, Long operatorId) {
+    public Mono<Void> updateDefaultRole(Long id, Long operatorId) {
         LOGGER.info("void updateDefaultRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
-        roleService.updateDefaultRole(id, operatorId);
+        roleResRelationService.updateDefaultRole(id, operatorId);
+        return empty();
     }
 
+    /**
+     * insert a new role
+     *
+     * @param roleInsertParam
+     * @param operatorId
+     * @return
+     */
     @Override
     public Mono<RoleInfo> insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
-        LOGGER.info("RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
+        LOGGER.info("Mono<RoleInfo> insertRole(RoleInsertParam roleInsertParam, Long operatorId), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
 
-        return just(roleService.insertRole(roleInsertParam, operatorId))
+        return just(roleResRelationService.insertRole(roleInsertParam, operatorId))
                 .doOnSuccess(ri -> {
-                    LOGGER.info("roleInfo = {}", ri);
+                    LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
                 });
     }
@@ -162,11 +172,11 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Mono<RoleInfo> updateRole(RoleUpdateParam roleUpdateParam, Long operatorId) {
-        LOGGER.info("RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
+        LOGGER.info("Mono<RoleInfo> updateRole(RoleUpdateParam roleUpdateParam, Long operatorId), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
 
-        return just(roleService.updateRole(roleUpdateParam, operatorId))
+        return just(roleResRelationService.updateRole(roleUpdateParam, operatorId))
                 .doOnSuccess(ri -> {
-                    LOGGER.info("roleInfo = {}", ri);
+                    LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
                 });
     }
@@ -179,15 +189,14 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public RoleInfo deleteRole(IdentityParam identityParam, Long operatorId) {
-        LOGGER.info("RoleInfo deleteRole(IdentityParam identityParam, Long operatorId), identityParam = {}, operatorId = {}", identityParam, operatorId);
-        long roleId = assertIdentityParamsAndReturnIdForOperate(identityParam, operatorId);
+    public Mono<RoleInfo> deleteRole(IdentityParam identityParam, Long operatorId) {
+        LOGGER.info("Mono<RoleInfo> deleteRole(IdentityParam identityParam, Long operatorId), identityParam = {}, operatorId = {}", identityParam, operatorId);
 
-        //TODO
-        long relCount = roleResRelationService.countRelationByRoleId(roleId);
-
-
-        return null;
+        return just(roleResRelationService.deleteRole(identityParam, operatorId))
+                .doOnSuccess(ri -> {
+                    LOGGER.info("ri = {}", ri);
+                    systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
+                });
     }
 
     /**
@@ -199,11 +208,11 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Mono<ResourceInfo> insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
-        LOGGER.info("ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId), resourceInsertParam = {}, operatorId = {}", resourceInsertParam, operatorId);
+        LOGGER.info("Mono<ResourceInfo> insertResource(ResourceInsertParam resourceInsertParam, Long operatorId), resourceInsertParam = {}, operatorId = {}", resourceInsertParam, operatorId);
 
-        return just(resourceService.insertResource(resourceInsertParam, operatorId))
+        return just(roleResRelationService.insertResource(resourceInsertParam, operatorId))
                 .doOnSuccess(ri -> {
-                    LOGGER.info("resourceInfo = {}", ri);
+                    LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
                 });
     }
@@ -217,11 +226,29 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Mono<ResourceInfo> updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId) {
-        LOGGER.info("ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}, operatorId = {}", resourceUpdateParam, operatorId);
+        LOGGER.info("Mono<ResourceInfo> updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}, operatorId = {}", resourceUpdateParam, operatorId);
 
-        return just(resourceService.updateResource(resourceUpdateParam, operatorId))
+        return just(roleResRelationService.updateResource(resourceUpdateParam, operatorId))
                 .doOnSuccess(ri -> {
-                    LOGGER.info("resourceInfo = {}", ri);
+                    LOGGER.info("ri = {}", ri);
+                    systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
+                });
+    }
+
+    /**
+     * delete a exist resource
+     *
+     * @param identityParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public Mono<ResourceInfo> deleteResource(IdentityParam identityParam, Long operatorId) {
+        LOGGER.info("Mono<ResourceInfo> deleteResource(IdentityParam identityParam, Long operatorId), identityParam = {}, operatorId = {}", identityParam, operatorId);
+
+        return just(roleResRelationService.deleteResource(identityParam, operatorId))
+                .doOnSuccess(ri -> {
+                    LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
                 });
     }

@@ -153,4 +153,19 @@
         </foreach>
     </select>
 
+    <select id="countByMemberId" resultType="java.lang.Long"
+            parameterType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM role_res_relation FORCE INDEX(idx_member_role)
+        WHERE
+            member_id = #{memberId,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByRoleId" resultType="java.lang.Long"
+            parameterType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM member_role_relation
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
 </mapper>

@@ -1,6 +1,5 @@
 package com.blue.secure.service.inter;
 
-import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.secure.api.model.RoleInfo;
@@ -40,13 +39,12 @@ public interface RoleService {
     RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId);
 
     /**
-     * delete a exist role
+     * delete role
      *
-     * @param identityParam
-     * @param operatorId
+     * @param id
      * @return
      */
-    RoleInfo deleteRole(IdentityParam identityParam, Long operatorId);
+    RoleInfo deleteRoleById(Long id);
 
     /**
      * refresh default role

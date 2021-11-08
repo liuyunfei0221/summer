@@ -91,6 +91,36 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     }
 
     /**
+     * count relation by member id
+     *
+     * @param memberId
+     * @return
+     */
+    @Override
+    public long countRelationByMemberId(Long memberId) {
+        LOGGER.info("long countRelationByMemberId(Long memberId), memberId = {}", memberId);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        return memberRoleRelationMapper.countByMemberId(memberId);
+    }
+
+    /**
+     * count relation by role id
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    public long countRelationByRoleId(Long roleId) {
+        LOGGER.info("long countRelationByRoleId(Long roleId), roleId = {}", roleId);
+        if (isInvalidIdentity(roleId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        return memberRoleRelationMapper.countByRoleId(roleId);
+    }
+
+    /**
      * update member role relation
      *
      * @param memberId

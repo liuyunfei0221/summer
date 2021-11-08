@@ -1,7 +1,10 @@
 package com.blue.secure.service.inter;
 
+import com.blue.base.model.base.IdentityParam;
 import com.blue.secure.api.model.AuthorityBaseOnRole;
-import com.blue.secure.model.AuthorityBaseOnResource;
+import com.blue.secure.api.model.ResourceInfo;
+import com.blue.secure.api.model.RoleInfo;
+import com.blue.secure.model.*;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.entity.RoleResRelation;
@@ -16,6 +19,22 @@ import java.util.List;
  */
 @SuppressWarnings("JavaDoc")
 public interface RoleResRelationService {
+
+    /**
+     * get authority base on role by role id
+     *
+     * @param roleId
+     * @return
+     */
+    Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId);
+
+    /**
+     * get authority base on resource by res id
+     *
+     * @param resId
+     * @return
+     */
+    Mono<AuthorityBaseOnResource> selectAuthorityMonoByResId(Long resId);
 
     /**
      * select all role resource relation
@@ -83,6 +102,24 @@ public interface RoleResRelationService {
     long countRelationByRoleId(Long roleId);
 
     /**
+     * select relation by limit and resource id
+     *
+     * @param resId
+     * @param limit
+     * @param rows
+     * @return
+     */
+    List<RoleResRelation> selectRelationByRowsAndResId(Long resId, Long limit, Long rows);
+
+    /**
+     * count relation by resource id
+     *
+     * @param resId
+     * @return
+     */
+    long countRelationByResId(Long resId);
+
+    /**
      * select relation by resource id
      *
      * @param resId
@@ -107,19 +144,104 @@ public interface RoleResRelationService {
     Mono<List<RoleResRelation>> selectRelationByResIds(List<Long> resIds);
 
     /**
-     * get authority base on role by role id
+     * get default role
+     *
+     * @return
+     */
+    Role getDefaultRole();
+
+    /**
+     * update default role by role id
+     *
+     * @param id
+     * @param operatorId
+     */
+    void updateDefaultRole(Long id, Long operatorId);
+
+    /**
+     * insert a new role
+     *
+     * @param roleInsertParam
+     * @param operatorId
+     * @return
+     */
+    RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId);
+
+    /**
+     * update a exist role
+     *
+     * @param roleUpdateParam
+     * @param operatorId
+     * @return
+     */
+    RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId);
+
+    /**
+     * delete a exist role
+     *
+     * @param identityParam
+     * @param operatorId
+     * @return
+     */
+    RoleInfo deleteRole(IdentityParam identityParam, Long operatorId);
+
+    /**
+     * insert resource
+     *
+     * @param resourceInsertParam
+     * @param operatorId
+     * @return
+     */
+    ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId);
+
+    /**
+     * update a exist resource
+     *
+     * @param resourceUpdateParam
+     * @param operatorId
+     * @return
+     */
+    ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId);
+
+    /**
+     * delete a exist resource
+     *
+     * @param identityParam
+     * @param operatorId
+     * @return
+     */
+    ResourceInfo deleteResource(IdentityParam identityParam, Long operatorId);
+
+    /**
+     * insert relation
+     *
+     * @param roleResRelation
+     * @return
+     */
+    void insertRelation(RoleResRelation roleResRelation);
+
+    /**
+     * insert relations
+     *
+     * @param roleResRelations
+     * @return
+     */
+    void insertRelationBatch(List<RoleResRelation> roleResRelations);
+
+    /**
+     * delete relation by role id
      *
      * @param roleId
      * @return
      */
-    Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId);
+    void deleteRelationByRoleId(Long roleId);
 
     /**
-     * get authority base on resource by res id
+     * delete relation by resource id
      *
      * @param resId
      * @return
      */
-    Mono<AuthorityBaseOnResource> selectAuthorityMonoByResId(Long resId);
+    void deleteRelationByResId(Long resId);
 
 }

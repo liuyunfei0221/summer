@@ -1,7 +1,6 @@
 package com.blue.secure.service.impl;
 
 import com.blue.base.common.base.Asserter;
-import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -43,7 +42,6 @@ import static com.blue.base.constant.base.Default.DEFAULT;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.ResponseMessage.*;
-import static com.blue.base.constant.base.SyncKey.DEFAULT_ROLE_UPDATE_KEY;
 import static com.blue.secure.converter.SecureModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
 import static com.blue.secure.converter.SecureModelConverters.ROLE_INSERT_PARAM_2_ROLE_CONVERTER;
 import static java.lang.System.currentTimeMillis;
@@ -187,8 +185,6 @@ public class RoleServiceImpl implements RoleService {
         }
     };
 
-    private static final String ROLE_SYNC_KEY = "ROLE_SYNC";
-
     /**
      * is a role exist?
      */
@@ -277,31 +273,17 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
 
-        RLock roleLock = redissonClient.getLock(ROLE_SYNC_KEY);
-        try {
-            roleLock.lock();
+        INSERT_ROLE_VALIDATOR.accept(roleInsertParam);
+        Role role = ROLE_INSERT_PARAM_2_ROLE_CONVERTER.apply(roleInsertParam);
 
-            INSERT_ROLE_VALIDATOR.accept(roleInsertParam);
-            Role role = ROLE_INSERT_PARAM_2_ROLE_CONVERTER.apply(roleInsertParam);
+        long id = blueIdentityProcessor.generate(Role.class);
+        role.setId(id);
+        role.setCreator(operatorId);
+        role.setUpdater(operatorId);
 
-            long id = blueIdentityProcessor.generate(Role.class);
-            role.setId(id);
-            role.setCreator(operatorId);
-            role.setUpdater(operatorId);
+        roleMapper.insert(role);
 
-            roleMapper.insert(role);
-
-            return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
-        } catch (Exception e) {
-            LOGGER.error("lock on insertRole failed, e = {0}", e);
-            throw e;
-        } finally {
-            try {
-                roleLock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("roleLock.unlock() failed, e = {}", e);
-            }
-        }
+        return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
     }
 
     /**
@@ -320,64 +302,37 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
 
-        RLock roleLock = redissonClient.getLock(ROLE_SYNC_KEY);
-        try {
-            roleLock.lock();
-
-            Role role = UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER.apply(roleUpdateParam);
-            if (ROLE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(roleUpdateParam, role)) {
-                roleMapper.updateByPrimaryKeySelective(role);
-                return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
-            }
-
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data has no change");
-        } catch (Exception e) {
-            LOGGER.error("lock on updateRole failed, e = {0}", e);
-            throw e;
-        } finally {
-            try {
-                roleLock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("roleLock.unlock() failed, e = {}", e);
-            }
+        Role role = UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER.apply(roleUpdateParam);
+        if (ROLE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(roleUpdateParam, role)) {
+            roleMapper.updateByPrimaryKeySelective(role);
+            return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
         }
+
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data has no change");
     }
 
     /**
-     * delete a exist role
+     * delete role
      *
-     * @param identityParam
-     * @param operatorId
+     * @param id
      * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
-    public RoleInfo deleteRole(IdentityParam identityParam, Long operatorId) {
-        LOGGER.info("RoleInfo deleteRole(IdentityParam identityParam, Long operatorId), identityParam = {}, operatorId = {}", identityParam, operatorId);
-        long id = assertIdentityParamsAndReturnIdForOperate(identityParam, operatorId);
+    public RoleInfo deleteRoleById(Long id) {
+        LOGGER.info("RoleInfo deleteRoleById(Long id, Long operatorId), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        RLock roleLock = redissonClient.getLock(ROLE_SYNC_KEY);
-        try {
-            roleLock.lock();
-
-            Role role = roleMapper.selectByPrimaryKey(id);
-            if (role != null) {
-                roleMapper.deleteByPrimaryKey(id);
-                return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
-            }
-
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
-        } catch (Exception e) {
-            LOGGER.error("lock on deleteRole failed, e = {0}", e);
-            throw e;
-        } finally {
-            try {
-                roleLock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("roleLock.unlock() failed, e = {}", e);
-            }
+        Role role = roleMapper.selectByPrimaryKey(id);
+        if (role != null) {
+            roleMapper.deleteByPrimaryKey(id);
+            return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
         }
+
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
     }
+
 
     /**
      * refresh default role
@@ -423,40 +378,26 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(id))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        RLock lock = redissonClient.getLock(DEFAULT_ROLE_UPDATE_KEY.key);
-        lock.lock();
+        Role role = roleMapper.selectByPrimaryKey(id);
+        Role defaultRole = getDefaultRoleFromDb();
 
-        try {
-            Role role = roleMapper.selectByPrimaryKey(id);
-            Role defaultRole = getDefaultRoleFromDb();
+        if (role.getId().equals(defaultRole.getId()))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is already default");
 
-            if (role.getId().equals(defaultRole.getId()))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is already default");
+        Long stamp = TIME_STAMP_GETTER.get();
 
-            Long stamp = TIME_STAMP_GETTER.get();
+        role.setIsDefault(DEFAULT.status);
+        role.setUpdater(operatorId);
+        role.setUpdateTime(stamp);
 
-            role.setIsDefault(DEFAULT.status);
-            role.setUpdater(operatorId);
-            role.setUpdateTime(stamp);
+        defaultRole.setIsDefault(NOT_DEFAULT.status);
+        defaultRole.setUpdater(operatorId);
+        defaultRole.setUpdateTime(stamp);
 
-            defaultRole.setIsDefault(NOT_DEFAULT.status);
-            defaultRole.setUpdater(operatorId);
-            defaultRole.setUpdateTime(stamp);
-
-            deleteDefaultRoleFromCache();
-            roleMapper.updateByPrimaryKey(role);
-            roleMapper.updateByPrimaryKey(defaultRole);
-            deleteDefaultRoleFromCache();
-        } catch (Exception e) {
-            LOGGER.error("void updateDefaultRole(Long id) failed, id = {}, e = {}", id, e);
-            throw e;
-        } finally {
-            try {
-                lock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("lock.unlock() fail, e = {0}", e);
-            }
-        }
+        deleteDefaultRoleFromCache();
+        roleMapper.updateByPrimaryKey(role);
+        roleMapper.updateByPrimaryKey(defaultRole);
+        deleteDefaultRoleFromCache();
     }
 
     /**

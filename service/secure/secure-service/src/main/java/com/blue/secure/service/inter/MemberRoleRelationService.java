@@ -32,6 +32,22 @@ public interface MemberRoleRelationService {
     Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds);
 
     /**
+     * count relation by member id
+     *
+     * @param memberId
+     * @return
+     */
+    long countRelationByMemberId(Long memberId);
+
+    /**
+     * count relation by role id
+     *
+     * @param roleId
+     * @return
+     */
+    long countRelationByRoleId(Long roleId);
+
+    /**
      * update member role relation
      *
      * @param memberId

@@ -1,6 +1,5 @@
 package com.blue.secure.service.inter;
 
-import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.secure.api.model.ResourceInfo;
@@ -40,16 +39,15 @@ public interface ResourceService {
     ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId);
 
     /**
-     * delete a exist resource
+     * delete resource
      *
-     * @param identityParam
-     * @param operatorId
+     * @param id
      * @return
      */
-    ResourceInfo deleteResource(IdentityParam identityParam, Long operatorId);
+    ResourceInfo deleteResourceById(Long id);
 
     /**
-     * get resource by role id
+     * get resource by id
      *
      * @param id
      * @return

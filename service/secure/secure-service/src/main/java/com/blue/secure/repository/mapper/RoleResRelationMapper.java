@@ -17,11 +17,17 @@ public interface RoleResRelationMapper {
 
     int insertSelective(RoleResRelation record);
 
+    void insertBatch(@Param("list") List<RoleResRelation> list);
+
     int updateByPrimaryKey(RoleResRelation record);
 
     int updateByPrimaryKeySelective(RoleResRelation record);
 
     int deleteByPrimaryKey(Long id);
+
+    int deleteByRoleId(Long roleId);
+
+    int deleteByResId(Long resId);
 
     RoleResRelation selectByPrimaryKey(Long id);
 
@@ -37,9 +43,13 @@ public interface RoleResRelationMapper {
 
     List<RoleResRelation> selectByRoleIds(@Param("roleIds") List<Long> roleIds);
 
-    List<RoleResRelation> selectRelationByLimitAndRoleId(@Param("roleId") Long roleId, @Param("limit") Long limit, @Param("rows") Long rows);
+    List<RoleResRelation> selectRelationByRowsAndRoleId(@Param("roleId") Long roleId, @Param("limit") Long limit, @Param("rows") Long rows);
 
     Long countByRoleId(@Param("roleId") Long roleId);
+
+    List<RoleResRelation> selectRelationByRowsAndResId(@Param("resId") Long resId, @Param("limit") Long limit, @Param("rows") Long rows);
+
+    Long countByResId(@Param("resId") Long resId);
 
     List<RoleResRelation> selectByResIds(@Param("resIds") List<Long> resIds);
 

@@ -20,7 +20,7 @@ public enum SyncKey {
     MEMBER_ROLE_REL_UPDATE_PRE("MEMBER_ROLE_REL_UPDATING_PRE:"),
 
     //key
-    DEFAULT_ROLE_UPDATE_KEY("DEFAULT_ROLE_UPDATING");
+    RESOURCES_SYNC("RESOURCES_SYNC");
 
     public final String key;
 
