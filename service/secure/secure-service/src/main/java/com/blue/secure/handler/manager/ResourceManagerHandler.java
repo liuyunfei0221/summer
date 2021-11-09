@@ -15,7 +15,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
+import static com.blue.base.common.reactive.PathVariableGetter.getLongVariableReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.base.constant.base.PathVariable.ID;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
@@ -25,6 +27,8 @@ import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.zip;
 
 /**
+ * role manager handler
+ *
  * @author liuyunfei
  * @date 2021/8/31
  * @apiNote
@@ -57,8 +61,7 @@ public final class ResourceManagerHandler {
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.insertResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
-                        ok()
-                                .contentType(APPLICATION_JSON)
+                        ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, OK.message), BlueResponse.class));
     }
 
@@ -74,8 +77,21 @@ public final class ResourceManagerHandler {
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.updateResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
-                        ok()
-                                .contentType(APPLICATION_JSON)
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, ri, OK.message), BlueResponse.class));
+    }
+
+    /**
+     * delete resource
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> delete(ServerRequest serverRequest) {
+        return zip(getLongVariableReact(serverRequest, ID.key), getAccessReact(serverRequest))
+                .flatMap(tuple2 -> controlService.deleteResource(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(ri ->
+                        ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, OK.message), BlueResponse.class));
     }
 

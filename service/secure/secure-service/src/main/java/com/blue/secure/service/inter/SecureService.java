@@ -86,15 +86,6 @@ public interface SecureService {
     Mono<Boolean> invalidLocalAuthByKeyId(String keyId);
 
     /**
-     * update member role info by access
-     *
-     * @param access
-     * @param roleId
-     * @return
-     */
-    void refreshMemberRoleByAccess(Access access, Long roleId);
-
-    /**
      * update member role info by member id
      *
      * @param memberId

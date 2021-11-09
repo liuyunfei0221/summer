@@ -201,8 +201,7 @@
         </foreach>
     </select>
 
-    <select id="selectRelationByRowsAndRoleId" resultMap="BaseResultMap"
-            parameterType="com.blue.secure.model.RoleCondition">
+    <select id="selectRelationByRowsAndRoleId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -220,8 +219,7 @@
             role_id = #{roleId,jdbcType=BIGINT}
     </select>
 
-    <select id="selectRelationByRowsAndResId" resultMap="BaseResultMap"
-            parameterType="com.blue.secure.model.RoleCondition">
+    <select id="selectRelationByRowsAndResId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -231,8 +229,7 @@
         LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>
 
-    <select id="countByResId" resultType="java.lang.Long"
-            parameterType="java.lang.Long">
+    <select id="countByResId" resultType="java.lang.Long" parameterType="java.lang.Long">
         SELECT COUNT(*)
         FROM role_res_relation FORCE INDEX(idx_res_role)
         WHERE
@@ -249,6 +246,18 @@
         <foreach collection="resIds" open="(" close=")" separator="," item="id" index="index">
             #{id,jdbcType=BIGINT}
         </foreach>
+    </select>
+
+    <select id="selectExistByResIdAndRoleId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        FROM role_res_relation FORCE INDEX(idx_res_role)
+        WHERE
+        res_id = #{resId,jdbcType=BIGINT}
+        AND
+        role_id = #{roleId,jdbcType=BIGINT}
+        LIMIT 1;
     </select>
 
 </mapper>

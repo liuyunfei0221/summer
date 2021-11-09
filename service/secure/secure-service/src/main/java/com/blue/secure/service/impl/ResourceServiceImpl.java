@@ -384,15 +384,28 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
+    public List<Resource> selectResourceByIds(List<Long> ids) {
+        LOGGER.info("List<Resource> selectResourceByIds(List<Long> ids), ids = {}", ids);
+
+        return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(resourceMapper::selectByIds)
+                .flatMap(List::stream)
+                .collect(toList())
+                :
+                emptyList();
+    }
+
+    /**
+     * select resources mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
     public Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids), ids = {}", ids);
 
-        return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(resourceMapper::selectByIds)
-                .flatMap(List::stream)
-                .collect(toList()))
-                :
-                just(emptyList());
+        return just(this.selectResourceByIds(ids));
     }
 
     /**

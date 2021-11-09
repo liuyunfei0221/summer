@@ -1,6 +1,5 @@
 package com.blue.secure.remote.provider;
 
-import com.blue.base.model.base.Access;
 import com.blue.secure.api.inter.RpcControlService;
 import com.blue.secure.service.inter.ControlService;
 import com.blue.secure.service.inter.SecureService;
@@ -44,19 +43,6 @@ public class RpcControlServiceProvider implements RpcControlService {
     public void insertDefaultMemberRoleRelation(Long memberId) {
         LOGGER.info("void insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
         controlService.insertDefaultMemberRoleRelation(memberId);
-    }
-
-    /**
-     * update member's auth by access
-     *
-     * @param access
-     * @param roleId
-     * @return
-     */
-    @Override
-    public void updateMemberRoleByAccess(Access access, Long roleId) {
-        LOGGER.info("void updateMemberRoleByAccess(Access access, Long roleId), access = {}, roleId = {}", access, roleId);
-        secureService.refreshMemberRoleByAccess(access, roleId);
     }
 
     /**

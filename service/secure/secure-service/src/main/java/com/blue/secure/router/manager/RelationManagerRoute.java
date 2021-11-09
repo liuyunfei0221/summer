@@ -1,13 +1,12 @@
 package com.blue.secure.router.manager;
 
-import com.blue.secure.handler.manager.RoleManagerHandler;
+import com.blue.secure.handler.manager.RelationManagerHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static com.blue.base.constant.base.PathVariable.ID;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
@@ -15,26 +14,25 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * secure api route
+ * relation manager route
  *
- * @author DarkBlue
+ * @author liuyunfei
+ * @date 2021/8/31
+ * @apiNote
  */
 @SuppressWarnings("DuplicatedCode")
 @Configuration
-public class RoleManagerRoute {
+public class RelationManagerRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> roleManagerRouter(RoleManagerHandler roleManagerHandler) {
+    RouterFunction<ServerResponse> relationManagerRouter(RelationManagerHandler relationManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-secure/manager/role");
+        RequestPredicate pathPredicate = path("/blue-secure/manager/relation");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("", accept(APPLICATION_JSON), roleManagerHandler::insert)
-                .PUT("", accept(APPLICATION_JSON), roleManagerHandler::update)
-                .DELETE("/{" + ID.key + "}", accept(APPLICATION_JSON), roleManagerHandler::delete)
-                .POST("/list", accept(APPLICATION_JSON), roleManagerHandler::select)
-                .POST("/auth", accept(APPLICATION_JSON), roleManagerHandler::selectAuthority)
+                .POST("/role-res", accept(APPLICATION_JSON), relationManagerHandler::updateAuthorityByRole)
+                .POST("/mem-role", accept(APPLICATION_JSON), relationManagerHandler::updateAuthorityByMember)
                 .build();
 
         return nest(pathPredicate, routerFunction);

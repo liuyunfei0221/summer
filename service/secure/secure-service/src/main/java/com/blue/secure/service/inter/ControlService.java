@@ -1,13 +1,9 @@
 package com.blue.secure.service.inter;
 
-import com.blue.base.model.base.Access;
-import com.blue.base.model.base.IdentityParam;
+import com.blue.secure.api.model.AuthorityBaseOnRole;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.api.model.RoleInfo;
-import com.blue.secure.model.ResourceInsertParam;
-import com.blue.secure.model.ResourceUpdateParam;
-import com.blue.secure.model.RoleInsertParam;
-import com.blue.secure.model.RoleUpdateParam;
+import com.blue.secure.model.*;
 import reactor.core.publisher.Mono;
 
 /**
@@ -17,8 +13,24 @@ import reactor.core.publisher.Mono;
  * @date 2021/11/1
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "unused"})
+@SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
 public interface ControlService {
+
+    /**
+     * get authority base on role by role id
+     *
+     * @param roleId
+     * @return
+     */
+    Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId);
+
+    /**
+     * get authority base on resource by res id
+     *
+     * @param resId
+     * @return
+     */
+    Mono<AuthorityBaseOnResource> selectAuthorityMonoByResId(Long resId);
 
     /**
      * refresh resource key/info or role-resource-relation
@@ -26,15 +38,6 @@ public interface ControlService {
      * @return
      */
     Mono<Void> refreshSystemAuthorityInfos();
-
-    /**
-     * update member role info by access
-     *
-     * @param access
-     * @param roleId
-     * @return
-     */
-    Mono<Void> updateMemberRoleByAccess(Access access, Long roleId);
 
     /**
      * update member role info by member id
@@ -83,11 +86,11 @@ public interface ControlService {
     /**
      * delete a exist role
      *
-     * @param identityParam
+     * @param id
      * @param operatorId
      * @return
      */
-    Mono<RoleInfo> deleteRole(IdentityParam identityParam, Long operatorId);
+    Mono<RoleInfo> deleteRole(Long id, Long operatorId);
 
     /**
      * insert resource
@@ -110,10 +113,28 @@ public interface ControlService {
     /**
      * delete a exist resource
      *
-     * @param identityParam
+     * @param id
      * @param operatorId
      * @return
      */
-    Mono<ResourceInfo> deleteResource(IdentityParam identityParam, Long operatorId);
+    Mono<ResourceInfo> deleteResource(Long id, Long operatorId);
+
+    /**
+     * update authority base on role / generate role-resource-relations
+     *
+     * @param roleResRelationParam
+     * @param operatorId
+     * @return
+     */
+    Mono<AuthorityBaseOnRole> updateAuthorityByRole(RoleResRelationParam roleResRelationParam, Long operatorId);
+
+    /**
+     * update authority base on member / update member-role-relations
+     *
+     * @param memberRoleRelationParam
+     * @param operatorId
+     * @return
+     */
+    Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId);
 
 }

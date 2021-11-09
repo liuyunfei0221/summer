@@ -13,6 +13,8 @@ import reactor.util.Loggers;
 import java.util.Map;
 
 import static com.blue.base.common.reactive.MetadataGetterForReactive.getMetadata;
+import static com.blue.base.common.reactive.PathVariableGetter.*;
+import static com.blue.base.constant.base.PathVariable.TYPE;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -35,8 +37,6 @@ public final class PortalApiHandler {
         this.portalService = portalService;
     }
 
-    private static final String TYPE_PAR = "bulletinType";
-
     /**
      * get bulletin
      *
@@ -49,7 +49,7 @@ public final class PortalApiHandler {
         Map<String, String> metadata = getMetadata(serverRequest);
         LOGGER.warn("metadata = {}", metadata);
 
-        return portalService.selectBulletinInfo(serverRequest.pathVariable(TYPE_PAR))
+        return portalService.selectBulletinInfo(getIntegerVariable(serverRequest, TYPE.key))
                 .flatMap(bl -> ok()
                         .contentType(APPLICATION_JSON)
                         .body(generate(OK.code, bl, OK.message), BlueResponse.class)

@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.server.RequestPredicate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static com.blue.base.constant.base.PathVariable.ID;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
@@ -31,6 +32,7 @@ public class ResourceManagerRoute {
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("", accept(APPLICATION_JSON), resourceManagerHandler::insert)
                 .PUT("", accept(APPLICATION_JSON), resourceManagerHandler::update)
+                .DELETE("/{" + ID.key + "}", accept(APPLICATION_JSON), resourceManagerHandler::delete)
                 .POST("/list", accept(APPLICATION_JSON), resourceManagerHandler::select)
                 .POST("/auth", accept(APPLICATION_JSON), resourceManagerHandler::selectAuthority)
                 .build();

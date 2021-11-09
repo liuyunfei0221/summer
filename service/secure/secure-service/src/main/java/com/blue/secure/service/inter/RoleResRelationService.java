@@ -1,6 +1,5 @@
 package com.blue.secure.service.inter;
 
-import com.blue.base.model.base.IdentityParam;
 import com.blue.secure.api.model.AuthorityBaseOnRole;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.api.model.RoleInfo;
@@ -179,11 +178,11 @@ public interface RoleResRelationService {
     /**
      * delete a exist role
      *
-     * @param identityParam
+     * @param id
      * @param operatorId
      * @return
      */
-    RoleInfo deleteRole(IdentityParam identityParam, Long operatorId);
+    RoleInfo deleteRole(Long id, Long operatorId);
 
     /**
      * insert resource
@@ -206,11 +205,11 @@ public interface RoleResRelationService {
     /**
      * delete a exist resource
      *
-     * @param identityParam
+     * @param id
      * @param operatorId
      * @return
      */
-    ResourceInfo deleteResource(IdentityParam identityParam, Long operatorId);
+    ResourceInfo deleteResource(Long id, Long operatorId);
 
     /**
      * insert relation
@@ -243,5 +242,15 @@ public interface RoleResRelationService {
      * @return
      */
     void deleteRelationByResId(Long resId);
+
+    /**
+     * update authority base on role / generate role-resource-relations
+     *
+     * @param roleId
+     * @param resIds
+     * @param operatorId
+     * @return
+     */
+    AuthorityBaseOnRole updateAuthorityByRole(Long roleId, List<Long> resIds, Long operatorId);
 
 }

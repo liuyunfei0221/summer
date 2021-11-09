@@ -48,6 +48,13 @@ public interface MemberRoleRelationService {
     long countRelationByRoleId(Long roleId);
 
     /**
+     * insert member role relation
+     *
+     * @param memberRoleRelation
+     */
+    void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation);
+
+    /**
      * update member role relation
      *
      * @param memberId
@@ -55,12 +62,5 @@ public interface MemberRoleRelationService {
      * @param operatorId
      */
     void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
-
-    /**
-     * insert member role relation
-     *
-     * @param memberRoleRelation
-     */
-    void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation);
 
 }

@@ -804,31 +804,6 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * update member role info by access
-     *
-     * @param access
-     * @param roleId
-     * @return
-     */
-    @Override
-    public void refreshMemberRoleByAccess(Access access, Long roleId) {
-        LOGGER.info("void refreshMemberRoleByAccess(Access access, Long roleId), access = {}, roleId = {}", access, roleId);
-        if (access == null)
-            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
-
-        long memberId = access.getId();
-        AuthInfoRefreshElementType elementType = ROLE;
-        String elementValue = valueOf(roleId);
-
-        String loginType = access.getLoginType().intern();
-        String deviceType = access.getDeviceType().intern();
-
-        refreshAuthInfoElementByKeyId(genSessionKey(memberId, loginType, deviceType), elementType, elementValue);
-        executorService.submit(() ->
-                new OtherTypesAuthRefreshTask(memberId, loginType, deviceType, elementType, elementValue));
-    }
-
-    /**
      * update member role info by member id
      *
      * @param memberId

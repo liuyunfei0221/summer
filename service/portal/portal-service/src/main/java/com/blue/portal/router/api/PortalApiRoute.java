@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.server.RequestPredicate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static com.blue.base.constant.base.PathVariable.TYPE;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
 import static org.springframework.web.reactive.function.server.RouterFunctions.nest;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
@@ -26,7 +27,7 @@ public class PortalApiRoute {
         RequestPredicate pathPredicate = path("/blue-portal/bulletin");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("/{bulletinType}", portalApiHandler::getBulletin)
+                .GET("/{" + TYPE.key + "}", portalApiHandler::getBulletin)
                 .build();
 
         return nest(pathPredicate, routerFunction);

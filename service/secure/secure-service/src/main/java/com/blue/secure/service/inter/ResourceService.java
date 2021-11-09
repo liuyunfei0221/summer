@@ -75,6 +75,14 @@ public interface ResourceService {
      * @param ids
      * @return
      */
+    List<Resource> selectResourceByIds(List<Long> ids);
+
+    /**
+     * select resources mono by ids
+     *
+     * @param ids
+     * @return
+     */
     Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids);
 
     /**

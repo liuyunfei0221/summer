@@ -26,6 +26,6 @@ public interface PortalService {
      * @param bulletinType
      * @return
      */
-    Mono<List<BulletinInfo>> selectBulletinInfo(String bulletinType);
+    Mono<List<BulletinInfo>> selectBulletinInfo(Integer bulletinType);
 
 }

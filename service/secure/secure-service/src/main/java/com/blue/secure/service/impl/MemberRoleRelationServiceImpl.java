@@ -1,6 +1,5 @@
 package com.blue.secure.service.impl;
 
-import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.secure.repository.entity.MemberRoleRelation;
@@ -19,6 +18,7 @@ import java.util.Optional;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.Asserter.*;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseMessage.*;
@@ -54,8 +54,6 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         this.memberRoleRelationMapper = memberRoleRelationMapper;
         this.redissonClient = redissonClient;
     }
-
-    private static final String MEMBER_ROLE_REL_UPDATE_PRE_SYNC_KEY = MEMBER_ROLE_REL_UPDATE_PRE.key;
 
     /**
      * get role id by member id
@@ -121,31 +119,6 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     }
 
     /**
-     * update member role relation
-     *
-     * @param memberId
-     * @param roleId
-     * @param operatorId
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
-    public void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
-        LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
-        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
-
-        MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getByMemberId(memberId);
-        if (isNull(memberRoleRelation))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message);
-
-        memberRoleRelation.setRoleId(roleId);
-        memberRoleRelation.setUpdateTime(CommonFunctions.TIME_STAMP_GETTER.get());
-        memberRoleRelation.setUpdater(operatorId);
-
-        memberRoleRelationMapper.updateByPrimaryKeySelective(memberRoleRelation);
-    }
-
-    /**
      * insert member role relation
      *
      * @param memberRoleRelation
@@ -163,7 +136,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
-        String syncKey = MEMBER_ROLE_REL_UPDATE_PRE_SYNC_KEY + memberId;
+        String syncKey = MEMBER_ROLE_REL_UPDATE_PRE.key + memberId;
 
         RLock lock = redissonClient.getLock(syncKey);
         lock.lock();
@@ -177,9 +150,9 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
 //            if (1 == 1) {
 //                throw new BlueException(500, 500, "test rollback on exception");
 //            }
-            LOGGER.info("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) success, memberRoleRelation = {}", memberRoleRelation);
+            LOGGER.info("void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) success, memberRoleRelation = {}", memberRoleRelation);
         } catch (Exception e) {
-            LOGGER.error("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) failed, memberRoleRelation = {}, e = {}", memberRoleRelation, e);
+            LOGGER.error("void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) failed, memberRoleRelation = {}, e = {}", memberRoleRelation, e);
             throw e;
         } finally {
             try {
@@ -190,5 +163,47 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         }
     }
 
+    /**
+     * update member role relation
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    public void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
+        LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        String syncKey = MEMBER_ROLE_REL_UPDATE_PRE.key + memberId;
+
+        RLock lock = redissonClient.getLock(syncKey);
+        lock.lock();
+
+        try {
+            MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getByMemberId(memberId);
+            if (isNull(memberRoleRelation))
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message);
+
+            memberRoleRelation.setRoleId(roleId);
+            memberRoleRelation.setUpdateTime(TIME_STAMP_GETTER.get());
+            memberRoleRelation.setUpdater(operatorId);
+
+            memberRoleRelationMapper.updateByPrimaryKeySelective(memberRoleRelation);
+
+            LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) success, memberRoleRelation = {}", memberRoleRelation);
+        } catch (Exception e) {
+            LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) failed, memberId = {}, roleId = {}, operatorId = {}, e = {]", memberId, roleId, operatorId);
+            throw e;
+        } finally {
+            try {
+                lock.unlock();
+            } catch (Exception e) {
+                LOGGER.error("lock.unlock() fail, e = {0}", e);
+            }
+        }
+    }
 
 }

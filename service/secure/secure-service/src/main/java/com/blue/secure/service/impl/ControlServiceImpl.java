@@ -1,15 +1,11 @@
 package com.blue.secure.service.impl;
 
-import com.blue.base.model.base.Access;
-import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.exps.BlueException;
+import com.blue.secure.api.model.AuthorityBaseOnRole;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.event.producer.SystemAuthorityInfosRefreshProducer;
-import com.blue.secure.model.ResourceInsertParam;
-import com.blue.secure.model.ResourceUpdateParam;
-import com.blue.secure.model.RoleInsertParam;
-import com.blue.secure.model.RoleUpdateParam;
+import com.blue.secure.model.*;
 import com.blue.secure.repository.entity.MemberRoleRelation;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.service.inter.ControlService;
@@ -20,14 +16,15 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.util.List;
+
+import static com.blue.base.common.base.Asserter.isEmpty;
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
 import static reactor.core.publisher.Mono.*;
-import static reactor.core.publisher.Mono.fromRunnable;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -52,12 +49,42 @@ public class ControlServiceImpl implements ControlService {
     private final SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ControlServiceImpl(SecureService secureService, RoleResRelationService roleResRelationService,
-                              MemberRoleRelationService memberRoleRelationService, SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer) {
+    public ControlServiceImpl(SecureService secureService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
+                              SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer) {
         this.secureService = secureService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
+    }
+
+    /**
+     * get authority base on role by role id
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    public Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId) {
+        LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId), roleId = {}", roleId);
+        if (isInvalidIdentity(roleId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        return roleResRelationService.selectAuthorityMonoByRoleId(roleId);
+    }
+
+    /**
+     * get authority base on resource by res id
+     *
+     * @param resId
+     * @return
+     */
+    @Override
+    public Mono<AuthorityBaseOnResource> selectAuthorityMonoByResId(Long resId) {
+        LOGGER.info("Mono<AuthorityBaseOnResource> getAuthorityMonoByResId(Long resId), resId = {}", resId);
+        if (isInvalidIdentity(resId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        return roleResRelationService.selectAuthorityMonoByResId(resId);
     }
 
     /**
@@ -71,22 +98,6 @@ public class ControlServiceImpl implements ControlService {
         secureService.refreshSystemAuthorityInfos();
 
         return fromRunnable(secureService::refreshSystemAuthorityInfos).then();
-    }
-
-    /**
-     * update member role info by access
-     *
-     * @param access
-     * @param roleId
-     * @return
-     */
-    @Override
-    public Mono<Void> updateMemberRoleByAccess(Access access, Long roleId) {
-        LOGGER.info("void updateMemberRoleByAccess(Access access, Long roleId), access = {}, roleId = {}", access, roleId);
-        long memberId = access.getId();
-
-        Mono<Void> mono = fromRunnable(() -> memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, memberId));
-        return mono.doOnSuccess(v -> secureService.refreshMemberRoleByAccess(access, roleId)).then();
     }
 
     /**
@@ -119,8 +130,9 @@ public class ControlServiceImpl implements ControlService {
         if (role == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
 
-        MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
         long epochSecond = TIME_STAMP_GETTER.get();
+
+        MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
         memberRoleRelation.setMemberId(memberId);
         memberRoleRelation.setRoleId(role.getId());
         memberRoleRelation.setCreateTime(epochSecond);
@@ -184,15 +196,19 @@ public class ControlServiceImpl implements ControlService {
     /**
      * delete a exist role
      *
-     * @param identityParam
+     * @param id
      * @param operatorId
      * @return
      */
     @Override
-    public Mono<RoleInfo> deleteRole(IdentityParam identityParam, Long operatorId) {
-        LOGGER.info("Mono<RoleInfo> deleteRole(IdentityParam identityParam, Long operatorId), identityParam = {}, operatorId = {}", identityParam, operatorId);
+    public Mono<RoleInfo> deleteRole(Long id, Long operatorId) {
+        LOGGER.info("Mono<RoleInfo> deleteRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
+        if (isInvalidIdentity(id))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        return just(roleResRelationService.deleteRole(identityParam, operatorId))
+        return just(roleResRelationService.deleteRole(id, operatorId))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -238,19 +254,72 @@ public class ControlServiceImpl implements ControlService {
     /**
      * delete a exist resource
      *
-     * @param identityParam
+     * @param id
      * @param operatorId
      * @return
      */
     @Override
-    public Mono<ResourceInfo> deleteResource(IdentityParam identityParam, Long operatorId) {
-        LOGGER.info("Mono<ResourceInfo> deleteResource(IdentityParam identityParam, Long operatorId), identityParam = {}, operatorId = {}", identityParam, operatorId);
+    public Mono<ResourceInfo> deleteResource(Long id, Long operatorId) {
+        LOGGER.info("Mono<ResourceInfo> deleteResource(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
+        if (isInvalidIdentity(id))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        return just(roleResRelationService.deleteResource(identityParam, operatorId))
+        return just(roleResRelationService.deleteResource(id, operatorId))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
                 });
+    }
+
+    /**
+     * update authority base on role / generate role-resource-relations
+     *
+     * @param roleResRelationParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public Mono<AuthorityBaseOnRole> updateAuthorityByRole(RoleResRelationParam roleResRelationParam, Long operatorId) {
+        LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityBaseOnRole(RoleResRelationParam roleResRelationParam, Long operatorId), roleResRelationParam = {}, operatorId = {}", roleResRelationParam, operatorId);
+        if (roleResRelationParam == null)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+
+        Long roleId = roleResRelationParam.getRoleId();
+        List<Long> resIds = roleResRelationParam.getResIds();
+        if (isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        if (isEmpty(resIds))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+
+        return just(roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), operatorId))
+                .doOnSuccess(auth -> {
+                    LOGGER.info("auth = {}", auth);
+                    systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
+                });
+    }
+
+    /**
+     * update authority base on member / update member-role-relations
+     *
+     * @param memberRoleRelationParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId) {
+        LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId), memberRoleRelationParam = {}, operatorId = {}", memberRoleRelationParam, operatorId);
+        if (memberRoleRelationParam == null)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+
+        Long memberId = memberRoleRelationParam.getMemberId();
+        Long roleId = memberRoleRelationParam.getRoleId();
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        return fromRunnable(() -> memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId))
+                .flatMap(v -> this.selectAuthorityMonoByRoleId(roleId));
     }
 
 }

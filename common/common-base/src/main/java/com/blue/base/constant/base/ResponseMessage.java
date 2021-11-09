@@ -25,6 +25,16 @@ public enum ResponseMessage {
     EMPTY_PARAM("Empty param"),
 
     /**
+     * EMPTY_PATH_VARIABLE
+     */
+    EMPTY_PATH_VARIABLE("Empty path variable"),
+
+    /**
+     * INVALID_PATH_VARIABLE
+     */
+    INVALID_PATH_VARIABLE("Invalid path variable"),
+
+    /**
      * TOO_MANY_HEADERS
      */
     TOO_MANY_HEADERS("Too many headers"),
