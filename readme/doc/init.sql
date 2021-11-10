@@ -441,7 +441,6 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (9505726846205970, 'GET', 'blue-portal', '/formatter/{formatter}.html', b'1', b'1', b'1', b'0', b'1', 1,
         'formatter test', 'formatter test', 1629253160, 1629253160, 1, 1);
 
-
 INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
                                     `name`,
@@ -480,7 +479,7 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (14989734363267073, 'GET', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
+VALUES (19029083459420161, 'GET', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'test endpoint', 'test endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
@@ -488,7 +487,7 @@ INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (14989734363267073, 'POST', 'blue-member', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
+VALUES (19028988970172419, 'POST', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'test endpoint', 'test endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- dynamic resources
@@ -611,6 +610,14 @@ INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
+VALUES (19026881223327750, 'DELETE', 'blue-secure', '/manager/role/{id}', b'1', b'1', b'1', b'0', b'1', 2,
+        'delete role', 'delete role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
 VALUES (18497811045679105, 'POST', 'blue-secure', '/manager/resource', b'1', b'1', b'1', b'1', b'1', 2,
         'insert resource', 'insert resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
@@ -627,9 +634,16 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
+VALUES (19027366546243585, 'DELETE', 'blue-secure', '/manager/resource/{id}', b'1', b'1', b'1', b'0', b'1', 2,
+        'delete resource', 'delete resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
 VALUES (18500844357943298, 'POST', 'blue-secure', '/manager/role/auth', b'1', b'1', b'1', b'1', b'1', 2,
         'role auth', 'role auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
-
 
 INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
@@ -639,6 +653,21 @@ INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (18501349016633350, 'POST', 'blue-secure', '/manager/resource/auth', b'1', b'1', b'1', b'1', b'1', 2,
         'resource auth', 'resource auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (19028252391636995, 'PUT', 'blue-secure', '/manager/relation/role-res', b'1', b'1', b'1', b'1', b'1', 2,
+        'update role-resources-relation', 'update role-resources-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (19028471435001859, 'PUT', 'blue-secure', '/manager/relation/mem-role', b'1', b'1', b'1', b'1', b'1', 2,
+        'update member-role-relation', 'update member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role
 
@@ -652,137 +681,237 @@ VALUES (17558421159018501, 'summer admin', 'summer admin', 0, UNIX_TIMESTAMP(), 
 
 -- role resource relations
 
+-- admin auth
+
 INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507161365282820, 9507591944175638, 9505726846205953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507161365282820, 17558421159018501, 9505726846205953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507452349349900, 9507591944175638, 9506121983229953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507452349349900, 17558421159018501, 9506121983229953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507496381120540, 9507591944175638, 9506477400129537, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507496381120540, 17558421159018501, 9506477400129537, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507591944175640, 9507591944175638, 9506557930799110, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507591944175640, 17558421159018501, 9506557930799110, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507161365282821, 9507591944175638, 9505726846205957, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507161365282821, 17558421159018501, 9505726846205957, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507452349349901, 9507591944175638, 9506121983229954, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507452349349901, 17558421159018501, 9506121983229954, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507496381120541, 9507591944175638, 9506477400129538, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507496381120541, 17558421159018501, 9506477400129538, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507591944175641, 9507591944175638, 9506557930799111, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507591944175641, 17558421159018501, 9506557930799111, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507161365282822, 9507591944175638, 9505726846205961, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507161365282822, 17558421159018501, 9505726846205961, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507452349349902, 9507591944175638, 9506121983229955, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507452349349902, 17558421159018501, 9506121983229955, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507496381120542, 9507591944175638, 9506477400129539, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507496381120542, 17558421159018501, 9506477400129539, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507591944175642, 9507591944175638, 9506557930799112, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507591944175642, 17558421159018501, 9506557930799112, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507161365282825, 9507591944175638, 9505726846205965, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507161365282825, 17558421159018501, 9505726846205965, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507452349349903, 9507591944175638, 9506121983229956, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507452349349903, 17558421159018501, 9506121983229956, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507496381120543, 9507591944175638, 9506477400129540, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507496381120543, 17558421159018501, 9506477400129540, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507591944175643, 9507591944175638, 9506557930799113, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507591944175643, 17558421159018501, 9506557930799113, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507161365282826, 9507591944175638, 9505726846205969, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507161365282829, 17558421159018501, 9505726846205969, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507452349349904, 9507591944175638, 9506121983229957, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507452349349904, 17558421159018501, 9506121983229957, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507496381120544, 9507591944175638, 9506477400129541, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507496381120544, 17558421159018501, 9506477400129541, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507591944175644, 9507591944175638, 9506557930799114, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507591944175644, 17558421159018501, 9506557930799114, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507161365282827, 9507591944175638, 9505726846205973, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507161365282827, 17558421159018501, 9505726846205973, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (9507161365282828, 9507591944175638, 9505726846205970, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507161365282828, 17558421159018501, 9505726846205970, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (12445829528846376, 9507591944175638, 9507591944175638, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (12445829528846376, 17558421159018501, 9507591944175638, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (17727873733361666, 9507591944175638, 17727588109647875, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (17727873733361666, 17558421159018501, 17727588109647875, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (17727823267528708, 9507591944175638, 17727698705088515, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (17727823267528708, 17558421159018501, 17727698705088515, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (17727870503747586, 9507591944175638, 17727756695502851, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (17727870503747586, 17558421159018501, 17727756695502851, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (17727973582995466, 9507591944175638, 17727776022888453, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (17727973582995466, 17558421159018501, 17727776022888453, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (18497811045679106, 9507591944175638, 18497721916719105, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (18497811045679106, 17558421159018501, 18497721916719105, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (18497870101512196, 9507591944175638, 18497740170362881, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (18497870101512196, 17558421159018501, 18497740170362881, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (18497721916719106, 9507591944175638, 18497811045679105, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (18497721916719106, 17558421159018501, 18497811045679105, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (18497740170362882, 9507591944175638, 18497870101512195, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (18497740170362882, 17558421159018501, 18497870101512195, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (18501196553650180, 9507591944175638, 18500844357943298, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (18501196553650180, 17558421159018501, 18500844357943298, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                              `updater`)
-VALUES (18501308222832650, 9507591944175638, 18501349016633350, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (18501308222832650, 17558421159018501, 18501349016633350, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (19027040128729089, 17558421159018501, 19026881223327750, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (19027459961815050, 17558421159018501, 19027366546243585, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (19028462836678660, 17558421159018501, 19028252391636995, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (19028617463857155, 17558421159018501, 19028471435001859, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+-- normal auth
+
+INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507161365282830, 9507591944175638, 9505726846205953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507452349349921, 9507591944175638, 9506121983229953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507496381120551, 9507591944175638, 9506477400129537, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507591944175651, 9507591944175638, 9506557930799110, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507161365282831, 9507591944175638, 9505726846205957, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507452349349922, 9507591944175638, 9506121983229954, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507496381120552, 9507591944175638, 9506477400129538, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507591944175652, 9507591944175638, 9506557930799111, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507161365282832, 9507591944175638, 9505726846205961, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507452349349923, 9507591944175638, 9506121983229955, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507496381120553, 9507591944175638, 9506477400129539, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507591944175653, 9507591944175638, 9506557930799112, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507161365282833, 9507591944175638, 9505726846205965, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507452349349925, 9507591944175638, 9506121983229956, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507496381120554, 9507591944175638, 9506477400129540, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507591944175654, 9507591944175638, 9506557930799113, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507161365282834, 9507591944175638, 9505726846205969, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507452349349926, 9507591944175638, 9506121983229957, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507496381120556, 9507591944175638, 9506477400129541, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                             `updater`)
+VALUES (9507591944175656, 9507591944175638, 9506557930799114, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- noinspection SqlDialectInspectionForFile
 

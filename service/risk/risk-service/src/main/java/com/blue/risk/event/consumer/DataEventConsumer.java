@@ -4,7 +4,6 @@ import com.blue.base.common.auth.AuthProcessor;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.constant.base.BlueTopic;
-import com.blue.base.model.base.Access;
 import com.blue.base.model.base.DataEvent;
 import com.blue.jwt.common.JwtProcessor;
 import com.blue.pulsar.common.BluePulsarConsumer;
@@ -47,9 +46,9 @@ public final class DataEventConsumer implements BlueLifecycle {
         Consumer<DataEvent> dataEventDataConsumer = dataEvent ->
                 //TODO risk control
                 ofNullable(dataEvent)
-                        .flatMap(de -> ofNullable(de.getData(BlueDataAttrKey.ACCESS.key))
-                                .map(AuthProcessor::jsonToAccess)
-                                .map(Access::getId)).ifPresent(access -> LOGGER.warn("access = {}", access));
+                        .map(de -> de.getData(BlueDataAttrKey.ACCESS.key))
+                        .map(AuthProcessor::jsonToAccess)
+                        .ifPresent(access -> LOGGER.warn("access = {}", access));
 
         this.dataEventConsumer = generateConsumer(blueConsumerConfig.getByKey(BlueTopic.REQUEST_EVENT.name), dataEventDataConsumer);
     }

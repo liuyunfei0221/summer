@@ -31,8 +31,8 @@ public class RelationManagerRoute {
         RequestPredicate pathPredicate = path("/blue-secure/manager/relation");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/role-res", accept(APPLICATION_JSON), relationManagerHandler::updateAuthorityByRole)
-                .POST("/mem-role", accept(APPLICATION_JSON), relationManagerHandler::updateAuthorityByMember)
+                .PUT("/role-res", accept(APPLICATION_JSON), relationManagerHandler::updateAuthorityByRole)
+                .PUT("/mem-role", accept(APPLICATION_JSON), relationManagerHandler::updateAuthorityByMember)
                 .build();
 
         return nest(pathPredicate, routerFunction);

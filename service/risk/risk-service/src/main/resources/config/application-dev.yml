@@ -1,6 +1,6 @@
 server:
   #  address: 172.30.128.25
-  port: 50000
+  port: 53000
   netty:
     connection-timeout: 6s
     h2c-max-content-length: 0B
@@ -325,7 +325,7 @@ dubbo:
   protocol:
     name: dubbo
     host: localhost
-    port: 51000
+    port: 54000
     accesslog: D:/locallogs/dubbo/risk/access.log
   provider:
     retries: 0

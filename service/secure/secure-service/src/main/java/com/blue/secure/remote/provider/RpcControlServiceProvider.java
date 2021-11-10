@@ -18,7 +18,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
 @DubboService(interfaceClass = RpcControlService.class, version = "1.0", methods = {
         @Method(name = "insertDefaultMemberRoleRelation", async = false),
-        @Method(name = "updateMemberRoleByAccess", async = false),
         @Method(name = "updateMemberRoleById", async = false)
 })
 public class RpcControlServiceProvider implements RpcControlService {
