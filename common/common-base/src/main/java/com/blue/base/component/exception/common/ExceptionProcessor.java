@@ -44,11 +44,12 @@ public final class ExceptionProcessor {
     private static Map<String, ExceptionHandler> generatorMapping(String dirName) {
         List<Class<?>> classes = getClassesByPackage(dirName, true);
         LOGGER.info("Map<String, ExceptionHandler> generatorMapping(String dirName), dirName = {}", dirName);
+        String expHandlerName = ExceptionHandler.class.getName();
         return classes
                 .stream()
                 .filter(clz ->
                         !clz.isInterface() &&
-                                of(clz.getInterfaces()).anyMatch(inter -> ExceptionHandler.class.getName().equals(inter.getName())))
+                                of(clz.getInterfaces()).anyMatch(inter -> expHandlerName.equals(inter.getName())))
                 .map(clz -> {
                     try {
                         LOGGER.info("generatorMapping(String dirName), Load exception handler class, clz = {}", clz.getName());

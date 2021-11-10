@@ -51,10 +51,6 @@ public class BlueLifecycleBeanDefinitionRegistrar implements ResourceLoaderAware
 
     private ApplicationContext applicationContext;
 
-    private static final String SCAN_PACKAGES_ATTR_NAME = BLUE_LIFECYCLE_SCAN_PACKAGE.scanPackagesAttrName;
-    private static final String[] DEFAULT_SCAN_PACKAGES = BLUE_LIFECYCLE_SCAN_PACKAGE.defaultScanPackages;
-    private static final boolean USE_DEFAULT_FILTERS = BLUE_LIFECYCLE_SCAN_PACKAGE.useDefaultFilters;
-
     private final AtomicBoolean running = new AtomicBoolean(false);
 
     private Map<String, BlueLifecycle> beans;
@@ -108,9 +104,10 @@ public class BlueLifecycleBeanDefinitionRegistrar implements ResourceLoaderAware
     @Override
     public void registerBeanDefinitions(@NonNull AnnotationMetadata importingClassMetadata, @NonNull BeanDefinitionRegistry registry) {
         AnnotationAttributes mapperScanAttrs = fromMap(importingClassMetadata.getAnnotationAttributes(EnableBlueLifecycle.class.getName()));
-        String[] basePackages = ofNullable(mapperScanAttrs).map(attr -> attr.getStringArray(SCAN_PACKAGES_ATTR_NAME)).orElse(DEFAULT_SCAN_PACKAGES);
+        String[] basePackages = ofNullable(mapperScanAttrs).map(attr -> attr.getStringArray(BLUE_LIFECYCLE_SCAN_PACKAGE.scanPackagesAttrName))
+                .orElse(BLUE_LIFECYCLE_SCAN_PACKAGE.defaultScanPackages);
 
-        BlueBeanDefinitionScanner scanner = new BlueBeanDefinitionScanner(registry, USE_DEFAULT_FILTERS);
+        BlueBeanDefinitionScanner scanner = new BlueBeanDefinitionScanner(registry, BLUE_LIFECYCLE_SCAN_PACKAGE.useDefaultFilters);
 
         scanner.setResourceLoader(resourceLoader);
         scanner.addIncludeFilter(new AssignableTypeFilter(BlueLifecycle.class));
