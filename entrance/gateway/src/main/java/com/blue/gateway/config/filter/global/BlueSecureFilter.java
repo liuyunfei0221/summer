@@ -65,14 +65,12 @@ public final class BlueSecureFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        Map<String, Object> attributes = exchange.getAttributes();
         return rpcSecureServiceConsumer.assertAuth(
                         new AssertAuth(HEADER_VALUE_GETTER.apply(request.getHeaders(), AUTHORIZATION.name),
-                                ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf).orElse(""),
                                 request.getMethodValue().intern(), request.getPath().value()))
                 .flatMap(authAsserted -> {
                     LOGGER.info("authAsserted = {}", authAsserted);
-                    authProcess(authAsserted, request, attributes);
+                    authProcess(authAsserted, request, exchange.getAttributes());
                     return chain.filter(exchange);
                 });
     }

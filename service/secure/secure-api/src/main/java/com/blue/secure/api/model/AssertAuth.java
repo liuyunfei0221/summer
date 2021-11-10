@@ -18,11 +18,6 @@ public final class AssertAuth implements Serializable {
     private String authentication;
 
     /**
-     * client ip
-     */
-    private String ip;
-
-    /**
      * request method str
      */
     private String method;
@@ -40,19 +35,14 @@ public final class AssertAuth implements Serializable {
     public AssertAuth() {
     }
 
-    public AssertAuth(String authentication, String ip, String method, String uri) {
+    public AssertAuth(String authentication, String method, String uri) {
         this.authentication = authentication;
-        this.ip = ip;
         this.method = method;
         this.uri = uri;
     }
 
     public String getAuthentication() {
         return authentication;
-    }
-
-    public String getIp() {
-        return ip;
     }
 
     public String getMethod() {
@@ -67,7 +57,6 @@ public final class AssertAuth implements Serializable {
     public String toString() {
         return "AssertAuth{" +
                 "authentication='" + authentication + '\'' +
-                ", ip='" + ip + '\'' +
                 ", method='" + method + '\'' +
                 ", uri='" + uri + '\'' +
                 '}';

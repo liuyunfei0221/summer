@@ -21,7 +21,7 @@ public class EncryptTest {
      * debug
      */
     private static void debugging() {
-        String priKey = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAyEXfJTvIkt6LFAwgB0Y680MdJsPVwchT7BDzLzfXNLUKlldiLkA+GMGtn30gT0EenvK0XoteYOWKNwjbb39W6QIDAQABAkACXLieEs9x1Agl62KxU0W8uszsOSEbUQaUYTrNEsaKC5c/kpCtPQF5RogNJp3t8xZEheVLubJQtBjDCUh6iyBVAiEA+WairwsXgXRnMqkAsGA0oxlkhQhU1MOWm9ewNrp+10MCIQDNknVcw+KfZ78MyTmDSR+ebKm7jNwc2xoeribL1+gIYwIgTlA3N2XxPJozqYm+CKQ9AxX/JXLnSGQeT9NbpuPK3ocCIFyr8YxoIfmKY234KJ0ukbpxcfLChVfczeGW0JaENm3RAiEAq3zKC372212F829qb0jWCfILT9ohptNZq0zJogp+t0w=";
+        String priKey = "MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAlYZ4AfKIePALHzUaoOy8H7e6T5W9681e+I3PQRc3KvUT+Q7X9wyyAMSJHIGjHrfhDKN+3ozTY9PfWUQLtsVNMQIDAQABAkA8W66f4p5yazuiGlaodUevagP8Uk77G8jlfqEV/mAXp35hPHhfELIl8WDlVpCaQNeLlCADJEJjJEdgHZ9C3mIBAiEA0M1Pd1Oj4BGFLrIJYVpQO9aL+/NtRZtxfKEjqs0eQmECIQC3UwIBkXLaU+35B/58CHUjA/MmYGTVrXT9NyJ3EV6c0QIgWemfJ5Y3whwpSqNV0LswQ6QuoW8AhfHa270T+8/aEOECIElJFrk3wvlCqhRuvK4q12DrGE3UJRtCn00GuHFu8SqxAiEAts5Zgvxbm0dpqybjJIPaeWTTDHvq+c9hE/jMDybs28U=";
         String original = "{\"original\":\"{\\\"amount\\\":400000,\\\"bankCardId\\\":8888888888,\\\"remark\\\":\\\"提现到钱包中\\\"}\",\"timeStamp\":" + Instant.now().getEpochSecond() + "}";
 
         String encrypt = generateTestParam(original, priKey);
