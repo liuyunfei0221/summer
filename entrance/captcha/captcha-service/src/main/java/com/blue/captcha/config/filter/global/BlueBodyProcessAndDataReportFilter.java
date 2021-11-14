@@ -71,7 +71,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
     private void reportError(Throwable throwable, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
         ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
 
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getCode()).intern());
+        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getStatus()).intern());
         dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionHandleInfo.getBlueVo()));
 
         LOGGER.info("getResponseAndReport(), dataEvent = {}, throwable = {}", dataEvent, throwable);

@@ -38,8 +38,8 @@ public class ReactiveCommonFunctions extends CommonFunctions {
     /**
      * request identity getter func
      */
-    public static final Function<ServerHttpRequest, String> REQUEST_IDENTITY_GETTER = request ->
-            RATE_LIMIT_KEY_PREFIX + ofNullable(request)
+    public static final Function<ServerHttpRequest, Mono<String>> REQUEST_IDENTITY_GETTER = request ->
+            just(RATE_LIMIT_KEY_PREFIX + ofNullable(request)
                     .map(ServerHttpRequest::getHeaders)
                     .map(h -> h.getFirst(AUTHORIZATION))
                     .filter(StringUtils::hasText)
@@ -48,7 +48,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
                     .orElse(ofNullable(request)
                             .map(ServerHttpRequest::getRemoteAddress)
                             .map(InetSocketAddress::getHostString)
-                            .orElse(UNKNOWN)).hashCode();
+                            .orElse(UNKNOWN)).hashCode());
 
     /**
      * package response result for reactive

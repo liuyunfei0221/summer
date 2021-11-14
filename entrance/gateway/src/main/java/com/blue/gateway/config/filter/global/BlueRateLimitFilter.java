@@ -1,6 +1,5 @@
 package com.blue.gateway.config.filter.global;
 
-import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.model.exps.BlueException;
 import com.blue.gateway.config.deploy.RateLimiterDeploy;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -29,7 +28,6 @@ import static com.blue.redis.constant.RedisScripts.RATE_LIMITER;
 import static java.lang.String.valueOf;
 import static java.time.Instant.now;
 import static java.util.Arrays.asList;
-import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.error;
 
 /**
@@ -52,9 +50,7 @@ public final class BlueRateLimitFilter implements GlobalFilter, Ordered {
         this.rateLimiterDeploy = rateLimiterDeploy;
     }
 
-    private static final String SCRIPT_STR = RATE_LIMITER.str;
-
-    private static final RedisScript<Long> SCRIPT = generateScriptByScriptStr(SCRIPT_STR, Long.class);
+    private static final RedisScript<Long> SCRIPT = generateScriptByScriptStr(RATE_LIMITER.str, Long.class);
 
     private static String REPLENISH_RATE, BURST_CAPACITY;
 
@@ -84,14 +80,11 @@ public final class BlueRateLimitFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String requestId = ofNullable(exchange.getAttribute(BlueDataAttrKey.REQUEST_ID.key)).map(String::valueOf).orElse("");
-
-        String limitKey = REQUEST_IDENTITY_GETTER.apply(exchange.getRequest());
-        return ALLOWED_GETTER.apply(limitKey)
+        return REQUEST_IDENTITY_GETTER.apply(exchange.getRequest())
+                .flatMap(ALLOWED_GETTER)
                 .flatMap(a -> {
                     if (a)
                         return chain.filter(exchange);
-                    LOGGER.error("has been limited -> requestId = {}, limitKey = {}", requestId, limitKey);
                     return error(new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, TOO_MANY_REQUESTS.message));
                 });
     }

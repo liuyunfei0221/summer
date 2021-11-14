@@ -48,7 +48,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection", "UnusedAssignment"})
 @Component
 public final class BlueErrorReportFilter implements WebFilter, Ordered {
 
@@ -87,11 +87,13 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
             executorService.submit(() -> {
                 ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
 
-                dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getCode()).intern());
+                dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getStatus()).intern());
                 dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionHandleInfo.getBlueVo()));
 
                 requestEventReporter.report(dataEvent);
                 LOGGER.info("report exception event, dataEvent = {}", dataEvent);
+
+                exceptionHandleInfo = null;
             });
         } catch (Exception e) {
             LOGGER.error("report failed, dataEvent = {}, throwable = {}, e = {}",

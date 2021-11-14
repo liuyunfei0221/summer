@@ -13,7 +13,7 @@ public final class BlueResponse<T> implements Serializable {
     private static final long serialVersionUID = -5093752294116263164L;
 
     /**
-     * http status
+     * business code
      */
     private Integer code;
 

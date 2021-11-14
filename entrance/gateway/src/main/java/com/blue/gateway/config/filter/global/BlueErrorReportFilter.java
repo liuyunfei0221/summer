@@ -35,7 +35,7 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @Component
-@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "AliControlFlowStatementWithoutBraces", "UnusedAssignment"})
 public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
 
     private static final Logger LOGGER = getLogger(BlueErrorReportFilter.class);
@@ -56,11 +56,13 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
             executorService.submit(() -> {
                 ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
 
-                dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getCode()).intern());
+                dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getStatus()).intern());
                 dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionHandleInfo.getBlueVo()));
 
                 requestEventReporter.report(dataEvent);
                 LOGGER.info("report exception event, dataEvent = {}", dataEvent);
+
+                exceptionHandleInfo = null;
             });
         } catch (Exception e) {
             LOGGER.error("report failed, dataEvent = {}, throwable = {}, e = {}",

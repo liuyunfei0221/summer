@@ -11,17 +11,17 @@ import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
  */
 public final class ExceptionHandleInfo {
 
-    private final Integer code;
+    private final Integer status;
 
     private final BlueResponse<Void> blueResponse;
 
-    public ExceptionHandleInfo(Integer code, BlueResponse<Void> blueResponse) {
-        this.code = code != null ? code : INTERNAL_SERVER_ERROR.code;
+    public ExceptionHandleInfo(Integer status, BlueResponse<Void> blueResponse) {
+        this.status = status != null ? status : INTERNAL_SERVER_ERROR.code;
         this.blueResponse = blueResponse != null ? blueResponse : new BlueResponse<>(INTERNAL_SERVER_ERROR.code, null, INTERNAL_SERVER_ERROR.message);
     }
 
-    public Integer getCode() {
-        return code;
+    public Integer getStatus() {
+        return status;
     }
 
     public BlueResponse<Void> getBlueVo() {
@@ -31,7 +31,7 @@ public final class ExceptionHandleInfo {
     @Override
     public String toString() {
         return "ExceptionHandleInfo{" +
-                "code=" + code +
+                "status=" + status +
                 ", blueVo=" + blueResponse +
                 '}';
     }

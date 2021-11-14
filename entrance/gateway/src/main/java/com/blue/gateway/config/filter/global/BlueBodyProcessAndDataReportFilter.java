@@ -87,7 +87,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
 
     private void packageError(Throwable throwable, DataEvent dataEvent) {
         ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getCode()).intern());
+        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getStatus()).intern());
         dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionHandleInfo.getBlueVo()));
     }
 

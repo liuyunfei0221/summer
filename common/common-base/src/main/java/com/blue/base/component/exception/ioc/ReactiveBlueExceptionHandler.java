@@ -37,7 +37,7 @@ public final class ReactiveBlueExceptionHandler implements WebExceptionHandler {
         ServerHttpResponse response = exchange.getResponse();
 
         response.getHeaders().add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
-        response.setRawStatusCode(exceptionHandleInfo.getCode());
+        response.setRawStatusCode(exceptionHandleInfo.getStatus());
 
         return response.writeWith(just(response.bufferFactory().wrap(GSON.toJson(exceptionHandleInfo.getBlueVo()).getBytes(CHARSET))));
     }
