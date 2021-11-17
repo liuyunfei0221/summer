@@ -60,12 +60,14 @@ CREATE TABLE `role_0`
     `id`          bigint      NOT NULL COMMENT 'id',
     `name`        varchar(64) NOT NULL COMMENT 'role name',
     `description` varchar(128) DEFAULT NULL COMMENT 'role disc',
+    `level`       int         NOT NULL COMMENT 'roles level',
     `is_default`  bit         NOT NULL COMMENT 'is default role? 1-yes 0-no',
     `create_time` bigint      NOT NULL COMMENT 'data create time',
     `update_time` bigint      NOT NULL COMMENT 'data update time',
     `creator`     bigint      NOT NULL COMMENT 'creator id',
     `updater`     bigint      NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_level`(`level`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role 0';
 
@@ -74,12 +76,14 @@ CREATE TABLE `role_1`
     `id`          bigint      NOT NULL COMMENT 'id',
     `name`        varchar(64) NOT NULL COMMENT 'role name',
     `description` varchar(128) DEFAULT NULL COMMENT 'role disc',
+    `level`       int         NOT NULL COMMENT 'roles level',
     `is_default`  bit         NOT NULL COMMENT 'is default role? 1-yes 0-no',
     `create_time` bigint      NOT NULL COMMENT 'data create time',
     `update_time` bigint      NOT NULL COMMENT 'data update time',
     `creator`     bigint      NOT NULL COMMENT 'creator id',
     `updater`     bigint      NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_level`(`level`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role 1';
 
@@ -210,12 +214,14 @@ CREATE TABLE `role_0`
     `id`          bigint      NOT NULL COMMENT 'id',
     `name`        varchar(64) NOT NULL COMMENT 'role name',
     `description` varchar(128) DEFAULT NULL COMMENT 'role disc',
+    `level`       int         NOT NULL COMMENT 'roles level',
     `is_default`  bit         NOT NULL COMMENT 'is default role? 1-yes 0-no',
     `create_time` bigint      NOT NULL COMMENT 'data create time',
     `update_time` bigint      NOT NULL COMMENT 'data update time',
     `creator`     bigint      NOT NULL COMMENT 'creator id',
     `updater`     bigint      NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_level`(`level`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role 0';
 
@@ -224,12 +230,14 @@ CREATE TABLE `role_1`
     `id`          bigint      NOT NULL COMMENT 'id',
     `name`        varchar(64) NOT NULL COMMENT 'role name',
     `description` varchar(128) DEFAULT NULL COMMENT 'role disc',
+    `level`       int         NOT NULL COMMENT 'roles level',
     `is_default`  bit         NOT NULL COMMENT 'is default role? 1-yes 0-no',
     `create_time` bigint      NOT NULL COMMENT 'data create time',
     `update_time` bigint      NOT NULL COMMENT 'data update time',
     `creator`     bigint      NOT NULL COMMENT 'creator id',
     `updater`     bigint      NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_level`(`level`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role 1';
 
@@ -671,13 +679,15 @@ VALUES (19028471435001859, 'PUT', 'blue-secure', '/manager/relation/mem-role', b
 
 -- role
 
-INSERT INTO `secure_1`.`role_1`(`id`, `name`, `description`, `is_default`, `create_time`, `update_time`, `creator`,
+INSERT INTO `secure_1`.`role_1`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,
+                                `creator`,
                                 `updater`)
-VALUES (9507591944175638, 'normal', 'normal', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9507591944175638, 'normal', 'normal', 999999999, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_0`(`id`, `name`, `description`, `is_default`, `create_time`, `update_time`, `creator`,
+INSERT INTO `secure_0`.`role_0`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,
+                                `creator`,
                                 `updater`)
-VALUES (17558421159018501, 'summer admin', 'summer admin', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (17558421159018501, 'summer admin', 0, 'summer admin', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role resource relations
 

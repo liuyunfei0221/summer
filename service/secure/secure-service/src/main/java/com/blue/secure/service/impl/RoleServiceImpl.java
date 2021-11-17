@@ -202,6 +202,9 @@ public class RoleServiceImpl implements RoleService {
 
         if (isNotNull(roleMapper.selectByName(rip.getName())))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists");
+
+        if (isNotNull(roleMapper.selectByLevel(rip.getLevel())))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The level already exists");
     };
 
     /**

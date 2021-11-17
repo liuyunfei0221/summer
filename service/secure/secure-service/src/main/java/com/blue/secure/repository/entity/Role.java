@@ -18,6 +18,8 @@ public final class Role implements Serializable {
 
     private String description;
 
+    private Integer level;
+
     /**
      * is the default role?
      */
@@ -53,6 +55,14 @@ public final class Role implements Serializable {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
     public Boolean getIsDefault() {
@@ -101,6 +111,7 @@ public final class Role implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", level=" + level +
                 ", isDefault=" + isDefault +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

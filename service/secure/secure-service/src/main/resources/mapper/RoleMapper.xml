@@ -6,6 +6,7 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="level" jdbcType="INTEGER" property="level"/>
         <result column="is_default" jdbcType="BIT" property="isDefault"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
@@ -15,16 +16,16 @@
 
     <sql id="Base_Column_List">
         id
-        , name, description, is_default, create_time, update_time, creator, updater
+        , name, description, level, is_default, create_time, update_time, creator, updater
     </sql>
 
     <insert id="insert" parameterType="com.blue.secure.repository.entity.Role">
         insert into role (id, name, description,
-                          is_default, create_time, update_time,
-                          creator, updater)
+                          level, is_default, create_time,
+                          update_time, creator, updater)
         values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
-                #{isDefault,jdbcType=BIT}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
-                #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
+                #{level,jdbcType=INTEGER}, #{isDefault,jdbcType=BIT}, #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertSelective" parameterType="com.blue.secure.repository.entity.Role">
@@ -38,6 +39,9 @@
             </if>
             <if test="description != null">
                 description,
+            </if>
+            <if test="level != null">
+                level,
             </if>
             <if test="isDefault != null">
                 is_default,
@@ -65,6 +69,9 @@
             <if test="description != null">
                 #{description,jdbcType=VARCHAR},
             </if>
+            <if test="level != null">
+                #{level,jdbcType=INTEGER},
+            </if>
             <if test="isDefault != null">
                 #{isDefault,jdbcType=BIT},
             </if>
@@ -87,6 +94,7 @@
         update role
         set name        = #{name,jdbcType=VARCHAR},
             description = #{description,jdbcType=VARCHAR},
+            level       = #{level,jdbcType=INTEGER},
             is_default  = #{isDefault,jdbcType=BIT},
             create_time = #{createTime,jdbcType=BIGINT},
             update_time = #{updateTime,jdbcType=BIGINT},
@@ -103,6 +111,9 @@
             </if>
             <if test="description != null">
                 description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                level = #{level,jdbcType=INTEGER},
             </if>
             <if test="isDefault != null">
                 is_default = #{isDefault,jdbcType=BIT},
@@ -224,6 +235,16 @@
         role FORCE INDEX(idx_name)
         WHERE
         `name` = #{name,jdbcType=VARCHAR}
+        LIMIT 1;
+    </select>
+
+    <select id="selectByLevel" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role FORCE
+        WHERE
+        `level` = #{level,jdbcType=INTEGER}
         LIMIT 1;
     </select>
 

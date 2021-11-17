@@ -28,6 +28,11 @@ public final class RoleInfo implements Serializable {
     private String description;
 
     /**
+     * role's level
+     */
+    private Integer level;
+
+    /**
      * default role?
      */
     private Boolean isDefault;
@@ -35,10 +40,11 @@ public final class RoleInfo implements Serializable {
     public RoleInfo() {
     }
 
-    public RoleInfo(Long id, String name, String description, Boolean isDefault) {
+    public RoleInfo(Long id, String name, String description, Integer level, Boolean isDefault) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.level = level;
         this.isDefault = isDefault;
     }
 
@@ -66,6 +72,14 @@ public final class RoleInfo implements Serializable {
         this.description = description;
     }
 
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
     public Boolean getDefault() {
         return isDefault;
     }
@@ -80,6 +94,7 @@ public final class RoleInfo implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
+                ", level=" + level +
                 ", isDefault=" + isDefault +
                 '}';
     }

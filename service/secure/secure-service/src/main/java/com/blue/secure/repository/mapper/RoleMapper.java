@@ -38,4 +38,6 @@ public interface RoleMapper {
 
     Role selectByName(@Param("name") String name);
 
+    Role selectByLevel(@Param("level") Integer level);
+
 }

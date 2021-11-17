@@ -23,8 +23,8 @@ public class RoleUpdateParam extends RoleInsertParam {
     public RoleUpdateParam() {
     }
 
-    public RoleUpdateParam(String name, String description, Long id) {
-        super(name, description);
+    public RoleUpdateParam(Long id, String name, String description, Integer level) {
+        super(name, description, level);
         if (isInvalidIdentity(id))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 

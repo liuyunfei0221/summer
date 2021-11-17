@@ -1,4 +1,4 @@
-package com.blue.secure.component.auth.ioc;
+package com.blue.secure.api.component.ioc;
 
 import com.blue.jwt.api.conf.BaseJwtConfParams;
 import com.blue.jwt.common.JwtProcessor;

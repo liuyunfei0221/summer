@@ -41,12 +41,17 @@ public final class SecureModelConverters {
         if (isBlank(description))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
 
+        Integer level = param.getLevel();
+        if (level == null || level < 1)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "level can't be null or less than 1");
+
         Long stamp = TIME_STAMP_GETTER.get();
 
         Role role = new Role();
 
         role.setName(name);
         role.setDescription(description);
+        role.setLevel(level);
         role.setIsDefault(NOT_DEFAULT.status);
         role.setCreateTime(stamp);
         role.setUpdateTime(stamp);
@@ -61,7 +66,7 @@ public final class SecureModelConverters {
         if (role == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
-        return new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getIsDefault());
+        return new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault());
     };
 
     /**
