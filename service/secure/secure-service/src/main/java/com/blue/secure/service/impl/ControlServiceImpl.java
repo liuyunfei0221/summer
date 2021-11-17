@@ -8,22 +8,22 @@ import com.blue.secure.event.producer.SystemAuthorityInfosRefreshProducer;
 import com.blue.secure.model.*;
 import com.blue.secure.repository.entity.MemberRoleRelation;
 import com.blue.secure.repository.entity.Role;
-import com.blue.secure.service.inter.ControlService;
-import com.blue.secure.service.inter.MemberRoleRelationService;
-import com.blue.secure.service.inter.RoleResRelationService;
-import com.blue.secure.service.inter.SecureService;
+import com.blue.secure.service.inter.*;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.blue.base.common.base.Asserter.isEmpty;
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.FORBIDDEN;
 import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
+import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -42,6 +42,8 @@ public class ControlServiceImpl implements ControlService {
 
     private final SecureService secureService;
 
+    private final RoleService roleService;
+
     private final RoleResRelationService roleResRelationService;
 
     private final MemberRoleRelationService memberRoleRelationService;
@@ -49,12 +51,28 @@ public class ControlServiceImpl implements ControlService {
     private final SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ControlServiceImpl(SecureService secureService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
+    public ControlServiceImpl(SecureService secureService, RoleService roleService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
                               SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer) {
         this.secureService = secureService;
+        this.roleService = roleService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
+    }
+
+    private Role getRoleByRoleId(Long roleId) {
+        return roleService.getRoleById(roleId).orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message));
+    }
+
+    private Role getRoleByMemberId(Long memberId) {
+        return memberRoleRelationService.getRoleIdByMemberId(memberId)
+                .map(roleService::getRoleById).filter(Optional::isPresent).map(Optional::get)
+                .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "operator has no role"));
+    }
+
+    private void assertRoleLevelForOperate(int tarLevel, int operatorLevel) {
+        if (tarLevel >= operatorLevel)
+            throw new BlueException(FORBIDDEN.status, FORBIDDEN.code, FORBIDDEN.message);
     }
 
     /**
@@ -111,6 +129,9 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public void updateMemberRoleById(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void updateMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
+        assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), getRoleByMemberId(operatorId).getLevel());
+        assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), getRoleByMemberId(operatorId).getLevel());
+
         memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
         secureService.refreshMemberRoleById(memberId, roleId, operatorId);
     }
@@ -153,6 +174,8 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<Void> updateDefaultRole(Long id, Long operatorId) {
         LOGGER.info("void updateDefaultRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
+        assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
+
         roleResRelationService.updateDefaultRole(id, operatorId);
         return empty();
     }
@@ -167,6 +190,7 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<RoleInfo> insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
         LOGGER.info("Mono<RoleInfo> insertRole(RoleInsertParam roleInsertParam, Long operatorId), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
+        assertRoleLevelForOperate(ofNullable(roleInsertParam).map(RoleInsertParam::getLevel).orElse(Integer.MAX_VALUE), getRoleByMemberId(operatorId).getLevel());
 
         return just(roleResRelationService.insertRole(roleInsertParam, operatorId))
                 .doOnSuccess(ri -> {
@@ -185,6 +209,7 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<RoleInfo> updateRole(RoleUpdateParam roleUpdateParam, Long operatorId) {
         LOGGER.info("Mono<RoleInfo> updateRole(RoleUpdateParam roleUpdateParam, Long operatorId), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
+        assertRoleLevelForOperate(getRoleByRoleId(roleUpdateParam.getId()).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return just(roleResRelationService.updateRole(roleUpdateParam, operatorId))
                 .doOnSuccess(ri -> {
@@ -207,6 +232,7 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return just(roleResRelationService.deleteRole(id, operatorId))
                 .doOnSuccess(ri -> {
@@ -292,6 +318,7 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
         if (isEmpty(resIds))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+        assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return just(roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), operatorId))
                 .doOnSuccess(auth -> {
@@ -317,6 +344,10 @@ public class ControlServiceImpl implements ControlService {
         Long roleId = memberRoleRelationParam.getRoleId();
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+
+        Integer operatorRoleLevel = getRoleByMemberId(operatorId).getLevel();
+        assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), operatorRoleLevel);
+        assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), operatorRoleLevel);
 
         return fromRunnable(() -> memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId))
                 .flatMap(v -> this.selectAuthorityMonoByRoleId(roleId));

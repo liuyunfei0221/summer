@@ -1,9 +1,9 @@
 package com.blue.secure.config.auth;
 
+import com.blue.secure.api.component.auth.MemberJwtConf;
+import com.blue.secure.api.component.auth.MemberJwtConfParams;
 import com.blue.secure.component.auth.AuthBatchExpireProcessor;
 import com.blue.secure.component.auth.AuthInfoCache;
-import com.blue.secure.component.auth.api.MemberJwtConf;
-import com.blue.secure.component.auth.api.MemberJwtConfParams;
 import com.blue.secure.config.deploy.AuthDeploy;
 import com.blue.secure.event.producer.AuthExpireProducer;
 import org.springframework.context.annotation.Bean;

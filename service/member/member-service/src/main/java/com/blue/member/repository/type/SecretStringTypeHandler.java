@@ -29,24 +29,24 @@ public class SecretStringTypeHandler extends BaseTypeHandler<String> {
 
     private static final Logger LOGGER = getLogger(SecretStringTypeHandler.class);
 
-    private static AesProcessor AES_PROCESSOR;
+    private static AesProcessor aesProcessor;
 
     @Autowired
     public void setSecretDeploy(SecretDeploy secretDeploy) {
         LOGGER.warn("secretDeploy = {}", secretDeploy);
-        AES_PROCESSOR = new AesProcessor(secretDeploy.getSalt());
+        aesProcessor = new AesProcessor(secretDeploy.getSalt());
     }
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType) throws SQLException {
-        ps.setString(i, AES_PROCESSOR.encrypt(parameter));
+        ps.setString(i, aesProcessor.encrypt(parameter));
     }
 
     @Override
     public String getNullableResult(ResultSet rs, String columnName) throws SQLException {
         return ofNullable(rs.getString(columnName))
                 .filter(StringUtils::hasText)
-                .map(AES_PROCESSOR::decrypt)
+                .map(aesProcessor::decrypt)
                 .orElse("");
     }
 
@@ -54,7 +54,7 @@ public class SecretStringTypeHandler extends BaseTypeHandler<String> {
     public String getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         return ofNullable(rs.getString(columnIndex))
                 .filter(StringUtils::hasText)
-                .map(AES_PROCESSOR::decrypt)
+                .map(aesProcessor::decrypt)
                 .orElse("");
     }
 
@@ -62,7 +62,7 @@ public class SecretStringTypeHandler extends BaseTypeHandler<String> {
     public String getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         return ofNullable(cs.getString(columnIndex))
                 .filter(StringUtils::hasText)
-                .map(AES_PROCESSOR::decrypt)
+                .map(aesProcessor::decrypt)
                 .orElse("");
     }
 }

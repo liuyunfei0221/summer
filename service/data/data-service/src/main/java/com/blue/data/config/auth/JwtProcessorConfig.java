@@ -1,8 +1,8 @@
 package com.blue.data.config.auth;
 
 import com.blue.data.config.deploy.JwtDeploy;
-import com.blue.secure.component.auth.api.MemberJwtConf;
-import com.blue.secure.component.auth.api.MemberJwtConfParams;
+import com.blue.secure.api.component.auth.MemberJwtConf;
+import com.blue.secure.api.component.auth.MemberJwtConfParams;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.util.Logger;

@@ -89,7 +89,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
 
                                                 Role role = idAndRoleMapping.get(rel.getRoleId());
                                                 if (role != null) {
-                                                    memberRoleRelationInfo.setRoleInfo(new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getIsDefault()));
+                                                    memberRoleRelationInfo.setRoleInfo(new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault()));
                                                     return memberRoleRelationInfo;
                                                 }
 

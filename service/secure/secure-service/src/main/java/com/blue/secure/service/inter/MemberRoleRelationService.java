@@ -21,6 +21,14 @@ public interface MemberRoleRelationService {
      * @param memberId
      * @return
      */
+    Optional<Long> getRoleIdByMemberId(Long memberId);
+
+    /**
+     * get role id mono by member id
+     *
+     * @param memberId
+     * @return
+     */
     Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId);
 
     /**

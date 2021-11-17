@@ -224,6 +224,14 @@ public class RoleServiceImpl implements RoleService {
                         throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exist");
                 });
 
+        ofNullable(rup.getLevel())
+                .map(roleMapper::selectByLevel)
+                .map(Role::getId)
+                .ifPresent(eid -> {
+                    if (!id.equals(eid))
+                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The level already exist");
+                });
+
         Role role = roleMapper.selectByPrimaryKey(id);
         if (role == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);

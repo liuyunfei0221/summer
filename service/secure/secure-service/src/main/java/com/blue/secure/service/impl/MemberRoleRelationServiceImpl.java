@@ -62,12 +62,25 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      * @return
      */
     @Override
-    public Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId) {
-        LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}", memberId);
+    public Optional<Long> getRoleIdByMemberId(Long memberId) {
+        LOGGER.info("Optional<Long> getRoleIdByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        return just(ofNullable(memberRoleRelationMapper.getRoleIdByMemberId(memberId)));
+        return ofNullable(memberRoleRelationMapper.getRoleIdByMemberId(memberId));
+    }
+
+    /**
+     * get role id mono by member id
+     *
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId) {
+        LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}", memberId);
+
+        return just(getRoleIdByMemberId(memberId));
     }
 
     /**
