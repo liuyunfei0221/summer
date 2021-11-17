@@ -71,7 +71,7 @@ public class ControlServiceImpl implements ControlService {
     }
 
     private void assertRoleLevelForOperate(int tarLevel, int operatorLevel) {
-        if (tarLevel >= operatorLevel)
+        if (tarLevel <= operatorLevel)
             throw new BlueException(FORBIDDEN.status, FORBIDDEN.code, FORBIDDEN.message);
     }
 
@@ -190,7 +190,9 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<RoleInfo> insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
         LOGGER.info("Mono<RoleInfo> insertRole(RoleInsertParam roleInsertParam, Long operatorId), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
-        assertRoleLevelForOperate(ofNullable(roleInsertParam).map(RoleInsertParam::getLevel).orElse(Integer.MAX_VALUE), getRoleByMemberId(operatorId).getLevel());
+        assertRoleLevelForOperate(ofNullable(roleInsertParam).map(RoleInsertParam::getLevel)
+                .filter(l -> l > 0)
+                .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "level can't be null or less than 1")), getRoleByMemberId(operatorId).getLevel());
 
         return just(roleResRelationService.insertRole(roleInsertParam, operatorId))
                 .doOnSuccess(ri -> {

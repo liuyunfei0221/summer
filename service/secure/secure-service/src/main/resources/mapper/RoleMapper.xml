@@ -242,7 +242,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        role FORCE
+        role FORCE INDEX(idx_level)
         WHERE
         `level` = #{level,jdbcType=INTEGER}
         LIMIT 1;

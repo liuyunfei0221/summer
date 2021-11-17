@@ -918,108 +918,6 @@
 			"response": []
 		},
 		{
-			"name": "修改资源",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGE4ZjM5MTgzMGExYjc2ZjdmNDY5N2U4YWQ5NDk4OGEyOTMzM2NmZjMzMWViY2M3OGU3YTlkMDhkMDdlZmJhMjQ0ZTI4MDUwNGJkMTFjNzdkZDRhOGQ1ZmM0YzA0MGRmYzIxOTRlN2E5YThlNGM1N2I0YTgxYTA5MWJhMDU1YmEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTkwMzA3NzM1MjkwNTExMzhfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM5MTk0NDQyMjY1LCJpIjoiMTkwMzA3NzM1MjkwNTExMzgiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2NTE2MDQyIiwibmJmIjoxNjM2NTE2MDQyLCJ0IjoiRllXbEx3OVd2VTQiLCJleHAiOjE2MzkxOTQ0NDIsImlhdCI6MTYzNjUxNjA0MiwianRpIjoiNHVzZTlrQUpnSzdhbkpkYkg4VVY0SU03Y1dKOU8xZHEifQ.iTp1KPHbL97tTar3swiAuEDpCTpn0SISaKKH5rgKb9ETRVz7CeR4knrUpSDt0oaQmMfd5pvrntybLV0S5lj0pQ",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\":19031311473704961,\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue-secure\",\r\n    \"uri\":\"/manager/role/auth2\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource111\",\r\n    \"description\":\"a test resource\"\r\n}"
-				},
-				"url": {
-					"raw": "localhost:10000/blue-secure/manager/resource",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-secure",
-						"manager",
-						"resource"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "删除资源",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGE4ZjM5MTgzMGExYjc2ZjdmNDY5N2U4YWQ5NDk4OGEyOTMzM2NmZjMzMWViY2M3OGU3YTlkMDhkMDdlZmJhMjQ0ZTI4MDUwNGJkMTFjNzdkZDRhOGQ1ZmM0YzA0MGRmYzIxOTRlN2E5YThlNGM1N2I0YTgxYTA5MWJhMDU1YmEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTkwMzA3NzM1MjkwNTExMzhfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM5MTk0NDQyMjY1LCJpIjoiMTkwMzA3NzM1MjkwNTExMzgiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2NTE2MDQyIiwibmJmIjoxNjM2NTE2MDQyLCJ0IjoiRllXbEx3OVd2VTQiLCJleHAiOjE2MzkxOTQ0NDIsImlhdCI6MTYzNjUxNjA0MiwianRpIjoiNHVzZTlrQUpnSzdhbkpkYkg4VVY0SU03Y1dKOU8xZHEifQ.iTp1KPHbL97tTar3swiAuEDpCTpn0SISaKKH5rgKb9ETRVz7CeR4knrUpSDt0oaQmMfd5pvrntybLV0S5lj0pQ",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-secure/manager/resource/19031311473704961",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-secure",
-						"manager",
-						"resource",
-						"19031311473704961"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "新增资源",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGE4ZjM5MTgzMGExYjc2ZjdmNDY5N2U4YWQ5NDk4OGEyOTMzM2NmZjMzMWViY2M3OGU3YTlkMDhkMDdlZmJhMjQ0ZTI4MDUwNGJkMTFjNzdkZDRhOGQ1ZmM0YzA0MGRmYzIxOTRlN2E5YThlNGM1N2I0YTgxYTA5MWJhMDU1YmEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTkwMzA3NzM1MjkwNTExMzhfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM5MTk0NDQyMjY1LCJpIjoiMTkwMzA3NzM1MjkwNTExMzgiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2NTE2MDQyIiwibmJmIjoxNjM2NTE2MDQyLCJ0IjoiRllXbEx3OVd2VTQiLCJleHAiOjE2MzkxOTQ0NDIsImlhdCI6MTYzNjUxNjA0MiwianRpIjoiNHVzZTlrQUpnSzdhbkpkYkg4VVY0SU03Y1dKOU8xZHEifQ.iTp1KPHbL97tTar3swiAuEDpCTpn0SISaKKH5rgKb9ETRVz7CeR4knrUpSDt0oaQmMfd5pvrntybLV0S5lj0pQ",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue_secure\",\r\n    \"uri\":\"/test/test\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource\",\r\n    \"description\":\"a test resource\"\r\n}"
-				},
-				"url": {
-					"raw": "localhost:10000/blue-secure/manager/resource",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-secure",
-						"manager",
-						"resource"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "修改角色",
 			"request": {
 				"method": "PUT",
@@ -1087,7 +985,109 @@
 			"response": []
 		},
 		{
-			"name": "localhost:10000/blue-secure/manager/relation/role-res",
+			"name": "新增资源",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGE4ZjM5MTgzMGExYjc2ZjdmNDY5N2U4YWQ5NDk4OGEyOTMzM2NmZjMzMWViY2M3OGU3YTlkMDhkMDdlZmJhMjQ0ZTI4MDUwNGJkMTFjNzdkZDRhOGQ1ZmM0YzA0MGRmYzIxOTRlN2E5YThlNGM1N2I0YTgxYTA5MWJhMDU1YmEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTkwMzA3NzM1MjkwNTExMzhfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM5MTk0NDQyMjY1LCJpIjoiMTkwMzA3NzM1MjkwNTExMzgiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2NTE2MDQyIiwibmJmIjoxNjM2NTE2MDQyLCJ0IjoiRllXbEx3OVd2VTQiLCJleHAiOjE2MzkxOTQ0NDIsImlhdCI6MTYzNjUxNjA0MiwianRpIjoiNHVzZTlrQUpnSzdhbkpkYkg4VVY0SU03Y1dKOU8xZHEifQ.iTp1KPHbL97tTar3swiAuEDpCTpn0SISaKKH5rgKb9ETRVz7CeR4knrUpSDt0oaQmMfd5pvrntybLV0S5lj0pQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue_secure\",\r\n    \"uri\":\"/test/test\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource\",\r\n    \"description\":\"a test resource\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:10000/blue-secure/manager/resource",
+					"host": [
+						"localhost"
+					],
+					"port": "10000",
+					"path": [
+						"blue-secure",
+						"manager",
+						"resource"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "修改资源",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGE4ZjM5MTgzMGExYjc2ZjdmNDY5N2U4YWQ5NDk4OGEyOTMzM2NmZjMzMWViY2M3OGU3YTlkMDhkMDdlZmJhMjQ0ZTI4MDUwNGJkMTFjNzdkZDRhOGQ1ZmM0YzA0MGRmYzIxOTRlN2E5YThlNGM1N2I0YTgxYTA5MWJhMDU1YmEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTkwMzA3NzM1MjkwNTExMzhfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM5MTk0NDQyMjY1LCJpIjoiMTkwMzA3NzM1MjkwNTExMzgiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2NTE2MDQyIiwibmJmIjoxNjM2NTE2MDQyLCJ0IjoiRllXbEx3OVd2VTQiLCJleHAiOjE2MzkxOTQ0NDIsImlhdCI6MTYzNjUxNjA0MiwianRpIjoiNHVzZTlrQUpnSzdhbkpkYkg4VVY0SU03Y1dKOU8xZHEifQ.iTp1KPHbL97tTar3swiAuEDpCTpn0SISaKKH5rgKb9ETRVz7CeR4knrUpSDt0oaQmMfd5pvrntybLV0S5lj0pQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":19031311473704961,\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue-secure\",\r\n    \"uri\":\"/manager/role/auth2\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource111\",\r\n    \"description\":\"a test resource\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:10000/blue-secure/manager/resource",
+					"host": [
+						"localhost"
+					],
+					"port": "10000",
+					"path": [
+						"blue-secure",
+						"manager",
+						"resource"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "删除资源",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGE4ZjM5MTgzMGExYjc2ZjdmNDY5N2U4YWQ5NDk4OGEyOTMzM2NmZjMzMWViY2M3OGU3YTlkMDhkMDdlZmJhMjQ0ZTI4MDUwNGJkMTFjNzdkZDRhOGQ1ZmM0YzA0MGRmYzIxOTRlN2E5YThlNGM1N2I0YTgxYTA5MWJhMDU1YmEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTkwMzA3NzM1MjkwNTExMzhfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM5MTk0NDQyMjY1LCJpIjoiMTkwMzA3NzM1MjkwNTExMzgiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2NTE2MDQyIiwibmJmIjoxNjM2NTE2MDQyLCJ0IjoiRllXbEx3OVd2VTQiLCJleHAiOjE2MzkxOTQ0NDIsImlhdCI6MTYzNjUxNjA0MiwianRpIjoiNHVzZTlrQUpnSzdhbkpkYkg4VVY0SU03Y1dKOU8xZHEifQ.iTp1KPHbL97tTar3swiAuEDpCTpn0SISaKKH5rgKb9ETRVz7CeR4knrUpSDt0oaQmMfd5pvrntybLV0S5lj0pQ",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:10000/blue-secure/manager/resource/19031311473704961",
+					"host": [
+						"localhost"
+					],
+					"port": "10000",
+					"path": [
+						"blue-secure",
+						"manager",
+						"resource",
+						"19031311473704961"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "修改角色的资源访问权限",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -1108,7 +1108,7 @@
 			"response": []
 		},
 		{
-			"name": "localhost:10000/blue-secure/manager/relation/mem-role",
+			"name": "修改成员的角色",
 			"request": {
 				"method": "PUT",
 				"header": [],

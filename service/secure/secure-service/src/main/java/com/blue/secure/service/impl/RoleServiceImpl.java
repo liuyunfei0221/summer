@@ -200,7 +200,7 @@ public class RoleServiceImpl implements RoleService {
         if (isBlank(description))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
 
-        if (isNotNull(roleMapper.selectByName(rip.getName())))
+        if (isNotNull(roleMapper.selectByName(name)))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists");
 
         if (isNotNull(roleMapper.selectByLevel(rip.getLevel())))

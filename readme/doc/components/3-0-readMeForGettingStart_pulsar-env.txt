@@ -17,7 +17,7 @@ yml:
 producers:
   configs:
     illegalMark:
-      services: [ 172.30.129.50:6650 ]
+      services: [ 192.168.182.131:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -74,7 +74,7 @@ producers:
 consumers:
   configs:
     requestEvent:
-      services: [ 172.30.129.50:6650 ]
+      services: [ 192.168.182.131:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

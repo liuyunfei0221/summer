@@ -687,7 +687,7 @@ VALUES (9507591944175638, 'normal', 'normal', 999999999, 1, UNIX_TIMESTAMP(), UN
 INSERT INTO `secure_0`.`role_0`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,
                                 `creator`,
                                 `updater`)
-VALUES (17558421159018501, 'summer admin', 0, 'summer admin', 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (17558421159018501, 'summer admin', 'summer admin', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role resource relations
 
