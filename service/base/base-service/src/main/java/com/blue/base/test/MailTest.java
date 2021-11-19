@@ -1,7 +1,6 @@
 package com.blue.base.test;
 
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.MediaType;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -19,6 +18,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static java.util.Collections.singletonList;
+import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 /**
  * @author liuyunfei
@@ -106,6 +106,8 @@ public class MailTest {
 
     private static void sendMimeMailMessageByHtml(String from, List<String> to, String subject, String text) {
 
+        long start = System.currentTimeMillis();
+
         MimeMessage message = MAIL_SENDER.createMimeMessage();
 
         String attachment = "E:\\tempFile\\source\\walls\\a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg";
@@ -119,17 +121,19 @@ public class MailTest {
             helper.setTo(to.toArray(String[]::new));
             helper.setSubject(subject);
 
-            helper.setText("<html><body>" + text + "<img src=\"cid:1.jpg\"></body></html>", true);
+            helper.setText("<html><body>" + text + "<img src=\"cid:tar.jpg\"></body></html>", true);
 
             helper.setSentDate(new Date());
             helper.setFrom(from);
 
-            helper.addInline("1.jpg", byteArrayResource, MediaType.IMAGE_JPEG_VALUE);
+            helper.addInline("tar.jpg", byteArrayResource, IMAGE_JPEG_VALUE);
 
             MAIL_SENDER.send(message);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.err.println(System.currentTimeMillis() - start);
     }
 
 
