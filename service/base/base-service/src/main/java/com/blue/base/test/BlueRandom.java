@@ -89,8 +89,7 @@ public class BlueRandom extends Random {
         }
     }
 
-    private static final AtomicLong SEEDER
-            = new AtomicLong(SEED_RANDOM.nextLong());
+    private static final AtomicLong SEEDER = new AtomicLong(SEED_RANDOM.nextLong());
 
     boolean initialized;
 
@@ -116,7 +115,8 @@ public class BlueRandom extends Random {
 
     @Override
     public void setSeed(long seed) {
-        this.SEEDER.set(seed);
+        if (SEEDER != null)
+            SEEDER.set(seed);
     }
 
     final long nextSeed() {
