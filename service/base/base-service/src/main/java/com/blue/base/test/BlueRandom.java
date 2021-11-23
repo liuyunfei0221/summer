@@ -106,11 +106,15 @@ public class BlueRandom extends Random {
         U.putInt(t, PROBE, probe);
     }
 
-    public static BlueRandom current() {
+    private static BlueRandom current() {
         if (U.getInt(Thread.currentThread(), PROBE) == 0)
             localInit();
         SEEDER.set(SEED_RANDOM.nextLong());
         return INSTANCE;
+    }
+
+    public static Random get() {
+        return current();
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class RandomGenerator {
 
-    private static final Supplier<Random> RANDOM_SUP = BlueRandom::current;
+    private static final Supplier<Random> RANDOM_SUP = BlueRandom::get;
 
     private static List<Integer> generateUnDistinct(int min, int max, int size, Random random) {
         List<Integer> res = new ArrayList<>(size);
@@ -52,10 +52,12 @@ public final class RandomGenerator {
 
     public static void main(String[] args) {
 
-        int min = 0, max = 20, size = 5;
-        boolean distinct = false;
+        int test = 10;
 
-        for (int i = 0; i < 10000; i++)
+        int min = 0, max = 20, size = 20;
+        boolean distinct = true;
+
+        for (int i = 0; i < test; i++)
             System.err.println(generate(min, max, size, distinct));
 
     }
