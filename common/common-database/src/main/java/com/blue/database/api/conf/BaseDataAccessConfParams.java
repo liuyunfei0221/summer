@@ -32,6 +32,16 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     protected Integer shardingTableSizePerDataBase;
 
     /**
+     * data center id to db index mappings
+     */
+    protected List<IdentityToShardingMappingAttr> dataCenterToDatabaseMappings;
+
+    /**
+     * worker id to db index mappings
+     */
+    protected List<IdentityToShardingMappingAttr> workerToTableMappings;
+
+    /**
      * broadcast tables in shard, now supply for seata undolog
      */
     protected List<String> shardingBroadcastTables;
@@ -115,6 +125,16 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     }
 
     @Override
+    public List<IdentityToShardingMappingAttr> getDataCenterToDatabaseMappings() {
+        return dataCenterToDatabaseMappings;
+    }
+
+    @Override
+    public List<IdentityToShardingMappingAttr> getWorkerToTableMappings() {
+        return workerToTableMappings;
+    }
+
+    @Override
     public List<String> getShardingBroadcastTables() {
         return shardingBroadcastTables;
     }
@@ -191,6 +211,14 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
         this.shardingTableSizePerDataBase = shardingTableSizePerDataBase;
     }
 
+    public void setDataCenterToDatabaseMappings(List<IdentityToShardingMappingAttr> dataCenterToDatabaseMappings) {
+        this.dataCenterToDatabaseMappings = dataCenterToDatabaseMappings;
+    }
+
+    public void setWorkerToTableMappings(List<IdentityToShardingMappingAttr> workerToTableMappings) {
+        this.workerToTableMappings = workerToTableMappings;
+    }
+
     public void setShardingBroadcastTables(List<String> shardingBroadcastTables) {
         this.shardingBroadcastTables = shardingBroadcastTables;
     }
@@ -249,6 +277,8 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
                 "shardingDatabases=" + shardingDatabases +
                 ", shardingTables=" + shardingTables +
                 ", shardingTableSizePerDataBase=" + shardingTableSizePerDataBase +
+                ", dataCenterToDatabaseMappings=" + dataCenterToDatabaseMappings +
+                ", workerToTableMappings=" + workerToTableMappings +
                 ", shardingBroadcastTables=" + shardingBroadcastTables +
                 ", singleDatabasesWithTables=" + singleDatabasesWithTables +
                 ", cacheEnabled=" + cacheEnabled +

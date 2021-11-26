@@ -73,6 +73,18 @@ data:
     - tableName: sign_reward_today_relation
       shardingColumn: id
   shardingTableSizePerDataBase: 2
+  dataCenterToDatabaseMapping:
+    - id: 0
+      index: 0
+
+    - id: 1
+      index: 1
+  workerToTableMapping:
+    - id: 0
+      index: 0
+
+    - id: 1
+      index: 1
   shardingBroadcastTables: [ ]
   singleDatabasesWithTables:
   cacheEnabled: false

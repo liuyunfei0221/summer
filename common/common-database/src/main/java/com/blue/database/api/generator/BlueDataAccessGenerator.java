@@ -2,10 +2,7 @@ package com.blue.database.api.generator;
 
 import com.blue.base.common.base.MathProcessor;
 import com.blue.base.model.exps.BlueException;
-import com.blue.database.api.conf.DataAccessConf;
-import com.blue.database.api.conf.ShardingDatabaseAttr;
-import com.blue.database.api.conf.ShardingTableAttr;
-import com.blue.database.api.conf.SingleDatabaseWithTablesAttr;
+import com.blue.database.api.conf.*;
 import com.blue.database.common.DatabaseShardingAlgorithm;
 import com.blue.database.common.TableShardingAlgorithm;
 import com.blue.identity.api.conf.IdentityConf;
@@ -41,6 +38,7 @@ import static com.blue.identity.constant.IdentitySchema.MAX_WORKER_ID;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -287,12 +285,36 @@ public final class BlueDataAccessGenerator {
         int maxTableIndex = shardingTableSizePerDataBase - 1;
 
         Integer dataCenter = identityConf.getDataCenter();
-        if (dataCenter == null || dataCenter < 0 || dataCenter > maxDataBaseIndex)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dataCenter can't be less than 0 or greater than maxDataBaseIndex");
+        if (dataCenter == null || dataCenter < 0)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dataCenter can't be null or less than 0");
+
+        List<IdentityToShardingMappingAttr> dataCenterToDatabaseMappings = dataAccessConf.getDataCenterToDatabaseMappings();
+        Set<Integer> dbMappingIds = dataCenterToDatabaseMappings.stream().map(IdentityToShardingMappingAttr::getId).collect(toSet());
+        if (dbMappingIds.size() < dataCenterToDatabaseMappings.size())
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dataCenterToDatabaseMappings contains duplicate id, dataCenterToDatabaseMappings = " + dataCenterToDatabaseMappings);
+        if (!dbMappingIds.contains(dataCenter))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dbMappingIds not contains dataCenter, dbMappingIds = " + dbMappingIds + ", dataCenter = " + dataCenter);
+
+        Integer maxDbMappingIndex = dataCenterToDatabaseMappings.stream().map(IdentityToShardingMappingAttr::getIndex).max(Integer::compareTo).orElseThrow(() ->
+                new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dbMapping's index can't be empty"));
+        if (maxDbMappingIndex > maxDataBaseIndex)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxDbMappingIndex can't be greater than maxDataBaseIndex, maxDbMappingIndex = " + maxDbMappingIndex + ", maxDataBaseIndex = " + maxDataBaseIndex);
 
         Integer worker = identityConf.getWorker();
-        if (worker == null || worker < 0 || worker > maxTableIndex)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "worker can't be less than 0 or greater than maxTableIndex");
+        if (worker == null || worker < 0)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "worker can't be null or less than 0");
+
+        List<IdentityToShardingMappingAttr> workerToTableMappings = dataAccessConf.getWorkerToTableMappings();
+        Set<Integer> wokerMappingIds = workerToTableMappings.stream().map(IdentityToShardingMappingAttr::getId).collect(toSet());
+        if (wokerMappingIds.size() < workerToTableMappings.size())
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "workerToTableMappings contains duplicate id, workerToTableMappings = " + workerToTableMappings);
+        if (!wokerMappingIds.contains(worker))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "wokerMappingIds not contains dataCenter, wokerMappingIds = " + wokerMappingIds + ", worker = " + worker);
+
+        Integer maxWorkerMappingIndex = workerToTableMappings.stream().map(IdentityToShardingMappingAttr::getIndex).max(Integer::compareTo).orElseThrow(() ->
+                new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "workerMapping's index can't be empty"));
+        if (maxWorkerMappingIndex > maxTableIndex)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxWorkerMappingIndex can't be greater than maxTableIndex, maxWorkerMappingIndex = " + maxWorkerMappingIndex + ", maxTableIndex = " + maxTableIndex);
 
         List<ShardingTableAttr> shardingTables = dataAccessConf.getShardingTables();
         if (isEmpty(shardingTables))
@@ -313,8 +335,8 @@ public final class BlueDataAccessGenerator {
                     String expression = shardingLogicDataBaseName + "_$->{0.." + maxDataBaseIndex + "}." + logicTableName + "_$->{0.." + maxTableIndex + "}";
 
                     TableRuleConfiguration conf = new TableRuleConfiguration(logicTableName, expression);
-                    conf.setDatabaseShardingStrategyConfig(new StandardShardingStrategyConfiguration(shardingColumn, new DatabaseShardingAlgorithm(shardingLogicDataBaseName, shardingSize)));
-                    conf.setTableShardingStrategyConfig(new StandardShardingStrategyConfiguration(shardingColumn, new TableShardingAlgorithm(logicTableName, shardingTableSizePerDataBase)));
+                    conf.setDatabaseShardingStrategyConfig(new StandardShardingStrategyConfiguration(shardingColumn, new DatabaseShardingAlgorithm(shardingLogicDataBaseName, dataCenterToDatabaseMappings)));
+                    conf.setTableShardingStrategyConfig(new StandardShardingStrategyConfiguration(shardingColumn, new TableShardingAlgorithm(logicTableName, workerToTableMappings)));
 
                     return conf;
                 }).collect(toList()));

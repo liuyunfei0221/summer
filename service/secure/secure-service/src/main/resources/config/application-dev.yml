@@ -76,6 +76,18 @@ data:
     - tableName: member_role_relation
       shardingColumn: id
   shardingTableSizePerDataBase: 2
+  dataCenterToDatabaseMapping:
+    - id: 0
+      index: 0
+
+    - id: 1
+      index: 1
+  workerToTableMapping:
+    - id: 0
+      index: 0
+
+    - id: 1
+      index: 1
   shardingBroadcastTables: [ undo_log ]
   singleDatabasesWithTables:
   cacheEnabled: false

@@ -180,7 +180,7 @@ public class BlueRandom extends Random {
         double r = (nextLong() >>> 11) * DOUBLE_UNIT;
         if (origin < bound) {
             r = r * (bound - origin) + origin;
-            if (r >= bound) // correct for rounding
+            if (r >= bound)
                 r = Double.longBitsToDouble(Double.doubleToLongBits(bound) - 1);
         }
         return r;

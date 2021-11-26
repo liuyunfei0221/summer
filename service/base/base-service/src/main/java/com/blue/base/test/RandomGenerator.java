@@ -10,7 +10,7 @@ import java.util.function.Supplier;
  * @date 2021/11/19
  * @apiNote
  */
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
+@SuppressWarnings("unused")
 public final class RandomGenerator {
 
     private static final Supplier<Random> RANDOM_SUP = BlueRandom::get;
@@ -50,16 +50,16 @@ public final class RandomGenerator {
     }
 
 
-    public static void main(String[] args) {
-
-        int test = 10;
-
-        int min = 0, max = 20, size = 20;
-        boolean distinct = true;
-
-        for (int i = 0; i < test; i++)
-            System.err.println(generate(min, max, size, distinct));
-
-    }
+    //public static void main(String[] args) {
+    //
+    //    int test = 10;
+    //
+    //    int min = 0, max = 20, size = 20;
+    //    boolean distinct = true;
+    //
+    //    for (int i = 0; i < test; i++)
+    //        System.err.println(generate(min, max, size, distinct));
+    //
+    //}
 
 }

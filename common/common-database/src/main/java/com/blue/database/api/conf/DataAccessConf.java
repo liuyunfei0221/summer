@@ -38,6 +38,20 @@ public interface DataAccessConf {
     Integer getShardingTableSizePerDataBase();
 
     /**
+     * data center id to db index mappings
+     *
+     * @return
+     */
+    List<IdentityToShardingMappingAttr> getDataCenterToDatabaseMappings();
+
+    /**
+     * worker id to db index mappings
+     *
+     * @return
+     */
+    List<IdentityToShardingMappingAttr> getWorkerToTableMappings();
+
+    /**
      * broadcast tables in shard
      *
      * @return

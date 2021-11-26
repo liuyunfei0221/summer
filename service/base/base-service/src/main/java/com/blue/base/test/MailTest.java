@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import static java.util.Collections.singletonList;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 /**
@@ -137,11 +136,11 @@ public class MailTest {
     }
 
 
-    public static void main(String[] args) {
-        //sendSimpleMailMessage("liuyunfei0221@outlook.com", singletonList("yunfei0221@outlook.com"), "a test message", "this is a test message");
-        //sendMimeMailMessage("liuyunfei0221@outlook.com", singletonList("yunfei0221@outlook.com"), "a test message", "this is a test message");
-        sendMimeMailMessageByHtml("liuyunfei0221@outlook.com", singletonList("yunfei0221@outlook.com"), "a test message", "this is a test message");
-    }
+    //public static void main(String[] args) {
+    //    sendSimpleMailMessage("liuyunfei0221@outlook.com", singletonList("yunfei0221@outlook.com"), "a test message", "this is a test message");
+    //    sendMimeMailMessage("liuyunfei0221@outlook.com", singletonList("yunfei0221@outlook.com"), "a test message", "this is a test message");
+    //    sendMimeMailMessageByHtml("liuyunfei0221@outlook.com", singletonList("yunfei0221@outlook.com"), "a test message", "this is a test message");
+    //}
 
 
 }
