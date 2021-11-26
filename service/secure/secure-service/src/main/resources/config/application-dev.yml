@@ -76,13 +76,13 @@ data:
     - tableName: member_role_relation
       shardingColumn: id
   shardingTableSizePerDataBase: 2
-  dataCenterToDatabaseMapping:
+  dataCenterToDatabaseMappings:
     - id: 0
       index: 0
 
     - id: 1
       index: 1
-  workerToTableMapping:
+  workerToTableMappings:
     - id: 0
       index: 0
 
@@ -288,7 +288,7 @@ blocking:
 producers:
   configs:
     authExpire:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -341,7 +341,7 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     invalidLocalAuth:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -394,7 +394,7 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     systemAuthorityInfosRefresh:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -450,7 +450,7 @@ producers:
 consumers:
   configs:
     authExpire:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -527,7 +527,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     invalidLocalAuth:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -604,7 +604,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     systemAuthorityInfosRefresh:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

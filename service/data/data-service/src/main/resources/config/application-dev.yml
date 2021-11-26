@@ -1,6 +1,6 @@
 server:
   #  address: 172.30.128.25
-  port: 55000
+  port: 55001
   netty:
     connection-timeout: 6s
     h2c-max-content-length: 0B
@@ -67,13 +67,13 @@ data:
     - tableName: bulletin
       shardingColumn: id
   shardingTableSizePerDataBase: 2
-  dataCenterToDatabaseMapping:
+  dataCenterToDatabaseMappings:
     - id: 0
       index: 0
 
     - id: 1
       index: 1
-  workerToTableMapping:
+  workerToTableMappings:
     - id: 0
       index: 0
 
@@ -189,7 +189,7 @@ redisson:
 producers:
   configs:
     illegalMark:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -246,7 +246,7 @@ producers:
 consumers:
   configs:
     requestEvent:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

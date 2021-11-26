@@ -73,13 +73,13 @@ data:
     - tableName: member_detail
       shardingColumn: id
   shardingTableSizePerDataBase: 2
-  dataCenterToDatabaseMapping:
+  dataCenterToDatabaseMappings:
     - id: 0
       index: 0
 
     - id: 1
       index: 1
-  workerToTableMapping:
+  workerToTableMappings:
     - id: 0
       index: 0
 
