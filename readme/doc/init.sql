@@ -141,6 +141,34 @@ CREATE TABLE `member_role_relation_1`
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 1';
 
+CREATE TABLE `credential_0`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `identity`    varchar(128) NOT NULL COMMENT 'identity str / json',
+    `login_type`  tinyint      NOT NULL COMMENT 'login type: 1-SMS_VERIFY, 2-PHONE_PWD, 3-EMAIL_PWD, 4-WECHAT, 5-MINI_PRO, 6-NOT_LOGGED_IN',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `password`    varchar(256) DEFAULT NULL COMMENT 'password / json',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_identity_type_status_password_member`(`identity`,`login_type`,`status`,`password`,`member_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='login credential 0';
+
+CREATE TABLE `credential_1`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `identity`    varchar(128) NOT NULL COMMENT 'identity str / json',
+    `login_type`  tinyint      NOT NULL COMMENT 'login type: 1-SMS_VERIFY, 2-PHONE_PWD, 3-EMAIL_PWD, 4-WECHAT, 5-MINI_PRO, 6-NOT_LOGGED_IN',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `password`    varchar(256) DEFAULT NULL COMMENT 'password / json',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_identity_type_status_password_member`(`identity`,`login_type`,`status`,`password`,`member_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='login credential 1';
+
 -- seata undo log
 
 CREATE TABLE `undo_log`
@@ -294,6 +322,34 @@ CREATE TABLE `member_role_relation_1`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 1';
+
+CREATE TABLE `credential_0`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `identity`    varchar(128) NOT NULL COMMENT 'identity str / json',
+    `login_type`  tinyint      NOT NULL COMMENT 'login type: 1-SMS_VERIFY, 2-PHONE_PWD, 3-EMAIL_PWD, 4-WECHAT, 5-MINI_PRO, 6-NOT_LOGGED_IN',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `password`    varchar(256) DEFAULT NULL COMMENT 'password / json',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_identity_type_status_password_member`(`identity`,`login_type`,`status`,`password`,`member_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='login credential 0';
+
+CREATE TABLE `credential_1`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `identity`    varchar(128) NOT NULL COMMENT 'identity str / json',
+    `login_type`  tinyint      NOT NULL COMMENT 'login type: 1-SMS_VERIFY, 2-PHONE_PWD, 3-EMAIL_PWD, 4-WECHAT, 5-MINI_PRO, 6-NOT_LOGGED_IN',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `password`    varchar(256) DEFAULT NULL COMMENT 'password / json',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_identity_type_status_password_member`(`identity`,`login_type`,`status`,`password`,`member_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='login credential 1';
 
 -- seata undo log
 

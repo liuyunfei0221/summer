@@ -30,8 +30,8 @@ public class MailTest {
 
     private static final String HOST = "outlook.office365.com";
     private static final int PORT = 587;
-    private static final String USER_NAME = "liuyunfei0221@outlook.com";
-    private static final String PASSWORD = "yiTian0116";
+    private static final String USER_NAME = "";
+    private static final String PASSWORD = "";
 
     private static final Properties PROPS;
     private static final Authenticator AUTHENTICATOR;

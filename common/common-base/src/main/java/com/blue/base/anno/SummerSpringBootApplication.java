@@ -60,9 +60,6 @@ public @interface SummerSpringBootApplication {
             "org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRestClientAutoConfiguration",
 
 
-            "org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration",
-
-
             "org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JAutoConfiguration",
             "org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JAutoConfiguration",
             "io.github.resilience4j.bulkhead.autoconfigure.BulkheadAutoConfiguration",
