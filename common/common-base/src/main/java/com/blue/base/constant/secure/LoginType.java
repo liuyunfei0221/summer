@@ -12,43 +12,37 @@ public enum LoginType {
     /**
      * login with phone num and message verify
      */
-    SMS_VERIFY("SV", 1, "CLI", "login with phone num and message verify"),
+    SMS_VERIFY("SV", "CLI", "login with phone num and message verify"),
 
     /**
      * login with phone num and password
      */
-    PHONE_PWD("PP", 2, "CLI", "login with phone num and password"),
+    PHONE_PWD("PP", "CLI", "login with phone num and password"),
 
     /**
      * login with email and password
      */
-    EMAIL_PWD("EP", 3, "CLI", "login with email and password"),
+    EMAIL_PWD("EP", "CLI", "login with email and password"),
 
     /**
      * login by wechat
      */
-    WECHAT("WE", 4, "CLI", "login by wechat"),
+    WECHAT("WE", "CLI", "login by wechat"),
 
     /**
      * login by wechar mini pro
      */
-    MINI_PRO("MP", 5, "MP", "login by wechar mini pro"),
+    MINI_PRO("MP", "MP", "login by wechar mini pro"),
 
     /**
      * not login
      */
-    NOT_LOGGED_IN("NLI", 0, "CLI", "not login");
+    NOT_LOGGED_IN("NLI", "CLI", "not login");
 
     /**
      * identity
      */
     public final String identity;
-
-
-    /**
-     * type
-     */
-    public final int type;
 
     /**
      * nature
@@ -60,9 +54,8 @@ public enum LoginType {
      */
     public final String disc;
 
-    LoginType(String identity, int type, String nature, String disc) {
+    LoginType(String identity, String nature, String disc) {
         this.identity = identity;
-        this.type = type;
         this.nature = nature;
         this.disc = disc;
     }

@@ -15,6 +15,7 @@ import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 
 import static com.blue.base.common.base.Asserter.isEmpty;
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
@@ -50,14 +51,17 @@ public class ControlServiceImpl implements ControlService {
 
     private final SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer;
 
+    private final ExecutorService executorService;
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ControlServiceImpl(SecureService secureService, RoleService roleService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
-                              SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer) {
+                              SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService) {
         this.secureService = secureService;
         this.roleService = roleService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
+        this.executorService = executorService;
     }
 
     private Role getRoleByRoleId(Long roleId) {
@@ -351,7 +355,10 @@ public class ControlServiceImpl implements ControlService {
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), operatorRoleLevel);
         assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), operatorRoleLevel);
 
-        return fromRunnable(() -> memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId))
+        return fromRunnable(() -> {
+            memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
+            executorService.submit(() -> secureService.refreshMemberRoleById(memberId, roleId, operatorId));
+        })
                 .flatMap(v -> this.selectAuthorityMonoByRoleId(roleId));
     }
 

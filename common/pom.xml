@@ -31,7 +31,6 @@
         <module>common-qr</module>
         <module>common-redis</module>
         <module>common-redisson</module>
-        <module>common-rocket</module>
         <module>common-seata</module>
     </modules>
 

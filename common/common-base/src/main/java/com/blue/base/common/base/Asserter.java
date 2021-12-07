@@ -261,6 +261,15 @@ public final class Asserter {
      *
      * @param status
      */
+    public static boolean isValidStatus(Integer status) {
+        return status != null && VALID.status == status;
+    }
+
+    /**
+     * check status is invalid
+     *
+     * @param status
+     */
     public static boolean isInvalidStatus(Integer status) {
         return status == null || VALID.status != status;
     }

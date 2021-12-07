@@ -27,6 +27,8 @@ import com.google.gson.JsonSyntaxException;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -36,7 +38,6 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.function.*;
 
 import static com.blue.base.common.base.Asserter.*;
@@ -49,7 +50,7 @@ import static com.blue.base.constant.base.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
 import static com.blue.base.constant.secure.AuthInfoRefreshElementType.PUB_KEY;
 import static com.blue.base.constant.secure.AuthInfoRefreshElementType.ROLE;
 import static com.blue.base.constant.secure.DeviceType.UNKNOWN;
-import static com.blue.base.constant.secure.LoginType.*;
+import static com.blue.base.constant.secure.LoginType.NOT_LOGGED_IN;
 import static com.blue.secure.converter.SecureModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER;
 import static com.blue.secure.converter.SecureModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
 import static java.lang.Long.parseLong;
@@ -89,6 +90,8 @@ public class SecureServiceImpl implements SecureService {
 
     private final ResourceService resourceService;
 
+    private final CredentialService credentialService;
+
     private final MemberService memberService;
 
     private final RoleResRelationService roleResRelationService;
@@ -96,8 +99,6 @@ public class SecureServiceImpl implements SecureService {
     private final MemberRoleRelationService memberRoleRelationService;
 
     private final InvalidLocalAuthProducer invalidLocalAuthProducer;
-
-    private final ExecutorService executorService;
 
     private final RedissonClient redissonClient;
 
@@ -107,19 +108,19 @@ public class SecureServiceImpl implements SecureService {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public SecureServiceImpl(JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCache authInfoCache, StringRedisTemplate stringRedisTemplate,
-                             RoleService roleService, ResourceService resourceService, MemberService memberService,
+                             RoleService roleService, ResourceService resourceService, CredentialService credentialService, MemberService memberService,
                              RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService, InvalidLocalAuthProducer invalidLocalAuthProducer,
-                             ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
+                             RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
         this.jwtProcessor = jwtProcessor;
         this.authInfoCache = authInfoCache;
         this.stringRedisTemplate = stringRedisTemplate;
         this.roleService = roleService;
         this.resourceService = resourceService;
+        this.credentialService = credentialService;
         this.memberService = memberService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.invalidLocalAuthProducer = invalidLocalAuthProducer;
-        this.executorService = executorService;
         this.redissonClient = redissonClient;
         this.sessionKeyDeploy = sessionKeyDeploy;
         this.blockingDeploy = blockingDeploy;
@@ -274,38 +275,6 @@ public class SecureServiceImpl implements SecureService {
                     false, true, true,
                     resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                     NOT_LOGGED_IN_SEC_KEY.value, NO_AUTH_ACCESS, NO_AUTH_REQUIRED_RESOURCE.message));
-
-    /**
-     * login func
-     */
-    private Map<String, Function<ClientLoginParam, Mono<MemberBasicInfo>>> clientLoginHandlers;
-
-    /**
-     * init login handler
-     */
-    private void initLoginHandler() {
-        clientLoginHandlers = new HashMap<>(16, 1.0f);
-        clientLoginHandlers.put(SMS_VERIGY.identity, memberService::selectMemberBasicInfoMonoByPhoneWithAssertVerify);
-        clientLoginHandlers.put(PHONE_PWD.identity, memberService::selectMemberBasicInfoMonoByPhoneWithAssertPwd);
-        clientLoginHandlers.put(EMAIL_PWD.identity, memberService::selectMemberBasicInfoMonoByEmailWithAssertPwd);
-
-        LOGGER.info("generateLoginHandler(), clientLoginHandlers = {}", clientLoginHandlers);
-    }
-
-    /**
-     * get login handler
-     */
-    private final Function<String, Function<ClientLoginParam, Mono<MemberBasicInfo>>> LOGIN_HANDLER_GETTER = loginType -> {
-        LOGGER.info("LOGIN_HANDLER_GETTER, loginType = {}", loginType);
-        if (loginType == null || "".equals(loginType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
-
-        Function<ClientLoginParam, Mono<MemberBasicInfo>> loginFunc = clientLoginHandlers.get(loginType);
-        if (loginFunc != null)
-            return loginFunc;
-
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
-    };
 
     /**
      * refresh element type -> authInfo packagers
@@ -527,6 +496,13 @@ public class SecureServiceImpl implements SecureService {
                 }));
     }
 
+    private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
+
+    private static final BiConsumer<String, MemberBasicInfo> PWD_ASSERTER = (access, mb) -> {
+        if (isNull(access) || isNull(mb) || !ENCODER.matches(access, mb.getPassword()))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message);
+    };
+
     /**
      * init
      */
@@ -536,7 +512,6 @@ public class SecureServiceImpl implements SecureService {
         RANDOM_ID_LENGTH = sessionKeyDeploy.getRanLen();
 
         refreshSystemAuthorityInfos();
-        initLoginHandler();
     }
 
     /**
@@ -623,17 +598,30 @@ public class SecureServiceImpl implements SecureService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         String loginType = clientLoginParam.getLoginType().intern();
-        String deviceType = clientLoginParam.getDeviceType().intern();
 
-        return LOGIN_HANDLER_GETTER.apply(loginType).apply(clientLoginParam)
-                .flatMap(mbi -> {
+        return credentialService.getCredentialMonoByIdentityAndLoginType(clientLoginParam.getIdentity(), loginType)
+                .flatMap(creOpt ->
+                        just(creOpt.orElseThrow(
+                                () -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message)))
+                ).flatMap(cre -> {
+                    if (isValidStatus(cre.getStatus()))
+                        return memberService.selectMemberBasicInfoMonoByPrimaryKey(cre.getMemberId());
+
+                    return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message));
+                }).flatMap(mbi -> {
+                    if (isInvalidStatus(mbi.getStatus()))
+                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message));
+
+                    PWD_ASSERTER.accept(clientLoginParam.getAccess(), mbi);
+                    return just(mbi);
+                }).flatMap(mbi -> {
                     LOGGER.info("mbi = {}", mbi);
                     Long mid = mbi.getId();
 
                     return memberRoleRelationService.getRoleIdMonoByMemberId(mid)
                             .flatMap(ridOpt ->
                                     ridOpt.map(rid ->
-                                                    just(new AuthGenElement(mid, rid, loginType, deviceType)))
+                                                    just(new AuthGenElement(mid, rid, loginType, clientLoginParam.getDeviceType().intern())))
                                             .orElseGet(() -> {
                                                 LOGGER.error("Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam) failed, member has no role, memberId = {}", mid);
                                                 return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message));
@@ -876,37 +864,6 @@ public class SecureServiceImpl implements SecureService {
                                         }))
                 :
                 error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message));
-    }
-
-    /**
-     * refresh auth for other login type and device type
-     */
-    private final class OtherTypesAuthRefreshTask implements Runnable {
-
-        private final long memberId;
-        private final String exclusiveLoginType;
-        private final String exclusiveDeviceType;
-        private final AuthInfoRefreshElementType elementType;
-        private final String elementValue;
-
-        public OtherTypesAuthRefreshTask(long memberId, String exclusiveLoginType, String exclusiveDeviceType, AuthInfoRefreshElementType elementType, String elementValue) {
-            this.memberId = memberId;
-            this.exclusiveLoginType = exclusiveLoginType.intern();
-            this.exclusiveDeviceType = exclusiveDeviceType.intern();
-            this.elementType = elementType;
-            this.elementValue = elementValue;
-        }
-
-        @Override
-        public void run() {
-            List<LoginType> loginTypes = LOGIN_TYPES.stream()
-                    .filter(lt -> !lt.identity.intern().equals(NOT_LOGGED_IN.identity) && !lt.identity.intern().equals(exclusiveLoginType)).collect(toList());
-            List<DeviceType> deviceTypes = DEVICE_TYPES.stream()
-                    .filter(dt -> !dt.identity.intern().equals(UNKNOWN.identity) && !dt.identity.intern().equals(exclusiveDeviceType)).collect(toList());
-
-            AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId, loginTypes, deviceTypes, elementType, elementValue);
-            refreshAuthElementMultiTypes(authInfoRefreshElement);
-        }
     }
 
 }

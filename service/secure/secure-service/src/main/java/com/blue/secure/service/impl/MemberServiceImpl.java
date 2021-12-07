@@ -2,23 +2,15 @@ package com.blue.secure.service.impl;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.secure.api.model.ClientLoginParam;
 import com.blue.secure.remote.consumer.RpcMemberServiceConsumer;
 import com.blue.secure.service.inter.MemberService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
-import static com.blue.base.common.base.Asserter.isInvalidStatus;
-import static com.blue.base.common.base.Asserter.isNull;
+import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.*;
-import static reactor.core.publisher.Mono.just;
+import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -38,94 +30,19 @@ public class MemberServiceImpl implements MemberService {
         this.rpcMemberServiceConsumer = rpcMemberServiceConsumer;
     }
 
-    private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
-
-    private static final BiConsumer<String, MemberBasicInfo> PWD_ASSERTER = (access, mb) -> {
-        if (isNull(access) || isNull(mb) || !ENCODER.matches(access, mb.getPassword()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message);
-    };
-
-    private static final Consumer<MemberBasicInfo> MEMBER_STATUS_ASSERTER = memberBasicInfo -> {
-        if (isInvalidStatus(memberBasicInfo.getStatus()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, ACCOUNT_HAS_BEEN_FROZEN.message);
-    };
-
     /**
-     * get member by phone and check verify
+     * get member by id
      *
-     * @param clientLoginParam
+     * @param id
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
-        if (isNull(clientLoginParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+    public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id) {
+        LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
-        //TODO check verify
-        //TODO check message verify
-
-        return rpcMemberServiceConsumer.selectMemberBasicByPhone(clientLoginParam.getIdentity())
-                .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message))
-                .flatMap(memberBasicInfo -> {
-                    LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
-                    MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
-
-                    memberBasicInfo.setPassword("");
-                    return just(memberBasicInfo);
-                });
-    }
-
-    /**
-     * get member by phone and check password
-     *
-     * @param clientLoginParam
-     * @return
-     */
-    @Override
-    public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
-        if (isNull(clientLoginParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
-
-        //TODO check verify
-
-        return rpcMemberServiceConsumer.selectMemberBasicByPhone(clientLoginParam.getIdentity())
-                .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message))
-                .flatMap(memberBasicInfo -> {
-                    LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
-                    PWD_ASSERTER.accept(clientLoginParam.getAccess(), memberBasicInfo);
-                    MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
-
-                    memberBasicInfo.setPassword("");
-                    return just(memberBasicInfo);
-                });
-    }
-
-    /**
-     * get member by email and check password
-     *
-     * @param clientLoginParam
-     * @return
-     */
-    @Override
-    public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
-        if (isNull(clientLoginParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
-
-        //TODO check verify
-
-        return rpcMemberServiceConsumer.selectMemberBasicByEmail(clientLoginParam.getIdentity())
-                .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message))
-                .flatMap(memberBasicInfo -> {
-                    LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
-                    PWD_ASSERTER.accept(clientLoginParam.getAccess(), memberBasicInfo);
-                    MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
-
-                    memberBasicInfo.setPassword("");
-                    return just(memberBasicInfo);
-                });
+        return rpcMemberServiceConsumer.selectMemberBasicMonoByPrimaryKey(id);
     }
 
 }

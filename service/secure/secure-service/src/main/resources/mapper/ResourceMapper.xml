@@ -146,6 +146,26 @@
         </trim>
     </insert>
 
+    <update id="updateByPrimaryKey" parameterType="com.blue.secure.repository.entity.Resource">
+        update resource
+        set request_method          = #{requestMethod,jdbcType=VARCHAR},
+            module                  = #{module,jdbcType=VARCHAR},
+            uri                     = #{uri,jdbcType=VARCHAR},
+            authenticate            = #{authenticate,jdbcType=BIT},
+            request_un_decryption   = #{requestUnDecryption,jdbcType=BIT},
+            response_un_encryption  = #{responseUnEncryption,jdbcType=BIT},
+            existence_request_body  = #{existenceRequestBody,jdbcType=BIT},
+            existence_response_body = #{existenceResponseBody,jdbcType=BIT},
+            type                    = #{type,jdbcType=TINYINT},
+            name                    = #{name,jdbcType=VARCHAR},
+            description             = #{description,jdbcType=VARCHAR},
+            create_time             = #{createTime,jdbcType=BIGINT},
+            update_time             = #{updateTime,jdbcType=BIGINT},
+            creator                 = #{creator,jdbcType=BIGINT},
+            updater                 = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.secure.repository.entity.Resource">
         update resource
         <set>
@@ -195,26 +215,6 @@
                 updater = #{updater,jdbcType=BIGINT},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
-    </update>
-
-    <update id="updateByPrimaryKey" parameterType="com.blue.secure.repository.entity.Resource">
-        update resource
-        set request_method          = #{requestMethod,jdbcType=VARCHAR},
-            module                  = #{module,jdbcType=VARCHAR},
-            uri                     = #{uri,jdbcType=VARCHAR},
-            authenticate            = #{authenticate,jdbcType=BIT},
-            request_un_decryption   = #{requestUnDecryption,jdbcType=BIT},
-            response_un_encryption  = #{responseUnEncryption,jdbcType=BIT},
-            existence_request_body  = #{existenceRequestBody,jdbcType=BIT},
-            existence_response_body = #{existenceResponseBody,jdbcType=BIT},
-            type                    = #{type,jdbcType=TINYINT},
-            name                    = #{name,jdbcType=VARCHAR},
-            description             = #{description,jdbcType=VARCHAR},
-            create_time             = #{createTime,jdbcType=BIGINT},
-            update_time             = #{updateTime,jdbcType=BIGINT},
-            creator                 = #{creator,jdbcType=BIGINT},
-            updater                 = #{updater,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
