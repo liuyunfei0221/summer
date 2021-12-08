@@ -38,7 +38,7 @@ public class RpcMemberServiceConsumer {
      * @param id
      * @return
      */
-    Mono<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id) {
+    public Mono<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id) {
         LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
         return fromFuture(rpcMemberService.selectMemberBasicMonoByPrimaryKey(id));
     }
@@ -49,32 +49,9 @@ public class RpcMemberServiceConsumer {
      * @param ids
      * @return
      */
-    Mono<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids) {
+    public Mono<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids), ids = {}", ids);
         return fromFuture(rpcMemberService.selectMemberBasicMonoByIds(ids));
-    }
-
-    /**
-     * get member basic info by member's phone
-     *
-     * @param phone
-     * @return
-     */
-    public Mono<MemberBasicInfo> selectMemberBasicByPhone(String phone) {
-        LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicByPhone(String phone), phone = {}", phone);
-        return fromFuture(rpcMemberService.selectMemberBasicByPhone(phone));
-    }
-
-
-    /**
-     * get member basic info by member's email
-     *
-     * @param email
-     * @return
-     */
-    public Mono<MemberBasicInfo> selectMemberBasicByEmail(String email) {
-        LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicByEmail(String email), email = {}", email);
-        return fromFuture(rpcMemberService.selectMemberBasicByEmail(email));
     }
 
 }

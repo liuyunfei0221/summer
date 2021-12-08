@@ -18,9 +18,9 @@ public interface ResourceMapper {
 
     int insertSelective(Resource record);
 
-    int updateByPrimaryKeySelective(Resource record);
-
     int updateByPrimaryKey(Resource record);
+
+    int updateByPrimaryKeySelective(Resource record);
 
     int deleteByPrimaryKey(Long id);
 
