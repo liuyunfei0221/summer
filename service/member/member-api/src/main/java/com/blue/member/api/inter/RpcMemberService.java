@@ -29,4 +29,20 @@ public interface RpcMemberService {
      */
     CompletableFuture<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids);
 
+    /**
+     * query member basic by phone
+     *
+     * @param phone
+     * @return
+     */
+    CompletableFuture<MemberBasicInfo> selectMemberBasicByPhone(String phone);
+
+    /**
+     * query member basic by email
+     *
+     * @param email
+     * @return
+     */
+    CompletableFuture<MemberBasicInfo> selectMemberBasicByEmail(String email);
+
 }
