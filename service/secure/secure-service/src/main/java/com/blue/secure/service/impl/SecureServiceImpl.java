@@ -135,10 +135,12 @@ public class SecureServiceImpl implements SecureService {
             PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity,
             PATH_SEPARATOR = Symbol.PATH_SEPARATOR.identity;
 
-    private static final List<LoginType> LOGIN_TYPES = of(LoginType.values())
+    private static final List<LoginType> VALID_LOGIN_TYPES = of(LoginType.values())
+            .filter(lt -> !lt.identity.intern().equals(NOT_LOGGED_IN.identity))
             .collect(toList());
 
-    private static final List<DeviceType> DEVICE_TYPES = of(DeviceType.values())
+    private static final List<DeviceType> VALID_DEVICE_TYPES = of(DeviceType.values())
+            .filter(dt -> !dt.identity.intern().equals(UNKNOWN.identity))
             .collect(toList());
 
     /**
@@ -285,7 +287,7 @@ public class SecureServiceImpl implements SecureService {
      */
     private void initLoginHandler() {
         clientLoginHandlers = new HashMap<>(16, 1.0f);
-        clientLoginHandlers.put(SMS_VERIGY.identity, memberService::selectMemberBasicInfoMonoByPhoneWithAssertVerify);
+        clientLoginHandlers.put(SMS_VERIFY.identity, memberService::selectMemberBasicInfoMonoByPhoneWithAssertVerify);
         clientLoginHandlers.put(PHONE_PWD.identity, memberService::selectMemberBasicInfoMonoByPhoneWithAssertPwd);
         clientLoginHandlers.put(EMAIL_PWD.identity, memberService::selectMemberBasicInfoMonoByEmailWithAssertPwd);
 
@@ -466,7 +468,7 @@ public class SecureServiceImpl implements SecureService {
      *
      * @param authInfoRefreshElement
      */
-    public void refreshAuthElementMultiTypes(AuthInfoRefreshElement authInfoRefreshElement) {
+    private void refreshAuthElementMultiTypes(AuthInfoRefreshElement authInfoRefreshElement) {
         LOGGER.info("void refreshAuthElementMultiTypes(AuthInfoRefreshParam authInfoRefreshParam), authInfoRefreshParam = {}", authInfoRefreshElement);
         Long memberId = authInfoRefreshElement.getMemberId();
         if (isInvalidIdentity(memberId))
@@ -815,10 +817,9 @@ public class SecureServiceImpl implements SecureService {
     public void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
         AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId,
-                LOGIN_TYPES.stream().filter(lt -> !lt.identity.intern().equals(NOT_LOGGED_IN.identity)).collect(toList()),
-                DEVICE_TYPES.stream().filter(dt -> !dt.identity.intern().equals(UNKNOWN.identity)).collect(toList()),
-                ROLE, valueOf(roleId).intern());
-        refreshAuthElementMultiTypes(authInfoRefreshElement);
+                VALID_LOGIN_TYPES, VALID_DEVICE_TYPES, ROLE, valueOf(roleId).intern());
+        executorService.submit(() ->
+                refreshAuthElementMultiTypes(authInfoRefreshElement));
     }
 
     /**
@@ -876,37 +877,6 @@ public class SecureServiceImpl implements SecureService {
                                         }))
                 :
                 error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message));
-    }
-
-    /**
-     * refresh auth for other login type and device type
-     */
-    private final class OtherTypesAuthRefreshTask implements Runnable {
-
-        private final long memberId;
-        private final String exclusiveLoginType;
-        private final String exclusiveDeviceType;
-        private final AuthInfoRefreshElementType elementType;
-        private final String elementValue;
-
-        public OtherTypesAuthRefreshTask(long memberId, String exclusiveLoginType, String exclusiveDeviceType, AuthInfoRefreshElementType elementType, String elementValue) {
-            this.memberId = memberId;
-            this.exclusiveLoginType = exclusiveLoginType.intern();
-            this.exclusiveDeviceType = exclusiveDeviceType.intern();
-            this.elementType = elementType;
-            this.elementValue = elementValue;
-        }
-
-        @Override
-        public void run() {
-            List<LoginType> loginTypes = LOGIN_TYPES.stream()
-                    .filter(lt -> !lt.identity.intern().equals(NOT_LOGGED_IN.identity) && !lt.identity.intern().equals(exclusiveLoginType)).collect(toList());
-            List<DeviceType> deviceTypes = DEVICE_TYPES.stream()
-                    .filter(dt -> !dt.identity.intern().equals(UNKNOWN.identity) && !dt.identity.intern().equals(exclusiveDeviceType)).collect(toList());
-
-            AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId, loginTypes, deviceTypes, elementType, elementValue);
-            refreshAuthElementMultiTypes(authInfoRefreshElement);
-        }
     }
 
 }

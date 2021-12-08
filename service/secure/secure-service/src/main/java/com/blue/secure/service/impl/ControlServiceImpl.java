@@ -351,7 +351,10 @@ public class ControlServiceImpl implements ControlService {
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), operatorRoleLevel);
         assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), operatorRoleLevel);
 
-        return fromRunnable(() -> memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId))
+        return fromRunnable(() -> {
+            memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
+            secureService.refreshMemberRoleById(memberId, roleId, operatorId);
+        })
                 .flatMap(v -> this.selectAuthorityMonoByRoleId(roleId));
     }
 

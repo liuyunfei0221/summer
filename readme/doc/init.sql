@@ -141,34 +141,6 @@ CREATE TABLE `member_role_relation_1`
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 1';
 
-CREATE TABLE `credential_0`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `identity`    varchar(128) NOT NULL COMMENT 'identity str / json',
-    `login_type`  tinyint      NOT NULL COMMENT 'login type: 1-SMS_VERIFY, 2-PHONE_PWD, 3-EMAIL_PWD, 4-WECHAT, 5-MINI_PRO, 6-NOT_LOGGED_IN',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `password`    varchar(256) DEFAULT NULL COMMENT 'password / json',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_identity_type_status_password_member`(`identity`,`login_type`,`status`,`password`,`member_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='login credential 0';
-
-CREATE TABLE `credential_1`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `identity`    varchar(128) NOT NULL COMMENT 'identity str / json',
-    `login_type`  tinyint      NOT NULL COMMENT 'login type: 1-SMS_VERIFY, 2-PHONE_PWD, 3-EMAIL_PWD, 4-WECHAT, 5-MINI_PRO, 6-NOT_LOGGED_IN',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `password`    varchar(256) DEFAULT NULL COMMENT 'password / json',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_identity_type_status_password_member`(`identity`,`login_type`,`status`,`password`,`member_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='login credential 1';
-
 -- seata undo log
 
 CREATE TABLE `undo_log`
@@ -322,34 +294,6 @@ CREATE TABLE `member_role_relation_1`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 1';
-
-CREATE TABLE `credential_0`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `identity`    varchar(128) NOT NULL COMMENT 'identity str / json',
-    `login_type`  tinyint      NOT NULL COMMENT 'login type: 1-SMS_VERIFY, 2-PHONE_PWD, 3-EMAIL_PWD, 4-WECHAT, 5-MINI_PRO, 6-NOT_LOGGED_IN',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `password`    varchar(256) DEFAULT NULL COMMENT 'password / json',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_identity_type_status_password_member`(`identity`,`login_type`,`status`,`password`,`member_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='login credential 0';
-
-CREATE TABLE `credential_1`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `identity`    varchar(128) NOT NULL COMMENT 'identity str / json',
-    `login_type`  tinyint      NOT NULL COMMENT 'login type: 1-SMS_VERIFY, 2-PHONE_PWD, 3-EMAIL_PWD, 4-WECHAT, 5-MINI_PRO, 6-NOT_LOGGED_IN',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `password`    varchar(256) DEFAULT NULL COMMENT 'password / json',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_identity_type_status_password_member`(`identity`,`login_type`,`status`,`password`,`member_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='login credential 1';
 
 -- seata undo log
 
@@ -1867,115 +1811,115 @@ VALUES (151397629962, '31th reward', 'Im a reward...', 'www.baidu.com', 1, '{}',
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982722, 185757335558, 2021, 11, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982722, 185757335558, 2021, 12, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237505, 151397629954, 2021, 11, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237505, 151397629954, 2021, 12, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665667, 235157848067, 2021, 11, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665667, 235157848067, 2021, 12, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469505, 185757335559, 2021, 11, 5, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469505, 185757335559, 2021, 12, 5, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982728, 151397629959, 2021, 11, 6, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982728, 151397629959, 2021, 12, 6, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237507, 235157848072, 2021, 11, 7, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237507, 235157848072, 2021, 12, 7, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665672, 127783698440, 2021, 11, 8, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665672, 127783698440, 2021, 12, 8, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469511, 185757335554, 2021, 11, 9, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469511, 185757335554, 2021, 12, 9, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982721, 151397629957, 2021, 11, 10, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982721, 151397629957, 2021, 12, 10, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237512, 235157848065, 2021, 11, 11, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237512, 235157848065, 2021, 12, 11, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665671, 127783698439, 2021, 11, 12, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665671, 127783698439, 2021, 12, 12, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469506, 185757335553, 2021, 11, 13, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469506, 185757335553, 2021, 12, 13, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982725, 235157848068, 2021, 11, 15, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982725, 235157848068, 2021, 12, 15, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237511, 127783698438, 2021, 11, 16, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237511, 127783698438, 2021, 12, 16, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665668, 185757335561, 2021, 11, 17, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665668, 185757335561, 2021, 12, 17, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469507, 151397629955, 2021, 11, 18, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469507, 151397629955, 2021, 12, 18, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982726, 235157848066, 2021, 11, 19, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982726, 235157848066, 2021, 12, 19, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237510, 127783698437, 2021, 11, 20, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237510, 127783698437, 2021, 12, 20, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665670, 185757335556, 2021, 11, 21, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665670, 185757335556, 2021, 12, 21, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469508, 151397629960, 2021, 11, 22, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469508, 151397629960, 2021, 12, 22, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982729, 235157848069, 2021, 11, 23, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982729, 235157848069, 2021, 12, 23, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237506, 185757335560, 2021, 11, 25, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237506, 185757335560, 2021, 12, 25, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665669, 151397629956, 2021, 11, 26, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665669, 151397629956, 2021, 12, 26, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469512, 235157848071, 2021, 11, 27, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469512, 235157848071, 2021, 12, 27, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982724, 127783698442, 2021, 11, 28, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982724, 127783698442, 2021, 12, 28, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237508, 185757335555, 2021, 11, 29, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237508, 185757335555, 2021, 12, 29, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665665, 151397629958, 2021, 11, 30, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665665, 151397629958, 2021, 12, 30, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469510, 151397629962, 2021, 11, 31, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469510, 151397629962, 2021, 12, 31, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 
 -- member0

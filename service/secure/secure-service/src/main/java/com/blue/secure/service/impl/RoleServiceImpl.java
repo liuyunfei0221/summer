@@ -344,7 +344,6 @@ public class RoleServiceImpl implements RoleService {
         throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
     }
 
-
     /**
      * refresh default role
      *
