@@ -10,10 +10,15 @@ import reactor.core.publisher.Mono;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static java.lang.Double.compare;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.just;
 
 /**
@@ -49,6 +54,22 @@ public class ReactiveCommonFunctions extends CommonFunctions {
                             .map(ServerHttpRequest::getRemoteAddress)
                             .map(InetSocketAddress::getHostString)
                             .orElse(UNKNOWN)).hashCode());
+
+
+    private static final int MAX_LANGUAGE_COUNT = 64;
+
+    private static final List<String> DEFAULT_LANGUAGES = singletonList("en_US");
+
+    private static List<String> parseAcceptLanguages(List<Locale.LanguageRange> languageRanges) {
+        if (languageRanges != null && languageRanges.size() <= MAX_LANGUAGE_COUNT)
+            return languageRanges.stream()
+                    .sorted((a, b) -> compare(b.getWeight(), a.getWeight()))
+                    .map(Locale.LanguageRange::getRange)
+                    .map(String::toLowerCase)
+                    .collect(toList());
+
+        return DEFAULT_LANGUAGES;
+    }
 
     /**
      * package response result for reactive
@@ -139,6 +160,28 @@ public class ReactiveCommonFunctions extends CommonFunctions {
         return ofNullable(serverHttpRequest.getRemoteAddress())
                 .map(InetSocketAddress::getAddress)
                 .map(InetAddress::getHostAddress).orElse(UNKNOWN);
+    }
+
+    /**
+     * get Accept-Language
+     *
+     * @param serverRequest
+     * @return
+     */
+    @SuppressWarnings("DuplicatedCode")
+    public static List<String> getAcceptLanguages(ServerRequest serverRequest) {
+        return parseAcceptLanguages(serverRequest.headers().acceptLanguage());
+    }
+
+    /**
+     * get Accept-Language
+     *
+     * @param serverHttpRequest
+     * @return
+     */
+    @SuppressWarnings("DuplicatedCode")
+    public static List<String> getAcceptLanguages(ServerHttpRequest serverHttpRequest) {
+        return parseAcceptLanguages(serverHttpRequest.getHeaders().getAcceptLanguage());
     }
 
 }

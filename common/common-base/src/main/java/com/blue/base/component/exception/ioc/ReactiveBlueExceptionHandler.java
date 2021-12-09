@@ -10,8 +10,12 @@ import org.springframework.web.server.WebExceptionHandler;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
 
 import static com.blue.base.common.base.CommonFunctions.GSON;
+import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
+import static com.blue.base.component.exception.common.MessagesReader.loadMessages;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -28,10 +32,17 @@ import static reactor.core.publisher.Mono.just;
 public final class ReactiveBlueExceptionHandler implements WebExceptionHandler {
 
     private static final Charset CHARSET = UTF_8;
+    private static final String MESSAGES_URI = "classpath:i18n";
+
+    private static final Map<String, Map<String, String>> I_18_N = loadMessages(MESSAGES_URI);
 
     @SuppressWarnings("NullableProblems")
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable throwable) {
+        List<String> acceptLanguages = getAcceptLanguages(exchange.getRequest());
+        System.err.println(acceptLanguages);
+        System.err.println(I_18_N);
+
         ExceptionHandleInfo exceptionHandleInfo = ExceptionProcessor.handle(throwable);
 
         ServerHttpResponse response = exchange.getResponse();
