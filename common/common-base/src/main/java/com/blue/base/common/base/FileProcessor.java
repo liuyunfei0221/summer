@@ -3,13 +3,12 @@ package com.blue.base.common.base;
 import reactor.util.Logger;
 
 import java.io.File;
-import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.springframework.util.ResourceUtils.getURL;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -57,14 +56,9 @@ public final class FileProcessor {
      * @return
      */
     public static List<File> getFiles(String uri, boolean recursive) {
-        String path = URI.create(uri).getPath();
-
-        if (isBlank(path))
-            return emptyList();
-
         File file;
         try {
-            file = new File(path);
+            file = new File(getURL(uri).getPath());
         } catch (Exception e) {
             LOGGER.error("List<File> getFiles(String pathDir) failed, e = {0}", e);
             return emptyList();
