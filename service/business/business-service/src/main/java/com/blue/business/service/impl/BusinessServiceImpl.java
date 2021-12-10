@@ -76,7 +76,7 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     public Mono<ArticleInfo> getArticle(Long id) {
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         //TODO es
         CompletableFuture<Optional<Article>> articleOptCf = CompletableFuture
@@ -93,7 +93,7 @@ public class BusinessServiceImpl implements BusinessService {
                                 articleOpt
                                         .map(Mono::just)
                                         .orElseGet(() ->
-                                                error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
+                                                error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null)))
                         )
                         .flatMap(article ->
                                 {

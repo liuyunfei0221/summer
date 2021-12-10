@@ -1,8 +1,8 @@
 package com.blue.gateway.config.filter.global;
 
 import com.blue.base.common.content.common.RequestBodyProcessor;
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.model.base.DataEvent;
+import com.blue.base.model.base.ExceptionResponse;
 import com.blue.gateway.component.RequestEventReporter;
 import com.blue.gateway.config.deploy.EncryptDeploy;
 import org.reactivestreams.Publisher;
@@ -85,10 +85,10 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                     :
                     encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(""));
 
-    private void packageError(Throwable throwable, DataEvent dataEvent) {
-        ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getStatus()).intern());
-        dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionHandleInfo.getBlueVo()));
+    private void packageError(Throwable throwable, ServerHttpRequest request, DataEvent dataEvent) {
+        ExceptionResponse exceptionResponse = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
+        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionResponse.getStatus()).intern());
+        dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionResponse));
     }
 
     @SuppressWarnings("DuplicatedCode")
@@ -150,7 +150,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                             .then(defer(() ->
                                     getDelegate().writeWith(outputMessage.getBody())))
                             .doOnError(throwable -> {
-                                packageError(throwable, dataEvent);
+                                packageError(throwable, exchange.getRequest(), dataEvent);
                                 ON_ERROR_CONSUMER_WITH_MESSAGE.accept(throwable, outputMessage);
                             });
                 }
@@ -204,7 +204,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                                 .build())
                 ))
                 .doOnError(throwable -> {
-                    packageError(throwable, dataEvent);
+                    packageError(throwable, request, dataEvent);
                     ON_ERROR_CONSUMER_WITH_MESSAGE.accept(throwable, outputMessage);
                 });
     }

@@ -9,7 +9,7 @@ import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
  *
  * @author DarkBlue
  */
-public final class ExceptionHandleInfo {
+public final class ExceptionInfo {
 
     private final Integer status;
 
@@ -17,13 +17,13 @@ public final class ExceptionHandleInfo {
 
     private final String[] fillings;
 
-    public ExceptionHandleInfo() {
+    public ExceptionInfo() {
         this.status = INTERNAL_SERVER_ERROR.code;
         this.code = INTERNAL_SERVER_ERROR.code;
         this.fillings = null;
     }
 
-    public ExceptionHandleInfo(Integer status, Integer code, String[] fillings) {
+    public ExceptionInfo(Integer status, Integer code, String[] fillings) {
         this.status = status != null ? status : INTERNAL_SERVER_ERROR.code;
         this.code = code != null ? code : INTERNAL_SERVER_ERROR.code;
         this.fillings = fillings;

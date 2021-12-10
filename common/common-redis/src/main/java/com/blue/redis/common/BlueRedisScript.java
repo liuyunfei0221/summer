@@ -23,7 +23,7 @@ public final class BlueRedisScript<T> implements RedisScript<T> {
 
     public BlueRedisScript(String script, Class<T> type) {
         if (script == null || "".equals(script))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "script can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "script can't be null", null);
 
         this.SCRIPT = script;
         this.SHA1 = sha1DigestAsHex(script);

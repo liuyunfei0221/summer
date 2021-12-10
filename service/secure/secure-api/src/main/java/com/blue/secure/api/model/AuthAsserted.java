@@ -67,7 +67,7 @@ public final class AuthAsserted implements Serializable {
 
     public AuthAsserted(boolean certificate, boolean requestUnDecryption, boolean responseUnEncryption, boolean existenceRequestBody, boolean existenceResponseBody, String secKey, Access access, String message) {
         if (secKey == null || access == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         this.certificate = certificate;
         this.requestUnDecryption = requestUnDecryption;

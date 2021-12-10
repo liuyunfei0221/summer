@@ -1,8 +1,8 @@
 package com.blue.file.config.filter.global;
 
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.model.base.DataEvent;
+import com.blue.base.model.base.ExceptionResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.file.common.request.body.RequestBodyGetter;
 import com.blue.file.component.RequestEventReporter;
@@ -28,6 +28,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.blue.base.common.base.CommonFunctions.*;
+import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
@@ -77,23 +78,23 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
         RequestBodyGetter processor = REQUEST_BODY_GETTER_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, HttpHeaders.CONTENT_TYPE));
 
         if (processor == null)
-            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message);
+            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message, null);
 
         return processor;
     };
 
-    private void report(DataEvent dataEvent, Throwable throwable) {
+    private void report(Throwable throwable, ServerHttpRequest request, DataEvent dataEvent) {
         try {
             executorService.submit(() -> {
-                ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
+                ExceptionResponse exceptionResponse = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
 
-                dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getStatus()).intern());
-                dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionHandleInfo.getBlueResponse()));
+                dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionResponse.getStatus()).intern());
+                dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionResponse));
 
                 requestEventReporter.report(dataEvent);
                 LOGGER.info("report exception event, dataEvent = {}", dataEvent);
 
-                exceptionHandleInfo = null;
+                exceptionResponse = null;
             });
         } catch (Exception e) {
             LOGGER.error("report failed, dataEvent = {}, throwable = {}, e = {}",
@@ -160,11 +161,11 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
                                 .processor(exchange)
                                 .flatMap(requestBody -> {
                                     dataEvent.addData(REQUEST_BODY.key, requestBody);
-                                    report(dataEvent, throwable);
+                                    report(throwable, request, dataEvent);
                                     return error(throwable);
                                 });
                     } else {
-                        report(dataEvent, throwable);
+                        report(throwable, request, dataEvent);
                         return error(throwable);
                     }
                 });

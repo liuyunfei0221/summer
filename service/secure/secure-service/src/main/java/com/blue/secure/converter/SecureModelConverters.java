@@ -31,19 +31,19 @@ public final class SecureModelConverters {
      */
     public static final Function<RoleInsertParam, Role> ROLE_INSERT_PARAM_2_ROLE_CONVERTER = param -> {
         if (param == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         String name = param.getName();
         if (isBlank(name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank", null);
 
         String description = param.getDescription();
         if (isBlank(description))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank", null);
 
         Integer level = param.getLevel();
         if (level == null || level < 1)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "level can't be null or less than 1");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "level can't be null or less than 1", null);
 
         Long stamp = TIME_STAMP_GETTER.get();
 
@@ -64,7 +64,7 @@ public final class SecureModelConverters {
      */
     public static final Function<Role, RoleInfo> ROLE_2_ROLE_INFO_CONVERTER = role -> {
         if (role == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         return new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault());
     };
@@ -74,49 +74,49 @@ public final class SecureModelConverters {
      */
     public static final Function<ResourceInsertParam, Resource> RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER = param -> {
         if (param == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         String requestMethod = param.getRequestMethod();
         assertHttpMethod(requestMethod, false);
 
         String module = param.getModule();
         if (isBlank(module))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "module can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "module can't be blank", null);
 
         String uri = param.getUri();
         if (isBlank(uri))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be blank", null);
 
         Boolean authenticate = param.getAuthenticate();
         if (authenticate == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "authenticate can't be null");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "authenticate can't be null", null);
 
         Boolean requestUnDecryption = param.getRequestUnDecryption();
         if (requestUnDecryption == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestUnDecryption can't be null");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestUnDecryption can't be null", null);
 
         Boolean responseUnEncryption = param.getResponseUnEncryption();
         if (responseUnEncryption == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "responseUnEncryption can't be null");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "responseUnEncryption can't be null", null);
 
         Boolean existenceRequestBody = param.getExistenceRequestBody();
         if (existenceRequestBody == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceRequestBody can't be null");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceRequestBody can't be null", null);
 
         Boolean existenceResponseBody = param.getExistenceResponseBody();
         if (existenceResponseBody == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceResponseBody can't be null");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceResponseBody can't be null", null);
 
         Integer type = param.getType();
         assertResourceType(type, false);
 
         String name = param.getName();
         if (isBlank(name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank", null);
 
         String description = param.getDescription();
         if (isBlank(description))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank", null);
 
         Long stamp = TIME_STAMP_GETTER.get();
 
@@ -145,7 +145,7 @@ public final class SecureModelConverters {
      */
     public static final Function<Resource, ResourceInfo> RESOURCE_2_RESOURCE_INFO_CONVERTER = resource -> {
         if (resource == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         String module = resource.getModule().intern();
         String relativeUri = resource.getUri().intern();

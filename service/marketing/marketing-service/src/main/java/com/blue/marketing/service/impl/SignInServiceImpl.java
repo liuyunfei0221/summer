@@ -109,7 +109,7 @@ public class SignInServiceImpl implements SignInService {
     private final BiConsumer<Integer, Integer> DAY_REWARD_INITIALIZER = (year, month) -> {
         List<SignRewardTodayRelation> relations = rewardService.selectRelationByYearAndMonth(year, month);
         if (isEmpty(relations))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "The reward information of the current month is not configured");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "The reward information of the current month is not configured", null);
 
         List<Reward> rewards = rewardService.selectRewardByIds(relations.stream()
                 .map(SignRewardTodayRelation::getRewardId).collect(toList()));
@@ -140,7 +140,7 @@ public class SignInServiceImpl implements SignInService {
             long start = currentTimeMillis();
             while (rewardInfoRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null);
                 onSpinWait();
             }
         }
@@ -240,7 +240,7 @@ public class SignInServiceImpl implements SignInService {
     public Mono<SignInReward> insertSignIn(Long memberId) {
         LOGGER.info("insertSignIn(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         LocalDate now = LocalDate.now();
         int year = now.getYear();

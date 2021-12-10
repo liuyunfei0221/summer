@@ -124,7 +124,7 @@ public class BlueSyncRestGenerator {
             return new RestTemplate(requestFactory);
         } catch (Exception e) {
             LOGGER.error("restTemplate init failed, e = {0}", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "restTemplate init failed, e = " + e);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "restTemplate init failed, e = " + e, null);
         }
     }
 

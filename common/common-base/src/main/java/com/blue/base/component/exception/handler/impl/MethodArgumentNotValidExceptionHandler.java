@@ -1,8 +1,7 @@
 package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.component.exception.handler.model.ExceptionInfo;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -31,14 +30,14 @@ public final class MethodArgumentNotValidExceptionHandler implements ExceptionHa
     }
 
     @Override
-    public ExceptionHandleInfo handle(Throwable throwable) {
+    public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("methodArgumentNotValidExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         MethodArgumentNotValidException ex = (MethodArgumentNotValidException) throwable;
-        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, of(ex.getBindingResult())
+        return new ExceptionInfo(BAD_REQUEST.status, BAD_REQUEST.code, new String[]{of(ex.getBindingResult())
                 .map(BindingResult::getAllErrors)
                 .filter(l -> !isEmpty(l))
                 .map(l -> l.get(0))
                 .map(ObjectError::getDefaultMessage)
-                .orElse(BAD_REQUEST.message)));
+                .orElse(BAD_REQUEST.message)});
     }
 }

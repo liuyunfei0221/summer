@@ -25,14 +25,14 @@ public final class BusinessModelConverters {
     public static final Function<ArticleInsertParam, Article> ARTICLE_INSERT_PARAM_2_ARTICLE = articleInsertParam -> {
         String title = articleInsertParam.getTitle();
         if (title == null || "".equals(title))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         Integer type = articleInsertParam.getType();
         assertArticleType(type, false);
 
         String content = articleInsertParam.getContent();
         if (content == null || "".equals(content))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         long epochSecond = Instant.now().getEpochSecond();
 
@@ -57,7 +57,7 @@ public final class BusinessModelConverters {
 
         String linkUrl = linkInsertParam.getLinkUrl();
         if (linkUrl == null || "".equals(linkUrl))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         long epochSecond = Instant.now().getEpochSecond();
         Link link = new Link();

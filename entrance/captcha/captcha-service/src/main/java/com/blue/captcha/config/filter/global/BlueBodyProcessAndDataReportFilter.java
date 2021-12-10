@@ -1,8 +1,8 @@
 package com.blue.captcha.config.filter.global;
 
 import com.blue.base.common.content.common.RequestBodyProcessor;
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.model.base.DataEvent;
+import com.blue.base.model.base.ExceptionResponse;
 import com.blue.captcha.component.RequestEventReporter;
 import com.blue.captcha.config.deploy.ResponseDeploy;
 import org.reactivestreams.Publisher;
@@ -68,11 +68,11 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
     private final Function<HttpHeaders, Boolean> EXISTENCE_BODY_PREDICATE = httpHeaders ->
             existenceBodyResponseContentTypes.contains(HEADER_VALUE_GETTER.apply(httpHeaders, HttpHeaders.CONTENT_TYPE));
 
-    private void reportError(Throwable throwable, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
-        ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
+    private void reportError(Throwable throwable, ServerHttpRequest request, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
+        ExceptionResponse exceptionResponse = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
 
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getStatus()).intern());
-        dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionHandleInfo.getBlueResponse()));
+        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionResponse.getStatus()).intern());
+        dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionResponse));
 
         LOGGER.info("getResponseAndReport(), dataEvent = {}, throwable = {}", dataEvent, throwable);
         requestEventReporter.report(dataEvent);
@@ -168,7 +168,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                                                 .build())
                                 .doOnError(throwable -> {
                                     ON_ERROR_CONSUMER.accept(throwable, decorator);
-                                    reportError(throwable, requestEventReporter, dataEvent);
+                                    reportError(throwable, request, requestEventReporter, dataEvent);
                                 })
                 );
     }

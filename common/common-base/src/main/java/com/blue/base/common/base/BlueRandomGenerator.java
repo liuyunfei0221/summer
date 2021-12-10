@@ -43,11 +43,11 @@ public final class BlueRandomGenerator {
      */
     public static String generateRandom(RandomType type, int length) {
         if (type == null || length < 1)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         Function<Integer, String> generator = GENERATOR_MAPPING.get(type);
         if (generator == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return generator.apply(length);
     }

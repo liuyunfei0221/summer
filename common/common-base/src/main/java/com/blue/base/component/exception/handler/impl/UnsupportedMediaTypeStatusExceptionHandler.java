@@ -1,8 +1,7 @@
 package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.component.exception.handler.model.ExceptionInfo;
 import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 import reactor.util.Logger;
 
@@ -30,13 +29,12 @@ public final class UnsupportedMediaTypeStatusExceptionHandler implements Excepti
     }
 
     @Override
-    public ExceptionHandleInfo handle(Throwable throwable) {
+    public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("unsupportedMediaTypeStatusExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionHandleInfo(UNSUPPORTED_MEDIA_TYPE.status,
-                new BlueResponse<>(UNSUPPORTED_MEDIA_TYPE.code, null,
-                        "not support media type -> " +
-                                ofNullable(((UnsupportedMediaTypeStatusException) throwable).getContentType())
-                                        .map(c -> c.getType() + PATH_SEPARATOR + c.getSubtype())
-                                        .orElse(UNKNOWN.identity)));
+        return new ExceptionInfo(UNSUPPORTED_MEDIA_TYPE.status,
+                UNSUPPORTED_MEDIA_TYPE.code, new String[]{"not support media type -> " +
+                ofNullable(((UnsupportedMediaTypeStatusException) throwable).getContentType())
+                        .map(c -> c.getType() + PATH_SEPARATOR + c.getSubtype())
+                        .orElse(UNKNOWN.identity)});
     }
 }

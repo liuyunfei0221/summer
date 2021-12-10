@@ -16,27 +16,27 @@ public enum FinanceCommonException {
     /**
      * MEMBER_NOT_HAS_A_ROLE_EXP
      */
-    MEMBER_NOT_HAS_A_ROLE_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message)),
+    MEMBER_NOT_HAS_A_ROLE_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message, null)),
 
     /**
      * MEMBER_ALREADY_HAS_A_ROLE_EXP
      */
-    MEMBER_ALREADY_HAS_A_ROLE_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_ALREADY_HAS_A_ROLE.message)),
+    MEMBER_ALREADY_HAS_A_ROLE_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_ALREADY_HAS_A_ROLE.message, null)),
 
     /**
      * BLANK_NAME_EXP
      */
-    BLANK_NAME_EXP( new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank")),
+    BLANK_NAME_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank", null)),
 
     /**
      * BLANK_DESC_EXP
      */
-    BLANK_DESC_EXP( new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank")),
+    BLANK_DESC_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank", null)),
 
     /**
      * ACCOUNT_HAS_BEEN_FROZEN_EXP
      */
-    ACCOUNT_HAS_BEEN_FROZEN_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, ACCOUNT_HAS_BEEN_FROZEN.message));
+    ACCOUNT_HAS_BEEN_FROZEN_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, ACCOUNT_HAS_BEEN_FROZEN.message, null));
 
     public BlueException exp;
 

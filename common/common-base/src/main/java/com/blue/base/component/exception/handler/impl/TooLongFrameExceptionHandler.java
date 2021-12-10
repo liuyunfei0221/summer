@@ -1,8 +1,7 @@
 package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.component.exception.handler.model.ExceptionInfo;
 import reactor.util.Logger;
 
 import static com.blue.base.constant.base.ResponseElement.PAYLOAD_TOO_LARGE;
@@ -20,7 +19,7 @@ public final class TooLongFrameExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "io.netty.handler.codec.TooLongFrameException";
 
-    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(PAYLOAD_TOO_LARGE.status, new BlueResponse<>(PAYLOAD_TOO_LARGE.code, null, PAYLOAD_TOO_LARGE.message));
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, null);
 
     @Override
     public String exceptionName() {
@@ -28,7 +27,7 @@ public final class TooLongFrameExceptionHandler implements ExceptionHandler {
     }
 
     @Override
-    public ExceptionHandleInfo handle(Throwable throwable) {
+    public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("tooLongFrameExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         return EXP_HANDLE_INFO;
     }

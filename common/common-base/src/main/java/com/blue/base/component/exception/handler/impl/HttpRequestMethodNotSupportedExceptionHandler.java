@@ -1,8 +1,7 @@
 package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.component.exception.handler.model.ExceptionInfo;
 import reactor.util.Logger;
 
 import static com.blue.base.constant.base.ResponseElement.NOT_FOUND;
@@ -20,7 +19,7 @@ public final class HttpRequestMethodNotSupportedExceptionHandler implements Exce
 
     private static final String EXP_NAME = "org.springframework.web.HttpRequestMethodNotSupportedException";
 
-    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(NOT_FOUND.status, new BlueResponse<>(NOT_FOUND.code, null, NOT_FOUND.message));
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(NOT_FOUND.status, NOT_FOUND.code, null);
 
     @Override
     public String exceptionName() {
@@ -28,7 +27,7 @@ public final class HttpRequestMethodNotSupportedExceptionHandler implements Exce
     }
 
     @Override
-    public ExceptionHandleInfo handle(Throwable throwable) {
+    public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("httpRequestMethodNotSupportedExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         //In the project, the resource operation is defined according to the request method + resource path,
         // and no separate request method verification is provided, because the authentication verification cannot be passed at all,

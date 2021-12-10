@@ -1,8 +1,7 @@
 package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.component.exception.handler.model.ExceptionInfo;
 import reactor.util.Logger;
 
 import static com.blue.base.constant.base.ResponseElement.GATEWAY_TIMEOUT;
@@ -20,7 +19,7 @@ public final class TimeoutExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "org.springframework.cloud.gateway.support.TimeoutException";
 
-    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(GATEWAY_TIMEOUT.status, new BlueResponse<>(GATEWAY_TIMEOUT.code, null, GATEWAY_TIMEOUT.message));
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(GATEWAY_TIMEOUT.status, GATEWAY_TIMEOUT.code, null);
 
     @Override
     public String exceptionName() {
@@ -28,7 +27,7 @@ public final class TimeoutExceptionHandler implements ExceptionHandler {
     }
 
     @Override
-    public ExceptionHandleInfo handle(Throwable throwable) {
+    public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("timeoutExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         return EXP_HANDLE_INFO;
     }

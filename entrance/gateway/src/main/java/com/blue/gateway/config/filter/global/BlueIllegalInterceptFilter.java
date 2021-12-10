@@ -60,7 +60,7 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
             return;
 
         LOGGER.warn("The ip has been risk control interception, ip = {}, illegalReason = {}", ip, illegalReason);
-        throw new BlueException(NOT_ACCEPTABLE.status, NOT_ACCEPTABLE.code, illegalReason);
+        throw new BlueException(NOT_ACCEPTABLE.status, NOT_ACCEPTABLE.code, illegalReason, null);
     };
 
     private static final Consumer<String> ILLEGAL_JWT_ASSERTER = jwt -> {
@@ -69,7 +69,7 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
             return;
 
         LOGGER.warn("The jwt has been risk control interception, jwt = {}, illegalReason = {}", jwt, illegalReason);
-        throw new BlueException(NOT_ACCEPTABLE.status, NOT_ACCEPTABLE.code, illegalReason);
+        throw new BlueException(NOT_ACCEPTABLE.status, NOT_ACCEPTABLE.code, illegalReason, null);
     };
 
     private final Consumer<ServerWebExchange> ILLEGAL_FILTER = exchange -> {
@@ -91,11 +91,11 @@ public final class BlueIllegalInterceptFilter implements GlobalFilter, Ordered {
     private void init() {
         Long illegalExpireSeconds = riskControlDeploy.getIllegalExpireSeconds();
         if (illegalExpireSeconds == null || illegalExpireSeconds < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalExpireSeconds can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalExpireSeconds can't be null or less than 1", null);
 
         Integer illegalCapacity = riskControlDeploy.getIllegalCapacity();
         if (illegalCapacity == null || illegalCapacity < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalCapacity can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalCapacity can't be null or less than 1", null);
 
         illegalIpCache = newBuilder()
                 .expireAfterAccess(of(illegalExpireSeconds, SECONDS))

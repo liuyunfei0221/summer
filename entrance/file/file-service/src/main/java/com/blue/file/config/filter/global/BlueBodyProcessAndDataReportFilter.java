@@ -1,8 +1,8 @@
 package com.blue.file.config.filter.global;
 
 import com.blue.base.common.content.common.RequestBodyProcessor;
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.model.base.DataEvent;
+import com.blue.base.model.base.ExceptionResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.file.common.request.body.ReportWithRequestBodyProcessor;
 import com.blue.file.component.RequestEventReporter;
@@ -93,11 +93,11 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                     :
                     encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(""));
 
-    private void reportError(Throwable throwable, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
-        ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
+    private void reportError(Throwable throwable, ServerHttpRequest request, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
+        ExceptionResponse exceptionResponse = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
 
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getStatus()).intern());
-        dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionHandleInfo.getBlueResponse()));
+        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionResponse.getStatus()).intern());
+        dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionResponse));
 
         LOGGER.info("getResponseAndReport(), dataEvent = {}, throwable = {}", dataEvent, throwable);
         requestEventReporter.report(dataEvent);
@@ -193,7 +193,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         ReportWithRequestBodyProcessor processor = REQUEST_BODY_PROCESSOR_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE));
 
         if (processor == null)
-            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message);
+            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message, null);
 
         return processor;
     };
@@ -259,7 +259,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                                                     .build())
                                     .doOnError(throwable -> {
                                         ON_ERROR_CONSUMER.accept(throwable, decorator);
-                                        reportError(throwable, requestEventReporter, dataEvent);
+                                        reportError(throwable, request, requestEventReporter, dataEvent);
                                     })
                     );
         }
@@ -288,7 +288,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                             .response(
                                     getResponseAndReport(exchange, dataEvent)).build())
                     .doOnError(throwable ->
-                            reportError(throwable, requestEventReporter, dataEvent));
+                            reportError(throwable, request, requestEventReporter, dataEvent));
         }
     }
 

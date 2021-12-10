@@ -1,8 +1,7 @@
 package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.component.exception.handler.model.ExceptionInfo;
 import reactor.util.Logger;
 
 import static com.blue.base.constant.base.ResponseElement.NOT_FOUND;
@@ -20,7 +19,7 @@ public final class NotFoundExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "org.springframework.cloud.gateway.support.NotFoundException";
 
-    private static final ExceptionHandleInfo EXP_HANDLE_INFO = new ExceptionHandleInfo(NOT_FOUND.status, new BlueResponse<>(NOT_FOUND.code, null, NOT_FOUND.message));
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(NOT_FOUND.status, NOT_FOUND.code, null);
 
     @Override
     public String exceptionName() {
@@ -28,7 +27,7 @@ public final class NotFoundExceptionHandler implements ExceptionHandler {
     }
 
     @Override
-    public ExceptionHandleInfo handle(Throwable throwable) {
+    public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("notFoundExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         return EXP_HANDLE_INFO;
     }

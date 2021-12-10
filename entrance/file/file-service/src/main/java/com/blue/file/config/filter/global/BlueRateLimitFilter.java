@@ -86,7 +86,7 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
                 .flatMap(a -> {
                     if (a)
                         return chain.filter(exchange);
-                    return error(new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, TOO_MANY_REQUESTS.message));
+                    return error(new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, TOO_MANY_REQUESTS.message, null));
                 });
     }
 

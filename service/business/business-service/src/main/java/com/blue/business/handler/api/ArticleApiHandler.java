@@ -41,7 +41,7 @@ public class ArticleApiHandler {
      */
     public Mono<ServerResponse> insertArticle(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(ArticleInsertParam.class)
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> {
                     businessService.insertArticle(tuple2.getT1(), tuple2.getT2().getId());

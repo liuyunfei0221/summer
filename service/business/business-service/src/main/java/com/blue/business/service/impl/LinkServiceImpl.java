@@ -48,7 +48,7 @@ public class LinkServiceImpl implements LinkService {
         if (isValidIdentity(id))
             return ofNullable(linkMapper.selectByPrimaryKey(id));
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
     }
 
     /**
@@ -73,7 +73,7 @@ public class LinkServiceImpl implements LinkService {
     public List<Link> selectBySubIdAndSubType(Long subId, Integer subType) {
         LOGGER.info("subId = {},subType = {}", subId, subType);
         if (isInvalidIdentity(subId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         assertSubjectType(subType, false);
         return linkMapper.selectBySubIdAndSubType(subId, subType);

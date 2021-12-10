@@ -1,7 +1,6 @@
 package com.blue.base.common.base;
 
 import com.blue.base.component.exception.common.ExceptionProcessor;
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
 import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.constant.base.SummerAttr;
 import com.blue.base.constant.base.Symbol;
@@ -9,6 +8,7 @@ import com.blue.base.constant.base.ValidResourceFormatters;
 import com.blue.base.model.base.DataWrapper;
 import com.blue.base.model.base.EncryptedRequest;
 import com.blue.base.model.base.EncryptedResponse;
+import com.blue.base.model.base.ExceptionResponse;
 import com.blue.base.model.exps.BlueException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -102,11 +102,11 @@ public class CommonFunctions {
      */
     public static final UnaryOperator<String> REST_URI_PROCESSOR = uri -> {
         if (uri == null || "".equals(uri))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uri can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uri can't be null", null);
 
         int lastPartIdx = lastIndexOf(uri, PATH_SEPARATOR);
         if (lastPartIdx == -1 || lastPartIdx == length(uri))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri, null);
 
         String maybePathVariable = uri.substring(lastPartIdx + 1);
         if (isDigits(maybePathVariable))
@@ -125,18 +125,18 @@ public class CommonFunctions {
      */
     public static final Consumer<String> REST_URI_ASSERTER = uri -> {
         if (uri == null || "".equals(uri))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uri can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uri can't be null", null);
 
         String tar = uri.trim();
 
         int idx = indexOf(tar, PATH_SEPARATOR);
 
         if (idx == -1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri, null);
         if (idx != 0)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not start with / -> " + uri);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not start with / -> " + uri, null);
         if (isBlank(substring(tar, idx)))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, non content but / -> " + uri);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, non content but / -> " + uri, null);
     };
 
     /**
@@ -147,7 +147,7 @@ public class CommonFunctions {
 
         int lastPartIdx = lastIndexOf(uri, PATH_SEPARATOR);
         if (lastPartIdx == -1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri, null);
 
         String maybePathVariable = uri.substring(lastPartIdx);
         int left = indexOf(maybePathVariable, "{");
@@ -164,7 +164,7 @@ public class CommonFunctions {
         if (VALID_TAILS.contains(schema))
             return (uri.substring(0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD + schema.intern()).intern();
 
-        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, freemarker unsupported -> " + uri);
+        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, freemarker unsupported -> " + uri, null);
     };
 
     /**
@@ -222,7 +222,7 @@ public class CommonFunctions {
         if (VALID_SCHEMAS.contains(schema))
             return;
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message, null);
     };
 
     /**
@@ -232,7 +232,7 @@ public class CommonFunctions {
         if (VALID_METHODS.contains(method.toUpperCase()))
             return;
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message, null);
     };
 
     /**
@@ -254,7 +254,7 @@ public class CommonFunctions {
     /**
      * throwable converter
      */
-    public static final Function<Throwable, ExceptionHandleInfo> THROWABLE_CONVERTER = ExceptionProcessor::handle;
+    public static final BiFunction<Throwable, List<String>, ExceptionResponse> THROWABLE_CONVERTER = ExceptionProcessor::handle;
 
     /**
      * assert decrypted data and assert
@@ -263,7 +263,7 @@ public class CommonFunctions {
         if (TIME_STAMP_GETTER.get() - ofNullable(dataWrapper.getTimeStamp()).orElse(0L) <= expire)
             return ofNullable(dataWrapper.getOriginal()).orElse("");
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message, null);
     };
 
     /**
@@ -276,16 +276,16 @@ public class CommonFunctions {
      */
     public static String decryptRequestBody(String requestBody, String secKey, long expire) {
         if (requestBody == null || "".equals(requestBody))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         if (secKey == null || "".equals(secKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         EncryptedRequest encryptedRequest = GSON.fromJson(requestBody, EncryptedRequest.class);
         String encrypted = encryptedRequest.getEncrypted();
 
         if (!verify(encrypted, encryptedRequest.getSignature(), secKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message, null);
 
         return DATA_CONVERTER.apply(GSON.fromJson(decryptByPublicKey(encrypted, secKey), DataWrapper.class), expire);
     }
@@ -299,10 +299,10 @@ public class CommonFunctions {
      */
     public static String encryptResponseBody(String responseBody, String secKey) {
         if (responseBody == null || "".equals(responseBody))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         if (secKey == null || "".equals(secKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         return GSON.toJson(new EncryptedResponse(encryptByPublicKey(GSON.toJson(new DataWrapper(responseBody, TIME_STAMP_GETTER.get())), secKey)));
     }

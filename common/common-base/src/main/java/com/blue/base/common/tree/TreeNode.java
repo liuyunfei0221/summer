@@ -42,12 +42,12 @@ public final class TreeNode<T> implements Serializable {
 
     private static void checkIdentity(Long identity) {
         if (identity == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
     }
 
     private static <T> void checkData(T data) {
         if (data == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
     }
 
     public TreeNode() {

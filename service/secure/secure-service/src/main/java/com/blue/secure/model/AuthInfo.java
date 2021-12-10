@@ -36,11 +36,11 @@ public final class AuthInfo implements Serializable {
 
     public AuthInfo(String jwt, Long roleId, String pubKey) {
         if (jwt == null || "".equals(jwt))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
         if (roleId == null || roleId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
         if (pubKey == null || "".equals(pubKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         this.jwt = jwt;
         this.roleId = roleId;
@@ -53,7 +53,7 @@ public final class AuthInfo implements Serializable {
 
     public void setJwt(String jwt) {
         if (jwt == null || "".equals(jwt))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         this.jwt = jwt;
     }
@@ -64,7 +64,7 @@ public final class AuthInfo implements Serializable {
 
     public void setRoleId(Long roleId) {
         if (roleId == null || roleId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         this.roleId = roleId;
     }
@@ -75,7 +75,7 @@ public final class AuthInfo implements Serializable {
 
     public void setPubKey(String pubKey) {
         if (pubKey == null || "".equals(pubKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         this.pubKey = pubKey;
     }

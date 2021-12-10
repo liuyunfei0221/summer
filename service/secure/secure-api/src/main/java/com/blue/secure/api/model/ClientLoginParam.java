@@ -58,13 +58,13 @@ public final class ClientLoginParam implements Serializable {
 
     public ClientLoginParam(String identity, String access, String verificationCode, String loginType, String deviceType) {
         if (identity == null || "".equals(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity can't be blank", null);
         if (identity.length() > ID_LEN_MAX)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity too long");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity too long", null);
         if (access == null || "".equals(access))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank", null);
         if (access.length() > ACS_LEN_MAX)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access too long");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access too long", null);
 
         assertLoginType(loginType, false);
 
@@ -83,9 +83,9 @@ public final class ClientLoginParam implements Serializable {
 
     public void setIdentity(String identity) {
         if (identity == null || "".equals(identity))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity can't be blank", null);
         if (identity.length() > ID_LEN_MAX)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity too long");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "identity too long", null);
 
         this.identity = identity;
     }
@@ -96,9 +96,9 @@ public final class ClientLoginParam implements Serializable {
 
     public void setAccess(String access) {
         if (access == null || "".equals(access))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank", null);
         if (access.length() > ACS_LEN_MAX)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access too long");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access too long", null);
 
         this.access = access;
     }

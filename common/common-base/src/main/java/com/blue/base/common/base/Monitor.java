@@ -33,7 +33,7 @@ public final class Monitor<T> {
 
     public Monitor(T monitored, BinaryOperator<T> combiner, Predicate<T> predicate) {
         if (monitored == null || combiner == null || predicate == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         this.monitored = monitored;
         this.combiner = combiner;
@@ -57,7 +57,7 @@ public final class Monitor<T> {
      */
     public boolean operateWithAssert(T data) {
         if (data == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         synchronized (this) {
             monitored = combiner.apply(monitored, data);

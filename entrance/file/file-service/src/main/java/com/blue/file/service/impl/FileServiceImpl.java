@@ -105,14 +105,14 @@ public class FileServiceImpl implements FileService {
 
         List<Part> resources = valueMap.get(ATTR_NAME);
         if (isEmpty(resources))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         int size = resources.size();
         if (size == 1 && "".equals(((FilePart) (resources.get(0))).filename()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         if (size > CURRENT_SIZE_THRESHOLD)
-            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
+            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message, null);
 
         return fromIterable(resources)
                 .flatMap(localDiskFileUploader::upload)

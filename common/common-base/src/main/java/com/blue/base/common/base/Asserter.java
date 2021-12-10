@@ -293,13 +293,13 @@ public final class Asserter {
     @SuppressWarnings("AlibabaMethodReturnWrapperType")
     public static long assertIdentityParamsAndReturnIdForOperate(IdentityParam identityParam, Long operatorId) {
         if (isNull(identityParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
         if (isInvalidIdentity(operatorId))
-            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
+            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null);
 
         Long id = identityParam.getId();
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return id;
     }

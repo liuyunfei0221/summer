@@ -42,12 +42,12 @@ public class MemberServiceImpl implements MemberService {
 
     private static final BiConsumer<String, MemberBasicInfo> PWD_ASSERTER = (access, mb) -> {
         if (isNull(access) || isNull(mb) || !ENCODER.matches(access, mb.getPassword()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message, null);
     };
 
     private static final Consumer<MemberBasicInfo> MEMBER_STATUS_ASSERTER = memberBasicInfo -> {
         if (isInvalidStatus(memberBasicInfo.getStatus()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, ACCOUNT_HAS_BEEN_FROZEN.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, ACCOUNT_HAS_BEEN_FROZEN.message, null);
     };
 
     /**
@@ -60,13 +60,13 @@ public class MemberServiceImpl implements MemberService {
     public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam) {
         LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
         if (isNull(clientLoginParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         //TODO check verify
         //TODO check message verify
 
         return rpcMemberServiceConsumer.selectMemberBasicByPhone(clientLoginParam.getIdentity())
-                .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message))
+                .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message, null))
                 .flatMap(memberBasicInfo -> {
                     LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
                     MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
@@ -86,12 +86,12 @@ public class MemberServiceImpl implements MemberService {
     public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam) {
         LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
         if (isNull(clientLoginParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         //TODO check verify
 
         return rpcMemberServiceConsumer.selectMemberBasicByPhone(clientLoginParam.getIdentity())
-                .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message))
+                .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message, null))
                 .flatMap(memberBasicInfo -> {
                     LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
                     PWD_ASSERTER.accept(clientLoginParam.getAccess(), memberBasicInfo);
@@ -112,12 +112,12 @@ public class MemberServiceImpl implements MemberService {
     public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam) {
         LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
         if (isNull(clientLoginParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         //TODO check verify
 
         return rpcMemberServiceConsumer.selectMemberBasicByEmail(clientLoginParam.getIdentity())
-                .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message))
+                .onErrorMap(t -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_ACCT_OR_PWD.message, null))
                 .flatMap(memberBasicInfo -> {
                     LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
                     PWD_ASSERTER.accept(clientLoginParam.getAccess(), memberBasicInfo);

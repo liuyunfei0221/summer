@@ -23,7 +23,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/12/10
  * @apiNote
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public final class PropertiesProcessor {
 
     private static final Logger LOGGER = getLogger(PropertiesProcessor.class);

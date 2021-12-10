@@ -50,7 +50,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service
 public class RoleResRelationServiceImpl implements RoleResRelationService {
 
@@ -80,32 +80,32 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     private final Consumer<RoleResRelation> INSERT_RELATION_VALIDATOR = relation -> {
         if (relation == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         Long id = relation.getId();
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "id is invalid");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "id is invalid", null);
 
         Long roleId = relation.getRoleId();
         if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "roleId is invalid");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "roleId is invalid", null);
 
         Long resId = relation.getResId();
         if (isInvalidIdentity(resId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "resId is invalid");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "resId is invalid", null);
 
         Long createTime = relation.getCreateTime();
         Long updateTime = relation.getUpdateTime();
         if (createTime == null || updateTime == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "createTime or updateTime is invalid");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "createTime or updateTime is invalid", null);
 
         Long creator = relation.getCreator();
         Long updater = relation.getUpdater();
         if (isInvalidIdentity(creator) || isInvalidIdentity(updater))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "creator or updater is invalid");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "creator or updater is invalid", null);
 
         if (isNotNull(roleResRelationMapper.selectExistByResIdAndRoleId(resId, roleId)))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The data base res and role already exists");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The data base res and role already exists", null);
     };
 
     /**
@@ -118,7 +118,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId), roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return roleService.getRoleMonoById(roleId)
                 .flatMap(roleOpt ->
@@ -126,7 +126,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
                                         just(ROLE_2_ROLE_INFO_CONVERTER.apply(role)))
                                 .orElseGet(() -> {
                                     LOGGER.error("role info doesn't exist, roleId = {}", roleId);
-                                    return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message));
+                                    return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null));
                                 })
                 ).flatMap(roleInfo ->
                         this.selectResIdsMonoByRoleId(roleId)
@@ -146,7 +146,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public Mono<AuthorityBaseOnResource> selectAuthorityMonoByResId(Long resId) {
         LOGGER.info("Mono<AuthorityBaseOnResource> getAuthorityMonoByResId(Long resId), resId = {}", resId);
         if (isInvalidIdentity(resId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return resourceService.getResourceMonoById(resId)
                 .flatMap(resOpt ->
@@ -154,7 +154,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
                                         just(RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(res)))
                                 .orElseGet(() -> {
                                     LOGGER.error("res info doesn't exist, resId = {}", resId);
-                                    return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message));
+                                    return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null));
                                 })
                 ).flatMap(resourceInfo ->
                         this.selectRoleIdsMonoByResId(resId)
@@ -184,7 +184,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public Mono<List<Long>> selectResIdsMonoByRoleId(Long roleId) {
         LOGGER.info("Mono<List<Long>> selectResIdsMonoByRoleId(Long roleId), roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return just(roleResRelationMapper.selectResIdsByRoleId(roleId));
     }
@@ -199,7 +199,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public Mono<List<Resource>> selectResMonoByRoleId(Long roleId) {
         LOGGER.info("Mono<List<Resource>> selectResMonoByRoleId(Long roleId), roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return this.selectResIdsMonoByRoleId(roleId)
                 .flatMap(ids -> {
@@ -218,7 +218,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public Mono<List<Long>> selectRoleIdsMonoByResId(Long resId) {
         LOGGER.info("Mono<List<Long>> selectRoleIdsMonoByResId(Long resId), resId = {}", resId);
         if (isInvalidIdentity(resId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return just(roleResRelationMapper.selectRoleIdsByResId(resId));
     }
@@ -233,7 +233,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public Mono<List<Role>> selectRoleMonoByResId(Long resId) {
         LOGGER.info("Mono<List<Role>> selectRoleMonoByResId(Long resId), resId = {}", resId);
         if (isInvalidIdentity(resId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return this.selectRoleIdsMonoByResId(resId)
                 .flatMap(ids -> {
@@ -252,7 +252,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public Mono<List<RoleResRelation>> selectRelationByRoleId(Long roleId) {
         LOGGER.info("Mono<List<RoleResRelation>> selectRelationByRoleId(Long roleId), roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return just(roleResRelationMapper.selectByRoleId(roleId));
     }
@@ -269,11 +269,11 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public List<RoleResRelation> selectRelationByRowsAndRoleId(Long roleId, Long limit, Long rows) {
         LOGGER.info("List<RoleResRelation> selectRelationByRowsAndRoleId(Long roleId, Long limit, Long rows), roleId = {}, limit = {}, rows = {}", roleId, limit, rows);
         if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId", null);
         if (isInvalidLimit(limit))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid limit");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid limit", null);
         if (isInvalidRows(rows))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid rows");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid rows", null);
 
         return roleResRelationMapper.selectRelationByRowsAndRoleId(roleId, limit, rows);
     }
@@ -288,7 +288,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public long countRelationByRoleId(Long roleId) {
         LOGGER.info("long countRelationByRoleId(Long roleId), roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return roleResRelationMapper.countByRoleId(roleId);
     }
@@ -305,11 +305,11 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public List<RoleResRelation> selectRelationByRowsAndResId(Long resId, Long limit, Long rows) {
         LOGGER.info("List<RoleResRelation> selectRelationByRowsAndResId(Long resId, Long limit, Long rows), resId = {}, limit = {}, rows = {}", resId, limit, rows);
         if (isInvalidIdentity(resId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resId");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resId", null);
         if (isInvalidLimit(limit))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid limit");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid limit", null);
         if (isInvalidRows(rows))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid rows");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid rows", null);
 
         return roleResRelationMapper.selectRelationByRowsAndResId(resId, limit, rows);
     }
@@ -324,7 +324,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public long countRelationByResId(Long resId) {
         LOGGER.info("long countRelationByResId(Long resId), resId = {}", resId);
         if (isInvalidIdentity(resId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return roleResRelationMapper.countByResId(resId);
     }
@@ -339,7 +339,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public Mono<List<RoleResRelation>> selectRelationByResId(Long resId) {
         LOGGER.info("Mono<List<RoleResRelation>> selectRelationByResId(Long resId), resId = {}", resId);
         if (isInvalidIdentity(resId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         return just(roleResRelationMapper.selectByResId(resId));
     }
@@ -484,16 +484,16 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public RoleInfo deleteRole(Long id, Long operatorId) {
         LOGGER.info("RoleInfo deleteRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
         if (isInvalidIdentity(operatorId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
         try {
             lock.lock();
 
             if (this.countRelationByRoleId(id) > 0L)
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role-res-relations count > 0");
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role-res-relations count > 0", null);
 
             this.deleteRelationByRoleId(id);
             return roleService.deleteRoleById(id);
@@ -575,16 +575,16 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public ResourceInfo deleteResource(Long id, Long operatorId) {
         LOGGER.info("ResourceInfo deleteResource(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
         if (isInvalidIdentity(operatorId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
         try {
             lock.lock();
 
             if (this.countRelationByResId(id) > 0L)
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role-res-relations count > 0");
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role-res-relations count > 0", null);
 
             this.deleteRelationByResId(id);
             ResourceInfo resourceInfo = resourceService.deleteResourceById(id);
@@ -614,7 +614,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public void insertRelation(RoleResRelation roleResRelation) {
         LOGGER.info("void insertRelation(RoleResRelation roleResRelation), roleResRelation = {}", roleResRelation);
         if (roleResRelation == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         INSERT_RELATION_VALIDATOR.accept(roleResRelation);
         roleResRelationMapper.insert(roleResRelation);
@@ -631,7 +631,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public void insertRelationBatch(List<RoleResRelation> roleResRelations) {
         LOGGER.info("void insertRelationBatch(List<RoleResRelation> roleResRelations), roleResRelations = {}", roleResRelations);
         if (isEmpty(roleResRelations))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
 
         roleResRelationMapper.insertBatch(roleResRelations.stream().filter(Objects::nonNull)
                 .peek(INSERT_RELATION_VALIDATOR).collect(toList()));
@@ -648,7 +648,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public void deleteRelationByRoleId(Long roleId) {
         LOGGER.info("void deleteRelationByRoleId(Long roleId), roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         int count = roleResRelationMapper.deleteByRoleId(roleId);
         LOGGER.info("void deleteRelationByRoleId(Long roleId), count = {}", count);
@@ -665,7 +665,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public void deleteRelationByResId(Long resId) {
         LOGGER.info("void deleteRelationByResId(Long resId), resId = {}", resId);
         if (isInvalidIdentity(resId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
 
         RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
         lock.lock();
@@ -695,11 +695,11 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     private List<RoleResRelation> generateRoleResRelations(Long roleId, List<Long> resIds, Long operatorId) {
         if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId", null);
         if (isEmpty(resIds))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds", null);
         if (isInvalidIdentity(operatorId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId", null);
 
         long epochSecond = TIME_STAMP_GETTER.get();
 
@@ -732,11 +732,11 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     public AuthorityBaseOnRole updateAuthorityByRole(Long roleId, List<Long> resIds, Long operatorId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityBaseOnRole(Long roleId, List<Long> resIds, Long operatorId), roleId = {}, resIds = {}, operatorId = {}", roleId, resIds, operatorId);
         if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId", null);
         if (isEmpty(resIds))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds", null);
         if (isInvalidIdentity(operatorId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId", null);
 
         RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
         lock.lock();
@@ -744,22 +744,22 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         try {
             Optional<Role> roleOpt = roleService.getRoleById(roleId);
             if (roleOpt.isEmpty())
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is not exist");
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is not exist", null);
 
             List<Long> resourceIds = resIds.stream().filter(Objects::nonNull).distinct()
                     .collect(toList());
 
             if (isEmpty(resourceIds))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds", null);
             List<Resource> resources = resourceService.selectResourceByIds(resourceIds);
             if (isEmpty(resources))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds", null);
 
             if (resources.size() < resourceIds.size()) {
                 Set<Long> resIdSet = resources.stream().map(Resource::getId).collect(toSet());
                 for (long rid : resourceIds) {
                     if (!resIdSet.contains(rid))
-                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resId in resIds, resId = " + rid);
+                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resId in resIds, resId = " + rid, null);
                 }
             }
 

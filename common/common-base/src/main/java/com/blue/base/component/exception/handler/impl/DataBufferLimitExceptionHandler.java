@@ -1,8 +1,7 @@
 package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.component.exception.handler.model.ExceptionInfo;
 import org.springframework.core.io.buffer.DataBufferLimitException;
 import reactor.util.Logger;
 
@@ -30,8 +29,7 @@ public class DataBufferLimitExceptionHandler implements ExceptionHandler {
 
     private static final String TAR_WORD = "of";
     private static final int TAR_WORD_LEN = TAR_WORD.length();
-    private static final String MSG_PRE = "file can't be lager than";
-    private static final String DEFAULT_MSG = "invalid file size";
+    private static final String DEFAULT_MSG = "---";
 
     private static final Function<DataBufferLimitException, String> MESSAGE_CONVERTER = exception ->
             Optional.ofNullable(exception)
@@ -39,7 +37,7 @@ public class DataBufferLimitExceptionHandler implements ExceptionHandler {
                     .map(msg -> {
                         int idx = indexOf(msg, TAR_WORD);
                         if (idx != -1)
-                            return MSG_PRE + msg.substring(idx + TAR_WORD_LEN);
+                            return msg.substring(idx + TAR_WORD_LEN);
 
                         return DEFAULT_MSG;
                     }).orElse(DEFAULT_MSG);
@@ -51,10 +49,10 @@ public class DataBufferLimitExceptionHandler implements ExceptionHandler {
     }
 
     @Override
-    public ExceptionHandleInfo handle(Throwable throwable) {
+    public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("dataBufferLimitExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         DataBufferLimitException exception = (DataBufferLimitException) throwable;
-        return new ExceptionHandleInfo(BAD_REQUEST.status, new BlueResponse<>(BAD_REQUEST.code, null, MESSAGE_CONVERTER.apply(exception)));
+        return new ExceptionInfo(BAD_REQUEST.status, BAD_REQUEST.code, new String[]{MESSAGE_CONVERTER.apply(exception)});
     }
 
 }

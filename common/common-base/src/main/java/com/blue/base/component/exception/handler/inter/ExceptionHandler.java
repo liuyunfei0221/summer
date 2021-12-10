@@ -1,6 +1,6 @@
 package com.blue.base.component.exception.handler.inter;
 
-import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
+import com.blue.base.component.exception.handler.model.ExceptionInfo;
 
 /**
  * exp handler interface
@@ -23,6 +23,6 @@ public interface ExceptionHandler {
      * @param throwable
      * @return
      */
-    public ExceptionHandleInfo handle(Throwable throwable);
+    public ExceptionInfo handle(Throwable throwable);
 
 }

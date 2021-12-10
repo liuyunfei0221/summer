@@ -28,9 +28,9 @@ public final class MemberAuth implements Serializable {
 
     public MemberAuth(String auth, String secKey) {
         if (auth == null || "".equals(auth))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
         if (secKey == null || "".equals(secKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
 
         this.auth = auth;
         this.secKey = secKey;

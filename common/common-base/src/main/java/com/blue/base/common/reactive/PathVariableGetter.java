@@ -32,16 +32,16 @@ public class PathVariableGetter {
      */
     public static Long getLongVariable(ServerRequest serverRequest, String placeHolder) {
         if (isBlank(placeHolder))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message, null);
 
         String pathVariable = serverRequest.pathVariable(placeHolder);
         if (isBlank(pathVariable))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message, null);
 
         try {
             return parseLong(pathVariable);
         } catch (NumberFormatException e) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_PATH_VARIABLE.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_PATH_VARIABLE.message, null);
         }
     }
 
@@ -65,16 +65,16 @@ public class PathVariableGetter {
      */
     public static Integer getIntegerVariable(ServerRequest serverRequest, String placeHolder) {
         if (isBlank(placeHolder))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message, null);
 
         String pathVariable = serverRequest.pathVariable(placeHolder);
         if (isBlank(pathVariable))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message, null);
 
         try {
             return parseInt(pathVariable);
         } catch (NumberFormatException e) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_PATH_VARIABLE.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_PATH_VARIABLE.message, null);
         }
     }
 
@@ -98,11 +98,11 @@ public class PathVariableGetter {
      */
     public static String getStringVariable(ServerRequest serverRequest, String placeHolder) {
         if (isBlank(placeHolder))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message, null);
 
         String pathVariable = serverRequest.pathVariable(placeHolder);
         if (isBlank(pathVariable))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PATH_VARIABLE.message, null);
 
         return pathVariable;
     }

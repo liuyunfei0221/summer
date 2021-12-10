@@ -58,23 +58,23 @@ public final class BlueExecutorGenerator {
     private static void assertConf(ExecutorConf executorConf) {
         Integer corePoolSize = executorConf.getCorePoolSize();
         if (corePoolSize == null || corePoolSize < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "corePoolSize can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "corePoolSize can't be null or less than 1", null);
 
         Integer maximumPoolSize = executorConf.getMaximumPoolSize();
         if (maximumPoolSize == null || maximumPoolSize < 1 || maximumPoolSize < corePoolSize)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maximumPoolSize can't be null or less than 1 or less than corePoolSize");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maximumPoolSize can't be null or less than 1 or less than corePoolSize", null);
 
         Long keepAliveTime = executorConf.getKeepAliveTime();
         if (keepAliveTime == null || keepAliveTime < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keepAliveTime can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keepAliveTime can't be null or less than 1", null);
 
         Integer blockingQueueCapacity = executorConf.getBlockingQueueCapacity();
         if (blockingQueueCapacity == null || blockingQueueCapacity < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "blockingQueueCapacity can't be null or less than 1");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "blockingQueueCapacity can't be null or less than 1", null);
 
         RejectedExecutionHandler rejectedExecutionHandler = executorConf.getRejectedExecutionHandler();
         if (rejectedExecutionHandler == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "rejectedExecutionHandler can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "rejectedExecutionHandler can't be null", null);
     }
 
 }

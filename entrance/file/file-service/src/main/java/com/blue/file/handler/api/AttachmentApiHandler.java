@@ -44,7 +44,7 @@ public final class AttachmentApiHandler {
     @SuppressWarnings("unchecked")
     public Mono<ServerResponse> listAttachment(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(PageModelRequest.class)
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         attachmentService.selectAttachmentByPageAndMemberId(tuple2.getT1(), tuple2.getT2().getId()))
@@ -62,7 +62,7 @@ public final class AttachmentApiHandler {
      */
     public Mono<ServerResponse> withdraw(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(WithdrawInfo.class)
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> {
                     System.err.println(tuple2.getT2());
