@@ -57,7 +57,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
                 ExceptionHandleInfo exceptionHandleInfo = THROWABLE_CONVERTER.apply(throwable);
 
                 dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionHandleInfo.getStatus()).intern());
-                dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionHandleInfo.getBlueVo()));
+                dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionHandleInfo.getBlueResponse()));
 
                 requestEventReporter.report(dataEvent);
                 LOGGER.info("report exception event, dataEvent = {}", dataEvent);

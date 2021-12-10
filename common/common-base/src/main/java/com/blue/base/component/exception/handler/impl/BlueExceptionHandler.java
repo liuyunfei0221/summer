@@ -2,7 +2,6 @@ package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionHandleInfo;
-import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import reactor.util.Logger;
 
@@ -29,6 +28,7 @@ public final class BlueExceptionHandler implements ExceptionHandler {
     public ExceptionHandleInfo handle(Throwable throwable) {
         LOGGER.info("blueExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         BlueException ex = (BlueException) throwable;
-        return new ExceptionHandleInfo(ex.getStatus(), new BlueResponse<>(ex.getCode(), null, ex.getMessage()));
+
+        return new ExceptionHandleInfo(ex.getStatus(), ex.getCode(), ex.getFillings());
     }
 }

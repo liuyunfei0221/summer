@@ -2,6 +2,8 @@ package com.blue.base.model.exps;
 
 import com.blue.base.constant.base.ResponseElement;
 
+import java.util.Arrays;
+
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 
 /**
@@ -34,16 +36,23 @@ public final class BlueException extends RuntimeException {
      */
     private String message;
 
+    /**
+     * fillings
+     */
+    private String[] fillings;
+
     public BlueException() {
         this.status = INTERNAL_SERVER_ERROR.status;
         this.code = INTERNAL_SERVER_ERROR.code;
         this.message = INTERNAL_SERVER_ERROR.message;
+        this.fillings = null;
     }
 
-    public BlueException(Integer status, Integer code, String message) {
+    public BlueException(Integer status, Integer code, String message, String[] fillings) {
         this.status = status;
         this.code = code;
         this.message = message;
+        this.fillings = fillings;
     }
 
     public Integer getStatus() {
@@ -71,13 +80,21 @@ public final class BlueException extends RuntimeException {
         this.message = message;
     }
 
+    public String[] getFillings() {
+        return fillings;
+    }
+
+    public void setFillings(String[] fillings) {
+        this.fillings = fillings;
+    }
+
     @Override
     public String toString() {
         return "BlueException{" +
                 "status=" + status +
                 ", code=" + code +
                 ", message='" + message + '\'' +
+                ", fillings=" + Arrays.toString(fillings) +
                 '}';
     }
-
 }

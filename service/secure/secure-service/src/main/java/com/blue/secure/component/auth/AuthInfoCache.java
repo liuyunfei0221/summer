@@ -62,7 +62,7 @@ public final class AuthInfoCache {
     /**
      * local cache
      */
-    private final Cache<String, String> cache;
+    private final Cache<String, String> CACHE;
 
     private static final String THREAD_NAME_PRE = "JwtCache-thread- ";
     private static final int RANDOM_LEN = 4;
@@ -98,7 +98,7 @@ public final class AuthInfoCache {
         CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpireMillis, MILLIS),
                 AFTER_WRITE, executorService);
 
-        this.cache = generateCache(caffeineConf);
+        this.CACHE = generateCache(caffeineConf);
     }
 
     /**
@@ -142,7 +142,7 @@ public final class AuthInfoCache {
      */
     public Mono<String> getAuthInfo(String keyId) {
         return isNotBlank(keyId) ?
-                justOrEmpty(cache.getIfPresent(keyId)).switchIfEmpty(REDIS_AUTH_GETTER.apply(keyId))
+                justOrEmpty(CACHE.getIfPresent(keyId)).switchIfEmpty(REDIS_AUTH_GETTER.apply(keyId))
                 :
                 error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message));
     }
@@ -172,7 +172,7 @@ public final class AuthInfoCache {
         LOGGER.info("invalidAuthInfo(), keyId = {}", keyId);
         return reactiveStringRedisTemplate.delete(keyId)
                 .flatMap(l -> {
-                    cache.invalidate(keyId);
+                    CACHE.invalidate(keyId);
                     return just(l > 0L);
                 });
     }
@@ -186,7 +186,7 @@ public final class AuthInfoCache {
         LOGGER.info("invalidLocalAuthInfo(), keyId = {}", keyId);
         try {
             if (isNotBlank(keyId))
-                cache.invalidate(keyId);
+                CACHE.invalidate(keyId);
             return just(true);
         } catch (Exception e) {
             return just(false);

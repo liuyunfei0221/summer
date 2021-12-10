@@ -1,6 +1,6 @@
 package com.blue.base.component.exception.handler.model;
 
-import com.blue.base.model.base.BlueResponse;
+import java.util.Arrays;
 
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 
@@ -13,26 +13,41 @@ public final class ExceptionHandleInfo {
 
     private final Integer status;
 
-    private final BlueResponse<Void> blueResponse;
+    private final Integer code;
 
-    public ExceptionHandleInfo(Integer status, BlueResponse<Void> blueResponse) {
+    private final String[] fillings;
+
+    public ExceptionHandleInfo() {
+        this.status = INTERNAL_SERVER_ERROR.code;
+        this.code = INTERNAL_SERVER_ERROR.code;
+        this.fillings = null;
+    }
+
+    public ExceptionHandleInfo(Integer status, Integer code, String[] fillings) {
         this.status = status != null ? status : INTERNAL_SERVER_ERROR.code;
-        this.blueResponse = blueResponse != null ? blueResponse : new BlueResponse<>(INTERNAL_SERVER_ERROR.code, null, INTERNAL_SERVER_ERROR.message);
+        this.code = code != null ? code : INTERNAL_SERVER_ERROR.code;
+        this.fillings = fillings;
     }
 
     public Integer getStatus() {
         return status;
     }
 
-    public BlueResponse<Void> getBlueVo() {
-        return blueResponse;
+    public Integer getCode() {
+        return code;
+    }
+
+    public String[] getFillings() {
+        return fillings;
     }
 
     @Override
     public String toString() {
         return "ExceptionHandleInfo{" +
                 "status=" + status +
-                ", blueVo=" + blueResponse +
+                ", code=" + code +
+                ", fillings=" + Arrays.toString(fillings) +
                 '}';
     }
+
 }
