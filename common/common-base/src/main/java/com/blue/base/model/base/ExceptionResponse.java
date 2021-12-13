@@ -37,9 +37,9 @@ public final class ExceptionResponse implements Serializable {
             this.status = status;
             this.code = code;
             this.message = message;
+        } else {
+            throw new RuntimeException("status or code or message can't be null");
         }
-
-        throw new RuntimeException("status or code or message can't be null");
     }
 
     public Integer getStatus() {

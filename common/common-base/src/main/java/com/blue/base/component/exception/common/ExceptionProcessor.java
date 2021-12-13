@@ -11,7 +11,6 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import static com.blue.base.common.base.ClassGetter.getClassesByPackage;
 import static com.blue.base.common.base.FileProcessor.getFiles;
@@ -78,7 +77,7 @@ public final class ExceptionProcessor {
     }
 
     private static final String MESSAGES_URI = "classpath:i18n";
-    private static final String DEFAULT_MESSAGES = "en_us";
+    private static final String DEFAULT_MESSAGES = "en-us";
     private static final int DEFAULT_KEY = INTERNAL_SERVER_ERROR.code;
     private static final String DEFAULT_MESSAGE = INTERNAL_SERVER_ERROR.message;
 
@@ -90,7 +89,7 @@ public final class ExceptionProcessor {
     };
 
     private static final Function<Map<String, String>, Map<Integer, String>> MESSAGES_CONVERTER = messages ->
-            messages.entrySet().stream().collect(Collectors.toMap(e -> {
+            messages.entrySet().stream().collect(toMap(e -> {
                 try {
                     return parseInt(e.getKey());
                 } catch (NumberFormatException ex) {
