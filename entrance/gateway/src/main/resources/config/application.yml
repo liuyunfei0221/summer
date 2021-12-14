@@ -24,28 +24,18 @@ spring:
       eureka:
         approximate-zone-from-hostname: false
       service-discovery:
-        timeout: 5s
-      sticky-session:
-        add-service-instance-cookie: false
+        timeout: 35s
       zone: summer
       retry:
         enabled: true
-        avoid-previous-instance: true
-        max-retries-on-next-service-instance: 1
-        max-retries-on-same-service-instance: 0
-        retry-on-all-operations: false
-        retryable-status-codes: [ 203,500,408,504 ]
-        backoff:
-          enabled: true
-          jitter: 0.5
-          min-backoff: 5ms
-          max-backoff: 10ms
+        avoid-previous-instance: false
       cache:
         enabled: true
         caffeine:
-          spec: initialCapacity=1024,expireAfterWrite=5s
+          spec: initialCapacity=1024,expireAfterWrite=35s
         capacity: 1024
-        ttl: 5s
+        ttl: 35s
+
 
     gateway:
       httpclient:
@@ -60,16 +50,12 @@ spring:
           acquireTimeout: 4000
           maxIdleTime: 4s
           maxLifeTime: 32s
-        ssl:
-          useInsecureTrustManager: false
-          handshakeTimeout: 10000
-          closeNotifyFlushTimeout: 3000
-          closeNotifyReadTimeout: 3000
-        #          key-store:
-        #          key-password:
-        #          key-store-password:
-        #          key-store-type:
-        #          key-store-provider:
+#        ssl:
+#          useInsecureTrustManager: false
+#          trusted-x509-certificates: []
+#          handshakeTimeout: 10000
+#          closeNotifyFlushTimeout: 3000
+#          closeNotifyReadTimeout: 3000
         websocket:
           maxFramePayloadLength: 4096
           proxyPing: false
@@ -77,7 +63,6 @@ spring:
       discovery:
         locator:
           enabled: true
-
       global-filter:
         remove-cached-body:
           enabled: false
@@ -93,6 +78,16 @@ spring:
           enabled: false
         reactive-load-balancer-client:
           enabled: false
+
+      globalcors:
+        cors-configurations:
+          allowedOrigins: [ "*" ]
+          allowedMethods: [ "*" ]
+          allowedHeaders: [ "*" ]
+          exposedHeaders: [ "*" ]
+          allowCredentials: true
+          maxAgeSeconds: 1728000
+          allowedOriginPatterns: [ /** ]
 
       filter:
         prefix-path:
@@ -218,3 +213,12 @@ server:
 
 logging:
   config: classpath:config/log4j2.xml
+
+resilience4j:
+  retry:
+    retry-aspect-order: 2147483643
+    instances:
+      wait-duration: 3s
+      interval-bi-function:
+      max-attempts: 10
+      retry-exception-predicate:

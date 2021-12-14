@@ -24,28 +24,17 @@ spring:
       eureka:
         approximate-zone-from-hostname: false
       service-discovery:
-        timeout: 5s
-      sticky-session:
-        add-service-instance-cookie: false
+        timeout: 35s
       zone: summer
       retry:
         enabled: true
-        avoid-previous-instance: true
-        max-retries-on-next-service-instance: 1
-        max-retries-on-same-service-instance: 0
-        retry-on-all-operations: false
-        retryable-status-codes: [ 203,500,408,504 ]
-        backoff:
-          enabled: true
-          jitter: 0.5
-          min-backoff: 5ms
-          max-backoff: 10ms
+        avoid-previous-instance: false
       cache:
         enabled: true
         caffeine:
-          spec: initialCapacity=1024,expireAfterWrite=5s
+          spec: initialCapacity=1024,expireAfterWrite=35s
         capacity: 1024
-        ttl: 5s
+        ttl: 35s
 
 server:
   shutdown: graceful

@@ -12,14 +12,21 @@ server:
     enabled: true
   error:
     path: /error
-  #  ssl:
-  #    key-store: classpath:blue.keystore
-  #    key-store-password: 123456
-  #    key-alias: blue
-  #    enabled: true
-  #    key-store-type: PKCS12
-#  http:
-#    port: 8102
+#  ssl:
+#    client-auth: need
+#    ciphers: [ ]
+#    enabled-protocols: [ ]
+#    key-alias:
+#    key-password:
+#    key-store:
+#    key-store-password:
+#    key-store-type:
+#    key-store-provider:
+#    trust-store:
+#    trust-store-password:
+#    trust-store-type:
+#    trust-store-provider:
+#    protocol: TLS
 
 
 eureka:
@@ -32,16 +39,6 @@ eureka:
     service-url:
       defaultZone: http://localhost:3000/eureka/
     registry-fetch-interval-seconds: 10
-
-
-cors:
-  allowedOrigins: [ "*" ]
-  allowedMethods: [ "*" ]
-  allowedHeaders: [ "*" ]
-  exposedHeaders: [ "*" ]
-  allowCredentials: true
-  maxAgeSeconds: 1728000
-  allowedOriginPatterns: [ /** ]
 
 
 cache:
