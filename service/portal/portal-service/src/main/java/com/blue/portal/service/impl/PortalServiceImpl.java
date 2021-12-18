@@ -97,7 +97,7 @@ public class PortalServiceImpl implements PortalService {
 
     private static final Function<Integer, BulletinType> TYPE_CONVERTER = type -> {
         if (isNull(type))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         return getBulletinTypeByIdentity(type);
     };

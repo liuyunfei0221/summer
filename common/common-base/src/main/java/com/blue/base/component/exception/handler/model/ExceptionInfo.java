@@ -15,18 +15,18 @@ public final class ExceptionInfo {
 
     private final Integer code;
 
-    private final String[] fillings;
+    private final String[] replacements;
 
     public ExceptionInfo() {
         this.status = INTERNAL_SERVER_ERROR.code;
         this.code = INTERNAL_SERVER_ERROR.code;
-        this.fillings = null;
+        this.replacements = null;
     }
 
-    public ExceptionInfo(Integer status, Integer code, String[] fillings) {
+    public ExceptionInfo(Integer status, Integer code, String[] replacements) {
         this.status = status != null ? status : INTERNAL_SERVER_ERROR.code;
         this.code = code != null ? code : INTERNAL_SERVER_ERROR.code;
-        this.fillings = fillings;
+        this.replacements = replacements;
     }
 
     public Integer getStatus() {
@@ -37,8 +37,8 @@ public final class ExceptionInfo {
         return code;
     }
 
-    public String[] getFillings() {
-        return fillings;
+    public String[] getReplacements() {
+        return replacements;
     }
 
     @Override
@@ -46,7 +46,7 @@ public final class ExceptionInfo {
         return "ExceptionHandleInfo{" +
                 "status=" + status +
                 ", code=" + code +
-                ", fillings=" + Arrays.toString(fillings) +
+                ", replacements=" + Arrays.toString(replacements) +
                 '}';
     }
 

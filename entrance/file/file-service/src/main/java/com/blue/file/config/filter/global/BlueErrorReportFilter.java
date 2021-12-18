@@ -78,7 +78,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
         RequestBodyGetter processor = REQUEST_BODY_GETTER_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, HttpHeaders.CONTENT_TYPE));
 
         if (processor == null)
-            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message, null);
+            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message);
 
         return processor;
     };

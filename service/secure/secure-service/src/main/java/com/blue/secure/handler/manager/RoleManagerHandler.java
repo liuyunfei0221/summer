@@ -57,7 +57,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> insert(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(RoleInsertParam.class)
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null))),
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.insertRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
@@ -73,7 +73,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> update(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(RoleUpdateParam.class)
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null))),
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.updateRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
@@ -103,7 +103,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PageModelRequest.class)
-                .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null)))
+                .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
                 .flatMap(roleService::selectRoleInfoPageMonoByPageAndCondition)
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
@@ -118,7 +118,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(IdentityParam.class)
-                .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null)))
+                .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
                 .flatMap(wrapper ->
                         roleResRelationService.selectAuthorityMonoByRoleId(wrapper.getId()))
                 .flatMap(auth ->

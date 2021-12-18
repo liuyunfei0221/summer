@@ -45,7 +45,7 @@ public class RelationManagerHandler {
      */
     public Mono<ServerResponse> updateAuthorityByRole(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(RoleResRelationParam.class)
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null))),
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.updateAuthorityByRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
@@ -61,7 +61,7 @@ public class RelationManagerHandler {
      */
     public Mono<ServerResponse> updateAuthorityByMember(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(MemberRoleRelationParam.class)
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null))),
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.updateAuthorityByMember(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->

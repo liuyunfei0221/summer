@@ -85,7 +85,7 @@ public final class BlueRateLimitFilter implements GlobalFilter, Ordered {
                 .flatMap(a -> {
                     if (a)
                         return chain.filter(exchange);
-                    return error(new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, TOO_MANY_REQUESTS.message, null));
+                    return error(new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, TOO_MANY_REQUESTS.message));
                 });
     }
 

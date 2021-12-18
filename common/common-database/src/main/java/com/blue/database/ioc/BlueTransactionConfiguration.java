@@ -85,23 +85,23 @@ public class BlueTransactionConfiguration {
     private static void assertConf(TransConf conf) {
         Isolation isolation = conf.getIsolation();
         if (isolation == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "isolation can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "isolation can't be null");
 
         Propagation propagation = conf.getPropagation();
         if (propagation == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "propagation can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "propagation can't be null");
 
         Integer transTimeout = conf.getTransTimeout();
         if (transTimeout == null || transTimeout < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "transTimeout can't be null or less than 1", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "transTimeout can't be null or less than 1");
 
         List<String> methodPreWithTrans = conf.getMethodPreWithTrans();
         if (isEmpty(methodPreWithTrans))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "corePoolSize can't be null or less than 1", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "corePoolSize can't be null or less than 1");
 
         String pointCutExpression = conf.getPointCutExpression();
         if (isBlank(pointCutExpression))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "pointCutExpression can't be null or ''", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "pointCutExpression can't be null or ''");
     }
 
 }

@@ -41,9 +41,9 @@ public final class PageModelRequest<T> implements Serializable {
 
     public PageModelRequest(Long page, Long rows, T param) {
         if (page == null || page < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value);
         if (rows == null || rows < 1L || rows > MAX_ROWS_PER_REQ)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value);
 
         this.page = page;
         this.rows = rows;
@@ -64,14 +64,14 @@ public final class PageModelRequest<T> implements Serializable {
 
     public void setPage(Long page) {
         if (page == null || page < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value);
 
         this.page = page;
     }
 
     public void setRows(Long rows) {
         if (rows == null || rows < 1L || rows > MAX_ROWS_PER_REQ)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value);
 
         this.rows = rows;
     }

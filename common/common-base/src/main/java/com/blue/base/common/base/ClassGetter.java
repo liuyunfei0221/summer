@@ -161,7 +161,7 @@ public final class ClassGetter {
             clazzName = path.substring(indexOf(path, CLASS_PREFIX) + CLASS_PREFIX.length())
                     .replace(separator, PACKAGE_SEPARATOR);
         } else {
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "handlePath(String path, List<String> clzNames) failed, path = " + path, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "handlePath(String path, List<String> clzNames) failed, path = " + path);
         }
         if (!clazzName.contains(INNER_CLASS_IDENTITY))
             clzNames.add(clazzName);

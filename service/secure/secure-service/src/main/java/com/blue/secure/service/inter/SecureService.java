@@ -78,6 +78,14 @@ public interface SecureService {
     Mono<Boolean> invalidAuthByJwt(String jwt);
 
     /**
+     * invalid auth by member id
+     *
+     * @param memberId
+     * @return
+     */
+    Mono<Boolean> invalidAuthByMemberId(Long memberId);
+
+    /**
      * invalid local auth by key id
      *
      * @param keyId

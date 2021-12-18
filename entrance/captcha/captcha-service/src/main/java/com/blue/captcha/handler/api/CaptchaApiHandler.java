@@ -45,7 +45,7 @@ public final class CaptchaApiHandler {
     public Mono<ServerResponse> generateClientLoginImageCaptcha(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(ClientLoginParam.class)
                 .switchIfEmpty(
-                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null)))
+                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
                 .flatMap(p ->
                         captchaService.generateClientLoginImageCaptcha(p)
                                 .flatMap(bytes ->

@@ -79,11 +79,11 @@ public class AttachmentServiceImpl implements AttachmentService {
         LOGGER.info("getAttachment(Long id), id = {}", id);
 
         if (id == null || id < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         Attachment attachment = attachmentMapper.selectByPrimaryKey(id);
         if (attachment == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
 
         LOGGER.info("attachment = {}", attachment);
         return just(attachment);
@@ -101,9 +101,9 @@ public class AttachmentServiceImpl implements AttachmentService {
         LOGGER.info("listAttachment(PageModelParam<Void> pageModelParam, Long memberId), pageModelDTO = {},memberId = {}", pageModelRequest, memberId);
 
         if (isNull(pageModelRequest))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
         if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return just(ofNullable(attachmentMapper.countByMemberId(memberId)).orElse(0L))
                 .flatMap(count -> {

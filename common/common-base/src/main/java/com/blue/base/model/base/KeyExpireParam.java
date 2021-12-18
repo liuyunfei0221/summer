@@ -39,11 +39,11 @@ public final class KeyExpireParam implements Serializable {
 
     public KeyExpireParam(String key, Long expire, ChronoUnit unit) {
         if (isBlank(key))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (isInvalidIdentity(expire))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         if (unit == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         this.key = key;
         this.expire = expire;
@@ -56,7 +56,7 @@ public final class KeyExpireParam implements Serializable {
 
     public void setKey(String key) {
         if (isBlank(key))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         this.key = key;
     }
 
@@ -66,7 +66,7 @@ public final class KeyExpireParam implements Serializable {
 
     public void setExpire(Long expire) {
         if (isInvalidIdentity(expire))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         this.expire = expire;
     }
 
@@ -76,7 +76,7 @@ public final class KeyExpireParam implements Serializable {
 
     public void setUnit(ChronoUnit unit) {
         if (unit == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
         this.unit = unit;
     }
 

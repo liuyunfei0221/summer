@@ -44,7 +44,7 @@ public final class BlueReactRestGenerator {
 
     public static WebClient createWebClient(ReactRestConf reactRestConf) {
         if (reactRestConf == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactRestConf can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactRestConf can't be null");
 
         LOGGER.info("WebClient createWebClient(ReactRestConf reactRestConf), reactRestConf = {}", reactRestConf);
 

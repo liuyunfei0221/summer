@@ -20,7 +20,7 @@ public class SecKeyHelper {
     //@see com.blue.jwt.constant.JwtConfSchema
     private static void generateSingKey(int len) {
         if (len < SEC_KEY_STR_MIN.len || len > SEC_KEY_STR_MAX.len)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "secKey's len can't be less than " + SEC_KEY_STR_MIN.len + " or greater than " + SEC_KEY_STR_MAX.len, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "secKey's len can't be less than " + SEC_KEY_STR_MIN.len + " or greater than " + SEC_KEY_STR_MAX.len);
 
         System.err.println("signKey = ");
         System.err.println(randomAlphanumeric(len));
@@ -28,13 +28,13 @@ public class SecKeyHelper {
 
     private static void generateGammaSecrets(int len, int size) {
         if (len < GAMMA_KEY_STR_MIN.len || len > GAMMA_KEY_STR_MAX.len)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret element len can't be less than " + GAMMA_KEY_STR_MIN.len + " or greater than " + GAMMA_KEY_STR_MAX.len, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret element len can't be less than " + GAMMA_KEY_STR_MIN.len + " or greater than " + GAMMA_KEY_STR_MAX.len);
 
         if (size < GAMMA_SECRETS_MIN.len || size > GAMMA_SECRETS_MAX.len)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's element count can't be less than " + GAMMA_SECRETS_MIN.len + " or greater than " + GAMMA_SECRETS_MAX.len, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's element count can't be less than " + GAMMA_SECRETS_MIN.len + " or greater than " + GAMMA_SECRETS_MAX.len);
 
         if (Integer.bitCount(size) != 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's count must be power of 2", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's count must be power of 2");
 
         List<String> gammaSecrets = new LinkedList<>();
         for (int i = 0; i < size; i++) {

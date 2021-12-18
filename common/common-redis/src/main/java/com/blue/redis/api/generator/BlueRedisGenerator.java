@@ -60,7 +60,7 @@ public final class BlueRedisGenerator {
             case SINGLE:
                 return generateStandConfiguration(redisConf);
             default:
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode, null);
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
         }
     }
 
@@ -227,7 +227,7 @@ public final class BlueRedisGenerator {
         confAsserter(redisConf);
 
         if (Stream.of(clz.getInterfaces()).noneMatch(inter -> Serializable.class.getName().equals(inter.getName())))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz must be a implemented of serializable", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz must be a implemented of serializable");
 
         RedisSerializationContext.RedisSerializationContextBuilder<String, T> contextBuilder =
                 RedisSerializationContext.newSerializationContext();
@@ -263,7 +263,7 @@ public final class BlueRedisGenerator {
                 redisClusterConfiguration.addClusterNode(new RedisNode(hostAndPort[0], parseInt(hostAndPort[1])));
             }
         } catch (Exception e) {
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redis init error,check args, e = " + e, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redis init error,check args, e = " + e);
         }
 
         ofNullable(redisConf.getMaxRedirects())
@@ -300,25 +300,25 @@ public final class BlueRedisGenerator {
      */
     private static void confAsserter(RedisConf conf) {
         if (conf == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         ServerMode serverMode = conf.getServerMode();
         if (serverMode == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
 
         switch (serverMode) {
             case CLUSTER:
                 List<String> nodes = conf.getNodes();
                 if (isEmpty(nodes))
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty", null);
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty");
                 break;
             case SINGLE:
                 Integer port = conf.getPort();
                 if (isBlank(conf.getHost()) || port == null || port < 1)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1", null);
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1");
                 break;
             default:
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode, null);
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
         }
     }
 

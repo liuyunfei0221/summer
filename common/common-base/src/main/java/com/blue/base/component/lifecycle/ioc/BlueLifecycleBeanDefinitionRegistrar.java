@@ -75,7 +75,7 @@ public class BlueLifecycleBeanDefinitionRegistrar implements ResourceLoaderAware
             String beanName = entry.getKey();
             int precedence = blueLifecycle.startPrecedence();
             LOGGER.error("start() failed, {} start failed, precedence is {}, e = {}", beanName, precedence, e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stop() failed, " + beanName + " start failed, precedence is " + precedence + ", e = " + e, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stop() failed, " + beanName + " start failed, precedence is " + precedence + ", e = " + e);
         }
     },
             ACTION_FOR_STOP = entry -> {
@@ -87,7 +87,7 @@ public class BlueLifecycleBeanDefinitionRegistrar implements ResourceLoaderAware
                     String beanName = entry.getKey();
                     int precedence = blueLifecycle.startPrecedence();
                     LOGGER.error("stop() failed, {} stop failed, precedence is {}, e = {}", beanName, precedence, e);
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stop() failed, " + beanName + " stop failed, precedence is " + precedence + ", e = " + e, null);
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stop() failed, " + beanName + " stop failed, precedence is " + precedence + ", e = " + e);
                 }
             };
 

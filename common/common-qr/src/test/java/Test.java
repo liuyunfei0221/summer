@@ -24,7 +24,7 @@ public class Test {
 
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(threads >>> 1, threads,
                 64L, TimeUnit.SECONDS, new ArrayBlockingQueue<>(blockingQueueSize), Thread::new, (r, executor) -> {
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "线程池任务堆积: " + r.toString(), null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "线程池任务堆积: " + r.toString());
         });
 
         for (int i = 0, end = blockingQueueSize >>> 1; i <= end; i++) {

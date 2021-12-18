@@ -53,7 +53,7 @@ public class RpcMemberServiceProvider implements RpcMemberService {
         return memberBasicService.selectMemberBasicMonoByPrimaryKey(id)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null)))
+                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
                 .toFuture();
     }
 
@@ -84,7 +84,7 @@ public class RpcMemberServiceProvider implements RpcMemberService {
         return memberBasicService.selectMemberBasicMonoByPhone(phone)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null)))
+                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
                 .toFuture();
     }
 
@@ -100,7 +100,7 @@ public class RpcMemberServiceProvider implements RpcMemberService {
         return memberBasicService.selectMemberBasicMonoByEmail(email)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null)))
+                        .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
                 .toFuture();
     }
 

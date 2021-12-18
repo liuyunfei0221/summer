@@ -148,7 +148,7 @@ public final class BlueRedissonGenerator {
                 configSingleServer(config, redissonConf);
                 break;
             default:
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode, null);
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
         }
 
         ThreadFactory threadFactory = r -> {
@@ -177,26 +177,26 @@ public final class BlueRedissonGenerator {
      */
     private static void confAsserter(RedissonConf redissonConf) {
         if (redissonConf == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redissonConf can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redissonConf can't be null");
 
         ServerMode serverMode = redissonConf.getServerMode();
         if (serverMode == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
 
         switch (serverMode) {
             case CLUSTER:
                 List<String> nodes = redissonConf.getNodes();
                 if (isEmpty(nodes))
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty", null);
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty");
                 break;
             case SINGLE:
                 String host = redissonConf.getHost();
                 Integer port = redissonConf.getPort();
                 if (isBlank(host) || port == null || port < 1)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1", null);
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1");
                 break;
             default:
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode, null);
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
         }
     }
 

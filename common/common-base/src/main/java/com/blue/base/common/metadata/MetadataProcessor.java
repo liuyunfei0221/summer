@@ -38,7 +38,7 @@ public final class MetadataProcessor {
         if (metadata != null)
             return GSON.toJson(metadata);
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_METADATA_PARAM.message, null);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_METADATA_PARAM.message);
     }
 
     /**
@@ -52,7 +52,7 @@ public final class MetadataProcessor {
             try {
                 return GSON.fromJson(json, METADATA_TYPE);
             } catch (JsonSyntaxException e) {
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_METADATA_PARAM.message, null);
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_METADATA_PARAM.message);
             }
 
         return EMPTY_METADATA_SUP.get();

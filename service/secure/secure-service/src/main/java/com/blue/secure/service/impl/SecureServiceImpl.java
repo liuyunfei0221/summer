@@ -59,13 +59,13 @@ import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -81,7 +81,7 @@ public class SecureServiceImpl implements SecureService {
 
     private JwtProcessor<MemberPayload> jwtProcessor;
 
-    private final AuthInfoCache authInfoCache;
+    private AuthInfoCache authInfoCache;
 
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -179,7 +179,7 @@ public class SecureServiceImpl implements SecureService {
         try {
             memberPayload = jwtProcessor.parse(jwt);
         } catch (Exception e) {
-            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null);
+            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
         }
         return memberPayload;
     };
@@ -192,7 +192,7 @@ public class SecureServiceImpl implements SecureService {
         try {
             authInfo = GSON.fromJson(authInfoStr, AuthInfo.class);
         } catch (JsonSyntaxException e) {
-            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null);
+            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
         }
         return authInfo;
     };
@@ -205,7 +205,7 @@ public class SecureServiceImpl implements SecureService {
             long start = currentTimeMillis();
             while (authorityInfosRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null);
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
                 onSpinWait();
             }
         }
@@ -220,7 +220,7 @@ public class SecureServiceImpl implements SecureService {
             long start = currentTimeMillis();
             while (authorityInfosRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null);
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
                 onSpinWait();
             }
         }
@@ -257,9 +257,9 @@ public class SecureServiceImpl implements SecureService {
             LoginType loginType = IDENTITY_NATURE_MAPPING.get(identity);
             if (loginType != null)
                 return loginType.nature.intern();
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
         }
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
     };
 
     /**
@@ -300,13 +300,13 @@ public class SecureServiceImpl implements SecureService {
     private final Function<String, Function<ClientLoginParam, Mono<MemberBasicInfo>>> LOGIN_HANDLER_GETTER = loginType -> {
         LOGGER.info("LOGIN_HANDLER_GETTER, loginType = {}", loginType);
         if (loginType == null || "".equals(loginType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         Function<ClientLoginParam, Mono<MemberBasicInfo>> loginFunc = clientLoginHandlers.get(loginType);
         if (loginFunc != null)
             return loginFunc;
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
     };
 
     /**
@@ -322,19 +322,19 @@ public class SecureServiceImpl implements SecureService {
     static {
         RE_PACKAGERS.put(ROLE, (ai, ele) -> {
             if (ai == null || ele == null || "".equals(ele))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
             long roleId;
             try {
                 roleId = parseLong(ele);
             } catch (NumberFormatException e) {
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
             }
             ai.setRoleId(roleId);
         });
         RE_PACKAGERS.put(PUB_KEY, (ai, ele) -> {
             if (ai == null || ele == null || "".equals(ele))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
             ai.setPubKey(ele);
         });
 
@@ -370,12 +370,12 @@ public class SecureServiceImpl implements SecureService {
      * @param deviceTypeIdentity
      * @return
      */
-    private String genSessionKey(Long id, String loginTypeIdentity, String deviceTypeIdentity) {
+    private static String genSessionKey(Long id, String loginTypeIdentity, String deviceTypeIdentity) {
         LOGGER.info("String genSessionKey(Long id, String loginTypeIdentity, String deviceTypeIdentity), id = {}, loginTypeIdentity = {}, deviceTypeIdentity = {}", id, loginTypeIdentity, deviceTypeIdentity);
         if (id != null && id >= 0L && deviceTypeIdentity != null && !"".equals(deviceTypeIdentity))
             return SESSION_KEY_PRE + id + PAR_CONCATENATION + LOGIN_TYPE_2_NATURE_CONVERTER.apply(loginTypeIdentity).intern() + PAR_CONCATENATION + deviceTypeIdentity;
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
     }
 
     /**
@@ -396,7 +396,7 @@ public class SecureServiceImpl implements SecureService {
         if (isNotBlank(snKey) && elementType != null && isNotBlank(elementValue))
             return AUTH_REFRESH_KEY_GENS.get(elementType).apply(snKey, elementValue);
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
     }
 
     /**
@@ -472,15 +472,15 @@ public class SecureServiceImpl implements SecureService {
         LOGGER.info("void refreshAuthElementMultiTypes(AuthInfoRefreshParam authInfoRefreshParam), authInfoRefreshParam = {}", authInfoRefreshElement);
         Long memberId = authInfoRefreshElement.getMemberId();
         if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         AuthInfoRefreshElementType elementType = authInfoRefreshElement.getElementType();
         if (elementType == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         String elementValue = authInfoRefreshElement.getElementValue();
         if (isBlank(elementValue))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         List<String> loginTypes = ofNullable(authInfoRefreshElement.getLoginTypes())
                 .filter(lts -> lts.size() > 0)
@@ -525,9 +525,25 @@ public class SecureServiceImpl implements SecureService {
                         new AuthorityBaseOnRole(role, RESOURCE_INFOS_BY_ROLE_ID_GETTER.apply(roleId)))
                 .orElseThrow(() -> {
                     LOGGER.error("role info doesn't exist, roleId = {}", roleId);
-                    return new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+                    return new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
                 }));
     }
+
+    private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_TASK = memberId -> {
+        String keyId;
+        try {
+            for (LoginType loginType : VALID_LOGIN_TYPES)
+                for (DeviceType deviceType : VALID_DEVICE_TYPES) {
+                    keyId = genSessionKey(memberId, loginType.identity, deviceType.identity);
+                    authInfoCache.invalidAuthInfo(keyId).subscribe();
+                    authInfoCache.invalidLocalAuthInfo(keyId).subscribe();
+                }
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    };
 
     /**
      * init
@@ -622,7 +638,7 @@ public class SecureServiceImpl implements SecureService {
     public Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam) {
         LOGGER.info("Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
         if (clientLoginParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         String loginType = clientLoginParam.getLoginType().intern();
         String deviceType = clientLoginParam.getDeviceType().intern();
@@ -638,7 +654,7 @@ public class SecureServiceImpl implements SecureService {
                                                     just(new AuthGenElement(mid, rid, loginType, deviceType)))
                                             .orElseGet(() -> {
                                                 LOGGER.error("Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam) failed, member has no role, memberId = {}", mid);
-                                                return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message, null));
+                                                return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message));
                                             }));
                 }).flatMap(this::generateAuthMono);
     }
@@ -653,7 +669,7 @@ public class SecureServiceImpl implements SecureService {
     public Mono<MemberAuth> loginByMiniPro(MiniProLoginParam miniProLoginParam) {
         LOGGER.info("Mono<MemberAuth> loginByMiniPro(MiniProLoginParam miniProLoginParam), miniProLoginParam = {}", miniProLoginParam);
         if (miniProLoginParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         return null;
     }
@@ -668,7 +684,7 @@ public class SecureServiceImpl implements SecureService {
     public Mono<MemberAuth> loginByWechat(WechatProLoginParam wechatProLoginParam) {
         LOGGER.info("Mono<MemberAuth> loginByWechat(WechatProLoginParam wechatProLoginParam), wechatProLoginParam = {}", wechatProLoginParam);
         if (wechatProLoginParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         return null;
     }
@@ -683,14 +699,14 @@ public class SecureServiceImpl implements SecureService {
     public Mono<AuthAsserted> assertAuthMono(AssertAuth assertAuth) {
         LOGGER.info("Mono<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", assertAuth);
         return just(assertAuth)
-                .switchIfEmpty(error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null)))
+                .switchIfEmpty(error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message)))
                 .flatMap(aa -> {
                     String resourceKey = REQ_RES_KEY_GENERATOR.apply(
                             aa.getMethod().intern(), aa.getUri());
 
                     Resource resource = RESOURCE_GETTER.apply(resourceKey);
                     if (resource == null)
-                        return error(new BlueException(NOT_FOUND.status, NOT_FOUND.code, NOT_FOUND.message, null));
+                        return error(new BlueException(NOT_FOUND.status, NOT_FOUND.code, NOT_FOUND.message));
 
                     if (!resource.getAuthenticate())
                         return NO_AUTH_REQUIRED_RES_GEN.apply(resource);
@@ -701,13 +717,13 @@ public class SecureServiceImpl implements SecureService {
                     return authInfoCache.getAuthInfo(memberPayload.getKeyId())
                             .flatMap(v -> {
                                 if (v == null || "".equals(v))
-                                    return error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null));
+                                    return error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message));
 
                                 AuthInfo authInfo = AUTH_INFO_PARSER.apply(v);
                                 if (!jwt.equals(authInfo.getJwt()))
-                                    return error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null));
+                                    return error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message));
                                 if (!AUTHORIZATION_RES_CHECKER.apply(authInfo.getRoleId(), resourceKey))
-                                    return error(new BlueException(FORBIDDEN.status, FORBIDDEN.code, FORBIDDEN.message, null));
+                                    return error(new BlueException(FORBIDDEN.status, FORBIDDEN.code, FORBIDDEN.message));
 
                                 boolean reqUnDecryption = resource.getRequestUnDecryption();
                                 boolean resUnEncryption = resource.getResponseUnEncryption();
@@ -754,12 +770,12 @@ public class SecureServiceImpl implements SecureService {
                                                 return just(new MemberAuth(jwt, keyPair.getPriKey()));
 
                                             LOGGER.error("authInfoCache.setAuthInfo(mp.getKeyId(), authInfoJson), failed, mp = {}", mp);
-                                            return error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null));
+                                            return error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message));
                                         });
                             });
                         })
                 :
-                error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null));
+                error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message));
     }
 
     /**
@@ -774,7 +790,7 @@ public class SecureServiceImpl implements SecureService {
         return access != null ?
                 authInfoCache.invalidAuthInfo(genSessionKey(access.getId(), access.getLoginType().intern(), access.getDeviceType().intern()))
                 :
-                error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null));
+                error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message));
     }
 
     /**
@@ -792,6 +808,21 @@ public class SecureServiceImpl implements SecureService {
             LOGGER.error("Mono<Boolean> invalidAuthByJwt(String jwt) failed, jwt = {}, e = {}", jwt, e);
             return just(false);
         }
+    }
+
+    /**
+     * invalid auth by member id
+     *
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<Boolean> invalidAuthByMemberId(Long memberId) {
+        LOGGER.info("Mono<Boolean> invalidAuthByMemberId(Long memberId), memberId = {}", memberId);
+        if (isValidIdentity(memberId))
+            return fromFuture(supplyAsync(() -> INVALID_AUTH_BY_MEMBER_ID_TASK.apply(memberId), executorService));
+
+        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message));
     }
 
     /**
@@ -840,7 +871,7 @@ public class SecureServiceImpl implements SecureService {
                             return just(keyPair.getPriKey());
                         })
                 :
-                error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null));
+                error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message));
     }
 
     /**
@@ -855,7 +886,7 @@ public class SecureServiceImpl implements SecureService {
         return access != null ?
                 getAuthorityMonoByRoleId(access.getRoleId())
                 :
-                error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null));
+                error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message));
     }
 
     /**
@@ -873,10 +904,10 @@ public class SecureServiceImpl implements SecureService {
                                 roleIdOpt.map(this::getAuthorityMonoByRoleId)
                                         .orElseGet(() -> {
                                             LOGGER.error("Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId), role id of the member id -> {} not found", memberId);
-                                            return error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null));
+                                            return error(new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message));
                                         }))
                 :
-                error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null));
+                error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message));
     }
 
 }

@@ -57,7 +57,7 @@ public class BulletinServiceImpl implements BulletinService {
     public List<Bulletin> selectTargetActiveBulletinByType(BulletinType bulletinType) {
         LOGGER.info("List<Bulletin> selectActiveBulletinByType(BulletinType bulletinType), bulletinType = {}", bulletinType);
         if (bulletinType == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message,null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         List<Bulletin> bulletins = bulletinMapper.selectByRowsAndCondition(bulletinType.identity, Status.VALID.status, ROWS.value);
         LOGGER.info("List<Bulletin> selectActiveBulletinByType(BulletinType bulletinType), bulletins = {}", bulletins);

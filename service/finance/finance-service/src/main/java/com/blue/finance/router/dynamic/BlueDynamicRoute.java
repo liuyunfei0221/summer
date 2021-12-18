@@ -42,7 +42,7 @@ public class BlueDynamicRoute {
     public BlueDynamicRoute(DynamicApiDeploy dynamicApiDeploy) {
         String path = dynamicApiDeploy.getPath();
         if (isBlank(path))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "path can't be null or ''", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "path can't be null or ''");
 
         this.PATH = PATH_PARSER.apply(path);
     }
@@ -64,7 +64,7 @@ public class BlueDynamicRoute {
         Long uriPlaceholder = dynamicResource.getUriPlaceholder();
 
         if (uriPlaceholder == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uriPlaceholder can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uriPlaceholder can't be null");
 
         switch (requestMethod) {
             case "GET":
@@ -96,7 +96,7 @@ public class BlueDynamicRoute {
                 break;
 
             default:
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "not support method -> " + requestMethod, null);
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "not support method -> " + requestMethod);
         }
 
         LOGGER.info("generate endPoint, dynamicResource = {}", dynamicResource);

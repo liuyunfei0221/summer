@@ -17,7 +17,7 @@ import static com.blue.base.common.base.FileProcessor.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.loadProp;
 import static com.blue.base.common.base.PropertiesProcessor.parseProp;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
+import static com.blue.base.constant.base.Symbol.*;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
@@ -85,7 +85,8 @@ public final class ExceptionProcessor {
 
     private static final UnaryOperator<String> PRE_NAME_PARSER = n -> {
         int idx = lastIndexOf(n, SCHEME_SEPARATOR.identity);
-        return idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : "") : n;
+        String name = idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : "") : n;
+        return name.replace(PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity);
     };
 
     private static final Function<Map<String, String>, Map<Integer, String>> MESSAGES_CONVERTER = messages ->
@@ -121,9 +122,9 @@ public final class ExceptionProcessor {
                     .map(messages -> messages.get(ofNullable(key).orElse(DEFAULT_KEY)))
                     .orElse(DEFAULT_MESSAGE);
 
-    private static final BiFunction<String, String[], String> FILLING_FUNC = (msg, fillings) -> {
+    private static final BiFunction<String, String[], String> FILLING_FUNC = (msg, replacements) -> {
         try {
-            return format(msg, (Object[]) fillings);
+            return format(msg, (Object[]) replacements);
         } catch (Exception e) {
             return msg;
         }
@@ -133,10 +134,10 @@ public final class ExceptionProcessor {
             ofNullable(info)
                     .map(i -> {
                         Integer code = i.getCode();
-                        String[] fillings = info.getFillings();
+                        String[] replacements = info.getReplacements();
                         String msg = MESSAGE_GETTER.apply(languages, code);
                         return new ExceptionResponse(i.getStatus(), code,
-                                fillings == null ? msg : FILLING_FUNC.apply(msg, fillings));
+                                replacements == null ? msg : FILLING_FUNC.apply(msg, replacements));
                     }).orElse(DEFAULT_EXP_RESP);
 
     /**

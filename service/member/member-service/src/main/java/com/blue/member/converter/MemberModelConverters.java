@@ -26,35 +26,35 @@ public final class MemberModelConverters {
 
     public static final Function<MemberRegistryParam, MemberBasic> MEMBER_REGISTRY_INFO_2_MEMBER_BASIC = memberRegistryParam -> {
         if (memberRegistryParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         String phone = memberRegistryParam.getPhone();
         if (isBlank(phone))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
         if (phone.length() > BlueNumericalValue.PHONE_LEN_MAX.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too long", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too long");
         if (phone.length() < BlueNumericalValue.PHONE_LEN_MIN.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too short", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too short");
 
         String email = memberRegistryParam.getEmail();
         if (isBlank(email))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank");
         if (email.length() > BlueNumericalValue.EMAIL_LEN_MAX.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too long", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too long");
         if (email.length() < BlueNumericalValue.EMAIL_LEN_MIN.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too short", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too short");
 
         String password = memberRegistryParam.getPassword();
         if (isBlank(password))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password can't be blank", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password can't be blank");
         if (password.length() > BlueNumericalValue.ACS_LEN_MAX.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password length is too long", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password length is too long");
         if (password.length() < BlueNumericalValue.ACS_LEN_MIN.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password length is too short", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password length is too short");
 
         String name = memberRegistryParam.getName();
         if (isBlank(name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
         Integer gender = memberRegistryParam.getGender();
         assertGenderIdentity(gender, false);

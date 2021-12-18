@@ -61,17 +61,17 @@ public final class AuthBatchExpireProcessor {
                                     Long batchExpireScheduledDelayMillis, Integer batchExpireQueueCapacity) {
 
         if (stringRedisTemplate == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stringRedisTemplate can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stringRedisTemplate can't be null");
         if (batchExpireMaxPerHandle == null || batchExpireMaxPerHandle < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireMaxPerHandle can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireMaxPerHandle can't be null");
         if (batchExpireScheduledCorePoolSize == null || batchExpireScheduledCorePoolSize < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireScheduledCorePoolSize can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireScheduledCorePoolSize can't be null");
         if (batchExpireScheduledInitialDelayMillis == null || batchExpireScheduledInitialDelayMillis < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireScheduledInitialDelayMillis can't be null or less than 1", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireScheduledInitialDelayMillis can't be null or less than 1");
         if (batchExpireScheduledDelayMillis == null || batchExpireScheduledDelayMillis < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireScheduledDelayMillis can't be null or less than 1", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireScheduledDelayMillis can't be null or less than 1");
         if (batchExpireQueueCapacity == null || batchExpireQueueCapacity < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireQueueCapacity can't be null or less than 1", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireQueueCapacity can't be null or less than 1");
 
         this.stringRedisTemplate = stringRedisTemplate;
 
@@ -79,7 +79,7 @@ public final class AuthBatchExpireProcessor {
             for (int i = 0; i < batchExpireQueueCapacity; i++)
                 QUEUE_FOR_PACKAGE.put(new ExpireData());
         } catch (InterruptedException e) {
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "QUEUE_FOR_PACKAGE put ExpireData failed, e = " + e, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "QUEUE_FOR_PACKAGE put ExpireData failed, e = " + e);
         }
 
         RejectedExecutionHandler rejectedExecutionHandler = (r, executor) -> {
@@ -117,17 +117,17 @@ public final class AuthBatchExpireProcessor {
      */
     private static final Consumer<KeyExpireParam> DATA_ASSERTER = keyExpireParam -> {
         if (keyExpireParam == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keyExpireParam can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keyExpireParam can't be null");
 
         if (isBlank(keyExpireParam.getKey()))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null or ''", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null or ''");
 
         Long expire = keyExpireParam.getExpire();
         if (expire == null || expire < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "expire can't be null or less than 1", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "expire can't be null or less than 1");
 
         if (keyExpireParam.getUnit() == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unit can't be null", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unit can't be null");
     };
 
     /**
@@ -157,7 +157,7 @@ public final class AuthBatchExpireProcessor {
         try {
             return queue.take();
         } catch (InterruptedException e) {
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "BLOCKING_ELEMENT_GETTER failed, e = " + e, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "BLOCKING_ELEMENT_GETTER failed, e = " + e);
         }
     };
 

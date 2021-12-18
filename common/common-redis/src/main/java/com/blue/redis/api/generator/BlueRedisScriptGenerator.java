@@ -33,7 +33,7 @@ public final class BlueRedisScriptGenerator {
      */
     public static <T> RedisScript<T> generateScriptByFile(String location, Class<T> clz) {
         if (isBlank(location))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "location can't be null or ''", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "location can't be null or ''");
 
         Resource resource = new ClassPathResource(location);
         EncodedResource encodedResource = new EncodedResource(resource, UTF_8.name());
@@ -42,7 +42,7 @@ public final class BlueRedisScriptGenerator {
         try {
             scriptStr = resourceScriptSource.getScriptAsString();
         } catch (IOException e) {
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "scriptStr can't be null or ''", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "scriptStr can't be null or ''");
         }
 
         return new BlueRedisScript<>(scriptStr, clz);
@@ -57,7 +57,7 @@ public final class BlueRedisScriptGenerator {
      */
     public static <T> RedisScript<T> generateScriptByScriptStr(String script, Class<T> clz) {
         if (isBlank(script))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "script can't be null or ''", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "script can't be null or ''");
 
         return new BlueRedisScript<>(script, clz);
     }

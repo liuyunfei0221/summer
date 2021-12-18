@@ -30,7 +30,6 @@ public final class ReactiveBlueExceptionHandler implements WebExceptionHandler {
 
     private static final Charset CHARSET = UTF_8;
 
-
     @SuppressWarnings("NullableProblems")
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable throwable) {

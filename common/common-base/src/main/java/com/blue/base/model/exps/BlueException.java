@@ -37,22 +37,43 @@ public final class BlueException extends RuntimeException {
     private String message;
 
     /**
-     * fillings
+     * replacements
      */
-    private String[] fillings;
+    private String[] replacements;
 
     public BlueException() {
         this.status = INTERNAL_SERVER_ERROR.status;
         this.code = INTERNAL_SERVER_ERROR.code;
         this.message = INTERNAL_SERVER_ERROR.message;
-        this.fillings = null;
+        this.replacements = null;
     }
 
-    public BlueException(Integer status, Integer code, String message, String[] fillings) {
+    public BlueException(Integer status) {
+        this.status = status;
+        this.code = status;
+        this.message = null;
+        this.replacements = null;
+    }
+
+    public BlueException(Integer status, Integer code) {
+        this.status = status;
+        this.code = code;
+        this.message = null;
+        this.replacements = null;
+    }
+
+    public BlueException(Integer status, Integer code, String message) {
         this.status = status;
         this.code = code;
         this.message = message;
-        this.fillings = fillings;
+        this.replacements = null;
+    }
+
+    public BlueException(Integer status, Integer code, String message, String[] replacements) {
+        this.status = status;
+        this.code = code;
+        this.message = message;
+        this.replacements = replacements;
     }
 
     public Integer getStatus() {
@@ -80,12 +101,12 @@ public final class BlueException extends RuntimeException {
         this.message = message;
     }
 
-    public String[] getFillings() {
-        return fillings;
+    public String[] getReplacements() {
+        return replacements;
     }
 
-    public void setFillings(String[] fillings) {
-        this.fillings = fillings;
+    public void setReplacements(String[] replacements) {
+        this.replacements = replacements;
     }
 
     @Override
@@ -94,7 +115,7 @@ public final class BlueException extends RuntimeException {
                 "status=" + status +
                 ", code=" + code +
                 ", message='" + message + '\'' +
-                ", fillings=" + Arrays.toString(fillings) +
+                ", replacements=" + Arrays.toString(replacements) +
                 '}';
     }
 }

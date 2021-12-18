@@ -26,7 +26,7 @@ public final class AuthProcessor {
         if (access != null)
             return GSON.toJson(access);
 
-        throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null);
+        throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
     }
 
     /**
@@ -40,10 +40,10 @@ public final class AuthProcessor {
             try {
                 return GSON.fromJson(json, Access.class);
             } catch (JsonSyntaxException e) {
-                throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null);
+                throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
             }
 
-        throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null);
+        throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
     }
 
 }

@@ -102,7 +102,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
             long start = currentTimeMillis();
             while (dynamicInfoRefreshing) {
                 if (currentTimeMillis() - start > maxWaitingForRefresh)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null);
+                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
                 onSpinWait();
             }
         }
@@ -111,7 +111,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
 
     private static final BinaryOperator<String> DYNAMIC_KEY_GENERATOR = (placeholder, method) -> {
         if (isBlank(placeholder) || isBlank(method))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
 
         return placeholder + PAR_CONCATENATION + method.toUpperCase();
     };
@@ -121,7 +121,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
 
         int index = lastIndexOf(path, PATH_SEPARATOR);
         if (index == -1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
 
         String maybePlaceholder = substring(path, index + 1);
 
@@ -132,7 +132,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
         if (dynamicEndPointHandler != null)
             return dynamicEndPointHandler;
 
-        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null);
+        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
     };
 
 
@@ -148,7 +148,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
                         ofNullable(r.getHandlerId())
                                 .map(handlerIdWithBeanNameMapping::get)
                                 .map(clzWithHandlerMapping::get)
-                                .orElseThrow(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "the handler with resource = {} not exist, r = " + r, null)), (a, b) -> a));
+                                .orElseThrow(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "the handler with resource = {} not exist, r = " + r)), (a, b) -> a));
 
         dynamicInfoRefreshing = true;
         placeHolderHandlerMapping = tempPlaceHolderHandlerMapping;
@@ -161,15 +161,15 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
     public void init() {
         Map<String, DynamicHandlerService> beansOfDynamicHandlerService = applicationContext.getBeansOfType(DynamicHandlerService.class);
         if (beansOfDynamicHandlerService.values().size() != 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicHandlerService can't be empty or more than 1", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicHandlerService can't be empty or more than 1");
 
         Map<String, DynamicResourceService> beansOfDynamicResourceService = applicationContext.getBeansOfType(DynamicResourceService.class);
         if (beansOfDynamicResourceService.values().size() != 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicResourceService can't be empty or more than 1", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicResourceService can't be empty or more than 1");
 
         Map<String, DynamicApiDeploy> beansOfDynamicApiDeploy = applicationContext.getBeansOfType(DynamicApiDeploy.class);
         if (beansOfDynamicApiDeploy.values().size() != 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicApiDeploy can't be empty or more than 1", null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicApiDeploy can't be empty or more than 1");
 
         this.dynamicHandlerService = new ArrayList<>(beansOfDynamicHandlerService.values()).get(0);
         this.dynamicResourceService = new ArrayList<>(beansOfDynamicResourceService.values()).get(0);

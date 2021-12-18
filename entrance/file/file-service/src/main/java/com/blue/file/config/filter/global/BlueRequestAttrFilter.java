@@ -53,14 +53,14 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
 
     private static final Consumer<ServerHttpRequest> URI_ASSERTER = request -> {
         if (request.getURI().getRawPath().length() > MAX_URI_LENGTH)
-            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message, null);
+            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
     };
 
     private static final Consumer<HttpHeaders> CONTENT_TYPE_ASSERTER = headers -> {
         if (VALID_CONTENT_TYPES.contains(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE)))
             return;
 
-        throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message, null);
+        throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message);
     };
 
     private static final Consumer<ServerHttpRequest> HEADER_ASSERTER = request -> {
@@ -74,13 +74,13 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
 
         for (Map.Entry<String, List<String>> headerEntry : headers.entrySet()) {
             if (++headerCount > MAX_HEADER_COUNT)
-                throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message, null);
+                throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
 
             headerValues = headerEntry.getValue();
             for (String value : headerValues) {
                 headerLength += value.getBytes().length;
                 if (headerLength > MAX_HEADER_LENGTH)
-                    throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message, null);
+                    throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
             }
         }
     };
@@ -88,7 +88,7 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
     private static final Consumer<ServerHttpRequest> CONTENT_ASSERTER = request -> {
         if (ofNullable(request.getHeaders().getFirst(CONTENT_LENGTH))
                 .map(Integer::valueOf).orElse(1) > MAX_CONTENT_LENGTH)
-            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message, null);
+            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
     };
 
     @PostConstruct

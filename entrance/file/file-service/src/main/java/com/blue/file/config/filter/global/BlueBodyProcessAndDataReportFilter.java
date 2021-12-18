@@ -193,7 +193,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         ReportWithRequestBodyProcessor processor = REQUEST_BODY_PROCESSOR_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE));
 
         if (processor == null)
-            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message, null);
+            throw new BlueException(UNSUPPORTED_MEDIA_TYPE.status, UNSUPPORTED_MEDIA_TYPE.code, UNSUPPORTED_MEDIA_TYPE.message);
 
         return processor;
     };

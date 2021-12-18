@@ -121,9 +121,9 @@ public class RoleServiceImpl implements RoleService {
     private Role getDefaultRoleFromDb() {
         List<Role> defaultRoles = roleMapper.selectDefault();
         if (isEmpty(defaultRoles))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
         if (defaultRoles.size() > 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
 
         Role defaultRole = defaultRoles.get(0);
         this.defaultRole = defaultRole;
@@ -190,21 +190,21 @@ public class RoleServiceImpl implements RoleService {
      */
     private final Consumer<RoleInsertParam> INSERT_ROLE_VALIDATOR = rip -> {
         if (rip == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
 
         String name = rip.getName();
         if (isBlank(name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
         String description = rip.getDescription();
         if (isBlank(description))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
 
         if (isNotNull(roleMapper.selectByName(name)))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists");
 
         if (isNotNull(roleMapper.selectByLevel(rip.getLevel())))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The level already exists", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The level already exists");
     };
 
     /**
@@ -213,7 +213,7 @@ public class RoleServiceImpl implements RoleService {
     private final Function<RoleUpdateParam, Role> UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
         Long id = rup.getId();
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         ofNullable(rup.getName())
                 .filter(Asserter::isNotBlank)
@@ -221,7 +221,7 @@ public class RoleServiceImpl implements RoleService {
                 .map(Role::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exist", null);
+                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exist");
                 });
 
         ofNullable(rup.getLevel())
@@ -229,12 +229,12 @@ public class RoleServiceImpl implements RoleService {
                 .map(Role::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The level already exist", null);
+                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The level already exist");
                 });
 
         Role role = roleMapper.selectByPrimaryKey(id);
         if (role == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
 
         return role;
     };
@@ -244,7 +244,7 @@ public class RoleServiceImpl implements RoleService {
      */
     public static final BiFunction<RoleUpdateParam, Role, Boolean> ROLE_UPDATE_PARAM_AND_ROLE_COMPARER = (p, t) -> {
         if (!p.getId().equals(t.getId()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
 
         boolean alteration = false;
 
@@ -280,9 +280,9 @@ public class RoleServiceImpl implements RoleService {
     public RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
         LOGGER.info("RoleInfo insertRole(RoleInsertParam roleInsertParam), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
         if (isNull(roleInsertParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
         if (isInvalidIdentity(operatorId))
-            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null);
+            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
 
         INSERT_ROLE_VALIDATOR.accept(roleInsertParam);
         Role role = ROLE_INSERT_PARAM_2_ROLE_CONVERTER.apply(roleInsertParam);
@@ -309,9 +309,9 @@ public class RoleServiceImpl implements RoleService {
     public RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId) {
         LOGGER.info("RoleInfo updateRole(RoleInsertParam roleInsertParam), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
         if (isNull(roleUpdateParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
         if (isInvalidIdentity(operatorId))
-            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message, null);
+            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
 
         Role role = UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER.apply(roleUpdateParam);
         if (ROLE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(roleUpdateParam, role)) {
@@ -319,7 +319,7 @@ public class RoleServiceImpl implements RoleService {
             return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
         }
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data has no change", null);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data has no change");
     }
 
     /**
@@ -333,7 +333,7 @@ public class RoleServiceImpl implements RoleService {
     public RoleInfo deleteRoleById(Long id) {
         LOGGER.info("RoleInfo deleteRoleById(Long id, Long operatorId), id = {}", id);
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         Role role = roleMapper.selectByPrimaryKey(id);
         if (role != null) {
@@ -341,7 +341,7 @@ public class RoleServiceImpl implements RoleService {
             return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
         }
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
     }
 
     /**
@@ -369,7 +369,7 @@ public class RoleServiceImpl implements RoleService {
         LOGGER.info("defaultRole = {}", defaultRole);
         if (isNull(defaultRole)) {
             LOGGER.error("Role getDefaultRole(), default role not exist");
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message, null);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
         }
 
         return defaultRole;
@@ -386,13 +386,13 @@ public class RoleServiceImpl implements RoleService {
     public void updateDefaultRole(Long id, Long operatorId) {
         LOGGER.info("void updateDefaultRole(Long id), id = {}", id);
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         Role role = roleMapper.selectByPrimaryKey(id);
         Role defaultRole = getDefaultRoleFromDb();
 
         if (role.getId().equals(defaultRole.getId()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is already default", null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is already default");
 
         Long stamp = TIME_STAMP_GETTER.get();
 
@@ -420,7 +420,7 @@ public class RoleServiceImpl implements RoleService {
     public Optional<Role> getRoleById(Long id) {
         LOGGER.info("Optional<Role> getRoleById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return ofNullable(roleMapper.selectByPrimaryKey(id));
     }
@@ -435,7 +435,7 @@ public class RoleServiceImpl implements RoleService {
     public Mono<Optional<Role>> getRoleMonoById(Long id) {
         LOGGER.info("Mono<Optional<Role>> getRoleMonoById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
 
         return just(ofNullable(roleMapper.selectByPrimaryKey(id)));
     }

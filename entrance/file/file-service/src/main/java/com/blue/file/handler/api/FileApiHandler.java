@@ -64,10 +64,10 @@ public final class FileApiHandler {
     public Mono<ServerResponse> upload(ServerRequest serverRequest) {
         long allFileSize = serverRequest.headers().contentLength().orElse(0L);
         if (0L == allFileSize || allFileSize > allFileSizeThreshold)
-            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message, null);
+            throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);
 
         return zip(serverRequest.multipartData()
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null))),
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         fileService.uploadAttachment(tuple2.getT1(), tuple2.getT2().getId()))
@@ -85,19 +85,19 @@ public final class FileApiHandler {
      */
     public Mono<ServerResponse> download(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(IdentityParam.class)
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message, null))),
+                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         fileService.getAttachmentForDownload(tuple2.getT1().getId(), tuple2.getT2().getId())
-                                .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null)))
+                                .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message)))
                                 .flatMap(attachment -> {
                                     String link = attachment.getLink();
                                     if (link == null || "".equals(link))
-                                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null));
+                                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message));
 
                                     FileSystemResource resource = new FileSystemResource(new File(link));
                                     if (!resource.exists())
-                                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null));
+                                        return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message));
 
                                     return ok().contentType(APPLICATION_OCTET_STREAM)
                                             .header(CONTENT_DISPOSITION.name,

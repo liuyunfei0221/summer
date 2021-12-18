@@ -15,7 +15,7 @@ public enum MarketingCommonException {
     /**
      * REPEAT_SIGN_IN_EXP
      */
-    REPEAT_SIGN_IN_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "Please do not sign in again", null));
+    REPEAT_SIGN_IN_EXP(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "Please do not sign in again"));
 
     public BlueException exp;
 

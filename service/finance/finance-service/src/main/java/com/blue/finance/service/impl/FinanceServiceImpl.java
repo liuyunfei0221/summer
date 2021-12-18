@@ -54,7 +54,7 @@ public class FinanceServiceImpl implements FinanceService {
                         Optional<FinanceAccount> faOpt = financeAccountService.getFinanceAccountByMemberId(mi);
                         if (faOpt.isEmpty()) {
                             LOGGER.error("A member did not allocate funds account, please repair data, memberId = {}", memberId);
-                            return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message, null));
+                            return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message));
                         }
 
                         FinanceAccount financeAccount = faOpt.get();
@@ -66,7 +66,7 @@ public class FinanceServiceImpl implements FinanceService {
                     .flatMap(fa ->
                             just(new FinanceInfo(fa.getBalance())));
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message, null);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
     }
 
 }
