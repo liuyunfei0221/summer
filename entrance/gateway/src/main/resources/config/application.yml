@@ -79,16 +79,6 @@ spring:
         reactive-load-balancer-client:
           enabled: false
 
-      globalcors:
-        cors-configurations:
-          allowedOrigins: [ "*" ]
-          allowedMethods: [ "*" ]
-          allowedHeaders: [ "*" ]
-          exposedHeaders: [ "*" ]
-          allowCredentials: true
-          maxAgeSeconds: 1728000
-          allowedOriginPatterns: [ /** ]
-
       filter:
         prefix-path:
           enabled: false
