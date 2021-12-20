@@ -2,8 +2,7 @@ package com.blue.finance.constant;
 
 import com.blue.base.model.exps.BlueException;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.*;
+import static com.blue.base.constant.base.ResponseElement.*;
 
 /**
  * @author liuyunfei

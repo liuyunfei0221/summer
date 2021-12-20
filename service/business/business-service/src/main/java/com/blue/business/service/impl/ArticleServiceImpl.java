@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.blue.base.common.base.Asserter.isValidIdentity;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -58,7 +57,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (isValidIdentity(id))
             return ofNullable(articleMapper.selectByPrimaryKey(id));
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
     }
 
     /**

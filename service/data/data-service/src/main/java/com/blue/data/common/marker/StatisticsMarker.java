@@ -17,8 +17,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.blue.base.common.base.Asserter.isNotBlank;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.springframework.util.CollectionUtils.isEmpty;

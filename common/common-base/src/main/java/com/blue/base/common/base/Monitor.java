@@ -5,8 +5,7 @@ import com.blue.base.model.exps.BlueException;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.*;
 
 /**
  * monitor for value
@@ -57,7 +56,7 @@ public final class Monitor<T> {
      */
     public boolean operateWithAssert(T data) {
         if (data == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM.status, EMPTY_PARAM.code, EMPTY_PARAM.message);
 
         synchronized (this) {
             monitored = combiner.apply(monitored, data);

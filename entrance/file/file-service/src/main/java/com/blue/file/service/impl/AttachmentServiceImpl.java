@@ -15,8 +15,7 @@ import java.util.List;
 
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.common.base.Asserter.isNull;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.*;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -79,11 +78,11 @@ public class AttachmentServiceImpl implements AttachmentService {
         LOGGER.info("getAttachment(Long id), id = {}", id);
 
         if (id == null || id < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
 
         Attachment attachment = attachmentMapper.selectByPrimaryKey(id);
         if (attachment == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
+            throw new BlueException(BAD_REQUEST.status, DATA_NOT_EXIST.code, DATA_NOT_EXIST.message);
 
         LOGGER.info("attachment = {}", attachment);
         return just(attachment);
@@ -101,9 +100,9 @@ public class AttachmentServiceImpl implements AttachmentService {
         LOGGER.info("listAttachment(PageModelParam<Void> pageModelParam, Long memberId), pageModelDTO = {},memberId = {}", pageModelRequest, memberId);
 
         if (isNull(pageModelRequest))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM.status, EMPTY_PARAM.code, EMPTY_PARAM.message);
         if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
 
         return just(ofNullable(attachmentMapper.countByMemberId(memberId)).orElse(0L))
                 .flatMap(count -> {

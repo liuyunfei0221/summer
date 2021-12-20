@@ -9,16 +9,12 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.base.common.message.MessageProcessor.resolveToMessage;
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.SECRET;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.OK;
-import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseMessage.GENERIC_SUCCESS;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
@@ -48,14 +44,12 @@ public final class SecureApiHandler {
         return serverRequest.bodyToMono(ClientLoginParam.class)
                 .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
                 .flatMap(secureService::loginByClient)
-                .flatMap(ma -> {
-                    String msg = resolveToMessage(OK.code, getAcceptLanguages(serverRequest)).intern();
-                    return ok().contentType(APPLICATION_JSON)
-                            .header(AUTHORIZATION.name, ma.getAuth())
-                            .header(SECRET.name, ma.getSecKey())
-                            .body(generate(OK.code, msg, msg)
-                                    , BlueResponse.class);
-                });
+                .flatMap(ma ->
+                        ok().contentType(APPLICATION_JSON)
+                                .header(AUTHORIZATION.name, ma.getAuth())
+                                .header(SECRET.name, ma.getSecKey())
+                                .body(generate(OK.code, OK.message, OK.message)
+                                        , BlueResponse.class));
     }
 
     /**
@@ -68,13 +62,11 @@ public final class SecureApiHandler {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
                         secureService.updateSecKeyByAccess(acc)
-                                .flatMap(secKey -> {
-                                    String msg = resolveToMessage(OK.code, getAcceptLanguages(serverRequest)).intern();
-                                    return ok().contentType(APPLICATION_JSON)
-                                            .header(SECRET.name, secKey)
-                                            .body(generate(OK.code, msg, msg)
-                                                    , BlueResponse.class);
-                                }));
+                                .flatMap(secKey ->
+                                        ok().contentType(APPLICATION_JSON)
+                                                .header(SECRET.name, secKey)
+                                                .body(generate(OK.code, OK.message, OK.message)
+                                                        , BlueResponse.class)));
     }
 
     /**
@@ -89,7 +81,7 @@ public final class SecureApiHandler {
                         secureService.getAuthorityMonoByAccess(acc)
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, authority, GENERIC_SUCCESS.message)
+                                                .body(generate(OK.code, authority, OK.message)
                                                         , BlueResponse.class)));
     }
 
@@ -107,7 +99,7 @@ public final class SecureApiHandler {
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(AUTHORIZATION.name, "")
                                                 .body(
-                                                        generate(OK.code, GENERIC_SUCCESS.message, GENERIC_SUCCESS.message)
+                                                        generate(OK.code, OK.message, OK.message)
                                                         , BlueResponse.class)));
     }
 

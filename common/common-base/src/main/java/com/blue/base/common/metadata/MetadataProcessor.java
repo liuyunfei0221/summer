@@ -9,8 +9,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.blue.base.common.base.CommonFunctions.GSON;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_METADATA_PARAM;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.google.gson.reflect.TypeToken.getParameterized;
 
 /**
@@ -38,7 +37,7 @@ public final class MetadataProcessor {
         if (metadata != null)
             return GSON.toJson(metadata);
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_METADATA_PARAM.message);
+        throw new BlueException(INVALID_METADATA_PARAM.status, INVALID_METADATA_PARAM.code, INVALID_METADATA_PARAM.message);
     }
 
     /**
@@ -52,7 +51,7 @@ public final class MetadataProcessor {
             try {
                 return GSON.fromJson(json, METADATA_TYPE);
             } catch (JsonSyntaxException e) {
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_METADATA_PARAM.message);
+                throw new BlueException(INVALID_METADATA_PARAM.status, INVALID_METADATA_PARAM.code, INVALID_METADATA_PARAM.message);
             }
 
         return EMPTY_METADATA_SUP.get();

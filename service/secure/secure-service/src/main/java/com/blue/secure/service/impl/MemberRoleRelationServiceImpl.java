@@ -20,8 +20,7 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.Asserter.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.*;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.SyncKey.MEMBER_ROLE_REL_UPDATE_PRE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -65,7 +64,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     public Optional<Long> getRoleIdByMemberId(Long memberId) {
         LOGGER.info("Optional<Long> getRoleIdByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
 
         return ofNullable(memberRoleRelationMapper.getRoleIdByMemberId(memberId));
     }
@@ -111,7 +110,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     public long countRelationByMemberId(Long memberId) {
         LOGGER.info("long countRelationByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
 
         return memberRoleRelationMapper.countByMemberId(memberId);
     }
@@ -126,7 +125,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     public long countRelationByRoleId(Long roleId) {
         LOGGER.info("long countRelationByRoleId(Long roleId), roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
 
         return memberRoleRelationMapper.countByRoleId(roleId);
     }
@@ -142,11 +141,11 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     public void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) {
         LOGGER.info("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation), memberRoleRelation = {}", memberRoleRelation);
         if (isNull(memberRoleRelation))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message);
+            throw new BlueException(DATA_NOT_EXIST.status, DATA_NOT_EXIST.code, DATA_NOT_EXIST.message);
 
         Long memberId = memberRoleRelation.getMemberId();
         if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
 
         memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
         String syncKey = MEMBER_ROLE_REL_UPDATE_PRE.key + memberId;
@@ -157,7 +156,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         try {
             MemberRoleRelation existRelation = memberRoleRelationMapper.getByMemberId(memberId);
             if (isNotNull(existRelation))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_ALREADY_HAS_A_ROLE.message);
+                throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE.status, MEMBER_ALREADY_HAS_A_ROLE.code, MEMBER_ALREADY_HAS_A_ROLE.message);
 
             memberRoleRelationMapper.insertSelective(memberRoleRelation);
 //            if (1 == 1) {
@@ -188,7 +187,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     public void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
 
         String syncKey = MEMBER_ROLE_REL_UPDATE_PRE.key + memberId;
 
@@ -198,7 +197,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         try {
             MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getByMemberId(memberId);
             if (isNull(memberRoleRelation))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message);
+                throw new BlueException(MEMBER_NOT_HAS_A_ROLE.status, MEMBER_NOT_HAS_A_ROLE.code, MEMBER_NOT_HAS_A_ROLE.message);
 
             memberRoleRelation.setRoleId(roleId);
             memberRoleRelation.setUpdateTime(TIME_STAMP_GETTER.get());

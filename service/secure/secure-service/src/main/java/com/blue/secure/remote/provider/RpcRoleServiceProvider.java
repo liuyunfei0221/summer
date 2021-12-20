@@ -16,10 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.secure.converter.SecureModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;

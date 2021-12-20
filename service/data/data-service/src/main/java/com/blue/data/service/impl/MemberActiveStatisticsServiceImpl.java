@@ -7,8 +7,7 @@ import com.blue.data.service.inter.MemberActiveStatisticsService;
 import org.springframework.stereotype.Service;
 
 import static com.blue.base.common.base.Asserter.isValidIdentity;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.data.StatisticsType.MEMBER_ACTIVE;
 
 /**

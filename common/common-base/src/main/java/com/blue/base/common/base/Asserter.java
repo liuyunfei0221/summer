@@ -7,10 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
-import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
 
 /**

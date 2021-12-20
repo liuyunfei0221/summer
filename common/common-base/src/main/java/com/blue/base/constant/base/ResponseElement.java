@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 @SuppressWarnings("unused")
 public enum ResponseElement {
 
+    //common
+
     /**
      * success
      */
@@ -78,7 +80,107 @@ public enum ResponseElement {
     /**
      * gateway timeout
      */
-    GATEWAY_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT.value(), HttpStatus.GATEWAY_TIMEOUT.value(), "Gateway timeout");
+    GATEWAY_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT.value(), HttpStatus.GATEWAY_TIMEOUT.value(), "Gateway timeout"),
+
+    //business
+
+    /**
+     * EMPTY_PARAM
+     */
+    EMPTY_PARAM(HttpStatus.BAD_REQUEST.value(), 400000001, "Empty param"),
+
+    /**
+     * EMPTY_PATH_VARIABLE
+     */
+    EMPTY_PATH_VARIABLE(HttpStatus.BAD_REQUEST.value(), 400000002, "Empty path variable"),
+
+    /**
+     * INVALID_PATH_VARIABLE
+     */
+    INVALID_PATH_VARIABLE(HttpStatus.BAD_REQUEST.value(), 400000003, "Invalid path variable"),
+
+    /**
+     * TOO_MANY_HEADERS
+     */
+    TOO_MANY_HEADERS(HttpStatus.BAD_REQUEST.value(), 400000004, "Too many headers"),
+
+    /**
+     * TOO_LARGE_HEADER
+     */
+    TOO_LARGE_HEADER(HttpStatus.BAD_REQUEST.value(), 400000005, "Too large headers"),
+
+    /**
+     * TOO_LARGE_BODY
+     */
+    TOO_LARGE_BODY(HttpStatus.BAD_REQUEST.value(), 400000006, "Too large body"),
+
+    /**
+     * TOO_LARGE_URI
+     */
+    TOO_LARGE_URI(HttpStatus.BAD_REQUEST.value(), 400000007, "Uri is too long"),
+
+    /**
+     * INVALID_METADATA_PARAM
+     */
+    INVALID_METADATA_PARAM(HttpStatus.BAD_REQUEST.value(), 400000008, "metadata can't be null"),
+
+    /**
+     * RSA_FAILED
+     */
+    RSA_FAILED(HttpStatus.BAD_REQUEST.value(), 400000009, "Encryption/decryption or signature/verification failed"),
+
+    /**
+     * INVALID_REQUEST_METHOD
+     */
+    INVALID_REQUEST_METHOD(HttpStatus.BAD_REQUEST.value(), 400000010, "Invalid request method"),
+
+    /**
+     * INVALID_IDENTITY
+     */
+    INVALID_IDENTITY(HttpStatus.BAD_REQUEST.value(), 400000011, "Invalid or empty identity"),
+
+    /**
+     * DATA_NOT_EXIST
+     */
+    DATA_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400000012, "Data not exist"),
+
+    /**
+     * DATA_ALREADY_EXIST
+     */
+    DATA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400000013, "Data already exist"),
+
+    //user
+
+    /**
+     * INVALID_ACCT_OR_PWD
+     */
+    INVALID_ACCT_OR_PWD(HttpStatus.BAD_REQUEST.value(), 400100001, "Invalid account or password"),
+
+    /**
+     * NO_AUTH_REQUIRED_RES
+     */
+    NO_AUTH_REQUIRED_RESOURCE(HttpStatus.BAD_REQUEST.value(), 400100002, "Resources do not require authentication access"),
+
+    /**
+     * FILE_NOT_EXIST
+     */
+    FILE_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400100003, "File not exist"),
+
+    /**
+     * MEMBER_NOT_HAS_A_ROLE
+     */
+    MEMBER_NOT_HAS_A_ROLE(HttpStatus.BAD_REQUEST.value(), 400100004, "Member not has a role"),
+
+    /**
+     * MEMBER_ALREADY_HAS_A_ROLE
+     */
+    MEMBER_ALREADY_HAS_A_ROLE(HttpStatus.BAD_REQUEST.value(), 400100005, "Member already has a role"),
+
+    /**
+     * ACCOUNT_HAS_BEEN_FROZEN
+     */
+    ACCOUNT_HAS_BEEN_FROZEN(HttpStatus.BAD_REQUEST.value(), 400100006, "Your account has been frozen");
+
 
     /**
      * http status

@@ -12,8 +12,7 @@ import java.time.Instant;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**

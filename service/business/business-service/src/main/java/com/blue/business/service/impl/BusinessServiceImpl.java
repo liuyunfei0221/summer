@@ -23,9 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.DATA_NOT_EXIST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.business.SubjectType.ARTICLE;
 import static com.blue.business.converter.BusinessModelConverters.ARTICLE_INSERT_PARAM_2_ARTICLE;

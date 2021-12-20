@@ -44,7 +44,6 @@ import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.base.RsaProcessor.initKeyPair;
 import static com.blue.base.constant.base.BlueNumericalValue.*;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.ResponseMessage.*;
 import static com.blue.base.constant.base.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
 import static com.blue.base.constant.secure.AuthInfoRefreshElementType.PUB_KEY;
 import static com.blue.base.constant.secure.AuthInfoRefreshElementType.ROLE;
@@ -257,9 +256,9 @@ public class SecureServiceImpl implements SecureService {
             LoginType loginType = IDENTITY_NATURE_MAPPING.get(identity);
             if (loginType != null)
                 return loginType.nature.intern();
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(NO_AUTH_REQUIRED_RESOURCE.status, NO_AUTH_REQUIRED_RESOURCE.code, NO_AUTH_REQUIRED_RESOURCE.message);
         }
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        throw new BlueException(NO_AUTH_REQUIRED_RESOURCE.status, NO_AUTH_REQUIRED_RESOURCE.code, NO_AUTH_REQUIRED_RESOURCE.message);
     };
 
     /**
@@ -731,7 +730,7 @@ public class SecureServiceImpl implements SecureService {
                                 return just(new AuthAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                                         reqUnDecryption && resUnEncryption ? "" : authInfo.getPubKey(),
                                         new Access(parseLong(memberPayload.getId()), authInfo.getRoleId(), memberPayload.getLoginType().intern(),
-                                                memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), ACCESS.message));
+                                                memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), OK.message));
                             });
                 });
     }

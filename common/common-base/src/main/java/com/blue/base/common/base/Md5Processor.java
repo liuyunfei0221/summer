@@ -4,8 +4,7 @@ package com.blue.base.common.base;
 import com.blue.base.model.exps.BlueException;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.RSA_FAILED;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.util.DigestUtils.md5DigestAsHex;
@@ -36,7 +35,7 @@ public final class Md5Processor {
             return md5DigestAsHex(originalData.getBytes(UTF_8));
         } catch (Exception e) {
             LOGGER.error("String encrypt(String originalData) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+            throw new BlueException(RSA_FAILED.status, RSA_FAILED.code, RSA_FAILED.message);
         }
     }
 

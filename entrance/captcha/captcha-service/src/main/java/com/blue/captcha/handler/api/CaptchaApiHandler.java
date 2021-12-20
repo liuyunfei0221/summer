@@ -11,8 +11,7 @@ import reactor.core.publisher.Mono;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.constant.base.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.base.constant.base.RandomType.ALPHABETIC;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
@@ -45,7 +44,7 @@ public final class CaptchaApiHandler {
     public Mono<ServerResponse> generateClientLoginImageCaptcha(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(ClientLoginParam.class)
                 .switchIfEmpty(
-                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
+                        error(new BlueException(EMPTY_PARAM.status, EMPTY_PARAM.code, EMPTY_PARAM.message)))
                 .flatMap(p ->
                         captchaService.generateClientLoginImageCaptcha(p)
                                 .flatMap(bytes ->

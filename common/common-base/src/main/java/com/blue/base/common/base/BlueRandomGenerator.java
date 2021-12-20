@@ -9,8 +9,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.blue.base.constant.base.RandomType.*;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 
 /**
  * random util base on commons-lang
@@ -47,7 +46,7 @@ public final class BlueRandomGenerator {
 
         Function<Integer, String> generator = GENERATOR_MAPPING.get(type);
         if (generator == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
 
         return generator.apply(length);
     }

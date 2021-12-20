@@ -25,9 +25,7 @@ import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_WRITE;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.PAYLOAD_TOO_LARGE;
-import static com.blue.base.constant.base.ResponseMessage.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
@@ -105,11 +103,11 @@ public class FileServiceImpl implements FileService {
 
         List<Part> resources = valueMap.get(ATTR_NAME);
         if (isEmpty(resources))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM.status, EMPTY_PARAM.code, EMPTY_PARAM.message);
 
         int size = resources.size();
         if (size == 1 && "".equals(((FilePart) (resources.get(0))).filename()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM.status, EMPTY_PARAM.code, EMPTY_PARAM.message);
 
         if (size > CURRENT_SIZE_THRESHOLD)
             throw new BlueException(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, PAYLOAD_TOO_LARGE.message);

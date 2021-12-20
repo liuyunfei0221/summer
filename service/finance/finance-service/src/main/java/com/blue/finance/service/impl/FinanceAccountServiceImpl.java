@@ -19,8 +19,7 @@ import java.util.Optional;
 
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.common.base.Asserter.isValidIdentity;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 

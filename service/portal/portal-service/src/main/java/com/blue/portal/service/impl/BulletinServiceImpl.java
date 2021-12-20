@@ -14,8 +14,7 @@ import reactor.util.Loggers;
 import java.util.List;
 
 import static com.blue.base.constant.base.BlueNumericalValue.ROWS;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static reactor.core.publisher.Mono.just;
 
 /**

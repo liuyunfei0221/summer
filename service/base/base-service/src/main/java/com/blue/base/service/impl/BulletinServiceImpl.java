@@ -14,8 +14,7 @@ import java.util.List;
 
 import static com.blue.base.common.base.Asserter.isNull;
 import static com.blue.base.constant.base.BlueNumericalValue.ROWS;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseMessage.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 
 /**
  * bulletin service
@@ -45,7 +44,7 @@ public class BulletinServiceImpl implements BulletinService {
     public List<Bulletin> selectBulletin(BulletinType bulletinType) {
         LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
         if (isNull(bulletinType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
 
         List<Bulletin> bulletins = bulletinMapper.selectBulletin(bulletinType.identity, Status.VALID.status, ROWS.value);
         LOGGER.info("bulletins = {}", bulletins);

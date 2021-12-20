@@ -1,5 +1,7 @@
 package com.blue.base.common.message;
 
+import org.springframework.web.reactive.function.server.ServerRequest;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -9,6 +11,7 @@ import java.util.function.UnaryOperator;
 import static com.blue.base.common.base.FileProcessor.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.loadProp;
 import static com.blue.base.common.base.PropertiesProcessor.parseProp;
+import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.*;
 import static java.lang.Integer.parseInt;
@@ -99,6 +102,32 @@ public final class MessageProcessor {
      */
     public static String resolveToMessage(Integer key, List<String> languages, String[] replacements) {
         String msg = resolveToMessage(key, languages).intern();
+        return replacements == null ? msg : FILLING_FUNC.apply(msg, replacements);
+    }
+
+    /**
+     * get message by i18n
+     *
+     * @param key
+     * @param serverRequest
+     * @return
+     */
+    public static String resolveToMessage(Integer key, ServerRequest serverRequest) {
+        return ofNullable(MESSAGES_GETTER.apply(getAcceptLanguages(serverRequest)))
+                .map(messages -> messages.get(ofNullable(key).orElse(DEFAULT_KEY)))
+                .orElse(DEFAULT_MESSAGE).intern();
+    }
+
+    /**
+     * get message by i18n
+     *
+     * @param key
+     * @param serverRequest
+     * @param replacements
+     * @return
+     */
+    public static String resolveToMessage(Integer key, ServerRequest serverRequest, String[] replacements) {
+        String msg = resolveToMessage(key, serverRequest).intern();
         return replacements == null ? msg : FILLING_FUNC.apply(msg, replacements);
     }
 
