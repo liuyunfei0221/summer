@@ -42,7 +42,7 @@ public final class SecureApiHandler {
      */
     public Mono<ServerResponse> loginByClient(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(ClientLoginParam.class)
-                .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
+                .switchIfEmpty(error(new BlueException(EMPTY_PARAM)))
                 .flatMap(secureService::loginByClient)
                 .flatMap(ma ->
                         ok().contentType(APPLICATION_JSON)

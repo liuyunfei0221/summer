@@ -18,8 +18,8 @@ import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessRea
 import static com.blue.base.common.reactive.PathVariableGetter.getLongVariableReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.PathVariable.ID;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
@@ -56,7 +56,7 @@ public final class ResourceManagerHandler {
      */
     public Mono<ServerResponse> insert(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(ResourceInsertParam.class)
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
+                        .switchIfEmpty(error(new BlueException(EMPTY_PARAM))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.insertResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
@@ -72,7 +72,7 @@ public final class ResourceManagerHandler {
      */
     public Mono<ServerResponse> update(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(ResourceUpdateParam.class)
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
+                        .switchIfEmpty(error(new BlueException(EMPTY_PARAM))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.updateResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
@@ -102,7 +102,7 @@ public final class ResourceManagerHandler {
      */
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PageModelRequest.class)
-                .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
+                .switchIfEmpty(error(new BlueException(EMPTY_PARAM)))
                 .flatMap(resourceService::selectResourceInfoPageMonoByPageAndCondition)
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
@@ -117,7 +117,7 @@ public final class ResourceManagerHandler {
      */
     public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(IdentityParam.class)
-                .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
+                .switchIfEmpty(error(new BlueException(EMPTY_PARAM)))
                 .flatMap(wrapper ->
                         roleResRelationService.selectAuthorityMonoByResId(wrapper.getId()))
                 .flatMap(auth ->

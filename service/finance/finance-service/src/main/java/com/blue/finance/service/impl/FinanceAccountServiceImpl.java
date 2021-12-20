@@ -82,7 +82,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
     public void insertInitFinanceAccount(Long memberId) {
         LOGGER.info("insertInitFinanceAccount(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId)) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
         }
 
         long epochSecond = Instant.now().getEpochSecond();
@@ -115,7 +115,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
         LOGGER.info("getFinanceAccountByMemberId(Long memberId), memberId = {}", memberId);
 
         if (isValidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         return ofNullable(financeAccountMapper.getByMemberId(memberId));
     }

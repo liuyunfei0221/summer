@@ -28,7 +28,7 @@ public final class ArrayAllocator {
 
     private static <T> void checkArgs(List<T> list, int par) {
         if (list == null || list.size() < 1 || par < 1)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
     }
 
     /**

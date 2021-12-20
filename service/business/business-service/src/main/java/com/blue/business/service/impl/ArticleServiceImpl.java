@@ -57,7 +57,7 @@ public class ArticleServiceImpl implements ArticleService {
         if (isValidIdentity(id))
             return ofNullable(articleMapper.selectByPrimaryKey(id));
 
-        throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+        throw new BlueException(INVALID_IDENTITY);
     }
 
     /**

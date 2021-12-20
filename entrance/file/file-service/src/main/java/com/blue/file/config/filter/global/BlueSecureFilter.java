@@ -48,7 +48,7 @@ public final class BlueSecureFilter implements WebFilter, Ordered {
 
     private static void authProcess(AuthAsserted authAsserted, ServerHttpRequest request, Map<String, Object> exchangeAttributes) {
         if (authAsserted == null || exchangeAttributes == null)
-            throw new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
+            throw new BlueException(UNAUTHORIZED);
 
         String accStr = accessToJson(ofNullable(authAsserted.getAccessInfo()).orElse(VISITOR.access));
         if (authAsserted.getCertificate())

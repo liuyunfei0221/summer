@@ -30,7 +30,7 @@ public final class SecureModelConverters {
      */
     public static final Function<RoleInsertParam, Role> ROLE_INSERT_PARAM_2_ROLE_CONVERTER = param -> {
         if (param == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         String name = param.getName();
         if (isBlank(name))
@@ -63,7 +63,7 @@ public final class SecureModelConverters {
      */
     public static final Function<Role, RoleInfo> ROLE_2_ROLE_INFO_CONVERTER = role -> {
         if (role == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         return new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault());
     };
@@ -73,7 +73,7 @@ public final class SecureModelConverters {
      */
     public static final Function<ResourceInsertParam, Resource> RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER = param -> {
         if (param == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         String requestMethod = param.getRequestMethod();
         assertHttpMethod(requestMethod, false);
@@ -144,7 +144,7 @@ public final class SecureModelConverters {
      */
     public static final Function<Resource, ResourceInfo> RESOURCE_2_RESOURCE_INFO_CONVERTER = resource -> {
         if (resource == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         String module = resource.getModule().intern();
         String relativeUri = resource.getUri().intern();

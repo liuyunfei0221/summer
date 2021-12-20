@@ -72,13 +72,13 @@ public final class AesProcessor {
      */
     public String encrypt(String originalData) {
         if (isBlank(originalData))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         try {
             return ENCODER.encodeToString(ENCRYPT.doFinal(originalData.getBytes(UTF_8)));
         } catch (Exception e) {
             LOGGER.error("String encrypt(String originalData) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+            throw new BlueException(RSA_FAILED);
         }
     }
 
@@ -90,13 +90,13 @@ public final class AesProcessor {
      */
     public String decrypt(String encryptData) {
         if (isBlank(encryptData))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         try {
             return new String(DECRYPT.doFinal(DECODER.decode(encryptData.getBytes(UTF_8))), UTF_8);
         } catch (Exception e) {
             LOGGER.error("String decrypt(String encryptData) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+            throw new BlueException(RSA_FAILED);
         }
     }
 
@@ -109,13 +109,13 @@ public final class AesProcessor {
      */
     public byte[] encrypt(byte[] originalData) {
         if (originalData == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         try {
             return ENCRYPT.doFinal(originalData);
         } catch (Exception e) {
             LOGGER.error("byte[] encrypt(byte[] originalData) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+            throw new BlueException(RSA_FAILED);
         }
     }
 
@@ -127,13 +127,13 @@ public final class AesProcessor {
      */
     public byte[] decrypt(byte[] encryptData) {
         if (encryptData == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         try {
             return DECRYPT.doFinal(encryptData);
         } catch (Exception e) {
             LOGGER.error("byte[] decrypt(byte[] encryptData) failed, e = {}", e);
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+            throw new BlueException(RSA_FAILED);
         }
     }
 

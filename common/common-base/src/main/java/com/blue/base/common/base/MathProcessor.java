@@ -91,7 +91,7 @@ public final class MathProcessor {
      */
     public static long getGreatestCommonDivisor(long a, long b) {
         if (a < 0L || b < 0L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         if (a == 0L || b == 0L)
             return 0L;

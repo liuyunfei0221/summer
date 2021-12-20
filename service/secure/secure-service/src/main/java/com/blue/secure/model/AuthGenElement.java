@@ -35,13 +35,13 @@ public final class AuthGenElement {
 
     public AuthGenElement(Long memberId, Long roleId, String loginType, String deviceType) {
         if (memberId == null || memberId < 0L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
         if (roleId == null || roleId < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
         if (loginType == null || "".equals(loginType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
         if (deviceType == null || "".equals(deviceType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         this.memberId = memberId;
         this.roleId = roleId;

@@ -178,7 +178,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
 
         if (jwt.getKeyId().equals(KEY_ID_GENERATOR.apply(jwt.getId(), expiresAtStamp)))
             return;
-        throw new AuthenticationException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
+        throw new AuthenticationException(UNAUTHORIZED);
     };
 
     /**
@@ -216,7 +216,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     public String create(T t) {
         if (t == null) {
             LOGGER.error("String create(T t), t can't be null");
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR);
         }
 
         long currentStamp = TIME_STAMP_SUP.get();
@@ -239,7 +239,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
             return builder.sign(ALGORITHM);
         } catch (Exception e) {
             LOGGER.error("String create(T t), failed, t = {}, e = {}", t, e);
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+            throw new AuthenticationException(INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -261,10 +261,10 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
                                 .collect(toMap(Map.Entry::getKey, e ->
                                         ofNullable(e.getValue()).map(Claim::asString).orElse(""), (a, b) -> a)));
             } catch (Exception e) {
-                throw new AuthenticationException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
+                throw new AuthenticationException(UNAUTHORIZED);
             }
 
-        throw new AuthenticationException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
+        throw new AuthenticationException(UNAUTHORIZED);
     }
 
     /**

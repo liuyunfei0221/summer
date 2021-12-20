@@ -102,7 +102,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
             long start = currentTimeMillis();
             while (dynamicInfoRefreshing) {
                 if (currentTimeMillis() - start > maxWaitingForRefresh)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+                    throw new BlueException(INTERNAL_SERVER_ERROR);
                 onSpinWait();
             }
         }
@@ -111,7 +111,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
 
     private static final BinaryOperator<String> DYNAMIC_KEY_GENERATOR = (placeholder, method) -> {
         if (isBlank(placeholder) || isBlank(method))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+            throw new BlueException(INTERNAL_SERVER_ERROR);
 
         return placeholder + PAR_CONCATENATION + method.toUpperCase();
     };
@@ -121,7 +121,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
 
         int index = lastIndexOf(path, PATH_SEPARATOR);
         if (index == -1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+            throw new BlueException(INTERNAL_SERVER_ERROR);
 
         String maybePlaceholder = substring(path, index + 1);
 
@@ -132,7 +132,7 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
         if (dynamicEndPointHandler != null)
             return dynamicEndPointHandler;
 
-        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+        throw new BlueException(INTERNAL_SERVER_ERROR);
     };
 
 

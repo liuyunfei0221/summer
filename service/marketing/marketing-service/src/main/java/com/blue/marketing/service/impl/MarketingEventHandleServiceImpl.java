@@ -66,18 +66,18 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
     private final Consumer<MarketingEvent> eventHandler = marketingEvent -> {
         MarketingEventType marketingEventType = marketingEvent.getEventType();
         if (marketingEventType == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         EventHandler eventHandler = marketingEventHandlers.get(marketingEventType);
         if (eventHandler == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         eventHandler.handleEvent(marketingEvent);
     };
 
     private static final Function<MarketingEvent, Event> EVENT_ENTITY_GEN = marketingEvent -> {
         if (marketingEvent == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         Event event = new Event();
 

@@ -32,7 +32,7 @@ public final class WithdrawApiHandler {
      */
     public Mono<ServerResponse> withdraw(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(WithdrawInfo.class)
-                        .switchIfEmpty(error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message))),
+                        .switchIfEmpty(error(new BlueException(EMPTY_PARAM))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> {
 

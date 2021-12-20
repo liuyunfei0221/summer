@@ -144,7 +144,7 @@ public final class AuthInfoCache {
         return isNotBlank(keyId) ?
                 justOrEmpty(CACHE.getIfPresent(keyId)).switchIfEmpty(REDIS_AUTH_GETTER.apply(keyId))
                 :
-                error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message));
+                error(new BlueException(UNAUTHORIZED));
     }
 
     /**

@@ -138,7 +138,7 @@ public class SignInServiceImpl implements SignInService {
             long start = currentTimeMillis();
             while (rewardInfoRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, INTERNAL_SERVER_ERROR.message);
+                    throw new BlueException(INTERNAL_SERVER_ERROR);
                 onSpinWait();
             }
         }
@@ -238,7 +238,7 @@ public class SignInServiceImpl implements SignInService {
     public Mono<SignInReward> insertSignIn(Long memberId) {
         LOGGER.info("insertSignIn(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         LocalDate now = LocalDate.now();
         int year = now.getYear();

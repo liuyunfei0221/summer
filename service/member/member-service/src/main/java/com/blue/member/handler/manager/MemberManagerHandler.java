@@ -42,7 +42,7 @@ public class MemberManagerHandler {
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PageModelRequest.class)
                 .switchIfEmpty(
-                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
+                        error(new BlueException(EMPTY_PARAM)))
                 .flatMap(memberBasicService::selectMemberInfoPageMonoByPageAndCondition)
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)

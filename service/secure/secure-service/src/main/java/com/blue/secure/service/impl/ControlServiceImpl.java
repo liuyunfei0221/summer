@@ -59,7 +59,7 @@ public class ControlServiceImpl implements ControlService {
     }
 
     private Role getRoleByRoleId(Long roleId) {
-        return roleService.getRoleById(roleId).orElseThrow(() -> new BlueException(DATA_NOT_EXIST.status, DATA_NOT_EXIST.code, DATA_NOT_EXIST.message));
+        return roleService.getRoleById(roleId).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     }
 
     private Role getRoleByMemberId(Long memberId) {
@@ -83,7 +83,7 @@ public class ControlServiceImpl implements ControlService {
     public Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId), roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         return roleResRelationService.selectAuthorityMonoByRoleId(roleId);
     }
@@ -98,7 +98,7 @@ public class ControlServiceImpl implements ControlService {
     public Mono<AuthorityBaseOnResource> selectAuthorityMonoByResId(Long resId) {
         LOGGER.info("Mono<AuthorityBaseOnResource> getAuthorityMonoByResId(Long resId), resId = {}", resId);
         if (isInvalidIdentity(resId))
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         return roleResRelationService.selectAuthorityMonoByResId(resId);
     }
@@ -143,11 +143,11 @@ public class ControlServiceImpl implements ControlService {
     public void insertDefaultMemberRoleRelation(Long memberId) {
         LOGGER.info("void insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         Role role = roleResRelationService.getDefaultRole();
         if (role == null)
-            throw new BlueException(DATA_NOT_EXIST.status, DATA_NOT_EXIST.code, DATA_NOT_EXIST.message);
+            throw new BlueException(DATA_NOT_EXIST);
 
         long epochSecond = TIME_STAMP_GETTER.get();
 
@@ -229,9 +229,9 @@ public class ControlServiceImpl implements ControlService {
     public Mono<RoleInfo> deleteRole(Long id, Long operatorId) {
         LOGGER.info("Mono<RoleInfo> deleteRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
         if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
         if (isInvalidIdentity(operatorId))
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
         assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return just(roleResRelationService.deleteRole(id, operatorId))
@@ -288,9 +288,9 @@ public class ControlServiceImpl implements ControlService {
     public Mono<ResourceInfo> deleteResource(Long id, Long operatorId) {
         LOGGER.info("Mono<ResourceInfo> deleteResource(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
         if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
         if (isInvalidIdentity(operatorId))
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         return just(roleResRelationService.deleteResource(id, operatorId))
                 .doOnSuccess(ri -> {
@@ -310,12 +310,12 @@ public class ControlServiceImpl implements ControlService {
     public Mono<AuthorityBaseOnRole> updateAuthorityByRole(RoleResRelationParam roleResRelationParam, Long operatorId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityBaseOnRole(RoleResRelationParam roleResRelationParam, Long operatorId), roleResRelationParam = {}, operatorId = {}", roleResRelationParam, operatorId);
         if (roleResRelationParam == null)
-            throw new BlueException(EMPTY_PARAM.status, EMPTY_PARAM.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         Long roleId = roleResRelationParam.getRoleId();
         List<Long> resIds = roleResRelationParam.getResIds();
         if (isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
         if (isEmpty(resIds))
             throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, "invalid resIds");
         assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), getRoleByMemberId(operatorId).getLevel());
@@ -338,12 +338,12 @@ public class ControlServiceImpl implements ControlService {
     public Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId), memberRoleRelationParam = {}, operatorId = {}", memberRoleRelationParam, operatorId);
         if (memberRoleRelationParam == null)
-            throw new BlueException(EMPTY_PARAM.status, EMPTY_PARAM.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         Long memberId = memberRoleRelationParam.getMemberId();
         Long roleId = memberRoleRelationParam.getRoleId();
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         Integer operatorRoleLevel = getRoleByMemberId(operatorId).getLevel();
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), operatorRoleLevel);

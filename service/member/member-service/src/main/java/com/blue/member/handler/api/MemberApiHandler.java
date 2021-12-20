@@ -59,7 +59,7 @@ public final class MemberApiHandler {
     public Mono<ServerResponse> registry(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(MemberRegistryParam.class)
                 .switchIfEmpty(
-                        error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message)))
+                        error(new BlueException(EMPTY_PARAM)))
                 .flatMap(mr ->
                         just(memberBasicService.insertMemberBasic(mr))
                 )

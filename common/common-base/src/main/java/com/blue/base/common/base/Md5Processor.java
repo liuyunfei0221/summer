@@ -29,13 +29,13 @@ public final class Md5Processor {
      */
     public static String encrypt(String originalData) {
         if (isBlank(originalData))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         try {
             return md5DigestAsHex(originalData.getBytes(UTF_8));
         } catch (Exception e) {
             LOGGER.error("String encrypt(String originalData) failed, e = {}", e);
-            throw new BlueException(RSA_FAILED.status, RSA_FAILED.code, RSA_FAILED.message);
+            throw new BlueException(RSA_FAILED);
         }
     }
 

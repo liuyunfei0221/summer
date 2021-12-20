@@ -120,7 +120,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone), phone = {}", phone);
         if (isNotBlank(phone))
             return just(ofNullable(memberBasicMapper.selectByPhone(phone)));
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+        throw new BlueException(BAD_REQUEST);
     }
 
     /**
@@ -134,7 +134,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email), email = {}", email);
         if (isNotBlank(email))
             return just(ofNullable(memberBasicMapper.selectByEmail(email)));
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+        throw new BlueException(BAD_REQUEST);
     }
 
     /**
@@ -148,7 +148,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
         if (isValidIdentity(id))
             return just(ofNullable(memberBasicMapper.selectByPrimaryKey(id)));
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        throw new BlueException(INVALID_IDENTITY);
     }
 
     /**
@@ -166,17 +166,17 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                     .flatMap(mbOpt ->
                             mbOpt.map(Mono::just)
                                     .orElseGet(() ->
-                                            error(new BlueException(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message)))
+                                            error(new BlueException(UNAUTHORIZED)))
                     ).flatMap(mb -> {
                         if (isInvalidStatus(mb.getStatus()))
-                            return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, ACCOUNT_HAS_BEEN_FROZEN.message));
+                            return error(new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
                         LOGGER.info("mb = {}", mb);
                         return just(mb);
                     }).flatMap(mb ->
                             just(MEMBER_BASIC_2_MEMBER_INFO.apply(mb))
                     );
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        throw new BlueException(INVALID_IDENTITY);
     }
 
     /**
@@ -195,7 +195,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     public MemberInfo insertMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("void insert(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
         if (isNull(memberRegistryParam))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         MEMBER_EXIST_VALIDATOR.accept(memberRegistryParam);
 

@@ -32,7 +32,7 @@ public class MemberActiveStatisticsServiceImpl implements MemberActiveStatistics
         if (isValidIdentity(memberId))
             return statisticsMarker.mark(MEMBER_ACTIVE, statisticsRange, memberId.toString());
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        throw new BlueException(INVALID_IDENTITY);
     }
 
 

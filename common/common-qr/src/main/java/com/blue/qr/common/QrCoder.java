@@ -102,7 +102,7 @@ public final class QrCoder {
      */
     public static String parseCode(byte[] qrData) {
         if (qrData == null || qrData.length < 1)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(qrData);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream)) {
@@ -125,7 +125,7 @@ public final class QrCoder {
      */
     public byte[] generateCodeWithoutLogo(String content) {
         if (content == null || "".equals(content))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
              BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream)) {
@@ -150,10 +150,10 @@ public final class QrCoder {
      */
     public byte[] generateCodeWithLogo(String content, byte[] logoData) {
         if (content == null || "".equals(content))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         if (logoData == null || logoData.length < 1)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(logoData);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);

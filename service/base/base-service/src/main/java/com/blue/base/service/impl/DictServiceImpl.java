@@ -71,15 +71,15 @@ public class DictServiceImpl implements DictService {
         LOGGER.info("Mono<List<Dict>> selectDictByTypeCode(String code), code = {}", code);
 
         if (isBlank(code))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         DictType dictType = dictTypeMapper.getByCode(code);
         if (isNull(dictType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         Long dictTypeId = dictType.getId();
         if (isInvalidIdentity(dictTypeId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         return just(dictMapper.selectByDictTypeId(dictTypeId));
     }

@@ -49,7 +49,7 @@ public class RewardServiceImpl implements RewardService {
     public Optional<Reward> getRewardByPrimaryKey(Long id) {
         LOGGER.info("getRewardByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         return ofNullable(rewardMapper.selectByPrimaryKey(id));
     }
@@ -80,7 +80,7 @@ public class RewardServiceImpl implements RewardService {
     public List<SignRewardTodayRelation> selectRelationByYearAndMonth(Integer year, Integer month) {
         LOGGER.info("listRelationByYearAndMonth(Integer year, Integer month), year = {}, month = {}", year, month);
         if (isNull(year) || isNull(month) || year < 1 || month < 1)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         return signRewardTodayRelationMapper.selectByYearAndMonth(year, month);
     }

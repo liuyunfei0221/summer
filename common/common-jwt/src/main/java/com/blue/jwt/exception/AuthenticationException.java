@@ -1,5 +1,7 @@
 package com.blue.jwt.exception;
 
+import com.blue.jwt.constant.JwtResponseElement;
+
 /**
  * jwt exception
  *
@@ -24,6 +26,12 @@ public final class AuthenticationException extends RuntimeException {
      * message
      */
     private String message;
+
+    public AuthenticationException(JwtResponseElement jwtResponseElement) {
+        this.status = jwtResponseElement.status;
+        this.code = jwtResponseElement.code;
+        this.message = jwtResponseElement.message;
+    }
 
     public AuthenticationException(Integer status, Integer code, String message) {
         this.status = status;

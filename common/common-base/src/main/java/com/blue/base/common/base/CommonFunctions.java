@@ -260,7 +260,7 @@ public class CommonFunctions {
         if (TIME_STAMP_GETTER.get() - ofNullable(dataWrapper.getTimeStamp()).orElse(0L) <= expire)
             return ofNullable(dataWrapper.getOriginal()).orElse("");
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+        throw new BlueException(RSA_FAILED);
     };
 
     /**
@@ -273,16 +273,16 @@ public class CommonFunctions {
      */
     public static String decryptRequestBody(String requestBody, String secKey, long expire) {
         if (requestBody == null || "".equals(requestBody))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         if (secKey == null || "".equals(secKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         EncryptedRequest encryptedRequest = GSON.fromJson(requestBody, EncryptedRequest.class);
         String encrypted = encryptedRequest.getEncrypted();
 
         if (!verify(encrypted, encryptedRequest.getSignature(), secKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, RSA_FAILED.message);
+            throw new BlueException(RSA_FAILED);
 
         return DATA_CONVERTER.apply(GSON.fromJson(decryptByPublicKey(encrypted, secKey), DataWrapper.class), expire);
     }
@@ -296,10 +296,10 @@ public class CommonFunctions {
      */
     public static String encryptResponseBody(String responseBody, String secKey) {
         if (responseBody == null || "".equals(responseBody))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         if (secKey == null || "".equals(secKey))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
 
         return GSON.toJson(new EncryptedResponse(encryptByPublicKey(GSON.toJson(new DataWrapper(responseBody, TIME_STAMP_GETTER.get())), secKey)));
     }

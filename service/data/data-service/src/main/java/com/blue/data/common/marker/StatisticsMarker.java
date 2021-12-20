@@ -54,7 +54,7 @@ public final class StatisticsMarker {
 
     private static final BiConsumer<StatisticsType, StatisticsRange> PARAMS_ASSERTER = (type, range) -> {
         if (type == null || range == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
     };
 
     private static final BiFunction<StatisticsType, StatisticsRange, String> HOLDER_KEY_GENERATOR = (type, range) ->
@@ -112,7 +112,7 @@ public final class StatisticsMarker {
             return stringRedisTemplate.opsForHyperLogLog()
                     .add(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange), value) > 0L;
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+        throw new BlueException(BAD_REQUEST);
     }
 
     /**

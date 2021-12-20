@@ -78,11 +78,11 @@ public class AttachmentServiceImpl implements AttachmentService {
         LOGGER.info("getAttachment(Long id), id = {}", id);
 
         if (id == null || id < 1L)
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         Attachment attachment = attachmentMapper.selectByPrimaryKey(id);
         if (attachment == null)
-            throw new BlueException(BAD_REQUEST.status, DATA_NOT_EXIST.code, DATA_NOT_EXIST.message);
+            throw new BlueException(DATA_NOT_EXIST);
 
         LOGGER.info("attachment = {}", attachment);
         return just(attachment);
@@ -100,9 +100,9 @@ public class AttachmentServiceImpl implements AttachmentService {
         LOGGER.info("listAttachment(PageModelParam<Void> pageModelParam, Long memberId), pageModelDTO = {},memberId = {}", pageModelRequest, memberId);
 
         if (isNull(pageModelRequest))
-            throw new BlueException(EMPTY_PARAM.status, EMPTY_PARAM.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, INVALID_IDENTITY.message);
+            throw new BlueException(INVALID_IDENTITY);
 
         return just(ofNullable(attachmentMapper.countByMemberId(memberId)).orElse(0L))
                 .flatMap(count -> {

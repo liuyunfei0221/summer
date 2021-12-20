@@ -14,7 +14,6 @@ import java.util.Optional;
 import static com.blue.base.common.base.Asserter.isInvalidStatus;
 import static com.blue.base.common.base.Asserter.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.finance.constant.FinanceCommonException.ACCOUNT_HAS_BEEN_FROZEN_EXP;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
@@ -52,19 +51,19 @@ public class FinanceServiceImpl implements FinanceService {
                         Optional<FinanceAccount> faOpt = financeAccountService.getFinanceAccountByMemberId(mi);
                         if (faOpt.isEmpty()) {
                             LOGGER.error("A member did not allocate funds account, please repair data, memberId = {}", memberId);
-                            return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_NOT_EXIST.message));
+                            return error(new BlueException(DATA_NOT_EXIST));
                         }
 
                         FinanceAccount financeAccount = faOpt.get();
                         if (isInvalidStatus(financeAccount.getStatus()))
-                            return error(ACCOUNT_HAS_BEEN_FROZEN_EXP.exp);
+                            return error(new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
 
                         return just(financeAccount);
                     })
                     .flatMap(fa ->
                             just(new FinanceInfo(fa.getBalance())));
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_IDENTITY.message);
+        throw new BlueException(INVALID_IDENTITY);
     }
 
 }

@@ -47,14 +47,14 @@ public class PortalServiceImpl implements PortalService {
 
     private static final Function<String, BulletinType> TYPE_CONVERTER = typeStr -> {
         if (isBlank(typeStr)) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
         }
 
         int type;
         try {
             type = parseInt(typeStr);
         } catch (NumberFormatException e) {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, BAD_REQUEST.message);
+            throw new BlueException(BAD_REQUEST);
         }
 
         return getBulletinTypeByIdentity(type);

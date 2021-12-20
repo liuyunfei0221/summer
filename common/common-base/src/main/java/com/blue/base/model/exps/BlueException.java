@@ -48,6 +48,21 @@ public final class BlueException extends RuntimeException {
         this.replacements = null;
     }
 
+    public BlueException(ResponseElement responseElement) {
+        this.status = responseElement.status;
+        this.code = responseElement.code;
+        this.message = responseElement.message;
+        this.replacements = null;
+    }
+
+    public BlueException(ResponseElement responseElement, String[] replacements) {
+        this.status = responseElement.status;
+        this.code = responseElement.code;
+        this.message = responseElement.message;
+        this.replacements = replacements;
+    }
+
+
     public BlueException(Integer status) {
         this.status = status;
         this.code = status;

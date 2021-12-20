@@ -30,16 +30,16 @@ public class PathVariableGetter {
      */
     public static Long getLongVariable(ServerRequest serverRequest, String placeHolder) {
         if (isBlank(placeHolder))
-            throw new BlueException(EMPTY_PATH_VARIABLE.status, EMPTY_PATH_VARIABLE.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(EMPTY_PATH_VARIABLE);
 
         String pathVariable = serverRequest.pathVariable(placeHolder);
         if (isBlank(pathVariable))
-            throw new BlueException(EMPTY_PATH_VARIABLE.status, EMPTY_PATH_VARIABLE.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(EMPTY_PATH_VARIABLE);
 
         try {
             return parseLong(pathVariable);
         } catch (NumberFormatException e) {
-            throw new BlueException(INVALID_PATH_VARIABLE.status, INVALID_PATH_VARIABLE.code, INVALID_PATH_VARIABLE.message);
+            throw new BlueException(INVALID_PATH_VARIABLE);
         }
     }
 
@@ -63,16 +63,16 @@ public class PathVariableGetter {
      */
     public static Integer getIntegerVariable(ServerRequest serverRequest, String placeHolder) {
         if (isBlank(placeHolder))
-            throw new BlueException(EMPTY_PATH_VARIABLE.status, EMPTY_PATH_VARIABLE.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(EMPTY_PATH_VARIABLE);
 
         String pathVariable = serverRequest.pathVariable(placeHolder);
         if (isBlank(pathVariable))
-            throw new BlueException(EMPTY_PATH_VARIABLE.status, EMPTY_PATH_VARIABLE.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(EMPTY_PATH_VARIABLE);
 
         try {
             return parseInt(pathVariable);
         } catch (NumberFormatException e) {
-            throw new BlueException(INVALID_PATH_VARIABLE.status, INVALID_PATH_VARIABLE.code, INVALID_PATH_VARIABLE.message);
+            throw new BlueException(INVALID_PATH_VARIABLE);
         }
     }
 
@@ -96,11 +96,11 @@ public class PathVariableGetter {
      */
     public static String getStringVariable(ServerRequest serverRequest, String placeHolder) {
         if (isBlank(placeHolder))
-            throw new BlueException(EMPTY_PATH_VARIABLE.status, EMPTY_PATH_VARIABLE.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(EMPTY_PATH_VARIABLE);
 
         String pathVariable = serverRequest.pathVariable(placeHolder);
         if (isBlank(pathVariable))
-            throw new BlueException(EMPTY_PATH_VARIABLE.status, EMPTY_PATH_VARIABLE.code, EMPTY_PATH_VARIABLE.message);
+            throw new BlueException(EMPTY_PATH_VARIABLE);
 
         return pathVariable;
     }

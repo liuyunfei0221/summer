@@ -25,7 +25,7 @@ public final class MemberModelConverters {
 
     public static final Function<MemberRegistryParam, MemberBasic> MEMBER_REGISTRY_INFO_2_MEMBER_BASIC = memberRegistryParam -> {
         if (memberRegistryParam == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, EMPTY_PARAM.message);
+            throw new BlueException(EMPTY_PARAM);
 
         String phone = memberRegistryParam.getPhone();
         if (isBlank(phone))

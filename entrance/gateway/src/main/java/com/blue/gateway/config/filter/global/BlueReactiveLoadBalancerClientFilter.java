@@ -42,7 +42,7 @@ public class BlueReactiveLoadBalancerClientFilter implements GlobalFilter, Order
         this.clientFactory = clientFactory;
     }
 
-    private static final Supplier<BlueException> NOT_FOUND_EXP_SUP = () -> new BlueException(NOT_FOUND.status, NOT_FOUND.code, NOT_FOUND.message);
+    private static final Supplier<BlueException> NOT_FOUND_EXP_SUP = () -> new BlueException(NOT_FOUND);
 
     private static final String LOAD_BALANCE_SCHEME = "lb";
 
@@ -66,7 +66,7 @@ public class BlueReactiveLoadBalancerClientFilter implements GlobalFilter, Order
                             exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR,
                                     URI_RE_CONSTRUCTOR.apply(new DelegatingServiceInstance(retrievedInstance, schemePrefix == null ? retrievedInstance.isSecure() ? SECURE_PROTOCOL : PROTOCOL : urlSchema), uri));
                         } else {
-                            throw new BlueException(NOT_FOUND.status, NOT_FOUND.code, NOT_FOUND.message);
+                            throw new BlueException(NOT_FOUND);
                         }
                     }).then(chain.filter(exchange));
         }
