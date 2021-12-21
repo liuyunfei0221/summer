@@ -4,19 +4,19 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.FileProcessor.getFiles;
-import static com.blue.base.common.base.PropertiesProcessor.loadProp;
 import static com.blue.base.common.base.PropertiesProcessor.parseProp;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
 import static com.blue.base.constant.base.Symbol.*;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
@@ -33,7 +33,7 @@ import static org.apache.commons.lang3.StringUtils.substring;
 public final class MessageProcessor {
 
     private static final String MESSAGES_URI = "classpath:i18n";
-    private static final String DEFAULT_MESSAGES = "en-us";
+    private static final String DEFAULT_LANGUAGE = LANGUAGE;
     private static final int DEFAULT_KEY = INTERNAL_SERVER_ERROR.code;
     private static final String DEFAULT_MESSAGE = INTERNAL_SERVER_ERROR.message;
 
@@ -48,14 +48,15 @@ public final class MessageProcessor {
                 try {
                     return parseInt(e.getKey());
                 } catch (NumberFormatException ex) {
-                    throw new RuntimeException("code must be int");
+                    throw new RuntimeException("code must be int, entry = " + e);
                 }
             }, Map.Entry::getValue, (a, b) -> a));
 
     private static final Function<String, Map<String, Map<Integer, String>>> MESSAGES_LOADER = uri ->
             getFiles(uri, true).stream()
-                    .collect(toMap(f -> requireNonNull(PRE_NAME_PARSER).apply(f.getName()).toLowerCase(),
-                            f -> MESSAGES_CONVERTER.apply(parseProp(loadProp(f))),
+                    .filter(Objects::nonNull)
+                    .collect(toMap(f -> PRE_NAME_PARSER.apply(f.getName()).toLowerCase(),
+                            f -> MESSAGES_CONVERTER.apply(parseProp(f)),
                             (a, b) -> a));
 
     private static final Map<String, Map<Integer, String>> I_18_N = MESSAGES_LOADER.apply(MESSAGES_URI);
@@ -68,7 +69,7 @@ public final class MessageProcessor {
                     return messages;
         }
 
-        return I_18_N.get(DEFAULT_MESSAGES);
+        return I_18_N.get(DEFAULT_LANGUAGE);
     };
 
     private static final BiFunction<String, String[], String> FILLING_FUNC = (msg, replacements) -> {
@@ -102,7 +103,7 @@ public final class MessageProcessor {
      */
     public static String resolveToMessage(Integer key, List<String> languages, String[] replacements) {
         String msg = resolveToMessage(key, languages).intern();
-        return replacements == null ? msg : FILLING_FUNC.apply(msg, replacements);
+        return replacements == null || replacements.length == 0 ? msg : FILLING_FUNC.apply(msg, replacements);
     }
 
     /**
@@ -128,7 +129,7 @@ public final class MessageProcessor {
      */
     public static String resolveToMessage(Integer key, ServerRequest serverRequest, String[] replacements) {
         String msg = resolveToMessage(key, serverRequest).intern();
-        return replacements == null ? msg : FILLING_FUNC.apply(msg, replacements);
+        return replacements == null || replacements.length == 0 ? msg : FILLING_FUNC.apply(msg, replacements);
     }
 
 }

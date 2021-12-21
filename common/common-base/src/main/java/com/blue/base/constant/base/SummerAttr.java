@@ -17,17 +17,15 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 @SuppressWarnings("unused")
 public class SummerAttr {
 
-    private static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
-    /**
-     * default datetime formatter
-     */
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern(TIME_FORMAT);
-
     /**
      * summer identity
      */
     public static final String IDENTITY = "summer";
+
+    /**
+     * default language
+     */
+    public static final String LANGUAGE = "en_US";
 
     /**
      * base time zone
@@ -38,6 +36,17 @@ public class SummerAttr {
      * clock
      */
     public static final Clock CLOCK = system(of(TIME_ZONE));
+
+    /**
+     * default datetime formatter
+     */
+    private static final String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
+    /**
+     * default datetime formatter
+     */
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = ofPattern(TIME_FORMAT);
+
 
     /**
      * non value param

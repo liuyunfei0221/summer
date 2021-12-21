@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
 import static java.lang.Double.compare;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
@@ -56,9 +57,10 @@ public class ReactiveCommonFunctions extends CommonFunctions {
                             .orElse(UNKNOWN)).hashCode());
 
 
-    private static final int MAX_LANGUAGE_COUNT = 64;
+    private static final int MAX_LANGUAGE_COUNT = 16;
 
-    private static final List<String> DEFAULT_LANGUAGES = singletonList("en_US");
+    private static final String DEFAULT_LANGUAGE = LANGUAGE;
+    private static final List<String> DEFAULT_LANGUAGES = singletonList(DEFAULT_LANGUAGE);
 
     private static List<String> parseAcceptLanguages(List<Locale.LanguageRange> languageRanges) {
         if (languageRanges != null && languageRanges.size() <= MAX_LANGUAGE_COUNT)

@@ -12,6 +12,7 @@ import java.util.Properties;
 
 import static com.blue.base.common.base.FileProcessor.getFiles;
 import static java.util.Collections.emptyMap;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static reactor.util.Loggers.getLogger;
@@ -55,10 +56,23 @@ public final class PropertiesProcessor {
      * @return
      */
     public static Map<String, String> parseProp(Properties prop) {
-        return prop != null ?
-                prop.entrySet().stream().collect(toMap(e -> e.getKey().toString(), e -> e.getValue().toString(), (a, b) -> a))
-                :
-                emptyMap();
+        return ofNullable(prop)
+                .map(p -> p.entrySet().stream().collect(toMap(e -> e.getKey().toString(), e -> e.getValue().toString(), (a, b) -> a)))
+                .orElse(emptyMap());
+    }
+
+    /**
+     * convert prop to map
+     *
+     * @param file
+     * @return
+     */
+    public static Map<String, String> parseProp(File file) {
+        return ofNullable(file)
+                .filter(File::isFile)
+                .map(PropertiesProcessor::loadProp)
+                .map(PropertiesProcessor::parseProp)
+                .orElse(emptyMap());
     }
 
     /**
