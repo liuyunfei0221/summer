@@ -19,8 +19,8 @@ public final class BlueQrCoderGenerator {
      *
      * @return
      */
-    public static QrCoder createQrCoder() {
-        return new QrCoder(DEFAULT_CONF);
+    public static QrCoder generateQrCoder() {
+        return generateQrCoder(DEFAULT_CONF);
     }
 
     /**
@@ -29,7 +29,7 @@ public final class BlueQrCoderGenerator {
      * @param qrConf
      * @return
      */
-    public static QrCoder createQrCoder(QrConf qrConf) {
+    public static QrCoder generateQrCoder(QrConf qrConf) {
         return new QrCoder(qrConf != null ? qrConf : DEFAULT_CONF);
     }
 
