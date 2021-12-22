@@ -18,9 +18,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
-public class SignRewardHandleServiceImpl implements EventHandler {
+public class SignRewardHandler implements EventHandler {
 
-    private static final Logger LOGGER = getLogger(SignRewardHandleServiceImpl.class);
+    private static final Logger LOGGER = getLogger(SignRewardHandler.class);
 
     @Override
     public void handleEvent(MarketingEvent marketingEvent) {

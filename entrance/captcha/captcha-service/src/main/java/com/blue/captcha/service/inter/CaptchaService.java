@@ -1,6 +1,7 @@
 package com.blue.captcha.service.inter;
 
-import com.blue.secure.api.model.ClientLoginParam;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
@@ -12,11 +13,11 @@ import reactor.core.publisher.Mono;
 public interface CaptchaService {
 
     /**
-     * generate a image captcha for client login
+     * generate captcha
      *
-     * @param clientLoginParam
+     * @param serverRequest
      * @return
      */
-    Mono<byte[]> generateClientLoginImageCaptcha(ClientLoginParam clientLoginParam);
+    Mono<ServerResponse> generate(ServerRequest serverRequest);
 
 }

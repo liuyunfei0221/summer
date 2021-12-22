@@ -90,64 +90,69 @@ public enum ResponseElement {
     EMPTY_PARAM(HttpStatus.BAD_REQUEST.value(), 400000001, "Empty param"),
 
     /**
+     * INVALID_PARAM
+     */
+    INVALID_PARAM(HttpStatus.BAD_REQUEST.value(), 400000002, "Invalid param"),
+
+    /**
      * EMPTY_PATH_VARIABLE
      */
-    EMPTY_PATH_VARIABLE(HttpStatus.BAD_REQUEST.value(), 400000002, "Empty path variable"),
+    EMPTY_PATH_VARIABLE(HttpStatus.BAD_REQUEST.value(), 400000003, "Empty path variable"),
 
     /**
      * INVALID_PATH_VARIABLE
      */
-    INVALID_PATH_VARIABLE(HttpStatus.BAD_REQUEST.value(), 400000003, "Invalid path variable"),
+    INVALID_PATH_VARIABLE(HttpStatus.BAD_REQUEST.value(), 400000004, "Invalid path variable"),
 
     /**
      * TOO_MANY_HEADERS
      */
-    TOO_MANY_HEADERS(HttpStatus.BAD_REQUEST.value(), 400000004, "Too many headers"),
+    TOO_MANY_HEADERS(HttpStatus.BAD_REQUEST.value(), 400000005, "Too many headers"),
 
     /**
      * TOO_LARGE_HEADER
      */
-    TOO_LARGE_HEADER(HttpStatus.BAD_REQUEST.value(), 400000005, "Too large headers"),
+    TOO_LARGE_HEADER(HttpStatus.BAD_REQUEST.value(), 400000006, "Too large headers"),
 
     /**
      * TOO_LARGE_BODY
      */
-    TOO_LARGE_BODY(HttpStatus.BAD_REQUEST.value(), 400000006, "Too large body"),
+    TOO_LARGE_BODY(HttpStatus.BAD_REQUEST.value(), 400000007, "Too large body"),
 
     /**
      * TOO_LARGE_URI
      */
-    TOO_LARGE_URI(HttpStatus.BAD_REQUEST.value(), 400000007, "Uri is too long"),
+    TOO_LARGE_URI(HttpStatus.BAD_REQUEST.value(), 400000008, "Uri is too long"),
 
     /**
      * INVALID_METADATA_PARAM
      */
-    INVALID_METADATA_PARAM(HttpStatus.BAD_REQUEST.value(), 400000008, "metadata can't be null"),
+    INVALID_METADATA_PARAM(HttpStatus.BAD_REQUEST.value(), 400000009, "metadata can't be null"),
 
     /**
      * RSA_FAILED
      */
-    RSA_FAILED(HttpStatus.BAD_REQUEST.value(), 400000009, "Encryption/decryption or signature/verification failed"),
+    RSA_FAILED(HttpStatus.BAD_REQUEST.value(), 400000010, "Encryption/decryption or signature/verification failed"),
 
     /**
      * INVALID_REQUEST_METHOD
      */
-    INVALID_REQUEST_METHOD(HttpStatus.BAD_REQUEST.value(), 400000010, "Invalid request method"),
+    INVALID_REQUEST_METHOD(HttpStatus.BAD_REQUEST.value(), 400000011, "Invalid request method"),
 
     /**
      * INVALID_IDENTITY
      */
-    INVALID_IDENTITY(HttpStatus.BAD_REQUEST.value(), 400000011, "Invalid or empty identity"),
+    INVALID_IDENTITY(HttpStatus.BAD_REQUEST.value(), 400000012, "Invalid or empty identity"),
 
     /**
      * DATA_NOT_EXIST
      */
-    DATA_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400000012, "Data not exist"),
+    DATA_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400000013, "Data not exist"),
 
     /**
      * DATA_ALREADY_EXIST
      */
-    DATA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400000013, "Data already exist"),
+    DATA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400000014, "Data already exist"),
 
     //user
 

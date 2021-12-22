@@ -6,6 +6,7 @@ import com.blue.base.model.exps.BlueException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
@@ -78,6 +79,27 @@ public final class Asserter {
         return list != null && list.size() > 0;
     }
 
+    /**
+     * check an empty list
+     *
+     * @param map
+     * @param <T,A>
+     * @return
+     */
+    public static <T, A> boolean isEmpty(Map<T, A> map) {
+        return map == null || map.size() < 1;
+    }
+
+    /**
+     * check not an empty map
+     *
+     * @param map
+     * @param <T,A>
+     * @return
+     */
+    public static <T, A> boolean isNotEmpty(Map<T, A> map) {
+        return map != null && map.size() > 0;
+    }
 
     /**
      * a num is greater than 0?

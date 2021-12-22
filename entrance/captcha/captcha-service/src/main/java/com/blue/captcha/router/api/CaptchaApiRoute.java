@@ -28,7 +28,7 @@ public class CaptchaApiRoute {
         RequestPredicate pathPredicate = path("/blue-captcha/captcha");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/forClientLogin", accept(APPLICATION_JSON), captchaApiHandler::generateClientLoginImageCaptcha)
+                .POST("/generate", accept(APPLICATION_JSON), captchaApiHandler::generate)
                 .build();
 
         return nest(pathPredicate, routerFunction);
