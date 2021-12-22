@@ -52,6 +52,7 @@
         <pulsar.version>2.9.0</pulsar.version>
         <slf4j.version>1.7.32</slf4j.version>
         <apollo.version>1.9.1</apollo.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
     </properties>
 
     <dependencyManagement>
