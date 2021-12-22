@@ -19,6 +19,7 @@
     <modules>
         <module>common-base</module>
         <module>common-caffeine</module>
+        <module>common-captcha</module>
         <module>common-curator</module>
         <module>common-database</module>
         <module>common-dubbo</module>

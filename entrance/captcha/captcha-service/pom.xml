@@ -25,6 +25,11 @@
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
+            <artifactId>common-captcha</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.blue</groupId>
             <artifactId>common-database</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
@@ -83,13 +88,6 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>com.google.code</groupId>
-            <artifactId>kaptcha</artifactId>
-            <version>${kaptcha.version}</version>
-        </dependency>
-
     </dependencies>
 
     <build>
