@@ -17,7 +17,7 @@ public class Test {
      */
     public static void main(String[] args) {
 
-        QrCoder qrCoder = BlueQrCoderGenerator.createQrCoder(null);
+        QrCoder qrCoder = BlueQrCoderGenerator.generateQrCoder();
 
         int threads = Runtime.getRuntime().availableProcessors();
         int blockingQueueSize = 2048;

@@ -8,7 +8,7 @@ import java.awt.*;
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class QrConfParams implements QrConf {
+public final class QrConfParams implements QrConf {
 
     /**
      * qrcode size
@@ -27,9 +27,9 @@ public class QrConfParams implements QrConf {
      */
     private int strokesWidth = 1;
 
-    protected Color logoFrameColor = Color.WHITE;
+    private Color logoFrameColor = Color.WHITE;
 
-    protected Color frameColor = Color.CYAN;
+    private Color frameColor = Color.CYAN;
 
     public QrConfParams() {
     }
