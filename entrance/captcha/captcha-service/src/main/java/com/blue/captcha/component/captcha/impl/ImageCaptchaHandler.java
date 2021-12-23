@@ -5,7 +5,6 @@ import com.blue.captcha.common.CaptchaProcessor;
 import com.blue.captcha.component.captcha.inter.CaptchaHandler;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -26,12 +25,11 @@ public class ImageCaptchaHandler implements CaptchaHandler {
 
     private static final Logger LOGGER = getLogger(ImageCaptchaHandler.class);
 
-    private final ReactiveStringRedisTemplate reactiveStringRedisTemplate;
+
 
     private final CaptchaProcessor captchaProcessor;
 
-    public ImageCaptchaHandler(ReactiveStringRedisTemplate reactiveStringRedisTemplate, CaptchaProcessor captchaProcessor) {
-        this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
+    public ImageCaptchaHandler( CaptchaProcessor captchaProcessor) {
         this.captchaProcessor = captchaProcessor;
     }
 

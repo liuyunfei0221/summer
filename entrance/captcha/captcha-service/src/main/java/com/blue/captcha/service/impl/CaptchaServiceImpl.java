@@ -1,70 +1,113 @@
 package com.blue.captcha.service.impl;
 
-import com.blue.base.constant.captcha.CaptchaType;
-import com.blue.base.model.exps.BlueException;
-import com.blue.captcha.api.model.CaptchaParam;
-import com.blue.captcha.component.captcha.inter.CaptchaHandler;
+import com.blue.base.constant.base.RandomType;
+import com.blue.captcha.api.model.CaptchaPair;
 import com.blue.captcha.service.inter.CaptchaService;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.Logger;
 
-import java.util.Map;
+import java.time.Duration;
+import java.util.List;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.Asserter.isEmpty;
-import static com.blue.base.constant.base.ResponseElement.*;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toMap;
-import static reactor.core.publisher.Mono.error;
+import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
+import static com.blue.base.constant.base.RandomType.ALPHANUMERIC;
+import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
+import static com.blue.redis.constant.RedisScripts.VALIDATION;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static reactor.core.publisher.Mono.just;
+import static reactor.util.Loggers.getLogger;
 
 /**
- * captcha service impl
- *
- * @author DarkBlue
+ * @author liuyunfei
+ * @date 2021/12/23
+ * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc"})
 @Service
-public class CaptchaServiceImpl implements CaptchaService, ApplicationListener<ContextRefreshedEvent> {
+public class CaptchaServiceImpl implements CaptchaService {
 
-    /**
-     * captcha type -> captcha handler
-     */
-    private Map<CaptchaType, CaptchaHandler> captchaHandlers;
+    private static final Logger LOGGER = getLogger(CaptchaServiceImpl.class);
 
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
-        Map<String, CaptchaHandler> beansOfType = applicationContext.getBeansOfType(CaptchaHandler.class);
-        if (isEmpty(beansOfType))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "captchaHandlers is empty");
+    private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-        captchaHandlers = beansOfType.values().stream()
-                .collect(toMap(CaptchaHandler::targetType, ch -> ch, (a, b) -> a));
+    public CaptchaServiceImpl(ReactiveStringRedisTemplate reactiveStringRedisTemplate) {
+        this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
     }
 
-    private final Function<ServerRequest, Mono<ServerResponse>> captchaHandler = serverRequest ->
-            serverRequest.bodyToMono(CaptchaParam.class)
-                    .switchIfEmpty(error(new BlueException(EMPTY_PARAM)))
-                    .flatMap(cp ->
-                            ofNullable(cp.getCaptchaType())
-                                    .map(captchaHandlers::get)
-                                    .map(h -> h.handle(cp.getDestination()))
-                                    .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+
+    private static final String SCRIPT_STR = VALIDATION.str;
 
     /**
-     * generate captcha
+     * verify assert script
+     */
+    private static final RedisScript<Boolean> SCRIPT = generateScriptByScriptStr(SCRIPT_STR, Boolean.class);
+    private static final Function<String, List<String>> LIST_GENERATOR = List::of;
+
+    private static final RandomType KEY_TYPE = ALPHANUMERIC;
+    private static final int KEY_LEN = 16;
+    private static final Duration DEFAULT_EXPIRE = Duration.of(15L, MINUTES);
+
+
+    private static final Function<Throwable, Flux<Long>> FALL_BACKER = e -> {
+        LOGGER.error("e = {}", e);
+        return Flux.just(1L);
+    };
+    //
+    //private final Function<String, Mono<Boolean>> ALLOWED_GETTER = limitKey ->
+    //        reactiveStringRedisTemplate.execute(SCRIPT, LIMIT_KEYS_GENERATOR.apply(limitKey),
+    //                        SCRIPT_ARGS_SUP.get())
+    //                .onErrorResume(FALL_BACKER)
+    //                .elementAt(0)
+    //                .flatMap(allowed ->
+    //                        Mono.just(allowed == 1L));
+
+    //private final Function<CaptchaPair, Mono<Boolean>> UN_REPEATABLE_VALIDATOR = pair -> {
+    //
+    //     reactiveStringRedisTemplate.execute(SCRIPT, LIST_GENERATOR.apply(pair.getKey()), LIST_GENERATOR.apply(pair.getVerify()))
+    //             .elementAt(0,false)
+    //
+    //
+    //};
+
+    /**
+     * generate pair
      *
-     * @param serverRequest
+     * @param type
+     * @param length
+     * @param expire
      * @return
      */
     @Override
-    public Mono<ServerResponse> generate(ServerRequest serverRequest) {
-        return captchaHandler.apply(serverRequest);
+    public Mono<CaptchaPair> generate(RandomType type, int length, Duration expire) {
+        LOGGER.info("Mono<CaptchaPair> generate(RandomType type, int length, Duration expire), type = {}, length = {}, expire = {}", type, length, expire);
+
+        String key = generateRandom(KEY_TYPE, KEY_LEN);
+        String verify = generateRandom(type, length);
+
+        LOGGER.info("Mono<CaptchaPair> generate(RandomType type, int length, Duration expire), key = {}, verify = {}", key, verify);
+
+        return reactiveStringRedisTemplate.opsForValue()
+                .set(key, verify, expire != null ? expire : DEFAULT_EXPIRE)
+                .flatMap(s -> just(new CaptchaPair(key, verify)));
+    }
+
+    /**
+     * validate pair
+     *
+     * @param captchaPair
+     * @param repeatable
+     * @return
+     */
+    @Override
+    public Mono<Boolean> validate(CaptchaPair captchaPair, boolean repeatable) {
+
+
+        return null;
     }
 
 }

@@ -1,23 +1,38 @@
 package com.blue.captcha.service.inter;
 
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import com.blue.base.constant.base.RandomType;
+import com.blue.captcha.api.model.CaptchaPair;
 import reactor.core.publisher.Mono;
+
+import java.time.Duration;
 
 /**
  * captcha service
  *
- * @author DarkBlue
+ * @author liuyunfei
+ * @date 2021/12/23
+ * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 public interface CaptchaService {
 
     /**
-     * generate captcha
+     * generate pair
      *
-     * @param serverRequest
+     * @param type
+     * @param length
+     * @param expire
      * @return
      */
-    Mono<ServerResponse> generate(ServerRequest serverRequest);
+    Mono<CaptchaPair> generate(RandomType type, int length, Duration expire);
+
+    /**
+     * validate pair
+     *
+     * @param captchaPair
+     * @param repeatable
+     * @return
+     */
+    Mono<Boolean> validate(CaptchaPair captchaPair,boolean repeatable);
 
 }
