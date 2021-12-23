@@ -25,6 +25,11 @@ public enum BlueHeader {
     METADATA("Metadata"),
 
     /**
+     * captcha key
+     */
+    CAPTCHA("Captcha"),
+
+    /**
      * content
      */
     CONTENT_DISPOSITION("Content-disposition");

@@ -16,6 +16,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
+import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.lang.Double.compare;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
@@ -59,7 +60,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
 
     private static final int MAX_LANGUAGE_COUNT = 16;
 
-    private static final String DEFAULT_LANGUAGE = LANGUAGE;
+    private static final String DEFAULT_LANGUAGE = LANGUAGE.replace(PAR_CONCATENATION, PAR_CONCATENATION_DATABASE_URL.identity);
     private static final List<String> DEFAULT_LANGUAGES = singletonList(DEFAULT_LANGUAGE);
 
     private static List<String> parseAcceptLanguages(List<Locale.LanguageRange> languageRanges) {

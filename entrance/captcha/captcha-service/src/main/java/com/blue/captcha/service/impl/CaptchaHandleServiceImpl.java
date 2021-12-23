@@ -17,10 +17,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.Asserter.isEmpty;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseElement.INVALID_PARAM;
+import static com.blue.base.constant.captcha.CaptchaType.IMAGE;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
-import static reactor.core.publisher.Mono.error;
+import static reactor.core.publisher.Mono.just;
 
 /**
  * captcha service impl
@@ -47,9 +49,11 @@ public class CaptchaHandleServiceImpl implements CaptchaHandleService, Applicati
                 .collect(toMap(CaptchaHandler::targetType, ch -> ch, (a, b) -> a));
     }
 
+    private static final CaptchaParam DEFAULT_PARAM = new CaptchaParam(IMAGE, "");
+
     private final Function<ServerRequest, Mono<ServerResponse>> captchaHandler = serverRequest ->
             serverRequest.bodyToMono(CaptchaParam.class)
-                    .switchIfEmpty(error(new BlueException(EMPTY_PARAM)))
+                    .switchIfEmpty(just(DEFAULT_PARAM))
                     .flatMap(cp ->
                             ofNullable(cp.getCaptchaType())
                                     .map(captchaHandlers::get)

@@ -231,7 +231,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -288,7 +288,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -360,6 +360,15 @@ consumers:
       pollDurationMills: 1000
       workingThreads: 2
       enableNegativeAcknowledge: true
+
+
+captcha:
+  verifyLength: 16
+  minLength: 6
+  maxLength: 32
+  type: ALPHANUMERIC
+  expireMillis: 600000
+  repeatable: true
 
 
 debug: false
