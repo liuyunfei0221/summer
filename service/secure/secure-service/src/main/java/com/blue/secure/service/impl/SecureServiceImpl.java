@@ -100,10 +100,6 @@ public class SecureServiceImpl implements SecureService {
 
     private final RedissonClient redissonClient;
 
-    private final SessionKeyDeploy sessionKeyDeploy;
-
-    private final BlockingDeploy blockingDeploy;
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public SecureServiceImpl(JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCache authInfoCache, StringRedisTemplate stringRedisTemplate,
                              RoleService roleService, ResourceService resourceService, MemberService memberService,
@@ -120,8 +116,9 @@ public class SecureServiceImpl implements SecureService {
         this.invalidLocalAuthProducer = invalidLocalAuthProducer;
         this.executorService = executorService;
         this.redissonClient = redissonClient;
-        this.sessionKeyDeploy = sessionKeyDeploy;
-        this.blockingDeploy = blockingDeploy;
+
+        MAX_WAITING_FOR_REFRESH = blockingDeploy.getBlockingMillis();
+        RANDOM_ID_LENGTH = sessionKeyDeploy.getRanLen();
     }
 
     private static int RANDOM_ID_LENGTH;
@@ -549,9 +546,6 @@ public class SecureServiceImpl implements SecureService {
      */
     @PostConstruct
     public void init() {
-        MAX_WAITING_FOR_REFRESH = blockingDeploy.getBlockingMillis();
-        RANDOM_ID_LENGTH = sessionKeyDeploy.getRanLen();
-
         refreshSystemAuthorityInfos();
         initLoginHandler();
     }
@@ -653,7 +647,7 @@ public class SecureServiceImpl implements SecureService {
                                                     just(new AuthGenElement(mid, rid, loginType, deviceType)))
                                             .orElseGet(() -> {
                                                 LOGGER.error("Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam) failed, member has no role, memberId = {}", mid);
-                                                return error(new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message));
+                                                return error(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message));
                                             }));
                 }).flatMap(this::generateAuthMono);
     }
@@ -698,14 +692,14 @@ public class SecureServiceImpl implements SecureService {
     public Mono<AuthAsserted> assertAuthMono(AssertAuth assertAuth) {
         LOGGER.info("Mono<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", assertAuth);
         return just(assertAuth)
-                .switchIfEmpty(error(new BlueException(UNAUTHORIZED)))
+                .switchIfEmpty(error(() -> new BlueException(UNAUTHORIZED)))
                 .flatMap(aa -> {
                     String resourceKey = REQ_RES_KEY_GENERATOR.apply(
                             aa.getMethod().intern(), aa.getUri());
 
                     Resource resource = RESOURCE_GETTER.apply(resourceKey);
                     if (resource == null)
-                        return error(new BlueException(NOT_FOUND));
+                        return error(() -> new BlueException(NOT_FOUND));
 
                     if (!resource.getAuthenticate())
                         return NO_AUTH_REQUIRED_RES_GEN.apply(resource);
@@ -716,13 +710,13 @@ public class SecureServiceImpl implements SecureService {
                     return authInfoCache.getAuthInfo(memberPayload.getKeyId())
                             .flatMap(v -> {
                                 if (v == null || "".equals(v))
-                                    return error(new BlueException(UNAUTHORIZED));
+                                    return error(() -> new BlueException(UNAUTHORIZED));
 
                                 AuthInfo authInfo = AUTH_INFO_PARSER.apply(v);
                                 if (!jwt.equals(authInfo.getJwt()))
-                                    return error(new BlueException(UNAUTHORIZED));
+                                    return error(() -> new BlueException(UNAUTHORIZED));
                                 if (!AUTHORIZATION_RES_CHECKER.apply(authInfo.getRoleId(), resourceKey))
-                                    return error(new BlueException(FORBIDDEN.status, FORBIDDEN.code, FORBIDDEN.message));
+                                    return error(() -> new BlueException(FORBIDDEN.status, FORBIDDEN.code, FORBIDDEN.message));
 
                                 boolean reqUnDecryption = resource.getRequestUnDecryption();
                                 boolean resUnEncryption = resource.getResponseUnEncryption();
@@ -769,12 +763,12 @@ public class SecureServiceImpl implements SecureService {
                                                 return just(new MemberAuth(jwt, keyPair.getPriKey()));
 
                                             LOGGER.error("authInfoCache.setAuthInfo(mp.getKeyId(), authInfoJson), failed, mp = {}", mp);
-                                            return error(new BlueException(INTERNAL_SERVER_ERROR));
+                                            return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
                                         });
                             });
                         })
                 :
-                error(new BlueException(INTERNAL_SERVER_ERROR));
+                error(() -> new BlueException(INTERNAL_SERVER_ERROR));
     }
 
     /**
@@ -789,7 +783,7 @@ public class SecureServiceImpl implements SecureService {
         return access != null ?
                 authInfoCache.invalidAuthInfo(genSessionKey(access.getId(), access.getLoginType().intern(), access.getDeviceType().intern()))
                 :
-                error(new BlueException(UNAUTHORIZED));
+                error(() -> new BlueException(UNAUTHORIZED));
     }
 
     /**
@@ -821,7 +815,7 @@ public class SecureServiceImpl implements SecureService {
         if (isValidIdentity(memberId))
             return fromFuture(supplyAsync(() -> INVALID_AUTH_BY_MEMBER_ID_TASK.apply(memberId), executorService));
 
-        return error(new BlueException(INVALID_IDENTITY));
+        return error(() -> new BlueException(INVALID_IDENTITY));
     }
 
     /**
@@ -870,7 +864,7 @@ public class SecureServiceImpl implements SecureService {
                             return just(keyPair.getPriKey());
                         })
                 :
-                error(new BlueException(UNAUTHORIZED));
+                error(() -> new BlueException(UNAUTHORIZED));
     }
 
     /**
@@ -885,7 +879,7 @@ public class SecureServiceImpl implements SecureService {
         return access != null ?
                 getAuthorityMonoByRoleId(access.getRoleId())
                 :
-                error(new BlueException(UNAUTHORIZED));
+                error(() -> new BlueException(UNAUTHORIZED));
     }
 
     /**
@@ -903,10 +897,10 @@ public class SecureServiceImpl implements SecureService {
                                 roleIdOpt.map(this::getAuthorityMonoByRoleId)
                                         .orElseGet(() -> {
                                             LOGGER.error("Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId), role id of the member id -> {} not found", memberId);
-                                            return error(new BlueException(INTERNAL_SERVER_ERROR));
+                                            return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
                                         }))
                 :
-                error(new BlueException(INVALID_IDENTITY));
+                error(() -> new BlueException(INVALID_IDENTITY));
     }
 
 }

@@ -13,7 +13,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -40,10 +39,12 @@ public final class BlueRequestAttrFilter implements GlobalFilter, Ordered {
 
     private static final Logger LOGGER = getLogger(BlueRequestAttrFilter.class);
 
-    private final RequestAttributeDeploy requestAttributeDeploy;
-
     public BlueRequestAttrFilter(RequestAttributeDeploy requestAttributeDeploy) {
-        this.requestAttributeDeploy = requestAttributeDeploy;
+        VALID_CONTENT_TYPES = new HashSet<>(requestAttributeDeploy.getValidContentTypes());
+        MAX_URI_LENGTH = requestAttributeDeploy.getMaxUriLength();
+        MAX_HEADER_COUNT = requestAttributeDeploy.getMaxHeaderCount();
+        MAX_HEADER_LENGTH = requestAttributeDeploy.getMaxHeaderLength();
+        MAX_CONTENT_LENGTH = requestAttributeDeploy.getMaxContentLength();
     }
 
     private static Set<String> VALID_CONTENT_TYPES;
@@ -89,15 +90,6 @@ public final class BlueRequestAttrFilter implements GlobalFilter, Ordered {
                 .map(Integer::valueOf).orElse(1) > MAX_CONTENT_LENGTH)
             throw new BlueException(PAYLOAD_TOO_LARGE);
     };
-
-    @PostConstruct
-    private void init() {
-        VALID_CONTENT_TYPES = new HashSet<>(requestAttributeDeploy.getValidContentTypes());
-        MAX_URI_LENGTH = requestAttributeDeploy.getMaxUriLength();
-        MAX_HEADER_COUNT = requestAttributeDeploy.getMaxHeaderCount();
-        MAX_HEADER_LENGTH = requestAttributeDeploy.getMaxHeaderLength();
-        MAX_CONTENT_LENGTH = requestAttributeDeploy.getMaxContentLength();
-    }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

@@ -28,7 +28,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -67,12 +66,17 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
     private final RequestEventReporter requestEventReporter;
 
-    private final EncryptDeploy encryptDeploy;
-
     public BlueBodyProcessAndDataReportFilter(RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter, EncryptDeploy encryptDeploy) {
         this.requestBodyProcessor = requestBodyProcessor;
         this.requestEventReporter = requestEventReporter;
-        this.encryptDeploy = encryptDeploy;
+
+        EXPIRED_SECONDS = encryptDeploy.getExpire();
+
+        ReportWithRequestBodyProcessor jsonRequestBodyProcessor = new JsonRequestBodyProcessor();
+        ReportWithRequestBodyProcessor multipartRequestBodyProcessor = new MultipartRequestBodyProcessor();
+
+        REQUEST_BODY_PROCESSOR_HOLDER.put(jsonRequestBodyProcessor.getContentType(), jsonRequestBodyProcessor);
+        REQUEST_BODY_PROCESSOR_HOLDER.put(multipartRequestBodyProcessor.getContentType(), multipartRequestBodyProcessor);
     }
 
     private static long EXPIRED_SECONDS;
@@ -201,17 +205,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
     private Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
         packageRequestInfo(dataEvent, request, exchange);
         return REQUEST_BODY_PROCESSOR_GETTER.apply(request.getHeaders()).processor(request, exchange, chain, requestEventReporter, dataEvent);
-    }
-
-    @PostConstruct
-    private void init() {
-        EXPIRED_SECONDS = encryptDeploy.getExpire();
-
-        ReportWithRequestBodyProcessor jsonRequestBodyProcessor = new JsonRequestBodyProcessor();
-        ReportWithRequestBodyProcessor multipartRequestBodyProcessor = new MultipartRequestBodyProcessor();
-
-        REQUEST_BODY_PROCESSOR_HOLDER.put(jsonRequestBodyProcessor.getContentType(), jsonRequestBodyProcessor);
-        REQUEST_BODY_PROCESSOR_HOLDER.put(multipartRequestBodyProcessor.getContentType(), multipartRequestBodyProcessor);
     }
 
     @Override

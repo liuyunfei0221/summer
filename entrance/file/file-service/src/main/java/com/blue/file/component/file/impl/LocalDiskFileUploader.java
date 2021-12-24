@@ -163,10 +163,10 @@ public final class LocalDiskFileUploader implements FileUploader {
                                 bufferedOutputStream.write(array);
                             } catch (IOException e) {
                                 LOGGER.error("upload failed, e -> " + e);
-                                error(new BlueException(INTERNAL_SERVER_ERROR));
+                                error(() -> new BlueException(INTERNAL_SERVER_ERROR));
                             }
                         } else {
-                            error(new BlueException(PAYLOAD_TOO_LARGE));
+                            error(() -> new BlueException(PAYLOAD_TOO_LARGE));
                         }
                         array = null;
                     }).collectList()

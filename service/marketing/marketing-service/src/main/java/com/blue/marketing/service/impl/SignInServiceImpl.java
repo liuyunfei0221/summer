@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -35,7 +34,8 @@ import static com.blue.base.common.base.Asserter.isEmpty;
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
 import static com.blue.marketing.constant.MarketingCommonException.REPEAT_SIGN_IN_EXP;
 import static java.lang.System.currentTimeMillis;
@@ -67,8 +67,6 @@ public class SignInServiceImpl implements SignInService {
 
     private final MarketingEventProducer marketingEventProducer;
 
-    private final BlockingDeploy blockingDeploy;
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public SignInServiceImpl(RewardService rewardService, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
                              SignExpireProducer signExpireProducer, MarketingEventProducer marketingEventProducer, BlockingDeploy blockingDeploy) {
@@ -76,7 +74,10 @@ public class SignInServiceImpl implements SignInService {
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.signExpireProducer = signExpireProducer;
         this.marketingEventProducer = marketingEventProducer;
-        this.blockingDeploy = blockingDeploy;
+
+        MAX_WAITING_FOR_REFRESH = blockingDeploy.getMillis();
+        LocalDate now = LocalDate.now();
+        DAY_REWARD_INITIALIZER.accept(now.getYear(), now.getMonthValue());
     }
 
     /**
@@ -220,13 +221,6 @@ public class SignInServiceImpl implements SignInService {
 
         return new MonthSignInRewardRecord(recordInfo, total);
     };
-
-    @PostConstruct
-    public final void init() {
-        MAX_WAITING_FOR_REFRESH = blockingDeploy.getMillis();
-        LocalDate now = LocalDate.now();
-        DAY_REWARD_INITIALIZER.accept(now.getYear(), now.getMonthValue());
-    }
 
     /**
      * sign in today

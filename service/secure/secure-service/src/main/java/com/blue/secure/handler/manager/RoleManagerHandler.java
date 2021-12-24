@@ -55,7 +55,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> insert(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(RoleInsertParam.class)
-                        .switchIfEmpty(error(new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.insertRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
@@ -71,7 +71,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> update(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(RoleUpdateParam.class)
-                        .switchIfEmpty(error(new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.updateRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
@@ -101,7 +101,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PageModelRequest.class)
-                .switchIfEmpty(error(new BlueException(EMPTY_PARAM)))
+                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
                 .flatMap(roleService::selectRoleInfoPageMonoByPageAndCondition)
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
@@ -116,7 +116,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(IdentityParam.class)
-                .switchIfEmpty(error(new BlueException(EMPTY_PARAM)))
+                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
                 .flatMap(wrapper ->
                         roleResRelationService.selectAuthorityMonoByRoleId(wrapper.getId()))
                 .flatMap(auth ->

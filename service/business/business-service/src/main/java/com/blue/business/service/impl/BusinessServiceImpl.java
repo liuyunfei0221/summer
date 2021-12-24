@@ -91,7 +91,7 @@ public class BusinessServiceImpl implements BusinessService {
                                 articleOpt
                                         .map(Mono::just)
                                         .orElseGet(() ->
-                                                error(new BlueException(DATA_NOT_EXIST)))
+                                                error(() -> new BlueException(DATA_NOT_EXIST)))
                         )
                         .flatMap(article ->
                                 {

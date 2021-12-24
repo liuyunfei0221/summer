@@ -18,7 +18,6 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -63,6 +62,12 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
         this.executorService = executorService;
         this.requestEventReporter = requestEventReporter;
         withRequestBodyContentTypes = new HashSet<>(errorReportDeploy.getErrorReportWithRequestBodyContentTypes());
+
+        RequestBodyGetter jsonRequestBodyGetter = new JsonRequestBodyGetter();
+        RequestBodyGetter multipartRequestBodyGetter = new MultipartRequestBodyGetter();
+
+        REQUEST_BODY_GETTER_HOLDER.put(jsonRequestBodyGetter.getContentType(), jsonRequestBodyGetter);
+        REQUEST_BODY_GETTER_HOLDER.put(multipartRequestBodyGetter.getContentType(), multipartRequestBodyGetter);
     }
 
     private static final String AUTHORIZATION = BlueHeader.AUTHORIZATION.name;
@@ -100,15 +105,6 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
             LOGGER.error("report failed, dataEvent = {}, throwable = {}, e = {}",
                     dataEvent, throwable, e);
         }
-    }
-
-    @PostConstruct
-    private void init() {
-        RequestBodyGetter jsonRequestBodyGetter = new JsonRequestBodyGetter();
-        RequestBodyGetter multipartRequestBodyGetter = new MultipartRequestBodyGetter();
-
-        REQUEST_BODY_GETTER_HOLDER.put(jsonRequestBodyGetter.getContentType(), jsonRequestBodyGetter);
-        REQUEST_BODY_GETTER_HOLDER.put(multipartRequestBodyGetter.getContentType(), multipartRequestBodyGetter);
     }
 
     @SuppressWarnings({"NullableProblems", "DuplicatedCode"})

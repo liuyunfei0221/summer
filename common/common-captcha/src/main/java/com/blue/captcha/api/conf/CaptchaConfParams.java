@@ -5,49 +5,48 @@ package com.blue.captcha.api.conf;
  * @date 2021/12/22
  * @apiNote
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "SpellCheckingInspection"})
 public class CaptchaConfParams implements CaptchaConf {
 
+    protected Boolean border = true;
 
-    private Boolean border = true;
+    protected String borderColor = "green";
 
-    private String borderColor = "white";
+    protected Integer borderThickness = 1;
 
-    private Integer borderThickness = 1;
+    protected String producerImpl = "com.google.code.kaptcha.impl.DefaultKaptcha";
 
-    private String producerImpl = "com.google.code.kaptcha.impl.DefaultKaptcha";
+    protected String textProducerImpl = "com.google.code.kaptcha.text.impl.DefaultTextCreator";
 
-    private String textProducerImpl = "com.google.code.kaptcha.text.impl.DefaultTextCreator";
+    protected String textProducerCharString = "blue summer";
 
-    private String textProducerCharString = "blue summer";
+    protected Integer textProducerCharLength = 5;
 
-    private Integer textProducerCharLength = 5;
+    protected String textProducerFontNames = "Arial,Courier";
 
-    private String textProducerFontNames = "Arial,Courier";
+    protected Integer textProducerFontSize = 40;
 
-    private Integer textProducerFontSize = 40;
+    protected String textProducerFontColor = "white";
 
-    private String textProducerFontColor = "white";
+    protected Integer textProducerCharSpace = 2;
 
-    private Integer textProducerCharSpace = 2;
+    protected String noiseImpl = "com.google.code.kaptcha.impl.DefaultNoise";
 
-    private String noiseImpl = "com.google.code.kaptcha.impl.DefaultNoise";
+    protected String noiseColor = "cyan";
 
-    private String noiseColor = "white";
+    protected String obscurificatorImpl = "com.google.code.kaptcha.impl.WaterRipple";
 
-    private String obscurificatorImpl = "com.google.code.kaptcha.impl.WaterRipple";
+    protected String wordImpl = "com.google.code.kaptcha.text.impl.DefaultWordRenderer";
 
-    private String wordImpl = "com.google.code.kaptcha.text.impl.DefaultWordRenderer";
+    protected String backgroundImpl = "com.google.code.kaptcha.impl.DefaultBackground";
 
-    private String backgroundImpl = "com.google.code.kaptcha.impl.DefaultBackground";
+    protected String backgroundClearFrom = "red";
 
-    private String backgroundClearFrom = "red";
+    protected String backgroundClearTo = "yellow";
 
-    private String backgroundClearTo = "yellow";
+    protected Integer imageWidth = 200;
 
-    private Integer imageWidth = 200;
-
-    private Integer imageHeight = 50;
+    protected Integer imageHeight = 50;
 
     public CaptchaConfParams() {
     }

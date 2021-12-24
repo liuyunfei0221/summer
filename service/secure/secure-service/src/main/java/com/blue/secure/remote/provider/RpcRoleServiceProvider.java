@@ -58,10 +58,10 @@ public class RpcRoleServiceProvider implements RpcRoleService {
         LOGGER.info("CompletableFuture<RoleInfo> selectRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
         return memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
                 .flatMap(roleIdOpt ->
-                        roleIdOpt.map(roleService::getRoleMonoById).orElseGet(() -> error(new BlueException(INVALID_IDENTITY)))
+                        roleIdOpt.map(roleService::getRoleMonoById).orElseGet(() -> error(() -> new BlueException(INVALID_IDENTITY)))
                 )
                 .flatMap(roleOpt ->
-                        roleOpt.map(role -> just(ROLE_2_ROLE_INFO_CONVERTER.apply(role))).orElseGet(() -> error(new BlueException(DATA_NOT_EXIST)))
+                        roleOpt.map(role -> just(ROLE_2_ROLE_INFO_CONVERTER.apply(role))).orElseGet(() -> error(() -> new BlueException(DATA_NOT_EXIST)))
                 ).toFuture();
     }
 

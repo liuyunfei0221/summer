@@ -13,7 +13,7 @@ import java.time.Duration;
  * @date 2021/12/23
  * @apiNote
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface CaptchaService {
 
     /**

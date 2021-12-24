@@ -20,7 +20,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
-import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -68,8 +67,6 @@ public class PortalServiceImpl implements PortalService {
 
     private final BlueRedisConfig blueRedisConfig;
 
-    private final CaffeineDeploy caffeineDeploy;
-
     private static long redisExpire;
 
     private final static TimeUnit EXPIRE_UNIT = TimeUnit.SECONDS;
@@ -82,7 +79,15 @@ public class PortalServiceImpl implements PortalService {
         this.stringRedisTemplate = stringRedisTemplate;
         this.redissonClient = redissonClient;
         this.blueRedisConfig = blueRedisConfig;
-        this.caffeineDeploy = caffeineDeploy;
+
+        redisExpire = blueRedisConfig.getEntryTtl();
+        CaffeineConf caffeineConf = new CaffeineConfParams(
+                caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
+                AFTER_WRITE, executorService);
+
+        LOCAL_CACHE = generateCache(caffeineConf);
+        of(BulletinType.values())
+                .forEach(this::getBulletinFromLocalCache);
     }
 
     private static final long WAIT_MILLIS_FOR_THREAD_SLEEP = BlueNumericalValue.WAIT_MILLIS_FOR_THREAD_SLEEP.value;
@@ -103,18 +108,6 @@ public class PortalServiceImpl implements PortalService {
     };
 
     private static final Function<BulletinType, String> BULLETIN_CACHE_KEY_GENERATOR = type -> PORTALS_PRE.key + type.identity;
-
-    @PostConstruct
-    public void init() {
-        redisExpire = blueRedisConfig.getEntryTtl();
-        CaffeineConf caffeineConf = new CaffeineConfParams(
-                caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
-                AFTER_WRITE, executorService);
-
-        LOCAL_CACHE = generateCache(caffeineConf);
-        of(BulletinType.values())
-                .forEach(this::getBulletinFromLocalCache);
-    }
 
     /**
      * refresh bulletin infos

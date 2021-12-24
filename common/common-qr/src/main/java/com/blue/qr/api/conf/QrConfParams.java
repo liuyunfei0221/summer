@@ -8,28 +8,28 @@ import java.awt.*;
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class QrConfParams implements QrConf {
+public class QrConfParams implements QrConf {
 
     /**
      * qrcode size
      */
-    private int width = 200;
-    private int height = 200;
+    protected int width = 200;
+    protected int height = 200;
 
     /**
      * logo color
      */
-    private int onColor = 0xFF000001;
-    private int offColor = 0xFFFFFFFF;
+    protected int onColor = 0xFF000001;
+    protected int offColor = 0xFFFFFFFF;
 
     /**
      * strokes info
      */
-    private int strokesWidth = 1;
+    protected int strokesWidth = 1;
 
-    private Color logoFrameColor = Color.WHITE;
+    protected Color logoFrameColor = Color.WHITE;
 
-    private Color frameColor = Color.CYAN;
+    protected Color frameColor = Color.CYAN;
 
     public QrConfParams() {
     }

@@ -51,12 +51,12 @@ public class FinanceServiceImpl implements FinanceService {
                         Optional<FinanceAccount> faOpt = financeAccountService.getFinanceAccountByMemberId(mi);
                         if (faOpt.isEmpty()) {
                             LOGGER.error("A member did not allocate funds account, please repair data, memberId = {}", memberId);
-                            return error(new BlueException(DATA_NOT_EXIST));
+                            return error(() -> new BlueException(DATA_NOT_EXIST));
                         }
 
                         FinanceAccount financeAccount = faOpt.get();
                         if (isInvalidStatus(financeAccount.getStatus()))
-                            return error(new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
+                            return error(() -> new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
 
                         return just(financeAccount);
                     })

@@ -11,7 +11,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +32,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/12/23
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal"})
 @Service
 public class CaptchaServiceImpl implements CaptchaService {
 
@@ -87,6 +86,9 @@ public class CaptchaServiceImpl implements CaptchaService {
         VERIFY_TYPE = type;
         DEFAULT_DURATION = Duration.of(expireMillis, MILLIS);
         DEFAULT_REPEATABLE = repeatable;
+
+        VALIDATORS.put(false, UN_REPEATABLE_VALIDATOR);
+        VALIDATORS.put(true, REPEATABLE_VALIDATOR);
     }
 
     /**
@@ -124,12 +126,6 @@ public class CaptchaServiceImpl implements CaptchaService {
     };
 
     private final Map<Boolean, Function<CaptchaPair, Mono<Boolean>>> VALIDATORS = new HashMap<>(2, 1.0f);
-
-    @PostConstruct
-    private void init() {
-        VALIDATORS.put(false, UN_REPEATABLE_VALIDATOR);
-        VALIDATORS.put(true, REPEATABLE_VALIDATOR);
-    }
 
     /**
      * generate pair

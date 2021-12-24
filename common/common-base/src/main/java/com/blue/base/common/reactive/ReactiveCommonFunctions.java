@@ -60,7 +60,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
 
     private static final int MAX_LANGUAGE_COUNT = 16;
 
-    private static final String DEFAULT_LANGUAGE = LANGUAGE.replace(PAR_CONCATENATION, PAR_CONCATENATION_DATABASE_URL.identity);
+    private static final String DEFAULT_LANGUAGE = LANGUAGE.replace(PAR_CONCATENATION, PAR_CONCATENATION_DATABASE_URL.identity).toLowerCase();
     private static final List<String> DEFAULT_LANGUAGES = singletonList(DEFAULT_LANGUAGE);
 
     private static List<String> parseAcceptLanguages(List<Locale.LanguageRange> languageRanges) {

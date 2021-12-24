@@ -14,7 +14,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
@@ -40,13 +39,28 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
 
     private static final Logger LOGGER = Loggers.getLogger(BlueIllegalInterceptFilter.class);
 
-    private final RiskControlDeploy riskControlDeploy;
-
     private final ExecutorService executorService;
 
-    public BlueIllegalInterceptFilter(RiskControlDeploy riskControlDeploy, ExecutorService executorService) {
-        this.riskControlDeploy = riskControlDeploy;
+    public BlueIllegalInterceptFilter(ExecutorService executorService, RiskControlDeploy riskControlDeploy) {
         this.executorService = executorService;
+
+        Long illegalExpireSeconds = riskControlDeploy.getIllegalExpireSeconds();
+        if (illegalExpireSeconds == null || illegalExpireSeconds < 1L)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalExpireSeconds can't be null or less than 1");
+
+        Integer illegalCapacity = riskControlDeploy.getIllegalCapacity();
+        if (illegalCapacity == null || illegalCapacity < 1)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalCapacity can't be null or less than 1");
+
+        illegalIpCache = newBuilder()
+                .expireAfterAccess(of(illegalExpireSeconds, SECONDS))
+                .executor(this.executorService)
+                .maximumSize(illegalCapacity).build();
+
+        illegalJwtCache = newBuilder()
+                .expireAfterAccess(of(illegalExpireSeconds, SECONDS))
+                .executor(this.executorService)
+                .maximumSize(illegalCapacity).build();
     }
 
     private static Cache<String, String> illegalIpCache;
@@ -85,27 +99,6 @@ public final class BlueIllegalInterceptFilter implements WebFilter, Ordered {
         LOGGER.info("blueIllegalInterceptFilter -> requestId = {}, method = {}, uri = {}, jwt = {}, clientIp = {}", requestId, request.getMethodValue().intern(), request.getURI().getRawPath(),
                 jwt, clientIp);
     };
-
-    @PostConstruct
-    private void init() {
-        Long illegalExpireSeconds = riskControlDeploy.getIllegalExpireSeconds();
-        if (illegalExpireSeconds == null || illegalExpireSeconds < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalExpireSeconds can't be null or less than 1");
-
-        Integer illegalCapacity = riskControlDeploy.getIllegalCapacity();
-        if (illegalCapacity == null || illegalCapacity < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalCapacity can't be null or less than 1");
-
-        illegalIpCache = newBuilder()
-                .expireAfterAccess(of(illegalExpireSeconds, SECONDS))
-                .executor(this.executorService)
-                .maximumSize(illegalCapacity).build();
-
-        illegalJwtCache = newBuilder()
-                .expireAfterAccess(of(illegalExpireSeconds, SECONDS))
-                .executor(this.executorService)
-                .maximumSize(illegalCapacity).build();
-    }
 
     @SuppressWarnings("NullableProblems")
     @Override

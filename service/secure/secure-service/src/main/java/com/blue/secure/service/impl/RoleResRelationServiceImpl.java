@@ -125,7 +125,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
                                         just(ROLE_2_ROLE_INFO_CONVERTER.apply(role)))
                                 .orElseGet(() -> {
                                     LOGGER.error("role info doesn't exist, roleId = {}", roleId);
-                                    return error(new BlueException(DATA_NOT_EXIST));
+                                    return error(() -> new BlueException(DATA_NOT_EXIST));
                                 })
                 ).flatMap(roleInfo ->
                         this.selectResIdsMonoByRoleId(roleId)
@@ -153,7 +153,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
                                         just(RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(res)))
                                 .orElseGet(() -> {
                                     LOGGER.error("res info doesn't exist, resId = {}", resId);
-                                    return error(new BlueException(DATA_NOT_EXIST));
+                                    return error(() -> new BlueException(DATA_NOT_EXIST));
                                 })
                 ).flatMap(resourceInfo ->
                         this.selectRoleIdsMonoByResId(resId)

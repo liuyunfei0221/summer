@@ -346,4 +346,12 @@ syncrest:
   radicalizationTry: false
 
 
+qr:
+  width: 200
+  height: 200
+  strokesWidth: 1
+  protected Color logoFrameColor: Color.WHITE
+  protected Color frameColor: Color.CYAN
+
+
 debug: false

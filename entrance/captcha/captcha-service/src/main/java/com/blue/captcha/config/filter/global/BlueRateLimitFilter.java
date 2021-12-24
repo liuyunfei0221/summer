@@ -14,7 +14,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -43,11 +42,11 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    private final RateLimiterDeploy rateLimiterDeploy;
-
     public BlueRateLimitFilter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, RateLimiterDeploy rateLimiterDeploy) {
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
-        this.rateLimiterDeploy = rateLimiterDeploy;
+
+        REPLENISH_RATE = valueOf(rateLimiterDeploy.getReplenishRate());
+        BURST_CAPACITY = valueOf(rateLimiterDeploy.getBurstCapacity());
     }
 
     private static final RedisScript<Long> SCRIPT = generateScriptByScriptStr(RATE_LIMITER.str, Long.class);
@@ -72,12 +71,6 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
                     .flatMap(allowed ->
                             Mono.just(allowed == 1L));
 
-    @PostConstruct
-    private void init() {
-        REPLENISH_RATE = valueOf(rateLimiterDeploy.getReplenishRate());
-        BURST_CAPACITY = valueOf(rateLimiterDeploy.getBurstCapacity());
-    }
-
     @SuppressWarnings("NullableProblems")
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -86,7 +79,7 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
                 .flatMap(a -> {
                     if (a)
                         return chain.filter(exchange);
-                    return error(new BlueException(TOO_MANY_REQUESTS));
+                    return error(() -> new BlueException(TOO_MANY_REQUESTS));
                 });
     }
 

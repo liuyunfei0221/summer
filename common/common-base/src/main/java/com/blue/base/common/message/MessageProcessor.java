@@ -33,7 +33,7 @@ import static org.apache.commons.lang3.StringUtils.substring;
 public final class MessageProcessor {
 
     private static final String MESSAGES_URI = "classpath:i18n";
-    private static final String DEFAULT_LANGUAGE = LANGUAGE.replace(PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity);
+    private static final String DEFAULT_LANGUAGE = LANGUAGE.replace(PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity).toLowerCase();
     private static final int DEFAULT_KEY = INTERNAL_SERVER_ERROR.code;
     private static final String DEFAULT_MESSAGE = INTERNAL_SERVER_ERROR.message;
 

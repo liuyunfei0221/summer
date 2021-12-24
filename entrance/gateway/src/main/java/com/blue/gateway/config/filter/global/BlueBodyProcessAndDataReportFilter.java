@@ -24,7 +24,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.function.BiFunction;
 
@@ -59,12 +58,11 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
 
     private final RequestEventReporter requestEventReporter;
 
-    private final EncryptDeploy encryptDeploy;
-
     public BlueBodyProcessAndDataReportFilter(RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter, EncryptDeploy encryptDeploy) {
         this.requestBodyProcessor = requestBodyProcessor;
         this.requestEventReporter = requestEventReporter;
-        this.encryptDeploy = encryptDeploy;
+
+        EXPIRED_SECONDS = encryptDeploy.getExpire();
     }
 
     private static long EXPIRED_SECONDS;
@@ -207,14 +205,6 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                     packageError(throwable, request, dataEvent);
                     ON_ERROR_CONSUMER_WITH_MESSAGE.accept(throwable, outputMessage);
                 });
-    }
-
-    /**
-     * init
-     */
-    @PostConstruct
-    private void init() {
-        EXPIRED_SECONDS = encryptDeploy.getExpire();
     }
 
     @Override

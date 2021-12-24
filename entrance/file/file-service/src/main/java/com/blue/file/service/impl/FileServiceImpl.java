@@ -18,14 +18,14 @@ import org.springframework.util.MultiValueMap;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.util.List;
 import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_WRITE;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.PAYLOAD_TOO_LARGE;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
@@ -54,26 +54,20 @@ public class FileServiceImpl implements FileService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private final FileDeploy fileDeploy;
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public FileServiceImpl(FileUploader localDiskFileUploader, AttachmentService attachmentService, DownloadHistoryService downloadHistoryService, BlueIdentityProcessor blueIdentityProcessor, FileDeploy fileDeploy) {
         this.localDiskFileUploader = localDiskFileUploader;
         this.attachmentService = attachmentService;
         this.downloadHistoryService = downloadHistoryService;
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.fileDeploy = fileDeploy;
+
+        ATTR_NAME = fileDeploy.getAttrName();
+        CURRENT_SIZE_THRESHOLD = fileDeploy.getCurrentSizeThreshold();
     }
 
     private static long CURRENT_SIZE_THRESHOLD;
 
     private static String ATTR_NAME;
-
-    @PostConstruct
-    public void init() {
-        ATTR_NAME = fileDeploy.getAttrName();
-        CURRENT_SIZE_THRESHOLD = fileDeploy.getCurrentSizeThreshold();
-    }
 
     private final BiFunction<FileUploadResult, Long, Attachment> ATTACHMENT_CONVERTER = (fur, memberId) -> {
         Attachment attachment = new Attachment();
