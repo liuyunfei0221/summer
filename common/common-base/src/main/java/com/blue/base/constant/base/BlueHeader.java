@@ -27,7 +27,12 @@ public enum BlueHeader {
     /**
      * verify key
      */
-    VERIFY("Verify"),
+    VERIFY_KEY("Verify-Key"),
+
+    /**
+     * verify value
+     */
+    VERIFY_VALUE("Verify-Value"),
 
     /**
      * content

@@ -22,7 +22,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLan
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
-import static com.blue.gateway.common.GatewayCommonFactory.MESSAGE_READERS;
+import static com.blue.gateway.common.GatewayCommonFunctions.MESSAGE_READERS;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_ERROR_REPORT;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;

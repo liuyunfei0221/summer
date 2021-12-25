@@ -192,9 +192,9 @@ public class CommonFunctions {
     /**
      * header value getter
      */
-    public static final UnaryOperator<String> HEADER_VALUE_CONVERTER = contentType -> {
-        int idx = indexOf(contentType, PAIR_SEPARATOR.identity);
-        return idx == NON_EXIST_INDEX ? contentType : contentType.substring(0, idx);
+    public static final UnaryOperator<String> HEADER_VALUE_CONVERTER = headerValue -> {
+        int idx = indexOf(headerValue, PAIR_SEPARATOR.identity);
+        return idx == NON_EXIST_INDEX ? headerValue : headerValue.substring(0, idx);
     };
 
     /**
@@ -240,6 +240,13 @@ public class CommonFunctions {
                     .filter(cts -> cts.size() > 0)
                     .map(cts -> cts.get(0))
                     .map(HEADER_VALUE_CONVERTER)
+                    .orElse("");
+
+    /**
+     * simple header value getter
+     */
+    public static final BiFunction<HttpHeaders, String, String> SIMPLE_HEADER_VALUE_GETTER = (headers, key) ->
+            ofNullable(headers.getFirst(key))
                     .orElse("");
 
     /**

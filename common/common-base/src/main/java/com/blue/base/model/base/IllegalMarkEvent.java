@@ -1,7 +1,5 @@
 package com.blue.base.model.base;
 
-import com.blue.base.constant.base.IllegalReason;
-
 import java.io.Serializable;
 
 /**
@@ -27,21 +25,15 @@ public final class IllegalMarkEvent implements Serializable {
     /**
      * actions for intercept
      */
-    private Boolean active;
-
-    /**
-     * illegal reason(if active is true)
-     */
-    private IllegalReason illegalReason;
+    private Boolean mark;
 
     public IllegalMarkEvent() {
     }
 
-    public IllegalMarkEvent(String jwt, String ip, Boolean active, IllegalReason illegalReason) {
+    public IllegalMarkEvent(String jwt, String ip, Boolean mark) {
         this.jwt = jwt;
         this.ip = ip;
-        this.active = active;
-        this.illegalReason = illegalReason;
+        this.mark = mark;
     }
 
     public String getJwt() {
@@ -60,20 +52,12 @@ public final class IllegalMarkEvent implements Serializable {
         this.ip = ip;
     }
 
-    public Boolean getActive() {
-        return active;
+    public Boolean getMark() {
+        return mark;
     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public IllegalReason getIllegalReason() {
-        return illegalReason;
-    }
-
-    public void setIllegalReason(IllegalReason illegalReason) {
-        this.illegalReason = illegalReason;
+    public void setMark(Boolean mark) {
+        this.mark = mark;
     }
 
     @Override
@@ -81,9 +65,7 @@ public final class IllegalMarkEvent implements Serializable {
         return "IllegalMarkEvent{" +
                 "jwt='" + jwt + '\'' +
                 ", ip='" + ip + '\'' +
-                ", active=" + active +
-                ", illegalReason=" + illegalReason +
+                ", mark=" + mark +
                 '}';
     }
-
 }

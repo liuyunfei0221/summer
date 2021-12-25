@@ -26,9 +26,9 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @SuppressWarnings({"unused", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
-public final class GatewayCommonFactory extends ReactiveCommonFunctions {
+public final class GatewayCommonFunctions extends ReactiveCommonFunctions {
 
-    private static final Logger LOGGER = getLogger(GatewayCommonFactory.class);
+    private static final Logger LOGGER = getLogger(GatewayCommonFunctions.class);
 
     public static final List<HttpMessageReader<?>> MESSAGE_READERS = withDefaults().messageReaders();
 

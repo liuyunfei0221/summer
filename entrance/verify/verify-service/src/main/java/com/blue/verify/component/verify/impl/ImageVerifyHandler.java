@@ -18,7 +18,7 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.time.Duration;
 
-import static com.blue.base.constant.base.BlueHeader.VERIFY;
+import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
 import static com.blue.base.constant.base.RandomType.ALPHABETIC;
 import static com.blue.base.constant.verify.VerifyType.IMAGE;
 import static java.time.temporal.ChronoUnit.MINUTES;
@@ -85,7 +85,7 @@ public class ImageVerifyHandler implements VerifyHandler {
 
                     return ok().contentType(IMAGE_PNG)
                             .header(CACHE_CONTROL, CACHE_CONTROL_VALUE)
-                            .header(VERIFY.name, key)
+                            .header(VERIFY_KEY.name, key)
                             .body(fromResource(resource));
                 });
     }

@@ -3,7 +3,7 @@ package com.blue.verify.event.consumer;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.model.base.IllegalMarkEvent;
 import com.blue.verify.config.blue.BlueConsumerConfig;
-import com.blue.verify.config.filter.global.BlueIllegalInterceptFilter;
+import com.blue.verify.config.filter.global.BlueRiskFilter;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import com.google.gson.JsonSyntaxException;
 import reactor.util.Logger;
@@ -29,14 +29,14 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(IllegalMarkConsumer.class);
 
-    private final BlueIllegalInterceptFilter blueIllegalInterceptFilter;
+    private final BlueRiskFilter blueRiskFilter;
 
     private final BlueConsumerConfig blueConsumerConfig;
 
     private BluePulsarConsumer<IllegalMarkEvent> illegalMarkEventConsumer;
 
-    public IllegalMarkConsumer(BlueIllegalInterceptFilter blueIllegalInterceptFilter, BlueConsumerConfig blueConsumerConfig) {
-        this.blueIllegalInterceptFilter = blueIllegalInterceptFilter;
+    public IllegalMarkConsumer(BlueRiskFilter blueRiskFilter, BlueConsumerConfig blueConsumerConfig) {
+        this.blueRiskFilter = blueRiskFilter;
         this.blueConsumerConfig = blueConsumerConfig;
     }
 
@@ -50,12 +50,12 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
                             try {
                                 ofNullable(ime.getJwt())
                                         .filter(jwt -> !"".equals(jwt))
-                                        .ifPresent(jwt -> blueIllegalInterceptFilter.markIllegalJwt(jwt,
-                                                ofNullable(ime.getIllegalReason()).orElse(UNKNOWN)));
+                                        .ifPresent(jwt -> blueRiskFilter.markIllegalJwt(jwt,
+                                                ofNullable(ime.getMark()).orElse(false)));
                                 ofNullable(ime.getIp())
                                         .filter(ip -> !"".equals(ip))
-                                        .ifPresent(ip -> blueIllegalInterceptFilter.markIllegalIp(ip,
-                                                ofNullable(ime.getIllegalReason()).orElse(UNKNOWN)));
+                                        .ifPresent(ip -> blueRiskFilter.markIllegalIp(ip,
+                                                ofNullable(ime.getMark()).orElse(false)));
 
                                 LOGGER.warn("mark jwt or ip -> SUCCESS,ime = {}", ime);
                             } catch (JsonSyntaxException e) {

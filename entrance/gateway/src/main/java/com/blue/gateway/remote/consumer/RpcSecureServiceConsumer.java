@@ -17,7 +17,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
+@SuppressWarnings({"JavaDoc", "unused"})
 @Component
 public class RpcSecureServiceConsumer {
 

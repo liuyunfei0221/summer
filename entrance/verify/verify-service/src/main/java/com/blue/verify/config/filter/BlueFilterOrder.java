@@ -19,9 +19,9 @@ public enum BlueFilterOrder {
     BLUE_RATE_LIMIT(-1003),
 
     /**
-     * illegal intercept
+     * risk intercept
      */
-    BLUE_ILLEGAL_INTERCEPT(-1002),
+    BLUE_RISK(-1002),
 
     /**
      * request attr

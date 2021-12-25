@@ -30,7 +30,7 @@ import java.util.function.BiFunction;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
-import static com.blue.gateway.common.GatewayCommonFactory.*;
+import static com.blue.gateway.common.GatewayCommonFunctions.*;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_BODY_PROCESS_AND_DATA_REPORT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;

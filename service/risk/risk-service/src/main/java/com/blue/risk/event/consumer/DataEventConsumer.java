@@ -1,13 +1,12 @@
 package com.blue.risk.event.consumer;
 
-import com.blue.base.common.auth.AuthProcessor;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.constant.base.BlueTopic;
 import com.blue.base.model.base.DataEvent;
 import com.blue.jwt.common.JwtProcessor;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import com.blue.risk.config.blue.BlueConsumerConfig;
+import com.blue.risk.service.inter.RiskService;
 import com.blue.secure.api.model.MemberPayload;
 import reactor.util.Logger;
 
@@ -30,13 +29,16 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(DataEventConsumer.class);
 
+    private final RiskService riskService;
+
     private final JwtProcessor<MemberPayload> jwtProcessor;
 
     private final BlueConsumerConfig blueConsumerConfig;
 
     private BluePulsarConsumer<DataEvent> dataEventConsumer;
 
-    public DataEventConsumer(JwtProcessor<MemberPayload> jwtProcessor, BlueConsumerConfig blueConsumerConfig) {
+    public DataEventConsumer(RiskService riskService, JwtProcessor<MemberPayload> jwtProcessor, BlueConsumerConfig blueConsumerConfig) {
+        this.riskService = riskService;
         this.jwtProcessor = jwtProcessor;
         this.blueConsumerConfig = blueConsumerConfig;
     }
@@ -46,9 +48,7 @@ public final class DataEventConsumer implements BlueLifecycle {
         Consumer<DataEvent> dataEventDataConsumer = dataEvent ->
                 //TODO risk control
                 ofNullable(dataEvent)
-                        .map(de -> de.getData(BlueDataAttrKey.ACCESS.key))
-                        .map(AuthProcessor::jsonToAccess)
-                        .ifPresent(access -> LOGGER.warn("access = {}", access));
+                        .ifPresent(riskService::testMarkIllegal);
 
         this.dataEventConsumer = generateConsumer(blueConsumerConfig.getByKey(BlueTopic.REQUEST_EVENT.name), dataEventDataConsumer);
     }

@@ -184,7 +184,21 @@ public enum ResponseElement {
     /**
      * ACCOUNT_HAS_BEEN_FROZEN
      */
-    ACCOUNT_HAS_BEEN_FROZEN(HttpStatus.BAD_REQUEST.value(), 400100006, "Your account has been frozen");
+    ACCOUNT_HAS_BEEN_FROZEN(HttpStatus.BAD_REQUEST.value(), 400100006, "Your account has been frozen"),
+
+
+    //risk
+
+    /**
+     * UNKNOWN IP
+     */
+    UNKNOWN_IP(HttpStatus.NOT_ACCEPTABLE.value(), 400900001, "Unknown ip"),
+
+
+    /**
+     * ILLEGAL_REQUEST IP
+     */
+    ILLEGAL_REQUEST(HttpStatus.NOT_ACCEPTABLE.value(), 400900002, "Illegal request");
 
 
     /**

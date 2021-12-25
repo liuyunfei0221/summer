@@ -37,7 +37,7 @@ import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
-import static com.blue.file.common.FluxCommonFactory.*;
+import static com.blue.file.common.FluxCommonFunctions.*;
 import static com.blue.file.config.filter.BlueFilterOrder.BLUE_BODY_PROCESS_AND_DATA_REPORT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;

@@ -38,9 +38,9 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces"})
-public final class FluxCommonFactory extends ReactiveCommonFunctions {
+public final class FluxCommonFunctions extends ReactiveCommonFunctions {
 
-    private static final Logger LOGGER = getLogger(FluxCommonFactory.class);
+    private static final Logger LOGGER = getLogger(FluxCommonFunctions.class);
 
     public static final List<HttpMessageReader<?>> MESSAGE_READERS = withDefaults().messageReaders();
 
