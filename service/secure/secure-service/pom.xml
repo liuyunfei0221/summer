@@ -65,12 +65,12 @@
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
-            <artifactId>captcha-api</artifactId>
+            <artifactId>member-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
-            <artifactId>member-api</artifactId>
+            <artifactId>verify-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

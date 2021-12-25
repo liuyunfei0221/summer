@@ -25,9 +25,9 @@ public enum BlueHeader {
     METADATA("Metadata"),
 
     /**
-     * captcha key
+     * verify key
      */
-    CAPTCHA("Captcha"),
+    VERIFY("Verify"),
 
     /**
      * content

@@ -18,9 +18,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>captcha</module>
         <module>file</module>
         <module>gateway</module>
+        <module>verify</module>
     </modules>
 
 </project>

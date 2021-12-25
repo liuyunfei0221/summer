@@ -12,9 +12,9 @@ PULSAR          2.8.1
 registry        注册中心              eureka
 common          通用组件集成           java
 
-captcha         验证码服务网关          webflux
 file            文件服务网关           webflux
 gateway         通用网关              cloud gateway
+verify          验证码服务网关         webflux
 
 base            基础服务              webflux
 secure          安全服务              webflux
