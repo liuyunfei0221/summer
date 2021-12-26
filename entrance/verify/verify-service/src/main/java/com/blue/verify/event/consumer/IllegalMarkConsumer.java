@@ -3,7 +3,7 @@ package com.blue.verify.event.consumer;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.model.base.IllegalMarkEvent;
 import com.blue.verify.config.blue.BlueConsumerConfig;
-import com.blue.verify.config.filter.global.BlueRiskFilter;
+import com.blue.verify.config.filter.global.BlueIllegalAssertFilter;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import com.google.gson.JsonSyntaxException;
 import reactor.util.Logger;
@@ -12,7 +12,6 @@ import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.base.constant.base.BlueTopic.ILLEGAL_MARK;
-import static com.blue.base.constant.base.IllegalReason.UNKNOWN;
 import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
@@ -29,14 +28,14 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(IllegalMarkConsumer.class);
 
-    private final BlueRiskFilter blueRiskFilter;
+    private final BlueIllegalAssertFilter blueIllegalAssertFilter;
 
     private final BlueConsumerConfig blueConsumerConfig;
 
     private BluePulsarConsumer<IllegalMarkEvent> illegalMarkEventConsumer;
 
-    public IllegalMarkConsumer(BlueRiskFilter blueRiskFilter, BlueConsumerConfig blueConsumerConfig) {
-        this.blueRiskFilter = blueRiskFilter;
+    public IllegalMarkConsumer(BlueIllegalAssertFilter blueIllegalAssertFilter, BlueConsumerConfig blueConsumerConfig) {
+        this.blueIllegalAssertFilter = blueIllegalAssertFilter;
         this.blueConsumerConfig = blueConsumerConfig;
     }
 
@@ -50,11 +49,11 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
                             try {
                                 ofNullable(ime.getJwt())
                                         .filter(jwt -> !"".equals(jwt))
-                                        .ifPresent(jwt -> blueRiskFilter.markIllegalJwt(jwt,
+                                        .ifPresent(jwt -> blueIllegalAssertFilter.markIllegalJwt(jwt,
                                                 ofNullable(ime.getMark()).orElse(false)));
                                 ofNullable(ime.getIp())
                                         .filter(ip -> !"".equals(ip))
-                                        .ifPresent(ip -> blueRiskFilter.markIllegalIp(ip,
+                                        .ifPresent(ip -> blueIllegalAssertFilter.markIllegalIp(ip,
                                                 ofNullable(ime.getMark()).orElse(false)));
 
                                 LOGGER.warn("mark jwt or ip -> SUCCESS,ime = {}", ime);

@@ -45,17 +45,17 @@
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
-            <artifactId>file-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.blue</groupId>
             <artifactId>secure-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
             <artifactId>verify-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.blue</groupId>
+            <artifactId>file-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

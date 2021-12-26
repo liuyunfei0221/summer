@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.time.Duration;
 
+import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
 import static com.blue.base.constant.base.RandomType.ALPHABETIC;
 import static com.blue.base.constant.verify.VerifyType.IMAGE;
@@ -50,6 +51,7 @@ public class ImageVerifyHandler implements VerifyHandler {
         this.verifyService = verifyService;
     }
 
+    private static final int DEFAULT_KEY_LEN = 16;
     private static final int DEFAULT_VERIFY_LEN = 7;
     private static final Duration DEFAULT_DURATION = Duration.of(10L, MINUTES);
 
@@ -66,7 +68,7 @@ public class ImageVerifyHandler implements VerifyHandler {
      */
     @Override
     public Mono<ServerResponse> handle(String destination) {
-        return verifyService.generate(ALPHABETIC, DEFAULT_VERIFY_LEN, DEFAULT_DURATION)
+        return verifyService.generate(IMAGE, generateRandom(ALPHABETIC, DEFAULT_KEY_LEN), DEFAULT_VERIFY_LEN, DEFAULT_DURATION)
                 .flatMap(cp -> {
                     String key = cp.getKey();
                     String verify = cp.getVerify();

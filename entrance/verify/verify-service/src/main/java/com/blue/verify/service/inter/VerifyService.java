@@ -1,6 +1,6 @@
 package com.blue.verify.service.inter;
 
-import com.blue.base.constant.base.RandomType;
+import com.blue.base.constant.verify.VerifyType;
 import com.blue.verify.api.model.VerifyPair;
 import reactor.core.publisher.Mono;
 
@@ -19,52 +19,73 @@ public interface VerifyService {
     /**
      * generate pair
      *
+     * @param type
+     * @param key
      * @return
      */
-    Mono<VerifyPair> generate();
+    Mono<VerifyPair> generate(VerifyType type, String key);
 
     /**
      * generate pair
      *
      * @param type
-     * @return
-     */
-    Mono<VerifyPair> generate(RandomType type);
-
-    /**
-     * generate pair
-     *
-     * @param type
+     * @param key
      * @param length
      * @return
      */
-    Mono<VerifyPair> generate(RandomType type, Integer length);
+    Mono<VerifyPair> generate(VerifyType type, String key, Integer length);
 
     /**
      * generate pair
      *
      * @param type
+     * @param key
+     * @param length
+     * @param toUpperCase
+     * @return
+     */
+    Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase);
+
+    /**
+     * generate pair
+     *
+     * @param type
+     * @param key
      * @param length
      * @param expire
      * @return
      */
-    Mono<VerifyPair> generate(RandomType type, Integer length, Duration expire);
+    Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire);
+
+    /**
+     * generate pair
+     *
+     * @param type
+     * @param key
+     * @param length
+     * @param toUpperCase
+     * @param expire
+     * @return
+     */
+    Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase, Duration expire);
 
     /**
      * validate pair
      *
+     * @param type
      * @param verifyPair
      * @return
      */
-    Mono<Boolean> validate(VerifyPair verifyPair);
+    Mono<Boolean> validate(VerifyType type, VerifyPair verifyPair);
 
     /**
      * validate pair
      *
+     * @param type
      * @param verifyPair
      * @param repeatable
      * @return
      */
-    Mono<Boolean> validate(VerifyPair verifyPair, Boolean repeatable);
+    Mono<Boolean> validate(VerifyType type, VerifyPair verifyPair, Boolean repeatable);
 
 }

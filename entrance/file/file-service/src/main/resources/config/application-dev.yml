@@ -180,8 +180,9 @@ limit:
 
 
 risk:
-  illegalExpireSeconds: 60
   illegalCapacity: 16384
+  illegalExpireSeconds: 10
+  expireStrategy: AFTER_ACCESS
 
 
 request:

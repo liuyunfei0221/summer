@@ -1,7 +1,7 @@
 package com.blue.verify.remote.provider;
 
 
-import com.blue.base.constant.base.RandomType;
+import com.blue.base.constant.verify.VerifyType;
 import com.blue.verify.api.inter.RpcVerifyService;
 import com.blue.verify.api.model.VerifyPair;
 import com.blue.verify.service.inter.VerifyService;
@@ -35,17 +35,20 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
     }
 
     /**
-     * generate pair
+     * generate
      *
      * @param type
+     * @param key
      * @param length
+     * @param toUpperCase
      * @param expire
      * @return
      */
     @Override
-    public CompletableFuture<VerifyPair> generate(RandomType type, int length, Duration expire) {
-        LOGGER.info("CompletableFuture<VerifyPair> generate(RandomType type, int length, Duration expire), type = {}, length = {}, expire = {}", type, length, expire);
-        return verifyService.generate(type, length, expire).toFuture();
+    public CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase, Duration expire) {
+        LOGGER.info("CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase, Duration expire), type = {}, key = {}, length = {}, toUpperCase = {}, expire = {}",
+                type, key, length, toUpperCase, expire);
+        return verifyService.generate(type, key, length, toUpperCase, expire).toFuture();
     }
 
     /**
@@ -56,9 +59,10 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      * @return
      */
     @Override
-    public CompletableFuture<Boolean> validate(VerifyPair verifyPair, boolean repeatable) {
-        LOGGER.info("CompletableFuture<Boolean> validate(VerifyPair verifyPair, boolean repeatable), verifyPair = {}, repeatable = {}", verifyPair, repeatable);
-        return verifyService.validate(verifyPair, repeatable).toFuture();
+    public CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, boolean repeatable) {
+        LOGGER.info("CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, boolean repeatable), type = {}, verifyPair = {}, repeatable = {}",
+                type, verifyPair, repeatable);
+        return verifyService.validate(type, verifyPair, repeatable).toFuture();
     }
 
 }

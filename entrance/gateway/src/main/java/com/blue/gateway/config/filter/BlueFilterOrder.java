@@ -16,14 +16,14 @@ public enum BlueFilterOrder {
     BLUE_ERROR_REPORT(WRITE_RESPONSE_FILTER_ORDER - 6),
 
     /**
+     * risk intercept
+     */
+    BLUE_ILLEGAL_ASSERT(WRITE_RESPONSE_FILTER_ORDER - 4),
+
+    /**
      * rate limit
      */
     BLUE_RATE_LIMIT(WRITE_RESPONSE_FILTER_ORDER - 5),
-
-    /**
-     * risk intercept
-     */
-    BLUE_RISK(WRITE_RESPONSE_FILTER_ORDER - 4),
 
     /**
      * request attr

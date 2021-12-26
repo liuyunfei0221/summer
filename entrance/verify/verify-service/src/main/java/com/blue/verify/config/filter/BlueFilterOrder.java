@@ -14,14 +14,14 @@ public enum BlueFilterOrder {
     BLUE_ERROR_REPORT(-1004),
 
     /**
-     * rate limit
-     */
-    BLUE_RATE_LIMIT(-1003),
-
-    /**
      * risk intercept
      */
-    BLUE_RISK(-1002),
+    BLUE_ILLEGAL_ASSERT(-1003),
+
+    /**
+     * rate limit
+     */
+    BLUE_RATE_LIMIT(-1002),
 
     /**
      * request attr

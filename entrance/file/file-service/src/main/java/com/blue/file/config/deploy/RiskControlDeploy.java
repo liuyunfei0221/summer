@@ -1,5 +1,6 @@
 package com.blue.file.config.deploy;
 
+import com.blue.caffeine.constant.ExpireStrategy;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -12,11 +13,21 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "risk")
 public class RiskControlDeploy {
 
-    private Long illegalExpireSeconds;
-
     private Integer illegalCapacity;
 
+    private Long illegalExpireSeconds;
+
+    private ExpireStrategy expireStrategy;
+
     public RiskControlDeploy() {
+    }
+
+    public Integer getIllegalCapacity() {
+        return illegalCapacity;
+    }
+
+    public void setIllegalCapacity(Integer illegalCapacity) {
+        this.illegalCapacity = illegalCapacity;
     }
 
     public Long getIllegalExpireSeconds() {
@@ -27,12 +38,21 @@ public class RiskControlDeploy {
         this.illegalExpireSeconds = illegalExpireSeconds;
     }
 
-    public Integer getIllegalCapacity() {
-        return illegalCapacity;
+    public ExpireStrategy getExpireStrategy() {
+        return expireStrategy;
     }
 
-    public void setIllegalCapacity(Integer illegalCapacity) {
-        this.illegalCapacity = illegalCapacity;
+    public void setExpireStrategy(ExpireStrategy expireStrategy) {
+        this.expireStrategy = expireStrategy;
+    }
+
+    @Override
+    public String toString() {
+        return "RiskControlDeploy{" +
+                "illegalCapacity=" + illegalCapacity +
+                ", illegalExpireSeconds=" + illegalExpireSeconds +
+                ", expireStrategy=" + expireStrategy +
+                '}';
     }
 
 }

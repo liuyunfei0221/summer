@@ -1,6 +1,5 @@
 package com.blue.verify.config.deploy;
 
-import com.blue.base.constant.base.RandomType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +17,6 @@ public class VerifyDeploy {
     private Integer minLength;
 
     private Integer maxLength;
-
-    private RandomType type;
 
     private Integer expireMillis;
 
@@ -52,14 +49,6 @@ public class VerifyDeploy {
         this.maxLength = maxLength;
     }
 
-    public RandomType getType() {
-        return type;
-    }
-
-    public void setType(RandomType type) {
-        this.type = type;
-    }
-
     public Integer getExpireMillis() {
         return expireMillis;
     }
@@ -82,7 +71,6 @@ public class VerifyDeploy {
                 ", verifyLength=" + verifyLength +
                 ", minLength=" + minLength +
                 ", maxLength=" + maxLength +
-                ", type=" + type +
                 ", expireMillis=" + expireMillis +
                 ", repeatable=" + repeatable +
                 '}';

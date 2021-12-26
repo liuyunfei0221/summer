@@ -1,6 +1,6 @@
 package com.blue.verify.api.inter;
 
-import com.blue.base.constant.base.RandomType;
+import com.blue.base.constant.verify.VerifyType;
 import com.blue.verify.api.model.VerifyPair;
 
 import java.time.Duration;
@@ -20,19 +20,22 @@ public interface RpcVerifyService {
      * generate pair
      *
      * @param type
+     * @param key
      * @param length
+     * @param toUpperCase
      * @param expire
      * @return
      */
-    CompletableFuture<VerifyPair> generate(RandomType type, int length, Duration expire);
+    CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase, Duration expire);
 
     /**
      * validate pair
      *
+     * @param type
      * @param verifyPair
      * @param repeatable
      * @return
      */
-    CompletableFuture<Boolean> validate(VerifyPair verifyPair, boolean repeatable);
+    CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, boolean repeatable);
 
 }

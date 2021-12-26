@@ -1,4 +1,4 @@
-package com.blue.secure.remote.consumer;
+package com.blue.member.remote.consumer;
 
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.verify.api.inter.RpcVerifyService;

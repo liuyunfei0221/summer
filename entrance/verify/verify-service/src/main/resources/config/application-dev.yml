@@ -180,8 +180,9 @@ limit:
 
 
 risk:
-  illegalExpireSeconds: 60
   illegalCapacity: 16384
+  illegalExpireSeconds: 10
+  expireStrategy: AFTER_ACCESS
 
 
 request:
@@ -366,7 +367,6 @@ verify:
   verifyLength: 16
   minLength: 6
   maxLength: 32
-  type: ALPHANUMERIC
   expireMillis: 600000
   repeatable: true
 

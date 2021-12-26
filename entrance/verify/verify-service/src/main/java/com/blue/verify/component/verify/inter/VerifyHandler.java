@@ -13,9 +13,10 @@ import reactor.core.publisher.Mono;
 public interface VerifyHandler {
 
     /**
-     * handle verify
+     * generate verify
      *
      * @param destination
+     * @return
      */
     Mono<ServerResponse> handle(String destination);
 
