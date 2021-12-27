@@ -18,10 +18,10 @@ import org.springframework.transaction.interceptor.RollbackRuleAttribute;
 import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static java.util.Collections.emptyList;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -56,7 +56,7 @@ public class BlueTransactionConfiguration {
         attributeWithTrans.setRollbackRules(of(new RollbackRuleAttribute(Throwable.class)));
         attributeWithTrans.setReadOnly(false);
         ofNullable(transConf.getMethodPreWithTrans())
-                .orElse(emptyList())
+                .orElseGet(Collections::emptyList)
                 .stream()
                 .filter(StringUtils::isNotBlank)
                 .distinct()

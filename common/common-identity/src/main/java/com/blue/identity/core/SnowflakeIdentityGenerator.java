@@ -108,7 +108,7 @@ public final class SnowflakeIdentityGenerator {
         this.bootSeconds = snowIdGenParam.getBootSeconds();
         long lastSeconds = ofNullable(snowIdGenParam.getLastSeconds())
                 .filter(ls -> ls > 0)
-                .orElse(now().getEpochSecond());
+                .orElseGet(() -> now().getEpochSecond());
 
         if (bootSeconds >= currentSecond || bootSeconds >= lastSeconds)
             throw new IdentityException("bootSeconds cannot be greater than " + currentSecond + " or " + lastSeconds);

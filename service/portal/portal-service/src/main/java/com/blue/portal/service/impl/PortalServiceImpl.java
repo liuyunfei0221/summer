@@ -22,6 +22,7 @@ import reactor.util.Loggers;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -141,8 +142,8 @@ public class PortalServiceImpl implements PortalService {
     private final Function<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_FUNC = type -> {
         List<String> bulletins = ofNullable(stringRedisTemplate.opsForList().range(ofNullable(type)
                 .map(BULLETIN_CACHE_KEY_GENERATOR)
-                .orElse(PORTALS_PRE.key + POPULAR.identity), 0, -1))
-                .orElse(emptyList());
+                .orElseGet(() -> PORTALS_PRE.key + POPULAR.identity), 0, -1))
+                .orElseGet(Collections::emptyList);
         LOGGER.info("REDIS_CACHE_PORTAL_FUNC, type = {}, bulletins = {}", type, bulletins);
         return bulletins
                 .stream().map(s -> GSON.fromJson(s, BulletinInfo.class)).collect(toList());
@@ -227,7 +228,7 @@ public class PortalServiceImpl implements PortalService {
     @Override
     public Mono<List<BulletinInfo>> selectBulletinInfo(Integer bulletinType) {
         LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
-        List<BulletinInfo> vos = ofNullable(getBulletinFromLocalCache(TYPE_CONVERTER.apply(bulletinType))).orElse(emptyList());
+        List<BulletinInfo> vos = ofNullable(getBulletinFromLocalCache(TYPE_CONVERTER.apply(bulletinType))).orElseGet(Collections::emptyList);
         LOGGER.info("vos = {}", vos);
         return just(vos);
     }

@@ -55,7 +55,6 @@ import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -486,7 +485,7 @@ public class SecureServiceImpl implements SecureService {
                                 .distinct()
                                 .filter(lti -> !lti.equals(NOT_LOGGED_IN.identity))
                                 .collect(toList())
-                ).orElse(emptyList());
+                ).orElseGet(Collections::emptyList);
         if (isEmpty(loginTypes))
             return;
 
@@ -498,7 +497,7 @@ public class SecureServiceImpl implements SecureService {
                                 .distinct()
                                 .filter(dti -> !dti.equals(UNKNOWN.identity))
                                 .collect(toList())
-                ).orElse(emptyList());
+                ).orElseGet(Collections::emptyList);
         if (isEmpty(deviceTypes))
             return;
 

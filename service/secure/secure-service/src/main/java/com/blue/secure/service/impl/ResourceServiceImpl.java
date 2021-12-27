@@ -163,12 +163,12 @@ public class ResourceServiceImpl implements ResourceService {
             throw new BlueException(DATA_NOT_EXIST);
 
         ofNullable(resourceMapper.selectByUnique(
-                ofNullable(rup.getRequestMethod()).filter(Asserter::isNotBlank).map(String::trim).map(String::toUpperCase).orElse(resource.getRequestMethod()),
-                ofNullable(rup.getModule()).filter(Asserter::isNotBlank).map(String::trim).map(String::toLowerCase).orElse(resource.getModule()),
+                ofNullable(rup.getRequestMethod()).filter(Asserter::isNotBlank).map(String::trim).map(String::toUpperCase).orElseGet(resource::getRequestMethod),
+                ofNullable(rup.getModule()).filter(Asserter::isNotBlank).map(String::trim).map(String::toLowerCase).orElseGet(resource::getModule),
                 ofNullable(rup.getUri()).filter(Asserter::isNotBlank).map(String::trim).map(String::toLowerCase).map(uri -> {
                     REST_URI_ASSERTER.accept(uri);
                     return uri;
-                }).orElse(resource.getUri()))
+                }).orElseGet(resource::getUri))
         )
                 .map(Resource::getId)
                 .ifPresent(eid -> {

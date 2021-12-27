@@ -24,7 +24,7 @@ public final class RequestBodyProcessor {
 
     public RequestBodyProcessor(List<RequestBodyHandler> processors) {
         this.processors = ofNullable(processors)
-                .orElse(singletonList(b -> b));
+                .orElseGet(() -> singletonList(b -> b));
     }
 
     /**

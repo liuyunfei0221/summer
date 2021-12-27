@@ -201,9 +201,6 @@ server:
   shutdown: graceful
 
 
-logging:
-  config: classpath:config/log4j2.xml
-
 resilience4j:
   retry:
     retry-aspect-order: 2147483643
@@ -212,3 +209,7 @@ resilience4j:
       interval-bi-function:
       max-attempts: 10
       retry-exception-predicate:
+
+
+logging:
+  config: classpath:config/log4j2.xml

@@ -74,7 +74,7 @@ public final class BlueEsGenerator {
                             .filter(rs -> rs.size() > 0)
                             .map(HashSet::new)
                             .map(Node.Roles::new)
-                            .orElse(new Node.Roles(new HashSet<>()));
+                            .orElseGet(() -> new Node.Roles(new HashSet<>()));
 
                     Map<String, List<String>> attributes = ofNullable(esNode.getAttributes()).orElseGet(HashMap::new);
 

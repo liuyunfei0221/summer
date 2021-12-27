@@ -54,7 +54,7 @@ public class DecodingExceptionHandler implements ExceptionHandler {
      * TODO By modifying this function to process all the information that may be encountered
      */
     private static final Function<DecodingException, String> MESSAGE_PARSER = decodingException -> {
-        String originalMessage = ofNullable(decodingException.getMessage()).orElse(decodingException.getLocalizedMessage());
+        String originalMessage = ofNullable(decodingException.getMessage()).orElseGet(decodingException::getLocalizedMessage);
 
         String message;
         if (originalMessage.startsWith("Too many parts")) {

@@ -52,7 +52,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
                     .filter(StringUtils::hasText)
                     .map(String::hashCode)
                     .map(String::valueOf)
-                    .orElse(ofNullable(request)
+                    .orElseGet(() -> ofNullable(request)
                             .map(ServerHttpRequest::getRemoteAddress)
                             .map(InetSocketAddress::getHostString)
                             .orElse(UNKNOWN)).hashCode());

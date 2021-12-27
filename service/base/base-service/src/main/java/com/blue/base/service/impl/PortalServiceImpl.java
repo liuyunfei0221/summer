@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -70,7 +71,7 @@ public class PortalServiceImpl implements PortalService {
     public Mono<List<BulletinInfo>> selectBulletin(String bulletinType) {
         LOGGER.info("Mono<List<BulletinInfo>> selectBulletin(String bulletinType), bulletinType = {}", bulletinType);
 
-        List<BulletinInfo> vos = VO_LIST_CONVERTER.apply(ofNullable(bulletinService.selectBulletin(TYPE_CONVERTER.apply(bulletinType))).orElse(emptyList()));
+        List<BulletinInfo> vos = VO_LIST_CONVERTER.apply(ofNullable(bulletinService.selectBulletin(TYPE_CONVERTER.apply(bulletinType))).orElseGet(Collections::emptyList));
         LOGGER.info("vos = {}", vos);
         return just(vos);
     }

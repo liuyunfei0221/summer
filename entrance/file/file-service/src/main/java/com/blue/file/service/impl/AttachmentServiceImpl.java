@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.util.Collections;
 import java.util.List;
 
 import static com.blue.base.common.base.Asserter.isInvalidIdentity;
@@ -110,7 +111,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                     pageModelResponse.setCount(count);
                     pageModelResponse.setList(count > 0L ?
                             ofNullable(attachmentMapper.selectByLimitAndMemberId(memberId, pageModelRequest.getLimit(), pageModelRequest.getRows()))
-                                    .orElse(emptyList()).stream().map(a ->
+                                    .orElseGet(Collections::emptyList).stream().map(a ->
                                             new AttachmentInfo(a.getId(), a.getName(), a.getSize(), a.getCreateTime(), "")
                                     ).collect(toList())
                             : emptyList()

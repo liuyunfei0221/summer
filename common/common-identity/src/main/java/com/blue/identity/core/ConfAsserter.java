@@ -77,7 +77,7 @@ public final class ConfAsserter {
         long lastSeconds = ofNullable(identityConf.getLastSecondsGetter())
                 .map(Supplier::get)
                 .filter(ls -> ls > 0)
-                .orElse(now().getEpochSecond());
+                .orElseGet(() -> now().getEpochSecond());
 
         if (bootSeconds == null || bootSeconds >= currentSecond || bootSeconds >= lastSeconds)
             throw new IdentityException("bootSeconds cannot be greater than " + currentSecond + " or " + lastSeconds);

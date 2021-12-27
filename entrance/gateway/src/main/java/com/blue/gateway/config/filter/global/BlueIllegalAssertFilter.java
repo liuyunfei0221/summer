@@ -1,6 +1,7 @@
 package com.blue.gateway.config.filter.global;
 
 import com.blue.base.common.base.Asserter;
+import com.blue.base.model.base.IllegalMarkEvent;
 import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
@@ -34,7 +35,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"UnusedReturnValue", "unused", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal"})
+@SuppressWarnings({"UnusedReturnValue", "unused", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "JavaDoc"})
 @Component
 public final class BlueIllegalAssertFilter implements GlobalFilter, Ordered {
 
@@ -96,7 +97,35 @@ public final class BlueIllegalAssertFilter implements GlobalFilter, Ordered {
         return BLUE_ILLEGAL_ASSERT.order;
     }
 
-    public boolean markIllegalIp(String ip, boolean mark) {
+
+    //TODO
+    private static final Consumer<IllegalMarkEvent> EVENT_HANDLER = event -> {
+        if (event == null)
+            return;
+
+        boolean mark = ofNullable(event.getMark()).orElse(false);
+
+
+        ofNullable(event.getJwt())
+                .filter(jwt -> !"".equals(jwt))
+                .ifPresent(jwt -> markIllegalJwt(jwt, mark));
+        ofNullable(event.getIp())
+                .filter(ip -> !"".equals(ip))
+                .ifPresent(ip -> markIllegalIp(ip, mark));
+
+    };
+
+    /**
+     * handle event
+     *
+     * @param event
+     */
+    public void handleIllegalMarkEvent(IllegalMarkEvent event) {
+        LOGGER.info("void handleIllegalMarkEvent(IllegalMarkEvent event), event = {}", event);
+        executorService.execute(() -> EVENT_HANDLER.accept(event));
+    }
+
+    public static boolean markIllegalIp(String ip, boolean mark) {
         LOGGER.info("markIllegalIp(String ip), ip = {}, mark = {}", ip, mark);
         try {
             if (mark) {
@@ -111,7 +140,7 @@ public final class BlueIllegalAssertFilter implements GlobalFilter, Ordered {
         return true;
     }
 
-    public boolean markIllegalJwt(String jwt, boolean mark) {
+    public static boolean markIllegalJwt(String jwt, boolean mark) {
         LOGGER.info("markIllegalJwt(String jwt), jwt = {}, mark = {}", jwt, mark);
         try {
             if (mark) {

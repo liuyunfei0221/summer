@@ -36,8 +36,10 @@ spring:
         capacity: 1024
         ttl: 35s
 
+
 server:
   shutdown: graceful
+
 
 logging:
   config: classpath:config/log4j2.xml

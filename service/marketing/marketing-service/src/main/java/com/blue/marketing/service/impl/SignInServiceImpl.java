@@ -123,7 +123,7 @@ public class SignInServiceImpl implements SignInService {
 
         Map<Integer, SignInReward> relationMapping = new HashMap<>(dayOfMonth);
         for (int i = 1; i <= dayOfMonth; i++)
-            relationMapping.put(i, ofNullable(tempMapping.get(i)).orElse(new SignInReward(null)));
+            relationMapping.put(i, ofNullable(tempMapping.get(i)).orElseGet(() -> new SignInReward(null)));
 
         rewardInfoRefreshing = true;
         TODAY_REWARD_MAPPING = relationMapping;

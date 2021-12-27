@@ -39,7 +39,7 @@ public final class FileProcessor {
             return files;
 
         if (file.isDirectory() && recursive)
-            for (File f : ofNullable(file.listFiles()).orElse(new File[0]))
+            for (File f : ofNullable(file.listFiles()).orElseGet(() -> new File[0]))
                 listFile(files, f, true);
 
         if (file.isFile())
