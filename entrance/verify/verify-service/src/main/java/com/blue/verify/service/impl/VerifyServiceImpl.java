@@ -120,12 +120,13 @@ public class VerifyServiceImpl implements VerifyService {
                     :
                     just(false);
 
-    private final Map<Boolean, BiFunction<String, String, Mono<Boolean>>> VALIDATORS = new HashMap<>(2, 1.0f);
+    private final Map<Boolean, BiFunction<String, String, Mono<Boolean>>> VALIDATORS = new HashMap<>(4, 1.0f);
 
     /**
      * generate pair
      *
      * @param type
+     * @param key
      * @return
      */
     @Override
@@ -137,6 +138,7 @@ public class VerifyServiceImpl implements VerifyService {
      * generate pair
      *
      * @param type
+     * @param key
      * @param length
      * @return
      */
@@ -149,6 +151,7 @@ public class VerifyServiceImpl implements VerifyService {
      * generate pair
      *
      * @param type
+     * @param key
      * @param length
      * @param toUpperCase
      * @return
@@ -162,6 +165,7 @@ public class VerifyServiceImpl implements VerifyService {
      * generate pair
      *
      * @param type
+     * @param key
      * @param length
      * @param expire
      * @return
@@ -175,6 +179,7 @@ public class VerifyServiceImpl implements VerifyService {
      * generate pair
      *
      * @param type
+     * @param key
      * @param length
      * @param toUpperCase
      * @param expire
@@ -202,6 +207,7 @@ public class VerifyServiceImpl implements VerifyService {
     /**
      * validate pair
      *
+     * @param type
      * @param verifyPair
      * @return
      */
@@ -213,6 +219,7 @@ public class VerifyServiceImpl implements VerifyService {
     /**
      * validate pair
      *
+     * @param type
      * @param verifyPair
      * @param repeatable
      * @return

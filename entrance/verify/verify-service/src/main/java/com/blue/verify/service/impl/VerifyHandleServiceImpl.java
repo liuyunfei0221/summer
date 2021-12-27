@@ -46,7 +46,7 @@ public class VerifyHandleServiceImpl implements VerifyHandleService, Application
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "verifyHandlers is empty");
 
         verifyHandlers = beansOfType.values().stream()
-                .collect(toMap(VerifyHandler::targetType, ch -> ch, (a, b) -> a));
+                .collect(toMap(VerifyHandler::targetType, vh -> vh, (a, b) -> a));
     }
 
     private static final VerifyParam DEFAULT_PARAM = new VerifyParam(IMAGE, "");
