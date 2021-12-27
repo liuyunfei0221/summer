@@ -1,6 +1,7 @@
 package com.blue.verify.config.filter.global;
 
 import com.blue.base.common.base.Asserter;
+import com.blue.base.model.base.IllegalMarkEvent;
 import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
@@ -34,7 +36,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"UnusedReturnValue", "unused", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection", "FieldCanBeLocal"})
+@SuppressWarnings({"UnusedReturnValue", "unused", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection", "FieldCanBeLocal", "JavaDoc"})
 @Component
 public final class BlueIllegalAssertFilter implements WebFilter, Ordered {
 
@@ -59,13 +61,22 @@ public final class BlueIllegalAssertFilter implements WebFilter, Ordered {
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "expireStrategy can't be null");
 
         CaffeineConf caffeineConf = new CaffeineConfParams(illegalCapacity, of(illegalExpireSeconds, SECONDS), expireStrategy, executorService);
+
         illegalIpCache = generateCache(caffeineConf);
         illegalJwtCache = generateCache(caffeineConf);
+
+        IP_MARKERS.put(true, ip -> illegalIpCache.put(ip, true));
+        IP_MARKERS.put(false, ip -> illegalIpCache.invalidate(ip));
+
+        JWT_MARKERS.put(true, jwt -> illegalJwtCache.put(jwt, true));
+        JWT_MARKERS.put(false, jwt -> illegalJwtCache.invalidate(jwt));
     }
 
     private static Cache<String, Boolean> illegalIpCache;
-
     private static Cache<String, Boolean> illegalJwtCache;
+
+    private static final Map<Boolean, Consumer<String>> IP_MARKERS = new HashMap<>(4, 1.0f);
+    private static final Map<Boolean, Consumer<String>> JWT_MARKERS = new HashMap<>(4, 1.0f);
 
     private final Consumer<ServerWebExchange> ILLEGAL_ASSERTER = exchange -> {
         Map<String, Object> attributes = exchange.getAttributes();
@@ -85,6 +96,20 @@ public final class BlueIllegalAssertFilter implements WebFilter, Ordered {
                 });
     };
 
+    private static final Consumer<IllegalMarkEvent> EVENT_HANDLER = event -> {
+        if (event == null)
+            return;
+
+        boolean mark = ofNullable(event.getMark()).orElse(true);
+
+        ofNullable(event.getJwt())
+                .filter(jwt -> !"".equals(jwt))
+                .ifPresent(jwt -> JWT_MARKERS.get(mark).accept(jwt));
+        ofNullable(event.getIp())
+                .filter(ip -> !"".equals(ip))
+                .ifPresent(ip -> IP_MARKERS.get(mark).accept(ip));
+    };
+
     @SuppressWarnings("NullableProblems")
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -97,34 +122,14 @@ public final class BlueIllegalAssertFilter implements WebFilter, Ordered {
         return BLUE_ILLEGAL_ASSERT.order;
     }
 
-    public boolean markIllegalIp(String ip, boolean mark) {
-        LOGGER.info("markIllegalIp(String ip), ip = {}, mark = {}", ip, mark);
-        try {
-            if (mark) {
-                illegalIpCache.put(ip, true);
-            } else {
-                illegalIpCache.invalidate(ip);
-            }
-        } catch (Exception e) {
-            LOGGER.error("markIllegalIp(String ip, boolean mark) failed, ip = {}, mark = {}, e = {}", ip, mark, e);
-            return false;
-        }
-        return true;
-    }
-
-    public boolean markIllegalJwt(String jwt, boolean mark) {
-        LOGGER.info("markIllegalJwt(String jwt), jwt = {}, mark = {}", jwt, mark);
-        try {
-            if (mark) {
-                illegalJwtCache.put(jwt, true);
-            } else {
-                illegalJwtCache.invalidate(jwt);
-            }
-        } catch (Exception e) {
-            LOGGER.error("markIllegalJwt(String jwt, boolean mark) failed, jwt = {}, mark = {},  e = {}", jwt, mark, e);
-            return false;
-        }
-        return true;
+    /**
+     * handle event
+     *
+     * @param event
+     */
+    public void handleIllegalMarkEvent(IllegalMarkEvent event) {
+        LOGGER.info("void handleIllegalMarkEvent(IllegalMarkEvent event), event = {}", event);
+        executorService.execute(() -> EVENT_HANDLER.accept(event));
     }
 
 }
