@@ -171,7 +171,7 @@ public final class SnowflakeIdentityGenerator {
      * last seconds processor
      */
     private final Consumer<Long> LAST_SECONDS_PROCESSOR = stepSeconds ->
-            executorService.submit(() -> {
+            executorService.execute(() -> {
                 MAXIMUM_TIME_ALARM.accept(stepSeconds);
                 STEP_SECONDS_RECORDER.accept(stepSeconds);
             });

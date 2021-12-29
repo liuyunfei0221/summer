@@ -1,15 +1,24 @@
 package com.blue.risk.service.impl;
 
-
 import com.blue.base.model.base.DataEvent;
-import com.blue.base.model.base.IllegalMarkEvent;
-import com.blue.risk.event.producer.IllegalMarkProducer;
+import com.blue.base.model.exps.BlueException;
+import com.blue.risk.component.risk.inter.RiskHandler;
 import com.blue.risk.service.inter.RiskService;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.base.BlueDataAttrKey.CLIENT_IP;
-import static com.blue.base.constant.base.BlueDataAttrKey.RESPONSE_STATUS;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.function.Consumer;
+
+import static com.blue.base.common.base.Asserter.isEmpty;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static java.util.stream.Collectors.toList;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -17,31 +26,52 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "AliControlFlowStatementWithoutBraces", "JavaDoc"})
 @Service
-public class RiskServiceImpl implements RiskService {
+public class RiskServiceImpl implements RiskService, ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOGGER = getLogger(RiskServiceImpl.class);
 
-    private final IllegalMarkProducer illegalMarkProducer;
+    private ExecutorService executorService;
 
-    public RiskServiceImpl(IllegalMarkProducer illegalMarkProducer) {
-        this.illegalMarkProducer = illegalMarkProducer;
+    public RiskServiceImpl(ExecutorService executorService) {
+        this.executorService = executorService;
     }
 
-    int i = 0;
+    /**
+     * sorted event handlers
+     */
+    private List<RiskHandler> riskHandlers;
 
     @Override
-    public void testMarkIllegal(DataEvent dataEvent) {
-        String ip = dataEvent.getData(CLIENT_IP.key);
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
+        Map<String, RiskHandler> beansOfType = applicationContext.getBeansOfType(RiskHandler.class);
+        if (isEmpty(beansOfType))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "riskHandlers is empty");
 
-        if (Integer.parseInt(dataEvent.getData(RESPONSE_STATUS.key)) != 200) {
-            i++;
-            System.err.println(ip);
-            if (i % 3 == 0) {
-                illegalMarkProducer.send(new IllegalMarkEvent("", ip, true));
-                LOGGER.error("test mark");
-            }
-        }
+        riskHandlers = beansOfType.values().stream()
+                .sorted(Comparator.comparingInt(RiskHandler::precedence))
+                .collect(toList());
     }
+
+    private final Consumer<DataEvent> EVENT_HANDLER_CHAIN = event -> {
+        for (RiskHandler handler : riskHandlers)
+            handler.handleEvent(event);
+    };
+
+    private final Consumer<DataEvent> EVENT_HANDLER = event ->
+            executorService.execute(() -> EVENT_HANDLER_CHAIN.accept(event));
+
+    /**
+     * analyze event
+     *
+     * @param dataEvent
+     */
+    @Override
+    public void analyzeEvent(DataEvent dataEvent) {
+        LOGGER.info(" void analyzeEvent(DataEvent dataEvent), dataEvent = {}", dataEvent);
+        EVENT_HANDLER.accept(dataEvent);
+    }
+
 }

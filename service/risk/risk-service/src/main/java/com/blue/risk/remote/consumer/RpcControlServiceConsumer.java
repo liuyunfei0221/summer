@@ -1,4 +1,4 @@
-package com.blue.member.remote.consumer;
+package com.blue.risk.remote.consumer;
 
 import com.blue.base.model.base.Access;
 import com.blue.secure.api.inter.RpcControlService;
@@ -27,7 +27,9 @@ public class RpcControlServiceConsumer {
     @DubboReference(version = "1.0",
             providedBy = {"summer-member"},
             methods = {
-                    @Method(name = "insertDefaultMemberRoleRelation", async = false)
+                    @Method(name = "insertDefaultMemberRoleRelation", async = false),
+                    @Method(name = "getAuthorityByAccess", async = true),
+                    @Method(name = "getAuthorityByMemberId", async = true),
             })
     private RpcControlService rpcControlService;
 

@@ -23,6 +23,11 @@ public final class IllegalMarkEvent implements Serializable {
     private String ip;
 
     /**
+     * resource for intercept
+     */
+    private String resource;
+
+    /**
      * actions for intercept
      */
     private Boolean mark;
@@ -30,9 +35,10 @@ public final class IllegalMarkEvent implements Serializable {
     public IllegalMarkEvent() {
     }
 
-    public IllegalMarkEvent(String jwt, String ip, Boolean mark) {
+    public IllegalMarkEvent(String jwt, String ip, String resource, Boolean mark) {
         this.jwt = jwt;
         this.ip = ip;
+        this.resource = resource;
         this.mark = mark;
     }
 
@@ -52,6 +58,14 @@ public final class IllegalMarkEvent implements Serializable {
         this.ip = ip;
     }
 
+    public String getResource() {
+        return resource;
+    }
+
+    public void setResource(String resource) {
+        this.resource = resource;
+    }
+
     public Boolean getMark() {
         return mark;
     }
@@ -65,7 +79,9 @@ public final class IllegalMarkEvent implements Serializable {
         return "IllegalMarkEvent{" +
                 "jwt='" + jwt + '\'' +
                 ", ip='" + ip + '\'' +
+                ", resource='" + resource + '\'' +
                 ", mark=" + mark +
                 '}';
     }
+
 }

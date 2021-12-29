@@ -54,7 +54,7 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
 
     private void report(Throwable throwable, ServerHttpRequest request, DataEvent dataEvent) {
         try {
-            executorService.submit(() -> {
+            executorService.execute(() -> {
                 ExceptionResponse exceptionResponse = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
 
                 dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionResponse.getStatus()).intern());

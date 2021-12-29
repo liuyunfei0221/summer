@@ -180,9 +180,7 @@ limit:
 
 
 risk:
-  illegalCapacity: 16384
-  illegalExpireSeconds: 10
-  expireStrategy: AFTER_ACCESS
+  illegalExpireSeconds: 30
 
 
 request:
@@ -252,7 +250,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -309,7 +307,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

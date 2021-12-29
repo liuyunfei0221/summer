@@ -8,8 +8,14 @@ import com.blue.base.model.base.DataEvent;
  *
  * @author DarkBlue
  */
+@SuppressWarnings("JavaDoc")
 public interface RiskService {
 
-    void testMarkIllegal(DataEvent dataEvent);
+    /**
+     * analyze event
+     *
+     * @param dataEvent
+     */
+    void analyzeEvent(DataEvent dataEvent);
 
 }

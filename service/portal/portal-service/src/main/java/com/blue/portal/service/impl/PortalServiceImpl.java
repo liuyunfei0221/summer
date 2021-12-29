@@ -32,7 +32,7 @@ import java.util.function.Function;
 import static com.blue.base.common.base.Asserter.isNull;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.ConstantProcessor.getBulletinTypeByIdentity;
-import static com.blue.base.constant.base.CacheKey.PORTALS_PRE;
+import static com.blue.base.constant.base.BlueCacheKey.PORTALS_PRE;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.SyncKey.PORTALS_REFRESH_PRE;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;

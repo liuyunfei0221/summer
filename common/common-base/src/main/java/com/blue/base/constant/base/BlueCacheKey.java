@@ -6,9 +6,19 @@ package com.blue.base.constant.base;
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public enum CacheKey {
+public enum BlueCacheKey {
 
     //prefix
+    /**
+     * illegal ips
+     */
+    ILLEGAL_IP_PRE("ILL_IP:"),
+
+    /**
+     * illegal jwts
+     */
+    ILLEGAL_JWT_PRE("ILL_JWT:"),
+
     /**
      * member session key prefix
      */
@@ -37,7 +47,7 @@ public enum CacheKey {
 
     public final String key;
 
-    CacheKey(String key) {
+    BlueCacheKey(String key) {
         this.key = key;
     }
 

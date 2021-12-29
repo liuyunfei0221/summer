@@ -134,7 +134,7 @@ public final class BlueExecutor<T, R> {
         //process
         resources.forEach(resource -> {
             if (resource != null) {
-                executorService.submit(new BlueCommand<>(this, resource, processor));
+                executorService.execute(new BlueCommand<>(this, resource, processor));
             } else {
                 currentComplete();
             }

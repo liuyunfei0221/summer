@@ -4,7 +4,6 @@ import com.blue.base.model.base.Access;
 import com.blue.secure.api.inter.RpcSecureService;
 import com.blue.secure.api.model.AssertAuth;
 import com.blue.secure.api.model.AuthAsserted;
-import com.blue.secure.api.model.AuthorityBaseOnRole;
 import com.blue.secure.service.inter.SecureService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
@@ -25,8 +24,7 @@ import static reactor.util.Loggers.getLogger;
         @Method(name = "assertAuth", async = true),
         @Method(name = "invalidAuthByAccess", async = true),
         @Method(name = "invalidAuthByJwt", async = true),
-        @Method(name = "getAuthorityByAccess", async = true),
-        @Method(name = "getAuthorityByMemberId", async = true)
+        @Method(name = "invalidAuthByMemberId", async = true)
 })
 public class RpcSecureServiceProvider implements RpcSecureService {
 
@@ -75,27 +73,15 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     }
 
     /**
-     * query authority by access
-     *
-     * @param access
-     * @return
-     */
-    @Override
-    public CompletableFuture<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
-        LOGGER.info("CompletableFuture<Authority> getAuthorityByAccess(Access access), access = {}", access);
-        return secureService.getAuthorityMonoByAccess(access).toFuture();
-    }
-
-    /**
-     * query authority by member id
+     * invalid auth by member id
      *
      * @param memberId
      * @return
      */
     @Override
-    public CompletableFuture<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
-        LOGGER.info("CompletableFuture<Authority> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
-        return secureService.getAuthorityMonoByMemberId(memberId).toFuture();
+    public CompletableFuture<Boolean> invalidAuthByMemberId(Long memberId) {
+        LOGGER.info("CompletableFuture<Boolean> invalidAuthByMemberId(Long memberId), memberId = {}", memberId);
+        return secureService.invalidAuthByMemberId(memberId).toFuture();
     }
 
 }

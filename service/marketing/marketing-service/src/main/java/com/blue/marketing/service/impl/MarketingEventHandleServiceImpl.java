@@ -44,7 +44,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
     /**
      * event type -> event handler
      */
-    private Map<MarketingEventType, EventHandler> marketingEventHandlers;
+    private Map<MarketingEventType, EventHandler> eventHandlers;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MarketingEventHandleServiceImpl(EventMapper eventMapper, BlueIdentityProcessor blueIdentityProcessor) {
@@ -59,7 +59,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
         if (isEmpty(beansOfType))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "marketingEventHandlers is empty");
 
-        marketingEventHandlers = beansOfType.values().stream()
+        eventHandlers = beansOfType.values().stream()
                 .collect(toMap(EventHandler::targetType, eh -> eh, (a, b) -> a));
     }
 
@@ -68,7 +68,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
         if (marketingEventType == null)
             throw new BlueException(INVALID_IDENTITY);
 
-        EventHandler eventHandler = marketingEventHandlers.get(marketingEventType);
+        EventHandler eventHandler = eventHandlers.get(marketingEventType);
         if (eventHandler == null)
             throw new BlueException(BAD_REQUEST);
 

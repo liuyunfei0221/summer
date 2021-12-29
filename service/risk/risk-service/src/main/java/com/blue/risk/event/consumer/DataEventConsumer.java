@@ -3,11 +3,9 @@ package com.blue.risk.event.consumer;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.constant.base.BlueTopic;
 import com.blue.base.model.base.DataEvent;
-import com.blue.jwt.common.JwtProcessor;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import com.blue.risk.config.blue.BlueConsumerConfig;
 import com.blue.risk.service.inter.RiskService;
-import com.blue.secure.api.model.MemberPayload;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -31,24 +29,20 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     private final RiskService riskService;
 
-    private final JwtProcessor<MemberPayload> jwtProcessor;
-
     private final BlueConsumerConfig blueConsumerConfig;
 
     private BluePulsarConsumer<DataEvent> dataEventConsumer;
 
-    public DataEventConsumer(RiskService riskService, JwtProcessor<MemberPayload> jwtProcessor, BlueConsumerConfig blueConsumerConfig) {
+    public DataEventConsumer(RiskService riskService, BlueConsumerConfig blueConsumerConfig) {
         this.riskService = riskService;
-        this.jwtProcessor = jwtProcessor;
         this.blueConsumerConfig = blueConsumerConfig;
     }
 
     @PostConstruct
     private void init() {
         Consumer<DataEvent> dataEventDataConsumer = dataEvent ->
-                //TODO risk control
                 ofNullable(dataEvent)
-                        .ifPresent(riskService::testMarkIllegal);
+                        .ifPresent(riskService::analyzeEvent);
 
         this.dataEventConsumer = generateConsumer(blueConsumerConfig.getByKey(BlueTopic.REQUEST_EVENT.name), dataEventDataConsumer);
     }

@@ -1,7 +1,7 @@
 package com.blue.marketing.service.impl;
 
 import com.blue.base.constant.base.BlueNumericalValue;
-import com.blue.base.constant.base.CacheKey;
+import com.blue.base.constant.base.BlueCacheKey;
 import com.blue.base.constant.base.Symbol;
 import com.blue.base.model.base.KeyExpireParam;
 import com.blue.base.model.exps.BlueException;
@@ -98,7 +98,7 @@ public class SignInServiceImpl implements SignInService {
 
     private static volatile Map<Integer, SignInReward> TODAY_REWARD_MAPPING;
 
-    private static final String SIGN_IN_KEY_PREFIX = CacheKey.SIGN_IN_KEY_PRE.key;
+    private static final String SIGN_IN_KEY_PREFIX = BlueCacheKey.SIGN_IN_KEY_PRE.key;
 
     private static final String PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity;
 

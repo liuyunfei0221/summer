@@ -1,6 +1,6 @@
 package com.blue.secure.service.impl;
 
-import com.blue.base.constant.base.CacheKey;
+import com.blue.base.constant.base.BlueCacheKey;
 import com.blue.base.constant.base.Symbol;
 import com.blue.base.constant.secure.AuthInfoRefreshElementType;
 import com.blue.base.constant.secure.DeviceType;
@@ -125,8 +125,8 @@ public class SecureServiceImpl implements SecureService {
     private static long MAX_WAITING_FOR_REFRESH;
 
     public static final String
-            SESSION_KEY_PRE = CacheKey.SESSION_KEY_PRE.key,
-            AUTH_REFRESH_KEY_PRE = CacheKey.AUTH_REFRESH_KEY_PRE.key,
+            SESSION_KEY_PRE = BlueCacheKey.SESSION_KEY_PRE.key,
+            AUTH_REFRESH_KEY_PRE = BlueCacheKey.AUTH_REFRESH_KEY_PRE.key,
             PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity,
             PATH_SEPARATOR = Symbol.PATH_SEPARATOR.identity;
 
@@ -841,7 +841,7 @@ public class SecureServiceImpl implements SecureService {
         LOGGER.info("void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
         AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId,
                 VALID_LOGIN_TYPES, VALID_DEVICE_TYPES, ROLE, valueOf(roleId).intern());
-        executorService.submit(() ->
+        executorService.execute(() ->
                 refreshAuthElementMultiTypes(authInfoRefreshElement));
     }
 

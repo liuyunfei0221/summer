@@ -63,7 +63,7 @@ public class IdentityPerfomanceTest {
 
         long s = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            executorService.submit(() -> {
+            executorService.execute(() -> {
                 long id = blueIdentityGenerator.generate();
                 synchronized (blueIdentityGenerator) {
                     boolean add = set.add(id);
@@ -101,7 +101,7 @@ public class IdentityPerfomanceTest {
         CountDownLatch countDownLatch = new CountDownLatch(count);
         long s = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
-            executorService.submit(() -> {
+            executorService.execute(() -> {
                 blueIdentityGenerator.generate();
                 countDownLatch.countDown();
             });

@@ -3,8 +3,6 @@ package com.blue.marketing.component.event.impl;
 import com.blue.base.constant.marketing.MarketingEventType;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.component.event.inter.EventHandler;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
 
@@ -17,7 +15,6 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @Component
-@Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class SignRewardHandler implements EventHandler {
 
     private static final Logger LOGGER = getLogger(SignRewardHandler.class);

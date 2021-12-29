@@ -1,6 +1,6 @@
 package com.blue.secure.component.verify;
 
-import com.blue.base.constant.base.CacheKey;
+import com.blue.base.constant.base.BlueCacheKey;
 import com.blue.base.constant.base.RandomType;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -77,7 +77,7 @@ public final class VerificationCodeProcessor {
      */
     private static final RedisScript<Boolean> SCRIPT = generateScriptByScriptStr(SCRIPT_STR, Boolean.class);
 
-    private static final String VERIFY_KEY_PRE = CacheKey.VERIFY_KEY_PRE.key;
+    private static final String VERIFY_KEY_PRE = BlueCacheKey.VERIFY_KEY_PRE.key;
 
     private static final UnaryOperator<String> KEY_GENERATOR = key -> VERIFY_KEY_PRE + key;
 
