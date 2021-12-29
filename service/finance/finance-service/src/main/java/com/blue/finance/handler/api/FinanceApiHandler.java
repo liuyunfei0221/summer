@@ -41,7 +41,7 @@ public final class FinanceApiHandler {
                                 .flatMap(fv ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, fv, OK.message), BlueResponse.class))
+                                                .body(generate(OK.code, fv, serverRequest), BlueResponse.class))
                 );
     }
 

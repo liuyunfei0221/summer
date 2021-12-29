@@ -44,7 +44,7 @@ public final class WithdrawApiHandler {
                 }).flatMap(
                         rs ->
                                 ok().contentType(APPLICATION_JSON)
-                                        .body(generate(OK.code, rs, OK.message), BlueResponse.class));
+                                        .body(generate(OK.code, rs, serverRequest), BlueResponse.class));
     }
 
 

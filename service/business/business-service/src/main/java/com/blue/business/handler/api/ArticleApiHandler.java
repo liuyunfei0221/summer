@@ -48,7 +48,7 @@ public class ArticleApiHandler {
                 .flatMap(b ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, b, OK.message), BlueResponse.class)
+                                .body(generate(OK.code, b, serverRequest), BlueResponse.class)
                 );
     }
 

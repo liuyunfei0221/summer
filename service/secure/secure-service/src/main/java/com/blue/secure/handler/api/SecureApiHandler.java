@@ -48,7 +48,7 @@ public final class SecureApiHandler {
                         ok().contentType(APPLICATION_JSON)
                                 .header(AUTHORIZATION.name, ma.getAuth())
                                 .header(SECRET.name, ma.getSecKey())
-                                .body(generate(OK.code, OK.message, OK.message)
+                                .body(generate(OK.code, serverRequest)
                                         , BlueResponse.class));
     }
 
@@ -65,7 +65,7 @@ public final class SecureApiHandler {
                                 .flatMap(secKey ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(SECRET.name, secKey)
-                                                .body(generate(OK.code, OK.message, OK.message)
+                                                .body(generate(OK.code, serverRequest)
                                                         , BlueResponse.class)));
     }
 
@@ -81,7 +81,7 @@ public final class SecureApiHandler {
                         secureService.getAuthorityMonoByAccess(acc)
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, authority, OK.message)
+                                                .body(generate(OK.code, authority, serverRequest)
                                                         , BlueResponse.class)));
     }
 
@@ -99,7 +99,7 @@ public final class SecureApiHandler {
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(AUTHORIZATION.name, "")
                                                 .body(
-                                                        generate(OK.code, OK.message, OK.message)
+                                                        generate(OK.code, serverRequest)
                                                         , BlueResponse.class)));
     }
 

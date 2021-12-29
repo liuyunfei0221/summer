@@ -49,7 +49,7 @@ public final class AttachmentApiHandler {
                         attachmentService.selectAttachmentByPageAndMemberId(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, vo, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, vo, serverRequest), BlueResponse.class));
     }
 
 
@@ -72,7 +72,7 @@ public final class AttachmentApiHandler {
                 }).flatMap(
                         rs ->
                                 ok().contentType(APPLICATION_JSON)
-                                        .body(generate(OK.code, rs, OK.message), BlueResponse.class));
+                                        .body(generate(OK.code, rs, serverRequest), BlueResponse.class));
     }
 
 

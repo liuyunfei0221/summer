@@ -32,7 +32,7 @@ public final class DataApiHandler {
                 .flatMap(ai ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, "test", OK.message), BlueResponse.class)
+                                .body(generate(OK.code, "test", serverRequest), BlueResponse.class)
                 );
     }
 

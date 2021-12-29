@@ -61,7 +61,7 @@ public final class ResourceManagerHandler {
                 .flatMap(tuple2 -> controlService.insertResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -77,7 +77,7 @@ public final class ResourceManagerHandler {
                 .flatMap(tuple2 -> controlService.updateResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -91,7 +91,7 @@ public final class ResourceManagerHandler {
                 .flatMap(tuple2 -> controlService.deleteResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -106,7 +106,7 @@ public final class ResourceManagerHandler {
                 .flatMap(resourceService::selectResourceInfoPageMonoByPageAndCondition)
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, vo, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, vo, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -122,7 +122,7 @@ public final class ResourceManagerHandler {
                         roleResRelationService.selectAuthorityMonoByResId(wrapper.getId()))
                 .flatMap(auth ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, auth, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, auth, serverRequest), BlueResponse.class));
 
     }
 

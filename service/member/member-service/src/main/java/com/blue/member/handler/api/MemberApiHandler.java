@@ -46,7 +46,7 @@ public final class MemberApiHandler {
                                 .flatMap(mv ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, mv, OK.message), BlueResponse.class))
+                                                .body(generate(OK.code, mv, serverRequest), BlueResponse.class))
                 );
     }
 
@@ -66,7 +66,7 @@ public final class MemberApiHandler {
                 .flatMap(mi ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mi, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, mi, serverRequest), BlueResponse.class));
     }
 
 

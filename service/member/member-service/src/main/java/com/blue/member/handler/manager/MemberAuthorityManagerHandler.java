@@ -46,7 +46,7 @@ public class MemberAuthorityManagerHandler {
                 .flatMap(memberAuthorityService::selectMemberAuthorityPageMonoByPageAndCondition)
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, vo, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, vo, serverRequest), BlueResponse.class));
     }
 
 }

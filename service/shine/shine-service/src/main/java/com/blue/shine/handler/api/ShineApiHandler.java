@@ -45,7 +45,7 @@ public final class ShineApiHandler {
                 .flatMap(shineInfo ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, shineInfo, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, shineInfo, serverRequest), BlueResponse.class));
     }
 
 

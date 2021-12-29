@@ -41,7 +41,7 @@ public final class SignInApiHandler {
                                 .flatMap(r ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, r, OK.message), BlueResponse.class))
+                                                .body(generate(OK.code, r, serverRequest), BlueResponse.class))
                 );
     }
 
@@ -58,7 +58,7 @@ public final class SignInApiHandler {
                                 .flatMap(info ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, info, OK.message), BlueResponse.class))
+                                                .body(generate(OK.code, info, serverRequest), BlueResponse.class))
 
                 );
     }

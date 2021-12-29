@@ -5,7 +5,6 @@ import com.blue.base.model.base.IllegalMarkEvent;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import com.blue.verify.component.IllegalAsserter;
 import com.blue.verify.config.blue.BlueConsumerConfig;
-import com.google.gson.JsonSyntaxException;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -45,17 +44,13 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
                 ofNullable(illegalMarkEvent)
                         .ifPresent(ime -> {
                             LOGGER.info("illegalMarkEventDataConsumer received, ime = {}", ime);
-                            try {
-                                illegalAsserter.handleIllegalMarkEvent(ime).subscribe(b -> {
-                                    if (b) {
-                                        LOGGER.info("mark jwt or ip -> SUCCESS, ime = {}", ime);
-                                    } else {
-                                        LOGGER.error("mark jwt or ip -> FAILED, ime = {}", ime);
-                                    }
-                                });
-                            } catch (JsonSyntaxException e) {
-                                LOGGER.error("mark jwt or ip -> FAILED,ime = {}", ime);
-                            }
+                            illegalAsserter.handleIllegalMarkEvent(ime).subscribe(b -> {
+                                if (b) {
+                                    LOGGER.info("mark jwt or ip -> SUCCESS, ime = {}", ime);
+                                } else {
+                                    LOGGER.error("mark jwt or ip -> FAILED, ime = {}", ime);
+                                }
+                            });
                         });
 
         this.illegalMarkEventConsumer = generateConsumer(blueConsumerConfig.getByKey(ILLEGAL_MARK.name), illegalMarkEventDataConsumer);

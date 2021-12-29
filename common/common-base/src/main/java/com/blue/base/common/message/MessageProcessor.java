@@ -17,6 +17,7 @@ import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
 import static com.blue.base.constant.base.Symbol.*;
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
@@ -79,6 +80,16 @@ public final class MessageProcessor {
             return msg;
         }
     };
+
+    /**
+     * get message by default
+     *
+     * @param key
+     * @return
+     */
+    public static String resolveToMessage(Integer key) {
+        return resolveToMessage(key, emptyList());
+    }
 
     /**
      * get message by i18n

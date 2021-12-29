@@ -48,7 +48,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"identity\":\"liuyunfei@outloot.com\",\r\n    \"access\":\"12345678\",\r\n    \"verificationCode\":\"test\",\r\n    \"loginType\":\"EP\",\r\n    \"deviceType\":\"M\"\r\n}"
+					"raw": "{\r\n    \"identity\":\"yunfei@outloot.com\",\r\n    \"access\":\"12345678\",\r\n    \"verificationCode\":\"test\",\r\n    \"loginType\":\"EP\",\r\n    \"deviceType\":\"M\"\r\n}"
 				},
 				"url": {
 					"raw": "localhost:10000/blue-secure/auth/loginByAcctAndPwd",
@@ -108,7 +108,7 @@
 					},
 					{
 						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMzFhOWYwMTI0NWFkYmQ4OWFlODJhMDBjODY2NDBlYjIxNDMyODM5YTViY2NkY2U0MGY1OGM1MzNiNGFjNzU1Njg3NGIyY2U2YjEyY2FhYjVlOGQwODNmNTY2NzFkNzkwOTM2YWE4MGI2YTg3NjAwYjZlNDJmZDZhZDBlMGNkY2QiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MTkwMzA3NzM1MjkwNTExMzdfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjM5MTkzODg1MzM4LCJpIjoiMTkwMzA3NzM1MjkwNTExMzciLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM2NTE1NDg1IiwibmJmIjoxNjM2NTE1NDg1LCJ0IjoibUR2UXNWRXFQa2oiLCJleHAiOjE2MzkxOTM4ODUsImlhdCI6MTYzNjUxNTQ4NSwianRpIjoib2Qxc2RVYkVnQVg2VkVtN2NIWUFZdUxCOWhXYTI5OEIifQ.oA4IldGRUn6mLcvTHNQc-hQ_wDXx2mwb8ba7-5L9jNne3F28kaNMG3MM_OZ-kqvDmmV39UJBibScyONfqxXbfg",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMGRiNWQwZjhkMmEwYzMyNWY4OWQ2OTlmN2I3NTdhNDYyNGZiNDg5NTU1YmRlM2QyNjk3MGQxZWU4ZWIyODA0NmZlNDZjNmUwYTQ5YmFhNjhlMjFjMzM4MjE2Y2U5Yjg2N2IzYjdhYWQ2ZjRjYmQyY2Q2NjU1NWY4MDI4ZTMwMWIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjA1NDAyMDc1NzI5NzU2MTdfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQwNTk4NzE5NDY2LCJpIjoiMjA1NDAyMDc1NzI5NzU2MTciLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjM3OTIwMzE5IiwibmJmIjoxNjM3OTIwMzE5LCJ0IjoibElmTjF1THEzdWIiLCJleHAiOjE2NDA1OTg3MTksImlhdCI6MTYzNzkyMDMxOSwianRpIjoiaXVZRVVQa2xnQ2Q0M0hUbnZRVGE0cjZCZmt4Uzc2OEgifQ.Pypej1Gs4VbVUd8ukKFl7GHEkZGukxw0JAaAVxILD7RqYvWYTHf9aCJyWvR1t46k8PhHzxL1EQsIkYp7C4_h5g",
 						"type": "text"
 					}
 				],
@@ -1123,6 +1123,32 @@
 						"manager",
 						"relation",
 						"mem-role"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "生成图形验证码",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:16000/blue-verify/verify/generate",
+					"host": [
+						"localhost"
+					],
+					"port": "16000",
+					"path": [
+						"blue-verify",
+						"verify",
+						"generate"
 					]
 				}
 			},

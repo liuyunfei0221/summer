@@ -65,7 +65,7 @@ public final class FileApiHandler {
                 .flatMap(rl ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, rl, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, rl, serverRequest), BlueResponse.class));
     }
 
     /**

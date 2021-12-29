@@ -49,7 +49,7 @@ public class RelationManagerHandler {
                 .flatMap(tuple2 -> controlService.updateAuthorityByRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -65,7 +65,7 @@ public class RelationManagerHandler {
                 .flatMap(tuple2 -> controlService.updateAuthorityByMember(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
     }
 
 }

@@ -38,7 +38,7 @@ public final class DictApiHandler {
                 .flatMap(dts ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, dts, OK.message), BlueResponse.class)
+                                .body(generate(OK.code, dts, serverRequest), BlueResponse.class)
                 );
     }
 

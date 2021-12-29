@@ -46,7 +46,7 @@ public class MemberManagerHandler {
                 .flatMap(memberBasicService::selectMemberInfoPageMonoByPageAndCondition)
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, vo, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, vo, serverRequest), BlueResponse.class));
     }
 
 

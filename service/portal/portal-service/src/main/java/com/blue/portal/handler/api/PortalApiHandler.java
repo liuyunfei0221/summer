@@ -52,7 +52,7 @@ public final class PortalApiHandler {
         return portalService.selectBulletinInfo(getIntegerVariable(serverRequest, TYPE.key))
                 .flatMap(bl -> ok()
                         .contentType(APPLICATION_JSON)
-                        .body(generate(OK.code, bl, OK.message), BlueResponse.class)
+                        .body(generate(OK.code, bl, serverRequest), BlueResponse.class)
                 );
     }
 

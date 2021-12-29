@@ -60,7 +60,7 @@ public final class RoleManagerHandler {
                 .flatMap(tuple2 -> controlService.insertRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -76,7 +76,7 @@ public final class RoleManagerHandler {
                 .flatMap(tuple2 -> controlService.updateRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -90,7 +90,7 @@ public final class RoleManagerHandler {
                 .flatMap(tuple2 -> controlService.deleteRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -105,7 +105,7 @@ public final class RoleManagerHandler {
                 .flatMap(roleService::selectRoleInfoPageMonoByPageAndCondition)
                 .flatMap(vo ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, vo, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, vo, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -121,7 +121,7 @@ public final class RoleManagerHandler {
                         roleResRelationService.selectAuthorityMonoByRoleId(wrapper.getId()))
                 .flatMap(auth ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, auth, OK.message), BlueResponse.class));
+                                .body(generate(OK.code, auth, serverRequest), BlueResponse.class));
     }
 
 }
