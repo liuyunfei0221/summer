@@ -79,12 +79,34 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * package response result for reactive
      *
      * @param code
-     * @param serverRequest
-     * @param <T>
      * @return
      */
-    public static <T> Mono<BlueResponse<String>> generate(int code, ServerRequest serverRequest) {
+    public static Mono<BlueResponse<String>> generate(int code) {
+        String message = resolveToMessage(code);
+        return just(new BlueResponse<>(code, message, message));
+    }
+
+    /**
+     * package response result for reactive
+     *
+     * @param code
+     * @param serverRequest
+     * @return
+     */
+    public static Mono<BlueResponse<String>> generate(int code, ServerRequest serverRequest) {
         String message = resolveToMessage(code, serverRequest);
+        return just(new BlueResponse<>(code, message, message));
+    }
+
+    /**
+     * package response result for reactive
+     *
+     * @param code
+     * @param serverRequest
+     * @return
+     */
+    public static Mono<BlueResponse<String>> generate(int code, ServerRequest serverRequest, String[] replacements) {
+        String message = resolveToMessage(code, serverRequest, replacements);
         return just(new BlueResponse<>(code, message, message));
     }
 
@@ -98,19 +120,6 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      */
     public static <T> Mono<BlueResponse<T>> generate(int code, T data) {
         return just(new BlueResponse<>(code, data, resolveToMessage(code)));
-    }
-
-    /**
-     * package response result for reactive
-     *
-     * @param code
-     * @param serverRequest
-     * @param <T>
-     * @return
-     */
-    public static <T> Mono<BlueResponse<String>> generate(int code, ServerRequest serverRequest, String[] replacements) {
-        String message = resolveToMessage(code, serverRequest, replacements);
-        return just(new BlueResponse<>(code, message, message));
     }
 
     /**

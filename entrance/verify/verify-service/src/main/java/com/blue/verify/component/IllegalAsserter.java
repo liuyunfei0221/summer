@@ -10,8 +10,6 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -41,8 +39,6 @@ import static reactor.core.publisher.Mono.*;
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Component
 public final class IllegalAsserter {
-
-    private static final Logger LOGGER = Loggers.getLogger(IllegalAsserter.class);
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
@@ -118,10 +114,10 @@ public final class IllegalAsserter {
 
         return zip(ofNullable(event.getJwt())
                         .filter(Asserter::isNotBlank)
-                        .map(jwt -> JWT_MARKERS.get(mark).apply(jwt, resource)).orElse(just(false)),
+                        .map(jwt -> JWT_MARKERS.get(mark).apply(jwt, resource)).orElseGet(() -> just(false)),
                 ofNullable(event.getIp())
                         .filter(Asserter::isNotBlank)
-                        .map(ip -> IP_MARKERS.get(mark).apply(ip, resource)).orElse(just(false))
+                        .map(ip -> IP_MARKERS.get(mark).apply(ip, resource)).orElseGet(() -> just(false))
         ).flatMap(tuple2 -> just(tuple2.getT1() || tuple2.getT2()));
     };
 
@@ -171,7 +167,6 @@ public final class IllegalAsserter {
      * @param event
      */
     public Mono<Boolean> handleIllegalMarkEvent(IllegalMarkEvent event) {
-        LOGGER.info("void handleIllegalMarkEvent(IllegalMarkEvent event), event = {}", event);
         return EVENT_HANDLER.apply(event);
     }
 
