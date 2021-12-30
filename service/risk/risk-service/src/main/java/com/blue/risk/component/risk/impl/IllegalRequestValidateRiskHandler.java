@@ -7,9 +7,10 @@ import com.blue.risk.event.producer.IllegalMarkProducer;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.base.BlueDataAttrKey.CLIENT_IP;
-import static com.blue.base.constant.base.BlueDataAttrKey.RESPONSE_STATUS;
+import static com.blue.base.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
+import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.risk.component.risk.HandlerPrecedence.ILLEGAL_REQUEST_VALIDATE;
+import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -41,7 +42,9 @@ public class IllegalRequestValidateRiskHandler implements RiskHandler {
             i++;
             System.err.println(ip);
             if (i % 3 == 0) {
-                illegalMarkProducer.send(new IllegalMarkEvent("", ip, "", true));
+                illegalMarkProducer.send(new IllegalMarkEvent("", ip, REQ_RES_KEY_GENERATOR.apply(
+                        ofNullable(dataEvent.getData(METHOD.key)).map(String::valueOf).orElse(""),
+                        ofNullable(dataEvent.getData(URI.key)).map(String::valueOf).orElse("")), true));
                 LOGGER.error("test mark");
             }
         }

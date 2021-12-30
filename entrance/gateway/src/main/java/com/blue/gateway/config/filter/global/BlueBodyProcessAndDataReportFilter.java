@@ -90,7 +90,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
     }
 
     @SuppressWarnings("DuplicatedCode")
-    private void packageRequestInfo(DataEvent dataEvent, ServerHttpRequest request, ServerWebExchange exchange) {
+    private void packageRequestInfo(DataEvent dataEvent, ServerWebExchange exchange) {
         Map<String, Object> attributes = exchange.getAttributes();
 
         dataEvent.addData(REQUEST_ID.key, valueOf(attributes.get(REQUEST_ID.key)));
@@ -104,10 +104,14 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                 .ifPresent(jwt -> dataEvent.addData(JWT.key, jwt));
         ofNullable(attributes.get(ACCESS.key)).map(String::valueOf)
                 .ifPresent(access -> dataEvent.addData(ACCESS.key, access));
-
-        dataEvent.addData(CLIENT_IP.key, ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf).orElse(""));
-        dataEvent.addData(METHOD.key, request.getMethodValue().intern());
-        dataEvent.addData(URI.key, request.getURI().getRawPath().intern());
+        ofNullable(attributes.get(METHOD.key)).map(String::valueOf)
+                .ifPresent(access -> dataEvent.addData(ACCESS.key, access));
+        ofNullable(attributes.get(URI.key)).map(String::valueOf)
+                .ifPresent(access -> dataEvent.addData(URI.key, access));
+        ofNullable(attributes.get(REAL_URI.key)).map(String::valueOf)
+                .ifPresent(access -> dataEvent.addData(REAL_URI.key, access));
+        ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf)
+                .ifPresent(access -> dataEvent.addData(CLIENT_IP.key, access));
     }
 
     private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
@@ -167,8 +171,8 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
         return response;
     }
 
-    private Mono<Void> reportWithoutRequestBody(ServerHttpRequest request, ServerWebExchange exchange, GatewayFilterChain chain, DataEvent dataEvent) {
-        packageRequestInfo(dataEvent, request, exchange);
+    private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, GatewayFilterChain chain, DataEvent dataEvent) {
+        packageRequestInfo(dataEvent, exchange);
         return chain.filter(
                 exchange.mutate().response(
                         getResponseAndReport(exchange, dataEvent)
@@ -183,7 +187,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
         CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(
                 exchange, headers);
 
-        packageRequestInfo(dataEvent, request, exchange);
+        packageRequestInfo(dataEvent, exchange);
         return fromPublisher(
                 ServerRequest.create(exchange, MESSAGE_READERS)
                         .bodyToMono(String.class)
@@ -209,14 +213,13 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
         DataEvent dataEvent = new DataEvent();
 
         if (ofNullable(exchange.getAttributes().get(EXISTENCE_REQUEST_BODY.key))
                 .map(b -> (boolean) b).orElse(true)) {
-            return reportWithRequestBody(request, exchange, chain, dataEvent);
+            return reportWithRequestBody(exchange.getRequest(), exchange, chain, dataEvent);
         } else {
-            return reportWithoutRequestBody(request, exchange, chain, dataEvent);
+            return reportWithoutRequestBody(exchange, chain, dataEvent);
         }
     }
 

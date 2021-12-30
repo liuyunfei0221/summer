@@ -78,7 +78,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         requestEventReporter.report(dataEvent);
     }
 
-    private void packageRequestInfo(DataEvent dataEvent, ServerHttpRequest request, ServerWebExchange exchange) {
+    private void packageRequestInfo(DataEvent dataEvent, ServerWebExchange exchange) {
 
         Map<String, Object> attributes = exchange.getAttributes();
 
@@ -89,12 +89,16 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
         ofNullable(attributes.get(METADATA.key)).map(String::valueOf)
                 .ifPresent(metadata -> dataEvent.addData(METADATA.key, metadata));
-
-        dataEvent.addData(CLIENT_IP.key, ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf).orElse(""));
-        dataEvent.addData(METHOD.key, request.getMethodValue().intern());
-        dataEvent.addData(URI.key, request.getURI().getRawPath().intern());
-
-        LOGGER.info("packageRequestParam(), dataEvent = {}", dataEvent);
+        ofNullable(attributes.get(JWT.key)).map(String::valueOf)
+                .ifPresent(jwt -> dataEvent.addData(JWT.key, jwt));
+        ofNullable(attributes.get(METHOD.key)).map(String::valueOf)
+                .ifPresent(access -> dataEvent.addData(ACCESS.key, access));
+        ofNullable(attributes.get(URI.key)).map(String::valueOf)
+                .ifPresent(access -> dataEvent.addData(URI.key, access));
+        ofNullable(attributes.get(REAL_URI.key)).map(String::valueOf)
+                .ifPresent(access -> dataEvent.addData(REAL_URI.key, access));
+        ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf)
+                .ifPresent(access -> dataEvent.addData(CLIENT_IP.key, access));
     }
 
     private Mono<String> getResponseBodyAndReport(ServerHttpResponse response, HttpStatus httpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
@@ -150,7 +154,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
     public Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
 
-        packageRequestInfo(dataEvent, request, exchange);
+        packageRequestInfo(dataEvent, exchange);
 
         return ServerRequest.create(exchange, MESSAGE_READERS)
                 .bodyToMono(String.class)
@@ -175,10 +179,9 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
         DataEvent dataEvent = new DataEvent();
 
-        return reportWithRequestBody(request, exchange, chain, dataEvent);
+        return reportWithRequestBody(exchange.getRequest(), exchange, chain, dataEvent);
     }
 
     @Override

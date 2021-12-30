@@ -180,8 +180,14 @@ public class CommonFunctions {
     /**
      * resource key generator for request
      */
-    public static final BinaryOperator<String> REQ_RES_KEY_GENERATOR = (method, uri) ->
+    public static final BinaryOperator<String> REQ_RES_KEY_CONVERTER = (method, uri) ->
             ((method.toUpperCase().intern() + PAR_CONCATENATION + REST_URI_PROCESSOR.apply(uri).intern()).intern()).intern();
+
+    /**
+     * resource key generator for request
+     */
+    public static final BinaryOperator<String> REQ_RES_KEY_GENERATOR = (method, uri) ->
+            (method.toUpperCase().intern() + PAR_CONCATENATION + uri).intern();
 
     /**
      * resource key generator for init

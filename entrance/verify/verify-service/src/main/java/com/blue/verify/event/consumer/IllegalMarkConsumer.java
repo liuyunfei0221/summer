@@ -3,8 +3,8 @@ package com.blue.verify.event.consumer;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.model.base.IllegalMarkEvent;
 import com.blue.pulsar.common.BluePulsarConsumer;
-import com.blue.verify.component.IllegalAsserter;
 import com.blue.verify.config.blue.BlueConsumerConfig;
+import com.blue.verify.config.filter.global.BlueIllegalAssertFilter;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -27,14 +27,14 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(IllegalMarkConsumer.class);
 
-    private final IllegalAsserter illegalAsserter;
+    private final BlueIllegalAssertFilter blueIllegalAssertFilter;
 
     private final BlueConsumerConfig blueConsumerConfig;
 
     private BluePulsarConsumer<IllegalMarkEvent> illegalMarkEventConsumer;
 
-    public IllegalMarkConsumer(IllegalAsserter illegalAsserter, BlueConsumerConfig blueConsumerConfig) {
-        this.illegalAsserter = illegalAsserter;
+    public IllegalMarkConsumer(BlueIllegalAssertFilter blueIllegalAssertFilter, BlueConsumerConfig blueConsumerConfig) {
+        this.blueIllegalAssertFilter = blueIllegalAssertFilter;
         this.blueConsumerConfig = blueConsumerConfig;
     }
 
@@ -44,13 +44,7 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
                 ofNullable(illegalMarkEvent)
                         .ifPresent(ime -> {
                             LOGGER.info("illegalMarkEventDataConsumer received, ime = {}", ime);
-                            illegalAsserter.handleIllegalMarkEvent(ime).subscribe(b -> {
-                                if (b) {
-                                    LOGGER.info("mark jwt or ip -> SUCCESS, ime = {}", ime);
-                                } else {
-                                    LOGGER.error("mark jwt or ip -> FAILED, ime = {}", ime);
-                                }
-                            });
+                            blueIllegalAssertFilter.handleIllegalMarkEvent(ime);
                         });
 
         this.illegalMarkEventConsumer = generateConsumer(blueConsumerConfig.getByKey(ILLEGAL_MARK.name), illegalMarkEventDataConsumer);

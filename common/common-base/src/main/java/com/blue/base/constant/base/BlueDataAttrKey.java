@@ -18,6 +18,11 @@ public enum BlueDataAttrKey {
     URI("uri"),
 
     /**
+     * real uri
+     */
+    REAL_URI("realUri"),
+
+    /**
      * request body
      */
     REQUEST_BODY("requestBody"),
