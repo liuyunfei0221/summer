@@ -10,7 +10,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 import reactor.util.Logger;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -18,6 +17,7 @@ import java.util.function.Consumer;
 
 import static com.blue.base.common.base.Asserter.isEmpty;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toList;
 import static reactor.util.Loggers.getLogger;
 
@@ -51,7 +51,7 @@ public class RiskServiceImpl implements RiskService, ApplicationListener<Context
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "riskHandlers is empty");
 
         riskHandlers = beansOfType.values().stream()
-                .sorted(Comparator.comparingInt(RiskHandler::precedence))
+                .sorted(comparingInt(RiskHandler::precedence))
                 .collect(toList());
     }
 

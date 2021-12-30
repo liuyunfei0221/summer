@@ -180,7 +180,9 @@ limit:
 
 
 risk:
+  illegalCapacity: 16384
   illegalExpireSeconds: 20
+  expireStrategy: AFTER_ACCESS
 
 
 request:
@@ -230,7 +232,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -287,7 +289,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -323,7 +325,7 @@ consumers:
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000
       negativeAckRedeliveryDelayMillis: 100
-      subscriptionType: Failover
+      subscriptionType: Shared
       subscriptionMode: Durable
       receiverQueueSize: 1000
       acknowledgementsGroupTimeMillis: 100
