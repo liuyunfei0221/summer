@@ -10,7 +10,7 @@ import java.util.function.Supplier;
  * @date 2021/11/19
  * @apiNote
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public final class RandomGenerator {
 
     private static final Supplier<Random> RANDOM_SUP = BlueRandom::get;
@@ -19,9 +19,8 @@ public final class RandomGenerator {
         List<Integer> res = new ArrayList<>(size);
 
         int mask = max - min;
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++)
             res.add(random.nextInt(mask) + min);
-        }
 
         return res;
     }
@@ -32,11 +31,9 @@ public final class RandomGenerator {
         int mask = max - min;
 
         int step = 0;
-        while (step < size) {
-            if (res.add(random.nextInt(mask) + min)) {
+        while (step < size)
+            if (res.add(random.nextInt(mask) + min))
                 step++;
-            }
-        }
 
         return new ArrayList<>(res);
     }

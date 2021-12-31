@@ -2,9 +2,10 @@ package com.blue.file.event.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.model.base.IllegalMarkEvent;
+import com.blue.file.component.IllegalAsserter;
 import com.blue.file.config.blue.BlueConsumerConfig;
-import com.blue.file.config.filter.global.BlueIllegalAssertFilter;
 import com.blue.pulsar.common.BluePulsarConsumer;
+import com.google.gson.JsonSyntaxException;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -22,19 +23,18 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("unused")
 public final class IllegalMarkConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(IllegalMarkConsumer.class);
 
-    private final BlueIllegalAssertFilter blueIllegalAssertFilter;
+    private final IllegalAsserter illegalAsserter;
 
     private final BlueConsumerConfig blueConsumerConfig;
 
     private BluePulsarConsumer<IllegalMarkEvent> illegalMarkEventConsumer;
 
-    public IllegalMarkConsumer(BlueIllegalAssertFilter blueIllegalAssertFilter, BlueConsumerConfig blueConsumerConfig) {
-        this.blueIllegalAssertFilter = blueIllegalAssertFilter;
+    public IllegalMarkConsumer(IllegalAsserter illegalAsserter, BlueConsumerConfig blueConsumerConfig) {
+        this.illegalAsserter = illegalAsserter;
         this.blueConsumerConfig = blueConsumerConfig;
     }
 
@@ -44,7 +44,17 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
                 ofNullable(illegalMarkEvent)
                         .ifPresent(ime -> {
                             LOGGER.info("illegalMarkEventDataConsumer received, ime = {}", ime);
-                            blueIllegalAssertFilter.handleIllegalMarkEvent(ime);
+                            try {
+                                illegalAsserter.handleIllegalMarkEvent(ime).subscribe(b -> {
+                                    if (b) {
+                                        LOGGER.info("mark jwt or ip -> SUCCESS, ime = {}", ime);
+                                    } else {
+                                        LOGGER.error("mark jwt or ip -> FAILED, ime = {}", ime);
+                                    }
+                                });
+                            } catch (JsonSyntaxException e) {
+                                LOGGER.error("mark jwt or ip -> FAILED,ime = {}", ime);
+                            }
                         });
 
         this.illegalMarkEventConsumer = generateConsumer(blueConsumerConfig.getByKey(ILLEGAL_MARK.name), illegalMarkEventDataConsumer);

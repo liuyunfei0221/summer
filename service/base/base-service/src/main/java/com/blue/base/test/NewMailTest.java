@@ -70,17 +70,17 @@ public class NewMailTest {
 
     private static void test1() {
 
-        String to1 = "liuyunfei0221@outlook.com";
-        String to2 = "yunfei.liu@dreamisland.ai";
+        String to1 = "";
+        String to2 = "";
 
         Email email = EmailBuilder.startingBlank()
                 .from(USER_NAME)
                 .to(to1)
                 .to(to2)
                 //.to(toName2, to2)
-                .cc("zhiyi", "liuzhiyi0805@outlook.com")
+                .cc("", "")
                 //.withReplyTo("lollypop", "lolly.pop@othermail.com")
-                .withSubject("yunfei")
+                .withSubject("text")
                 //.withHTMLText("<img src='cid:wink1'><b>We should meet up!</b><img src='cid:wink2'>")
                 .withPlainText("What would you like for Lunch?")
                 //.withEmbeddedImage("wink1", imageByteArray, "image/png")
