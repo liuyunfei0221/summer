@@ -22,7 +22,6 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -42,7 +41,6 @@ import static org.springframework.web.reactive.function.BodyInserters.fromPublis
 import static reactor.core.publisher.Flux.from;
 import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * data report filter
@@ -51,8 +49,6 @@ import static reactor.util.Loggers.getLogger;
  */
 @Component
 public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, Ordered {
-
-    private static final Logger LOGGER = getLogger(BlueBodyProcessAndDataReportFilter.class);
 
     private final RequestBodyProcessor requestBodyProcessor;
 
@@ -89,29 +85,13 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
         dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionResponse));
     }
 
-    @SuppressWarnings("DuplicatedCode")
     private void packageRequestInfo(DataEvent dataEvent, ServerWebExchange exchange) {
         Map<String, Object> attributes = exchange.getAttributes();
-
-        dataEvent.addData(REQUEST_ID.key, valueOf(attributes.get(REQUEST_ID.key)));
 
         dataEvent.setDataEventType(UNIFIED);
         dataEvent.setStamp(TIME_STAMP_GETTER.get());
 
-        ofNullable(attributes.get(METADATA.key)).map(String::valueOf)
-                .ifPresent(metadata -> dataEvent.addData(METADATA.key, metadata));
-        ofNullable(attributes.get(JWT.key)).map(String::valueOf)
-                .ifPresent(jwt -> dataEvent.addData(JWT.key, jwt));
-        ofNullable(attributes.get(ACCESS.key)).map(String::valueOf)
-                .ifPresent(access -> dataEvent.addData(ACCESS.key, access));
-        ofNullable(attributes.get(METHOD.key)).map(String::valueOf)
-                .ifPresent(access -> dataEvent.addData(ACCESS.key, access));
-        ofNullable(attributes.get(URI.key)).map(String::valueOf)
-                .ifPresent(access -> dataEvent.addData(URI.key, access));
-        ofNullable(attributes.get(REAL_URI.key)).map(String::valueOf)
-                .ifPresent(access -> dataEvent.addData(REAL_URI.key, access));
-        ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf)
-                .ifPresent(access -> dataEvent.addData(CLIENT_IP.key, access));
+        EVENT_PACKAGER.accept(attributes, dataEvent);
     }
 
     private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
@@ -165,7 +145,6 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
             };
         }
 
-        LOGGER.info("getBodyWithPackageResponse(), dataEvent = {}", dataEvent);
         requestEventReporter.report(dataEvent);
 
         return response;

@@ -1,6 +1,5 @@
 package com.blue.verify.config.filter.global;
 
-import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.model.exps.BlueException;
 import com.blue.verify.config.deploy.RequestAttributeDeploy;
 import org.springframework.core.Ordered;
@@ -11,7 +10,6 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +24,6 @@ import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_REQUEST_ATTR;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * request attr filter
@@ -36,8 +33,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 @Component
 public final class BlueRequestAttrFilter implements WebFilter, Ordered {
-
-    private static final Logger LOGGER = getLogger(BlueRequestAttrFilter.class);
 
     public BlueRequestAttrFilter(RequestAttributeDeploy requestAttributeDeploy) {
         VALID_CONTENT_TYPES = new HashSet<>(requestAttributeDeploy.getValidContentTypes());
@@ -95,9 +90,6 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
     @SuppressWarnings("NullableProblems")
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        String requestId = ofNullable(exchange.getAttribute(BlueDataAttrKey.REQUEST_ID.key)).map(String::valueOf).orElse("");
-        LOGGER.info("blueRequestAttrFilter -> requestId = {}", requestId);
-
         ServerHttpRequest request = exchange.getRequest();
 
         URI_ASSERTER.accept(request);

@@ -11,7 +11,6 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -24,7 +23,6 @@ import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
 import static com.blue.base.constant.base.SpecialAccess.VISITOR;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_SECURE;
 import static java.util.Optional.ofNullable;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * secure filter
@@ -34,8 +32,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces"})
 @Component
 public final class BlueSecureFilter implements GlobalFilter, Ordered {
-
-    private static final Logger LOGGER = getLogger(BlueSecureFilter.class);
 
     private final RpcSecureServiceConsumer rpcSecureServiceConsumer;
 
@@ -72,7 +68,6 @@ public final class BlueSecureFilter implements GlobalFilter, Ordered {
                                 ofNullable(attributes.get(METHOD.key)).map(String::valueOf).orElse(""),
                                 ofNullable(attributes.get(URI.key)).map(String::valueOf).orElse("")))
                 .flatMap(authAsserted -> {
-                    LOGGER.info("authAsserted = {}", authAsserted);
                     authProcess(authAsserted, request, attributes);
                     return chain.filter(exchange);
                 });

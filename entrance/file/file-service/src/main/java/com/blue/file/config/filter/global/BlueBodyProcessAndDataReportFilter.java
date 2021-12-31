@@ -26,7 +26,6 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +48,6 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * data report filter
@@ -59,8 +57,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"NullableProblems", "AliControlFlowStatementWithoutBraces"})
 @Component
 public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Ordered {
-
-    private static final Logger LOGGER = getLogger(BlueBodyProcessAndDataReportFilter.class);
 
     private final RequestBodyProcessor requestBodyProcessor;
 
@@ -103,33 +99,16 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionResponse.getStatus()).intern());
         dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionResponse));
 
-        LOGGER.info("getResponseAndReport(), dataEvent = {}, throwable = {}", dataEvent, throwable);
         requestEventReporter.report(dataEvent);
     }
 
     private void packageRequestInfo(DataEvent dataEvent, ServerWebExchange exchange) {
         Map<String, Object> attributes = exchange.getAttributes();
 
-        dataEvent.addData(REQUEST_ID.key, valueOf(attributes.get(REQUEST_ID.key)));
-
         dataEvent.setDataEventType(UNIFIED);
         dataEvent.setStamp(TIME_STAMP_GETTER.get());
 
-        ofNullable(attributes.get(METADATA.key)).map(String::valueOf)
-                .ifPresent(metadata -> dataEvent.addData(METADATA.key, metadata));
-        ofNullable(attributes.get(JWT.key)).map(String::valueOf)
-                .ifPresent(jwt -> dataEvent.addData(JWT.key, jwt));
-        ofNullable(attributes.get(ACCESS.key)).map(String::valueOf)
-                .ifPresent(access -> dataEvent.addData(ACCESS.key, access));
-        ofNullable(attributes.get(METHOD.key)).map(String::valueOf)
-                .ifPresent(access -> dataEvent.addData(ACCESS.key, access));
-        ofNullable(attributes.get(URI.key)).map(String::valueOf)
-                .ifPresent(access -> dataEvent.addData(URI.key, access));
-        ofNullable(attributes.get(REAL_URI.key)).map(String::valueOf)
-                .ifPresent(access -> dataEvent.addData(REAL_URI.key, access));
-        ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf)
-                .ifPresent(access -> dataEvent.addData(CLIENT_IP.key, access));
-        LOGGER.info("packageRequestParam(), dataEvent = {}", dataEvent);
+        EVENT_PACKAGER.accept(attributes, dataEvent);
     }
 
     private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, ServerHttpResponse response, HttpStatus httpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
@@ -143,7 +122,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                             String tarBody = RESPONSE_BODY_PROCESSOR.apply(responseBody, exchange.getAttributes());
 
                             dataEvent.addData(RESPONSE_BODY.key, responseBody);
-                            LOGGER.info("getBodyWithPackageResponse(), dataEvent = {}", dataEvent);
                             requestEventReporter.report(dataEvent);
 
                             response.getHeaders().put(CONTENT_LENGTH, singletonList(valueOf(tarBody.getBytes(UTF_8).length)));
@@ -180,7 +158,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
             };
         }
 
-        LOGGER.info("getBodyWithPackageResponse(), dataEvent = {}", dataEvent);
         requestEventReporter.report(dataEvent);
 
         return response;

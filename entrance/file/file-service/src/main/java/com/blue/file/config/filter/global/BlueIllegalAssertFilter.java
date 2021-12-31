@@ -9,7 +9,6 @@ import com.blue.caffeine.constant.ExpireStrategy;
 import com.blue.file.config.deploy.RiskControlDeploy;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.core.Ordered;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -23,7 +22,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.blue.base.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
-import static com.blue.base.common.base.CommonFunctions.REST_URI_PROCESSOR;
 import static com.blue.base.constant.base.BlueCacheKey.ILLEGAL_IP_PRE;
 import static com.blue.base.constant.base.BlueCacheKey.ILLEGAL_JWT_PRE;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
@@ -88,15 +86,11 @@ public final class BlueIllegalAssertFilter implements WebFilter, Ordered {
             ILLEGAL_JWT_PREFIX = ILLEGAL_JWT_PRE.key;
 
     private final Consumer<ServerWebExchange> ILLEGAL_ASSERTER = exchange -> {
-
-        ServerHttpRequest request = exchange.getRequest();
-
-        String method = request.getMethodValue().intern();
-        String realUri = request.getPath().value();
-        String uri = REST_URI_PROCESSOR.apply(realUri).intern();
-        String resourceKey = REQ_RES_KEY_GENERATOR.apply(method, uri);
-
         Map<String, Object> attributes = exchange.getAttributes();
+
+        String resourceKey = REQ_RES_KEY_GENERATOR.apply(
+                ofNullable(attributes.get(METHOD.key)).map(String::valueOf).orElse(""),
+                ofNullable(attributes.get(URI.key)).map(String::valueOf).orElse(""));
 
         String ip = ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf).filter(Asserter::isNotBlank)
                 .orElseThrow(() -> new BlueException(UNKNOWN_IP.status, UNKNOWN_IP.code, UNKNOWN_IP.message));
@@ -113,10 +107,6 @@ public final class BlueIllegalAssertFilter implements WebFilter, Ordered {
                             ofNullable(illegalJwtCache.getIfPresent(ILLEGAL_JWT_PREFIX + jwt + CONCATENATION + resourceKey)).orElse(false))
                         throw new BlueException(ILLEGAL_REQUEST);
                 });
-
-        attributes.put(METHOD.key, method);
-        attributes.put(URI.key, uri);
-        attributes.put(REAL_URI.key, realUri);
     };
 
     private static final Consumer<IllegalMarkEvent> EVENT_HANDLER = event -> {

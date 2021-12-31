@@ -71,27 +71,36 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
         }
     }
 
+    private void packageAttr(ServerHttpRequest request, Map<String, Object> attributes) {
+        String method = request.getMethodValue().intern();
+        METHOD_VALUE_ASSERTER.accept(method);
+
+        String requestId = RANDOM_KEY_GETTER.get();
+        String clientIp = getIp(request);
+        String realUri = request.getPath().value();
+        String uri = REST_URI_PROCESSOR.apply(realUri).intern();
+
+        attributes.put(REQUEST_ID.key, requestId);
+        attributes.put(CLIENT_IP.key, clientIp);
+        attributes.put(METHOD.key, method);
+        attributes.put(REAL_URI.key, realUri);
+        attributes.put(URI.key, uri);
+
+        ofNullable(request.getHeaders().getFirst(BlueHeader.METADATA.name))
+                .ifPresent(metadata -> attributes.put(METADATA.key, metadata));
+        ofNullable(request.getHeaders().getFirst(AUTHORIZATION))
+                .ifPresent(jwt -> attributes.put(JWT.key, jwt));
+    }
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
         SCHEMA_ASSERTER.accept(request.getURI().getScheme());
 
-        String methodValue = request.getMethodValue();
-        METHOD_VALUE_ASSERTER.accept(methodValue);
-
-        String requestId = RANDOM_KEY_GETTER.get();
-        String clientIp = getIp(request);
-
         Map<String, Object> attributes = exchange.getAttributes();
 
-        attributes.put(REQUEST_ID.key, requestId);
-        attributes.put(CLIENT_IP.key, clientIp);
-
-        ofNullable(request.getHeaders().getFirst(BlueHeader.METADATA.name))
-                .ifPresent(metadata -> attributes.put(METADATA.key, metadata));
-        ofNullable(request.getHeaders().getFirst(AUTHORIZATION))
-                .ifPresent(jwt -> attributes.put(JWT.key, jwt));
+        packageAttr(request, attributes);
 
         return chain.filter(exchange)
                 .onErrorResume(throwable ->
@@ -104,24 +113,11 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
 
                                     dataEvent.setDataEventType(UNIFIED);
                                     dataEvent.setStamp(TIME_STAMP_GETTER.get());
-
-                                    dataEvent.addData(REQUEST_ID.key, requestId);
-                                    dataEvent.addData(CLIENT_IP.key, clientIp);
-
-                                    ofNullable(attributes.get(METADATA.key)).map(String::valueOf)
-                                            .ifPresent(metadata -> dataEvent.addData(METADATA.key, metadata));
-                                    ofNullable(attributes.get(JWT.key)).map(String::valueOf)
-                                            .ifPresent(jwt -> dataEvent.addData(JWT.key, jwt));
-                                    ofNullable(attributes.get(ACCESS.key)).map(String::valueOf)
-                                            .ifPresent(access -> dataEvent.addData(ACCESS.key, access));
-
-                                    dataEvent.addData(METHOD.key, methodValue.intern());
-                                    dataEvent.addData(URI.key, request.getURI().getRawPath().intern());
-
+                                    EVENT_PACKAGER.accept(attributes, dataEvent);
                                     if (!"".equals(requestBody))
                                         dataEvent.addData(REQUEST_BODY.key, requestBody);
-
                                     report(throwable, request, dataEvent);
+
                                     return error(throwable);
                                 }));
     }

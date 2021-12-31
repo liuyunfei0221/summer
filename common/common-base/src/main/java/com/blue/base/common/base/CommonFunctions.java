@@ -1,39 +1,35 @@
 package com.blue.base.common.base;
 
 import com.blue.base.component.exception.common.ExceptionProcessor;
-import com.blue.base.constant.base.BlueHeader;
-import com.blue.base.constant.base.SummerAttr;
-import com.blue.base.constant.base.Symbol;
-import com.blue.base.constant.base.ValidResourceFormatters;
-import com.blue.base.model.base.DataWrapper;
-import com.blue.base.model.base.EncryptedRequest;
-import com.blue.base.model.base.EncryptedResponse;
-import com.blue.base.model.base.ExceptionResponse;
+import com.blue.base.constant.base.*;
+import com.blue.base.model.base.*;
 import com.blue.base.model.exps.BlueException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import reactor.util.Logger;
 
 import java.time.Clock;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.*;
+import java.util.stream.Stream;
 
 import static com.blue.base.common.base.RsaProcessor.*;
+import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Symbol.PAIR_SEPARATOR;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Instant.now;
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.apache.commons.lang3.StringUtils.*;
 import static org.apache.commons.lang3.math.NumberUtils.isDigits;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * Common function set
@@ -42,8 +38,6 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"WeakerAccess", "JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
 public class CommonFunctions {
-
-    public static final Logger LOGGER = getLogger(CommonFunctions.class);
 
     public static final Gson GSON = new GsonBuilder().serializeNulls().create();
 
@@ -274,6 +268,21 @@ public class CommonFunctions {
             return ofNullable(dataWrapper.getOriginal()).orElse("");
 
         throw new BlueException(RSA_FAILED);
+    };
+
+    private static final Set<String> UN_PACK_KEYS = Stream.of(REQUEST_BODY.key, RESPONSE_STATUS.key, RESPONSE_BODY.key)
+            .collect(toSet());
+
+    private static final List<String> ATTR_KEYS = Stream.of(BlueDataAttrKey.values())
+            .map(ak -> ak.key).filter(k -> !UN_PACK_KEYS.contains(k)).collect(toList());
+
+    /**
+     * package info to event
+     */
+    public static final BiConsumer<Map<String, Object>, DataEvent> EVENT_PACKAGER = (attributes, dataEvent) -> {
+        if (attributes != null && dataEvent != null)
+            ATTR_KEYS.forEach(key -> ofNullable(attributes.get(key)).map(String::valueOf)
+                    .ifPresent(metadata -> dataEvent.addData(key, metadata)));
     };
 
     /**

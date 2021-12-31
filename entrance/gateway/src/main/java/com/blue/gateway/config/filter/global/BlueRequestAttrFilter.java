@@ -1,6 +1,5 @@
 package com.blue.gateway.config.filter.global;
 
-import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.model.exps.BlueException;
 import com.blue.gateway.config.deploy.RequestAttributeDeploy;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -11,7 +10,6 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +24,6 @@ import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_REQUEST_ATTR;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * request attr filter
@@ -36,8 +33,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 @Component
 public final class BlueRequestAttrFilter implements GlobalFilter, Ordered {
-
-    private static final Logger LOGGER = getLogger(BlueRequestAttrFilter.class);
 
     public BlueRequestAttrFilter(RequestAttributeDeploy requestAttributeDeploy) {
         VALID_CONTENT_TYPES = new HashSet<>(requestAttributeDeploy.getValidContentTypes());
@@ -93,9 +88,6 @@ public final class BlueRequestAttrFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        String requestId = ofNullable(exchange.getAttribute(BlueDataAttrKey.REQUEST_ID.key)).map(String::valueOf).orElse("");
-        LOGGER.info("blueRequestAttrFilter -> requestId = {}", requestId);
-
         ServerHttpRequest request = exchange.getRequest();
 
         URI_ASSERTER.accept(request);
