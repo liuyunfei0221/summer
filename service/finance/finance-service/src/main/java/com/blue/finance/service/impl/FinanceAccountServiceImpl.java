@@ -115,9 +115,9 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
         LOGGER.info("getFinanceAccountByMemberId(Long memberId), memberId = {}", memberId);
 
         if (isValidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
+            return ofNullable(financeAccountMapper.getByMemberId(memberId));
 
-        return ofNullable(financeAccountMapper.getByMemberId(memberId));
+        throw new BlueException(INVALID_IDENTITY);
     }
 
 }

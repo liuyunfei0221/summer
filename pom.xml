@@ -33,10 +33,10 @@
         <mysql-connector-java.version>8.0.27</mysql-connector-java.version>
         <hikari-cp.version>5.0.0</hikari-cp.version>
         <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
-        <spring-dubbo.version>3.0.4</spring-dubbo.version>
+        <spring-dubbo.version>3.0.5</spring-dubbo.version>
         <zkclient.version>0.11</zkclient.version>
         <seata-spring.version>1.4.2</seata-spring.version>
-        <spring-mybatis.version>2.2.0</spring-mybatis.version>
+        <spring-mybatis.version>2.2.1</spring-mybatis.version>
         <apache.curator.version>5.2.0</apache.curator.version>
         <commons-pool2.version>2.11.1</commons-pool2.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
