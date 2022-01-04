@@ -20,10 +20,16 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.redis.constant.ServerMode.CLUSTER;
+import static com.blue.redis.constant.ServerMode.SINGLE;
 import static io.lettuce.core.protocol.DecodeBufferPolicies.ratio;
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -44,6 +50,75 @@ public final class BlueRedisGenerator {
 
     private static final String KEY_VALUE_SEPARATOR = ":";
 
+    private static final Map<ServerMode, Consumer<RedisConf>> SERVER_MODE_ASSERTERS = new HashMap<>(4, 1.0f);
+
+    private static final Map<ServerMode, Function<RedisConf, RedisConfiguration>> CONF_GENERATORS = new HashMap<>(4, 1.0f);
+
+    static {
+        SERVER_MODE_ASSERTERS.put(CLUSTER, conf -> {
+            if (conf == null)
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+
+            List<String> nodes = conf.getNodes();
+            if (isEmpty(nodes))
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty");
+        });
+
+        SERVER_MODE_ASSERTERS.put(SINGLE, conf -> {
+            if (conf == null)
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+
+            Integer port = conf.getPort();
+            if (isBlank(conf.getHost()) || port == null || port < 1)
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1");
+        });
+
+        CONF_GENERATORS.put(CLUSTER, BlueRedisGenerator::generateClusterConfiguration);
+        CONF_GENERATORS.put(SINGLE, BlueRedisGenerator::generateStandConfiguration);
+    }
+
+    private static final Consumer<RedisConf> SERVER_MODE_ASSERTER = conf -> {
+        if (conf == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+
+        ServerMode serverMode = conf.getServerMode();
+        if (serverMode == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
+
+        Consumer<RedisConf> asserter = SERVER_MODE_ASSERTERS.get(serverMode);
+        if (asserter == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
+
+        asserter.accept(conf);
+    };
+
+    private static final Function<RedisConf, RedisConfiguration> CONF_GENERATOR = conf -> {
+        if (conf == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+
+        ServerMode serverMode = conf.getServerMode();
+        if (serverMode == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
+
+        Function<RedisConf, RedisConfiguration> generator = CONF_GENERATORS.get(serverMode);
+        if (generator == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
+
+        return generator.apply(conf);
+    };
+
+    /**
+     * assert params
+     *
+     * @param conf
+     */
+    private static void confAsserter(RedisConf conf) {
+        if (conf == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+
+        SERVER_MODE_ASSERTER.accept(conf);
+    }
+
     /**
      * generate redis configuration
      *
@@ -53,15 +128,7 @@ public final class BlueRedisGenerator {
     public static RedisConfiguration generateConfiguration(RedisConf redisConf) {
         confAsserter(redisConf);
 
-        ServerMode serverMode = redisConf.getServerMode();
-        switch (serverMode) {
-            case CLUSTER:
-                return generateClusterConfiguration(redisConf);
-            case SINGLE:
-                return generateStandConfiguration(redisConf);
-            default:
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
-        }
+        return CONF_GENERATOR.apply(redisConf);
     }
 
     /**
@@ -291,35 +358,6 @@ public final class BlueRedisGenerator {
                 .ifPresent(redisStandaloneConfiguration::setPort);
 
         return redisStandaloneConfiguration;
-    }
-
-    /**
-     * assert params
-     *
-     * @param conf
-     */
-    private static void confAsserter(RedisConf conf) {
-        if (conf == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
-
-        ServerMode serverMode = conf.getServerMode();
-        if (serverMode == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
-
-        switch (serverMode) {
-            case CLUSTER:
-                List<String> nodes = conf.getNodes();
-                if (isEmpty(nodes))
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty");
-                break;
-            case SINGLE:
-                Integer port = conf.getPort();
-                if (isBlank(conf.getHost()) || port == null || port < 1)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1");
-                break;
-            default:
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
-        }
     }
 
 }

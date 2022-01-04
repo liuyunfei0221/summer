@@ -27,6 +27,7 @@
         <module>common-excel</module>
         <module>common-identity</module>
         <module>common-jwt</module>
+        <module>common-mail</module>
         <module>common-mongo</module>
         <module>common-pulsar</module>
         <module>common-qr</module>
