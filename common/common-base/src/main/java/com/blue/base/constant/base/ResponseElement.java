@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
 @SuppressWarnings("unused")
 public enum ResponseElement {
 
-    //common
 
+    //<editor-fold desc="base">
     /**
      * success
      */
@@ -82,8 +82,6 @@ public enum ResponseElement {
      */
     GATEWAY_TIMEOUT(HttpStatus.GATEWAY_TIMEOUT.value(), HttpStatus.GATEWAY_TIMEOUT.value(), "Gateway timeout"),
 
-    //business
-
     /**
      * EMPTY_PARAM
      */
@@ -153,9 +151,10 @@ public enum ResponseElement {
      * DATA_ALREADY_EXIST
      */
     DATA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400000014, "Data already exist"),
+    //</editor-fold>
 
-    //user
 
+    //<editor-fold desc="member">
     /**
      * INVALID_ACCT_OR_PWD
      */
@@ -167,38 +166,38 @@ public enum ResponseElement {
     NO_AUTH_REQUIRED_RESOURCE(HttpStatus.BAD_REQUEST.value(), 400100002, "Resources do not require authentication access"),
 
     /**
-     * FILE_NOT_EXIST
-     */
-    FILE_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400100003, "File not exist"),
-
-    /**
      * MEMBER_NOT_HAS_A_ROLE
      */
-    MEMBER_NOT_HAS_A_ROLE(HttpStatus.BAD_REQUEST.value(), 400100004, "Member not has a role"),
+    MEMBER_NOT_HAS_A_ROLE(HttpStatus.BAD_REQUEST.value(), 400100003, "Member not has a role"),
 
     /**
      * MEMBER_ALREADY_HAS_A_ROLE
      */
-    MEMBER_ALREADY_HAS_A_ROLE(HttpStatus.BAD_REQUEST.value(), 400100005, "Member already has a role"),
+    MEMBER_ALREADY_HAS_A_ROLE(HttpStatus.BAD_REQUEST.value(), 400100004, "Member already has a role"),
 
     /**
      * ACCOUNT_HAS_BEEN_FROZEN
      */
-    ACCOUNT_HAS_BEEN_FROZEN(HttpStatus.BAD_REQUEST.value(), 400100006, "Your account has been frozen"),
+    ACCOUNT_HAS_BEEN_FROZEN(HttpStatus.BAD_REQUEST.value(), 400100005, "Your account has been frozen"),
+    //</editor-fold>
 
 
-    //risk
-
+    //<editor-fold desc="gateways">
     /**
      * UNKNOWN IP
      */
     UNKNOWN_IP(HttpStatus.NOT_ACCEPTABLE.value(), 400900001, "Unknown ip"),
 
-
     /**
      * ILLEGAL_REQUEST IP
      */
-    ILLEGAL_REQUEST(HttpStatus.NOT_ACCEPTABLE.value(), 400900002, "Illegal request");
+    ILLEGAL_REQUEST(HttpStatus.NOT_ACCEPTABLE.value(), 400900002, "Illegal request"),
+
+    /**
+     * FILE_NOT_EXIST
+     */
+    FILE_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400900003, "File not exist");
+    //</editor-fold>
 
 
     /**
