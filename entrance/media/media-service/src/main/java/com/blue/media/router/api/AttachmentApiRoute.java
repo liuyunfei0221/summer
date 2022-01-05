@@ -24,7 +24,7 @@ public class AttachmentApiRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> attachmentRouter(AttachmentApiHandler attachmentApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-file/attachment");
+        RequestPredicate pathPredicate = path("/blue-media/attachment");
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/list", accept(APPLICATION_JSON), attachmentApiHandler::listAttachment)

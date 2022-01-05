@@ -1,11 +1,9 @@
 package com.blue.mail.api.conf;
 
-import com.sanctionco.jmail.EmailValidator;
 import org.simplejavamail.api.mailer.config.LoadBalancingStrategy;
 import org.simplejavamail.api.mailer.config.TransportStrategy;
 
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 /**
  * @author liuyunfei
@@ -13,7 +11,7 @@ import java.util.concurrent.ExecutorService;
  * @apiNote
  */
 @SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming"})
-public class MailConfParams implements MailConf {
+public abstract class MailConfParams implements MailConf {
 
     protected String smtpServerHost;
 
@@ -23,9 +21,15 @@ public class MailConfParams implements MailConf {
 
     protected String smtpPassword;
 
-    protected EmailValidator emailValidator;
+    protected Integer corePoolSize;
 
-    protected ExecutorService executorService;
+    protected Integer maximumPoolSize;
+
+    protected Long keepAliveSeconds;
+
+    protected Integer blockingQueueCapacity;
+
+    protected String threadNamePre;
 
     protected Integer connectionPoolCoreSize;
 
@@ -41,8 +45,6 @@ public class MailConfParams implements MailConf {
 
     protected TransportStrategy transportStrategy;
 
-    protected Boolean async;
-
     protected Boolean withDKIM;
 
     protected String domainKeyFile;
@@ -53,7 +55,7 @@ public class MailConfParams implements MailConf {
 
     protected Boolean debugLogging;
 
-    protected Map<String, Object> properties;
+    protected Map<String, String> props;
 
     public MailConfParams() {
     }
@@ -79,13 +81,28 @@ public class MailConfParams implements MailConf {
     }
 
     @Override
-    public EmailValidator getEmailValidator() {
-        return emailValidator;
+    public Integer getCorePoolSize() {
+        return corePoolSize;
     }
 
     @Override
-    public ExecutorService getExecutorService() {
-        return executorService;
+    public Integer getMaximumPoolSize() {
+        return maximumPoolSize;
+    }
+
+    @Override
+    public Long getKeepAliveSeconds() {
+        return keepAliveSeconds;
+    }
+
+    @Override
+    public Integer getBlockingQueueCapacity() {
+        return blockingQueueCapacity;
+    }
+
+    @Override
+    public String getThreadNamePre() {
+        return threadNamePre;
     }
 
     @Override
@@ -124,11 +141,6 @@ public class MailConfParams implements MailConf {
     }
 
     @Override
-    public Boolean getAsync() {
-        return async;
-    }
-
-    @Override
     public Boolean getWithDKIM() {
         return withDKIM;
     }
@@ -154,8 +166,8 @@ public class MailConfParams implements MailConf {
     }
 
     @Override
-    public Map<String, Object> getProperties() {
-        return properties;
+    public Map<String, String> getProps() {
+        return props;
     }
 
     public void setSmtpServerHost(String smtpServerHost) {
@@ -174,12 +186,24 @@ public class MailConfParams implements MailConf {
         this.smtpPassword = smtpPassword;
     }
 
-    public void setEmailValidator(EmailValidator emailValidator) {
-        this.emailValidator = emailValidator;
+    public void setCorePoolSize(Integer corePoolSize) {
+        this.corePoolSize = corePoolSize;
     }
 
-    public void setExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
+    public void setMaximumPoolSize(Integer maximumPoolSize) {
+        this.maximumPoolSize = maximumPoolSize;
+    }
+
+    public void setKeepAliveSeconds(Long keepAliveSeconds) {
+        this.keepAliveSeconds = keepAliveSeconds;
+    }
+
+    public void setBlockingQueueCapacity(Integer blockingQueueCapacity) {
+        this.blockingQueueCapacity = blockingQueueCapacity;
+    }
+
+    public void setThreadNamePre(String threadNamePre) {
+        this.threadNamePre = threadNamePre;
     }
 
     public void setConnectionPoolCoreSize(Integer connectionPoolCoreSize) {
@@ -210,10 +234,6 @@ public class MailConfParams implements MailConf {
         this.transportStrategy = transportStrategy;
     }
 
-    public void setAsync(Boolean async) {
-        this.async = async;
-    }
-
     public void setWithDKIM(Boolean withDKIM) {
         this.withDKIM = withDKIM;
     }
@@ -234,8 +254,8 @@ public class MailConfParams implements MailConf {
         this.debugLogging = debugLogging;
     }
 
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
+    public void setProps(Map<String, String> props) {
+        this.props = props;
     }
 
     @Override
@@ -245,22 +265,24 @@ public class MailConfParams implements MailConf {
                 ", smtpServerPort=" + smtpServerPort +
                 ", smtpUsername='" + smtpUsername + '\'' +
                 ", smtpPassword='" + smtpPassword + '\'' +
-                ", emailValidator=" + emailValidator +
-                ", executorService=" + executorService +
+                ", corePoolSize=" + corePoolSize +
+                ", maximumPoolSize=" + maximumPoolSize +
+                ", keepAliveSeconds=" + keepAliveSeconds +
+                ", blockingQueueCapacity=" + blockingQueueCapacity +
+                ", threadNamePre='" + threadNamePre + '\'' +
                 ", connectionPoolCoreSize=" + connectionPoolCoreSize +
                 ", connectionPoolMaxSize=" + connectionPoolMaxSize +
                 ", connectionPoolClaimTimeoutMillis=" + connectionPoolClaimTimeoutMillis +
                 ", connectionPoolExpireAfterMillis=" + connectionPoolExpireAfterMillis +
                 ", sessionTimeout=" + sessionTimeout +
-                ", connectionPoolLoadBalancingStrategy='" + connectionPoolLoadBalancingStrategy + '\'' +
-                ", transportStrategy='" + transportStrategy + '\'' +
-                ", async=" + async +
+                ", connectionPoolLoadBalancingStrategy=" + connectionPoolLoadBalancingStrategy +
+                ", transportStrategy=" + transportStrategy +
                 ", withDKIM=" + withDKIM +
                 ", domainKeyFile='" + domainKeyFile + '\'' +
                 ", domain='" + domain + '\'' +
                 ", selector='" + selector + '\'' +
                 ", debugLogging=" + debugLogging +
-                ", properties=" + properties +
+                ", props=" + props +
                 '}';
     }
 

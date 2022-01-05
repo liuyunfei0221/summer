@@ -80,7 +80,7 @@ public interface RedissonConf {
 
     Integer getExecutorMaximumPoolSize();
 
-    Long getExecutorKeepAliveTime();
+    Long getExecutorKeepAliveSeconds();
 
     Integer getExecutorBlockingQueueCapacity();
 

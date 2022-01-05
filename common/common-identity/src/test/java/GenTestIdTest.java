@@ -26,7 +26,7 @@ public class GenTestIdTest {
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor =
                 new ScheduledThreadPoolExecutor(1, Thread::new, (r, executor) -> System.err.println("scheduled padding thread rejected"));
 
-        IdGenParam idGenParam = new IdGenParam(0, 1,
+        IdGenParam idGenParam = new IdGenParam(0, 0,
                 Instant.now().getEpochSecond(), 1618790400L, System.err::println, null, 3, 50,
                 executorService, false, scheduledThreadPoolExecutor, 3L, 3L);
 

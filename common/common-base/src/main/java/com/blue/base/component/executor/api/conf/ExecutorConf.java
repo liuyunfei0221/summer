@@ -16,7 +16,7 @@ public interface ExecutorConf {
 
     Integer getMaximumPoolSize();
 
-    Long getKeepAliveTime();
+    Long getKeepAliveSeconds();
 
     Integer getBlockingQueueCapacity();
 

@@ -253,7 +253,7 @@ cache:
 executor:
   corePoolSize: 4
   maximumPoolSize: 8
-  keepAliveTime: 64
+  keepAliveSeconds: 64
   blockingQueueCapacity: 128
   threadNamePre: blue-summer
 
@@ -285,7 +285,7 @@ redisson:
   pingConnectionInterval: 300000
   executorCorePoolSize: 4
   executorMaximumPoolSize: 8
-  executorKeepAliveTime: 64
+  executorkeepAliveSeconds: 64
   executorBlockingQueueCapacity: 128
 
 

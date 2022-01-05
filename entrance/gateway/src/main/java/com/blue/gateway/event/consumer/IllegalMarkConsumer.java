@@ -45,13 +45,8 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
                         .ifPresent(ime -> {
                             LOGGER.info("illegalMarkEventDataConsumer received, ime = {}", ime);
                             try {
-                                illegalAsserter.handleIllegalMarkEvent(ime).subscribe(b -> {
-                                    if (b) {
-                                        LOGGER.info("mark jwt or ip -> SUCCESS, ime = {}", ime);
-                                    } else {
-                                        LOGGER.error("mark jwt or ip -> FAILED, ime = {}", ime);
-                                    }
-                                });
+                                illegalAsserter.handleIllegalMarkEvent(ime).subscribe(b ->
+                                        LOGGER.warn("mark jwt or ip -> SUCCESS, ime = {}, b = {}", ime, b));
                             } catch (JsonSyntaxException e) {
                                 LOGGER.error("mark jwt or ip -> FAILED,ime = {}", ime);
                             }

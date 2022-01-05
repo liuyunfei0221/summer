@@ -10,12 +10,17 @@ import org.simplejavamail.mailer.internal.MailerRegularBuilderImpl;
 import reactor.util.Logger;
 
 import java.io.InputStream;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.blue.base.common.base.Asserter.isBlank;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -25,7 +30,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2022/1/4
  * @apiNote
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "AlibabaLowerCamelCaseVariableNaming"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "AlibabaLowerCamelCaseVariableNaming", "DuplicatedCode", "unused"})
 public final class MailSender {
 
     private static final Logger LOGGER = getLogger(MailSender.class);
@@ -38,9 +43,10 @@ public final class MailSender {
 
     private String selector;
 
-    private final boolean async;
-
     private final Mailer MAILER;
+
+    private static final String DEFAULT_THREAD_NAME_PRE = "blue-mail-sender-thread" + PAR_CONCATENATION_DATABASE_URL.identity;
+    private static final int RANDOM_LEN = 6;
 
     public MailSender(MailConf conf) {
         confAsserter(conf);
@@ -51,8 +57,25 @@ public final class MailSender {
         ofNullable(conf.getEmailValidator())
                 .ifPresent(builder::withEmailValidator);
 
-        ofNullable(conf.getExecutorService())
-                .ifPresent(builder::withExecutorService);
+        String threadNamePre = ofNullable(conf.getThreadNamePre())
+                .map(p -> p + PAR_CONCATENATION_DATABASE_URL.identity)
+                .orElse(DEFAULT_THREAD_NAME_PRE);
+
+        RejectedExecutionHandler rejectedExecutionHandler = (r, executor) -> {
+            LOGGER.warn("Trigger the thread pool rejection strategy and hand it over to the calling thread for execution");
+            r.run();
+        };
+
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(conf.getCorePoolSize(),
+                conf.getMaximumPoolSize(), conf.getKeepAliveSeconds(), SECONDS,
+                new ArrayBlockingQueue<>(conf.getBlockingQueueCapacity()),
+                r -> {
+                    Thread thread = new Thread(r, threadNamePre + randomAlphabetic(RANDOM_LEN));
+                    thread.setDaemon(true);
+                    return thread;
+                }, rejectedExecutionHandler);
+
+        builder.withExecutorService(threadPoolExecutor);
 
         ofNullable(conf.getConnectionPoolCoreSize()).filter(n -> n > 0)
                 .ifPresent(builder::withConnectionPoolCoreSize);
@@ -75,13 +98,11 @@ public final class MailSender {
         ofNullable(conf.getTransportStrategy())
                 .ifPresent(builder::withTransportStrategy);
 
-        this.async = ofNullable(conf.getAsync()).orElse(true);
-
         ofNullable(conf.getDebugLogging())
                 .ifPresent(builder::withDebugLogging);
 
-        ofNullable(conf.getProperties())
-                .ifPresent(m -> m.forEach(builder::withProperty));
+        ofNullable(conf.getProps())
+                .ifPresent(builder::withProperties);
 
         this.MAILER = builder.buildMailer();
 
@@ -98,7 +119,6 @@ public final class MailSender {
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "load domain key media error");
             }
     }
-
 
     /**
      * assert params
@@ -122,6 +142,22 @@ public final class MailSender {
         if (isBlank(conf.getSmtpPassword()))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "smtpPassword can't be blank");
 
+        Integer corePoolSize = conf.getCorePoolSize();
+        if (corePoolSize == null || corePoolSize < 1)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "corePoolSize can't be null or less than 1");
+
+        Integer maximumPoolSize = conf.getMaximumPoolSize();
+        if (maximumPoolSize == null || maximumPoolSize < 1 || maximumPoolSize < corePoolSize)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maximumPoolSize can't be null or less than 1 or less than corePoolSize");
+
+        Long keepAliveTime = conf.getKeepAliveSeconds();
+        if (keepAliveTime == null || keepAliveTime < 1L)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keepAliveTime can't be null or less than 1");
+
+        Integer blockingQueueCapacity = conf.getBlockingQueueCapacity();
+        if (blockingQueueCapacity == null || blockingQueueCapacity < 1)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "blockingQueueCapacity can't be null or less than 1");
+
         Boolean withDKIM = conf.getWithDKIM();
         if (withDKIM != null && withDKIM) {
             if (isBlank(conf.getDomainKeyFile()))
@@ -133,7 +169,6 @@ public final class MailSender {
             if (isBlank(conf.getSelector()))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "selector can't be blank");
         }
-
     }
 
     /**
@@ -153,23 +188,8 @@ public final class MailSender {
      * @return
      */
     public CompletableFuture<Void> sendMail(Email email) {
-        return this.sendMail(email, this.async);
-    }
-
-    /**
-     * send mail
-     *
-     * @param email
-     * @param async
-     * @return
-     */
-    public CompletableFuture<Void> sendMail(Email email, boolean async) {
-        LOGGER.info("CompletableFuture<Void> sendMail(Email email, boolean async), email = {}, async = {}", email, async);
-
-        if (email == null)
-            throw new BlueException(BAD_REQUEST);
-
-        return MAILER.sendMail(email, async);
+        LOGGER.info("CompletableFuture<Void> sendMail(Email email), email = {}", email);
+        return MAILER.sendMail(email, true);
     }
 
 }

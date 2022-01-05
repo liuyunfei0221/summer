@@ -16,7 +16,7 @@ public abstract class ExecutorConfParam implements ExecutorConf {
 
     protected Integer maximumPoolSize;
 
-    protected Long keepAliveTime;
+    protected Long keepAliveSeconds;
 
     protected Integer blockingQueueCapacity;
 
@@ -25,11 +25,11 @@ public abstract class ExecutorConfParam implements ExecutorConf {
     public ExecutorConfParam() {
     }
 
-    public ExecutorConfParam(Integer corePoolSize, Integer maximumPoolSize, Long keepAliveTime,
+    public ExecutorConfParam(Integer corePoolSize, Integer maximumPoolSize, Long keepAliveSeconds,
                              Integer blockingQueueCapacity, String threadNamePre) {
         this.corePoolSize = corePoolSize;
         this.maximumPoolSize = maximumPoolSize;
-        this.keepAliveTime = keepAliveTime;
+        this.keepAliveSeconds = keepAliveSeconds;
         this.blockingQueueCapacity = blockingQueueCapacity;
         this.threadNamePre = threadNamePre;
     }
@@ -45,8 +45,8 @@ public abstract class ExecutorConfParam implements ExecutorConf {
     }
 
     @Override
-    public Long getKeepAliveTime() {
-        return keepAliveTime;
+    public Long getKeepAliveSeconds() {
+        return keepAliveSeconds;
     }
 
     @Override
@@ -70,8 +70,8 @@ public abstract class ExecutorConfParam implements ExecutorConf {
         this.maximumPoolSize = maximumPoolSize;
     }
 
-    public void setKeepAliveTime(Long keepAliveTime) {
-        this.keepAliveTime = keepAliveTime;
+    public void setKeepAliveSeconds(Long keepAliveSeconds) {
+        this.keepAliveSeconds = keepAliveSeconds;
     }
 
     public void setBlockingQueueCapacity(Integer blockingQueueCapacity) {
@@ -87,7 +87,7 @@ public abstract class ExecutorConfParam implements ExecutorConf {
         return "ExecutorConfParam{" +
                 "corePoolSize=" + corePoolSize +
                 ", maximumPoolSize=" + maximumPoolSize +
-                ", keepAliveTime=" + keepAliveTime +
+                ", keepAliveSeconds=" + keepAliveSeconds +
                 ", blockingQueueCapacity=" + blockingQueueCapacity +
                 ", threadNamePre='" + threadNamePre + '\'' +
                 '}';

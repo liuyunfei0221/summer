@@ -677,6 +677,14 @@ INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (19028471435001859, 'PUT', 'blue-secure', '/manager/relation/mem-role', b'1', b'1', b'1', b'1', b'1', 2,
         'update member-role-relation', 'update member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (24244842351558658, 'GET', 'blue-media', '/mail/test', b'0', b'1', b'1', b'0', b'1', 2,
+        'test mail', 'test mail', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
 -- role
 
 INSERT INTO `secure_1`.`role_1`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,

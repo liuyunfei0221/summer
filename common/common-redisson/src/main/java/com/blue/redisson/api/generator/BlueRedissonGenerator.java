@@ -9,10 +9,16 @@ import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
 import reactor.util.Logger;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.redisson.constant.ServerMode.CLUSTER;
+import static com.blue.redisson.constant.ServerMode.SINGLE;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -34,14 +40,65 @@ public final class BlueRedissonGenerator {
     private static final String THREAD_NAME_PRE = "redisson-thread- ";
     private static final int RANDOM_LEN = 6;
 
+    private static final Map<ServerMode, Consumer<RedissonConf>> SERVER_MODE_ASSERTERS = new HashMap<>(4, 1.0f);
+
+    private static final Map<ServerMode, BiConsumer<RedissonConf, Config>> CONF_PACKAGERS = new HashMap<>(4, 1.0f);
+
+    static {
+        SERVER_MODE_ASSERTERS.put(CLUSTER, redissonConf -> {
+            List<String> nodes = redissonConf.getNodes();
+            if (isEmpty(nodes))
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty");
+        });
+
+        SERVER_MODE_ASSERTERS.put(SINGLE, redissonConf -> {
+            String host = redissonConf.getHost();
+            Integer port = redissonConf.getPort();
+            if (isBlank(host) || port == null || port < 1)
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1");
+        });
+
+        CONF_PACKAGERS.put(CLUSTER, BlueRedissonGenerator::configClusterServer);
+        CONF_PACKAGERS.put(SINGLE, BlueRedissonGenerator::configSingleServer);
+    }
+
+    private static final Consumer<RedissonConf> SERVER_MODE_ASSERTER = redissonConf -> {
+        if (redissonConf == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redissonConf can't be null");
+
+        ServerMode serverMode = redissonConf.getServerMode();
+        if (serverMode == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
+
+        Consumer<RedissonConf> asserter = SERVER_MODE_ASSERTERS.get(serverMode);
+        if (asserter == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
+
+        asserter.accept(redissonConf);
+    };
+
+    private static final BiConsumer<RedissonConf, Config> CONF_PACKAGER = (redissonConf, conf) -> {
+        if (redissonConf == null || conf == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redissonConf or conf can't be null");
+
+        ServerMode serverMode = redissonConf.getServerMode();
+        if (serverMode == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
+
+        BiConsumer<RedissonConf, Config> packager = CONF_PACKAGERS.get(serverMode);
+        if (packager == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
+
+        packager.accept(redissonConf, conf);
+    };
 
     /**
      * cluster
      *
-     * @param config
      * @param redissonConf
+     * @param config
      */
-    private static void configClusterServer(Config config, RedissonConf redissonConf) {
+    private static void configClusterServer(RedissonConf redissonConf, Config config) {
         confAsserter(redissonConf);
 
         ClusterServersConfig serverConfig = config.useClusterServers();
@@ -73,10 +130,10 @@ public final class BlueRedissonGenerator {
     /**
      * standalone
      *
-     * @param config
      * @param redissonConf
+     * @param config
      */
-    private static void configSingleServer(Config config, RedissonConf redissonConf) {
+    private static void configSingleServer(RedissonConf redissonConf, Config config) {
         confAsserter(redissonConf);
 
         SingleServerConfig serverConfig = config.useSingleServer()
@@ -139,17 +196,7 @@ public final class BlueRedissonGenerator {
 
         Config config = new Config();
 
-        ServerMode serverMode = redissonConf.getServerMode();
-        switch (serverMode) {
-            case CLUSTER:
-                configClusterServer(config, redissonConf);
-                break;
-            case SINGLE:
-                configSingleServer(config, redissonConf);
-                break;
-            default:
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
-        }
+        CONF_PACKAGER.accept(redissonConf, config);
 
         ThreadFactory threadFactory = r -> {
             Thread thread = new Thread(r, THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN));
@@ -160,7 +207,7 @@ public final class BlueRedissonGenerator {
 
         ExecutorService executorService = new ThreadPoolExecutor(redissonConf.getExecutorCorePoolSize(),
                 redissonConf.getExecutorMaximumPoolSize(),
-                redissonConf.getExecutorKeepAliveTime(), SECONDS, blockingQueue, threadFactory, (r, executor) -> {
+                redissonConf.getExecutorKeepAliveSeconds(), SECONDS, blockingQueue, threadFactory, (r, executor) -> {
             LOGGER.warn("Trigger the thread pool rejection strategy and hand it over to the calling thread for execution");
             r.run();
         });
@@ -183,21 +230,7 @@ public final class BlueRedissonGenerator {
         if (serverMode == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
 
-        switch (serverMode) {
-            case CLUSTER:
-                List<String> nodes = redissonConf.getNodes();
-                if (isEmpty(nodes))
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty");
-                break;
-            case SINGLE:
-                String host = redissonConf.getHost();
-                Integer port = redissonConf.getPort();
-                if (isBlank(host) || port == null || port < 1)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1");
-                break;
-            default:
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
-        }
+        SERVER_MODE_ASSERTER.accept(redissonConf);
     }
 
 }

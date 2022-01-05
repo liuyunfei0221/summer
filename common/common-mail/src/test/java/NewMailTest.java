@@ -1,18 +1,16 @@
 import com.blue.mail.api.conf.MailConfParams;
 import com.blue.mail.common.MailSender;
+import com.sanctionco.jmail.EmailValidator;
 import org.simplejavamail.api.email.Email;
-import org.simplejavamail.api.email.EmailPopulatingBuilder;
 import org.simplejavamail.email.EmailBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
 
 import static com.blue.mail.api.generator.BlueMailSenderGenerator.generateMailSender;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.simplejavamail.api.mailer.config.LoadBalancingStrategy.ROUND_ROBIN;
 import static org.simplejavamail.api.mailer.config.TransportStrategy.SMTP;
 
@@ -27,37 +25,30 @@ public class NewMailTest {
 
     private static final String HOST = "outlook.office365.com";
     private static final int PORT = 587;
-    private static final String USER_NAME = "";
-    private static final String PASSWORD = "";
+    private static final String USER_NAME = "yunfei0221@outlook.com";
+    private static final String PASSWORD = "Fei19890116";
 
 
     private static final MailSender MAIL_SENDER;
 
     static {
-        MailConfParams params = new MailConfParams();
+        MailConfParams params = new MailConfParams() {
+            @Override
+            public EmailValidator getEmailValidator() {
+                return null;
+            }
+        };
 
         params.setSmtpServerHost(HOST);
         params.setSmtpServerPort(PORT);
         params.setSmtpUsername(USER_NAME);
         params.setSmtpPassword(PASSWORD);
 
-        String threadNamePre = "temp-message-send-executor-";
+        params.setCorePoolSize(2);
+        params.setMaximumPoolSize(8);
+        params.setKeepAliveSeconds(128L);
+        params.setBlockingQueueCapacity(4096);
 
-        ThreadFactory threadFactory = r ->
-                new Thread(r, threadNamePre + randomAlphabetic(4));
-
-        RejectedExecutionHandler rejectedExecutionHandler = (r, executor) -> {
-            LOGGER.error("Trigger the thread pool rejection strategy and hand it over to the calling thread for execution, : r = {}", r);
-            r.run();
-        };
-
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(4,
-                8,
-                128, SECONDS,
-                new ArrayBlockingQueue<>(4096),
-                threadFactory, rejectedExecutionHandler);
-
-        params.setExecutorService(threadPoolExecutor);
         params.setConnectionPoolCoreSize(32);
         params.setConnectionPoolMaxSize(64);
         params.setConnectionPoolClaimTimeoutMillis(6000);
@@ -65,15 +56,14 @@ public class NewMailTest {
         params.setSessionTimeout(6000);
         params.setConnectionPoolLoadBalancingStrategy(ROUND_ROBIN);
         params.setTransportStrategy(SMTP);
-        params.setAsync(true);
         params.setWithDKIM(false);
         params.setDebugLogging(true);
 
-        Map<String, Object> props = new HashMap<>(4, 1.0f);
-        props.put("mail.smtp.ssl", true);
-        props.put("mail.smtp.starttls.enable", true);
+        Map<String, String> props = new HashMap<>(4, 1.0f);
+        props.put("mail.smtp.ssl", "true");
+        props.put("mail.smtp.starttls.enable", "true");
 
-        params.setProperties(props);
+        params.setProps(props);
 
         //protected Boolean withDKIM;
         //protected String domainKeyFile;
@@ -86,13 +76,13 @@ public class NewMailTest {
     private static void test1() {
         String to1 = "liuyunfei0221@outlook.com";
         String to2 = "liuyunfei19890221@gmail.com";
-
-        EmailPopulatingBuilder builder = EmailBuilder.startingBlank();
+        String to3 = "liuyunfei19890221@163.com";
 
         Email email = EmailBuilder.startingBlank()
                 .from(USER_NAME)
                 .to(to1)
                 .to(to2)
+                .to(to3)
                 //.ccWithFixedName("C. Bo group", "chocobo1@candyshop.org", "chocobo2@candyshop.org")
                 //.withRecipientsWithFixedName("Tasting Group", BCC,
                 //        "taster1@cgroup.org;taster2@cgroup.org;tester <taster3@cgroup.org>")
@@ -115,7 +105,8 @@ public class NewMailTest {
                 //.encryptWithSmime(x509Certificate)
                 .buildEmail();
 
-        MAIL_SENDER.sendMail(email, true);
+        CompletableFuture<Void> future = MAIL_SENDER.sendMail(email);
+        future.join();
     }
 
 

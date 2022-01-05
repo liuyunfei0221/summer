@@ -141,7 +141,7 @@ identity:
 executor:
   corePoolSize: 2
   maximumPoolSize: 8
-  keepAliveTime: 64
+  keepAliveSeconds: 64
   blockingQueueCapacity: 2048
   threadNamePre: blue-summer
 
@@ -213,6 +213,33 @@ files:
 
 encrypt:
   expire: 10000000000
+
+
+mail:
+  smtpServerHost: outlook.office365.com
+  smtpServerPort: 587
+  smtpUsername:
+  smtpPassword:
+  corePoolSize: 2
+  maximumPoolSize: 8
+  keepAliveSeconds: 64
+  blockingQueueCapacity: 2048
+  threadNamePre: blue-mail-sender
+  connectionPoolCoreSize: 128
+  connectionPoolMaxSize: 256
+  connectionPoolClaimTimeoutMillis: 6000
+  connectionPoolExpireAfterMillis: 6000
+  sessionTimeout: 6000
+  connectionPoolLoadBalancingStrategy: ROUND_ROBIN
+  transportStrategy: SMTP
+  withDKIM: false
+  domainKeyFile:
+  domain:
+  selector:
+  debugLogging:
+  props:
+    mail.smtp.ssl: true
+    mail.smtp.starttls.enable: true
 
 
 dubbo:
@@ -338,7 +365,7 @@ consumers:
       proxyProtocol: SNI
       topics: [ illegalMark ]
       topicsPattern:
-      subscriptionName: mediaIllegalMarkSubscription
+      subscriptionName: illegalMarkSubscription
       ackTimeoutMillis: 2000
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000

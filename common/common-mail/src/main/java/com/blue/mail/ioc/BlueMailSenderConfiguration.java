@@ -15,7 +15,7 @@ import static com.blue.mail.api.generator.BlueMailSenderGenerator.generateMailSe
  * @date 2022/1/4
  * @apiNote
  */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
 @ConditionalOnBean(value = {MailConf.class})
 @Configuration
 public class BlueMailSenderConfiguration {

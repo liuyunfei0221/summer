@@ -5,7 +5,6 @@ import org.simplejavamail.api.mailer.config.LoadBalancingStrategy;
 import org.simplejavamail.api.mailer.config.TransportStrategy;
 
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
 /**
  * @author liuyunfei
@@ -25,7 +24,15 @@ public interface MailConf {
 
     EmailValidator getEmailValidator();
 
-    ExecutorService getExecutorService();
+    Integer getCorePoolSize();
+
+    Integer getMaximumPoolSize();
+
+    Long getKeepAliveSeconds();
+
+    Integer getBlockingQueueCapacity();
+
+    String getThreadNamePre();
 
     Integer getConnectionPoolCoreSize();
 
@@ -41,8 +48,6 @@ public interface MailConf {
 
     TransportStrategy getTransportStrategy();
 
-    Boolean getAsync();
-
     Boolean getWithDKIM();
 
     String getDomainKeyFile();
@@ -53,6 +58,6 @@ public interface MailConf {
 
     Boolean getDebugLogging();
 
-    Map<String, Object> getProperties();
+    Map<String, String> getProps();
 
 }

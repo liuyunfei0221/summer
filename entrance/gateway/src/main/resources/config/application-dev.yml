@@ -149,7 +149,7 @@ dubbo:
 executor:
   corePoolSize: 2
   maximumPoolSize: 8
-  keepAliveTime: 64
+  keepAliveSeconds: 64
   blockingQueueCapacity: 128
   threadNamePre: blue-summer
 
@@ -246,7 +246,7 @@ consumers:
       proxyProtocol: SNI
       topics: [ illegalMark ]
       topicsPattern:
-      subscriptionName: gatewayIllegalMarkSubscription
+      subscriptionName: illegalMarkSubscription
       ackTimeoutMillis: 2000
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000

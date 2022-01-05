@@ -23,7 +23,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/9/11
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 public final class BlueExecutorGenerator {
 
     private static final Logger LOGGER = getLogger(BlueExecutorGenerator.class);
@@ -41,7 +41,7 @@ public final class BlueExecutorGenerator {
 
         return new ThreadPoolExecutor(executorConf.getCorePoolSize(),
                 executorConf.getMaximumPoolSize(),
-                executorConf.getKeepAliveTime(), SECONDS,
+                executorConf.getKeepAliveSeconds(), SECONDS,
                 new ArrayBlockingQueue<>(executorConf.getBlockingQueueCapacity()),
                 r -> {
                     Thread thread = new Thread(r, threadNamePre + randomAlphabetic(RANDOM_LEN));
@@ -64,9 +64,9 @@ public final class BlueExecutorGenerator {
         if (maximumPoolSize == null || maximumPoolSize < 1 || maximumPoolSize < corePoolSize)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maximumPoolSize can't be null or less than 1 or less than corePoolSize");
 
-        Long keepAliveTime = executorConf.getKeepAliveTime();
-        if (keepAliveTime == null || keepAliveTime < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keepAliveTime can't be null or less than 1");
+        Long keepAliveSeconds = executorConf.getKeepAliveSeconds();
+        if (keepAliveSeconds == null || keepAliveSeconds < 1L)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keepAliveSeconds can't be null or less than 1");
 
         Integer blockingQueueCapacity = executorConf.getBlockingQueueCapacity();
         if (blockingQueueCapacity == null || blockingQueueCapacity < 1)

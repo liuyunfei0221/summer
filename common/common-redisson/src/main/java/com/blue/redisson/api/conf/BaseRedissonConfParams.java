@@ -78,7 +78,7 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
 
     protected Integer executorMaximumPoolSize;
 
-    protected Long executorKeepAliveTime;
+    protected Long executorKeepAliveSeconds;
 
     protected Integer executorBlockingQueueCapacity;
 
@@ -231,8 +231,8 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
     }
 
     @Override
-    public Long getExecutorKeepAliveTime() {
-        return executorKeepAliveTime;
+    public Long getExecutorKeepAliveSeconds() {
+        return executorKeepAliveSeconds;
     }
 
     @Override
@@ -356,8 +356,8 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
         this.executorMaximumPoolSize = executorMaximumPoolSize;
     }
 
-    public void setExecutorKeepAliveTime(Long executorKeepAliveTime) {
-        this.executorKeepAliveTime = executorKeepAliveTime;
+    public void setExecutorKeepAliveSeconds(Long executorKeepAliveSeconds) {
+        this.executorKeepAliveSeconds = executorKeepAliveSeconds;
     }
 
     public void setExecutorBlockingQueueCapacity(Integer executorBlockingQueueCapacity) {
@@ -396,7 +396,7 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
                 ", pingConnectionInterval=" + pingConnectionInterval +
                 ", executorCorePoolSize=" + executorCorePoolSize +
                 ", executorMaximumPoolSize=" + executorMaximumPoolSize +
-                ", executorKeepAliveTime=" + executorKeepAliveTime +
+                ", executorKeepAliveSeconds=" + executorKeepAliveSeconds +
                 ", executorBlockingQueueCapacity=" + executorBlockingQueueCapacity +
                 '}';
     }

@@ -68,11 +68,11 @@ public final class AuthInfoCache {
     private static final int RANDOM_LEN = 4;
 
     public AuthInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer,
-                         Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveTime,
+                         Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
                          Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
 
         assertConf(reactiveStringRedisTemplate, authExpireProducer,
-                refresherCorePoolSize, refresherMaximumPoolSize, refresherKeepAliveTime,
+                refresherCorePoolSize, refresherMaximumPoolSize, refresherKeepAliveSeconds,
                 refresherBlockingQueueCapacity, globalExpireMillis, localExpireMillis, capacity);
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
@@ -90,7 +90,7 @@ public final class AuthInfoCache {
         };
 
         this.executorService = new ThreadPoolExecutor(refresherCorePoolSize, refresherMaximumPoolSize,
-                refresherKeepAliveTime, SECONDS, new ArrayBlockingQueue<>(refresherBlockingQueueCapacity), threadFactory, rejectedExecutionHandler);
+                refresherKeepAliveSeconds, SECONDS, new ArrayBlockingQueue<>(refresherBlockingQueueCapacity), threadFactory, rejectedExecutionHandler);
 
         this.globalExpireMillis = globalExpireMillis;
         this.globalExpireDuration = Duration.of(globalExpireMillis, UNIT);
@@ -197,7 +197,7 @@ public final class AuthInfoCache {
      * assert conf
      */
     private static void assertConf(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer,
-                                   Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveTime,
+                                   Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
                                    Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
         if (reactiveStringRedisTemplate == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveStringRedisTemplate can't be null");
@@ -211,8 +211,8 @@ public final class AuthInfoCache {
         if (refresherMaximumPoolSize == null || refresherMaximumPoolSize < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherMaximumPoolSize can't be null or less than 1");
 
-        if (refresherKeepAliveTime == null || refresherKeepAliveTime < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherKeepAliveTime can't be null or less than 1");
+        if (refresherKeepAliveSeconds == null || refresherKeepAliveSeconds < 1)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherKeepAliveSeconds can't be null or less than 1");
 
         if (refresherBlockingQueueCapacity == null || refresherBlockingQueueCapacity < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherBlockingQueueCapacity can't be null or less than 1");

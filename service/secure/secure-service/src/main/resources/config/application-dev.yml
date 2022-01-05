@@ -252,7 +252,7 @@ cache:
 executor:
   corePoolSize: 4
   maximumPoolSize: 32
-  keepAliveTime: 64
+  keepAliveSeconds: 64
   blockingQueueCapacity: 128
   threadNamePre: blue-summer
 
@@ -264,7 +264,7 @@ auth:
   localExpireMillis: 10000
   refresherCorePoolSize: 2
   refresherMaximumPoolSize: 4
-  refresherKeepAliveTime: 64
+  refresherkeepAliveSeconds: 64
   refresherBlockingQueueCapacity: 8192
   batchExpireMaxPerHandle: 256
   batchExpireScheduledCorePoolSize: 1
@@ -761,7 +761,7 @@ redisson:
   pingConnectionInterval: 300000
   executorCorePoolSize: 4
   executorMaximumPoolSize: 8
-  executorKeepAliveTime: 64
+  executorkeepAliveSeconds: 64
   executorBlockingQueueCapacity: 128
 
 

@@ -26,7 +26,7 @@ public class AuthDeploy {
 
     private Integer refresherMaximumPoolSize;
 
-    private Long refresherKeepAliveTime;
+    private Long refresherKeepAliveSeconds;
 
     private Integer refresherBlockingQueueCapacity;
 
@@ -101,12 +101,12 @@ public class AuthDeploy {
         this.refresherMaximumPoolSize = refresherMaximumPoolSize;
     }
 
-    public Long getRefresherKeepAliveTime() {
-        return refresherKeepAliveTime;
+    public Long getRefresherKeepAliveSeconds() {
+        return refresherKeepAliveSeconds;
     }
 
-    public void setRefresherKeepAliveTime(Long refresherKeepAliveTime) {
-        this.refresherKeepAliveTime = refresherKeepAliveTime;
+    public void setRefresherKeepAliveSeconds(Long refresherKeepAliveSeconds) {
+        this.refresherKeepAliveSeconds = refresherKeepAliveSeconds;
     }
 
     public Integer getRefresherBlockingQueueCapacity() {
@@ -206,7 +206,7 @@ public class AuthDeploy {
                 ", localExpireMillis=" + localExpireMillis +
                 ", refresherCorePoolSize=" + refresherCorePoolSize +
                 ", refresherMaximumPoolSize=" + refresherMaximumPoolSize +
-                ", refresherKeepAliveTime=" + refresherKeepAliveTime +
+                ", refresherKeepAliveSeconds=" + refresherKeepAliveSeconds +
                 ", refresherBlockingQueueCapacity=" + refresherBlockingQueueCapacity +
                 ", batchExpireMaxPerHandle=" + batchExpireMaxPerHandle +
                 ", batchExpireScheduledCorePoolSize=" + batchExpireScheduledCorePoolSize +

@@ -42,7 +42,7 @@ public class AuthConfig {
     AuthInfoCache authInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer) {
         LOGGER.info("jwtDeploy = {}", authDeploy);
         return new AuthInfoCache(reactiveStringRedisTemplate, authExpireProducer, authDeploy.getRefresherCorePoolSize(),
-                authDeploy.getRefresherMaximumPoolSize(), authDeploy.getRefresherKeepAliveTime(), authDeploy.getRefresherBlockingQueueCapacity(),
+                authDeploy.getRefresherMaximumPoolSize(), authDeploy.getRefresherKeepAliveSeconds(), authDeploy.getRefresherBlockingQueueCapacity(),
                 authDeploy.getGlobalMinExpireMillis(), authDeploy.getLocalExpireMillis(), authDeploy.getLocalCacheCapacity());
     }
 
