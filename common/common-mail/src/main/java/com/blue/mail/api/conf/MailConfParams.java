@@ -1,6 +1,8 @@
 package com.blue.mail.api.conf;
 
 import com.sanctionco.jmail.EmailValidator;
+import org.simplejavamail.api.mailer.config.LoadBalancingStrategy;
+import org.simplejavamail.api.mailer.config.TransportStrategy;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -10,18 +12,16 @@ import java.util.concurrent.ExecutorService;
  * @date 2022/1/4
  * @apiNote
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming"})
 public class MailConfParams implements MailConf {
 
     protected String smtpServerHost;
 
     protected Integer smtpServerPort;
 
-    protected Integer smtpUsername;
+    protected String smtpUsername;
 
-    protected Integer smtpPassword;
-
-    protected Boolean clearEmailValidator;
+    protected String smtpPassword;
 
     protected EmailValidator emailValidator;
 
@@ -31,15 +31,19 @@ public class MailConfParams implements MailConf {
 
     protected Integer connectionPoolMaxSize;
 
+    protected Integer connectionPoolClaimTimeoutMillis;
+
     protected Integer connectionPoolExpireAfterMillis;
 
     protected Integer sessionTimeout;
 
-    protected String connectionPoolLoadBalancingStrategy;
+    protected LoadBalancingStrategy connectionPoolLoadBalancingStrategy;
 
-    protected String transportStrategy;
+    protected TransportStrategy transportStrategy;
 
     protected Boolean async;
+
+    protected Boolean withDKIM;
 
     protected String domainKeyFile;
 
@@ -65,18 +69,13 @@ public class MailConfParams implements MailConf {
     }
 
     @Override
-    public Integer getSmtpUsername() {
+    public String getSmtpUsername() {
         return smtpUsername;
     }
 
     @Override
-    public Integer getSmtpPassword() {
+    public String getSmtpPassword() {
         return smtpPassword;
-    }
-
-    @Override
-    public Boolean getClearEmailValidator() {
-        return clearEmailValidator;
     }
 
     @Override
@@ -100,6 +99,11 @@ public class MailConfParams implements MailConf {
     }
 
     @Override
+    public Integer getConnectionPoolClaimTimeoutMillis() {
+        return connectionPoolClaimTimeoutMillis;
+    }
+
+    @Override
     public Integer getConnectionPoolExpireAfterMillis() {
         return connectionPoolExpireAfterMillis;
     }
@@ -110,18 +114,23 @@ public class MailConfParams implements MailConf {
     }
 
     @Override
-    public String getConnectionPoolLoadBalancingStrategy() {
+    public LoadBalancingStrategy getConnectionPoolLoadBalancingStrategy() {
         return connectionPoolLoadBalancingStrategy;
     }
 
     @Override
-    public String getTransportStrategy() {
+    public TransportStrategy getTransportStrategy() {
         return transportStrategy;
     }
 
     @Override
     public Boolean getAsync() {
         return async;
+    }
+
+    @Override
+    public Boolean getWithDKIM() {
+        return withDKIM;
     }
 
     @Override
@@ -157,16 +166,12 @@ public class MailConfParams implements MailConf {
         this.smtpServerPort = smtpServerPort;
     }
 
-    public void setSmtpUsername(Integer smtpUsername) {
+    public void setSmtpUsername(String smtpUsername) {
         this.smtpUsername = smtpUsername;
     }
 
-    public void setSmtpPassword(Integer smtpPassword) {
+    public void setSmtpPassword(String smtpPassword) {
         this.smtpPassword = smtpPassword;
-    }
-
-    public void setClearEmailValidator(Boolean clearEmailValidator) {
-        this.clearEmailValidator = clearEmailValidator;
     }
 
     public void setEmailValidator(EmailValidator emailValidator) {
@@ -185,6 +190,10 @@ public class MailConfParams implements MailConf {
         this.connectionPoolMaxSize = connectionPoolMaxSize;
     }
 
+    public void setConnectionPoolClaimTimeoutMillis(Integer connectionPoolClaimTimeoutMillis) {
+        this.connectionPoolClaimTimeoutMillis = connectionPoolClaimTimeoutMillis;
+    }
+
     public void setConnectionPoolExpireAfterMillis(Integer connectionPoolExpireAfterMillis) {
         this.connectionPoolExpireAfterMillis = connectionPoolExpireAfterMillis;
     }
@@ -193,16 +202,20 @@ public class MailConfParams implements MailConf {
         this.sessionTimeout = sessionTimeout;
     }
 
-    public void setConnectionPoolLoadBalancingStrategy(String connectionPoolLoadBalancingStrategy) {
+    public void setConnectionPoolLoadBalancingStrategy(LoadBalancingStrategy connectionPoolLoadBalancingStrategy) {
         this.connectionPoolLoadBalancingStrategy = connectionPoolLoadBalancingStrategy;
     }
 
-    public void setTransportStrategy(String transportStrategy) {
+    public void setTransportStrategy(TransportStrategy transportStrategy) {
         this.transportStrategy = transportStrategy;
     }
 
     public void setAsync(Boolean async) {
         this.async = async;
+    }
+
+    public void setWithDKIM(Boolean withDKIM) {
+        this.withDKIM = withDKIM;
     }
 
     public void setDomainKeyFile(String domainKeyFile) {
@@ -230,18 +243,19 @@ public class MailConfParams implements MailConf {
         return "MailConfParams{" +
                 "smtpServerHost='" + smtpServerHost + '\'' +
                 ", smtpServerPort=" + smtpServerPort +
-                ", smtpUsername=" + smtpUsername +
-                ", smtpPassword=" + smtpPassword +
-                ", clearEmailValidator=" + clearEmailValidator +
+                ", smtpUsername='" + smtpUsername + '\'' +
+                ", smtpPassword='" + smtpPassword + '\'' +
                 ", emailValidator=" + emailValidator +
                 ", executorService=" + executorService +
                 ", connectionPoolCoreSize=" + connectionPoolCoreSize +
                 ", connectionPoolMaxSize=" + connectionPoolMaxSize +
+                ", connectionPoolClaimTimeoutMillis=" + connectionPoolClaimTimeoutMillis +
                 ", connectionPoolExpireAfterMillis=" + connectionPoolExpireAfterMillis +
                 ", sessionTimeout=" + sessionTimeout +
                 ", connectionPoolLoadBalancingStrategy='" + connectionPoolLoadBalancingStrategy + '\'' +
                 ", transportStrategy='" + transportStrategy + '\'' +
                 ", async=" + async +
+                ", withDKIM=" + withDKIM +
                 ", domainKeyFile='" + domainKeyFile + '\'' +
                 ", domain='" + domain + '\'' +
                 ", selector='" + selector + '\'' +

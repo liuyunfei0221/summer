@@ -1,8 +1,8 @@
 DROP DATABASE secure_0;
 DROP DATABASE secure_1;
 
-DROP DATABASE file_0;
-DROP DATABASE file_1;
+DROP DATABASE media_0;
+DROP DATABASE media_1;
 
 DROP DATABASE finance_0;
 DROP DATABASE finance_1;

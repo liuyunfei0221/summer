@@ -383,23 +383,23 @@ INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (9506121983229955, 'POST', 'blue-file', '/file/upload', b'1', b'1', b'1', b'1', b'1', 1,
-        'file upload of api', 'file upload of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9506121983229955, 'POST', 'blue-media', '/media/upload', b'1', b'1', b'1', b'1', b'1', 1,
+        'media upload of api', 'media upload of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (9506477400129539, 'POST', 'blue-file', '/file/download', b'1', b'1', b'1', b'1', b'0', 1,
-        'file download of api', 'file download of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9506477400129539, 'POST', 'blue-media', '/media/download', b'1', b'1', b'1', b'1', b'0', 1,
+        'media download of api', 'media download of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (9506557930799112, 'POST', 'blue-file', '/attachment/list', b'1', b'1', b'1', b'1', b'1', 1,
+VALUES (9506557930799112, 'POST', 'blue-media', '/attachment/list', b'1', b'1', b'1', b'1', b'1', 1,
         'attachment list of api', 'attachment list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
@@ -423,7 +423,7 @@ INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (9506477400129540, 'GET', 'blue-file', '/file/downloadTest/{id}', b'1', b'1', b'1', b'1', b'0', 1,
+VALUES (9506477400129540, 'GET', 'blue-media', '/media/downloadTest/{id}', b'1', b'1', b'1', b'1', b'0', 1,
         'download test', 'download test', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
@@ -462,7 +462,7 @@ INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (9506477400129541, 'POST', 'blue-file', '/attachment/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
+VALUES (9506477400129541, 'POST', 'blue-media', '/attachment/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
         'withdraw/test encrypt', 'withdraw/test encrypt', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
@@ -930,9 +930,9 @@ VALUES (9507591944175656, 9507591944175638, 9506557930799114, UNIX_TIMESTAMP(), 
 -- file0
 
 CREATE
-DATABASE file_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DATABASE media_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
-file_0;
+media_0;
 
 CREATE TABLE `attachment_0`
 (
@@ -1007,9 +1007,9 @@ CREATE TABLE `undo_log`
 -- file1
 
 CREATE
-DATABASE file_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DATABASE media_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
-file_1;
+media_1;
 
 CREATE TABLE `attachment_0`
 (

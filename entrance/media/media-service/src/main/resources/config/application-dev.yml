@@ -1,0 +1,384 @@
+server:
+  #  address: 172.30.128.25
+  port: 13000
+  netty:
+    connection-timeout: 16s
+    h2c-max-content-length: 0B
+    initial-buffer-size: 128B
+    max-chunk-size: 8KB
+    max-initial-line-length: 4KB
+    validate-headers: true
+  http2:
+    enabled: true
+  error:
+    path: /error
+#  ssl:
+#    client-auth: need
+#    ciphers: [ ]
+#    enabled-protocols: [ ]
+#    key-alias:
+#    key-password:
+#    key-store:
+#    key-store-password:
+#    key-store-type:
+#    key-store-provider:
+#    trust-store:
+#    trust-store-password:
+#    trust-store-type:
+#    trust-store-provider:
+#    protocol: TLS
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 300
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+    hostname: ${spring.cloud.client.ip-address}
+  client:
+    service-url:
+      defaultZone: http://localhost:3000/eureka/
+    registry-fetch-interval-seconds: 16
+
+
+cors:
+  allowedOrigins: [ "*" ]
+  allowedMethods: [ "*" ]
+  allowedHeaders: [ "*" ]
+  exposedHeaders: [ "*" ]
+  allowCredentials: true
+  maxAgeSeconds: 1728000
+  allowedOriginPatterns: [ /** ]
+
+
+data:
+  shardingDatabases:
+    - url: jdbc:mysql://localhost:3306/media_0
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+
+    - url: jdbc:mysql://localhost:3306/media_1
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+  shardingTables:
+    - tableName: attachment
+      shardingColumn: id
+
+    - tableName: download_history
+      shardingColumn: id
+  shardingTableSizePerDataBase: 2
+  dataCenterToDatabaseMappings:
+    - id: 0
+      index: 0
+
+    - id: 1
+      index: 1
+  workerToTableMappings:
+    - id: 0
+      index: 0
+
+    - id: 1
+      index: 1
+  shardingBroadcastTables: [ ]
+  singleDatabasesWithTables:
+  cacheEnabled: false
+  lazyLoadingEnabled: false
+  aggressiveLazyLoading: false
+  multipleResultSetsEnabled: false
+  useColumnLabel: true
+  useGeneratedKeys: false
+  connectionTimeout: 30000
+  autoMappingBehavior: FULL
+  executorType: BATCH
+  mapperLocation: classpath:mapper/*.xml
+  props:
+    sql.show: true
+    sql.simple: false
+    executor.size: 128
+    max.connections.size.per.query: 2
+    check.table.metadata.enabled: true
+    query.with.cipher.column: false
+    xa.transaction.manager.type: Atomikos
+
+
+identity:
+  dataCenter: 0
+  worker: 0
+  serviceName: blue-media
+  bootSeconds: 1618790400
+  bufferPower: 3
+  paddingFactor: 50
+  paddingCorePoolSize: 1
+  paddingMaximumPoolSize: 2
+  keepAliveSeconds: 128
+  paddingBlockingQueueSize: 1024
+  paddingScheduled: true
+  paddingScheduledCorePoolSize: 2
+  paddingScheduledInitialDelayMillis: 5000
+  paddingScheduledDelayMillis: 15000
+
+
+executor:
+  corePoolSize: 2
+  maximumPoolSize: 8
+  keepAliveTime: 64
+  blockingQueueCapacity: 2048
+  threadNamePre: blue-summer
+
+
+cache:
+  serverMode: SINGLE
+  nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
+  password: sfakjfiju99jjf87LJSDDU8
+  maxRedirects: 4
+  host: localhost
+  port: 6379
+  minIdle: 4
+  maxIdle: 64
+  maxTotal: 128
+  maxWaitMillis: 16
+  autoReconnect: true
+  bufferUsageRatio: 32.0
+  cancelCommandsOnReconnectFailure: false
+  pingBeforeActivateConnection: false
+  requestQueueSize: 64
+  publishOnScheduler: true
+  tcpNoDelay: true
+  connectTimeout: 4
+  keepAlive: false
+  suspendReconnectOnProtocolFailure: false
+  fixedTimeout: 4
+  commandTimeout: 4
+  shutdownTimeout: 8
+  shutdownQuietPeriod: 4
+  entryTtl: 60
+
+
+limit:
+  replenishRate: 1
+  burstCapacity: 3
+
+
+risk:
+  illegalExpireSeconds: 30
+
+
+request:
+  validContentTypes: [ application/json,multipart/form-data ]
+  maxUriLength: 256
+  maxHeaderCount: 16
+  maxHeaderLength: 2048
+  maxContentLength: 4294967296
+  maxHeadersSize: 1048576
+  maxInMemorySize: 8388608
+  maxDiskUsagePerPart: 4294967296
+  maxParts: 32
+  enableLoggingRequestDetails: false
+
+
+error:
+  errorReportWithRequestBodyContentTypes: [ application/json,multipart/form-data ]
+
+
+files:
+  attrName: attachments
+  validTypes: [ .JPG,.JPEG,.PNG,.RMVB,.MKV,.MP4,.ZIP ]
+  invalidPres: [ .,/,^ ]
+  nameLenThreshold: 256
+  allFileSizeThreshold: 4294967296
+  singleFileSizeThreshold: 4294967296
+  currentSizeThreshold: 32
+  descPath: E:\\tempFile\\disc
+
+
+encrypt:
+  expire: 10000000000
+
+
+dubbo:
+  registry:
+    id: summer-registry
+    zone: summer
+    protocol: zookeeper
+    address: zookeeper://127.0.0.1:2181
+    file: D:/locallogs/dubbo/media/registry.properties
+    check: false
+    timeout: 60000
+  application:
+    id: summer-media
+    name: summer-media
+    owner: blue
+    organization: blue
+    shutwait: 20s
+  protocol:
+    name: dubbo
+    host: localhost
+    port: 14000
+    accesslog: D:/locallogs/dubbo/media/access.log
+  provider:
+    retries: 0
+    timeout: 5000
+    loadbalance: random
+    filter: -exception
+  consumer:
+    retries: 0
+    timeout: 5000
+    loadbalance: random
+    check: false
+
+
+producers:
+  configs:
+    requestEvent:
+      services: [ 192.168.203.61:6650 ]
+      enableTls: false
+      tlsTrustCertsFilePath:
+      tlsCertFilePath:
+      tlsKeyFilePath:
+      tlsAllowInsecureConnection:
+      tlsHostnameVerificationEnable:
+      listenerName:
+      operationTimeoutMillis: 30000
+      statsIntervalMillis: 60000
+      ioThreads: 1
+      listenerThreads: 1
+      connectionsPerBroker: 1
+      useTcpNoDelay: true
+      memoryLimitKiloBytes: 512
+      maxConcurrentLookupRequests: 60
+      maxLookupRequest: 50000
+      maxLookupRedirects: 3
+      maxNumberOfRejectedRequestPerConnection: 50
+      keepAliveIntervalMillis: 30000
+      connectionTimeoutMillis: 60000
+      startingBackoffIntervalMillis: 300
+      maxBackoffIntervalMillis: 600
+      enableBusyWait: false
+      clockZoneId: Asia/Shanghai
+      enableTransaction: false
+      enableProxy: false
+      proxyServiceUrl:
+      proxyProtocol: SNI
+      topic: requestEvent
+      producerName: mediaRequestEventProducer000
+      accessMode: Shared
+      sendTimeoutMillis: 30000
+      maxPendingMessages: 1000
+      maxPendingMessagesAcrossPartitions: 5000
+      blockIfQueueFull: false
+      messageRoutingMode: RoundRobinPartition
+      compressionType: NONE
+      enableBatching: true
+      enableChunking: false
+      batchingMaxPublishDelayMillis: 1000
+      roundRobinRouterBatchingPartitionSwitchFrequency: 2
+      batchingMaxMessages: 512
+      batchingMaxBytes: 512
+      initialSequenceId: 0
+      autoUpdatePartitions: true
+      autoUpdatePartitionsIntervalMillis: 30000
+      enableMultiSchema: false
+      hashingSchemes: [ JavaStringHash ]
+      enableEncrypt: false
+      encryptionKey:
+      producerCryptoFailureAction: FAIL
+
+
+consumers:
+  configs:
+    illegalMark:
+      services: [ 192.168.203.61:6650 ]
+      enableTls: false
+      tlsTrustCertsFilePath:
+      tlsCertFilePath:
+      tlsKeyFilePath:
+      tlsAllowInsecureConnection:
+      tlsHostnameVerificationEnable:
+      listenerName:
+      operationTimeoutMillis: 30000
+      statsIntervalMillis: 60
+      ioThreads: 1
+      listenerThreads: 1
+      connectionsPerBroker: 2
+      useTcpNoDelay: true
+      memoryLimitKiloBytes: 1024
+      maxConcurrentLookupRequests: 60
+      maxLookupRequest: 1000
+      maxLookupRedirects: 2
+      maxNumberOfRejectedRequestPerConnection: 50
+      keepAliveIntervalMillis: 30000
+      connectionTimeoutMillis: 10000
+      startingBackoffIntervalMillis: 1000
+      maxBackoffIntervalMillis: 30000
+      enableBusyWait: true
+      clockZoneId: Asia/Shanghai
+      enableTransaction: false
+      enableProxy: false
+      proxyServiceUrl:
+      proxyProtocol: SNI
+      topics: [ illegalMark ]
+      topicsPattern:
+      subscriptionName: mediaIllegalMarkSubscription
+      ackTimeoutMillis: 2000
+      enableAckReceipt: true
+      ackTimeoutTickTimeMillis: 1000
+      negativeAckRedeliveryDelayMillis: 100
+      subscriptionType: Failover
+      subscriptionMode: Durable
+      receiverQueueSize: 1000
+      acknowledgementsGroupTimeMillis: 100
+      replicateSubscriptionState: false
+      maxTotalReceiverQueueSizeAcrossPartitions: 5
+      consumerName: mediaIllegalMarkConsumer000
+      readCompacted: false
+      patternAutoDiscoveryPeriodMillis: 1
+      priorityLevel: 0
+      subscriptionInitialPosition: Latest
+      regexSubscriptionMode: PersistentOnly
+      autoUpdatePartitions: true
+      autoUpdatePartitionsIntervalMillis: 30000
+      batchReceivePolicy: DEFAULT_POLICY
+      enableRetry: true
+      enableBatchIndexAcknowledgment: false
+      maxPendingChunkedMessage: 10
+      autoAckOldestChunkedMessageOnQueueFull: true
+      expireTimeOfIncompleteChunkedMessageMillis: 2000
+      poolMessages: false
+      enableEncrypt: false
+      encryptionKey:
+      consumerCryptoFailureAction: FAIL
+      enableDeadLetter: true
+      deadLetterTopic: illegalMark
+      retryLetterTopic: illegalMark
+      maxRedeliverCount: 1000
+      startMessageIdInclusive: false
+      enableBatchReceive: false
+      batchReceiveMaxNumMessages: -1
+      batchReceiveMaxNumBytes: 10485760
+      batchReceiveTimeoutMillis: 100
+      pollDurationMills: 1000
+      workingThreads: 2
+      enableNegativeAcknowledge: true
+
+
+debug: false

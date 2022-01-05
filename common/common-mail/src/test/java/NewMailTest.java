@@ -1,9 +1,20 @@
+import com.blue.mail.api.conf.MailConfParams;
+import com.blue.mail.common.MailSender;
 import org.simplejavamail.api.email.Email;
-import org.simplejavamail.api.mailer.Mailer;
+import org.simplejavamail.api.email.EmailPopulatingBuilder;
 import org.simplejavamail.email.EmailBuilder;
-import org.simplejavamail.mailer.MailerBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.*;
+
+import static com.blue.mail.api.generator.BlueMailSenderGenerator.generateMailSender;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.simplejavamail.api.mailer.config.LoadBalancingStrategy.ROUND_ROBIN;
+import static org.simplejavamail.api.mailer.config.TransportStrategy.SMTP;
 
 /**
  * @author liuyunfei
@@ -12,42 +23,71 @@ import static org.simplejavamail.api.mailer.config.LoadBalancingStrategy.ROUND_R
  */
 public class NewMailTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(NewMailTest.class);
+
     private static final String HOST = "outlook.office365.com";
     private static final int PORT = 587;
     private static final String USER_NAME = "";
     private static final String PASSWORD = "";
 
 
-    private static final Mailer MAILER;
+    private static final MailSender MAIL_SENDER;
 
     static {
+        MailConfParams params = new MailConfParams();
 
-        MAILER = MailerBuilder
-                .withSMTPServer(HOST, PORT, USER_NAME, PASSWORD)
-                .withSessionTimeout(1000 * 100000)
-                .clearEmailValidator()
-                .withProperty("mail.smtp.ssl", true)
-                .withProperty("mail.smtp.starttls.enable", true)
-                .withDebugLogging(true)
+        params.setSmtpServerHost(HOST);
+        params.setSmtpServerPort(PORT);
+        params.setSmtpUsername(USER_NAME);
+        params.setSmtpPassword(PASSWORD);
 
-                .withThreadPoolSize(10)
-                .withThreadPoolKeepAliveTime(10)
+        String threadNamePre = "temp-message-send-executor-";
 
+        ThreadFactory threadFactory = r ->
+                new Thread(r, threadNamePre + randomAlphabetic(4));
 
+        RejectedExecutionHandler rejectedExecutionHandler = (r, executor) -> {
+            LOGGER.error("Trigger the thread pool rejection strategy and hand it over to the calling thread for execution, : r = {}", r);
+            r.run();
+        };
 
-                .withConnectionPoolExpireAfterMillis(5000)
-                .withConnectionPoolClaimTimeoutMillis(5000)
-                .withConnectionPoolLoadBalancingStrategy(ROUND_ROBIN)
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(4,
+                8,
+                128, SECONDS,
+                new ArrayBlockingQueue<>(4096),
+                threadFactory, rejectedExecutionHandler);
 
+        params.setExecutorService(threadPoolExecutor);
+        params.setConnectionPoolCoreSize(32);
+        params.setConnectionPoolMaxSize(64);
+        params.setConnectionPoolClaimTimeoutMillis(6000);
+        params.setConnectionPoolExpireAfterMillis(6000);
+        params.setSessionTimeout(6000);
+        params.setConnectionPoolLoadBalancingStrategy(ROUND_ROBIN);
+        params.setTransportStrategy(SMTP);
+        params.setAsync(true);
+        params.setWithDKIM(false);
+        params.setDebugLogging(true);
 
+        Map<String, Object> props = new HashMap<>(4, 1.0f);
+        props.put("mail.smtp.ssl", true);
+        props.put("mail.smtp.starttls.enable", true);
 
-                .async()
-                .buildMailer();
+        params.setProperties(props);
+
+        //protected Boolean withDKIM;
+        //protected String domainKeyFile;
+        //protected String domain;
+        //protected String selector;
+
+        MAIL_SENDER = generateMailSender(params);
     }
 
     private static void test1() {
         String to1 = "liuyunfei0221@outlook.com";
         String to2 = "liuyunfei19890221@gmail.com";
+
+        EmailPopulatingBuilder builder = EmailBuilder.startingBlank();
 
         Email email = EmailBuilder.startingBlank()
                 .from(USER_NAME)
@@ -75,8 +115,7 @@ public class NewMailTest {
                 //.encryptWithSmime(x509Certificate)
                 .buildEmail();
 
-
-        MAILER.sendMail(email, true);
+        MAIL_SENDER.sendMail(email, true);
     }
 
 

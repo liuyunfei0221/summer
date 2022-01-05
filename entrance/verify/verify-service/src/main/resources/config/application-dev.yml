@@ -53,7 +53,7 @@ cors:
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://localhost:3306/file_0
+    - url: jdbc:mysql://localhost:3306/media_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -67,7 +67,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://localhost:3306/file_1
+    - url: jdbc:mysql://localhost:3306/media_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -230,7 +230,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -287,7 +287,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -323,7 +323,7 @@ consumers:
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000
       negativeAckRedeliveryDelayMillis: 100
-      subscriptionType: Shared
+      subscriptionType: Failover
       subscriptionMode: Durable
       receiverQueueSize: 1000
       acknowledgementsGroupTimeMillis: 100

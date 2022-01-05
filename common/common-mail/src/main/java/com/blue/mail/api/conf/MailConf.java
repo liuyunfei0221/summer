@@ -1,6 +1,8 @@
 package com.blue.mail.api.conf;
 
 import com.sanctionco.jmail.EmailValidator;
+import org.simplejavamail.api.mailer.config.LoadBalancingStrategy;
+import org.simplejavamail.api.mailer.config.TransportStrategy;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -10,18 +12,16 @@ import java.util.concurrent.ExecutorService;
  * @date 2022/1/4
  * @apiNote
  */
-@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
+@SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaLowerCamelCaseVariableNaming"})
 public interface MailConf {
 
     String getSmtpServerHost();
 
     Integer getSmtpServerPort();
 
-    Integer getSmtpUsername();
+    String getSmtpUsername();
 
-    Integer getSmtpPassword();
-
-    Boolean getClearEmailValidator();
+    String getSmtpPassword();
 
     EmailValidator getEmailValidator();
 
@@ -31,15 +31,19 @@ public interface MailConf {
 
     Integer getConnectionPoolMaxSize();
 
+    Integer getConnectionPoolClaimTimeoutMillis();
+
     Integer getConnectionPoolExpireAfterMillis();
 
     Integer getSessionTimeout();
 
-    String getConnectionPoolLoadBalancingStrategy();
+    LoadBalancingStrategy getConnectionPoolLoadBalancingStrategy();
 
-    String getTransportStrategy();
+    TransportStrategy getTransportStrategy();
 
     Boolean getAsync();
+
+    Boolean getWithDKIM();
 
     String getDomainKeyFile();
 

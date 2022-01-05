@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.media.repository.mapper.AttachmentMapper">
+    <resultMap id="BaseResultMap" type="com.blue.media.repository.entity.Attachment">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="link" jdbcType="VARCHAR" property="link"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="file_type" jdbcType="VARCHAR" property="fileType"/>
+        <result column="size" jdbcType="BIGINT" property="size"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="creator" jdbcType="BIGINT" property="creator"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , link, name, file_type, size, status, create_time, creator
+    </sql>
+
+    <insert id="insert" parameterType="com.blue.media.repository.entity.Attachment">
+        insert into attachment (id, link, name, file_type,
+                                size, status, create_time,
+                                creator)
+        values (#{id,jdbcType=BIGINT}, #{link,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{fileType,jdbcType=VARCHAR},
+                #{size,jdbcType=BIGINT}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
+                #{creator,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.media.repository.entity.Attachment">
+        insert into attachment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="link != null">
+                link,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="fileType != null">
+                fileType,
+            </if>
+            <if test="size != null">
+                size,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="link != null">
+                #{link,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="fileType != null">
+                #{fileType,jdbcType=VARCHAR},
+            </if>
+            <if test="size != null">
+                #{size,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.media.repository.entity.Attachment">
+        update attachment
+        set link        = #{link,jdbcType=VARCHAR},
+            name        = #{name,jdbcType=VARCHAR},
+            file_type   = #{fileType,jdbcType=VARCHAR},
+            size        = #{size,jdbcType=BIGINT},
+            status      = #{status,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.media.repository.entity.Attachment">
+        update attachment
+        <set>
+            <if test="link != null">
+                link = #{link,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="fileType != null">
+                file_type = #{fileType,jdbcType=VARCHAR},
+            </if>
+            <if test="size != null">
+                size = #{size,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from attachment
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from attachment
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        <if test="list != null and list.size > 0">
+            INSERT INTO attachment (
+            id, link, name, file_type, size, status, create_time, creator
+            ) values
+            <foreach collection="list" index="index" item="item" separator=",">
+                (
+                #{item.id,jdbcType=BIGINT},
+                #{item.link,jdbcType=VARCHAR},
+                #{item.name,jdbcType=VARCHAR},
+                #{item.fileType,jdbcType=VARCHAR},
+                #{item.size,jdbcType=BIGINT},
+                #{item.status,jdbcType=TINYINT},
+                #{item.createTime,jdbcType=BIGINT},
+                #{item.creator,jdbcType=BIGINT}
+                )
+            </foreach>
+        </if>
+    </insert>
+
+    <select id="selectByLimitAndMemberId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM attachment
+        WHERE creator = #{memberId,jdbcType=BIGINT}
+        ORDER BY id DESC
+        LIMIT #{limit,jdbcType=BIGINT}, #{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByMemberId" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM attachment
+        WHERE creator = #{memberId,jdbcType=BIGINT}
+    </select>
+
+</mapper>

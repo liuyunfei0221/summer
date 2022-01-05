@@ -39,8 +39,8 @@ summer
 ├── common                               // 公共组件
 │   
 ├── entrance                             
-│       └── file                         // 文件网关
 │       └── gateway                      // 业务网关
+│       └── media                        // 媒体网关
 │       └── verify                       // 验证码网关
 │   
 ├── readme
@@ -85,8 +85,8 @@ summer
 ## 服务说明
 
 1. common: 公共依赖项，组件，工具类等。
-2. file: 独立的文件网关。
-3. gateway: 非文件操作的业务网关。
+2. gateway: 非文件操作的业务网关。
+3. media: 独立的文件网关。
 4. verify: 独立的验证码网关。
 5. registry: 路由服务注册中心。
 6. base: 基础服务及第三方公共服务。
@@ -150,8 +150,8 @@ summer
 ├── common                               // Public component
 │   
 ├── entrance                             
-│       └── file                         // File gateway
 │       └── gateway                      // Business gateway
+│       └── media                        // Media gateway
 │       └── verify                       // Verify gateway
 │   
 ├── readme                              
@@ -196,8 +196,8 @@ summer
 ## Service description
 
 1. common: Common dependencies, components, tool classes, etc.
-2. file: Independent file gateway.
-3. gateway: Service gateway for non-file operations.
+2. gateway: Service gateway for non-file operations.
+3. media: Independent file gateway.
 4. verify: Independent verify gateway.
 5. registry: Routing service registry.
 6. base: Basic services and third-party public services.

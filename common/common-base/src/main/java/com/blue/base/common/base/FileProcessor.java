@@ -12,7 +12,7 @@ import static org.springframework.util.ResourceUtils.getURL;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * file processor
+ * media processor
  *
  * @author liuyunfei
  * @date 2021/12/10

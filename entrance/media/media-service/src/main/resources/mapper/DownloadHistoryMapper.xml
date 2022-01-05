@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.media.repository.mapper.DownloadHistoryMapper">
+    <resultMap id="BaseResultMap" type="com.blue.media.repository.entity.DownloadHistory">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="attachment_id" jdbcType="BIGINT" property="attachmentId"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="creator" jdbcType="BIGINT" property="creator"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , attachment_id, create_time, creator
+    </sql>
+
+    <insert id="insert" parameterType="com.blue.media.repository.entity.DownloadHistory">
+        insert into download_history (id, attachment_id, create_time,
+                                      creator)
+        values (#{id,jdbcType=BIGINT}, #{attachmentId,jdbcType=BIGINT}, #{createTime,jdbcType=BIGINT},
+                #{creator,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.media.repository.entity.DownloadHistory">
+        insert into download_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="attachmentId != null">
+                attachment_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="attachmentId != null">
+                #{attachmentId,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.media.repository.entity.DownloadHistory">
+        update download_history
+        set attachment_id = #{attachmentId,jdbcType=BIGINT},
+            create_time   = #{createTime,jdbcType=BIGINT},
+            creator       = #{creator,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.media.repository.entity.DownloadHistory">
+        update download_history
+        <set>
+            <if test="attachmentId != null">
+                attachment_id = #{attachmentId,jdbcType=BIGINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from download_history
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from download_history
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+</mapper>
