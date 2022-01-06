@@ -205,7 +205,7 @@ blocking:
 producers:
   configs:
     signExpire:
-      services: [ 192.168.203.61:6650 ]
+      services: [ 192.168.0.119:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -258,7 +258,7 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     marketing:
-      services: [ 192.168.203.61:6650 ]
+      services: [ 192.168.0.119:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -315,7 +315,7 @@ producers:
 consumers:
   configs:
     signExpire:
-      services: [ 192.168.203.61:6650 ]
+      services: [ 192.168.0.119:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -388,7 +388,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     marketing:
-      services: [ 192.168.203.61:6650 ]
+      services: [ 192.168.0.119:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
