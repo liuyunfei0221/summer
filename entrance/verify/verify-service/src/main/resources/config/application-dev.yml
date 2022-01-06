@@ -230,7 +230,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -287,7 +287,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -379,7 +379,7 @@ image:
   textProducerCharLength: 5
   textProducerFontNames: Arial,Courier
   textProducerFontSize: 40
-  textProducerFontColor: white
+  textProducerFontColor: cyan
   textProducerCharSpace: 2
   noiseImpl: com.google.code.kaptcha.impl.DefaultNoise
   noiseColor: cyan

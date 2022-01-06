@@ -2,7 +2,7 @@ package com.blue.media.handler.manager;
 
 import com.blue.base.model.base.BlueResponse;
 import com.blue.mail.common.MailSender;
-import org.simplejavamail.api.email.Email;
+import org.simplejavamail.api.email.EmailPopulatingBuilder;
 import org.simplejavamail.email.EmailBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.ResponseElement.OK;
+import static com.blue.base.constant.media.MailHeader.LIST_UNSUBSCRIBE;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -54,14 +55,16 @@ public class MailManagerHandler {
      * @return
      */
     public Mono<ServerResponse> testMail(ServerRequest serverRequest) {
-        Email email = EmailBuilder.startingBlank()
+        EmailPopulatingBuilder builder = EmailBuilder.startingBlank()
                 .from(FROM)
                 .toMultiple(RECEIVERS)
+                .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
                 .withSubject("hello world")
-                .withPlainText("Please view this email in a modern email client!")
-                .buildEmail();
+                .withPlainText("Please view this email in a modern email client!");
 
-        CompletableFuture<Void> future = mailSender.sendMail(email)
+        mailSender.signWithDomainKey(builder);
+
+        CompletableFuture<Void> future = mailSender.sendMail(builder.buildEmail())
                 .thenAcceptAsync(v -> System.err.println("SEND SUCCESS!!!"))
                 .exceptionally(t -> {
                     LOGGER.error("SEND FAILED!!!");

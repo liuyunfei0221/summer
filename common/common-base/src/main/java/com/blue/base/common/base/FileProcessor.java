@@ -1,11 +1,13 @@
 package com.blue.base.common.base;
 
+import com.blue.base.model.exps.BlueException;
 import reactor.util.Logger;
 
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.util.ResourceUtils.getURL;
@@ -60,11 +62,26 @@ public final class FileProcessor {
         try {
             file = new File(getURL(uri).getPath());
         } catch (Exception e) {
-            LOGGER.error("List<File> getFiles(String pathDir) failed, e = {0}", e);
+            LOGGER.error("List<File> getFiles(String pathDir) failed, uri = {}, recursive = {}, e = {0}", uri, recursive, e);
             return emptyList();
         }
 
         return listFile(new LinkedList<>(), file, recursive);
+    }
+
+    /**
+     * find file by uri
+     *
+     * @param uri
+     * @return
+     */
+    public static File getFile(String uri) {
+        try {
+            return new File(getURL(uri).getPath());
+        } catch (Exception e) {
+            LOGGER.error("File getFile(String uri) failed, uri = {}, e = {0}", uri, e);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "load file error");
+        }
     }
 
 }

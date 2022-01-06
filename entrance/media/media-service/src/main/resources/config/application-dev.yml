@@ -218,8 +218,8 @@ encrypt:
 mail:
   smtpServerHost: outlook.office365.com
   smtpServerPort: 587
-  smtpUsername: liu
-  smtpPassword: liu
+  smtpUsername: yunfei
+  smtpPassword: liuyunfei
   corePoolSize: 2
   maximumPoolSize: 8
   keepAliveSeconds: 64
@@ -233,10 +233,10 @@ mail:
   connectionPoolLoadBalancingStrategy: ROUND_ROBIN
   transportStrategy: SMTP
   withDKIM: false
-  domainKeyFile:
-  domain:
-  selector:
-  debugLogging:
+  domainKeyFile: classpath:dkim/summer.private
+  domain: summer.com
+  selector: summer
+  debugLogging: true
   props:
     mail.smtp.ssl: true
     mail.smtp.starttls.enable: true
@@ -277,7 +277,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -334,7 +334,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.182.131:6650 ]
+      services: [ 192.168.203.61:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

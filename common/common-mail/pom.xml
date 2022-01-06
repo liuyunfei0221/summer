@@ -39,6 +39,11 @@
             <version>${simple-mail.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.simplejavamail</groupId>
+            <artifactId>dkim-module</artifactId>
+            <version>${simple-mail.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
             <exclusions>

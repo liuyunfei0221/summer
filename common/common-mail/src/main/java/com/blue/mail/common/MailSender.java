@@ -1,5 +1,6 @@
 package com.blue.mail.common;
 
+import com.blue.base.common.base.FileProcessor;
 import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailConf;
 import org.simplejavamail.api.email.Email;
@@ -9,7 +10,10 @@ import org.simplejavamail.mailer.MailerBuilder;
 import org.simplejavamail.mailer.internal.MailerRegularBuilderImpl;
 import reactor.util.Logger;
 
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.Base64;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -107,17 +111,11 @@ public final class MailSender {
         this.MAILER = builder.buildMailer();
 
         this.withDKIM = ofNullable(conf.getWithDKIM()).orElse(false);
-
-        if (this.withDKIM)
-            try (InputStream inputStream = ClassLoader.getSystemResourceAsStream(conf.getDomainKeyFile())) {
-                if (inputStream == null)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "domain key media is empty");
-                this.domainKey = inputStream.readAllBytes();
-                this.domain = conf.getDomain();
-                this.selector = conf.getSelector();
-            } catch (Exception e) {
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "load domain key media error");
-            }
+        if (this.withDKIM) {
+            this.domainKey = getDomainKey(conf.getDomainKeyFile());
+            this.domain = conf.getDomain();
+            this.selector = conf.getSelector();
+        }
     }
 
     /**
@@ -158,10 +156,10 @@ public final class MailSender {
         if (blockingQueueCapacity == null || blockingQueueCapacity < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "blockingQueueCapacity can't be null or less than 1");
 
-        Boolean withDKIM = conf.getWithDKIM();
-        if (withDKIM != null && withDKIM) {
+        Boolean withDKIM = ofNullable(conf.getWithDKIM()).orElse(false);
+        if (withDKIM) {
             if (isBlank(conf.getDomainKeyFile()))
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "domain key media path can't be blank");
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "domain key file path can't be blank");
 
             if (isBlank(conf.getDomain()))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "domain can't be blank");
@@ -190,6 +188,54 @@ public final class MailSender {
     public CompletableFuture<Void> sendMail(Email email) {
         LOGGER.info("CompletableFuture<Void> sendMail(Email email), email = {}", email);
         return MAILER.sendMail(email, true);
+    }
+
+    private static final String PRI_KEY_BEGIN = "-----BEGIN RSA PRIVATE KEY-----";
+    private static final String PRI_KEY_END = "-----END RSA PRIVATE KEY-----";
+
+    private static final byte[] PREFIX = {0x30, (byte) 0x82, 0, 0, 2, 1, 0,
+            0x30, 0x0d, 6, 9, 0x2a, (byte) 0x86, 0x48, (byte) 0x86, (byte) 0xf7, 0x0d, 1, 1, 1, 5, 0,
+            4, (byte) 0x82, 0, 0};
+
+    public byte[] getDomainKey(String uri) {
+        File priKeyFile = FileProcessor.getFile(uri);
+
+        try (FileReader fr = new FileReader(priKeyFile);
+             BufferedReader br = new BufferedReader(fr)) {
+
+            String line;
+            StringBuilder sb = null;
+            while ((line = br.readLine()) != null)
+                if (line.equals(PRI_KEY_BEGIN))
+                    sb = new StringBuilder();
+                else if (line.equals(PRI_KEY_END))
+                    break;
+                else if (sb != null) sb.append(line);
+
+            if (sb == null || line == null)
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "rsa private key is invalid");
+
+            byte[] rsaBytes = Base64.getDecoder().decode(sb.toString());
+
+            byte[] derBytes = new byte[PREFIX.length + rsaBytes.length];
+
+            System.arraycopy(PREFIX, 0, derBytes, 0, PREFIX.length);
+            System.arraycopy(rsaBytes, 0, derBytes, PREFIX.length, rsaBytes.length);
+
+            int len = rsaBytes.length, loc = PREFIX.length - 2;
+
+            derBytes[loc] = (byte) (len >> 8);
+            derBytes[loc + 1] = (byte) len;
+            len = derBytes.length - 4;
+            loc = 2;
+            derBytes[loc] = (byte) (len >> 8);
+            derBytes[loc + 1] = (byte) len;
+
+            return derBytes;
+        } catch (Exception e) {
+            LOGGER.error("get domain key failed， e = {]", e);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "get domain key failed");
+        }
     }
 
 }
