@@ -344,7 +344,7 @@ dubbo:
   protocol:
     name: dubbo
     host: localhost
-    port: 54000
+    port: 56000
     accesslog: D:/locallogs/dubbo/risk/access.log
   provider:
     retries: 0

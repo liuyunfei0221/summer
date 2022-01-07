@@ -357,7 +357,7 @@ dubbo:
   protocol:
     name: dubbo
     host: localhost
-    port: 56000
+    port: 58000
     accesslog: D:/locallogs/dubbo/analyze/access.log
   provider:
     retries: 0
