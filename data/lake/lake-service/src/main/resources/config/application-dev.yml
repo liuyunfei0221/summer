@@ -1,6 +1,6 @@
 server:
   #  address: 172.30.128.25
-  port: 55000
+  port: 53000
   netty:
     connection-timeout: 6s
     h2c-max-content-length: 0B
@@ -111,7 +111,7 @@ data:
 identity:
   dataCenter: 0
   worker: 0
-  serviceName: blue-risk
+  serviceName: blue-lake
   bootSeconds: 1618790400
   bufferPower: 3
   paddingFactor: 50
@@ -225,7 +225,7 @@ producers:
       proxyServiceUrl:
       proxyProtocol: SNI
       topic: illegalMark
-      producerName: riskIllegalMarkProducer000
+      producerName: lakeIllegalMarkProducer000
       accessMode: Shared
       sendTimeoutMillis: 30000
       maxPendingMessages: 1000
@@ -283,7 +283,7 @@ consumers:
       proxyProtocol: SNI
       topics: [ requestEvent ]
       topicsPattern:
-      subscriptionName: riskRequestEventSubscription
+      subscriptionName: lakeRequestEventSubscription
       ackTimeoutMillis: 2000
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000
@@ -294,7 +294,7 @@ consumers:
       acknowledgementsGroupTimeMillis: 100
       replicateSubscriptionState: false
       maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: riskRequestEventSubscription
+      consumerName: lakeRequestEventSubscription
       readCompacted: false
       patternAutoDiscoveryPeriodMillis: 1
       priorityLevel: 0
@@ -332,12 +332,12 @@ dubbo:
     zone: summer
     protocol: zookeeper
     address: zookeeper://127.0.0.1:2181
-    file: D:/locallogs/dubbo/risk/registry.properties
+    file: D:/locallogs/dubbo/lake/registry.properties
     check: false
     timeout: 60000
   application:
-    id: summer-risk
-    name: summer-risk
+    id: summer-lake
+    name: summer-lake
     owner: blue
     organization: blue
     shutwait: 20s
@@ -345,7 +345,7 @@ dubbo:
     name: dubbo
     host: localhost
     port: 54000
-    accesslog: D:/locallogs/dubbo/risk/access.log
+    accesslog: D:/locallogs/dubbo/lake/access.log
   provider:
     retries: 0
     timeout: 5000
