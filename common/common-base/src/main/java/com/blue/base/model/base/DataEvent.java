@@ -1,5 +1,6 @@
 package com.blue.base.model.base;
 
+import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.constant.base.DataEventType;
 
 import java.io.Serializable;
@@ -16,6 +17,9 @@ public final class DataEvent implements Serializable {
 
     private static final long serialVersionUID = -7101856515135840564L;
 
+    private static final int ENTRIES_SIZE = BlueDataAttrKey.values().length;
+    private static final float LOAD_FACTOR = 1.0f;
+
     /**
      * event type
      */
@@ -29,7 +33,7 @@ public final class DataEvent implements Serializable {
     /**
      * data
      */
-    private Map<String, String> entries = new HashMap<>();
+    private Map<String, String> entries = new HashMap<>(ENTRIES_SIZE, LOAD_FACTOR);
 
     public DataEvent() {
     }
@@ -59,10 +63,6 @@ public final class DataEvent implements Serializable {
 
     public Map<String, String> getEntries() {
         return entries;
-    }
-
-    public void setEntries(Map<String, String> entries) {
-        this.entries = entries != null ? entries : new HashMap<>();
     }
 
     public String getData(String key) {
