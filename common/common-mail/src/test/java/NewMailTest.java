@@ -25,8 +25,8 @@ public class NewMailTest {
 
     private static final String HOST = "outlook.office365.com";
     private static final int PORT = 587;
-    private static final String USER_NAME = "yunfei0221@outlook.com";
-    private static final String PASSWORD = "Fei19890116";
+    private static final String USER_NAME = "";
+    private static final String PASSWORD = "";
 
 
     private static final MailSender MAIL_SENDER;

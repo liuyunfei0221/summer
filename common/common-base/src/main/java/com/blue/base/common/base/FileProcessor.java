@@ -14,7 +14,7 @@ import static org.springframework.util.ResourceUtils.getURL;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * media processor
+ * file processor
  *
  * @author liuyunfei
  * @date 2021/12/10

@@ -1,6 +1,5 @@
 package com.blue.database.api.generator;
 
-import com.blue.base.common.base.MathProcessor;
 import com.blue.base.model.exps.BlueException;
 import com.blue.database.api.conf.*;
 import com.blue.database.common.DatabaseShardingAlgorithm;
@@ -31,6 +30,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+import static com.blue.base.common.base.MathProcessor.assertDisorderIntegerContinuous;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.*;
 import static com.blue.identity.constant.IdentitySchema.MAX_DATA_CENTER_ID;
@@ -39,6 +39,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -140,9 +141,7 @@ public final class BlueDataAccessGenerator {
     /**
      * valid data element parts num
      */
-    private static final int VALID_DB_URL_PARTS_LEN = 4, VALID_DB_NAME_PARTS_LEN = 2;
-    private static final int DATA_BASE_NAME_PAR = 3;
-    private static final int DATA_BASE_LOGIC_NAME_PAR = 0, DATA_BASE_INDEX_PAR = 1;
+    private static final int MIN_VALID_DB_URL_PARTS_LEN = 4;
     //</editor-fold>
 
     /**
@@ -208,12 +207,13 @@ public final class BlueDataAccessGenerator {
         List<Integer> assertIndexList = new ArrayList<>(shardingSize);
 
         Set<String> existDatabases = new HashSet<>(totalSize);
-        String logicDataBaseName = null;
-        String[] urlParts, dataBaseNameParts;
-        String url, dataBaseName, tempLogicDataBaseName, dataBaseIndexStr;
 
-        int dataBaseIndex;
+        String[] urlParts;
+        String url, dataBaseName, tempLogicDataBaseName, dataBaseIndexStr;
+        int dataBaseNameLen, nameAndIndexConcatenationIdx, dataBaseIndex;
+        String logicDataBaseName = null;
         DataSource dataSource;
+
         for (ShardingDatabaseAttr shardingDatabase : shardingDatabases) {
             if (shardingDatabase == null)
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingDatabase can't be null");
@@ -221,22 +221,24 @@ public final class BlueDataAccessGenerator {
             if (isBlank(url = shardingDatabase.getUrl()))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "url can't be blank");
 
-            if ((urlParts = url.split(PATH_SEPARATOR.identity)).length != VALID_DB_URL_PARTS_LEN)
+            if ((urlParts = url.split(PATH_SEPARATOR.identity)).length < MIN_VALID_DB_URL_PARTS_LEN)
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid url, url = " + url);
 
-            if (isBlank(dataBaseName = urlParts[DATA_BASE_NAME_PAR]))
+            if (isBlank(dataBaseName = urlParts[urlParts.length - 1]))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database name can't be blank, dataBaseName = " + dataBaseName);
 
             if (!existDatabases.add(dataBaseName))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database name dupicates, dataBaseName = " + dataBaseName);
 
-            if ((dataBaseNameParts = dataBaseName.split(PAR_CONCATENATION.identity)).length != VALID_DB_NAME_PARTS_LEN)
+            dataBaseNameLen = dataBaseName.length();
+            nameAndIndexConcatenationIdx = lastIndexOf(dataBaseName, PAR_CONCATENATION.identity);
+            if (nameAndIndexConcatenationIdx < 0 || nameAndIndexConcatenationIdx == dataBaseNameLen)
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database name must consist of logical name and index number, for example -> member_0");
 
-            if (isBlank(tempLogicDataBaseName = dataBaseNameParts[DATA_BASE_LOGIC_NAME_PAR]))
+            if (isBlank(tempLogicDataBaseName = dataBaseName.substring(0, nameAndIndexConcatenationIdx)))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database logical name can't be blank, for example -> member_0");
 
-            if (isBlank(dataBaseIndexStr = dataBaseNameParts[DATA_BASE_INDEX_PAR]))
+            if (isBlank(dataBaseIndexStr = dataBaseName.substring(nameAndIndexConcatenationIdx + 1, dataBaseNameLen)))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database index number can't be null, for example -> member_0");
 
             try {
@@ -269,7 +271,7 @@ public final class BlueDataAccessGenerator {
         if (0 != assertIndexList.stream().min(Integer::compare).orElse(-1))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "db index number must start at 0");
 
-        if (!MathProcessor.assertDisorderIntegerContinuous(assertIndexList))
+        if (!assertDisorderIntegerContinuous(assertIndexList))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "The database index set should be a continuous number starting from 0");
         //</editor-fold>
 
@@ -369,10 +371,10 @@ public final class BlueDataAccessGenerator {
                 if (isBlank(url = single.getUrl()))
                     throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "url can't be blank");
 
-                if ((urlParts = url.split(PATH_SEPARATOR.identity)).length != VALID_DB_URL_PARTS_LEN)
+                if ((urlParts = url.split(PATH_SEPARATOR.identity)).length < MIN_VALID_DB_URL_PARTS_LEN)
                     throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid url, url = " + url);
 
-                if (isBlank(dataBaseName = urlParts[DATA_BASE_NAME_PAR]))
+                if (isBlank(dataBaseName = urlParts[urlParts.length - 1]))
                     throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database name can't be blank, dataBaseName = " + dataBaseName);
 
                 if (!existDatabases.add(dataBaseName))

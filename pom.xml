@@ -31,6 +31,7 @@
         <spring-cloud.version>2021.0.0</spring-cloud.version>
         <aspectj.version>1.9.7</aspectj.version>
         <mysql-connector-java.version>8.0.27</mysql-connector-java.version>
+        <clickhouse-java.version>0.3.2</clickhouse-java.version>
         <hikari-cp.version>5.0.0</hikari-cp.version>
         <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
         <spring-dubbo.version>3.0.5</spring-dubbo.version>

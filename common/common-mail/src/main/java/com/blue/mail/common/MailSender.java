@@ -1,6 +1,5 @@
 package com.blue.mail.common;
 
-import com.blue.base.common.base.FileProcessor;
 import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailConf;
 import org.simplejavamail.api.email.Email;
@@ -20,6 +19,7 @@ import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.blue.base.common.base.Asserter.isBlank;
+import static com.blue.base.common.base.FileProcessor.getFile;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.util.Optional.ofNullable;
@@ -119,6 +119,75 @@ public final class MailSender {
     }
 
     /**
+     * DKIM
+     *
+     * @param emailPopulatingBuilder
+     */
+    public void signWithDomainKey(EmailPopulatingBuilder emailPopulatingBuilder) {
+        if (withDKIM)
+            emailPopulatingBuilder.signWithDomainKey(domainKey, domain, selector);
+    }
+
+    /**
+     * send mail
+     *
+     * @param email
+     * @return
+     */
+    public CompletableFuture<Void> sendMail(Email email) {
+        LOGGER.info("CompletableFuture<Void> sendMail(Email email), email = {}", email);
+        return MAILER.sendMail(email, true);
+    }
+
+    private static final String PRI_KEY_BEGIN = "-----BEGIN RSA PRIVATE KEY-----";
+    private static final String PRI_KEY_END = "-----END RSA PRIVATE KEY-----";
+
+    private static final byte[] PREFIX = {0x30, (byte) 0x82, 0, 0, 2, 1, 0,
+            0x30, 0x0d, 6, 9, 0x2a, (byte) 0x86, 0x48, (byte) 0x86, (byte) 0xf7, 0x0d, 1, 1, 1, 5, 0,
+            4, (byte) 0x82, 0, 0};
+
+    public byte[] getDomainKey(String uri) {
+        File priKeyFile = getFile(uri);
+
+        try (FileReader fr = new FileReader(priKeyFile);
+             BufferedReader br = new BufferedReader(fr)) {
+
+            String line;
+            StringBuilder sb = null;
+            while ((line = br.readLine()) != null)
+                if (line.equals(PRI_KEY_BEGIN))
+                    sb = new StringBuilder();
+                else if (line.equals(PRI_KEY_END))
+                    break;
+                else if (sb != null) sb.append(line);
+
+            if (sb == null || line == null)
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "rsa private key is invalid");
+
+            byte[] rsaBytes = Base64.getDecoder().decode(sb.toString());
+
+            byte[] derBytes = new byte[PREFIX.length + rsaBytes.length];
+
+            System.arraycopy(PREFIX, 0, derBytes, 0, PREFIX.length);
+            System.arraycopy(rsaBytes, 0, derBytes, PREFIX.length, rsaBytes.length);
+
+            int len = rsaBytes.length, loc = PREFIX.length - 2;
+
+            derBytes[loc] = (byte) (len >> 8);
+            derBytes[loc + 1] = (byte) len;
+            len = derBytes.length - 4;
+            loc = 2;
+            derBytes[loc] = (byte) (len >> 8);
+            derBytes[loc + 1] = (byte) len;
+
+            return derBytes;
+        } catch (Exception e) {
+            LOGGER.error("get domain key failed， e = {]", e);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "get domain key failed");
+        }
+    }
+
+    /**
      * assert params
      *
      * @param conf
@@ -166,75 +235,6 @@ public final class MailSender {
 
             if (isBlank(conf.getSelector()))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "selector can't be blank");
-        }
-    }
-
-    /**
-     * DKIM
-     *
-     * @param emailPopulatingBuilder
-     */
-    public void signWithDomainKey(EmailPopulatingBuilder emailPopulatingBuilder) {
-        if (withDKIM)
-            emailPopulatingBuilder.signWithDomainKey(domainKey, domain, selector);
-    }
-
-    /**
-     * send mail
-     *
-     * @param email
-     * @return
-     */
-    public CompletableFuture<Void> sendMail(Email email) {
-        LOGGER.info("CompletableFuture<Void> sendMail(Email email), email = {}", email);
-        return MAILER.sendMail(email, true);
-    }
-
-    private static final String PRI_KEY_BEGIN = "-----BEGIN RSA PRIVATE KEY-----";
-    private static final String PRI_KEY_END = "-----END RSA PRIVATE KEY-----";
-
-    private static final byte[] PREFIX = {0x30, (byte) 0x82, 0, 0, 2, 1, 0,
-            0x30, 0x0d, 6, 9, 0x2a, (byte) 0x86, 0x48, (byte) 0x86, (byte) 0xf7, 0x0d, 1, 1, 1, 5, 0,
-            4, (byte) 0x82, 0, 0};
-
-    public byte[] getDomainKey(String uri) {
-        File priKeyFile = FileProcessor.getFile(uri);
-
-        try (FileReader fr = new FileReader(priKeyFile);
-             BufferedReader br = new BufferedReader(fr)) {
-
-            String line;
-            StringBuilder sb = null;
-            while ((line = br.readLine()) != null)
-                if (line.equals(PRI_KEY_BEGIN))
-                    sb = new StringBuilder();
-                else if (line.equals(PRI_KEY_END))
-                    break;
-                else if (sb != null) sb.append(line);
-
-            if (sb == null || line == null)
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "rsa private key is invalid");
-
-            byte[] rsaBytes = Base64.getDecoder().decode(sb.toString());
-
-            byte[] derBytes = new byte[PREFIX.length + rsaBytes.length];
-
-            System.arraycopy(PREFIX, 0, derBytes, 0, PREFIX.length);
-            System.arraycopy(rsaBytes, 0, derBytes, PREFIX.length, rsaBytes.length);
-
-            int len = rsaBytes.length, loc = PREFIX.length - 2;
-
-            derBytes[loc] = (byte) (len >> 8);
-            derBytes[loc + 1] = (byte) len;
-            len = derBytes.length - 4;
-            loc = 2;
-            derBytes[loc] = (byte) (len >> 8);
-            derBytes[loc + 1] = (byte) len;
-
-            return derBytes;
-        } catch (Exception e) {
-            LOGGER.error("get domain key failed， e = {]", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "get domain key failed");
         }
     }
 

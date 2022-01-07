@@ -1,15 +1,19 @@
 package com.blue.media.handler.manager;
 
+import com.blue.base.common.base.FileProcessor;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.mail.common.MailSender;
 import org.simplejavamail.api.email.EmailPopulatingBuilder;
 import org.simplejavamail.email.EmailBuilder;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
@@ -28,7 +32,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2022/1/5
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection", "BlockingMethodInNonBlockingContext"})
 @Component
 public class MailManagerHandler {
 
@@ -55,12 +59,23 @@ public class MailManagerHandler {
      * @return
      */
     public Mono<ServerResponse> testMail(ServerRequest serverRequest) {
+
+        File file = FileProcessor.getFile("E:\\tempFile\\source\\walls\\a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg");
+
+
         EmailPopulatingBuilder builder = EmailBuilder.startingBlank()
                 .from(FROM)
                 .toMultiple(RECEIVERS)
                 .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
                 .withSubject("hello world")
-                .withPlainText("Please view this email in a modern email client!");
+                .withHTMLText("Please view this email in a modern email client!");
+
+
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            builder.withAttachment("img.jpg", fileInputStream.readAllBytes(), MediaType.IMAGE_JPEG_VALUE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         mailSender.signWithDomainKey(builder);
 
