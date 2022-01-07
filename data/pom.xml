@@ -10,22 +10,17 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>service</artifactId>
+    <artifactId>data</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>service</name>
-    <description>service</description>
+    <name>data</name>
+    <description>data</description>
 
     <packaging>pom</packaging>
 
     <modules>
-        <module>base</module>
-        <module>business</module>
-        <module>finance</module>
-        <module>marketing</module>
-        <module>member</module>
-        <module>portal</module>
-        <module>secure</module>
-        <module>shine</module>
+        <module>analyze</module>
+<!--        <module>lake</module>-->
+        <module>risk</module>
     </modules>
 
 </project>
