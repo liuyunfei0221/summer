@@ -9,8 +9,8 @@ import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
@@ -18,14 +18,18 @@ import org.springframework.transaction.interceptor.RollbackRuleAttribute;
 import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
+import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
 
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.database.api.generator.BlueDataAccessGenerator.generateTxManager;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.context.annotation.AdviceMode.PROXY;
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
 /**
@@ -35,14 +39,19 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  * @date 2021/9/10
  * @apiNote
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
-@ConditionalOnBean(value = {TransConf.class})
-@Configuration
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "DefaultAnnotationParam"})
+@EnableTransactionManagement(proxyTargetClass = true, mode = PROXY, order = LOWEST_PRECEDENCE)
 public class BlueTransactionConfiguration {
 
     private static final Logger LOGGER = getLogger(BlueTransactionConfiguration.class);
 
     @Bean
+    public TransactionManager txManager(DataSource dataSource) {
+        return generateTxManager(dataSource);
+    }
+
+    @Bean
+    @ConditionalOnBean(value = {TransConf.class})
     TransactionInterceptor txAdvice(TransactionManager txManager, TransConf transConf) {
         LOGGER.info("txAdvice(TransactionManager txManager, TransactionConf transactionConf), txManager = {}, transactionConf = {}", txManager, transConf);
         assertConf(transConf);
@@ -67,6 +76,7 @@ public class BlueTransactionConfiguration {
     }
 
     @Bean
+    @ConditionalOnBean(value = {TransConf.class})
     Advisor advisor(TransactionInterceptor txAdvice, TransConf transConf) {
         LOGGER.info("advisor(TransactionInterceptor txAdvice, TransactionConf transactionConf), txAdvice = {}, transactionConf = {}", txAdvice, transConf);
         assertConf(transConf);

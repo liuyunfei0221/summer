@@ -6,15 +6,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.TransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
 import static com.blue.database.api.generator.BlueDataAccessGenerator.*;
 import static org.apache.ibatis.session.ExecutorType.BATCH;
-import static org.springframework.context.annotation.AdviceMode.PROXY;
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
 
 /**
@@ -22,9 +18,7 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"DefaultAnnotationParam"})
 @Configuration
-@EnableTransactionManagement(proxyTargetClass = true, mode = PROXY, order = LOWEST_PRECEDENCE)
 public class BlueDataAccessConfiguration {
 
     private final DataAccessConf dataAccessConf;
@@ -39,11 +33,6 @@ public class BlueDataAccessConfiguration {
     @Bean
     public DataSource dataSource() {
         return generateDataSource(dataAccessConf, identityConf);
-    }
-
-    @Bean
-    public TransactionManager txManager(DataSource dataSource) {
-        return generateTxManager(dataSource);
     }
 
     @Bean
