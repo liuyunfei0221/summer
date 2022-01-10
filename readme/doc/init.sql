@@ -2787,3 +2787,10 @@ CREATE TABLE `dict`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_type_name_value`(`dict_type_id`,`name`,`value` ) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dict';
+
+
+
+
+
+-- data
+

@@ -67,9 +67,11 @@ public class MailManagerHandler {
                 .from(FROM)
                 .toMultiple(RECEIVERS)
                 .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
-                .withSubject("hello world")
-                .withHTMLText("Please view this email in a modern email client!");
+                .withSubject("hello world");
 
+        mailSender.signWithDomainKey(builder);
+
+        builder.withHTMLText("Please view this email in a modern email client!");
 
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
             builder.withAttachment("img.jpg", fileInputStream.readAllBytes(), MediaType.IMAGE_JPEG_VALUE);
@@ -77,12 +79,11 @@ public class MailManagerHandler {
             e.printStackTrace();
         }
 
-        mailSender.signWithDomainKey(builder);
-
         CompletableFuture<Void> future = mailSender.sendMail(builder.buildEmail())
                 .thenAcceptAsync(v -> System.err.println("SEND SUCCESS!!!"))
                 .exceptionally(t -> {
                     LOGGER.error("SEND FAILED!!!");
+                    LOGGER.error("t = {}", t);
                     return null;
                 });
 

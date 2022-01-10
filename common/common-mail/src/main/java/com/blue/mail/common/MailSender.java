@@ -34,7 +34,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2022/1/4
  * @apiNote
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "AlibabaLowerCamelCaseVariableNaming", "DuplicatedCode", "unused"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "AlibabaLowerCamelCaseVariableNaming", "DuplicatedCode"})
 public final class MailSender {
 
     private static final Logger LOGGER = getLogger(MailSender.class);
@@ -139,12 +139,8 @@ public final class MailSender {
         return MAILER.sendMail(email, true);
     }
 
-    private static final String PRI_KEY_BEGIN = "-----BEGIN RSA PRIVATE KEY-----";
-    private static final String PRI_KEY_END = "-----END RSA PRIVATE KEY-----";
-
-    private static final byte[] PREFIX = {0x30, (byte) 0x82, 0, 0, 2, 1, 0,
-            0x30, 0x0d, 6, 9, 0x2a, (byte) 0x86, 0x48, (byte) 0x86, (byte) 0xf7, 0x0d, 1, 1, 1, 5, 0,
-            4, (byte) 0x82, 0, 0};
+    private static final String PRI_KEY_BEGIN = "-----BEGIN PRIVATE KEY-----";
+    private static final String PRI_KEY_END = "-----END PRIVATE KEY-----";
 
     public byte[] getDomainKey(String uri) {
         File priKeyFile = getFile(uri);
@@ -164,23 +160,7 @@ public final class MailSender {
             if (sb == null || line == null)
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "rsa private key is invalid");
 
-            byte[] rsaBytes = Base64.getDecoder().decode(sb.toString());
-
-            byte[] derBytes = new byte[PREFIX.length + rsaBytes.length];
-
-            System.arraycopy(PREFIX, 0, derBytes, 0, PREFIX.length);
-            System.arraycopy(rsaBytes, 0, derBytes, PREFIX.length, rsaBytes.length);
-
-            int len = rsaBytes.length, loc = PREFIX.length - 2;
-
-            derBytes[loc] = (byte) (len >> 8);
-            derBytes[loc + 1] = (byte) len;
-            len = derBytes.length - 4;
-            loc = 2;
-            derBytes[loc] = (byte) (len >> 8);
-            derBytes[loc + 1] = (byte) len;
-
-            return derBytes;
+            return Base64.getDecoder().decode(sb.toString());
         } catch (Exception e) {
             LOGGER.error("get domain key failed， e = {]", e);
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "get domain key failed");
