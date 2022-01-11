@@ -9,6 +9,7 @@ import com.blue.media.component.RequestEventReporter;
 import com.blue.media.config.deploy.ErrorReportDeploy;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -18,10 +19,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -32,7 +30,6 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
-import static com.blue.media.common.MediaCommonFunctions.MESSAGE_READERS;
 import static com.blue.media.common.MediaCommonFunctions.extractValuesToBind;
 import static com.blue.media.config.filter.BlueFilterOrder.BLUE_ERROR_REPORT;
 import static java.lang.String.valueOf;
@@ -54,11 +51,14 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
 
     private static final Logger LOGGER = getLogger(BlueErrorReportFilter.class);
 
+    private final List<HttpMessageReader<?>> httpMessageReaders;
+
     private final ExecutorService executorService;
 
     private final RequestEventReporter requestEventReporter;
 
-    public BlueErrorReportFilter(ExecutorService executorService, RequestEventReporter requestEventReporter, ErrorReportDeploy errorReportDeploy) {
+    public BlueErrorReportFilter(List<HttpMessageReader<?>> httpMessageReaders, ExecutorService executorService, RequestEventReporter requestEventReporter, ErrorReportDeploy errorReportDeploy) {
+        this.httpMessageReaders = httpMessageReaders;
         this.executorService = executorService;
         this.requestEventReporter = requestEventReporter;
         withRequestBodyContentTypes = new HashSet<>(errorReportDeploy.getErrorReportWithRequestBodyContentTypes());
@@ -169,7 +169,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
     }
 
 
-    protected static class JsonRequestBodyGetter implements RequestBodyGetter {
+    protected class JsonRequestBodyGetter implements RequestBodyGetter {
         @Override
         public String getContentType() {
             return APPLICATION_JSON_VALUE;
@@ -177,7 +177,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
 
         @Override
         public Mono<String> processor(ServerWebExchange exchange) {
-            return ServerRequest.create(exchange, MESSAGE_READERS)
+            return ServerRequest.create(exchange, httpMessageReaders)
                     .bodyToMono(String.class)
                     .switchIfEmpty(
                             just(""));

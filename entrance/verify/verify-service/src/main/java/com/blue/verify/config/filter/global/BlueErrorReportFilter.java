@@ -5,6 +5,7 @@ import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.base.ExceptionResponse;
 import com.blue.verify.component.RequestEventReporter;
 import org.springframework.core.Ordered;
+import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -14,6 +15,7 @@ import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
@@ -22,7 +24,6 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLan
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
-import static com.blue.verify.common.VerifyCommonFactory.MESSAGE_READERS;
 import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_ERROR_REPORT;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
@@ -41,11 +42,14 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
 
     private static final Logger LOGGER = getLogger(BlueErrorReportFilter.class);
 
+    private final List<HttpMessageReader<?>> httpMessageReaders;
+
     private final ExecutorService executorService;
 
     private final RequestEventReporter requestEventReporter;
 
-    public BlueErrorReportFilter(ExecutorService executorService, RequestEventReporter requestEventReporter) {
+    public BlueErrorReportFilter(List<HttpMessageReader<?>> httpMessageReaders, ExecutorService executorService, RequestEventReporter requestEventReporter) {
+        this.httpMessageReaders = httpMessageReaders;
         this.executorService = executorService;
         this.requestEventReporter = requestEventReporter;
     }
@@ -105,7 +109,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
 
         return chain.filter(exchange)
                 .onErrorResume(throwable ->
-                        ServerRequest.create(exchange, MESSAGE_READERS)
+                        ServerRequest.create(exchange, httpMessageReaders)
                                 .bodyToMono(String.class)
                                 .switchIfEmpty(
                                         just(""))

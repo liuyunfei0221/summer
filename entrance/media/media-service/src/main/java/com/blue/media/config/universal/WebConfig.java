@@ -4,11 +4,15 @@ import com.blue.media.config.deploy.RequestAttributeDeploy;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.multipart.DefaultPartHttpMessageReader;
 import org.springframework.http.codec.multipart.MultipartHttpMessageReader;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.reactive.function.server.HandlerStrategies;
+
+import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static reactor.core.scheduler.Schedulers.single;
@@ -54,6 +58,14 @@ public class WebConfig implements WebFluxConfigurer {
         configurer.defaultCodecs().maxInMemorySize(requestAttributeDeploy.getMaxInMemorySize());
 
         WebFluxConfigurer.super.configureHttpMessageCodecs(configurer);
+    }
+
+    @Bean
+    List<HttpMessageReader<?>> httpMessageReaders() {
+        return HandlerStrategies.builder()
+                .codecs(serverCodecConfigurer ->
+                        serverCodecConfigurer.defaultCodecs().maxInMemorySize(requestAttributeDeploy.getMaxInMemorySize()))
+                .build().messageReaders();
     }
 
 }

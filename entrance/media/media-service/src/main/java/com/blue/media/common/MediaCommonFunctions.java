@@ -6,7 +6,6 @@ import com.blue.media.common.request.part.common.PartInfoProcessor;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.NettyDataBufferFactory;
-import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
@@ -28,7 +27,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.core.io.buffer.DataBufferUtils.release;
-import static org.springframework.web.reactive.function.server.HandlerStrategies.withDefaults;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -41,8 +39,6 @@ import static reactor.util.Loggers.getLogger;
 public final class MediaCommonFunctions extends ReactiveCommonFunctions {
 
     private static final Logger LOGGER = getLogger(MediaCommonFunctions.class);
-
-    public static final List<HttpMessageReader<?>> MESSAGE_READERS = withDefaults().messageReaders();
 
     public static final DataBufferFactory DATA_BUFFER_FACTORY = new NettyDataBufferFactory(DEFAULT);
 
@@ -61,8 +57,10 @@ public final class MediaCommonFunctions extends ReactiveCommonFunctions {
                         release(dataBuffer);
                     }
                     return empty();
-                }).doFinally(signalType ->
-                        error(throwable));
+                }).doFinally(signalType -> {
+                    LOGGER.info("signalType = {}", signalType.toString());
+                    LOGGER.error("throwable = {}", throwable);
+                }).subscribe();
 
         LOGGER.info("throwable = {}", throwable);
         if (throwable instanceof BlueException)
@@ -80,6 +78,7 @@ public final class MediaCommonFunctions extends ReactiveCommonFunctions {
                         @SuppressWarnings("NullableProblems")
                         @Override
                         public Flux<DataBuffer> getBody() {
+                            //noinspection CallingSubscribeInNonBlockingScope
                             return Flux.create(fluxSink ->
                                     dataMono
                                             .onErrorStop()

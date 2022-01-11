@@ -12,6 +12,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -28,6 +29,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -58,11 +60,14 @@ import static reactor.core.publisher.Mono.just;
 @Component
 public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Ordered {
 
+    private final List<HttpMessageReader<?>> httpMessageReaders;
+
     private final RequestBodyProcessor requestBodyProcessor;
 
     private final RequestEventReporter requestEventReporter;
 
-    public BlueBodyProcessAndDataReportFilter(RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter, EncryptDeploy encryptDeploy) {
+    public BlueBodyProcessAndDataReportFilter(List<HttpMessageReader<?>> httpMessageReaders, RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter, EncryptDeploy encryptDeploy) {
+        this.httpMessageReaders = httpMessageReaders;
         this.requestBodyProcessor = requestBodyProcessor;
         this.requestEventReporter = requestEventReporter;
 
@@ -113,7 +118,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
     private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, ServerHttpResponse response, HttpStatus httpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         return ClientResponse
-                .create(httpStatus)
+                .create(httpStatus, httpMessageReaders)
                 .headers(hs ->
                         hs.putAll(response.getHeaders()))
                 .body(Flux.from(body)).build()
@@ -214,7 +219,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
         @Override
         public Mono<Void> processor(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
-            return ServerRequest.create(exchange, MESSAGE_READERS)
+            return ServerRequest.create(exchange, httpMessageReaders)
                     .bodyToMono(String.class)
                     .switchIfEmpty(
                             just(""))

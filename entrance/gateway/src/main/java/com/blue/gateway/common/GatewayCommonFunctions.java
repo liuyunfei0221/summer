@@ -5,19 +5,15 @@ import com.blue.base.model.exps.BlueException;
 import org.springframework.cloud.gateway.filter.factory.rewrite.CachedBodyOutputMessage;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import reactor.core.publisher.Flux;
 import reactor.util.Logger;
 
-import java.util.List;
 import java.util.function.BiConsumer;
 
 import static org.springframework.core.io.buffer.DataBufferUtils.release;
-import static org.springframework.web.reactive.function.server.HandlerStrategies.withDefaults;
 import static reactor.core.publisher.Mono.empty;
-import static reactor.core.publisher.Mono.error;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -29,8 +25,6 @@ import static reactor.util.Loggers.getLogger;
 public final class GatewayCommonFunctions extends ReactiveCommonFunctions {
 
     private static final Logger LOGGER = getLogger(GatewayCommonFunctions.class);
-
-    public static final List<HttpMessageReader<?>> MESSAGE_READERS = withDefaults().messageReaders();
 
     /**
      * error message consumer
@@ -44,7 +38,7 @@ public final class GatewayCommonFunctions extends ReactiveCommonFunctions {
                 })
                 .doFinally(signalType -> {
                     LOGGER.info("signalType = {}", signalType.toString());
-                    error(throwable);
+                    LOGGER.error("throwable = {}", throwable);
                 }).subscribe();
 
         LOGGER.info("throwable = {}", throwable);
