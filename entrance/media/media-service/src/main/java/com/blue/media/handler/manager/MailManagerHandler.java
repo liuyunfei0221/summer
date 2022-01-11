@@ -64,10 +64,12 @@ public class MailManagerHandler {
 
 
         EmailPopulatingBuilder builder = EmailBuilder.startingBlank()
-                .from(FROM)
-                .toMultiple(RECEIVERS)
+                .from("blue", FROM)
+                .toWithFixedName("darkBlue", RECEIVERS)
+//                .toMultiple(RECEIVERS)
                 .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
                 .withSubject("hello world");
+
 
         mailSender.signWithDomainKey(builder);
 

@@ -32,6 +32,15 @@ public final class ConstantProcessor {
     //<editor-fold desc="constant mappings">
 
     /**
+     * boolean
+     */
+    private static final Map<Integer, BlueBoolean> BOOL_STATUS_MAPPING =
+            of(BlueBoolean.values()).collect(toMap(b -> b.status, b -> b, (a, b) -> a));
+
+    private static final Map<Boolean, BlueBoolean> STATUS_BOOL_MAPPING =
+            of(BlueBoolean.values()).collect(toMap(b -> b.bool, b -> b, (a, b) -> a));
+
+    /**
      * http response status and response element mapping
      */
     private static final Map<Integer, ResponseElement> RESPONSE_ELEMENT_MAPPING =
@@ -117,6 +126,19 @@ public final class ConstantProcessor {
     //</editor-fold>
 
     //<editor-fold desc="asserter">
+
+    /**
+     * assert bool status
+     *
+     * @param status
+     */
+    public static void assertBoolStatus(Integer status, boolean nullable) {
+        if (nullable && status == null)
+            return;
+
+        if (!BOOL_STATUS_MAPPING.containsKey(status))
+            throw new BlueException(INVALID_IDENTITY);
+    }
 
     /**
      * assert resource type
@@ -291,6 +313,40 @@ public final class ConstantProcessor {
     //</editor-fold>
 
     //<editor-fold desc="getter">
+
+    /**
+     * get bool by int status
+     *
+     * @param status
+     * @return
+     */
+    public static BlueBoolean getBoolByStatus(Integer status) {
+        if (status == null)
+            throw new BlueException(INVALID_IDENTITY);
+
+        BlueBoolean blueBoolean = BOOL_STATUS_MAPPING.get(status);
+        if (blueBoolean == null)
+            throw new BlueException(INVALID_IDENTITY);
+
+        return blueBoolean;
+    }
+
+    /**
+     * get bool by int bool
+     *
+     * @param bool
+     * @return
+     */
+    public static BlueBoolean getBoolByBool(Boolean bool) {
+        if (bool == null)
+            throw new BlueException(INVALID_IDENTITY);
+
+        BlueBoolean blueBoolean = STATUS_BOOL_MAPPING.get(bool);
+        if (blueBoolean == null)
+            throw new BlueException(INVALID_IDENTITY);
+
+        return blueBoolean;
+    }
 
     /**
      * get element by http status

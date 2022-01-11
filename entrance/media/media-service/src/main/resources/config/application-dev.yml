@@ -99,7 +99,7 @@ data:
 
     - id: 1
       index: 1
-  shardingBroadcastTables: [ ]
+  broadcastTables: [ ]
   singleDatabasesWithTables:
   cacheEnabled: false
   lazyLoadingEnabled: false
@@ -232,7 +232,7 @@ mail:
   sessionTimeout: 6000
   connectionPoolLoadBalancingStrategy: ROUND_ROBIN
   transportStrategy: SMTP
-  withDKIM: true
+  withDKIM: false
   domainKeyFile: classpath:dkim/selector1.pem
   domain: outlook.com
   selector: selector1

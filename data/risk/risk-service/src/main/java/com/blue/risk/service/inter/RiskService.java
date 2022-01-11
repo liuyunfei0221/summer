@@ -2,6 +2,7 @@ package com.blue.risk.service.inter;
 
 
 import com.blue.base.model.base.DataEvent;
+import reactor.core.publisher.Mono;
 
 /**
  * risk analyse service
@@ -15,7 +16,8 @@ public interface RiskService {
      * analyze event
      *
      * @param dataEvent
+     * @return
      */
-    void analyzeEvent(DataEvent dataEvent);
+    Mono<Void> analyzeEvent(DataEvent dataEvent);
 
 }

@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import static com.blue.base.common.base.Asserter.isEmpty;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toList;
+import static reactor.core.publisher.Mono.fromRunnable;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -67,11 +69,12 @@ public class RiskServiceImpl implements RiskService, ApplicationListener<Context
      * analyze event
      *
      * @param dataEvent
+     * @return
      */
     @Override
-    public void analyzeEvent(DataEvent dataEvent) {
+    public Mono<Void> analyzeEvent(DataEvent dataEvent) {
         LOGGER.info(" void analyzeEvent(DataEvent dataEvent), dataEvent = {}", dataEvent);
-        EVENT_HANDLER.accept(dataEvent);
+        return fromRunnable(() -> EVENT_HANDLER.accept(dataEvent)).then();
     }
 
 }

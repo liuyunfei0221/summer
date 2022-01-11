@@ -43,7 +43,7 @@
         </javaClientGenerator>
 
         <!-- tables -->
-        <table tableName="credential" domainObjectName="Credential"/>
+        <table tableName="opt_event" domainObjectName="OptEvent"/>
 
     </context>
 </generatorConfiguration>

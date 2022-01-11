@@ -350,7 +350,7 @@ public final class BlueDataAccessGenerator {
         //</editor-fold>
 
         //<editor-fold desc="broadcast">
-        ofNullable(dataAccessConf.getShardingBroadcastTables())
+        ofNullable(dataAccessConf.getBroadcastTables())
                 .filter(sbts -> sbts.size() > 0)
                 .ifPresent(sbts ->
                         shardingRuleConfiguration.getBroadcastTables().addAll(

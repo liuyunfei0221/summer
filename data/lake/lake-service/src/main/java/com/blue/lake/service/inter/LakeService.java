@@ -1,6 +1,11 @@
 package com.blue.lake.service.inter;
 
 import com.blue.base.model.base.DataEvent;
+import com.blue.base.model.base.LimitModelRequest;
+import com.blue.lake.repository.entity.OptEvent;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * lake service
@@ -11,10 +16,18 @@ import com.blue.base.model.base.DataEvent;
 public interface LakeService {
 
     /**
-     * insert data
+     * insert event
      *
      * @param dataEvent
      */
-    void insertData(DataEvent dataEvent);
+    void insertEvent(DataEvent dataEvent);
+
+    /**
+     * select by limit
+     *
+     * @param limitModelRequest
+     * @return
+     */
+    Mono<List<OptEvent>> selectByLimitAndRows(LimitModelRequest<Void> limitModelRequest);
 
 }

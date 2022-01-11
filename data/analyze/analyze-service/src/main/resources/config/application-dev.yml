@@ -86,7 +86,7 @@ data:
 
     - id: 1
       index: 1
-  shardingBroadcastTables: [ ]
+  broadcastTables: [ ]
   singleDatabases:
   cacheEnabled: false
   lazyLoadingEnabled: false
@@ -289,7 +289,7 @@ consumers:
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000
       negativeAckRedeliveryDelayMillis: 100
-      subscriptionType: Failover
+      subscriptionType: Shared
       subscriptionMode: Durable
       receiverQueueSize: 1000
       acknowledgementsGroupTimeMillis: 100

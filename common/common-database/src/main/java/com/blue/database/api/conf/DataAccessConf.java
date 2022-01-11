@@ -52,11 +52,11 @@ public interface DataAccessConf {
     List<IdentityToShardingMappingAttr> getWorkerToTableMappings();
 
     /**
-     * broadcast tables in shard
+     * broadcast tables
      *
      * @return
      */
-    List<String> getShardingBroadcastTables();
+    List<String> getBroadcastTables();
 
     /**
      * db and tables for not sharding

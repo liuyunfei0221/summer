@@ -42,9 +42,9 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     protected List<IdentityToShardingMappingAttr> workerToTableMappings;
 
     /**
-     * broadcast tables in shard, now supply for seata undolog
+     * broadcast tables, now supply for seata undolog
      */
-    protected List<String> shardingBroadcastTables;
+    protected List<String> broadcastTables;
 
     /**
      * db and tables for not sharding
@@ -135,8 +135,8 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     }
 
     @Override
-    public List<String> getShardingBroadcastTables() {
-        return shardingBroadcastTables;
+    public List<String> getBroadcastTables() {
+        return broadcastTables;
     }
 
     @Override
@@ -219,8 +219,8 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
         this.workerToTableMappings = workerToTableMappings;
     }
 
-    public void setShardingBroadcastTables(List<String> shardingBroadcastTables) {
-        this.shardingBroadcastTables = shardingBroadcastTables;
+    public void setBroadcastTables(List<String> broadcastTables) {
+        this.broadcastTables = broadcastTables;
     }
 
     public void setSingleDatabasesWithTables(List<SingleDatabaseWithTablesAttr> singleDatabasesWithTables) {
@@ -279,7 +279,7 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
                 ", shardingTableSizePerDataBase=" + shardingTableSizePerDataBase +
                 ", dataCenterToDatabaseMappings=" + dataCenterToDatabaseMappings +
                 ", workerToTableMappings=" + workerToTableMappings +
-                ", shardingBroadcastTables=" + shardingBroadcastTables +
+                ", broadcastTables=" + broadcastTables +
                 ", singleDatabasesWithTables=" + singleDatabasesWithTables +
                 ", cacheEnabled=" + cacheEnabled +
                 ", lazyLoadingEnabled=" + lazyLoadingEnabled +

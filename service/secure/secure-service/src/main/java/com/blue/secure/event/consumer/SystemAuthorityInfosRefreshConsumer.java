@@ -43,7 +43,9 @@ public class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle {
                 ofNullable(nonValueParam)
                         .ifPresent(nvp -> {
                             LOGGER.info("systemAuthorityInfosRefreshDataConsumer received");
-                            controlService.refreshSystemAuthorityInfos();
+                            controlService.refreshSystemAuthorityInfos().subscribe(v ->
+                                    LOGGER.info("controlService.refreshSystemAuthorityInfos()")
+                            );
                         });
 
         this.systemAuthorityInfosRefreshConsumer = generateConsumer(blueConsumerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), systemAuthorityInfosRefreshDataConsumer);

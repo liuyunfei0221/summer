@@ -1,7 +1,6 @@
 package com.blue.lake.event.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.constant.base.BlueTopic;
 import com.blue.base.model.base.DataEvent;
 import com.blue.lake.config.blue.BlueConsumerConfig;
 import com.blue.lake.service.inter.LakeService;
@@ -11,6 +10,7 @@ import reactor.util.Logger;
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
+import static com.blue.base.constant.base.BlueTopic.REQUEST_EVENT;
 import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
@@ -42,9 +42,9 @@ public final class DataEventConsumer implements BlueLifecycle {
     private void init() {
         Consumer<DataEvent> dataEventDataConsumer = dataEvent ->
                 ofNullable(dataEvent)
-                        .ifPresent(lakeService::insertData);
+                        .ifPresent(lakeService::insertEvent);
 
-        this.dataEventConsumer = generateConsumer(blueConsumerConfig.getByKey(BlueTopic.REQUEST_EVENT.name), dataEventDataConsumer);
+        this.dataEventConsumer = generateConsumer(blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataEventDataConsumer);
     }
 
     @Override

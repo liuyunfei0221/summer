@@ -685,6 +685,14 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (24244842351558658, 'GET', 'blue-media', '/mail/test', b'0', b'1', b'1', b'0', b'1', 2,
         'test mail', 'test mail', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (24244842351558659, 'POST', 'blue-lake', '/event/list', b'0', b'1', b'1', b'1', b'1', 2,
+        'test lake event', 'test lake event', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
 -- role
 
 INSERT INTO `secure_1`.`role_1`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,
@@ -2789,8 +2797,153 @@ CREATE TABLE `dict`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dict';
 
 
-
-
-
 -- data
+
+-- lake
+
+CREATE
+DATABASE ldap_lake_0 ENGINE = Ordinary;
+
+use
+ldap_lake_0;
+
+CREATE TABLE `opt_event_0`
+(
+    `id`                      UInt64,
+    `data_event_type`         String,
+    `stamp`                   UInt64,
+    `create_date`             date,
+    `method`                  String,
+    `uri`                     String,
+    `real_uri`                String,
+    `request_body`            String,
+    `response_status`         UInt16,
+    `response_body`           String,
+    `request_id`              String,
+    `metadata`                String,
+    `jwt`                     String,
+    `access`                  String,
+    `client_ip`               String,
+    `sec_key`                 String,
+    `request_un_decryption`   UInt8,
+    `response_un_encryption`  UInt8,
+    `existence_request_body`  UInt8,
+    `existence_response_body` UInt8
+) ENGINE = MergeTree(create_date, (id), 8192);
+
+CREATE TABLE `opt_event_1`
+(
+    `id`                      UInt64,
+    `data_event_type`         String,
+    `stamp`                   UInt64,
+    `create_date`             date,
+    `method`                  String,
+    `uri`                     String,
+    `real_uri`                String,
+    `request_body`            String,
+    `response_status`         UInt16,
+    `response_body`           String,
+    `request_id`              String,
+    `metadata`                String,
+    `jwt`                     String,
+    `access`                  String,
+    `client_ip`               String,
+    `sec_key`                 String,
+    `request_un_decryption`   UInt8,
+    `response_un_encryption`  UInt8,
+    `existence_request_body`  UInt8,
+    `existence_response_body` UInt8
+) ENGINE = MergeTree(create_date, (id), 8192);
+
+
+
+CREATE
+DATABASE ldap_lake_1 ENGINE = Ordinary;
+
+use
+ldap_lake_1;
+
+CREATE TABLE `opt_event_0`
+(
+    `id`                      UInt64,
+    `data_event_type`         String,
+    `stamp`                   UInt64,
+    `create_date`             date,
+    `method`                  String,
+    `uri`                     String,
+    `real_uri`                String,
+    `request_body`            String,
+    `response_status`         UInt16,
+    `response_body`           String,
+    `request_id`              String,
+    `metadata`                String,
+    `jwt`                     String,
+    `access`                  String,
+    `client_ip`               String,
+    `sec_key`                 String,
+    `request_un_decryption`   UInt8,
+    `response_un_encryption`  UInt8,
+    `existence_request_body`  UInt8,
+    `existence_response_body` UInt8
+) ENGINE = MergeTree(create_date, (id), 8192);
+
+CREATE TABLE `opt_event_1`
+(
+    `id`                      UInt64,
+    `data_event_type`         String,
+    `stamp`                   UInt64,
+    `create_date`             date,
+    `method`                  String,
+    `uri`                     String,
+    `real_uri`                String,
+    `request_body`            String,
+    `response_status`         UInt16,
+    `response_body`           String,
+    `request_id`              String,
+    `metadata`                String,
+    `jwt`                     String,
+    `access`                  String,
+    `client_ip`               String,
+    `sec_key`                 String,
+    `request_un_decryption`   UInt8,
+    `response_un_encryption`  UInt8,
+    `existence_request_body`  UInt8,
+    `existence_response_body` UInt8
+) ENGINE = MergeTree(create_date, (id), 8192);
+
+
+
+-- risk
+
+CREATE
+DATABASE ldap_risk_0 ENGINE = Ordinary;
+
+CREATE
+DATABASE ldap_risk_1 ENGINE = Ordinary;
+
+
+
+
+
+
+
+
+-- analyze
+
+
+CREATE
+DATABASE ldap_analyze_0 ENGINE = Ordinary;
+
+CREATE
+DATABASE ldap_analyze_1 ENGINE = Ordinary;
+
+
+
+
+
+
+
+
+
+
 

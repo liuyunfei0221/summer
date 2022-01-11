@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.lake.repository.mapper.OptEventMapper">
+    <resultMap id="BaseResultMap" type="com.blue.lake.repository.entity.OptEvent">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="data_event_type" jdbcType="VARCHAR" property="dataEventType"/>
+        <result column="stamp" jdbcType="BIGINT" property="stamp"/>
+        <result column="create_date" jdbcType="VARCHAR" property="createDate"/>
+        <result column="method" jdbcType="VARCHAR" property="method"/>
+        <result column="uri" jdbcType="VARCHAR" property="uri"/>
+        <result column="real_uri" jdbcType="VARCHAR" property="realUri"/>
+        <result column="request_body" jdbcType="VARCHAR" property="requestBody"/>
+        <result column="response_status" jdbcType="INTEGER" property="responseStatus"/>
+        <result column="response_body" jdbcType="VARCHAR" property="responseBody"/>
+        <result column="request_id" jdbcType="VARCHAR" property="requestId"/>
+        <result column="metadata" jdbcType="VARCHAR" property="metadata"/>
+        <result column="jwt" jdbcType="VARCHAR" property="jwt"/>
+        <result column="access" jdbcType="VARCHAR" property="access"/>
+        <result column="client_ip" jdbcType="VARCHAR" property="clientIp"/>
+        <result column="sec_key" jdbcType="VARCHAR" property="secKey"/>
+        <result column="request_un_decryption" jdbcType="INTEGER" property="requestUnDecryption"/>
+        <result column="response_un_encryption" jdbcType="INTEGER" property="responseUnEncryption"/>
+        <result column="existence_request_body" jdbcType="INTEGER" property="existenceRequestBody"/>
+        <result column="existence_response_body" jdbcType="INTEGER" property="existenceResponseBody"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , data_event_type, stamp, create_date, method, uri, real_uri, request_body, response_status,response_body,
+    request_id, metadata, jwt, access, client_ip, sec_key, request_un_decryption, response_un_encryption, 
+    existence_request_body, existence_response_body
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from opt_event
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from opt_event
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.blue.lake.repository.entity.OptEvent">
+        insert into opt_event (id, data_event_type, stamp, create_date,
+                               method, uri, real_uri,
+                               request_body, response_status, response_body, request_id,
+                               metadata, jwt, access,
+                               client_ip, sec_key, request_un_decryption,
+                               response_un_encryption, existence_request_body,
+                               existence_response_body)
+        values (#{id,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
+                #{createDate,jdbcType=VARCHAR},
+                #{method,jdbcType=VARCHAR}, #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
+                #{requestBody,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR},
+                #{requestId,jdbcType=VARCHAR}, #{metadata,jdbcType=VARCHAR}, #{jwt,jdbcType=VARCHAR},
+                #{access,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, #{secKey,jdbcType=VARCHAR},
+                #{requestUnDecryption,jdbcType=INTEGER}, #{responseUnEncryption,jdbcType=INTEGER},
+                #{existenceRequestBody,jdbcType=INTEGER}, #{existenceResponseBody,jdbcType=INTEGER})
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        <if test="list != null and list.size > 0">
+            INSERT INTO opt_event (
+            id, data_event_type, stamp,
+            create_date, method, uri, real_uri,
+            request_body, response_status,response_body, request_id,
+            metadata, jwt, access,
+            client_ip, sec_key, request_un_decryption,
+            response_un_encryption, existence_request_body,
+            existence_response_body)
+            values
+            <foreach collection="list" index="index" item="item" separator=",">
+                (
+                #{id,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
+                #{createDate,jdbcType=VARCHAR},
+                #{method,jdbcType=VARCHAR}, #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
+                #{requestBody,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER},#{responseBody,jdbcType=VARCHAR},
+                #{requestId,jdbcType=VARCHAR},#{metadata,jdbcType=VARCHAR}, #{jwt,jdbcType=VARCHAR},
+                #{access,jdbcType=VARCHAR},#{clientIp,jdbcType=VARCHAR}, #{secKey,jdbcType=VARCHAR},
+                #{requestUnDecryption,jdbcType=INTEGER},#{responseUnEncryption,jdbcType=INTEGER},
+                #{existenceRequestBody,jdbcType=INTEGER},#{existenceResponseBody,jdbcType=INTEGER}
+                )
+            </foreach>
+        </if>
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.lake.repository.entity.OptEvent">
+        insert into opt_event
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="dataEventType != null">
+                data_event_type,
+            </if>
+            <if test="stamp != null">
+                stamp,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="method != null">
+                method,
+            </if>
+            <if test="uri != null">
+                uri,
+            </if>
+            <if test="realUri != null">
+                real_uri,
+            </if>
+            <if test="requestBody != null">
+                request_body,
+            </if>
+            <if test="responseStatus != null">
+                response_status,
+            </if>
+            <if test="responseBody != null">
+                response_body,
+            </if>
+            <if test="requestId != null">
+                request_id,
+            </if>
+            <if test="metadata != null">
+                metadata,
+            </if>
+            <if test="jwt != null">
+                jwt,
+            </if>
+            <if test="access != null">
+                access,
+            </if>
+            <if test="clientIp != null">
+                client_ip,
+            </if>
+            <if test="secKey != null">
+                sec_key,
+            </if>
+            <if test="requestUnDecryption != null">
+                request_un_decryption,
+            </if>
+            <if test="responseUnEncryption != null">
+                response_un_encryption,
+            </if>
+            <if test="existenceRequestBody != null">
+                existence_request_body,
+            </if>
+            <if test="existenceResponseBody != null">
+                existence_response_body,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="dataEventType != null">
+                #{dataEventType,jdbcType=VARCHAR},
+            </if>
+            <if test="stamp != null">
+                #{stamp,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                #{create_date,jdbcType=VARCHAR},
+            </if>
+            <if test="method != null">
+                #{method,jdbcType=VARCHAR},
+            </if>
+            <if test="uri != null">
+                #{uri,jdbcType=VARCHAR},
+            </if>
+            <if test="realUri != null">
+                #{realUri,jdbcType=VARCHAR},
+            </if>
+            <if test="requestBody != null">
+                #{requestBody,jdbcType=VARCHAR},
+            </if>
+            <if test="responseStatus != null">
+                #{responseStatus,jdbcType=INTEGER},
+            </if>
+            <if test="responseBody != null">
+                #{responseBody,jdbcType=VARCHAR},
+            </if>
+            <if test="requestId != null">
+                #{requestId,jdbcType=VARCHAR},
+            </if>
+            <if test="metadata != null">
+                #{metadata,jdbcType=VARCHAR},
+            </if>
+            <if test="jwt != null">
+                #{jwt,jdbcType=VARCHAR},
+            </if>
+            <if test="access != null">
+                #{access,jdbcType=VARCHAR},
+            </if>
+            <if test="clientIp != null">
+                #{clientIp,jdbcType=VARCHAR},
+            </if>
+            <if test="secKey != null">
+                #{secKey,jdbcType=VARCHAR},
+            </if>
+            <if test="requestUnDecryption != null">
+                #{requestUnDecryption,jdbcType=INTEGER},
+            </if>
+            <if test="responseUnEncryption != null">
+                #{responseUnEncryption,jdbcType=INTEGER},
+            </if>
+            <if test="existenceRequestBody != null">
+                #{existenceRequestBody,jdbcType=INTEGER},
+            </if>
+            <if test="existenceResponseBody != null">
+                #{existenceResponseBody,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.lake.repository.entity.OptEvent">
+        update opt_event
+        <set>
+            <if test="dataEventType != null">
+                data_event_type = #{dataEventType,jdbcType=VARCHAR},
+            </if>
+            <if test="stamp != null">
+                stamp = #{stamp,jdbcType=BIGINT},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=VARCHAR},
+            </if>
+            <if test="method != null">
+                method = #{method,jdbcType=VARCHAR},
+            </if>
+            <if test="uri != null">
+                uri = #{uri,jdbcType=VARCHAR},
+            </if>
+            <if test="realUri != null">
+                real_uri = #{realUri,jdbcType=VARCHAR},
+            </if>
+            <if test="requestBody != null">
+                request_body = #{requestBody,jdbcType=VARCHAR},
+            </if>
+            <if test="responseStatus != null">
+                response_status = #{responseStatus,jdbcType=INTEGER},
+            </if>
+            <if test="responseBody != null">
+                response_body = #{responseBody,jdbcType=VARCHAR},
+            </if>
+            <if test="requestId != null">
+                request_id = #{requestId,jdbcType=VARCHAR},
+            </if>
+            <if test="metadata != null">
+                metadata = #{metadata,jdbcType=VARCHAR},
+            </if>
+            <if test="jwt != null">
+                jwt = #{jwt,jdbcType=VARCHAR},
+            </if>
+            <if test="access != null">
+                access = #{access,jdbcType=VARCHAR},
+            </if>
+            <if test="clientIp != null">
+                client_ip = #{clientIp,jdbcType=VARCHAR},
+            </if>
+            <if test="secKey != null">
+                sec_key = #{secKey,jdbcType=VARCHAR},
+            </if>
+            <if test="requestUnDecryption != null">
+                request_un_decryption = #{requestUnDecryption,jdbcType=INTEGER},
+            </if>
+            <if test="responseUnEncryption != null">
+                response_un_encryption = #{responseUnEncryption,jdbcType=INTEGER},
+            </if>
+            <if test="existenceRequestBody != null">
+                existence_request_body = #{existenceRequestBody,jdbcType=INTEGER},
+            </if>
+            <if test="existenceResponseBody != null">
+                existence_response_body = #{existenceResponseBody,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.lake.repository.entity.OptEvent">
+        update opt_event
+        set data_event_type         = #{dataEventType,jdbcType=VARCHAR},
+            stamp                   = #{stamp,jdbcType=BIGINT},
+            create_date             = #{createDate,jdbcType=VARCHAR},
+            method                  = #{method,jdbcType=VARCHAR},
+            uri                     = #{uri,jdbcType=VARCHAR},
+            real_uri                = #{realUri,jdbcType=VARCHAR},
+            request_body            = #{requestBody,jdbcType=VARCHAR},
+            response_status         = #{responseStatus,jdbcType=INTEGER},
+            response_body           = #{responseBody,jdbcType=VARCHAR},
+            request_id              = #{requestId,jdbcType=VARCHAR},
+            metadata                = #{metadata,jdbcType=VARCHAR},
+            jwt                     = #{jwt,jdbcType=VARCHAR},
+            access                  = #{access,jdbcType=VARCHAR},
+            client_ip               = #{clientIp,jdbcType=VARCHAR},
+            sec_key                 = #{secKey,jdbcType=VARCHAR},
+            request_un_decryption   = #{requestUnDecryption,jdbcType=INTEGER},
+            response_un_encryption  = #{responseUnEncryption,jdbcType=INTEGER},
+            existence_request_body  = #{existenceRequestBody,jdbcType=INTEGER},
+            existence_response_body = #{existenceResponseBody,jdbcType=INTEGER}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectByLimitAndRows" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        opt_event
+        ORDER BY
+        stamp DESC
+        LIMIT #{limit,jdbcType=BIGINT}, #{rows,jdbcType=BIGINT}
+    </select>
+
+</mapper>

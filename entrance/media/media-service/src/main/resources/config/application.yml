@@ -9,6 +9,8 @@ spring:
     basename: i18n.messages
   webflux:
     static-path-pattern: /*
+    multipart:
+      max-in-memory-size: 8192KB
   web:
     resources:
       static-locations: classpath:static

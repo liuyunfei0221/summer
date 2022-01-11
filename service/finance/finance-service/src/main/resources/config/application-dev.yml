@@ -95,7 +95,7 @@ data:
 
     - id: 1
       index: 1
-  shardingBroadcastTables: [ undo_log ]
+  broadcastTables: [ undo_log ]
   singleDatabasesWithTables:
   cacheEnabled: false
   lazyLoadingEnabled: false

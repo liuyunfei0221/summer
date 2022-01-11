@@ -13,6 +13,11 @@ public enum BlueNumericalValue {
     PAGE(1L),
 
     /**
+     * default limit
+     */
+    LIMIT(0L),
+
+    /**
      * default rows per page
      */
     ROWS(10L),
@@ -41,6 +46,16 @@ public enum BlueNumericalValue {
      * max write from database per request
      */
     DB_WRITE(100L),
+
+    /**
+     * max queries from ldap per request
+     */
+    LDAP_SELECT(100000000L),
+
+    /**
+     * max write from ldap per request
+     */
+    LDAP_WRITE(10000000L),
 
     /**
      * phone number/email length minimum for member login

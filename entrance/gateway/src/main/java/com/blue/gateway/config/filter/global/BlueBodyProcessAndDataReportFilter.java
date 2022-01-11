@@ -12,6 +12,8 @@ import org.springframework.cloud.gateway.filter.factory.rewrite.CachedBodyOutput
 import org.springframework.cloud.gateway.support.BodyInserterContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.core.io.buffer.NettyDataBufferFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -31,6 +34,7 @@ import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.gateway.common.GatewayCommonFunctions.*;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_BODY_PROCESS_AND_DATA_REPORT;
+import static io.netty.buffer.ByteBufAllocator.DEFAULT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonList;
@@ -38,7 +42,6 @@ import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
-import static reactor.core.publisher.Flux.from;
 import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.just;
 
@@ -60,6 +63,8 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
 
         EXPIRED_SECONDS = encryptDeploy.getExpire();
     }
+
+    public static final DataBufferFactory DATA_BUFFER_FACTORY = new NettyDataBufferFactory(DEFAULT);
 
     private static long EXPIRED_SECONDS;
 
@@ -94,16 +99,68 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
         EVENT_PACKAGER.accept(attributes, dataEvent);
     }
 
-    private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
-        ServerHttpResponse response = exchange.getResponse();
-        HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
+//    private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
+//        ServerHttpResponse response = exchange.getResponse();
+//        HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
+//        dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
+//
+//        return ClientResponse
+//                .create(httpStatus)
+//                .headers(hs ->
+//                        hs.putAll(response.getHeaders()))
+//                .body(from(body)).build()
+//                .bodyToMono(String.class)
+//                .flatMap(responseBody -> {
+//                            String tarBody = RESPONSE_BODY_PROCESSOR.apply(responseBody, exchange.getAttributes());
+//
+//                            dataEvent.addData(RESPONSE_BODY.key, responseBody);
+//                            requestEventReporter.report(dataEvent);
+//
+//                            response.getHeaders().put(CONTENT_LENGTH, singletonList(valueOf(tarBody.getBytes(UTF_8).length)));
+//                            return just(tarBody);
+//                        }
+//                );
+//    }
+//
+//    private ServerHttpResponse getResponseAndReport(ServerWebExchange exchange, DataEvent dataEvent) {
+//        ServerHttpResponse response = exchange.getResponse();
+//        if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
+//                .map(b -> (boolean) b).orElse(true)) {
+//            //noinspection NullableProblems
+//            return new ServerHttpResponseDecorator(response) {
+//                @Override
+//                public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+//                    CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(
+//                            exchange, exchange.getResponse().getHeaders());
+//                    return fromPublisher(getResponseBodyAndReport(exchange, body, dataEvent), String.class)
+//                            .insert(outputMessage, new BodyInserterContext())
+//                            .then(defer(() ->
+//                                    getDelegate().writeWith(outputMessage.getBody())))
+//                            .doOnError(throwable -> {
+//                                packageError(throwable, exchange.getRequest(), dataEvent);
+//                                ON_ERROR_CONSUMER_WITH_MESSAGE.accept(throwable, outputMessage);
+//                            });
+//                }
+//
+//                @Override
+//                public Mono<Void> writeAndFlushWith(
+//                        Publisher<? extends Publisher<? extends DataBuffer>> body) {
+//                    return writeWith(from(body).flatMapSequential(p -> p));
+//                }
+//            };
+//        }
+//
+//        requestEventReporter.report(dataEvent);
+//
+//        return response;
+//    }
 
+    private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, ServerHttpResponse response, HttpStatus httpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         return ClientResponse
                 .create(httpStatus)
                 .headers(hs ->
                         hs.putAll(response.getHeaders()))
-                .body(from(body)).build()
+                .body(Flux.from(body)).build()
                 .bodyToMono(String.class)
                 .flatMap(responseBody -> {
                             String tarBody = RESPONSE_BODY_PROCESSOR.apply(responseBody, exchange.getAttributes());
@@ -119,28 +176,29 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
 
     private ServerHttpResponse getResponseAndReport(ServerWebExchange exchange, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
+
+        HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
+        dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
+
         if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
                 .map(b -> (boolean) b).orElse(true)) {
-            //noinspection NullableProblems
             return new ServerHttpResponseDecorator(response) {
                 @Override
                 public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                    CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(
-                            exchange, exchange.getResponse().getHeaders());
-                    return fromPublisher(getResponseBodyAndReport(exchange, body, dataEvent), String.class)
-                            .insert(outputMessage, new BodyInserterContext())
-                            .then(defer(() ->
-                                    getDelegate().writeWith(outputMessage.getBody())))
-                            .doOnError(throwable -> {
-                                packageError(throwable, exchange.getRequest(), dataEvent);
-                                ON_ERROR_CONSUMER_WITH_MESSAGE.accept(throwable, outputMessage);
-                            });
+                    return getResponseBodyAndReport(exchange, response, httpStatus, body, dataEvent).flatMap(data -> {
+                        byte[] bytes = data.getBytes(UTF_8);
+                        DataBuffer resBuffer = DATA_BUFFER_FACTORY.allocateBuffer(bytes.length);
+                        resBuffer.write(bytes);
+                        response.getHeaders().put(CONTENT_LENGTH, singletonList(valueOf(bytes.length)));
+
+                        bytes = null;
+                        return getDelegate().writeWith(just(resBuffer));
+                    });
                 }
 
                 @Override
-                public Mono<Void> writeAndFlushWith(
-                        Publisher<? extends Publisher<? extends DataBuffer>> body) {
-                    return writeWith(from(body).flatMapSequential(p -> p));
+                public Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body) {
+                    return getDelegate().writeWith(Flux.from(body).flatMapSequential(p -> p));
                 }
             };
         }

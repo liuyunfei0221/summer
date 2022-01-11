@@ -156,11 +156,6 @@ spring:
           predicates:
             - Path=/blue-business/**
 
-        - id: blue-data
-          uri: lb://blue-data
-          predicates:
-            - Path=/blue-data/**
-
         - id: blue-finance
           uri: lb://blue-finance
           predicates:
@@ -181,11 +176,6 @@ spring:
           predicates:
             - Path=/blue-portal/**
 
-        - id: blue-risk
-          uri: lb://blue-risk
-          predicates:
-            - Path=/blue-risk/**
-
         - id: blue-secure
           uri: lb://blue-secure
           predicates:
@@ -195,6 +185,21 @@ spring:
           uri: lb://blue-shine
           predicates:
             - Path=/blue-shine/**
+
+        - id: blue-analyze
+          uri: lb://blue-analyze
+          predicates:
+            - Path=/blue-analyze/**
+
+        - id: blue-lake
+          uri: lb://blue-lake
+          predicates:
+            - Path=/blue-lake/**
+
+        - id: blue-risk
+          uri: lb://blue-risk
+          predicates:
+            - Path=/blue-risk/**
 
 
 server:

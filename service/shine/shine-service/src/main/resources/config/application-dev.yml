@@ -86,7 +86,7 @@ data:
 
     - id: 1
       index: 1
-  shardingBroadcastTables: [ ]
+  broadcastTables: [ ]
   singleDatabasesWithTables:
   cacheEnabled: false
   lazyLoadingEnabled: false

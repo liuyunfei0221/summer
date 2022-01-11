@@ -45,7 +45,7 @@ public final class GatewayCommonFunctions extends ReactiveCommonFunctions {
                 .doFinally(signalType -> {
                     LOGGER.info("signalType = {}", signalType.toString());
                     error(throwable);
-                });
+                }).subscribe();
 
         LOGGER.info("throwable = {}", throwable);
         if (throwable instanceof BlueException)
