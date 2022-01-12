@@ -2,9 +2,9 @@ package com.blue.base.common.reactive;
 
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.base.BlueResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
@@ -17,11 +17,14 @@ import java.util.function.Predicate;
 
 import static com.blue.base.common.message.MessageProcessor.resolveToMessage;
 import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
+import static com.blue.base.constant.base.Symbol.LIST_ELEMENT_SEPARATOR;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.lang.Double.compare;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.split;
 import static reactor.core.publisher.Mono.just;
 
 /**
@@ -50,18 +53,16 @@ public class ReactiveCommonFunctions extends CommonFunctions {
             just(RATE_LIMIT_KEY_PREFIX + ofNullable(request)
                     .map(ServerHttpRequest::getHeaders)
                     .map(h -> h.getFirst(AUTHORIZATION))
-                    .filter(StringUtils::hasText)
+                    .filter(StringUtils::isNotEmpty)
                     .map(String::hashCode)
                     .map(String::valueOf)
-                    .orElseGet(() -> ofNullable(request)
-                            .map(ServerHttpRequest::getRemoteAddress)
-                            .map(InetSocketAddress::getHostString)
-                            .orElse(UNKNOWN)).hashCode());
+                    .orElseGet(() ->
+                            ReactiveCommonFunctions.getIp(request)).hashCode());
 
 
-    private static final int MAX_LANGUAGE_COUNT = 16;
+    private static final int MAX_LANGUAGE_COUNT = 32;
 
-    private static final String DEFAULT_LANGUAGE = LANGUAGE.replace(PAR_CONCATENATION, PAR_CONCATENATION_DATABASE_URL.identity).toLowerCase();
+    private static final String DEFAULT_LANGUAGE = lowerCase(LANGUAGE.replace(PAR_CONCATENATION, PAR_CONCATENATION_DATABASE_URL.identity));
     private static final List<String> DEFAULT_LANGUAGES = singletonList(DEFAULT_LANGUAGE);
 
     private static List<String> parseAcceptLanguages(List<Locale.LanguageRange> languageRanges) {
@@ -69,7 +70,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
             return languageRanges.stream()
                     .sorted((a, b) -> compare(b.getWeight(), a.getWeight()))
                     .map(Locale.LanguageRange::getRange)
-                    .map(String::toLowerCase)
+                    .map(StringUtils::lowerCase)
                     .collect(toList());
 
         return DEFAULT_LANGUAGES;
@@ -82,7 +83,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @return
      */
     public static Mono<BlueResponse<String>> generate(int code) {
-        String message = resolveToMessage(code);
+        String message = resolveToMessage(code).intern();
         return just(new BlueResponse<>(code, message, message));
     }
 
@@ -94,7 +95,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @return
      */
     public static Mono<BlueResponse<String>> generate(int code, ServerRequest serverRequest) {
-        String message = resolveToMessage(code, serverRequest);
+        String message = resolveToMessage(code, serverRequest).intern();
         return just(new BlueResponse<>(code, message, message));
     }
 
@@ -169,11 +170,15 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      */
     @SuppressWarnings("DuplicatedCode")
     public static String getIp(ServerRequest serverRequest) {
+        if (serverRequest == null)
+            return UNKNOWN;
+
         ServerRequest.Headers headers = serverRequest.headers();
 
         String ip = headers.firstHeader(X_FORWARDED_FOR);
         if (VALID_HEADER_ASSERTER.test(ip))
-            return ip;
+            //noinspection ConstantConditions
+            return split(ip, LIST_ELEMENT_SEPARATOR.identity)[0];
 
         ip = headers.firstHeader(PROXY_CLIENT_IP);
         if (VALID_HEADER_ASSERTER.test(ip))
@@ -208,11 +213,15 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      */
     @SuppressWarnings("DuplicatedCode")
     public static String getIp(ServerHttpRequest serverHttpRequest) {
+        if (serverHttpRequest == null)
+            return UNKNOWN;
+
         HttpHeaders headers = serverHttpRequest.getHeaders();
 
         String ip = headers.getFirst(X_FORWARDED_FOR);
         if (VALID_HEADER_ASSERTER.test(ip))
-            return ip;
+            //noinspection ConstantConditions
+            return split(ip, LIST_ELEMENT_SEPARATOR.identity)[0];
 
         ip = headers.getFirst(PROXY_CLIENT_IP);
         if (VALID_HEADER_ASSERTER.test(ip))

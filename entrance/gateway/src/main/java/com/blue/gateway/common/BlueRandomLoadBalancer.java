@@ -33,8 +33,7 @@ public final class BlueRandomLoadBalancer implements ReactorServiceInstanceLoadB
     }
 
     private static final Function<List<ServiceInstance>, Response<ServiceInstance>> INSTANCE_RESPONSE_GETTER = instances ->
-            instances.isEmpty() ? new EmptyResponse()
-                    : new DefaultResponse(instances.get(current().nextInt(instances.size())));
+            instances.isEmpty() ? new EmptyResponse() : new DefaultResponse(instances.get(current().nextInt(instances.size())));
 
     private static final BiFunction<ServiceInstanceListSupplier, List<ServiceInstance>, Response<ServiceInstance>> INSTANCE_RESPONSE_PROCESSOR = (supplier, serviceInstances) -> {
         Response<ServiceInstance> serviceInstanceResponse =
@@ -47,9 +46,9 @@ public final class BlueRandomLoadBalancer implements ReactorServiceInstanceLoadB
 
     @Override
     public Mono<Response<ServiceInstance>> choose(Request request) {
-        ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider
-                .getIfAvailable(NoopServiceInstanceListSupplier::new);
-        return supplier.get().next()
+        ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider.getIfAvailable(NoopServiceInstanceListSupplier::new);
+        return supplier.get()
+                .next()
                 .map(serviceInstances ->
                         INSTANCE_RESPONSE_PROCESSOR.apply(supplier, serviceInstances));
     }

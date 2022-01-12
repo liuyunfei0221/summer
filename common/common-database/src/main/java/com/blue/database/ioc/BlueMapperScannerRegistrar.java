@@ -37,7 +37,7 @@ import static org.springframework.util.StringUtils.hasText;
  * @date 2021/8/15
  * @apiNote
  */
-@SuppressWarnings({"NullableProblems", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
+@SuppressWarnings({"NullableProblems", "AliControlFlowStatementWithoutBraces"})
 @Order(HIGHEST_PRECEDENCE)
 public class BlueMapperScannerRegistrar implements ImportBeanDefinitionRegistrar {
 

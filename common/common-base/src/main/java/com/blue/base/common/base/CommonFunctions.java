@@ -6,6 +6,7 @@ import com.blue.base.model.base.*;
 import com.blue.base.model.exps.BlueException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 
@@ -99,14 +100,14 @@ public class CommonFunctions {
         if (lastPartIdx == -1 || lastPartIdx == length(uri))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
 
-        String maybePathVariable = uri.substring(lastPartIdx + 1);
+        String maybePathVariable = substring(uri, lastPartIdx + 1);
         if (isDigits(maybePathVariable))
-            return (uri.substring(0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD).intern();
+            return (substring(uri, 0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD).intern();
 
         int schemaIdx = lastIndexOf(maybePathVariable, SCHEME_SEPARATOR);
         String schema;
-        if (schemaIdx != -1 && VALID_TAILS.contains(schema = maybePathVariable.substring(schemaIdx)))
-            return (uri.substring(0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD + schema.intern()).intern();
+        if (schemaIdx != -1 && VALID_TAILS.contains(schema = substring(maybePathVariable, schemaIdx)))
+            return (substring(uri, 0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD + schema.intern()).intern();
 
         return uri.intern();
     };
@@ -118,8 +119,7 @@ public class CommonFunctions {
         if (uri == null || "".equals(uri))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uri can't be null");
 
-        String tar = uri.trim();
-
+        String tar = trim(uri);
         int idx = indexOf(tar, PATH_SEPARATOR);
 
         if (idx == -1)
@@ -140,7 +140,8 @@ public class CommonFunctions {
         if (lastPartIdx == -1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
 
-        String maybePathVariable = uri.substring(lastPartIdx);
+        String maybePathVariable = substring(uri, lastPartIdx);
+
         int left = indexOf(maybePathVariable, "{");
         int right = lastIndexOf(maybePathVariable, "}");
 
@@ -149,11 +150,11 @@ public class CommonFunctions {
 
         int maybePathVariableLength = length(maybePathVariable);
         if (right == maybePathVariableLength - 1)
-            return (uri.substring(0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD).intern();
+            return (substring(uri, 0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD).intern();
 
-        String schema = maybePathVariable.substring(right + 1).intern();
+        String schema = substring(maybePathVariable, right + 1).intern();
         if (VALID_TAILS.contains(schema))
-            return (uri.substring(0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD + schema.intern()).intern();
+            return (substring(uri, 0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD + schema.intern()).intern();
 
         throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, freemarker unsupported -> " + uri);
     };
@@ -175,33 +176,33 @@ public class CommonFunctions {
      * resource key generator for request
      */
     public static final BinaryOperator<String> REQ_RES_KEY_CONVERTER = (method, uri) ->
-            ((method.toUpperCase().intern() + PAR_CONCATENATION + REST_URI_PROCESSOR.apply(uri).intern()).intern()).intern();
+            ((upperCase(method).intern() + PAR_CONCATENATION + REST_URI_PROCESSOR.apply(uri).intern()).intern()).intern();
 
     /**
      * resource key generator for request
      */
     public static final BinaryOperator<String> REQ_RES_KEY_GENERATOR = (method, uri) ->
-            (method.toUpperCase().intern() + PAR_CONCATENATION + uri).intern();
+            (upperCase(method).intern() + PAR_CONCATENATION + uri).intern();
 
     /**
      * resource key generator for init
      */
     public static final BinaryOperator<String> INIT_RES_KEY_GENERATOR = (method, uri) ->
-            (method.toUpperCase().intern() + PAR_CONCATENATION + REST_URI_CONVERTER.apply(uri).intern()).intern();
+            (upperCase(method).intern() + PAR_CONCATENATION + REST_URI_CONVERTER.apply(uri).intern()).intern();
 
     /**
      * header value getter
      */
     public static final UnaryOperator<String> HEADER_VALUE_CONVERTER = headerValue -> {
         int idx = indexOf(headerValue, PAIR_SEPARATOR.identity);
-        return idx == NON_EXIST_INDEX ? headerValue : headerValue.substring(0, idx);
+        return idx == NON_EXIST_INDEX ? headerValue : substring(headerValue, 0, idx);
     };
 
     /**
      * valid schema
      */
     public static final Set<String> VALID_SCHEMAS = of("https", "http")
-            .map(String::toLowerCase)
+            .map(StringUtils::lowerCase)
             .collect(toSet());
 
     /**
@@ -209,14 +210,14 @@ public class CommonFunctions {
      */
     public static final Set<String> VALID_METHODS = of(HttpMethod.values())
             .map(Enum::name)
-            .map(String::toUpperCase)
+            .map(StringUtils::upperCase)
             .collect(toSet());
 
     /**
      * schema asserter
      */
     public static final Consumer<String> SCHEMA_ASSERTER = schema -> {
-        if (VALID_SCHEMAS.contains(schema))
+        if (VALID_SCHEMAS.contains(lowerCase(schema)))
             return;
 
         throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);
@@ -226,7 +227,7 @@ public class CommonFunctions {
      * method asserter
      */
     public static final Consumer<String> METHOD_VALUE_ASSERTER = method -> {
-        if (VALID_METHODS.contains(method.toUpperCase()))
+        if (VALID_METHODS.contains(upperCase(method)))
             return;
 
         throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);

@@ -5,8 +5,9 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.HttpMessageReader;
+import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.reactive.function.server.HandlerStrategies;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 import java.util.List;
 
@@ -17,19 +18,28 @@ import java.util.List;
  * @author DarkBlue
  */
 @Configuration
-public class WebConfig {
+public class WebConfig implements WebFluxConfigurer {
+
+    private final WebDeploy webDeploy;
+
+    public WebConfig(WebDeploy webDeploy) {
+        this.webDeploy = webDeploy;
+    }
 
     @Bean
     HttpMessageConverters httpMessageConverters() {
         return new HttpMessageConverters(new MappingJackson2HttpMessageConverter());
     }
 
+    @Override
+    public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
+        configurer.defaultCodecs().maxInMemorySize(webDeploy.getMaxInMemorySize());
+        WebFluxConfigurer.super.configureHttpMessageCodecs(configurer);
+    }
+
     @Bean
-    List<HttpMessageReader<?>> httpMessageReaders(WebDeploy webDeploy) {
-        return HandlerStrategies.builder()
-                .codecs(serverCodecConfigurer ->
-                        serverCodecConfigurer.defaultCodecs().maxInMemorySize(webDeploy.getMaxInMemorySize()))
-                .build().messageReaders();
+    List<HttpMessageReader<?>> httpMessageReaders(ServerCodecConfigurer configurer) {
+        return configurer.getReaders();
     }
 
 }

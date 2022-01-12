@@ -383,7 +383,7 @@ INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (9506121983229955, 'POST', 'blue-media', '/media/upload', b'1', b'1', b'1', b'1', b'1', 1,
+VALUES (9506121983229955, 'POST', 'blue-media', '/file/upload', b'1', b'1', b'1', b'1', b'1', 1,
         'media upload of api', 'media upload of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
@@ -391,8 +391,8 @@ INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (9506477400129539, 'POST', 'blue-media', '/media/download', b'1', b'1', b'1', b'1', b'0', 1,
-        'media download of api', 'media download of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9506477400129539, 'POST', 'blue-media', '/file/download', b'1', b'1', b'1', b'1', b'0', 1,
+        'file download of api', 'file download of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
@@ -423,7 +423,7 @@ INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (9506477400129540, 'GET', 'blue-media', '/media/downloadTest/{id}', b'1', b'1', b'1', b'1', b'0', 1,
+VALUES (9506477400129540, 'GET', 'blue-media', '/file/downloadTest/{id}', b'1', b'1', b'1', b'1', b'0', 1,
         'download test', 'download test', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
@@ -2915,11 +2915,9 @@ CREATE TABLE `opt_event_1`
 
 -- risk
 
-CREATE
-DATABASE ldap_risk_0 ENGINE = Ordinary;
+CREATE DATABASE ldap_risk_0 ENGINE = Ordinary;
 
-CREATE
-DATABASE ldap_risk_1 ENGINE = Ordinary;
+CREATE DATABASE ldap_risk_1 ENGINE = Ordinary;
 
 
 
@@ -2930,12 +2928,9 @@ DATABASE ldap_risk_1 ENGINE = Ordinary;
 
 -- analyze
 
+CREATE DATABASE ldap_analyze_0 ENGINE = Ordinary;
 
-CREATE
-DATABASE ldap_analyze_0 ENGINE = Ordinary;
-
-CREATE
-DATABASE ldap_analyze_1 ENGINE = Ordinary;
+CREATE DATABASE ldap_analyze_1 ENGINE = Ordinary;
 
 
 

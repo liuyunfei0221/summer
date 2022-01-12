@@ -1,4 +1,4 @@
-package com.blue.shine.repository.entity;
+package com.blue.analyze.repository.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;

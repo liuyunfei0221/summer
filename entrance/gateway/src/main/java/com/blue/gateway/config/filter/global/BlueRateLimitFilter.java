@@ -32,7 +32,6 @@ import static reactor.core.publisher.Mono.error;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
 @Component
 public final class BlueRateLimitFilter implements GlobalFilter, Ordered {
 
@@ -69,11 +68,9 @@ public final class BlueRateLimitFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         return REQUEST_IDENTITY_GETTER.apply(exchange.getRequest())
                 .flatMap(ALLOWED_GETTER)
-                .flatMap(a -> {
-                    if (a)
-                        return chain.filter(exchange);
-                    return error(() -> new BlueException(TOO_MANY_REQUESTS));
-                });
+                .flatMap(a ->
+                        a ? chain.filter(exchange) : error(() -> new BlueException(TOO_MANY_REQUESTS))
+                );
     }
 
     @Override

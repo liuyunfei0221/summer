@@ -20,8 +20,7 @@ import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang3.StringUtils.lastIndexOf;
-import static org.apache.commons.lang3.StringUtils.substring;
+import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  * i18n message processor
@@ -34,14 +33,14 @@ import static org.apache.commons.lang3.StringUtils.substring;
 public final class MessageProcessor {
 
     private static final String MESSAGES_URI = "classpath:i18n";
-    private static final String DEFAULT_LANGUAGE = LANGUAGE.replace(PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity).toLowerCase();
+    private static final String DEFAULT_LANGUAGE = lowerCase(replace(LANGUAGE, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity));
     private static final int DEFAULT_KEY = INTERNAL_SERVER_ERROR.code;
     private static final String DEFAULT_MESSAGE = INTERNAL_SERVER_ERROR.message;
 
     private static final UnaryOperator<String> PRE_NAME_PARSER = n -> {
         int idx = lastIndexOf(n, SCHEME_SEPARATOR.identity);
         String name = idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : "") : n;
-        return name.replace(PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity);
+        return replace(name, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity);
     };
 
     private static final Function<Map<String, String>, Map<Integer, String>> MESSAGES_CONVERTER = messages ->
@@ -56,7 +55,7 @@ public final class MessageProcessor {
     private static final Function<String, Map<String, Map<Integer, String>>> MESSAGES_LOADER = uri ->
             getFiles(uri, true).stream()
                     .filter(Objects::nonNull)
-                    .collect(toMap(f -> PRE_NAME_PARSER.apply(f.getName()).toLowerCase(),
+                    .collect(toMap(f -> lowerCase(PRE_NAME_PARSER.apply(f.getName())),
                             f -> MESSAGES_CONVERTER.apply(parseProp(f)),
                             (a, b) -> a));
 
@@ -100,7 +99,7 @@ public final class MessageProcessor {
      */
     public static String resolveToMessage(Integer key, List<String> languages) {
         return ofNullable(MESSAGES_GETTER.apply(languages))
-                .map(messages -> messages.get(ofNullable(key).orElse(DEFAULT_KEY)))
+                .map(messages -> messages.get(ofNullable(key).orElse(DEFAULT_KEY)).intern())
                 .orElse(DEFAULT_MESSAGE).intern();
     }
 
@@ -126,7 +125,7 @@ public final class MessageProcessor {
      */
     public static String resolveToMessage(Integer key, ServerRequest serverRequest) {
         return ofNullable(MESSAGES_GETTER.apply(getAcceptLanguages(serverRequest)))
-                .map(messages -> messages.get(ofNullable(key).orElse(DEFAULT_KEY)))
+                .map(messages -> messages.get(ofNullable(key).orElse(DEFAULT_KEY)).intern())
                 .orElse(DEFAULT_MESSAGE).intern();
     }
 

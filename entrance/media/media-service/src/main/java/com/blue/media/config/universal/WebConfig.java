@@ -1,6 +1,7 @@
 package com.blue.media.config.universal;
 
 import com.blue.media.config.deploy.RequestAttributeDeploy;
+import com.blue.media.config.deploy.WebDeploy;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,6 @@ import org.springframework.http.codec.multipart.DefaultPartHttpMessageReader;
 import org.springframework.http.codec.multipart.MultipartHttpMessageReader;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
-import org.springframework.web.reactive.function.server.HandlerStrategies;
 
 import java.util.List;
 
@@ -26,9 +26,12 @@ import static reactor.core.scheduler.Schedulers.single;
 @Configuration
 public class WebConfig implements WebFluxConfigurer {
 
+    private final WebDeploy webDeploy;
+
     private final RequestAttributeDeploy requestAttributeDeploy;
 
-    public WebConfig(RequestAttributeDeploy requestAttributeDeploy) {
+    public WebConfig(WebDeploy webDeploy, RequestAttributeDeploy requestAttributeDeploy) {
+        this.webDeploy = webDeploy;
         this.requestAttributeDeploy = requestAttributeDeploy;
     }
 
@@ -55,17 +58,14 @@ public class WebConfig implements WebFluxConfigurer {
         multipartReader.setEnableLoggingRequestDetails(requestAttributeDeploy.getEnableLoggingRequestDetails());
 
         configurer.defaultCodecs().multipartReader(multipartReader);
-        configurer.defaultCodecs().maxInMemorySize(requestAttributeDeploy.getMaxInMemorySize());
+        configurer.defaultCodecs().maxInMemorySize(webDeploy.getMaxInMemorySize());
 
         WebFluxConfigurer.super.configureHttpMessageCodecs(configurer);
     }
 
     @Bean
-    List<HttpMessageReader<?>> httpMessageReaders() {
-        return HandlerStrategies.builder()
-                .codecs(serverCodecConfigurer ->
-                        serverCodecConfigurer.defaultCodecs().maxInMemorySize(requestAttributeDeploy.getMaxInMemorySize()))
-                .build().messageReaders();
+    List<HttpMessageReader<?>> httpMessageReaders(ServerCodecConfigurer configurer) {
+        return configurer.getReaders();
     }
 
 }

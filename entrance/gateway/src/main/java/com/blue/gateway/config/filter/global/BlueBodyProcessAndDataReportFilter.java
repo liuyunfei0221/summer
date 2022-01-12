@@ -74,8 +74,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                     requestBody
                     :
                     decryptRequestBody(requestBody,
-                            ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(""),
-                            EXPIRED_SECONDS);
+                            ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(""), EXPIRED_SECONDS);
 
     private static final BiFunction<String, Map<String, Object>, String> RESPONSE_BODY_PROCESSOR = (responseBody, attributes) ->
             ofNullable(attributes.get(RESPONSE_UN_ENCRYPTION.key))
