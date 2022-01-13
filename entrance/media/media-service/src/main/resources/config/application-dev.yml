@@ -222,8 +222,8 @@ encrypt:
 mail:
   smtpServerHost: outlook.office365.com
   smtpServerPort: 587
-  smtpUsername: liuyunfei
-  smtpPassword: liuyunfei
+  smtpUsername:
+  smtpPassword:
   corePoolSize: 2
   maximumPoolSize: 8
   keepAliveSeconds: 64

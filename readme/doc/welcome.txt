@@ -47,7 +47,7 @@ shine           公益服务              webflux
     --来自百度网盘
 
 
-2.根据 readme/doc/init.sql 文件初始化一些相关的初始化数据.
+2.根据 readme/doc/mysql-init.sql 文件初始化一些相关的初始化数据.
 
 3.首先启动注册中心服务 - registry , 然后启动其他的对应服务
 

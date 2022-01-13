@@ -32,7 +32,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2022/1/5
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection", "BlockingMethodInNonBlockingContext"})
+@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection", "DuplicatedCode"})
 @Component
 public class MailManagerHandler {
 
@@ -60,18 +60,43 @@ public class MailManagerHandler {
      */
     public Mono<ServerResponse> testMail(ServerRequest serverRequest) {
 
-        File file = FileProcessor.getFile("E:\\tempFile\\source\\walls\\a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg");
+        mediaMailTest();
 
+        return just(true)
+                .flatMap(t ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, serverRequest), BlueResponse.class));
+    }
+
+
+    private void mailTest() {
+        EmailPopulatingBuilder builder = EmailBuilder.startingBlank()
+                .from("blue", FROM)
+                .toWithFixedName("darkBlue", RECEIVERS)
+                .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
+                .withSubject("hello world");
+
+        builder.withHTMLText("Please view this email in a modern email client!");
+
+        mailSender.signWithDomainKey(builder);
+
+        CompletableFuture<Void> future = mailSender.sendMail(builder.buildEmail())
+                .thenAcceptAsync(v -> System.err.println("SEND SUCCESS!!!"))
+                .exceptionally(t -> {
+                    LOGGER.error("SEND FAILED!!!");
+                    LOGGER.error("t = {}", t);
+                    return null;
+                });
+    }
+
+    private void mediaMailTest() {
+        File file = FileProcessor.getFile("E:\\tempFile\\source\\walls\\a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg");
 
         EmailPopulatingBuilder builder = EmailBuilder.startingBlank()
                 .from("blue", FROM)
                 .toWithFixedName("darkBlue", RECEIVERS)
-//                .toMultiple(RECEIVERS)
                 .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
                 .withSubject("hello world");
-
-
-        mailSender.signWithDomainKey(builder);
 
         builder.withHTMLText("Please view this email in a modern email client!");
 
@@ -81,6 +106,8 @@ public class MailManagerHandler {
             e.printStackTrace();
         }
 
+        mailSender.signWithDomainKey(builder);
+
         CompletableFuture<Void> future = mailSender.sendMail(builder.buildEmail())
                 .thenAcceptAsync(v -> System.err.println("SEND SUCCESS!!!"))
                 .exceptionally(t -> {
@@ -88,11 +115,6 @@ public class MailManagerHandler {
                     LOGGER.error("t = {}", t);
                     return null;
                 });
-
-        return just(true)
-                .flatMap(t ->
-                        ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, serverRequest), BlueResponse.class));
     }
 
 }
