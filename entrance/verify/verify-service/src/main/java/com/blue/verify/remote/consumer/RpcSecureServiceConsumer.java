@@ -7,6 +7,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import static reactor.core.publisher.Mono.fromFuture;
@@ -17,7 +18,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcSecureServiceConsumer {
 
@@ -28,6 +29,12 @@ public class RpcSecureServiceConsumer {
     })
     private RpcSecureService rpcSecureService;
 
+    private final Scheduler scheduler;
+
+    public RpcSecureServiceConsumer(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
     /**
      * authentication and authorization
      *
@@ -36,7 +43,7 @@ public class RpcSecureServiceConsumer {
      */
     public Mono<AuthAsserted> assertAuth(AssertAuth assertAuth) {
         LOGGER.info("Mono<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", assertAuth);
-        return fromFuture(rpcSecureService.assertAuth(assertAuth));
+        return fromFuture(rpcSecureService.assertAuth(assertAuth)).publishOn(scheduler);
     }
 
 }
