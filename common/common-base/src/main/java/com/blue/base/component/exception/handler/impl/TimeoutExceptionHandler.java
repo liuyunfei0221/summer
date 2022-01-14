@@ -19,7 +19,7 @@ public final class TimeoutExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "org.springframework.cloud.gateway.support.TimeoutException";
 
-    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(GATEWAY_TIMEOUT.status, GATEWAY_TIMEOUT.code, null);
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(GATEWAY_TIMEOUT);
 
     @Override
     public String exceptionName() {

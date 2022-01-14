@@ -77,6 +77,6 @@ public class DecodingExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("decodingExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionInfo(BAD_REQUEST.status, BAD_REQUEST.code, new String[]{MESSAGE_PARSER.apply(((DecodingException) throwable))});
+        return new ExceptionInfo(BAD_REQUEST, new String[]{MESSAGE_PARSER.apply(((DecodingException) throwable))});
     }
 }

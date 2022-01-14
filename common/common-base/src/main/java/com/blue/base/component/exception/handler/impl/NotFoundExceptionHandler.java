@@ -19,7 +19,7 @@ public final class NotFoundExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "org.springframework.cloud.gateway.support.NotFoundException";
 
-    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(NOT_FOUND.status, NOT_FOUND.code, null);
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(NOT_FOUND);
 
     @Override
     public String exceptionName() {

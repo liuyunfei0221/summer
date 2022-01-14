@@ -21,7 +21,7 @@ public class AuthenticationExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "com.blue.jwt.exception.AuthenticationException";
 
-    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(UNAUTHORIZED.status, UNAUTHORIZED.code, null);
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(UNAUTHORIZED);
 
     @Override
     public String exceptionName() {

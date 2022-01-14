@@ -19,7 +19,7 @@ public final class ConnectExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "java.net.ConnectException";
 
-    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(REQUEST_TIMEOUT.status, REQUEST_TIMEOUT.code, null);
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(REQUEST_TIMEOUT);
 
     @Override
     public String exceptionName() {

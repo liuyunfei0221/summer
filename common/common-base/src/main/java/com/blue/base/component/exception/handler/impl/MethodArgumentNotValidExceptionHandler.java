@@ -33,7 +33,7 @@ public final class MethodArgumentNotValidExceptionHandler implements ExceptionHa
     public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("methodArgumentNotValidExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         MethodArgumentNotValidException ex = (MethodArgumentNotValidException) throwable;
-        return new ExceptionInfo(BAD_REQUEST.status, BAD_REQUEST.code, new String[]{of(ex.getBindingResult())
+        return new ExceptionInfo(BAD_REQUEST, new String[]{of(ex.getBindingResult())
                 .map(BindingResult::getAllErrors)
                 .filter(l -> !isEmpty(l))
                 .map(l -> l.get(0))

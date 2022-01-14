@@ -222,8 +222,8 @@ encrypt:
 mail:
   smtpServerHost: outlook.office365.com
   smtpServerPort: 587
-  smtpUsername:
-  smtpPassword:
+  smtpUsername: yunfei0221@outlook.com
+  smtpPassword: Fei19890116
   corePoolSize: 2
   maximumPoolSize: 8
   keepAliveSeconds: 64
@@ -231,10 +231,10 @@ mail:
   threadNamePre: blue-mail-sender
   connectionPoolCoreSize: 128
   connectionPoolMaxSize: 256
-  connectionPoolClaimTimeoutMillis: 6000
-  connectionPoolExpireAfterMillis: 6000
-  sessionTimeout: 6000
-  connectionPoolLoadBalancingStrategy: ROUND_ROBIN
+  connectionPoolClaimTimeoutMillis: 1000
+  connectionPoolExpireAfterMillis: 18000
+  sessionTimeout: 60000
+  connectionPoolLoadBalancingStrategy: RANDOM_ACCESS
   transportStrategy: SMTP
   withDKIM: false
   domainKeyFile: classpath:dkim/selector1.pem

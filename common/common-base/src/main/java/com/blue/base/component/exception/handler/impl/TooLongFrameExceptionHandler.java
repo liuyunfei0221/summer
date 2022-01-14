@@ -19,7 +19,7 @@ public final class TooLongFrameExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "io.netty.handler.codec.TooLongFrameException";
 
-    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(PAYLOAD_TOO_LARGE.status, PAYLOAD_TOO_LARGE.code, null);
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(PAYLOAD_TOO_LARGE);
 
     @Override
     public String exceptionName() {

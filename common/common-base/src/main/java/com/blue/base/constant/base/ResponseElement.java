@@ -196,9 +196,13 @@ public enum ResponseElement {
     /**
      * FILE_NOT_EXIST
      */
-    FILE_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400900003, "File not exist");
-    //</editor-fold>
+    FILE_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400900003, "File not exist"),
 
+    /**
+     * INVALID_EMAIL_ADDRESS
+     */
+    INVALID_EMAIL_ADDRESS(HttpStatus.BAD_REQUEST.value(), 400900004, "Cause: %s");
+    //</editor-fold>
 
     /**
      * http status

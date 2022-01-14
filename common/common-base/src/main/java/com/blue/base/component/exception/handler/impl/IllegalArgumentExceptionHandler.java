@@ -29,7 +29,7 @@ public final class IllegalArgumentExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("illegalArgumentExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionInfo(BAD_REQUEST.status, BAD_REQUEST.code, new String[]{ofNullable(throwable.getMessage()).filter(StringUtils::hasText).orElse(BAD_REQUEST.message)});
+        return new ExceptionInfo(BAD_REQUEST, new String[]{ofNullable(throwable.getMessage()).filter(StringUtils::hasText).orElse(BAD_REQUEST.message)});
     }
 
 }

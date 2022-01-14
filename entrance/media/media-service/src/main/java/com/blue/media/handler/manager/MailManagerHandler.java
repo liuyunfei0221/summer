@@ -49,6 +49,7 @@ public class MailManagerHandler {
     private static final List<String> RECEIVERS = Stream.of(
             "liuyunfei19890221@gmail.com",
             "liuyunfei19890221@163.com"
+//            "asdfwefsadfwerqwerwqer@@gmail.com"
     ).collect(toList());
 
 
@@ -74,9 +75,8 @@ public class MailManagerHandler {
                 .from("blue", FROM)
                 .toWithFixedName("darkBlue", RECEIVERS)
                 .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
-                .withSubject("hello world");
-
-        builder.withHTMLText("Please view this email in a modern email client!");
+                .withSubject("hello world")
+                .withHTMLText("Please view this email in a modern email client!");
 
         mailSender.signWithDomainKey(builder);
 
@@ -90,18 +90,26 @@ public class MailManagerHandler {
     }
 
     private void mediaMailTest() {
-        File file = FileProcessor.getFile("E:\\tempFile\\source\\walls\\a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg");
+        String htmlText = "<img src='cid:logo.jpg'><b>We should meet up!</b><img src='logo.jpg'>";
 
         EmailPopulatingBuilder builder = EmailBuilder.startingBlank()
                 .from("blue", FROM)
                 .toWithFixedName("darkBlue", RECEIVERS)
                 .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
-                .withSubject("hello world");
+                .withHeader("Content-ID", "<logo.jpg>")
+                .withSubject("hello world")
+                .withHTMLText(htmlText);
 
-        builder.withHTMLText("Please view this email in a modern email client!");
+//        File file = FileProcessor.getFile("E:\\tempFile\\source\\walls\\a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg");
+//        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+//            builder.withAttachment("img.jpg", fileInputStream.readAllBytes(), MediaType.IMAGE_JPEG_VALUE);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
-        try (FileInputStream fileInputStream = new FileInputStream(file)) {
-            builder.withAttachment("img.jpg", fileInputStream.readAllBytes(), MediaType.IMAGE_JPEG_VALUE);
+        File logoFile = FileProcessor.getFile("E:\\tempFile\\source\\favicon.jpg");
+        try (FileInputStream fileInputStream = new FileInputStream(logoFile)) {
+            builder.withAttachment("logo.jpg", fileInputStream.readAllBytes(), MediaType.IMAGE_JPEG_VALUE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -109,12 +117,19 @@ public class MailManagerHandler {
         mailSender.signWithDomainKey(builder);
 
         CompletableFuture<Void> future = mailSender.sendMail(builder.buildEmail())
-                .thenAcceptAsync(v -> System.err.println("SEND SUCCESS!!!"))
+                .thenAcceptAsync(v ->
+                        System.err.println("SEND SUCCESS!!!"))
                 .exceptionally(t -> {
                     LOGGER.error("SEND FAILED!!!");
                     LOGGER.error("t = {}", t);
                     return null;
                 });
+
+//        try {
+//            Thread.currentThread().join();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
 }

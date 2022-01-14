@@ -7,6 +7,11 @@ import com.sanctionco.jmail.TopLevelDomain;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Stream;
+
+import static com.sanctionco.jmail.TopLevelDomain.*;
+import static java.util.stream.Collectors.toList;
+
 /**
  * redis config
  *
@@ -16,10 +21,14 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "mail")
 public class BlueMailConfig extends MailConfParams {
 
+    private static final TopLevelDomain[] TOP_LEVEL_DOMAINS = Stream.of(
+            DOT_COM, DOT_ORG, DOT_NET, DOT_INT, DOT_EDU, DOT_GOV, DOT_MIL, TopLevelDomain.fromString("ai")
+    ).collect(toList()).toArray(TopLevelDomain[]::new);
+
     @Override
     public EmailValidator getEmailValidator() {
         return JMail.strictValidator()
-                .requireOnlyTopLevelDomains(TopLevelDomain.DOT_COM)
+                .requireOnlyTopLevelDomains(TOP_LEVEL_DOMAINS)
                 .withRule(email -> true);
     }
 

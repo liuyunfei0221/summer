@@ -56,7 +56,7 @@ public class BlueSyncRestGenerator {
 
     private static final TrustStrategy TRUST_STRATEGY = new TrustAllStrategy();
 
-    public static RestTemplate createRestTemplate(SyncRestConf syncRestConf) {
+    public static RestTemplate generateRestTemplate(SyncRestConf syncRestConf) {
         try {
             PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
                     RegistryBuilder.<ConnectionSocketFactory>create()

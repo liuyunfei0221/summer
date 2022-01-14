@@ -19,7 +19,7 @@ public final class ServerWebInputExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "org.springframework.web.server.ServerWebInputException";
 
-    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(BAD_REQUEST.status, BAD_REQUEST.code, null);
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(BAD_REQUEST);
 
     @Override
     public String exceptionName() {

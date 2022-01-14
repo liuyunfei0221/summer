@@ -29,6 +29,6 @@ public final class BlueExceptionHandler implements ExceptionHandler {
         LOGGER.info("blueExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         BlueException ex = (BlueException) throwable;
 
-        return new ExceptionInfo(ex.getStatus(), ex.getCode(), ex.getReplacements());
+        return new ExceptionInfo(ex);
     }
 }

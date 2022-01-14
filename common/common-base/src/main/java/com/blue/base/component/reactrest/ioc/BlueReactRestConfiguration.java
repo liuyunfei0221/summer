@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static com.blue.base.component.reactrest.api.generator.BlueReactRestGenerator.createWebClient;
+import static com.blue.base.component.reactrest.api.generator.BlueReactRestGenerator.generateWebClient;
 
 /**
  * reactive rest configuration
@@ -21,7 +21,7 @@ public class BlueReactRestConfiguration {
 
     @Bean
     WebClient webClient(ReactRestConf reactRestConf) {
-        return createWebClient(reactRestConf);
+        return generateWebClient(reactRestConf);
     }
 
 }

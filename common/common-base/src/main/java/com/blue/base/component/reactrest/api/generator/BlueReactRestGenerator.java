@@ -42,7 +42,7 @@ public final class BlueReactRestGenerator {
 
     private static final boolean DAEMON = true;
 
-    public static WebClient createWebClient(ReactRestConf reactRestConf) {
+    public static WebClient generateWebClient(ReactRestConf reactRestConf) {
         if (reactRestConf == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactRestConf can't be null");
 

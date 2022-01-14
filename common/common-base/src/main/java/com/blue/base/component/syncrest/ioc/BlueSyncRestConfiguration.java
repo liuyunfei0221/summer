@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-import static com.blue.base.component.syncrest.api.generator.BlueSyncRestGenerator.createRestTemplate;
+import static com.blue.base.component.syncrest.api.generator.BlueSyncRestGenerator.generateRestTemplate;
 
 /**
  * rest configuration
@@ -21,7 +21,7 @@ public class BlueSyncRestConfiguration {
 
     @Bean
     public RestTemplate restTemplate(SyncRestConf syncRestConf) {
-        return createRestTemplate(syncRestConf);
+        return generateRestTemplate(syncRestConf);
     }
 
 }

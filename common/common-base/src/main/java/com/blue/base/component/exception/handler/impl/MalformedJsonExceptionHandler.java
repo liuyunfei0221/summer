@@ -19,7 +19,7 @@ public final class MalformedJsonExceptionHandler implements ExceptionHandler {
 
     private static final String EXP_NAME = "com.google.gson.stream.MalformedJsonException";
 
-    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(BAD_REQUEST.status, BAD_REQUEST.code, null);
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(BAD_REQUEST);
 
     @Override
     public String exceptionName() {

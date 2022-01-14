@@ -52,7 +52,7 @@ public class DataBufferLimitExceptionHandler implements ExceptionHandler {
     public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("dataBufferLimitExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         DataBufferLimitException exception = (DataBufferLimitException) throwable;
-        return new ExceptionInfo(BAD_REQUEST.status, BAD_REQUEST.code, new String[]{MESSAGE_CONVERTER.apply(exception)});
+        return new ExceptionInfo(BAD_REQUEST, new String[]{MESSAGE_CONVERTER.apply(exception)});
     }
 
 }

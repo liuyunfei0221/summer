@@ -73,11 +73,9 @@ public final class MailSender {
         ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(conf.getCorePoolSize(),
                 conf.getMaximumPoolSize(), conf.getKeepAliveSeconds(), SECONDS,
                 new ArrayBlockingQueue<>(conf.getBlockingQueueCapacity()),
-                r -> {
-                    Thread thread = new Thread(r, threadNamePre + randomAlphabetic(RANDOM_LEN));
-                    thread.setDaemon(true);
-                    return thread;
-                }, rejectedExecutionHandler);
+                r ->
+                        new Thread(r, threadNamePre + randomAlphabetic(RANDOM_LEN)),
+                rejectedExecutionHandler);
 
         builder.withExecutorService(threadPoolExecutor);
 
@@ -107,6 +105,8 @@ public final class MailSender {
 
         ofNullable(conf.getProps())
                 .ifPresent(builder::withProperties);
+
+        builder.async();
 
         this.MAILER = builder.buildMailer();
 
