@@ -54,12 +54,12 @@ public final class IllegalAsserter {
         IP_MARKERS.put(true, (ip, resKey) ->
                 isNotBlank(ip) ?
                         KEY_RES_MARKER.apply(ILLEGAL_IP_PREFIX + ip, ofNullable(resKey).filter(Asserter::isNotBlank).orElse(ALL_RESOURCE)) :
-                        error(() -> new BlueException(UNKNOWN_IP.status, UNKNOWN_IP.code, UNKNOWN_IP.message)));
+                        error(() -> new BlueException(UNKNOWN_IP)));
 
         IP_MARKERS.put(false, (ip, resKey) ->
                 isNotBlank(ip) ?
                         KEY_RES_CLEARER.apply(ILLEGAL_IP_PREFIX + ip, ofNullable(resKey).filter(Asserter::isNotBlank).orElse(ALL_RESOURCE)) :
-                        error(() -> new BlueException(UNKNOWN_IP.status, UNKNOWN_IP.code, UNKNOWN_IP.message)));
+                        error(() -> new BlueException(UNKNOWN_IP)));
 
         JWT_MARKERS.put(true, (jwt, resKey) ->
                 isNotBlank(jwt) ?
@@ -150,7 +150,7 @@ public final class IllegalAsserter {
         return zip(
                 ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf).filter(Asserter::isNotBlank)
                         .map(ip -> IP_VALIDATOR.apply(ip, resKey))
-                        .orElseThrow(() -> new BlueException(UNKNOWN_IP.status, UNKNOWN_IP.code, UNKNOWN_IP.message)),
+                        .orElseThrow(() -> new BlueException(UNKNOWN_IP)),
                 ofNullable(attributes.get(BlueDataAttrKey.JWT.key))
                         .map(String::valueOf).filter(Asserter::isNotBlank)
                         .map(jwt -> JWT_VALIDATOR.apply(jwt, resKey)).orElseGet(() -> just(true))

@@ -54,12 +54,12 @@ public final class IllegalAsserter {
         IP_MARKERS.put(true, (ip, resKey) ->
                 isNotBlank(ip) ?
                         KEY_RES_MARKER.apply(ILLEGAL_IP_PREFIX + ip, ofNullable(resKey).filter(Asserter::isNotBlank).orElse(ALL_RESOURCE)) :
-                        error(() -> new BlueException(UNKNOWN_IP.status, UNKNOWN_IP.code, UNKNOWN_IP.message)));
+                        error(() -> new BlueException(UNKNOWN_IP)));
 
         IP_MARKERS.put(false, (ip, resKey) ->
                 isNotBlank(ip) ?
                         KEY_RES_CLEARER.apply(ILLEGAL_IP_PREFIX + ip, ofNullable(resKey).filter(Asserter::isNotBlank).orElse(ALL_RESOURCE)) :
-                        error(() -> new BlueException(UNKNOWN_IP.status, UNKNOWN_IP.code, UNKNOWN_IP.message)));
+                        error(() -> new BlueException(UNKNOWN_IP)));
 
         JWT_MARKERS.put(true, (jwt, resKey) ->
                 isNotBlank(jwt) ?

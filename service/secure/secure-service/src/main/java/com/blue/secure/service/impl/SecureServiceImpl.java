@@ -252,9 +252,9 @@ public class SecureServiceImpl implements SecureService {
             LoginType loginType = IDENTITY_NATURE_MAPPING.get(identity);
             if (loginType != null)
                 return loginType.nature.intern();
-            throw new BlueException(NO_AUTH_REQUIRED_RESOURCE.status, NO_AUTH_REQUIRED_RESOURCE.code, NO_AUTH_REQUIRED_RESOURCE.message);
+            throw new BlueException(BAD_REQUEST);
         }
-        throw new BlueException(NO_AUTH_REQUIRED_RESOURCE.status, NO_AUTH_REQUIRED_RESOURCE.code, NO_AUTH_REQUIRED_RESOURCE.message);
+        throw new BlueException(BAD_REQUEST);
     };
 
     /**

@@ -220,7 +220,7 @@ public class CommonFunctions {
         if (VALID_SCHEMAS.contains(lowerCase(schema)))
             return;
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);
+        throw new BlueException(INVALID_REQUEST_METHOD);
     };
 
     /**
@@ -230,7 +230,7 @@ public class CommonFunctions {
         if (VALID_METHODS.contains(upperCase(method)))
             return;
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, INVALID_REQUEST_METHOD.message);
+        throw new BlueException(INVALID_REQUEST_METHOD);
     };
 
     /**

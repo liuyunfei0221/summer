@@ -179,6 +179,21 @@ public enum ResponseElement {
      * ACCOUNT_HAS_BEEN_FROZEN
      */
     ACCOUNT_HAS_BEEN_FROZEN(HttpStatus.BAD_REQUEST.value(), 400100005, "Your account has been frozen"),
+
+    /**
+     * PHONE_ALREADY_EXIST
+     */
+    PHONE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100006, "The phone number already exists"),
+
+    /**
+     * EMAIL_ALREADY_EXIST
+     */
+    EMAIL_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100007, "The email already exists"),
+
+    /**
+     * NAME_ALREADY_EXIST
+     */
+    NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100008, "The name already exists"),
     //</editor-fold>
 
 

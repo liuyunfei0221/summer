@@ -80,15 +80,15 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     private final Consumer<MemberRegistryParam> MEMBER_EXIST_VALIDATOR = mrp -> {
         MemberBasic exist = memberBasicMapper.selectByPhone(mrp.getPhone());
         if (isNotNull(exist))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The phone number already exists");
+            throw new BlueException(PHONE_ALREADY_EXIST);
 
         exist = memberBasicMapper.selectByEmail(mrp.getEmail());
         if (isNotNull(exist))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The email already exists");
+            throw new BlueException(EMAIL_ALREADY_EXIST);
 
         exist = memberBasicMapper.selectByName(mrp.getName());
         if (isNotNull(exist))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists");
+            throw new BlueException(NAME_ALREADY_EXIST);
     };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())
