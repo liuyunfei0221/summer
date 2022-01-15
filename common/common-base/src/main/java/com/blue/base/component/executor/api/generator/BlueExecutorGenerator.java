@@ -31,7 +31,7 @@ public final class BlueExecutorGenerator {
     private static final String DEFAULT_THREAD_NAME_PRE = "blue-executor-thread" + PAR_CONCATENATION_DATABASE_URL.identity;
     private static final int RANDOM_LEN = 6;
 
-    public static ExecutorService createExecutorService(ExecutorConf executorConf) {
+    public static ExecutorService generateExecutorService(ExecutorConf executorConf) {
         LOGGER.info("ExecutorService executorService(ExecutorConf executorConf), executorConf = {}", executorConf);
         assertConf(executorConf);
 

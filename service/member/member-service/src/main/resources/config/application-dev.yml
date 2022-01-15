@@ -258,6 +258,13 @@ executor:
   threadNamePre: blue-summer
 
 
+scheduler:
+  threadCap: 4
+  queuedTaskCap: 4096
+  threadNamePre: blue-summer-scheduler
+  ttlSeconds: 128
+
+
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]

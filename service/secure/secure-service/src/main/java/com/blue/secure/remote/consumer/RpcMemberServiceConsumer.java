@@ -6,6 +6,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -18,7 +19,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcMemberServiceConsumer {
 
@@ -32,6 +33,12 @@ public class RpcMemberServiceConsumer {
     })
     private RpcMemberService rpcMemberService;
 
+    private final Scheduler scheduler;
+
+    public RpcMemberServiceConsumer(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
     /**
      * query member by id
      *
@@ -40,7 +47,7 @@ public class RpcMemberServiceConsumer {
      */
     Mono<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id) {
         LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
-        return fromFuture(rpcMemberService.selectMemberBasicMonoByPrimaryKey(id));
+        return fromFuture(rpcMemberService.selectMemberBasicMonoByPrimaryKey(id)).publishOn(scheduler);
     }
 
     /**

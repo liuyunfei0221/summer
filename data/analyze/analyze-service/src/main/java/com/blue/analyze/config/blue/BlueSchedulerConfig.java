@@ -1,4 +1,4 @@
-package com.blue.base.config.blue;
+package com.blue.analyze.config.blue;
 
 import com.blue.base.component.scheduler.api.conf.SchedulerConfParams;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -7,6 +7,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -22,7 +23,7 @@ import static reactor.util.Loggers.getLogger;
  * @apiNote
  */
 
-@SuppressWarnings({"JavaDoc", "unused"})
+@SuppressWarnings({"JavaDoc", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcRoleServiceConsumer {
 
@@ -36,6 +37,12 @@ public class RpcRoleServiceConsumer {
             })
     private RpcRoleService rpcRoleService;
 
+    private final Scheduler scheduler;
+
+    public RpcRoleServiceConsumer(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
     /**
      * get member's role info by member id
      *
@@ -44,7 +51,7 @@ public class RpcRoleServiceConsumer {
      */
     public Mono<RoleInfo> selectRoleInfoByMemberId(Long memberId) {
         LOGGER.info("RoleInfo getRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
-        return fromFuture(rpcRoleService.selectRoleInfoByMemberId(memberId));
+        return fromFuture(rpcRoleService.selectRoleInfoByMemberId(memberId)).publishOn(scheduler);
     }
 
     /**
@@ -55,7 +62,7 @@ public class RpcRoleServiceConsumer {
      */
     public Mono<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
         LOGGER.info("List<MemberRoleRelationInfo> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
-        return fromFuture(rpcRoleService.selectRoleInfoByMemberIds(memberIds));
+        return fromFuture(rpcRoleService.selectRoleInfoByMemberIds(memberIds)).publishOn(scheduler);
     }
 
 }

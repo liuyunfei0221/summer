@@ -7,6 +7,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.time.Duration;
@@ -19,7 +20,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/12/23
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcVerifyServiceConsumer {
 
@@ -30,6 +31,12 @@ public class RpcVerifyServiceConsumer {
             @Method(name = "validate", async = true)
     })
     private RpcVerifyService rpcVerifyService;
+
+    private final Scheduler scheduler;
+
+    public RpcVerifyServiceConsumer(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
 
     /**
      * generate pair
@@ -44,7 +51,8 @@ public class RpcVerifyServiceConsumer {
     Mono<VerifyPair> generate(VerifyType type, String key, int length, Boolean toUpperCase, Duration expire) {
         LOGGER.info("Mono<VerifyPair> generate(VerifyType type, String key, int length, Duration expire), type = {}, key = {}, length = {}, expire ={}",
                 key, type, length, expire);
-        return fromFuture(rpcVerifyService.generate(type, key, length, toUpperCase, expire));
+        return fromFuture(rpcVerifyService.generate(type, key, length, toUpperCase, expire))
+                .publishOn(scheduler);
     }
 
     /**
@@ -58,7 +66,7 @@ public class RpcVerifyServiceConsumer {
     Mono<Boolean> validate(VerifyType type, VerifyPair verifyPair, boolean repeatable) {
         LOGGER.info("Mono<Boolean> validate(VerifyType type,VerifyPair verifyPair, boolean repeatable), type = {} verifyPair = {}, repeatable = {}",
                 type, verifyPair, repeatable);
-        return fromFuture(rpcVerifyService.validate(type, verifyPair, repeatable));
+        return fromFuture(rpcVerifyService.validate(type, verifyPair, repeatable)).publishOn(scheduler);
     }
 
 }

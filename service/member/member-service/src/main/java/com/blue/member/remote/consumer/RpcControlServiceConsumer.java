@@ -7,6 +7,7 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import static reactor.core.publisher.Mono.fromFuture;
@@ -18,7 +19,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam", "FieldCanBeLocal"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam", "FieldCanBeLocal", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcControlServiceConsumer {
 
@@ -30,6 +31,12 @@ public class RpcControlServiceConsumer {
                     @Method(name = "insertDefaultMemberRoleRelation", async = false)
             })
     private RpcControlService rpcControlService;
+
+    private final Scheduler scheduler;
+
+    public RpcControlServiceConsumer(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
 
     /**
      * assign default roles to member
@@ -49,7 +56,7 @@ public class RpcControlServiceConsumer {
      */
     public Mono<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByAccess(Access access), access = {}", access);
-        return fromFuture(rpcControlService.getAuthorityByAccess(access));
+        return fromFuture(rpcControlService.getAuthorityByAccess(access)).publishOn(scheduler);
     }
 
     /**
@@ -60,7 +67,7 @@ public class RpcControlServiceConsumer {
      */
     public Mono<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
-        return fromFuture(rpcControlService.getAuthorityByMemberId(memberId));
+        return fromFuture(rpcControlService.getAuthorityByMemberId(memberId)).publishOn(scheduler);
     }
 
 }

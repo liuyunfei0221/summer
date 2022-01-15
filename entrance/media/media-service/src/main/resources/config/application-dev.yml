@@ -150,6 +150,13 @@ executor:
   threadNamePre: blue-summer
 
 
+scheduler:
+  threadCap: 4
+  queuedTaskCap: 4096
+  threadNamePre: blue-summer-scheduler
+  ttlSeconds: 128
+
+
 cache:
   serverMode: SINGLE
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
@@ -281,7 +288,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.203.61:6650 ]
+      services: [ 192.168.0.122:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -338,7 +345,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.203.61:6650 ]
+      services: [ 192.168.0.122:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

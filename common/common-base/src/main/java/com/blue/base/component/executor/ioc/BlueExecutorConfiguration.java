@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.ExecutorService;
 
-import static com.blue.base.component.executor.api.generator.BlueExecutorGenerator.createExecutorService;
+import static com.blue.base.component.executor.api.generator.BlueExecutorGenerator.generateExecutorService;
 
 /**
  * global executor configuration
@@ -22,7 +22,7 @@ public class BlueExecutorConfiguration {
 
     @Bean
     ExecutorService executorService(ExecutorConf executorConf) {
-        return createExecutorService(executorConf);
+        return generateExecutorService(executorConf);
     }
 
 }

@@ -263,6 +263,13 @@ executor:
   threadNamePre: blue-summer
 
 
+scheduler:
+  threadCap: 4
+  queuedTaskCap: 4096
+  threadNamePre: blue-summer-scheduler
+  ttlSeconds: 128
+
+
 curator:
   connectString: 127.0.0.1:2181
   connectionTimeoutMs: 6000
