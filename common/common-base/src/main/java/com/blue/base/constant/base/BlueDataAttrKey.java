@@ -53,6 +53,11 @@ public enum BlueDataAttrKey {
     JWT("jwt"),
 
     /**
+     * public key on server
+     */
+    SEC_KEY("secKey"),
+
+    /**
      * access from jwt with parse
      */
     ACCESS("access"),
@@ -63,9 +68,9 @@ public enum BlueDataAttrKey {
     CLIENT_IP("clientIp"),
 
     /**
-     * public key on server
+     * request user agent
      */
-    SEC_KEY("secKey"),
+    USER_AGENT("userAgent"),
 
     /**
      * Whether it is a requested resource that does not need to be decrypted
