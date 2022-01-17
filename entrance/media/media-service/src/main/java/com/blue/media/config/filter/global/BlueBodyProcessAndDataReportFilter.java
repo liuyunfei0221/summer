@@ -107,9 +107,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         requestEventReporter.report(dataEvent);
     }
 
-    private void packageRequestInfo(DataEvent dataEvent, ServerWebExchange exchange) {
-        Map<String, Object> attributes = exchange.getAttributes();
-
+    private void packageRequestInfo(DataEvent dataEvent, Map<String, Object> attributes) {
         dataEvent.setDataEventType(UNIFIED);
         dataEvent.setStamp(TIME_STAMP_GETTER.get());
 
@@ -169,7 +167,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
     }
 
     private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
-        packageRequestInfo(dataEvent, exchange);
+        packageRequestInfo(dataEvent, exchange.getAttributes());
         return chain.filter(
                 exchange.mutate().response(
                         getResponseAndReport(exchange, dataEvent)
@@ -188,7 +186,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
     };
 
     private Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
-        packageRequestInfo(dataEvent, exchange);
+        packageRequestInfo(dataEvent, exchange.getAttributes());
         return REQUEST_BODY_PROCESSOR_GETTER.apply(request.getHeaders()).processor(request, exchange, chain, requestEventReporter, dataEvent);
     }
 

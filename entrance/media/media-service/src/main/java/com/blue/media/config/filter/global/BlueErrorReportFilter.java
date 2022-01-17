@@ -110,17 +110,15 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
     private void packageAttr(ServerHttpRequest request, Map<String, Object> attributes) {
         String method = request.getMethodValue().intern();
         METHOD_VALUE_ASSERTER.accept(method);
+        SCHEMA_ASSERTER.accept(request.getURI().getScheme());
 
-        String requestId = RANDOM_KEY_GETTER.get();
-        String clientIp = getIp(request);
         String realUri = request.getPath().value();
-        String uri = REST_URI_PROCESSOR.apply(realUri).intern();
 
-        attributes.put(REQUEST_ID.key, requestId);
-        attributes.put(CLIENT_IP.key, clientIp);
+        attributes.put(REQUEST_ID.key, RANDOM_KEY_GETTER.get());
+        attributes.put(CLIENT_IP.key, getIp(request));
         attributes.put(METHOD.key, method);
         attributes.put(REAL_URI.key, realUri);
-        attributes.put(URI.key, uri);
+        attributes.put(URI.key, REST_URI_PROCESSOR.apply(realUri).intern());
 
         ofNullable(request.getHeaders().getFirst(BlueHeader.METADATA.name))
                 .ifPresent(metadata -> attributes.put(METADATA.key, metadata));
@@ -134,8 +132,6 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-
-        SCHEMA_ASSERTER.accept(request.getURI().getScheme());
 
         Map<String, Object> attributes = exchange.getAttributes();
 
