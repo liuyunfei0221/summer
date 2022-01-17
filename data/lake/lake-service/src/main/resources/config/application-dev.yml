@@ -43,7 +43,7 @@ eureka:
 
 data:
   shardingDatabases:
-    - url: jdbc:clickhouse://192.168.203.129:8123/ldap_lake_0
+    - url: jdbc:clickhouse://172.16.201.9:8123/ldap_lake_0
       dataBaseConf:
       username: default
       password: 1024
@@ -57,7 +57,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:clickhouse://192.168.203.129:8123/ldap_lake_1
+    - url: jdbc:clickhouse://172.16.201.9:8123/ldap_lake_1
       dataBaseConf:
       username: default
       password: 1024
@@ -106,6 +106,7 @@ data:
     check.table.metadata.enabled: true
     query.with.cipher.column: false
     xa.transaction.manager.type: Atomikos
+  debugLogging: true
 
 
 mongo:
@@ -229,7 +230,7 @@ redisson:
 producers:
   configs:
     illegalMark:
-      services: [ 192.168.203.129:6650 ]
+      services: [ 172.16.201.9:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -286,7 +287,7 @@ producers:
 consumers:
   configs:
     requestEvent:
-      services: [ 192.168.203.129:6650 ]
+      services: [ 172.16.201.9:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

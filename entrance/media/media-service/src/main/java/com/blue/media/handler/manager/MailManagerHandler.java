@@ -61,7 +61,7 @@ public class MailManagerHandler {
      */
     public Mono<ServerResponse> testMail(ServerRequest serverRequest) {
 
-        mediaMailTest();
+        mailTest();
 
         return just(true)
                 .flatMap(t ->

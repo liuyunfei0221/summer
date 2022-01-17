@@ -112,6 +112,7 @@ data:
     check.table.metadata.enabled: true
     query.with.cipher.column: false
     xa.transaction.manager.type: Atomikos
+  debugLogging: true
 
 
 identity:

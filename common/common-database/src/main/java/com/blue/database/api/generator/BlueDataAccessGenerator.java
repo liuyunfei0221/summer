@@ -102,9 +102,8 @@ public final class BlueDataAccessGenerator {
         ofNullable(dataAccessConf.getConnectionTimeout()).ifPresent(configuration::setDefaultStatementTimeout);
         ofNullable(dataAccessConf.getAutoMappingBehavior()).ifPresent(configuration::setAutoMappingBehavior);
         ofNullable(dataAccessConf.getExecutorType()).ifPresent(configuration::setDefaultExecutorType);
-
-        //TODO Print SQL log during development phase
-        configuration.setLogImpl(StdOutImpl.class);
+        if (ofNullable(dataAccessConf.getDebugLogging()).orElse(false))
+            configuration.setLogImpl(StdOutImpl.class);
 
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
         sqlSessionFactoryBean.setConfiguration(configuration);

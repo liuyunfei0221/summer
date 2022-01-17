@@ -11,8 +11,7 @@ import java.io.Serializable;
 public class OptEvent implements Serializable {
 
     private static final long serialVersionUID = 2594284948929033405L;
-
-
+    
     private Long id;
 
     private String dataEventType;
@@ -42,6 +41,8 @@ public class OptEvent implements Serializable {
     private String access;
 
     private String clientIp;
+
+    private String userAgent;
 
     private String secKey;
 
@@ -173,6 +174,14 @@ public class OptEvent implements Serializable {
         this.clientIp = clientIp;
     }
 
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
     public String getSecKey() {
         return secKey;
     }
@@ -231,6 +240,7 @@ public class OptEvent implements Serializable {
                 ", jwt='" + jwt + '\'' +
                 ", access='" + access + '\'' +
                 ", clientIp='" + clientIp + '\'' +
+                ", userAgent='" + userAgent + '\'' +
                 ", secKey='" + secKey + '\'' +
                 ", requestUnDecryption=" + requestUnDecryption +
                 ", responseUnEncryption=" + responseUnEncryption +

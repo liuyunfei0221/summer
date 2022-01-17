@@ -18,6 +18,7 @@
         <result column="jwt" jdbcType="VARCHAR" property="jwt"/>
         <result column="access" jdbcType="VARCHAR" property="access"/>
         <result column="client_ip" jdbcType="VARCHAR" property="clientIp"/>
+        <result column="user_agent" jdbcType="VARCHAR" property="userAgent"/>
         <result column="sec_key" jdbcType="VARCHAR" property="secKey"/>
         <result column="request_un_decryption" jdbcType="INTEGER" property="requestUnDecryption"/>
         <result column="response_un_encryption" jdbcType="INTEGER" property="responseUnEncryption"/>
@@ -27,9 +28,8 @@
 
     <sql id="Base_Column_List">
         id
-        , data_event_type, stamp, create_date, method, uri, real_uri, request_body, response_status,response_body,
-    request_id, metadata, jwt, access, client_ip, sec_key, request_un_decryption, response_un_encryption, 
-    existence_request_body, existence_response_body
+        , data_event_type, stamp, create_date, method, uri, real_uri, request_body, response_status,response_body,request_id, metadata, jwt,
+        access, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -49,8 +49,8 @@
         insert into opt_event (id, data_event_type, stamp, create_date,
                                method, uri, real_uri,
                                request_body, response_status, response_body, request_id,
-                               metadata, jwt, access,
-                               client_ip, sec_key, request_un_decryption,
+                               metadata, jwt, access, client_ip,
+                               user_agent, sec_key, request_un_decryption,
                                response_un_encryption, existence_request_body,
                                existence_response_body)
         values (#{id,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
@@ -58,9 +58,10 @@
                 #{method,jdbcType=VARCHAR}, #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
                 #{requestBody,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR},
                 #{requestId,jdbcType=VARCHAR}, #{metadata,jdbcType=VARCHAR}, #{jwt,jdbcType=VARCHAR},
-                #{access,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, #{secKey,jdbcType=VARCHAR},
-                #{requestUnDecryption,jdbcType=INTEGER}, #{responseUnEncryption,jdbcType=INTEGER},
-                #{existenceRequestBody,jdbcType=INTEGER}, #{existenceResponseBody,jdbcType=INTEGER})
+                #{access,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
+                #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
+                #{responseUnEncryption,jdbcType=INTEGER}, #{existenceRequestBody,jdbcType=INTEGER},
+                #{existenceResponseBody,jdbcType=INTEGER})
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
@@ -69,8 +70,7 @@
             id, data_event_type, stamp,
             create_date, method, uri, real_uri,
             request_body, response_status,response_body, request_id,
-            metadata, jwt, access,
-            client_ip, sec_key, request_un_decryption,
+            metadata, jwt, access, client_ip, user_agent, sec_key, request_un_decryption,
             response_un_encryption, existence_request_body,
             existence_response_body)
             values
@@ -81,8 +81,8 @@
                 #{method,jdbcType=VARCHAR}, #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
                 #{requestBody,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER},#{responseBody,jdbcType=VARCHAR},
                 #{requestId,jdbcType=VARCHAR},#{metadata,jdbcType=VARCHAR}, #{jwt,jdbcType=VARCHAR},
-                #{access,jdbcType=VARCHAR},#{clientIp,jdbcType=VARCHAR}, #{secKey,jdbcType=VARCHAR},
-                #{requestUnDecryption,jdbcType=INTEGER},#{responseUnEncryption,jdbcType=INTEGER},
+                #{access,jdbcType=VARCHAR},#{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
+                #{secKey,jdbcType=VARCHAR},#{requestUnDecryption,jdbcType=INTEGER},#{responseUnEncryption,jdbcType=INTEGER},
                 #{existenceRequestBody,jdbcType=INTEGER},#{existenceResponseBody,jdbcType=INTEGER}
                 )
             </foreach>
@@ -136,6 +136,9 @@
             </if>
             <if test="clientIp != null">
                 client_ip,
+            </if>
+            <if test="userAgent != null">
+                user_agent,
             </if>
             <if test="secKey != null">
                 sec_key,
@@ -198,6 +201,9 @@
             </if>
             <if test="clientIp != null">
                 #{clientIp,jdbcType=VARCHAR},
+            </if>
+            <if test="userAgent != null">
+                #{userAgent,jdbcType=VARCHAR},
             </if>
             <if test="secKey != null">
                 #{secKey,jdbcType=VARCHAR},
@@ -262,6 +268,9 @@
             <if test="clientIp != null">
                 client_ip = #{clientIp,jdbcType=VARCHAR},
             </if>
+            <if test="userAgent != null">
+                user_agent = #{userAgent,jdbcType=VARCHAR},
+            </if>
             <if test="secKey != null">
                 sec_key = #{secKey,jdbcType=VARCHAR},
             </if>
@@ -297,6 +306,7 @@
             jwt                     = #{jwt,jdbcType=VARCHAR},
             access                  = #{access,jdbcType=VARCHAR},
             client_ip               = #{clientIp,jdbcType=VARCHAR},
+            user_agent              = #{userAgent,jdbcType=VARCHAR},
             sec_key                 = #{secKey,jdbcType=VARCHAR},
             request_un_decryption   = #{requestUnDecryption,jdbcType=INTEGER},
             response_un_encryption  = #{responseUnEncryption,jdbcType=INTEGER},

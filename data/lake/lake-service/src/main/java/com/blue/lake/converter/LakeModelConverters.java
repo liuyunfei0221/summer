@@ -93,6 +93,7 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
         optEvent.setJwt(ofNullable(entries.get(JWT.key)).orElse(""));
         optEvent.setAccess(ofNullable(entries.get(ACCESS.key)).orElse(""));
         optEvent.setClientIp(ofNullable(entries.get(CLIENT_IP.key)).orElse(""));
+        optEvent.setUserAgent(ofNullable(entries.get(USER_AGENT.key)).orElse(""));
         optEvent.setSecKey(ofNullable(entries.get(SEC_KEY.key)).orElse(""));
         optEvent.setRequestUnDecryption(getBoolByBool(ofNullable(entries.get(REQUEST_UN_DECRYPTION.key)).map(Boolean::valueOf).orElse(true)).status);
         optEvent.setResponseUnEncryption(getBoolByBool(ofNullable(entries.get(RESPONSE_UN_ENCRYPTION.key)).map(Boolean::valueOf).orElse(true)).status);

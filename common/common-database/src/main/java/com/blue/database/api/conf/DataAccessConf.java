@@ -149,4 +149,11 @@ public interface DataAccessConf {
      */
     List<UnaryOperator<DataSource>> getProxiesChain();
 
+    /**
+     * show sql log?
+     *
+     * @return
+     */
+    Boolean getDebugLogging();
+
 }

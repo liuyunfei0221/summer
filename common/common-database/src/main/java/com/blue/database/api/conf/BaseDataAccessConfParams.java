@@ -106,6 +106,11 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
      */
     protected Map<String, String> props;
 
+    /**
+     * show sql log?
+     */
+    protected Boolean debugLogging;
+
     public BaseDataAccessConfParams() {
     }
 
@@ -199,6 +204,11 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
         return props;
     }
 
+    @Override
+    public Boolean getDebugLogging() {
+        return debugLogging;
+    }
+
     public void setShardingDatabases(List<ShardingDatabaseAttr> shardingDatabases) {
         this.shardingDatabases = shardingDatabases;
     }
@@ -271,6 +281,10 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
         this.props = props;
     }
 
+    public void setDebugLogging(Boolean debugLogging) {
+        this.debugLogging = debugLogging;
+    }
+
     @Override
     public String toString() {
         return "BaseDataAccessConfParams{" +
@@ -292,6 +306,7 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
                 ", executorType=" + executorType +
                 ", mapperLocation='" + mapperLocation + '\'' +
                 ", props=" + props +
+                ", debugLogging=" + debugLogging +
                 '}';
     }
 
