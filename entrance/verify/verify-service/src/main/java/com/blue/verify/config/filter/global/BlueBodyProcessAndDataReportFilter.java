@@ -78,9 +78,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         requestEventReporter.report(dataEvent);
     }
 
-    private void packageRequestInfo(DataEvent dataEvent, ServerWebExchange exchange) {
-        Map<String, Object> attributes = exchange.getAttributes();
-
+    private void packageRequestInfo(DataEvent dataEvent, Map<String, Object> attributes) {
         dataEvent.setDataEventType(UNIFIED);
         dataEvent.setStamp(TIME_STAMP_GETTER.get());
 
@@ -136,9 +134,17 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         return response;
     }
 
-    public Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
+    private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
+        packageRequestInfo(dataEvent, exchange.getAttributes());
+        return chain.filter(
+                exchange.mutate().response(
+                        getResponseAndReport(exchange, dataEvent)
+                ).build());
+    }
 
-        packageRequestInfo(dataEvent, exchange);
+    private Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
+
+        packageRequestInfo(dataEvent, exchange.getAttributes());
 
         return ServerRequest.create(exchange, httpMessageReaders)
                 .bodyToMono(String.class)
@@ -165,7 +171,12 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         DataEvent dataEvent = new DataEvent();
 
-        return reportWithRequestBody(exchange.getRequest(), exchange, chain, dataEvent);
+        if (ofNullable(exchange.getAttributes().get(EXISTENCE_REQUEST_BODY.key))
+                .map(b -> (boolean) b).orElse(true)) {
+            return reportWithRequestBody(exchange.getRequest(), exchange, chain, dataEvent);
+        } else {
+            return reportWithoutRequestBody(exchange, chain, dataEvent);
+        }
     }
 
     @Override

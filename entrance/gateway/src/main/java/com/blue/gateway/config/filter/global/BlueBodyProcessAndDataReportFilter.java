@@ -89,9 +89,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
         dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionResponse));
     }
 
-    private void packageRequestInfo(DataEvent dataEvent, ServerWebExchange exchange) {
-        Map<String, Object> attributes = exchange.getAttributes();
-
+    private void packageRequestInfo(DataEvent dataEvent, Map<String, Object> attributes) {
         dataEvent.setDataEventType(UNIFIED);
         dataEvent.setStamp(TIME_STAMP_GETTER.get());
 
@@ -155,7 +153,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
     }
 
     private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, GatewayFilterChain chain, DataEvent dataEvent) {
-        packageRequestInfo(dataEvent, exchange);
+        packageRequestInfo(dataEvent, exchange.getAttributes());
         return chain.filter(
                 exchange.mutate().response(
                         getResponseAndReport(exchange, dataEvent)
@@ -170,7 +168,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
         CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(
                 exchange, headers);
 
-        packageRequestInfo(dataEvent, exchange);
+        packageRequestInfo(dataEvent, attributes);
         return fromPublisher(
                 ServerRequest.create(exchange, httpMessageReaders)
                         .bodyToMono(String.class)
