@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import static reactor.util.Loggers.getLogger;
@@ -19,14 +20,18 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Configuration
 public class AuthConfig {
 
     private static final Logger LOGGER = getLogger(AuthConfig.class);
 
+    private final Scheduler scheduler;
+
     private final AuthDeploy authDeploy;
 
-    public AuthConfig(AuthDeploy authDeploy) {
+    public AuthConfig(Scheduler scheduler, AuthDeploy authDeploy) {
+        this.scheduler = scheduler;
         this.authDeploy = authDeploy;
     }
 
@@ -41,7 +46,7 @@ public class AuthConfig {
     @Bean
     AuthInfoCache authInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer) {
         LOGGER.info("jwtDeploy = {}", authDeploy);
-        return new AuthInfoCache(reactiveStringRedisTemplate, authExpireProducer, authDeploy.getRefresherCorePoolSize(),
+        return new AuthInfoCache(reactiveStringRedisTemplate, authExpireProducer, scheduler, authDeploy.getRefresherCorePoolSize(),
                 authDeploy.getRefresherMaximumPoolSize(), authDeploy.getRefresherKeepAliveSeconds(), authDeploy.getRefresherBlockingQueueCapacity(),
                 authDeploy.getGlobalMinExpireMillis(), authDeploy.getLocalExpireMillis(), authDeploy.getLocalCacheCapacity());
     }

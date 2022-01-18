@@ -10,6 +10,7 @@ import com.blue.secure.service.inter.MemberRoleRelationService;
 import com.blue.secure.service.inter.RoleService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -42,9 +43,12 @@ public class RpcRoleServiceProvider implements RpcRoleService {
 
     private final MemberRoleRelationService memberRoleRelationService;
 
-    public RpcRoleServiceProvider(RoleService roleService, MemberRoleRelationService memberRoleRelationService) {
+    private final Scheduler scheduler;
+
+    public RpcRoleServiceProvider(RoleService roleService, MemberRoleRelationService memberRoleRelationService, Scheduler scheduler) {
         this.roleService = roleService;
         this.memberRoleRelationService = memberRoleRelationService;
+        this.scheduler = scheduler;
     }
 
     /**
@@ -56,7 +60,8 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     @Override
     public CompletableFuture<RoleInfo> selectRoleInfoByMemberId(Long memberId) {
         LOGGER.info("CompletableFuture<RoleInfo> selectRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
-        return memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
+        return just(memberId).publishOn(scheduler)
+                .flatMap(memberRoleRelationService::getRoleIdMonoByMemberId)
                 .flatMap(roleIdOpt ->
                         roleIdOpt.map(roleService::getRoleMonoById).orElseGet(() -> error(() -> new BlueException(INVALID_IDENTITY)))
                 )
@@ -74,7 +79,8 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     @Override
     public CompletableFuture<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
         LOGGER.info("CompletableFuture<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
-        return memberRoleRelationService.selectRelationMonoByMemberIds(memberIds)
+        return just(memberIds).publishOn(scheduler)
+                .flatMap(memberRoleRelationService::selectRelationMonoByMemberIds)
                 .flatMap(relations ->
                         roleService.selectRoleMonoByIds(relations.stream().map(MemberRoleRelation::getRoleId).collect(toList()))
                                 .flatMap(roles -> {

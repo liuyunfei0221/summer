@@ -48,8 +48,9 @@ public class MailManagerHandler {
 
     private static final List<String> RECEIVERS = Stream.of(
             "liuyunfei19890221@gmail.com",
-            "liuyunfei19890221@163.com"
-//            "asdfwefsadfwerqwerwqer@@gmail.com"
+            "liuyunfei198902210221@163.com",
+            "liuyunfei19890221@163.com",
+            "yunfei.liu@dreamisland.ai"
     ).collect(toList());
 
 
@@ -75,8 +76,14 @@ public class MailManagerHandler {
                 .from("blue", FROM)
                 .toWithFixedName("darkBlue", RECEIVERS)
                 .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
+
+                .withDispositionNotificationTo(FROM)
+                .withReturnReceiptTo(FROM)
+
                 .withSubject("hello world")
                 .withHTMLText("Please view this email in a modern email client!");
+
+        //测试已读等
 
         mailSender.signWithDomainKey(builder);
 

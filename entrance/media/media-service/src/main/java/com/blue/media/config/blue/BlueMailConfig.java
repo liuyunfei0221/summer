@@ -28,8 +28,7 @@ public class BlueMailConfig extends MailConfParams {
     @Override
     public EmailValidator getEmailValidator() {
         return JMail.strictValidator()
-                .requireOnlyTopLevelDomains(TOP_LEVEL_DOMAINS)
-                .withRule(email -> true);
+                .requireOnlyTopLevelDomains(TOP_LEVEL_DOMAINS);
     }
 
 }

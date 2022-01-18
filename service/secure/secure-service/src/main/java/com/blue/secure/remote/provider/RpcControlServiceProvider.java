@@ -7,10 +7,12 @@ import com.blue.secure.service.inter.ControlService;
 import com.blue.secure.service.inter.SecureService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
 
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 
@@ -34,9 +36,12 @@ public class RpcControlServiceProvider implements RpcControlService {
 
     private final SecureService secureService;
 
-    public RpcControlServiceProvider(ControlService controlService, SecureService secureService) {
+    private final Scheduler scheduler;
+
+    public RpcControlServiceProvider(ControlService controlService, SecureService secureService, Scheduler scheduler) {
         this.controlService = controlService;
         this.secureService = secureService;
+        this.scheduler = scheduler;
     }
 
     /**
@@ -73,7 +78,7 @@ public class RpcControlServiceProvider implements RpcControlService {
     @Override
     public CompletableFuture<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByAccess(Access access), access = {}", access);
-        return secureService.getAuthorityMonoByAccess(access).toFuture();
+        return just(access).publishOn(scheduler).flatMap(secureService::getAuthorityMonoByAccess).toFuture();
     }
 
     /**
@@ -85,7 +90,7 @@ public class RpcControlServiceProvider implements RpcControlService {
     @Override
     public CompletableFuture<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
-        return secureService.getAuthorityMonoByMemberId(memberId).toFuture();
+        return just(memberId).publishOn(scheduler).flatMap(secureService::getAuthorityMonoByMemberId).toFuture();
     }
 
 }

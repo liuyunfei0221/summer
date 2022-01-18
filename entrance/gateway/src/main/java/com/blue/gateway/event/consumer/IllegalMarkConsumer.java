@@ -5,7 +5,7 @@ import com.blue.base.model.base.IllegalMarkEvent;
 import com.blue.gateway.component.IllegalAsserter;
 import com.blue.gateway.config.blue.BlueConsumerConfig;
 import com.blue.pulsar.common.BluePulsarConsumer;
-import com.google.gson.JsonSyntaxException;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -15,7 +15,7 @@ import static com.blue.base.constant.base.BlueTopic.ILLEGAL_MARK;
 import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
-import static java.util.Optional.ofNullable;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -29,28 +29,27 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
 
     private final IllegalAsserter illegalAsserter;
 
+    private final Scheduler scheduler;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private BluePulsarConsumer<IllegalMarkEvent> illegalMarkEventConsumer;
 
-    public IllegalMarkConsumer(IllegalAsserter illegalAsserter, BlueConsumerConfig blueConsumerConfig) {
+    public IllegalMarkConsumer(IllegalAsserter illegalAsserter, Scheduler scheduler, BlueConsumerConfig blueConsumerConfig) {
         this.illegalAsserter = illegalAsserter;
+        this.scheduler = scheduler;
         this.blueConsumerConfig = blueConsumerConfig;
     }
 
     @PostConstruct
     private void init() {
         Consumer<IllegalMarkEvent> illegalMarkEventDataConsumer = illegalMarkEvent ->
-                ofNullable(illegalMarkEvent)
-                        .ifPresent(ime -> {
-                            LOGGER.info("illegalMarkEventDataConsumer received, ime = {}", ime);
-                            try {
-                                illegalAsserter.handleIllegalMarkEvent(ime).subscribe(b ->
-                                        LOGGER.warn("mark jwt or ip -> SUCCESS, ime = {}, b = {}", ime, b));
-                            } catch (JsonSyntaxException e) {
-                                LOGGER.error("mark jwt or ip -> FAILED,ime = {}", ime);
-                            }
-                        });
+                just(illegalMarkEvent)
+                        .publishOn(scheduler)
+                        .flatMap(illegalAsserter::handleIllegalMarkEvent)
+                        .doOnError(t -> LOGGER.error("mark jwt or ip -> FAILED,illegalMarkEvent = {}, t = {}", illegalMarkEvent, t))
+                        .subscribe(b ->
+                                LOGGER.warn("mark jwt or ip -> SUCCESS, illegalMarkEvent = {}, b = {}", illegalMarkEvent, b));
 
         this.illegalMarkEventConsumer = generateConsumer(blueConsumerConfig.getByKey(ILLEGAL_MARK.name), illegalMarkEventDataConsumer);
     }

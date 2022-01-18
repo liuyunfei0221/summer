@@ -11,6 +11,7 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.function.Function;
@@ -32,13 +33,17 @@ import static reactor.core.publisher.Mono.error;
  *
  * @author DarkBlue
  */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Component
 public final class BlueRateLimitFilter implements WebFilter, Ordered {
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    public BlueRateLimitFilter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, RateLimiterDeploy rateLimiterDeploy) {
+    private final Scheduler scheduler;
+
+    public BlueRateLimitFilter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, RateLimiterDeploy rateLimiterDeploy) {
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
+        this.scheduler = scheduler;
 
         REPLENISH_RATE = valueOf(rateLimiterDeploy.getReplenishRate());
         BURST_CAPACITY = valueOf(rateLimiterDeploy.getBurstCapacity());
@@ -69,6 +74,7 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return REQUEST_IDENTITY_GETTER.apply(exchange.getRequest())
                 .flatMap(ALLOWED_GETTER)
+                .publishOn(scheduler)
                 .flatMap(a ->
                         a ? chain.filter(exchange) : error(() -> new BlueException(TOO_MANY_REQUESTS))
                 );

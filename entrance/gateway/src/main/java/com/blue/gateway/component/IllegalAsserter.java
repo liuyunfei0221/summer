@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import static com.blue.base.constant.base.Symbol.WILDCARD;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.*;
+import static reactor.util.Loggers.getLogger;
 
 /**
  * illegal request asserter
@@ -38,6 +40,8 @@ import static reactor.core.publisher.Mono.*;
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Component
 public final class IllegalAsserter {
+
+    private static final Logger LOGGER = getLogger(IllegalAsserter.class);
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
@@ -172,6 +176,7 @@ public final class IllegalAsserter {
      * @param event
      */
     public Mono<Boolean> handleIllegalMarkEvent(IllegalMarkEvent event) {
+        LOGGER.info("Mono<Boolean> handleIllegalMarkEvent(IllegalMarkEvent event), event = {}", event);
         return ILLEGAL_MARKER.apply(event);
     }
 

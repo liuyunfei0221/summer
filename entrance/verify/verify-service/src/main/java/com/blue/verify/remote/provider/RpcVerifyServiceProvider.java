@@ -7,11 +7,13 @@ import com.blue.verify.api.model.VerifyPair;
 import com.blue.verify.service.inter.VerifyService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -30,8 +32,11 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
 
     private final VerifyService verifyService;
 
-    public RpcVerifyServiceProvider(VerifyService verifyService) {
+    private final Scheduler scheduler;
+
+    public RpcVerifyServiceProvider(VerifyService verifyService, Scheduler scheduler) {
         this.verifyService = verifyService;
+        this.scheduler = scheduler;
     }
 
     /**
@@ -48,7 +53,7 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
     public CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase, Duration expire) {
         LOGGER.info("CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase, Duration expire), type = {}, key = {}, length = {}, toUpperCase = {}, expire = {}",
                 type, key, length, toUpperCase, expire);
-        return verifyService.generate(type, key, length, toUpperCase, expire).toFuture();
+        return just(true).publishOn(scheduler).flatMap(v -> verifyService.generate(type, key, length, toUpperCase, expire)).toFuture();
     }
 
     /**
@@ -62,7 +67,7 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
     public CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, boolean repeatable) {
         LOGGER.info("CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, boolean repeatable), type = {}, verifyPair = {}, repeatable = {}",
                 type, verifyPair, repeatable);
-        return verifyService.validate(type, verifyPair, repeatable).toFuture();
+        return just(true).publishOn(scheduler).flatMap(v -> verifyService.validate(type, verifyPair, repeatable)).toFuture();
     }
 
 }

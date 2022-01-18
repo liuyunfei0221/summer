@@ -125,6 +125,7 @@ data:
     xa.transaction.manager.type: Atomikos
   debugLogging: true
 
+
 identity:
   dataCenter: 0
   worker: 0

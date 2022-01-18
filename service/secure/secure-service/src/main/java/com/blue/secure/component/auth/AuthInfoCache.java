@@ -9,6 +9,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.time.Duration;
@@ -42,6 +43,8 @@ public final class AuthInfoCache {
 
     private AuthExpireProducer authExpireProducer;
 
+    private Scheduler scheduler;
+
     private ExecutorService executorService;
 
     /**
@@ -68,7 +71,7 @@ public final class AuthInfoCache {
     private static final int RANDOM_LEN = 4;
 
     public AuthInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer,
-                         Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
+                         Scheduler scheduler, Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
                          Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
 
         assertConf(reactiveStringRedisTemplate, authExpireProducer,
@@ -77,6 +80,7 @@ public final class AuthInfoCache {
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.authExpireProducer = authExpireProducer;
+        this.scheduler = scheduler;
 
         ThreadFactory threadFactory = r -> {
             Thread thread = new Thread(r, THREAD_NAME_PRE + RandomStringUtils.randomAlphabetic(RANDOM_LEN));
@@ -131,7 +135,7 @@ public final class AuthInfoCache {
                     if (!"".equals(authInfo))
                         REDIS_AUTH_REFRESHER.accept(keyId, authInfo);
                     return just(authInfo);
-                });
+                }).publishOn(scheduler);
     };
 
     /**
@@ -142,7 +146,7 @@ public final class AuthInfoCache {
      */
     public Mono<String> getAuthInfo(String keyId) {
         return isNotBlank(keyId) ?
-                justOrEmpty(CACHE.getIfPresent(keyId)).switchIfEmpty(REDIS_AUTH_GETTER.apply(keyId))
+                justOrEmpty(CACHE.getIfPresent(keyId)).switchIfEmpty(REDIS_AUTH_GETTER.apply(keyId)).publishOn(scheduler)
                 :
                 error(() -> new BlueException(UNAUTHORIZED));
     }
@@ -157,6 +161,7 @@ public final class AuthInfoCache {
         LOGGER.info("setAuthInfo(), keyId = {},authInfo = {}", keyId, authInfo);
         return reactiveStringRedisTemplate.opsForValue()
                 .set(keyId, authInfo, globalExpireDuration)
+                .publishOn(scheduler)
                 .onErrorResume(throwable -> {
                     LOGGER.error("setAuthInfo(String keyId, String authInfo) failed, throwable = {}", throwable);
                     return just(false);
@@ -174,7 +179,7 @@ public final class AuthInfoCache {
                 .flatMap(l -> {
                     CACHE.invalidate(keyId);
                     return just(l > 0L);
-                });
+                }).publishOn(scheduler);
     }
 
     /**
@@ -187,9 +192,9 @@ public final class AuthInfoCache {
         try {
             if (isNotBlank(keyId))
                 CACHE.invalidate(keyId);
-            return just(true);
+            return just(true).publishOn(scheduler);
         } catch (Exception e) {
-            return just(false);
+            return just(false).publishOn(scheduler);
         }
     }
 

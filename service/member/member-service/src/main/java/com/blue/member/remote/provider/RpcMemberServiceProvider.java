@@ -7,6 +7,7 @@ import com.blue.member.service.inter.MemberBasicService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -36,8 +37,11 @@ public class RpcMemberServiceProvider implements RpcMemberService {
 
     private final MemberBasicService memberBasicService;
 
-    public RpcMemberServiceProvider(MemberBasicService memberBasicService) {
+    private final Scheduler scheduler;
+
+    public RpcMemberServiceProvider(MemberBasicService memberBasicService, Scheduler scheduler) {
         this.memberBasicService = memberBasicService;
+        this.scheduler = scheduler;
     }
 
     /**
@@ -49,7 +53,8 @@ public class RpcMemberServiceProvider implements RpcMemberService {
     @Override
     public CompletableFuture<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id) {
         LOGGER.info("CompletableFuture<Optional<MemberBasicInfo>> selectMemberBasicMonoByPrimaryKey(Long id), id = {},", id);
-        return memberBasicService.selectMemberBasicMonoByPrimaryKey(id)
+        return just(id).publishOn(scheduler)
+                .flatMap(memberBasicService::selectMemberBasicMonoByPrimaryKey)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))
@@ -65,7 +70,8 @@ public class RpcMemberServiceProvider implements RpcMemberService {
     @Override
     public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids) {
         LOGGER.info("CompletableFuture<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids), ids = {},", ids);
-        return memberBasicService.selectMemberBasicMonoByIds(ids)
+        return just(ids).publishOn(scheduler)
+                .flatMap(memberBasicService::selectMemberBasicMonoByIds)
                 .flatMap(l -> just(l.stream().map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .collect(toList())))
                 .toFuture();
@@ -80,7 +86,8 @@ public class RpcMemberServiceProvider implements RpcMemberService {
     @Override
     public CompletableFuture<MemberBasicInfo> selectMemberBasicByPhone(String phone) {
         LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicByPhone(String phone), phone = {},", phone);
-        return memberBasicService.selectMemberBasicMonoByPhone(phone)
+        return just(phone).publishOn(scheduler)
+                .flatMap(memberBasicService::selectMemberBasicMonoByPhone)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))
@@ -96,7 +103,8 @@ public class RpcMemberServiceProvider implements RpcMemberService {
     @Override
     public CompletableFuture<MemberBasicInfo> selectMemberBasicByEmail(String email) {
         LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicByEmail(String email), email = {},", email);
-        return memberBasicService.selectMemberBasicMonoByEmail(email)
+        return just(email).publishOn(scheduler)
+                .flatMap(memberBasicService::selectMemberBasicMonoByEmail)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))

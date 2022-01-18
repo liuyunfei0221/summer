@@ -7,10 +7,12 @@ import com.blue.secure.api.model.AuthAsserted;
 import com.blue.secure.service.inter.SecureService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
 
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 
@@ -32,8 +34,11 @@ public class RpcSecureServiceProvider implements RpcSecureService {
 
     private final SecureService secureService;
 
-    public RpcSecureServiceProvider(SecureService secureService) {
+    private final Scheduler scheduler;
+
+    public RpcSecureServiceProvider(SecureService secureService, Scheduler scheduler) {
         this.secureService = secureService;
+        this.scheduler = scheduler;
     }
 
     /**
@@ -45,7 +50,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<AuthAsserted> assertAuth(AssertAuth assertAuth) {
         LOGGER.info("CompletableFuture<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", assertAuth);
-        return secureService.assertAuthMono(assertAuth).toFuture();
+        return just(assertAuth).publishOn(scheduler).flatMap(secureService::assertAuthMono).toFuture();
     }
 
     /**
@@ -57,7 +62,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<Boolean> invalidAuthByAccess(Access access) {
         LOGGER.info("CompletableFuture<Boolean> invalidAuthByAccess(Access access), access = {}", access);
-        return secureService.invalidAuthByAccess(access).toFuture();
+        return just(access).publishOn(scheduler).flatMap(secureService::invalidAuthByAccess).toFuture();
     }
 
     /**
@@ -69,7 +74,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<Boolean> invalidAuthByJwt(String jwt) {
         LOGGER.info("CompletableFuture<Boolean> invalidAuthByJwt(String jwt), jwt = {}", jwt);
-        return secureService.invalidAuthByJwt(jwt).toFuture();
+        return just(jwt).publishOn(scheduler).flatMap(secureService::invalidAuthByJwt).toFuture();
     }
 
     /**
@@ -81,7 +86,7 @@ public class RpcSecureServiceProvider implements RpcSecureService {
     @Override
     public CompletableFuture<Boolean> invalidAuthByMemberId(Long memberId) {
         LOGGER.info("CompletableFuture<Boolean> invalidAuthByMemberId(Long memberId), memberId = {}", memberId);
-        return secureService.invalidAuthByMemberId(memberId).toFuture();
+        return just(memberId).flatMap(secureService::invalidAuthByMemberId).toFuture();
     }
 
 }
