@@ -1,6 +1,6 @@
 package com.blue.secure.service.impl;
 
-import com.blue.base.common.base.Asserter;
+import com.blue.base.common.base.Check;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.Asserter.*;
+import static com.blue.base.common.base.Check.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
@@ -200,10 +200,10 @@ public class RoleServiceImpl implements RoleService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
 
         if (isNotNull(roleMapper.selectByName(name)))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exists");
+            throw new BlueException(ROLE_NAME_ALREADY_EXIST);
 
         if (isNotNull(roleMapper.selectByLevel(rip.getLevel())))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The level already exists");
+            throw new BlueException(ROLE_LEVEL_ALREADY_EXIST);
     };
 
     /**
@@ -215,12 +215,12 @@ public class RoleServiceImpl implements RoleService {
             throw new BlueException(INVALID_IDENTITY);
 
         ofNullable(rup.getName())
-                .filter(Asserter::isNotBlank)
+                .filter(Check::isNotBlank)
                 .map(roleMapper::selectByName)
                 .map(Role::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exist");
+                        throw new BlueException(ROLE_NAME_ALREADY_EXIST);
                 });
 
         ofNullable(rup.getLevel())
@@ -228,7 +228,7 @@ public class RoleServiceImpl implements RoleService {
                 .map(Role::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The level already exist");
+                        throw new BlueException(ROLE_LEVEL_ALREADY_EXIST);
                 });
 
         Role role = roleMapper.selectByPrimaryKey(id);
@@ -256,6 +256,12 @@ public class RoleServiceImpl implements RoleService {
         String description = p.getDescription();
         if (isNotBlank(description) && !description.equals(t.getDescription())) {
             t.setDescription(description);
+            alteration = true;
+        }
+
+        Integer level = p.getLevel();
+        if (isNotNull(level) && !level.equals(t.getLevel())) {
+            t.setLevel(level);
             alteration = true;
         }
 
@@ -318,7 +324,7 @@ public class RoleServiceImpl implements RoleService {
             return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
         }
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data has no change");
+        throw new BlueException(DATA_HAS_NOT_CHANGED);
     }
 
     /**

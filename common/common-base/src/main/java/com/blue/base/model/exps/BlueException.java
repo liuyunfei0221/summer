@@ -130,7 +130,7 @@ public final class BlueException extends RuntimeException {
                 "status=" + status +
                 ", code=" + code +
                 ", message='" + message + '\'' +
-                ", replacements=" + Arrays.toString(replacements) +
+                (replacements == null ? "" : ", replacements=" + Arrays.toString(replacements)) +
                 '}';
     }
 }

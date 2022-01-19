@@ -1,6 +1,6 @@
 package com.blue.secure.service.impl;
 
-import com.blue.base.common.base.Asserter;
+import com.blue.base.common.base.Check;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -28,7 +28,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.Asserter.*;
+import static com.blue.base.common.base.Check.*;
 import static com.blue.base.common.base.CommonFunctions.REST_URI_ASSERTER;
 import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
@@ -137,8 +137,11 @@ public class ResourceServiceImpl implements ResourceService {
         if (isBlank(description))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
 
-        if (isNotNull(resourceMapper.selectByName(name)) || isNotNull(resourceMapper.selectByUnique(requestMethod.toUpperCase(), module.toLowerCase(), uri.toLowerCase())))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_ALREADY_EXIST.message);
+        if (isNotNull(resourceMapper.selectByName(name)))
+            throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
+
+        if (isNotNull(resourceMapper.selectByUnique(requestMethod.toUpperCase(), module.toLowerCase(), uri.toLowerCase())))
+            throw new BlueException(RESOURCE_FEATURE_ALREADY_EXIST);
     };
 
     /**
@@ -150,12 +153,12 @@ public class ResourceServiceImpl implements ResourceService {
             throw new BlueException(INVALID_IDENTITY);
 
         ofNullable(rup.getName())
-                .filter(Asserter::isNotBlank)
+                .filter(Check::isNotBlank)
                 .map(resourceMapper::selectByName)
                 .map(Resource::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The name already exist");
+                        throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
                 });
 
         Resource resource = resourceMapper.selectByPrimaryKey(id);
@@ -163,17 +166,17 @@ public class ResourceServiceImpl implements ResourceService {
             throw new BlueException(DATA_NOT_EXIST);
 
         ofNullable(resourceMapper.selectByUnique(
-                ofNullable(rup.getRequestMethod()).filter(Asserter::isNotBlank).map(String::trim).map(String::toUpperCase).orElseGet(resource::getRequestMethod),
-                ofNullable(rup.getModule()).filter(Asserter::isNotBlank).map(String::trim).map(String::toLowerCase).orElseGet(resource::getModule),
-                ofNullable(rup.getUri()).filter(Asserter::isNotBlank).map(String::trim).map(String::toLowerCase).map(uri -> {
+                ofNullable(rup.getRequestMethod()).filter(Check::isNotBlank).map(String::trim).map(String::toUpperCase).orElseGet(resource::getRequestMethod),
+                ofNullable(rup.getModule()).filter(Check::isNotBlank).map(String::trim).map(String::toLowerCase).orElseGet(resource::getModule),
+                ofNullable(rup.getUri()).filter(Check::isNotBlank).map(String::trim).map(String::toLowerCase).map(uri -> {
                     REST_URI_ASSERTER.accept(uri);
                     return uri;
                 }).orElseGet(resource::getUri))
         )
                 .map(Resource::getId)
-                .ifPresent(eid -> {
-                    if (!id.equals(eid))
-                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, DATA_ALREADY_EXIST.message);
+                .ifPresent(rid -> {
+                    if (!id.equals(rid))
+                        throw new BlueException(RESOURCE_FEATURE_ALREADY_EXIST);
                 });
 
         return resource;
@@ -309,7 +312,7 @@ public class ResourceServiceImpl implements ResourceService {
             return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
         }
 
-        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data has no change");
+        throw new BlueException(DATA_HAS_NOT_CHANGED);
     }
 
     /**

@@ -6,7 +6,7 @@ import com.blue.analyze.common.marker.StatisticsMarker;
 import com.blue.analyze.service.inter.MemberActiveStatisticsService;
 import org.springframework.stereotype.Service;
 
-import static com.blue.base.common.base.Asserter.isValidIdentity;
+import static com.blue.base.common.base.Check.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.analyze.StatisticsType.MEMBER_ACTIVE;
 

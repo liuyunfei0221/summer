@@ -16,8 +16,8 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Optional;
 
-import static com.blue.base.common.base.Asserter.isEmpty;
-import static com.blue.base.common.base.Asserter.isInvalidIdentity;
+import static com.blue.base.common.base.Check.isEmpty;
+import static com.blue.base.common.base.Check.isInvalidIdentity;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
@@ -65,12 +65,12 @@ public class ControlServiceImpl implements ControlService {
     private Role getRoleByMemberId(Long memberId) {
         return memberRoleRelationService.getRoleIdByMemberId(memberId)
                 .map(roleService::getRoleById).filter(Optional::isPresent).map(Optional::get)
-                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST.status, DATA_NOT_EXIST.code, "operator has no role"));
+                .orElseThrow(() -> new BlueException(MEMBER_NOT_HAS_A_ROLE));
     }
 
     private void assertRoleLevelForOperate(int tarLevel, int operatorLevel) {
         if (tarLevel <= operatorLevel)
-            throw new BlueException(FORBIDDEN.status, FORBIDDEN.code, FORBIDDEN.message);
+            throw new BlueException(FORBIDDEN);
     }
 
     /**
@@ -349,11 +349,11 @@ public class ControlServiceImpl implements ControlService {
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), operatorRoleLevel);
         assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), operatorRoleLevel);
 
-        return fromRunnable(() -> {
+        return defer(() -> {
             memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
             secureService.refreshMemberRoleById(memberId, roleId, operatorId);
-        })
-                .flatMap(v -> this.selectAuthorityMonoByRoleId(roleId));
+            return just(true);
+        }).flatMap(v -> this.selectAuthorityMonoByRoleId(roleId));
     }
 
 }

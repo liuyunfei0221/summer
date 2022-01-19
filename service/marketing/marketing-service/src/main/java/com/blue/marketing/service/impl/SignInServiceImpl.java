@@ -1,7 +1,7 @@
 package com.blue.marketing.service.impl;
 
-import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.base.BlueCacheKey;
+import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.base.Symbol;
 import com.blue.base.model.base.KeyExpireParam;
 import com.blue.base.model.exps.BlueException;
@@ -30,14 +30,12 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.Asserter.isEmpty;
-import static com.blue.base.common.base.Asserter.isInvalidIdentity;
+import static com.blue.base.common.base.Check.isEmpty;
+import static com.blue.base.common.base.Check.isInvalidIdentity;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
-import static com.blue.marketing.constant.MarketingCommonException.REPEAT_SIGN_IN_EXP;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.nio.ByteBuffer.wrap;
@@ -181,6 +179,7 @@ public class SignInServiceImpl implements SignInService {
     }
 
     private static final long MARK_BIT = 1L;
+    private static final int DAY_0F_MONTH_START = 1;
 
     private static final int FLUX_ELEMENT_INDEX = 0, LIST_ELEMENT_INDEX = 0;
 
@@ -210,7 +209,7 @@ public class SignInServiceImpl implements SignInService {
         boolean signed;
         long bit = 1L;
 
-        for (int d = lengthOfMonth; d > 0; d--) {
+        for (int d = lengthOfMonth; d >= DAY_0F_MONTH_START; d--) {
             signed = (record & bit) != 0L;
             bit <<= 1;
 
@@ -230,7 +229,7 @@ public class SignInServiceImpl implements SignInService {
      */
     @Override
     public Mono<SignInReward> insertSignIn(Long memberId) {
-        LOGGER.info("insertSignIn(Long memberId), memberId = {}", memberId);
+        LOGGER.info("Mono<SignInReward> insertSignIn(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -244,36 +243,36 @@ public class SignInServiceImpl implements SignInService {
         LOGGER.info("key = {}, year = {}, month = {}, dayOfMonth = {}", key, year, month, dayOfMonth);
 
         return BITMAP_BIT_GETTER.apply(key, (long) dayOfMonth)
-                .flatMap(b -> {
-                    if (b)
-                        return error(REPEAT_SIGN_IN_EXP.exp);
+                .flatMap(b ->
+                        b ?
+                                error(new BlueException(REPEAT_SIGN_IN))
+                                :
+                                BITMAP_TRUE_BIT_SETTER.apply(key, (long) dayOfMonth)
+                                        .flatMap(f -> {
+                                            if (f)
+                                                return error(new BlueException(REPEAT_SIGN_IN));
 
-                    return BITMAP_TRUE_BIT_SETTER.apply(key, (long) dayOfMonth)
-                            .flatMap(f -> {
-                                if (f)
-                                    return error(REPEAT_SIGN_IN_EXP.exp);
+                                            try {
+                                                signExpireProducer.send(new KeyExpireParam(key, (long) (MAX_EXPIRE_DAYS_FOR_SIGN - dayOfMonth), EXPIRE_UNIT));
+                                            } catch (Exception e) {
+                                                LOGGER.error("sign in key expire failed, key = {}, expire = {}, e = {}", key, (MAX_EXPIRE_DAYS_FOR_SIGN - dayOfMonth), e);
+                                            }
 
-                                try {
-                                    signExpireProducer.send(new KeyExpireParam(key, (long) (MAX_EXPIRE_DAYS_FOR_SIGN - dayOfMonth), EXPIRE_UNIT));
-                                } catch (Exception e) {
-                                    LOGGER.error("sign in key expire failed, key = {}, expire = {}, e = {}", key, (MAX_EXPIRE_DAYS_FOR_SIGN - dayOfMonth), e);
-                                }
-
-                                return just(getDayReward(year, month, dayOfMonth));
-                            })
-                            .flatMap(signInReward -> {
-                                try {
-                                    LOGGER.info("sign in success, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}",
-                                            memberId, year, month, dayOfMonth, signInReward);
-                                    marketingEventProducer.send(new MarketingEvent(SIGN_IN_REWARD, memberId,
-                                            GSON.toJson(new SignRewardEvent(memberId, year, month, dayOfMonth, signInReward)), TIME_STAMP_GETTER.get()));
-                                } catch (Exception e) {
-                                    LOGGER.info("sign in failed, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}, e = {}",
-                                            memberId, year, month, dayOfMonth, signInReward, e);
-                                }
-                                return just(signInReward);
-                            });
-                });
+                                            return just(getDayReward(year, month, dayOfMonth));
+                                        })
+                                        .flatMap(signInReward -> {
+                                            try {
+                                                LOGGER.info("sign in success, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}",
+                                                        memberId, year, month, dayOfMonth, signInReward);
+                                                marketingEventProducer.send(new MarketingEvent(SIGN_IN_REWARD, memberId,
+                                                        GSON.toJson(new SignRewardEvent(memberId, year, month, dayOfMonth, signInReward)), TIME_STAMP_GETTER.get()));
+                                            } catch (Exception e) {
+                                                LOGGER.error("marketingEventProducer send sign event failed, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}, e = {}",
+                                                        memberId, year, month, dayOfMonth, signInReward, e);
+                                            }
+                                            return just(signInReward);
+                                        })
+                );
     }
 
     /**
@@ -284,12 +283,10 @@ public class SignInServiceImpl implements SignInService {
      */
     @Override
     public Mono<MonthSignInRewardRecord> getSignInRecord(Long memberId) {
-        LOGGER.info("getSignInRecord(Long memberId), memberId = {}", memberId);
+        LOGGER.info("Mono<MonthSignInRewardRecord> getSignInRecord(Long memberId), memberId = {}", memberId);
 
         LocalDate now = LocalDate.now();
         int lengthOfMonth = now.lengthOfMonth();
-
-        LOGGER.info("memberId = {}, lengthOfMonth = {}", memberId, lengthOfMonth);
 
         return BITMAP_LIMIT_GETTER.apply(generateSignKey(memberId, now.getYear(), now.getMonthValue()), lengthOfMonth)
                 .flatMap(record -> {

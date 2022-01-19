@@ -1,6 +1,6 @@
 server:
   #  address: 172.30.128.25
-  port: 53000
+  port: 53050
   netty:
     connection-timeout: 6s
     h2c-max-content-length: 0B
@@ -43,7 +43,7 @@ eureka:
 
 data:
   shardingDatabases:
-    - url: jdbc:clickhouse://192.168.0.125:8123/ldap_lake_0
+    - url: jdbc:clickhouse://172.16.201.9:8123/ldap_lake_0
       dataBaseConf:
       username: default
       password: 1024
@@ -57,7 +57,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:clickhouse://192.168.0.125:8123/ldap_lake_1
+    - url: jdbc:clickhouse://172.16.201.9:8123/ldap_lake_1
       dataBaseConf:
       username: default
       password: 1024
@@ -230,7 +230,7 @@ redisson:
 producers:
   configs:
     illegalMark:
-      services: [ 192.168.0.125:6650 ]
+      services: [ 172.16.201.9:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -287,7 +287,7 @@ producers:
 consumers:
   configs:
     requestEvent:
-      services: [ 192.168.0.125:6650 ]
+      services: [ 172.16.201.9:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

@@ -205,7 +205,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        FROM role_res_relation FORCE INDEX(idx_role_res)
+        role_res_relation FORCE INDEX(idx_role_res)
         WHERE
         role_id = #{roleId,jdbcType=BIGINT}
         LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
@@ -223,7 +223,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        FROM role_res_relation FORCE INDEX(idx_res_role)
+        role_res_relation FORCE INDEX(idx_res_role)
         WHERE
         res_id = #{resId,jdbcType=BIGINT}
         LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
@@ -252,7 +252,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        FROM role_res_relation FORCE INDEX(idx_res_role)
+        role_res_relation FORCE INDEX(idx_res_role)
         WHERE
         res_id = #{resId,jdbcType=BIGINT}
         AND

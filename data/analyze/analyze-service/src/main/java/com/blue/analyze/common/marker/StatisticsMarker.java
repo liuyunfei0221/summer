@@ -16,7 +16,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.Asserter.isNotBlank;
+import static com.blue.base.common.base.Check.isNotBlank;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;

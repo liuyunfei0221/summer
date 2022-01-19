@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.Asserter.isNull;
+import static com.blue.base.common.base.Check.isNull;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.ConstantProcessor.getBulletinTypeByIdentity;
 import static com.blue.base.constant.base.BlueCacheKey.PORTALS_PRE;
@@ -66,8 +66,6 @@ public class PortalServiceImpl implements PortalService {
 
     private final RedissonClient redissonClient;
 
-    private final BlueRedisConfig blueRedisConfig;
-
     private static long redisExpire;
 
     private final static TimeUnit EXPIRE_UNIT = TimeUnit.SECONDS;
@@ -79,7 +77,6 @@ public class PortalServiceImpl implements PortalService {
         this.executorService = executorService;
         this.stringRedisTemplate = stringRedisTemplate;
         this.redissonClient = redissonClient;
-        this.blueRedisConfig = blueRedisConfig;
 
         redisExpire = blueRedisConfig.getEntryTtl();
         CaffeineConf caffeineConf = new CaffeineConfParams(

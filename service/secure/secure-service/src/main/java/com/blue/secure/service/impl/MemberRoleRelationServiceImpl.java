@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.Asserter.*;
+import static com.blue.base.common.base.Check.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -156,7 +156,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         try {
             MemberRoleRelation existRelation = memberRoleRelationMapper.getByMemberId(memberId);
             if (isNotNull(existRelation))
-                throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE.status, MEMBER_ALREADY_HAS_A_ROLE.code, MEMBER_ALREADY_HAS_A_ROLE.message);
+                throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE.status);
 
             memberRoleRelationMapper.insertSelective(memberRoleRelation);
 //            if (1 == 1) {
@@ -197,7 +197,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         try {
             MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getByMemberId(memberId);
             if (isNull(memberRoleRelation))
-                throw new BlueException(MEMBER_NOT_HAS_A_ROLE.status, MEMBER_NOT_HAS_A_ROLE.code, MEMBER_NOT_HAS_A_ROLE.message);
+                throw new BlueException(MEMBER_NOT_HAS_A_ROLE.status);
 
             memberRoleRelation.setRoleId(roleId);
             memberRoleRelation.setUpdateTime(TIME_STAMP_GETTER.get());

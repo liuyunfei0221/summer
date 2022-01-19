@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.Asserter.*;
+import static com.blue.base.common.base.Check.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -710,7 +710,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
                     relation.setRoleId(roleId);
                     relation.setResId(resId);
                     relation.setCreateTime(epochSecond);
-                    relation.setUpdater(epochSecond);
+                    relation.setUpdateTime(epochSecond);
                     relation.setCreator(operatorId);
                     relation.setUpdater(operatorId);
 

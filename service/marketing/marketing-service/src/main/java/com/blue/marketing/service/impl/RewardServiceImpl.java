@@ -12,7 +12,7 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Optional;
 
-import static com.blue.base.common.base.Asserter.*;
+import static com.blue.base.common.base.Check.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Optional.ofNullable;
@@ -47,7 +47,7 @@ public class RewardServiceImpl implements RewardService {
      */
     @Override
     public Optional<Reward> getRewardByPrimaryKey(Long id) {
-        LOGGER.info("getRewardByPrimaryKey(Long id), id = {}", id);
+        LOGGER.info("Optional<Reward> getRewardByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -78,7 +78,7 @@ public class RewardServiceImpl implements RewardService {
      */
     @Override
     public List<SignRewardTodayRelation> selectRelationByYearAndMonth(Integer year, Integer month) {
-        LOGGER.info("listRelationByYearAndMonth(Integer year, Integer month), year = {}, month = {}", year, month);
+        LOGGER.info("List<SignRewardTodayRelation> selectRelationByYearAndMonth(Integer year, Integer month), year = {}, month = {}", year, month);
         if (isNull(year) || isNull(month) || year < 1 || month < 1)
             throw new BlueException(BAD_REQUEST);
 

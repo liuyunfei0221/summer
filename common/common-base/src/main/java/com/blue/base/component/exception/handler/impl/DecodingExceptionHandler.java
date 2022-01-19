@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.FILE_INVALID;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static org.apache.commons.lang3.StringUtils.substring;
@@ -77,6 +77,6 @@ public class DecodingExceptionHandler implements ExceptionHandler {
     @Override
     public ExceptionInfo handle(Throwable throwable) {
         LOGGER.info("decodingExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionInfo(BAD_REQUEST, new String[]{MESSAGE_PARSER.apply(((DecodingException) throwable))});
+        return new ExceptionInfo(FILE_INVALID, new String[]{MESSAGE_PARSER.apply(((DecodingException) throwable))});
     }
 }

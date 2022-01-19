@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.Asserter.isEmpty;
+import static com.blue.base.common.base.Check.isEmpty;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
@@ -95,7 +95,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
      */
     @Override
     public EventHandleResult handleEvent(MarketingEvent marketingEvent) {
-        LOGGER.info("handleEvent(MarketingEvent marketingEvent), marketingEvent = {}", marketingEvent);
+        LOGGER.info("EventHandleResult handleEvent(MarketingEvent marketingEvent), marketingEvent = {}", marketingEvent);
 
         EventHandleResult handleResult = new EventHandleResult();
 

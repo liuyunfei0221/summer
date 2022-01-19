@@ -1,3 +1,5 @@
+-- noinspection SpellCheckingInspectionForFile
+
 -- noinspection SqlDialectInspectionForFile
 
 -- noinspection SqlNoDataSourceInspectionForFile

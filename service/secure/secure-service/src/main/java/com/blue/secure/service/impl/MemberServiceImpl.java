@@ -14,8 +14,8 @@ import reactor.util.Logger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static com.blue.base.common.base.Asserter.isInvalidStatus;
-import static com.blue.base.common.base.Asserter.isNull;
+import static com.blue.base.common.base.Check.isInvalidStatus;
+import static com.blue.base.common.base.Check.isNull;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
@@ -46,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
 
     private static final Consumer<MemberBasicInfo> MEMBER_STATUS_ASSERTER = memberBasicInfo -> {
         if (isInvalidStatus(memberBasicInfo.getStatus()))
-            throw new BlueException(ACCOUNT_HAS_BEEN_FROZEN.status, ACCOUNT_HAS_BEEN_FROZEN.code, ACCOUNT_HAS_BEEN_FROZEN.message);
+            throw new BlueException(ACCOUNT_HAS_BEEN_FROZEN);
     };
 
     /**

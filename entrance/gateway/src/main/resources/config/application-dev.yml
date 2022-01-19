@@ -84,8 +84,8 @@ cache:
 
 
 limit:
-  replenishRate: 1
-  burstCapacity: 2
+  replenishRate: 100000
+  burstCapacity: 200000
 
 
 circuit:
@@ -107,7 +107,7 @@ encrypt:
 
 
 risk:
-  illegalExpireSeconds: 30
+  illegalExpireSeconds: 10
 
 
 request:
@@ -168,7 +168,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.0.125:6650 ]
+      services: [ 172.16.201.9:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -226,7 +226,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.0.125:6650 ]
+      services: [ 172.16.201.9:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

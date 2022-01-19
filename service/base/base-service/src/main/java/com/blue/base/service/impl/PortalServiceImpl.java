@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.Asserter.isBlank;
+import static com.blue.base.common.base.Check.isBlank;
 import static com.blue.base.common.base.ConstantProcessor.getBulletinTypeByIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static java.lang.Integer.parseInt;

@@ -34,7 +34,7 @@ public final class MessageProcessor {
 
     private static final String MESSAGES_URI = "classpath:i18n";
     private static final String DEFAULT_LANGUAGE = lowerCase(replace(LANGUAGE, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity));
-    private static final int DEFAULT_KEY = INTERNAL_SERVER_ERROR.code;
+    private static final int DEFAULT_CODE = INTERNAL_SERVER_ERROR.code;
     private static final String DEFAULT_MESSAGE = INTERNAL_SERVER_ERROR.message;
 
     private static final UnaryOperator<String> PRE_NAME_PARSER = n -> {
@@ -83,62 +83,62 @@ public final class MessageProcessor {
     /**
      * get message by default
      *
-     * @param key
+     * @param code
      * @return
      */
-    public static String resolveToMessage(Integer key) {
-        return resolveToMessage(key, emptyList());
+    public static String resolveToMessage(Integer code) {
+        return resolveToMessage(code, emptyList());
     }
 
     /**
      * get message by i18n
      *
-     * @param key
+     * @param code
      * @param languages
      * @return
      */
-    public static String resolveToMessage(Integer key, List<String> languages) {
+    public static String resolveToMessage(Integer code, List<String> languages) {
         return ofNullable(MESSAGES_GETTER.apply(languages))
-                .map(messages -> messages.get(ofNullable(key).orElse(DEFAULT_KEY)).intern())
+                .map(messages -> messages.get(ofNullable(code).orElse(DEFAULT_CODE)).intern())
                 .orElse(DEFAULT_MESSAGE).intern();
     }
 
     /**
      * get message by i18n
      *
-     * @param key
+     * @param code
      * @param languages
      * @param replacements
      * @return
      */
-    public static String resolveToMessage(Integer key, List<String> languages, String[] replacements) {
-        String msg = resolveToMessage(key, languages).intern();
+    public static String resolveToMessage(Integer code, List<String> languages, String[] replacements) {
+        String msg = resolveToMessage(code, languages).intern();
         return replacements == null || replacements.length == 0 ? msg : FILLING_FUNC.apply(msg, replacements);
     }
 
     /**
      * get message by i18n
      *
-     * @param key
+     * @param code
      * @param serverRequest
      * @return
      */
-    public static String resolveToMessage(Integer key, ServerRequest serverRequest) {
+    public static String resolveToMessage(Integer code, ServerRequest serverRequest) {
         return ofNullable(MESSAGES_GETTER.apply(getAcceptLanguages(serverRequest)))
-                .map(messages -> messages.get(ofNullable(key).orElse(DEFAULT_KEY)).intern())
+                .map(messages -> messages.get(ofNullable(code).orElse(DEFAULT_CODE)).intern())
                 .orElse(DEFAULT_MESSAGE).intern();
     }
 
     /**
      * get message by i18n
      *
-     * @param key
+     * @param code
      * @param serverRequest
      * @param replacements
      * @return
      */
-    public static String resolveToMessage(Integer key, ServerRequest serverRequest, String[] replacements) {
-        String msg = resolveToMessage(key, serverRequest).intern();
+    public static String resolveToMessage(Integer code, ServerRequest serverRequest, String[] replacements) {
+        String msg = resolveToMessage(code, serverRequest).intern();
         return replacements == null || replacements.length == 0 ? msg : FILLING_FUNC.apply(msg, replacements);
     }
 

@@ -1,4 +1,4 @@
-package com.blue.base.test;
+package com.blue.base.common.base;
 
 
 import sun.misc.Unsafe;
@@ -20,12 +20,14 @@ import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
 /**
+ * safe random generator
+ *
  * @author liuyunfei
  * @date 2021/11/19
  * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "StatementWithEmptyBody", "unused"})
-public class BlueRandom extends Random {
+public class TheRandom extends Random {
 
     private static long mix64(long z) {
         z = (z ^ (z >>> 33)) * 0xff51afd7ed558ccdL;
@@ -77,7 +79,7 @@ public class BlueRandom extends Random {
 
     private static final AtomicInteger PROBE_GENERATOR = new AtomicInteger();
 
-    static final BlueRandom INSTANCE = new BlueRandom();
+    static final TheRandom INSTANCE = new TheRandom();
 
     private static final Random SEED_RANDOM;
 
@@ -93,7 +95,7 @@ public class BlueRandom extends Random {
 
     boolean initialized;
 
-    private BlueRandom() {
+    private TheRandom() {
         initialized = true;
     }
 
@@ -106,7 +108,7 @@ public class BlueRandom extends Random {
         U.putInt(t, PROBE, probe);
     }
 
-    private static BlueRandom current() {
+    private static TheRandom current() {
         if (U.getInt(Thread.currentThread(), PROBE) == 0)
             localInit();
         SEEDER.set(SEED_RANDOM.nextLong());
@@ -293,7 +295,7 @@ public class BlueRandom extends Random {
         if (streamSize < 0L)
             throw new IllegalArgumentException(BAD_SIZE);
         return StreamSupport.intStream
-                (new BlueRandom.RandomIntsSpliterator
+                (new RandomIntsSpliterator
                                 (0L, streamSize, Integer.MAX_VALUE, 0),
                         false);
     }
@@ -301,7 +303,7 @@ public class BlueRandom extends Random {
     @Override
     public IntStream ints() {
         return StreamSupport.intStream
-                (new BlueRandom.RandomIntsSpliterator
+                (new RandomIntsSpliterator
                                 (0L, Long.MAX_VALUE, Integer.MAX_VALUE, 0),
                         false);
     }
@@ -314,7 +316,7 @@ public class BlueRandom extends Random {
         if (randomNumberOrigin >= randomNumberBound)
             throw new IllegalArgumentException(BAD_RANGE);
         return StreamSupport.intStream
-                (new BlueRandom.RandomIntsSpliterator
+                (new RandomIntsSpliterator
                                 (0L, streamSize, randomNumberOrigin, randomNumberBound),
                         false);
     }
@@ -324,7 +326,7 @@ public class BlueRandom extends Random {
         if (randomNumberOrigin >= randomNumberBound)
             throw new IllegalArgumentException(BAD_RANGE);
         return StreamSupport.intStream
-                (new BlueRandom.RandomIntsSpliterator
+                (new RandomIntsSpliterator
                                 (0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound),
                         false);
     }
@@ -334,7 +336,7 @@ public class BlueRandom extends Random {
         if (streamSize < 0L)
             throw new IllegalArgumentException(BAD_SIZE);
         return StreamSupport.longStream
-                (new BlueRandom.RandomLongsSpliterator
+                (new RandomLongsSpliterator
                                 (0L, streamSize, Long.MAX_VALUE, 0L),
                         false);
     }
@@ -342,7 +344,7 @@ public class BlueRandom extends Random {
     @Override
     public LongStream longs() {
         return StreamSupport.longStream
-                (new BlueRandom.RandomLongsSpliterator
+                (new RandomLongsSpliterator
                                 (0L, Long.MAX_VALUE, Long.MAX_VALUE, 0L),
                         false);
     }
@@ -355,7 +357,7 @@ public class BlueRandom extends Random {
         if (randomNumberOrigin >= randomNumberBound)
             throw new IllegalArgumentException(BAD_RANGE);
         return StreamSupport.longStream
-                (new BlueRandom.RandomLongsSpliterator
+                (new RandomLongsSpliterator
                                 (0L, streamSize, randomNumberOrigin, randomNumberBound),
                         false);
     }
@@ -365,7 +367,7 @@ public class BlueRandom extends Random {
         if (randomNumberOrigin >= randomNumberBound)
             throw new IllegalArgumentException(BAD_RANGE);
         return StreamSupport.longStream
-                (new BlueRandom.RandomLongsSpliterator
+                (new RandomLongsSpliterator
                                 (0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound),
                         false);
     }
@@ -375,7 +377,7 @@ public class BlueRandom extends Random {
         if (streamSize < 0L)
             throw new IllegalArgumentException(BAD_SIZE);
         return StreamSupport.doubleStream
-                (new BlueRandom.RandomDoublesSpliterator
+                (new RandomDoublesSpliterator
                                 (0L, streamSize, Double.MAX_VALUE, 0.0),
                         false);
     }
@@ -383,7 +385,7 @@ public class BlueRandom extends Random {
     @Override
     public DoubleStream doubles() {
         return StreamSupport.doubleStream
-                (new BlueRandom.RandomDoublesSpliterator
+                (new RandomDoublesSpliterator
                                 (0L, Long.MAX_VALUE, Double.MAX_VALUE, 0.0),
                         false);
     }
@@ -396,7 +398,7 @@ public class BlueRandom extends Random {
         if (!(randomNumberOrigin < randomNumberBound))
             throw new IllegalArgumentException(BAD_RANGE);
         return StreamSupport.doubleStream
-                (new BlueRandom.RandomDoublesSpliterator
+                (new RandomDoublesSpliterator
                                 (0L, streamSize, randomNumberOrigin, randomNumberBound),
                         false);
     }
@@ -406,7 +408,7 @@ public class BlueRandom extends Random {
         if (!(randomNumberOrigin < randomNumberBound))
             throw new IllegalArgumentException(BAD_RANGE);
         return StreamSupport.doubleStream
-                (new BlueRandom.RandomDoublesSpliterator
+                (new RandomDoublesSpliterator
                                 (0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound),
                         false);
     }
@@ -428,10 +430,10 @@ public class BlueRandom extends Random {
         }
 
         @Override
-        public BlueRandom.RandomIntsSpliterator trySplit() {
+        public RandomIntsSpliterator trySplit() {
             long i = index, m = (i + fence) >>> 1;
             return (m <= i) ? null :
-                    new BlueRandom.RandomIntsSpliterator(i, index = m, origin, bound);
+                    new RandomIntsSpliterator(i, index = m, origin, bound);
         }
 
         @Override
@@ -450,7 +452,7 @@ public class BlueRandom extends Random {
             if (consumer == null) throw new NullPointerException();
             long i = index, f = fence;
             if (i < f) {
-                consumer.accept(BlueRandom.current().internalNextInt(origin, bound));
+                consumer.accept(TheRandom.current().internalNextInt(origin, bound));
                 index = i + 1;
                 return true;
             }
@@ -464,7 +466,7 @@ public class BlueRandom extends Random {
             if (i < f) {
                 index = f;
                 int o = origin, b = bound;
-                BlueRandom rng = BlueRandom.current();
+                TheRandom rng = TheRandom.current();
                 do {
                     consumer.accept(rng.internalNextInt(o, b));
                 } while (++i < f);
@@ -489,10 +491,10 @@ public class BlueRandom extends Random {
         }
 
         @Override
-        public BlueRandom.RandomLongsSpliterator trySplit() {
+        public RandomLongsSpliterator trySplit() {
             long i = index, m = (i + fence) >>> 1;
             return (m <= i) ? null :
-                    new BlueRandom.RandomLongsSpliterator(i, index = m, origin, bound);
+                    new RandomLongsSpliterator(i, index = m, origin, bound);
         }
 
         @Override
@@ -511,7 +513,7 @@ public class BlueRandom extends Random {
             if (consumer == null) throw new NullPointerException();
             long i = index, f = fence;
             if (i < f) {
-                consumer.accept(BlueRandom.current().internalNextLong(origin, bound));
+                consumer.accept(TheRandom.current().internalNextLong(origin, bound));
                 index = i + 1;
                 return true;
             }
@@ -525,7 +527,7 @@ public class BlueRandom extends Random {
             if (i < f) {
                 index = f;
                 long o = origin, b = bound;
-                BlueRandom rng = BlueRandom.current();
+                TheRandom rng = TheRandom.current();
                 do {
                     consumer.accept(rng.internalNextLong(o, b));
                 } while (++i < f);
@@ -551,10 +553,10 @@ public class BlueRandom extends Random {
         }
 
         @Override
-        public BlueRandom.RandomDoublesSpliterator trySplit() {
+        public RandomDoublesSpliterator trySplit() {
             long i = index, m = (i + fence) >>> 1;
             return (m <= i) ? null :
-                    new BlueRandom.RandomDoublesSpliterator(i, index = m, origin, bound);
+                    new RandomDoublesSpliterator(i, index = m, origin, bound);
         }
 
         @Override
@@ -573,7 +575,7 @@ public class BlueRandom extends Random {
             if (consumer == null) throw new NullPointerException();
             long i = index, f = fence;
             if (i < f) {
-                consumer.accept(BlueRandom.current().internalNextDouble(origin, bound));
+                consumer.accept(TheRandom.current().internalNextDouble(origin, bound));
                 index = i + 1;
                 return true;
             }
@@ -587,7 +589,7 @@ public class BlueRandom extends Random {
             if (i < f) {
                 index = f;
                 double o = origin, b = bound;
-                BlueRandom rng = BlueRandom.current();
+                TheRandom rng = TheRandom.current();
                 do {
                     consumer.accept(rng.internalNextDouble(o, b));
                 } while (++i < f);

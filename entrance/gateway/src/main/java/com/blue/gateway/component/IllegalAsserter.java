@@ -1,6 +1,6 @@
 package com.blue.gateway.component;
 
-import com.blue.base.common.base.Asserter;
+import com.blue.base.common.base.Check;
 import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.model.base.IllegalMarkEvent;
 import com.blue.base.model.exps.BlueException;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.Asserter.*;
+import static com.blue.base.common.base.Check.*;
 import static com.blue.base.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
 import static com.blue.base.constant.base.BlueCacheKey.ILLEGAL_IP_PRE;
 import static com.blue.base.constant.base.BlueCacheKey.ILLEGAL_JWT_PRE;
@@ -56,21 +56,21 @@ public final class IllegalAsserter {
 
         IP_MARKERS.put(true, (ip, resKey) ->
                 isNotBlank(ip) ?
-                        KEY_RES_MARKER.apply(ILLEGAL_IP_PREFIX + ip, ofNullable(resKey).filter(Asserter::isNotBlank).orElse(ALL_RESOURCE)) :
-                        error(() -> new BlueException(UNKNOWN_IP.status, UNKNOWN_IP.code, UNKNOWN_IP.message)));
+                        KEY_RES_MARKER.apply(ILLEGAL_IP_PREFIX + ip, ofNullable(resKey).filter(Check::isNotBlank).orElse(ALL_RESOURCE)) :
+                        error(() -> new BlueException(UNKNOWN_IP.status)));
 
         IP_MARKERS.put(false, (ip, resKey) ->
                 isNotBlank(ip) ?
-                        KEY_RES_CLEARER.apply(ILLEGAL_IP_PREFIX + ip, ofNullable(resKey).filter(Asserter::isNotBlank).orElse(ALL_RESOURCE)) :
-                        error(() -> new BlueException(UNKNOWN_IP.status, UNKNOWN_IP.code, UNKNOWN_IP.message)));
+                        KEY_RES_CLEARER.apply(ILLEGAL_IP_PREFIX + ip, ofNullable(resKey).filter(Check::isNotBlank).orElse(ALL_RESOURCE)) :
+                        error(() -> new BlueException(UNKNOWN_IP.status)));
 
         JWT_MARKERS.put(true, (jwt, resKey) ->
                 isNotBlank(jwt) ?
-                        KEY_RES_MARKER.apply(ILLEGAL_JWT_PREFIX + jwt, ofNullable(resKey).filter(Asserter::isNotBlank).orElse(ALL_RESOURCE)) : just(false));
+                        KEY_RES_MARKER.apply(ILLEGAL_JWT_PREFIX + jwt, ofNullable(resKey).filter(Check::isNotBlank).orElse(ALL_RESOURCE)) : just(false));
 
         JWT_MARKERS.put(false, (jwt, resKey) ->
                 isNotBlank(jwt) ?
-                        KEY_RES_CLEARER.apply(ILLEGAL_JWT_PREFIX + jwt, ofNullable(resKey).filter(Asserter::isNotBlank).orElse(ALL_RESOURCE)) : just(false));
+                        KEY_RES_CLEARER.apply(ILLEGAL_JWT_PREFIX + jwt, ofNullable(resKey).filter(Check::isNotBlank).orElse(ALL_RESOURCE)) : just(false));
     }
 
     private static final String
@@ -132,10 +132,10 @@ public final class IllegalAsserter {
         boolean mark = ofNullable(event.getMark()).orElse(true);
 
         return zip(ofNullable(event.getJwt())
-                        .filter(Asserter::isNotBlank)
+                        .filter(Check::isNotBlank)
                         .map(jwt -> JWT_MARKERS.get(mark).apply(jwt, resourceKey)).orElseGet(() -> just(false)),
                 ofNullable(event.getIp())
-                        .filter(Asserter::isNotBlank)
+                        .filter(Check::isNotBlank)
                         .map(ip -> IP_MARKERS.get(mark).apply(ip, resourceKey)).orElseGet(() -> just(false))
         ).flatMap(tuple2 -> just(tuple2.getT1() || tuple2.getT2()));
     };
@@ -151,11 +151,11 @@ public final class IllegalAsserter {
                 ofNullable(attributes.get(BlueDataAttrKey.URI.key)).map(String::valueOf).orElse(""));
 
         return zip(
-                ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf).filter(Asserter::isNotBlank)
+                ofNullable(attributes.get(CLIENT_IP.key)).map(String::valueOf).filter(Check::isNotBlank)
                         .map(ip -> IP_VALIDATOR.apply(ip, resKey))
-                        .orElseThrow(() -> new BlueException(UNKNOWN_IP.status, UNKNOWN_IP.code, UNKNOWN_IP.message)),
+                        .orElseThrow(() -> new BlueException(UNKNOWN_IP)),
                 ofNullable(attributes.get(BlueDataAttrKey.JWT.key))
-                        .map(String::valueOf).filter(Asserter::isNotBlank)
+                        .map(String::valueOf).filter(Check::isNotBlank)
                         .map(jwt -> JWT_VALIDATOR.apply(jwt, resKey)).orElseGet(() -> just(true))
         ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
     };

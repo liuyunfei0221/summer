@@ -39,7 +39,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.*;
 
-import static com.blue.base.common.base.Asserter.*;
+import static com.blue.base.common.base.Check.*;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.base.RsaProcessor.initKeyPair;
 import static com.blue.base.constant.base.BlueNumericalValue.*;
@@ -646,7 +646,7 @@ public class SecureServiceImpl implements SecureService {
                                                     just(new AuthGenElement(mid, rid, loginType, deviceType)))
                                             .orElseGet(() -> {
                                                 LOGGER.error("Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam) failed, member has no role, memberId = {}", mid);
-                                                return error(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, MEMBER_NOT_HAS_A_ROLE.message));
+                                                return error(() -> new BlueException(MEMBER_NOT_HAS_A_ROLE));
                                             }));
                 }).flatMap(this::generateAuthMono);
     }

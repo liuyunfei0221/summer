@@ -19,6 +19,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Optional.ofNullable;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 import static org.springframework.web.reactive.function.BodyInserters.fromResource;
@@ -42,8 +43,17 @@ public final class FileApiHandler {
 
     public FileApiHandler(FileService fileService, FileDeploy fileDeploy) {
         this.fileService = fileService;
-
         allFileSizeThreshold = fileDeploy.getAllFileSizeThreshold();
+    }
+
+    private void assertContentLength(ServerRequest serverRequest) {
+        long allFileSize = ofNullable(serverRequest)
+                .map(sr -> sr.headers().contentLength().orElse(0L)).orElse(0L);
+
+        if (allFileSize < 1L)
+            throw new BlueException(FILE_NOT_EXIST);
+        if (allFileSize > allFileSizeThreshold)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
     }
 
     /**
@@ -53,9 +63,8 @@ public final class FileApiHandler {
      * @return
      */
     public Mono<ServerResponse> upload(ServerRequest serverRequest) {
-        long allFileSize = serverRequest.headers().contentLength().orElse(0L);
-        if (0L == allFileSize || allFileSize > allFileSizeThreshold)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
+
+        assertContentLength(serverRequest);
 
         return zip(serverRequest.multipartData()
                         .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),

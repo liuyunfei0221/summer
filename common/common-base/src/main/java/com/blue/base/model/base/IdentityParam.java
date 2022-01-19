@@ -4,7 +4,7 @@ import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.Asserter.isInvalidIdentity;
+import static com.blue.base.common.base.Check.isInvalidIdentity;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 
 /**

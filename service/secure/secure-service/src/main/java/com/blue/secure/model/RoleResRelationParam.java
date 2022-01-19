@@ -10,6 +10,7 @@ import java.util.List;
  * @date 2021/11/9
  * @apiNote
  */
+@SuppressWarnings("unused")
 public final class RoleResRelationParam implements Serializable {
 
     private static final long serialVersionUID = -4707222541690629552L;
