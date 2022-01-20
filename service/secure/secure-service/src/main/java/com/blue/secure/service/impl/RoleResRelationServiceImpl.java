@@ -610,13 +610,13 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
-    public void insertRelation(RoleResRelation roleResRelation) {
+    public int insertRelation(RoleResRelation roleResRelation) {
         LOGGER.info("void insertRelation(RoleResRelation roleResRelation), roleResRelation = {}", roleResRelation);
         if (roleResRelation == null)
             throw new BlueException(EMPTY_PARAM);
 
         INSERT_RELATION_VALIDATOR.accept(roleResRelation);
-        roleResRelationMapper.insert(roleResRelation);
+        return roleResRelationMapper.insert(roleResRelation);
     }
 
     /**
@@ -627,12 +627,12 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
-    public void insertRelationBatch(List<RoleResRelation> roleResRelations) {
+    public int insertRelationBatch(List<RoleResRelation> roleResRelations) {
         LOGGER.info("void insertRelationBatch(List<RoleResRelation> roleResRelations), roleResRelations = {}", roleResRelations);
         if (isEmpty(roleResRelations))
             throw new BlueException(EMPTY_PARAM);
 
-        roleResRelationMapper.insertBatch(roleResRelations.stream().filter(Objects::nonNull)
+        return roleResRelationMapper.insertBatch(roleResRelations.stream().filter(Objects::nonNull)
                 .peek(INSERT_RELATION_VALIDATOR).collect(toList()));
     }
 
@@ -644,13 +644,14 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
-    public void deleteRelationByRoleId(Long roleId) {
+    public int deleteRelationByRoleId(Long roleId) {
         LOGGER.info("void deleteRelationByRoleId(Long roleId), roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
             throw new BlueException(INVALID_IDENTITY);
 
         int count = roleResRelationMapper.deleteByRoleId(roleId);
         LOGGER.info("void deleteRelationByRoleId(Long roleId), count = {}", count);
+        return count;
     }
 
     /**
@@ -661,7 +662,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
-    public void deleteRelationByResId(Long resId) {
+    public int deleteRelationByResId(Long resId) {
         LOGGER.info("void deleteRelationByResId(Long resId), resId = {}", resId);
         if (isInvalidIdentity(resId))
             throw new BlueException(INVALID_IDENTITY);
@@ -672,6 +673,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         try {
             int count = roleResRelationMapper.deleteByResId(resId);
             LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
+            return count;
         } catch (Exception e) {
             LOGGER.error("void deleteRelationByResId(Long resId) failed, resId = {}, e = {}", resId, e);
             throw e;

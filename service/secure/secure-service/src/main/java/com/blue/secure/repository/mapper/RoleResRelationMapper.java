@@ -17,7 +17,7 @@ public interface RoleResRelationMapper {
 
     int insertSelective(RoleResRelation record);
 
-    void insertBatch(@Param("list") List<RoleResRelation> list);
+    int insertBatch(@Param("list") List<RoleResRelation> list);
 
     int updateByPrimaryKey(RoleResRelation record);
 

@@ -25,7 +25,7 @@ public interface AttachmentMapper {
 
     Attachment selectByPrimaryKey(Long id);
 
-    void insertBatch(@Param("list") List<Attachment> list);
+    int insertBatch(@Param("list") List<Attachment> list);
 
     List<Attachment> selectByLimitAndMemberId(@Param("memberId") Long memberId, @Param("limit") long limit, @Param("rows") long rows);
 

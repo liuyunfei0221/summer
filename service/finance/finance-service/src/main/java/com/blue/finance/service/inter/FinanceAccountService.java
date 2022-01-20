@@ -10,22 +10,24 @@ import java.util.Optional;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "UnusedReturnValue"})
 public interface FinanceAccountService {
 
     /**
      * create a finance account
      *
      * @param financeAccount
+     * @return
      */
-    void insertFinanceAccount(FinanceAccount financeAccount);
+    int insertFinanceAccount(FinanceAccount financeAccount);
 
     /**
      * init finance account for a member
      *
      * @param memberId
+     * @return
      */
-    void insertInitFinanceAccount(Long memberId);
+    int insertInitFinanceAccount(Long memberId);
 
     /**
      * get finance account by member id

@@ -47,14 +47,15 @@ public interface ControlService {
      * @param operatorId
      * @return
      */
-    void updateMemberRoleById(Long memberId, Long roleId, Long operatorId);
+    int updateMemberRoleById(Long memberId, Long roleId, Long operatorId);
 
     /**
      * set a default role to member
      *
      * @param memberId
+     * @return
      */
-    void insertDefaultMemberRoleRelation(Long memberId);
+    int insertDefaultMemberRoleRelation(Long memberId);
 
     /**
      * update default role by role id

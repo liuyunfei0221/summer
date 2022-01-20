@@ -19,8 +19,9 @@ import java.util.function.Consumer;
 import static com.blue.base.common.base.Check.isEmpty;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Comparator.comparingInt;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
-import static reactor.core.publisher.Mono.fromRunnable;
+import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -72,9 +73,13 @@ public class RiskServiceImpl implements RiskService, ApplicationListener<Context
      * @return
      */
     @Override
-    public Mono<Void> analyzeEvent(DataEvent dataEvent) {
+    public Mono<Boolean> analyzeEvent(DataEvent dataEvent) {
         LOGGER.info(" void analyzeEvent(DataEvent dataEvent), dataEvent = {}", dataEvent);
-        return fromRunnable(() -> EVENT_HANDLER.accept(dataEvent)).then();
+
+        return fromFuture(supplyAsync(() -> {
+            EVENT_HANDLER.accept(dataEvent);
+            return true;
+        }, executorService));
     }
 
 }

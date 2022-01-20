@@ -15,6 +15,7 @@ import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 
 import static com.blue.base.common.base.Check.isEmpty;
 import static com.blue.base.common.base.Check.isInvalidIdentity;
@@ -22,6 +23,7 @@ import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -48,14 +50,17 @@ public class ControlServiceImpl implements ControlService {
 
     private final SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer;
 
+    private final ExecutorService executorService;
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ControlServiceImpl(SecureService secureService, RoleService roleService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
-                              SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer) {
+                              SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService) {
         this.secureService = secureService;
         this.roleService = roleService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
+        this.executorService = executorService;
     }
 
     private Role getRoleByRoleId(Long roleId) {
@@ -125,22 +130,26 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public void updateMemberRoleById(Long memberId, Long roleId, Long operatorId) {
+    public int updateMemberRoleById(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void updateMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
         assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), getRoleByMemberId(operatorId).getLevel());
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
-        memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
-        secureService.refreshMemberRoleById(memberId, roleId, operatorId);
+        int i = memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
+        if (i > 0)
+            secureService.refreshMemberRoleById(memberId, roleId, operatorId);
+
+        return i;
     }
 
     /**
      * set a default role to member
      *
      * @param memberId
+     * @return
      */
     @Override
-    public void insertDefaultMemberRoleRelation(Long memberId) {
+    public int insertDefaultMemberRoleRelation(Long memberId) {
         LOGGER.info("void insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
@@ -159,7 +168,7 @@ public class ControlServiceImpl implements ControlService {
         memberRoleRelation.setCreator(memberId);
         memberRoleRelation.setUpdater(memberId);
 
-        memberRoleRelationService.insertMemberRoleRelation(memberRoleRelation);
+        return memberRoleRelationService.insertMemberRoleRelation(memberRoleRelation);
     }
 
     /**
@@ -349,11 +358,13 @@ public class ControlServiceImpl implements ControlService {
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), operatorRoleLevel);
         assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), operatorRoleLevel);
 
-        return defer(() -> {
-            memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
-            secureService.refreshMemberRoleById(memberId, roleId, operatorId);
-            return just(true);
-        }).flatMap(v -> this.selectAuthorityMonoByRoleId(roleId));
+        return fromFuture(supplyAsync(() ->
+                memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId), executorService))
+                .doOnSuccess(i -> {
+                    if (i > 0)
+                        secureService.refreshMemberRoleById(memberId, roleId, operatorId);
+                })
+                .flatMap(i -> this.selectAuthorityMonoByRoleId(roleId));
     }
 
 }

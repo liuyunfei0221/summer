@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "UnusedReturnValue"})
 public interface RoleResRelationService {
 
     /**
@@ -217,7 +217,7 @@ public interface RoleResRelationService {
      * @param roleResRelation
      * @return
      */
-    void insertRelation(RoleResRelation roleResRelation);
+    int insertRelation(RoleResRelation roleResRelation);
 
     /**
      * insert relations
@@ -225,7 +225,7 @@ public interface RoleResRelationService {
      * @param roleResRelations
      * @return
      */
-    void insertRelationBatch(List<RoleResRelation> roleResRelations);
+    int insertRelationBatch(List<RoleResRelation> roleResRelations);
 
     /**
      * delete relation by role id
@@ -233,7 +233,7 @@ public interface RoleResRelationService {
      * @param roleId
      * @return
      */
-    void deleteRelationByRoleId(Long roleId);
+    int deleteRelationByRoleId(Long roleId);
 
     /**
      * delete relation by resource id
@@ -241,7 +241,7 @@ public interface RoleResRelationService {
      * @param resId
      * @return
      */
-    void deleteRelationByResId(Long resId);
+    int deleteRelationByResId(Long resId);
 
     /**
      * update authority base on role / generate role-resource-relations

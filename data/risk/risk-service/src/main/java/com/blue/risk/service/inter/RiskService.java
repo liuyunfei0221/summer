@@ -18,6 +18,6 @@ public interface RiskService {
      * @param dataEvent
      * @return
      */
-    Mono<Void> analyzeEvent(DataEvent dataEvent);
+    Mono<Boolean> analyzeEvent(DataEvent dataEvent);
 
 }

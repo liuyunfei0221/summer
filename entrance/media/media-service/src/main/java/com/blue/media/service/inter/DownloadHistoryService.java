@@ -16,6 +16,6 @@ public interface DownloadHistoryService {
      * @param downloadHistory
      * @return
      */
-    void insert(DownloadHistory downloadHistory);
+    int insert(DownloadHistory downloadHistory);
 
 }

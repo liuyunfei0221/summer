@@ -27,7 +27,8 @@ public class MailManagerRoute {
         RequestPredicate pathPredicate = path("/blue-media/mail");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("/test", accept(APPLICATION_JSON), mailManagerHandler::testMail)
+                .GET("/send", accept(APPLICATION_JSON), mailManagerHandler::testSend)
+                .GET("/read", accept(APPLICATION_JSON), mailManagerHandler::testRead)
                 .build();
 
         return nest(pathPredicate, routerFunction);

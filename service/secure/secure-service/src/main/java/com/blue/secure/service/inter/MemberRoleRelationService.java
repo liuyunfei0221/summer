@@ -12,7 +12,7 @@ import java.util.Optional;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "UnusedReturnValue"})
 public interface MemberRoleRelationService {
 
     /**
@@ -59,8 +59,9 @@ public interface MemberRoleRelationService {
      * insert member role relation
      *
      * @param memberRoleRelation
+     * @return
      */
-    void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation);
+    int insertMemberRoleRelation(MemberRoleRelation memberRoleRelation);
 
     /**
      * update member role relation
@@ -68,7 +69,8 @@ public interface MemberRoleRelationService {
      * @param memberId
      * @param roleId
      * @param operatorId
+     * @return
      */
-    void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
+    int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
 
 }

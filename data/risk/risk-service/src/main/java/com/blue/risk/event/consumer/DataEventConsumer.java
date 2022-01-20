@@ -44,7 +44,7 @@ public final class DataEventConsumer implements BlueLifecycle {
                 ofNullable(dataEvent)
                         .ifPresent(de -> {
                             LOGGER.info("dataEventDataConsumer received");
-                            riskService.analyzeEvent(de).subscribe(v ->
+                            riskService.analyzeEvent(de).subscribe(b ->
                                     LOGGER.info("Mono<Void> analyzeEvent(DataEvent dataEvent), de = {}", de)
                             );
                         });

@@ -54,9 +54,9 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
             rollbackFor = Exception.class, timeout = 15)
     @GlobalLock
     @Override
-    public void insertFinanceAccount(FinanceAccount financeAccount) {
+    public int insertFinanceAccount(FinanceAccount financeAccount) {
         LOGGER.info("insertFinanceAccount(FinanceAccount financeAccount), financeAccount = {}", financeAccount);
-        financeAccountMapper.insert(financeAccount);
+        return financeAccountMapper.insert(financeAccount);
 
         //test business exp
         //if (1 == 1) {
@@ -79,7 +79,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
             rollbackFor = Exception.class, timeout = 15)
     @GlobalLock
     @Override
-    public void insertInitFinanceAccount(Long memberId) {
+    public int insertInitFinanceAccount(Long memberId) {
         LOGGER.info("insertInitFinanceAccount(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId)) {
             throw new BlueException(INVALID_IDENTITY);
@@ -101,7 +101,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
         financeAccount.setCreateTime(epochSecond);
         financeAccount.setUpdateTime(epochSecond);
 
-        insertFinanceAccount(financeAccount);
+        return insertFinanceAccount(financeAccount);
     }
 
     /**

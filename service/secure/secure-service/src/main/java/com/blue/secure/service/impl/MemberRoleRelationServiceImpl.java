@@ -138,7 +138,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     @GlobalLock
-    public void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) {
+    public int insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) {
         LOGGER.info("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation), memberRoleRelation = {}", memberRoleRelation);
         if (isNull(memberRoleRelation))
             throw new BlueException(DATA_NOT_EXIST);
@@ -158,11 +158,10 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
             if (isNotNull(existRelation))
                 throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE.status);
 
-            memberRoleRelationMapper.insertSelective(memberRoleRelation);
+            return memberRoleRelationMapper.insertSelective(memberRoleRelation);
 //            if (1 == 1) {
 //                throw new BlueException(500, 500, "test rollback on exception");
 //            }
-            LOGGER.info("void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) success, memberRoleRelation = {}", memberRoleRelation);
         } catch (Exception e) {
             LOGGER.error("void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) failed, memberRoleRelation = {}, e = {}", memberRoleRelation, e);
             throw e;
@@ -184,7 +183,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
-    public void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
+    public int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
@@ -203,11 +202,9 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
             memberRoleRelation.setUpdateTime(TIME_STAMP_GETTER.get());
             memberRoleRelation.setUpdater(operatorId);
 
-            memberRoleRelationMapper.updateByPrimaryKeySelective(memberRoleRelation);
-
-            LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) success, memberRoleRelation = {}", memberRoleRelation);
+            return memberRoleRelationMapper.updateByPrimaryKeySelective(memberRoleRelation);
         } catch (Exception e) {
-            LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) failed, memberId = {}, roleId = {}, operatorId = {}, e = {]", memberId, roleId, operatorId);
+            LOGGER.error("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) failed, memberId = {}, roleId = {}, operatorId = {}, e = {]", memberId, roleId, operatorId);
             throw e;
         } finally {
             try {

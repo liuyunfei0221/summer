@@ -684,15 +684,23 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (24244842351558658, 'GET', 'blue-media', '/mail/test', b'0', b'1', b'1', b'0', b'1', 2,
-        'test mail', 'test mail', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (24244842351558658, 'GET', 'blue-media', '/mail/send', b'0', b'1', b'1', b'0', b'1', 2,
+        'test send', 'test send', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (24244842351558659, 'POST', 'blue-lake', '/event/list', b'0', b'1', b'1', b'1', b'1', 2,
+VALUES (24244842351558659, 'GET', 'blue-media', '/mail/read', b'0', b'1', b'1', b'0', b'1', 2,
+        'test read', 'test read', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (24244842351558660, 'POST', 'blue-lake', '/event/list', b'0', b'1', b'1', b'1', b'1', 2,
         'test lake event', 'test lake event', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role

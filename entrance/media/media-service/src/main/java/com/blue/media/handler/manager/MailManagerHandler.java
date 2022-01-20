@@ -60,7 +60,7 @@ public class MailManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> testMail(ServerRequest serverRequest) {
+    public Mono<ServerResponse> testSend(ServerRequest serverRequest) {
 
         mailTest();
 
@@ -69,6 +69,23 @@ public class MailManagerHandler {
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, serverRequest), BlueResponse.class));
     }
+
+    /**
+     * test
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> testRead(ServerRequest serverRequest) {
+
+        mailTest();
+
+        return just(true)
+                .flatMap(t ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, serverRequest), BlueResponse.class));
+    }
+
 
 
     private void mailTest() {
@@ -82,8 +99,6 @@ public class MailManagerHandler {
 
                 .withSubject("hello world")
                 .withHTMLText("Please view this email in a modern email client!");
-
-        //测试已读等
 
         mailSender.signWithDomainKey(builder);
 
@@ -131,12 +146,6 @@ public class MailManagerHandler {
                     LOGGER.error("t = {}", t);
                     return null;
                 });
-
-//        try {
-//            Thread.currentThread().join();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
     }
 
 }

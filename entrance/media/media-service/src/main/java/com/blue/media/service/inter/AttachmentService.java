@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "UnusedReturnValue"})
 public interface AttachmentService {
 
     /**
@@ -22,7 +22,7 @@ public interface AttachmentService {
      * @param attachment
      * @return
      */
-    void insert(Attachment attachment);
+    int insert(Attachment attachment);
 
     /**
      * insert attachment batch
@@ -30,7 +30,7 @@ public interface AttachmentService {
      * @param attachments
      * @return
      */
-    void insertBatch(List<Attachment> attachments);
+    int insertBatch(List<Attachment> attachments);
 
     /**
      * get attachment by id

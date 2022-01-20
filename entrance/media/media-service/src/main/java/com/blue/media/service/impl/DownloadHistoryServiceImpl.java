@@ -33,9 +33,9 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
      * @return
      */
     @Override
-    public void insert(DownloadHistory downloadHistory) {
+    public int insert(DownloadHistory downloadHistory) {
         LOGGER.info("insert(DownloadHistory downloadHistory), downloadHistory = {}", downloadHistory);
-        downloadHistoryMapper.insert(downloadHistory);
+        return downloadHistoryMapper.insert(downloadHistory);
     }
 
 }
