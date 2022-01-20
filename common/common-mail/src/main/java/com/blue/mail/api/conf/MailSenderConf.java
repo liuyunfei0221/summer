@@ -12,7 +12,7 @@ import java.util.Map;
  * @apiNote
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaLowerCamelCaseVariableNaming"})
-public interface MailConf {
+public interface MailSenderConf {
 
     String getSmtpServerHost();
 

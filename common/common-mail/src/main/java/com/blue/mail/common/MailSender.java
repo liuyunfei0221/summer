@@ -1,7 +1,7 @@
 package com.blue.mail.common;
 
 import com.blue.base.model.exps.BlueException;
-import com.blue.mail.api.conf.MailConf;
+import com.blue.mail.api.conf.MailSenderConf;
 import org.simplejavamail.api.email.Email;
 import org.simplejavamail.api.email.EmailPopulatingBuilder;
 import org.simplejavamail.api.mailer.Mailer;
@@ -52,7 +52,7 @@ public final class MailSender {
     private static final String DEFAULT_THREAD_NAME_PRE = "blue-mail-sender-thread" + PAR_CONCATENATION_DATABASE_URL.identity;
     private static final int RANDOM_LEN = 6;
 
-    public MailSender(MailConf conf) {
+    public MailSender(MailSenderConf conf) {
         confAsserter(conf);
 
         MailerRegularBuilderImpl builder =
@@ -172,7 +172,7 @@ public final class MailSender {
      *
      * @param conf
      */
-    private static void confAsserter(MailConf conf) {
+    private static void confAsserter(MailSenderConf conf) {
         if (conf == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 

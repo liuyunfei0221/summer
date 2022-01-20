@@ -1,6 +1,6 @@
 package com.blue.mail.api.generator;
 
-import com.blue.mail.api.conf.MailConf;
+import com.blue.mail.api.conf.MailSenderConf;
 import com.blue.mail.common.MailSender;
 
 /**
@@ -12,8 +12,8 @@ import com.blue.mail.common.MailSender;
  */
 public final class BlueMailSenderGenerator {
 
-    public static MailSender generateMailSender(MailConf mailConf) {
-        return new MailSender(mailConf);
+    public static MailSender generateMailSender(MailSenderConf mailSenderConf) {
+        return new MailSender(mailSenderConf);
     }
 
 }

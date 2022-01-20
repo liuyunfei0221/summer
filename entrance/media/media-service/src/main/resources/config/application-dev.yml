@@ -227,8 +227,19 @@ encrypt:
   expire: 10000000000
 
 
-mail:
-  smtpServerHost: outlook.office365.com
+reader:
+  protocol: imap
+  serverHost: outlook.office365.com
+  serverPort: 993
+  username: yunfei0221@outlook.com
+  password: Fei19890116
+  props:
+    mail.imap.ssl: true
+    mail.imap.starttls.enable: true
+
+
+sender:
+  smtpServerHost: smtp.office365.com
   smtpServerPort: 587
   smtpUsername: yunfei0221@outlook.com
   smtpPassword: Fei19890116

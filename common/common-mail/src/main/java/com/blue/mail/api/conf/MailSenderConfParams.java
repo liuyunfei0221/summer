@@ -11,7 +11,7 @@ import java.util.Map;
  * @apiNote
  */
 @SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming"})
-public abstract class MailConfParams implements MailConf {
+public abstract class MailSenderConfParams implements MailSenderConf {
 
     protected String smtpServerHost;
 
@@ -57,7 +57,7 @@ public abstract class MailConfParams implements MailConf {
 
     protected Map<String, String> props;
 
-    public MailConfParams() {
+    public MailSenderConfParams() {
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.blue.media.config.blue;
 
-import com.blue.mail.api.conf.MailConfParams;
+import com.blue.mail.api.conf.MailSenderConfParams;
 import com.sanctionco.jmail.EmailValidator;
 import com.sanctionco.jmail.JMail;
 import com.sanctionco.jmail.TopLevelDomain;
@@ -18,8 +18,8 @@ import static java.util.stream.Collectors.toList;
  * @author DarkBlue
  */
 @Component
-@ConfigurationProperties(prefix = "mail")
-public class BlueMailConfig extends MailConfParams {
+@ConfigurationProperties(prefix = "sender")
+public class BlueMailSenderConfig extends MailSenderConfParams {
 
     private static final TopLevelDomain[] TOP_LEVEL_DOMAINS = Stream.of(
             DOT_COM, DOT_ORG, DOT_NET, DOT_INT, DOT_EDU, DOT_GOV, DOT_MIL, TopLevelDomain.fromString("ai")
