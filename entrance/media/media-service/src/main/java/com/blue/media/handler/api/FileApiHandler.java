@@ -99,6 +99,9 @@ public final class FileApiHandler {
                                     if (!resource.exists())
                                         return error(() -> new BlueException(DATA_NOT_EXIST));
 
+
+
+
                                     return ok().contentType(APPLICATION_OCTET_STREAM)
                                             .header(CONTENT_DISPOSITION.name,
                                                     "attachment; filename=" + URLEncoder.encode(attachment.getName(), UTF_8))

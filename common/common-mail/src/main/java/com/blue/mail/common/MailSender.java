@@ -158,7 +158,7 @@ public final class MailSender {
                 else if (sb != null) sb.append(line);
 
             if (sb == null || line == null)
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "rsa private key is invalid");
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "private key is invalid");
 
             return Base64.getDecoder().decode(sb.toString());
         } catch (Exception e) {
