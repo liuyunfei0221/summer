@@ -1,103 +1,89 @@
 package com.blue.mail.common;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailReaderConf;
-import com.sun.mail.util.MailSSLSocketFactory;
 
 import javax.mail.*;
-import javax.mail.event.*;
+import javax.mail.event.ConnectionListener;
+import javax.mail.event.FolderListener;
+import javax.mail.event.MessageChangedListener;
+import javax.mail.event.MessageCountListener;
 import javax.mail.search.SearchTerm;
-import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static java.lang.System.currentTimeMillis;
+import static java.lang.Thread.onSpinWait;
+import static java.util.Optional.ofNullable;
+
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "unused", "SpellCheckingInspection"})
 public final class MailReader {
 
-    private String folderName = "INBOX";
+    private MailReaderConf mailReaderConf;
 
-    private Session session;
-
-    private Store store;
+    private final long DEFAULT_MAX_WAITING_MILLIS_FOR_REFRESH = 5000;
 
     private Folder folder;
 
-
-    public MailReader(MailReaderConf conf) {
-
-        this.session = generateSession();
-        this.store = generateStore();
-        this.folder = this.openFolder(folderName);
-
+    public MailReader(MailReaderConf mailReaderConf) {
+        this.mailReaderConf = mailReaderConf;
+        this.folder = FOLDER_GENERATOR.apply(this.mailReaderConf);
+        ofNullable(mailReaderConf.getMaxWaitingMillisForRefresh())
+                .filter(v -> v > 0)
+                .ifPresent(v -> MAX_WAITING_MILLIS_FOR_REFRESH = v);
     }
 
-    private Session generateSession() {
+    private final Function<MailReaderConf, Folder> FOLDER_GENERATOR = ReaderComponentGenerator::generateFolder;
 
-        try {
-            String protocol = "imaps";
-            String host = "outlook.office365.com";
-            int port = 993;
+    private volatile boolean refreshing = false;
+    private long MAX_WAITING_MILLIS_FOR_REFRESH = 5000;
 
-            Properties props = new Properties();
-
-            MailSSLSocketFactory sf = new MailSSLSocketFactory();
-            sf.setTrustAllHosts(true);
-//        sf.setSecureRandom();
-
-            props.put("mail.imap.ssl.socketFactory", sf);
-
-            props.setProperty("mail.imap.host", host);
-            props.setProperty("mail.imap.port", String.valueOf(port));
-            props.setProperty("mail.imapStore.protocol", protocol);
-            props.setProperty("mail.imap.ssl.enable", "true");
-            props.setProperty("mail.debug", "false");
-
-            return Session.getInstance(props);
-        } catch (Exception e) {
-            throw new RuntimeException();
+    private final Supplier<Folder> FOLDER_SUP = () -> {
+        if (refreshing) {
+            long start = currentTimeMillis();
+            while (refreshing) {
+                if (currentTimeMillis() - start > MAX_WAITING_MILLIS_FOR_REFRESH)
+                    throw new BlueException(INTERNAL_SERVER_ERROR);
+                onSpinWait();
+            }
         }
-    }
 
-    private Store generateStore() {
-        try {
-            String protocol = "imaps";
-            String host = "outlook.office365.com";
-            int port = 993;
-            String username = "yunfei0221@outlook.com";
-            String password = "Fei19890116";
+        return folder;
+    };
 
-            Store store = this.session.getStore(protocol);
-            store.connect(host, port, username, password);
+    private final Supplier<Folder> FOLDER_REFRESHER = () -> {
+        if (!refreshing)
+            synchronized (this) {
+                if (!refreshing) {
+                    refreshing = true;
+                    this.folder = FOLDER_GENERATOR.apply(this.mailReaderConf);
+                    refreshing = false;
+                }
+            }
 
-            return store;
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
-    }
+        return FOLDER_SUP.get();
+    };
 
-    private Folder openFolder(String folderName) {
-        try {
-            Folder folder = store.getFolder(folderName);
-
-            if (!folder.exists())
-                throw new RuntimeException("folder with name (" + folderName + ") is not exist");
-
-            folder.open(Folder.READ_WRITE);
-
-            return folder;
-        } catch (Exception e) {
-            throw new RuntimeException();
-        }
-    }
 
     public int getMessageCount() {
         try {
-            return folder.getMessageCount();
-        } catch (MessagingException e) {
+            return FOLDER_SUP.get().getMessageCount();
+        } catch (Exception e) {
+            if (e instanceof IllegalStateException) {
+                try {
+                    return FOLDER_REFRESHER.get().getMessageCount();
+                } catch (MessagingException ex) {
+                    throw new RuntimeException();
+                }
+            }
             throw new RuntimeException();
         }
     }
 
     public int getNewMessageCount() {
         try {
-            return folder.getNewMessageCount();
+            return FOLDER_SUP.get().getNewMessageCount();
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -105,7 +91,7 @@ public final class MailReader {
 
     public int getUnreadMessageCount() {
         try {
-            return folder.getUnreadMessageCount();
+            return FOLDER_SUP.get().getUnreadMessageCount();
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -113,7 +99,7 @@ public final class MailReader {
 
     public int getDeletedMessageCount() {
         try {
-            return folder.getDeletedMessageCount();
+            return FOLDER_SUP.get().getDeletedMessageCount();
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -121,7 +107,7 @@ public final class MailReader {
 
     public Message getMessage(int index) {
         try {
-            return folder.getMessage(index);
+            return FOLDER_SUP.get().getMessage(index);
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -129,7 +115,7 @@ public final class MailReader {
 
     public Message[] getMessages(int start, int end) {
         try {
-            return folder.getMessages(start, end);
+            return FOLDER_SUP.get().getMessages(start, end);
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -137,7 +123,7 @@ public final class MailReader {
 
     public Message[] getMessages(int[] msgnums) {
         try {
-            return folder.getMessages(msgnums);
+            return FOLDER_SUP.get().getMessages(msgnums);
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -145,7 +131,7 @@ public final class MailReader {
 
     public Message[] getMessages() {
         try {
-            return folder.getMessages();
+            return FOLDER_SUP.get().getMessages();
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -153,7 +139,7 @@ public final class MailReader {
 
     public void appendMessages(Message[] messages) {
         try {
-            folder.appendMessages(messages);
+            FOLDER_SUP.get().appendMessages(messages);
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -161,7 +147,7 @@ public final class MailReader {
 
     public void fetch(Message[] msgs, FetchProfile fp) {
         try {
-            folder.fetch(msgs, fp);
+            FOLDER_SUP.get().fetch(msgs, fp);
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -169,7 +155,7 @@ public final class MailReader {
 
     public void setFlags(Message[] msgs, Flags flag, boolean value) {
         try {
-            folder.setFlags(msgs, flag, value);
+            FOLDER_SUP.get().setFlags(msgs, flag, value);
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -177,7 +163,7 @@ public final class MailReader {
 
     public void setFlags(int start, int end, Flags flag, boolean value) {
         try {
-            folder.setFlags(start, end, flag, value);
+            FOLDER_SUP.get().setFlags(start, end, flag, value);
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -185,7 +171,7 @@ public final class MailReader {
 
     public void setFlags(int[] msgnums, Flags flag, boolean value) {
         try {
-            folder.setFlags(msgnums, flag, value);
+            FOLDER_SUP.get().setFlags(msgnums, flag, value);
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -193,7 +179,7 @@ public final class MailReader {
 
     public void copyMessages(Message[] msgs, Folder folder) {
         try {
-            folder.copyMessages(msgs, folder);
+            FOLDER_SUP.get().copyMessages(msgs, folder);
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -201,7 +187,7 @@ public final class MailReader {
 
     public Message[] expunge() {
         try {
-            return folder.expunge();
+            return FOLDER_SUP.get().expunge();
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -209,7 +195,7 @@ public final class MailReader {
 
     public Message[] search(SearchTerm term) {
         try {
-            return folder.search(term);
+            return FOLDER_SUP.get().search(term);
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -217,7 +203,7 @@ public final class MailReader {
 
     public Message[] search(SearchTerm term, Message[] msgs) {
         try {
-            return folder.search(term, msgs);
+            return FOLDER_SUP.get().search(term, msgs);
         } catch (MessagingException e) {
             throw new RuntimeException();
         }
@@ -225,7 +211,7 @@ public final class MailReader {
 
     public void addConnectionListener(ConnectionListener l) {
         try {
-            folder.addConnectionListener(l);
+            FOLDER_SUP.get().addConnectionListener(l);
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -233,7 +219,7 @@ public final class MailReader {
 
     public void removeConnectionListener(ConnectionListener l) {
         try {
-            folder.removeConnectionListener(l);
+            FOLDER_SUP.get().removeConnectionListener(l);
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -241,7 +227,7 @@ public final class MailReader {
 
     public void addFolderListener(FolderListener l) {
         try {
-            folder.addFolderListener(l);
+            FOLDER_SUP.get().addFolderListener(l);
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -249,7 +235,7 @@ public final class MailReader {
 
     public void removeFolderListener(FolderListener l) {
         try {
-            folder.removeFolderListener(l);
+            FOLDER_SUP.get().removeFolderListener(l);
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -257,7 +243,7 @@ public final class MailReader {
 
     public void addMessageCountListener(MessageCountListener l) {
         try {
-            folder.addMessageCountListener(l);
+            FOLDER_SUP.get().addMessageCountListener(l);
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -265,7 +251,7 @@ public final class MailReader {
 
     public void removeMessageCountListener(MessageCountListener l) {
         try {
-            folder.removeMessageCountListener(l);
+            FOLDER_SUP.get().removeMessageCountListener(l);
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -273,7 +259,7 @@ public final class MailReader {
 
     public void addMessageChangedListener(MessageChangedListener l) {
         try {
-            folder.addMessageChangedListener(l);
+            FOLDER_SUP.get().addMessageChangedListener(l);
         } catch (Exception e) {
             throw new RuntimeException();
         }
@@ -281,7 +267,7 @@ public final class MailReader {
 
     public void removeMessageChangedListener(MessageChangedListener l) {
         try {
-            folder.removeMessageChangedListener(l);
+            FOLDER_SUP.get().removeMessageChangedListener(l);
         } catch (Exception e) {
             throw new RuntimeException();
         }

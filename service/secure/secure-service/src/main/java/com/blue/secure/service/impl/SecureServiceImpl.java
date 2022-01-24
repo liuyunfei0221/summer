@@ -116,13 +116,13 @@ public class SecureServiceImpl implements SecureService {
         this.executorService = executorService;
         this.redissonClient = redissonClient;
 
-        MAX_WAITING_FOR_REFRESH = blockingDeploy.getBlockingMillis();
+        MAX_WAITING_MILLIS_FOR_REFRESH = blockingDeploy.getBlockingMillis();
         RANDOM_ID_LENGTH = sessionKeyDeploy.getRanLen();
     }
 
     private static int RANDOM_ID_LENGTH;
 
-    private static long MAX_WAITING_FOR_REFRESH;
+    private static long MAX_WAITING_MILLIS_FOR_REFRESH;
 
     public static final String
             SESSION_KEY_PRE = BlueCacheKey.SESSION_KEY_PRE.key,
@@ -199,7 +199,7 @@ public class SecureServiceImpl implements SecureService {
         if (authorityInfosRefreshing) {
             long start = currentTimeMillis();
             while (authorityInfosRefreshing) {
-                if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
+                if (currentTimeMillis() - start > MAX_WAITING_MILLIS_FOR_REFRESH)
                     throw new BlueException(INTERNAL_SERVER_ERROR);
                 onSpinWait();
             }
@@ -214,7 +214,7 @@ public class SecureServiceImpl implements SecureService {
         if (authorityInfosRefreshing) {
             long start = currentTimeMillis();
             while (authorityInfosRefreshing) {
-                if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
+                if (currentTimeMillis() - start > MAX_WAITING_MILLIS_FOR_REFRESH)
                     throw new BlueException(INTERNAL_SERVER_ERROR);
                 onSpinWait();
             }
