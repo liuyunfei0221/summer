@@ -14,8 +14,8 @@ import reactor.util.Logger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static com.blue.base.common.base.Check.isInvalidStatus;
-import static com.blue.base.common.base.Check.isNull;
+import static com.blue.base.common.base.BlueCheck.isInvalidStatus;
+import static com.blue.base.common.base.BlueCheck.isNull;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;

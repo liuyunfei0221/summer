@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.Check.isNotBlank;
+import static com.blue.base.common.base.BlueCheck.isNotBlank;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.constant.base.RandomType.ALPHANUMERIC;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;

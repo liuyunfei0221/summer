@@ -1,6 +1,6 @@
 package com.blue.member.service.impl;
 
-import com.blue.base.common.base.Check;
+import com.blue.base.common.base.BlueCheck;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.Check.*;
+import static com.blue.base.common.base.BlueCheck.*;
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -97,15 +97,15 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     private static final Consumer<MemberCondition> CONDITION_REPACKAGER = condition -> {
         if (condition != null) {
             ofNullable(condition.getSortAttribute())
-                    .filter(Check::isNotBlank)
+                    .filter(BlueCheck::isNotBlank)
                     .map(SORT_ATTRIBUTE_MAPPING::get)
-                    .filter(Check::isNotBlank)
+                    .filter(BlueCheck::isNotBlank)
                     .ifPresent(condition::setSortAttribute);
 
             assertSortType(condition.getSortType(), true);
 
             ofNullable(condition.getName())
-                    .filter(Check::isNotBlank).ifPresent(n -> condition.setName("%" + n + "%"));
+                    .filter(BlueCheck::isNotBlank).ifPresent(n -> condition.setName("%" + n + "%"));
         }
     };
 

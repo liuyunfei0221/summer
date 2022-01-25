@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.ClassGetter.getClassesByPackage;
+import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
 import static com.blue.base.common.message.MessageProcessor.resolveToMessage;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
@@ -85,20 +86,17 @@ public final class ExceptionProcessor {
     public static ExceptionResponse handle(Throwable throwable, List<String> languages) {
         LOGGER.info("ExceptionHandleInfo handle(Throwable throwable), throwable = {}", throwable);
 
-        Throwable t = throwable;
-        Throwable cause;
-        while ((cause = t.getCause()) != null)
-            t = cause;
+        Throwable original = getOriginalThrowable(throwable);
 
-        ExceptionHandler handler = MAPPING.get(t.getClass().getName());
+        ExceptionHandler handler = MAPPING.get(original.getClass().getName());
         if (handler != null)
             try {
-                return EXP_RES_GETTER.apply(languages, handler.handle(t));
+                return EXP_RES_GETTER.apply(languages, handler.handle(original));
             } catch (Exception e) {
-                LOGGER.error("handle(Throwable throwable), Exception handling failed, t = {}, e = {}", t, e);
+                LOGGER.error("handle(Throwable throwable), Exception handling failed, throwable = {}, e = {}", throwable, e);
             }
 
-        LOGGER.error("handle(Throwable throwable), unknown exception, t = {}", t);
+        LOGGER.error("handle(Throwable throwable), unknown exception, throwable = {}", throwable);
         return EXP_RES_GETTER.apply(languages, UNKNOWN_EXP_HANDLE_INFO);
     }
 

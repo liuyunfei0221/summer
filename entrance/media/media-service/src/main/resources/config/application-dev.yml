@@ -228,14 +228,14 @@ encrypt:
 
 
 reader:
-  protocol: imap
-  serverHost: outlook.office365.com
-  serverPort: 993
-  username: yunfei0221@outlook.com
+  imapHost: outlook.office365.com
+  imapPort: 993
+  imapSslEnable: true
+  user: yunfei0221@outlook.com
   password: Fei19890116
-  props:
-    mail.imap.ssl: true
-    mail.imap.starttls.enable: true
+  folderName: INBOX
+  maxWaitingMillisForRefresh: 5000
+  debug: false
 
 
 sender:
@@ -243,26 +243,44 @@ sender:
   smtpServerPort: 587
   smtpUsername: yunfei0221@outlook.com
   smtpPassword: Fei19890116
+  mailSmtpSsl: true
+  mailSmtpStarttlsEnable: true
+
   corePoolSize: 2
   maximumPoolSize: 8
   keepAliveSeconds: 64
   blockingQueueCapacity: 2048
   threadNamePre: blue-mail-sender
-  connectionPoolCoreSize: 128
-  connectionPoolMaxSize: 256
-  connectionPoolClaimTimeoutMillis: 1000
-  connectionPoolExpireAfterMillis: 18000
-  sessionTimeout: 60000
-  connectionPoolLoadBalancingStrategy: RANDOM_ACCESS
-  transportStrategy: SMTP
+  throwableForRetry: []
+  retryTimes: 1
   withDKIM: false
   domainKeyFile: classpath:dkim/selector1.pem
   domain: outlook.com
   selector: selector1
-  debugLogging: false
-  props:
-    mail.smtp.ssl: true
-    mail.smtp.starttls.enable: true
+  debug: false
+
+
+
+#sender:
+#  smtpServerHost: smtp.office365.com
+#  smtpServerPort: 587
+#  smtpUsername: yunfei0221@outlook.com
+#  smtpPassword: Fei19890116
+#  corePoolSize: 2
+#  maximumPoolSize: 8
+#  keepAliveSeconds: 64
+#  blockingQueueCapacity: 2048
+#  threadNamePre: blue-mail-sender
+#  throwableForRetry: []
+#  retryTimes: 1
+#  withDKIM: false
+#  domainKeyFile: classpath:dkim/selector1.pem
+#  domain: outlook.com
+#  selector: selector1
+#  debugLogging: false
+#  props:
+#    mail.smtp.ssl: true
+#    mail.smtp.starttls.enable: true
 
 
 dubbo:

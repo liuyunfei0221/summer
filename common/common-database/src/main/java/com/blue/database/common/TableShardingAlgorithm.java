@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.blue.base.common.base.Check.isEmpty;
+import static com.blue.base.common.base.BlueCheck.isEmpty;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static com.blue.identity.core.SnowflakeIdentityParser.parse;
 import static java.lang.Long.valueOf;

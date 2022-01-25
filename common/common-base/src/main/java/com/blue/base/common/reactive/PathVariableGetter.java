@@ -5,7 +5,7 @@ import com.blue.base.model.exps.BlueException;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
-import static com.blue.base.common.base.Check.isBlank;
+import static com.blue.base.common.base.BlueCheck.isBlank;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;

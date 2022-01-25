@@ -1,19 +1,17 @@
 package com.blue.media.handler.manager;
 
-import com.blue.base.common.base.FileProcessor;
 import com.blue.base.model.base.BlueResponse;
+import com.blue.mail.common.MailReader;
 import com.blue.mail.common.MailSender;
-import org.simplejavamail.api.email.EmailPopulatingBuilder;
-import org.simplejavamail.email.EmailBuilder;
-import org.springframework.http.MediaType;
+import jakarta.mail.Message;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
@@ -21,6 +19,7 @@ import java.util.stream.Stream;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static com.blue.base.constant.media.MailHeader.LIST_UNSUBSCRIBE;
+import static com.blue.mail.common.MailReader.parseMessage;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -32,7 +31,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2022/1/5
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection", "DuplicatedCode"})
+@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection", "DuplicatedCode", "AliControlFlowStatementWithoutBraces"})
 @Component
 public class MailManagerHandler {
 
@@ -40,8 +39,11 @@ public class MailManagerHandler {
 
     private final MailSender mailSender;
 
-    public MailManagerHandler(MailSender mailSender) {
+    private final MailReader mailReader;
+
+    public MailManagerHandler(MailSender mailSender, MailReader mailReader) {
         this.mailSender = mailSender;
+        this.mailReader = mailReader;
     }
 
     private static final String FROM = "yunfei0221@outlook.com";
@@ -61,9 +63,7 @@ public class MailManagerHandler {
      * @return
      */
     public Mono<ServerResponse> testSend(ServerRequest serverRequest) {
-
-        mailTest();
-
+        testSend();
         return just(true)
                 .flatMap(t ->
                         ok().contentType(APPLICATION_JSON)
@@ -77,8 +77,9 @@ public class MailManagerHandler {
      * @return
      */
     public Mono<ServerResponse> testRead(ServerRequest serverRequest) {
-
-        mailTest();
+        Message[] messages = mailReader.getMessages();
+        for (Message msg : messages)
+            parseMessage(msg);
 
         return just(true)
                 .flatMap(t ->
@@ -87,65 +88,41 @@ public class MailManagerHandler {
     }
 
 
+    //=============================================================================================================================
 
-    private void mailTest() {
-        EmailPopulatingBuilder builder = EmailBuilder.startingBlank()
-                .from("blue", FROM)
-                .toWithFixedName("darkBlue", RECEIVERS)
-                .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
+    private void testSend() {
+        Message message = mailSender.initMessage();
 
-                .withDispositionNotificationTo(FROM)
-                .withReturnReceiptTo(FROM)
+        try {
+            message.setFrom(new InternetAddress(FROM));
 
-                .withSubject("hello world")
-                .withHTMLText("Please view this email in a modern email client!");
+            InternetAddress[] tos = RECEIVERS.stream().map(r -> {
+                try {
+                    return new InternetAddress(r);
+                } catch (AddressException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            }).toArray(InternetAddress[]::new);
+            message.setRecipients(Message.RecipientType.TO, tos);
 
-        mailSender.signWithDomainKey(builder);
+            message.addHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/");
+            message.setSubject("hello new world");
 
-        CompletableFuture<Void> future = mailSender.sendMail(builder.buildEmail())
-                .thenAcceptAsync(v -> System.err.println("SEND SUCCESS!!!"))
-                .exceptionally(t -> {
-                    LOGGER.error("SEND FAILED!!!");
-                    LOGGER.error("t = {}", t);
-                    return null;
-                });
-    }
+            message.setText("Please view this email in a modern email client!");
 
-    private void mediaMailTest() {
-        String htmlText = "<img src='cid:logo.jpg'><b>We should meet up!</b><img src='logo.jpg'>";
+            CompletableFuture<Void> future = mailSender.sendMessage(message)
+                    .thenAcceptAsync(v -> System.err.println("SEND SUCCESS!!!"))
+                    .exceptionally(t -> {
+                        LOGGER.error("SEND FAILED!!!");
+                        LOGGER.error("t = {}", t);
+                        return null;
+                    });
 
-        EmailPopulatingBuilder builder = EmailBuilder.startingBlank()
-                .from("blue", FROM)
-                .toWithFixedName("darkBlue", RECEIVERS)
-                .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
-                .withHeader("Content-ID", "<logo.jpg>")
-                .withSubject("hello world")
-                .withHTMLText(htmlText);
-
-//        File file = FileProcessor.getFile("E:\\tempFile\\source\\walls\\a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg");
-//        try (FileInputStream fileInputStream = new FileInputStream(file)) {
-//            builder.withAttachment("img.jpg", fileInputStream.readAllBytes(), MediaType.IMAGE_JPEG_VALUE);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-        File logoFile = FileProcessor.getFile("E:\\tempFile\\source\\favicon.jpg");
-        try (FileInputStream fileInputStream = new FileInputStream(logoFile)) {
-            builder.withAttachment("logo.jpg", fileInputStream.readAllBytes(), MediaType.IMAGE_JPEG_VALUE);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        mailSender.signWithDomainKey(builder);
-
-        CompletableFuture<Void> future = mailSender.sendMail(builder.buildEmail())
-                .thenAcceptAsync(v ->
-                        System.err.println("SEND SUCCESS!!!"))
-                .exceptionally(t -> {
-                    LOGGER.error("SEND FAILED!!!");
-                    LOGGER.error("t = {}", t);
-                    return null;
-                });
     }
 
 }

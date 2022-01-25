@@ -30,8 +30,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.Check.isEmpty;
-import static com.blue.base.common.base.Check.isInvalidIdentity;
+import static com.blue.base.common.base.BlueCheck.isEmpty;
+import static com.blue.base.common.base.BlueCheck.isInvalidIdentity;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.*;

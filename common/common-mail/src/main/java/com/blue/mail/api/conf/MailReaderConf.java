@@ -1,5 +1,6 @@
 package com.blue.mail.api.conf;
 
+@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface MailReaderConf {
 
     String getImapHost();

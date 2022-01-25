@@ -1,9 +1,7 @@
-package com.blue.mail.common;
-
 import com.sun.mail.util.BASE64DecoderStream;
 import com.sun.mail.util.MailSSLSocketFactory;
+import jakarta.mail.*;
 
-import javax.mail.*;
 import java.io.*;
 import java.util.Enumeration;
 import java.util.Properties;

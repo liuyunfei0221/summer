@@ -1,16 +1,24 @@
-package com.blue.mail.common;
-
 import com.blue.mail.api.conf.MailReaderConfParams;
-
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.internet.MimeMultipart;
+import com.blue.mail.common.MailReader;
+import jakarta.mail.BodyPart;
+import jakarta.mail.Message;
+import jakarta.mail.internet.MimeMultipart;
 
 public class ReaderTest {
 
     public static void main(String[] args) {
+        
+        MailReaderConfParams params = new MailReaderConfParams();
+        params.setImapHost("outlook.office365.com");
+        params.setImapPort(993);
+        params.setImapSslEnable(true);
+        params.setUser("yunfei0221@outlook.com");
+        params.setPassword("Fei19890116");
+        params.setFolderName("INBOX");
+        params.setMaxWaitingMillisForRefresh(5000);
+        params.setDebug(false);
 
-        MailReader mailReader = new MailReader(new MailReaderConfParams());
+        MailReader mailReader = new MailReader(params);
 
         System.err.println("COUNT = " + mailReader.getMessageCount());
 

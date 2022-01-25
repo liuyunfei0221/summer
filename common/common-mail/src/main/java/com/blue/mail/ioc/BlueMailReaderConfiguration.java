@@ -1,12 +1,12 @@
 package com.blue.mail.ioc;
 
-import com.blue.mail.api.conf.MailSenderConf;
-import com.blue.mail.common.MailSender;
+import com.blue.mail.api.conf.MailReaderConf;
+import com.blue.mail.common.MailReader;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static com.blue.mail.api.generator.BlueMailSenderGenerator.generateMailSender;
+import static com.blue.mail.api.generator.BlueMailReaderGenerator.generateMailReader;
 
 /**
  * captcha processor configuration
@@ -16,13 +16,13 @@ import static com.blue.mail.api.generator.BlueMailSenderGenerator.generateMailSe
  * @apiNote
  */
 @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
-@ConditionalOnBean(value = {MailSenderConf.class})
+@ConditionalOnBean(value = {MailReaderConf.class})
 @Configuration
 public class BlueMailReaderConfiguration {
 
     @Bean
-    MailSender mailSender(MailSenderConf mailSenderConf) {
-        return generateMailSender(mailSenderConf);
+    MailReader mailReader(MailReaderConf mailReaderConf) {
+        return generateMailReader(mailReaderConf);
     }
 
 }

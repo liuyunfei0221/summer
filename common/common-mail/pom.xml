@@ -23,16 +23,28 @@
             <artifactId>common-base</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.simplejavamail</groupId>-->
+<!--            <artifactId>simple-java-mail</artifactId>-->
+<!--            <version>${simple-mail.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.simplejavamail</groupId>-->
+<!--            <artifactId>dkim-module</artifactId>-->
+<!--            <version>${simple-mail.version}</version>-->
+<!--        </dependency>-->
+
         <dependency>
-            <groupId>org.simplejavamail</groupId>
-            <artifactId>simple-java-mail</artifactId>
-            <version>${simple-mail.version}</version>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+            <version>${jakarta.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.simplejavamail</groupId>
-            <artifactId>dkim-module</artifactId>
-            <version>${simple-mail.version}</version>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>${jakarta.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>

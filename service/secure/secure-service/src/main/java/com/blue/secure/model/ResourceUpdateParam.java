@@ -2,7 +2,7 @@ package com.blue.secure.model;
 
 import com.blue.base.model.exps.BlueException;
 
-import static com.blue.base.common.base.Check.isInvalidIdentity;
+import static com.blue.base.common.base.BlueCheck.isInvalidIdentity;
 import static com.blue.base.constant.base.ResponseElement.*;
 
 /**

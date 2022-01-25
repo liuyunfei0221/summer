@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Properties;
 
-import static com.blue.base.common.base.Check.isBlank;
+import static com.blue.base.common.base.BlueCheck.isBlank;
 import static com.blue.base.common.base.FileProcessor.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.loadProp;
 import static java.time.Clock.system;

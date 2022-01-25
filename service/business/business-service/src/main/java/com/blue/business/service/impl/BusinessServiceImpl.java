@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
-import static com.blue.base.common.base.Check.isInvalidIdentity;
+import static com.blue.base.common.base.BlueCheck.isInvalidIdentity;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.business.SubjectType.ARTICLE;

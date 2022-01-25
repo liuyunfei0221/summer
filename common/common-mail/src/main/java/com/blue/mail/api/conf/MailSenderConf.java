@@ -1,10 +1,6 @@
 package com.blue.mail.api.conf;
 
-import com.sanctionco.jmail.EmailValidator;
-import org.simplejavamail.api.mailer.config.LoadBalancingStrategy;
-import org.simplejavamail.api.mailer.config.TransportStrategy;
-
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author liuyunfei
@@ -22,7 +18,9 @@ public interface MailSenderConf {
 
     String getSmtpPassword();
 
-    EmailValidator getEmailValidator();
+    Boolean getMailSmtpSsl();
+
+    Boolean getMailSmtpStarttlsEnable();
 
     Integer getCorePoolSize();
 
@@ -34,19 +32,9 @@ public interface MailSenderConf {
 
     String getThreadNamePre();
 
-    Integer getConnectionPoolCoreSize();
+    List<String> getThrowableForRetry();
 
-    Integer getConnectionPoolMaxSize();
-
-    Integer getConnectionPoolClaimTimeoutMillis();
-
-    Integer getConnectionPoolExpireAfterMillis();
-
-    Integer getSessionTimeout();
-
-    LoadBalancingStrategy getConnectionPoolLoadBalancingStrategy();
-
-    TransportStrategy getTransportStrategy();
+    Integer getRetryTimes();
 
     Boolean getWithDKIM();
 
@@ -56,8 +44,6 @@ public interface MailSenderConf {
 
     String getSelector();
 
-    Boolean getDebugLogging();
-
-    Map<String, String> getProps();
+    Boolean getDebug();
 
 }

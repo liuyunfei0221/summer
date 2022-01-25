@@ -17,7 +17,7 @@ import static com.blue.base.constant.base.Status.VALID;
  * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
-public final class Check {
+public final class BlueCheck {
 
     /**
      * check a null value

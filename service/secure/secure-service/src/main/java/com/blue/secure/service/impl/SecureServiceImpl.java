@@ -39,7 +39,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.*;
 
-import static com.blue.base.common.base.Check.*;
+import static com.blue.base.common.base.BlueCheck.*;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.base.RsaProcessor.initKeyPair;
 import static com.blue.base.constant.base.BlueNumericalValue.*;

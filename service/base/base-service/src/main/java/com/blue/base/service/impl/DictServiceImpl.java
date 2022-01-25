@@ -12,7 +12,7 @@ import reactor.util.Logger;
 
 import java.util.List;
 
-import static com.blue.base.common.base.Check.*;
+import static com.blue.base.common.base.BlueCheck.*;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;

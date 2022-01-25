@@ -1,16 +1,13 @@
 package com.blue.mail.api.conf;
 
-import org.simplejavamail.api.mailer.config.LoadBalancingStrategy;
-import org.simplejavamail.api.mailer.config.TransportStrategy;
-
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author liuyunfei
  * @date 2022/1/4
  * @apiNote
  */
-@SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming"})
+@SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class MailSenderConfParams implements MailSenderConf {
 
     protected String smtpServerHost;
@@ -20,6 +17,10 @@ public abstract class MailSenderConfParams implements MailSenderConf {
     protected String smtpUsername;
 
     protected String smtpPassword;
+
+    protected Boolean mailSmtpSsl;
+
+    protected Boolean mailSmtpStarttlsEnable;
 
     protected Integer corePoolSize;
 
@@ -31,19 +32,9 @@ public abstract class MailSenderConfParams implements MailSenderConf {
 
     protected String threadNamePre;
 
-    protected Integer connectionPoolCoreSize;
+    protected List<String> throwableForRetry;
 
-    protected Integer connectionPoolMaxSize;
-
-    protected Integer connectionPoolClaimTimeoutMillis;
-
-    protected Integer connectionPoolExpireAfterMillis;
-
-    protected Integer sessionTimeout;
-
-    protected LoadBalancingStrategy connectionPoolLoadBalancingStrategy;
-
-    protected TransportStrategy transportStrategy;
+    protected Integer retryTimes;
 
     protected Boolean withDKIM;
 
@@ -53,9 +44,7 @@ public abstract class MailSenderConfParams implements MailSenderConf {
 
     protected String selector;
 
-    protected Boolean debugLogging;
-
-    protected Map<String, String> props;
+    protected Boolean debug;
 
     public MailSenderConfParams() {
     }
@@ -78,6 +67,16 @@ public abstract class MailSenderConfParams implements MailSenderConf {
     @Override
     public String getSmtpPassword() {
         return smtpPassword;
+    }
+
+    @Override
+    public Boolean getMailSmtpSsl() {
+        return mailSmtpSsl;
+    }
+
+    @Override
+    public Boolean getMailSmtpStarttlsEnable() {
+        return mailSmtpStarttlsEnable;
     }
 
     @Override
@@ -106,38 +105,13 @@ public abstract class MailSenderConfParams implements MailSenderConf {
     }
 
     @Override
-    public Integer getConnectionPoolCoreSize() {
-        return connectionPoolCoreSize;
+    public List<String> getThrowableForRetry() {
+        return throwableForRetry;
     }
 
     @Override
-    public Integer getConnectionPoolMaxSize() {
-        return connectionPoolMaxSize;
-    }
-
-    @Override
-    public Integer getConnectionPoolClaimTimeoutMillis() {
-        return connectionPoolClaimTimeoutMillis;
-    }
-
-    @Override
-    public Integer getConnectionPoolExpireAfterMillis() {
-        return connectionPoolExpireAfterMillis;
-    }
-
-    @Override
-    public Integer getSessionTimeout() {
-        return sessionTimeout;
-    }
-
-    @Override
-    public LoadBalancingStrategy getConnectionPoolLoadBalancingStrategy() {
-        return connectionPoolLoadBalancingStrategy;
-    }
-
-    @Override
-    public TransportStrategy getTransportStrategy() {
-        return transportStrategy;
+    public Integer getRetryTimes() {
+        return retryTimes;
     }
 
     @Override
@@ -161,13 +135,8 @@ public abstract class MailSenderConfParams implements MailSenderConf {
     }
 
     @Override
-    public Boolean getDebugLogging() {
-        return debugLogging;
-    }
-
-    @Override
-    public Map<String, String> getProps() {
-        return props;
+    public Boolean getDebug() {
+        return debug;
     }
 
     public void setSmtpServerHost(String smtpServerHost) {
@@ -184,6 +153,14 @@ public abstract class MailSenderConfParams implements MailSenderConf {
 
     public void setSmtpPassword(String smtpPassword) {
         this.smtpPassword = smtpPassword;
+    }
+
+    public void setMailSmtpSsl(Boolean mailSmtpSsl) {
+        this.mailSmtpSsl = mailSmtpSsl;
+    }
+
+    public void setMailSmtpStarttlsEnable(Boolean mailSmtpStarttlsEnable) {
+        this.mailSmtpStarttlsEnable = mailSmtpStarttlsEnable;
     }
 
     public void setCorePoolSize(Integer corePoolSize) {
@@ -206,32 +183,12 @@ public abstract class MailSenderConfParams implements MailSenderConf {
         this.threadNamePre = threadNamePre;
     }
 
-    public void setConnectionPoolCoreSize(Integer connectionPoolCoreSize) {
-        this.connectionPoolCoreSize = connectionPoolCoreSize;
+    public void setThrowableForRetry(List<String> throwableForRetry) {
+        this.throwableForRetry = throwableForRetry;
     }
 
-    public void setConnectionPoolMaxSize(Integer connectionPoolMaxSize) {
-        this.connectionPoolMaxSize = connectionPoolMaxSize;
-    }
-
-    public void setConnectionPoolClaimTimeoutMillis(Integer connectionPoolClaimTimeoutMillis) {
-        this.connectionPoolClaimTimeoutMillis = connectionPoolClaimTimeoutMillis;
-    }
-
-    public void setConnectionPoolExpireAfterMillis(Integer connectionPoolExpireAfterMillis) {
-        this.connectionPoolExpireAfterMillis = connectionPoolExpireAfterMillis;
-    }
-
-    public void setSessionTimeout(Integer sessionTimeout) {
-        this.sessionTimeout = sessionTimeout;
-    }
-
-    public void setConnectionPoolLoadBalancingStrategy(LoadBalancingStrategy connectionPoolLoadBalancingStrategy) {
-        this.connectionPoolLoadBalancingStrategy = connectionPoolLoadBalancingStrategy;
-    }
-
-    public void setTransportStrategy(TransportStrategy transportStrategy) {
-        this.transportStrategy = transportStrategy;
+    public void setRetryTimes(Integer retryTimes) {
+        this.retryTimes = retryTimes;
     }
 
     public void setWithDKIM(Boolean withDKIM) {
@@ -250,39 +207,31 @@ public abstract class MailSenderConfParams implements MailSenderConf {
         this.selector = selector;
     }
 
-    public void setDebugLogging(Boolean debugLogging) {
-        this.debugLogging = debugLogging;
-    }
-
-    public void setProps(Map<String, String> props) {
-        this.props = props;
+    public void setDebug(Boolean debug) {
+        this.debug = debug;
     }
 
     @Override
     public String toString() {
-        return "MailConfParams{" +
+        return "MailSenderConfParams{" +
                 "smtpServerHost='" + smtpServerHost + '\'' +
                 ", smtpServerPort=" + smtpServerPort +
                 ", smtpUsername='" + smtpUsername + '\'' +
                 ", smtpPassword='" + smtpPassword + '\'' +
+                ", mailSmtpSsl=" + mailSmtpSsl +
+                ", mailSmtpStarttlsEnable=" + mailSmtpStarttlsEnable +
                 ", corePoolSize=" + corePoolSize +
                 ", maximumPoolSize=" + maximumPoolSize +
                 ", keepAliveSeconds=" + keepAliveSeconds +
                 ", blockingQueueCapacity=" + blockingQueueCapacity +
                 ", threadNamePre='" + threadNamePre + '\'' +
-                ", connectionPoolCoreSize=" + connectionPoolCoreSize +
-                ", connectionPoolMaxSize=" + connectionPoolMaxSize +
-                ", connectionPoolClaimTimeoutMillis=" + connectionPoolClaimTimeoutMillis +
-                ", connectionPoolExpireAfterMillis=" + connectionPoolExpireAfterMillis +
-                ", sessionTimeout=" + sessionTimeout +
-                ", connectionPoolLoadBalancingStrategy=" + connectionPoolLoadBalancingStrategy +
-                ", transportStrategy=" + transportStrategy +
+                ", throwableForRetry=" + throwableForRetry +
+                ", retryTimes=" + retryTimes +
                 ", withDKIM=" + withDKIM +
                 ", domainKeyFile='" + domainKeyFile + '\'' +
                 ", domain='" + domain + '\'' +
                 ", selector='" + selector + '\'' +
-                ", debugLogging=" + debugLogging +
-                ", props=" + props +
+                ", debug=" + debug +
                 '}';
     }
 

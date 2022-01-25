@@ -2,19 +2,32 @@ package com.blue.mail.common;
 
 import com.blue.mail.api.conf.MailReaderConf;
 import com.sun.mail.util.MailSSLSocketFactory;
+import jakarta.mail.Folder;
+import jakarta.mail.Session;
+import jakarta.mail.Store;
+import reactor.util.Logger;
 
-import javax.mail.Folder;
-import javax.mail.Session;
-import javax.mail.Store;
 import java.util.Properties;
 
 import static java.util.Optional.ofNullable;
+import static reactor.util.Loggers.getLogger;
 
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
+/**
+ * @author DarkBlue
+ */
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 public final class ReaderComponentGenerator {
 
-    private static final String PROTOCOL = "imaps";
+    private static final Logger LOGGER = getLogger(ReaderComponentGenerator.class);
 
+    private static final String PROTOCOL = "imap";
+
+    /**
+     * generate a session
+     *
+     * @param mailReaderConf
+     * @return
+     */
     public static Session generateSession(MailReaderConf mailReaderConf) {
         try {
             Properties props = new Properties();
@@ -31,14 +44,21 @@ public final class ReaderComponentGenerator {
 
             return Session.getInstance(props);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException();
+            LOGGER.error("Session generateSession(MailReaderConf mailReaderConf) failed, e = {}", e);
+            throw new RuntimeException(e);
         }
     }
 
+    /**
+     * connect store
+     *
+     * @param session
+     * @param mailReaderConf
+     * @return
+     */
     public static Store generateStore(Session session, MailReaderConf mailReaderConf) {
         if (session == null || mailReaderConf == null)
-            throw new RuntimeException();
+            throw new RuntimeException("session or mailReaderConf can't be null");
 
         try {
             Store store = session.getStore(PROTOCOL);
@@ -46,18 +66,26 @@ public final class ReaderComponentGenerator {
 
             return store;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException();
+            LOGGER.error("Store generateStore(Session session, MailReaderConf mailReaderConf) failed, e = {}", e);
+            throw new RuntimeException(e);
         }
     }
 
+    /**
+     * open a folder
+     *
+     * @param store
+     * @param mailReaderConf
+     * @return
+     */
     public static Folder openFolder(Store store, MailReaderConf mailReaderConf) {
         if (store == null || mailReaderConf == null)
-            throw new RuntimeException();
+            throw new RuntimeException("store or mailReaderConf can't be null");
 
         try {
             String folderName = mailReaderConf.getFolderName();
             Folder folder = store.getFolder(folderName);
+
 
             if (!folder.exists())
                 throw new RuntimeException("folder with name (" + folderName + ") is not exist");
@@ -66,14 +94,20 @@ public final class ReaderComponentGenerator {
 
             return folder;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException();
+            LOGGER.error("Folder openFolder(Store store, MailReaderConf mailReaderConf) failed, e = {}", e);
+            throw new RuntimeException(e);
         }
     }
 
+    /**
+     * generate a folder
+     *
+     * @param mailReaderConf
+     * @return
+     */
     public static Folder generateFolder(MailReaderConf mailReaderConf) {
         if (mailReaderConf == null)
-            throw new RuntimeException();
+            throw new RuntimeException("mailReaderConf can't be null");
 
         try {
             Session session = generateSession(mailReaderConf);
@@ -81,8 +115,8 @@ public final class ReaderComponentGenerator {
 
             return openFolder(store, mailReaderConf);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException();
+            LOGGER.error("Folder generateFolder(MailReaderConf mailReaderConf) failed, e = {}", e);
+            throw new RuntimeException(e);
         }
     }
 

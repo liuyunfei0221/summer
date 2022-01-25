@@ -1,9 +1,7 @@
-package com.blue.mail.common;
-
 import com.sun.mail.util.MailSSLSocketFactory;
+import jakarta.mail.*;
+import jakarta.mail.internet.MimeMultipart;
 
-import javax.mail.*;
-import javax.mail.internet.MimeMultipart;
 import java.util.Properties;
 
 public class MailReadTest {
