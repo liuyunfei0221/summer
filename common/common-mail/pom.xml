@@ -23,17 +23,6 @@
             <artifactId>common-base</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.simplejavamail</groupId>-->
-<!--            <artifactId>simple-java-mail</artifactId>-->
-<!--            <version>${simple-mail.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.simplejavamail</groupId>-->
-<!--            <artifactId>dkim-module</artifactId>-->
-<!--            <version>${simple-mail.version}</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>com.sun.activation</groupId>
             <artifactId>jakarta.activation</artifactId>

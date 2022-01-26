@@ -111,8 +111,13 @@ public class MailManagerHandler {
 
             message.setText("Please view this email in a modern email client!");
 
+            long start = System.currentTimeMillis();
+
             CompletableFuture<Void> future = mailSender.sendMessage(message)
-                    .thenAcceptAsync(v -> System.err.println("SEND SUCCESS!!!"))
+                    .thenAcceptAsync(v -> {
+                        System.err.println("SEND SUCCESS!!!");
+                        System.err.println("DURATION MILLIS: " + (System.currentTimeMillis() - start));
+                    })
                     .exceptionally(t -> {
                         LOGGER.error("SEND FAILED!!!");
                         LOGGER.error("t = {}", t);

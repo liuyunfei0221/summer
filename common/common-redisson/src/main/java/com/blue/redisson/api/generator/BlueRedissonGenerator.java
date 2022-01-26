@@ -191,7 +191,7 @@ public final class BlueRedissonGenerator {
      * @param redissonConf
      * @return
      */
-    public static RedissonClient createRedissonClient(RedissonConf redissonConf) {
+    public static RedissonClient generateRedissonClient(RedissonConf redissonConf) {
         confAsserter(redissonConf);
 
         Config config = new Config();

@@ -1,43 +1,46 @@
-//package com.blue.mail.common;
-//
+//import com.blue.base.common.base.BlueCheck;
 //import com.blue.base.model.exps.BlueException;
 //import com.blue.mail.api.conf.MailSenderConf;
-//import org.simplejavamail.api.email.Email;
-//import org.simplejavamail.api.email.EmailPopulatingBuilder;
-//import org.simplejavamail.api.mailer.Mailer;
-//import org.simplejavamail.mailer.MailerBuilder;
-//import org.simplejavamail.mailer.internal.MailerRegularBuilderImpl;
+//import jakarta.mail.Message;
+//import jakarta.mail.Session;
+//import jakarta.mail.Transport;
+//import jakarta.mail.internet.MimeMessage;
 //import reactor.util.Logger;
 //
 //import java.io.BufferedReader;
 //import java.io.File;
 //import java.io.FileReader;
 //import java.util.Base64;
-//import java.util.concurrent.ArrayBlockingQueue;
-//import java.util.concurrent.CompletableFuture;
-//import java.util.concurrent.RejectedExecutionHandler;
-//import java.util.concurrent.ThreadPoolExecutor;
+//import java.util.HashSet;
+//import java.util.Set;
+//import java.util.concurrent.*;
+//import java.util.function.Consumer;
+//import java.util.function.Predicate;
 //
-//import static com.blue.base.common.base.Check.isBlank;
+//import static com.blue.base.common.base.BlueCheck.isBlank;
 //import static com.blue.base.common.base.FileProcessor.getFile;
+//import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
 //import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 //import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
+//import static com.blue.mail.common.SenderComponentGenerator.generateSession;
 //import static java.util.Optional.ofNullable;
+//import static java.util.concurrent.CompletableFuture.runAsync;
 //import static java.util.concurrent.TimeUnit.SECONDS;
 //import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 //import static reactor.util.Loggers.getLogger;
 //
-///**
-// * mail sender
-// *
-// * @author liuyunfei
-// * @date 2022/1/4
-// * @apiNote
-// */
-//@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "AlibabaLowerCamelCaseVariableNaming", "DuplicatedCode"})
-//public final class MailSenderTemp {
+//@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "AlibabaLowerCamelCaseVariableNaming"})
+//public final class MailSender {
 //
-//    private static final Logger LOGGER = getLogger(MailSenderTemp.class);
+//    private static final Logger LOGGER = getLogger(MailSender.class);
+//
+//    private Session session;
+//
+//    private final ExecutorService executorService;
+//
+//    private Set<String> throwableForRetry;
+//
+//    private int retryTimes;
 //
 //    private final boolean withDKIM;
 //
@@ -47,19 +50,13 @@
 //
 //    private String selector;
 //
-//    private final Mailer MAILER;
-//
 //    private static final String DEFAULT_THREAD_NAME_PRE = "blue-mail-sender-thread" + PAR_CONCATENATION_DATABASE_URL.identity;
 //    private static final int RANDOM_LEN = 6;
 //
-//    public MailSenderTemp(MailSenderConf conf) {
+//    public MailSender(MailSenderConf conf) {
 //        confAsserter(conf);
 //
-//        MailerRegularBuilderImpl builder =
-//                MailerBuilder.withSMTPServer(conf.getSmtpServerHost(), conf.getSmtpServerPort(), conf.getSmtpUsername(), conf.getSmtpPassword());
-//
-//        ofNullable(conf.getEmailValidator())
-//                .ifPresent(builder::withEmailValidator);
+//        this.session = generateSession(conf);
 //
 //        String threadNamePre = ofNullable(conf.getThreadNamePre())
 //                .map(p -> p + PAR_CONCATENATION_DATABASE_URL.identity)
@@ -70,45 +67,17 @@
 //            r.run();
 //        };
 //
-//        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(conf.getCorePoolSize(),
+//        this.executorService = new ThreadPoolExecutor(conf.getCorePoolSize(),
 //                conf.getMaximumPoolSize(), conf.getKeepAliveSeconds(), SECONDS,
 //                new ArrayBlockingQueue<>(conf.getBlockingQueueCapacity()),
 //                r ->
 //                        new Thread(r, threadNamePre + randomAlphabetic(RANDOM_LEN)),
 //                rejectedExecutionHandler);
 //
-//        builder.withExecutorService(threadPoolExecutor);
+//        this.throwableForRetry = ofNullable(conf.getThrowableForRetry())
+//                .filter(BlueCheck::isNotEmpty).map(HashSet::new).orElseGet(HashSet::new);
 //
-//        ofNullable(conf.getConnectionPoolCoreSize()).filter(n -> n > 0)
-//                .ifPresent(builder::withConnectionPoolCoreSize);
-//
-//        ofNullable(conf.getConnectionPoolMaxSize()).filter(n -> n > 0)
-//                .ifPresent(builder::withConnectionPoolMaxSize);
-//
-//        ofNullable(conf.getConnectionPoolClaimTimeoutMillis()).filter(m -> m > 0)
-//                .ifPresent(builder::withConnectionPoolClaimTimeoutMillis);
-//
-//        ofNullable(conf.getConnectionPoolExpireAfterMillis()).filter(m -> m > 0)
-//                .ifPresent(builder::withConnectionPoolExpireAfterMillis);
-//
-//        ofNullable(conf.getSessionTimeout()).filter(t -> t > 0)
-//                .ifPresent(builder::withSessionTimeout);
-//
-//        ofNullable(conf.getConnectionPoolLoadBalancingStrategy())
-//                .ifPresent(builder::withConnectionPoolLoadBalancingStrategy);
-//
-//        ofNullable(conf.getTransportStrategy())
-//                .ifPresent(builder::withTransportStrategy);
-//
-//        ofNullable(conf.getDebugLogging())
-//                .ifPresent(builder::withDebugLogging);
-//
-//        ofNullable(conf.getProps())
-//                .ifPresent(builder::withProperties);
-//
-//        builder.async();
-//
-//        this.MAILER = builder.buildMailer();
+//        this.retryTimes = ofNullable(conf.getRetryTimes()).filter(rt -> rt >= 0).orElse(0);
 //
 //        this.withDKIM = ofNullable(conf.getWithDKIM()).orElse(false);
 //        if (this.withDKIM) {
@@ -118,25 +87,46 @@
 //        }
 //    }
 //
-//    /**
-//     * DKIM
-//     *
-//     * @param emailPopulatingBuilder
-//     */
-//    public void signWithDomainKey(EmailPopulatingBuilder emailPopulatingBuilder) {
-//        if (withDKIM)
-//            emailPopulatingBuilder.signWithDomainKey(domainKey, domain, selector);
+//    private final Predicate<Throwable> RETRY_PREDICATE = throwable ->
+//            throwable != null && throwableForRetry.contains(getOriginalThrowable(throwable).getClass().getName());
+//
+//    private final Consumer<Message> MESSAGE_SENDER = message -> {
+//        try {
+//            Transport transport = session.getTransport();
+//            transport.connect();
+//
+////            Transport.send(message, message.getAllRecipients());
+//            transport.sendMessage(message, message.getAllRecipients());
+//
+//            transport.close();
+//        } catch (Throwable throwable) {
+//            if (RETRY_PREDICATE.test(throwable)) {
+//                LOGGER.error("CompletableFuture<Void> sendMessage(Message message) failed, retry, throwable = {0}", throwable);
+//                for (int i = 0; i < retryTimes; i++)
+//                    try {
+//                        Transport.send(message);
+//                        break;
+//                    } catch (Exception ex) {
+//                        LOGGER.error("CompletableFuture<Void> sendMessage(Message message) retry failed, retryTimes = {}, throwable = {}", retryTimes, throwable);
+//                    }
+//            }
+//            LOGGER.error("CompletableFuture<Void> sendMessage(Message message) failed, throwable = {0}", throwable);
+//            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "Consumer<Message> MESSAGE_SENDER, failed");
+//        }
+//    };
+//
+//    public MimeMessage initMessage() {
+//        return new MimeMessage(session);
 //    }
 //
 //    /**
-//     * send mail
+//     * send message
 //     *
-//     * @param email
+//     * @param message
 //     * @return
 //     */
-//    public CompletableFuture<Void> sendMail(Email email) {
-//        LOGGER.info("CompletableFuture<Void> sendMail(Email email), email = {}", email);
-//        return MAILER.sendMail(email, true);
+//    public CompletableFuture<Void> sendMessage(Message message) {
+//        return runAsync(() -> MESSAGE_SENDER.accept(message), executorService);
 //    }
 //
 //    private static final String PRI_KEY_BEGIN = "-----BEGIN PRIVATE KEY-----";

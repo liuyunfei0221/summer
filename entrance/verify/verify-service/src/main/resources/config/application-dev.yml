@@ -163,7 +163,7 @@ cache:
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
   maxRedirects: 4
-  host: localhost
+  host: 172.16.201.9
   port: 6379
   minIdle: 4
   maxIdle: 64

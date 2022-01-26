@@ -228,7 +228,7 @@ cache:
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
   maxRedirects: 4
-  host: localhost
+  host: 172.16.201.9
   port: 6379
   minIdle: 4
   maxIdle: 64
@@ -270,7 +270,7 @@ redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password:
-  host: localhost
+  host: 172.16.201.9
   port: 6379
   scanInterval: 8000
   checkSlotsCoverage: false

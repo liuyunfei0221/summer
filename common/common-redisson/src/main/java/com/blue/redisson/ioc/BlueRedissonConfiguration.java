@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.util.Logger;
 
-import static com.blue.redisson.api.generator.BlueRedissonGenerator.createRedissonClient;
+import static com.blue.redisson.api.generator.BlueRedissonGenerator.generateRedissonClient;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -27,7 +27,7 @@ public class BlueRedissonConfiguration {
     @Bean
     RedissonClient redissonClient(RedissonConf redissonConf) {
         LOGGER.info("RedissonClient redissonClient(RedissonConf redissonConf), redissonConf = {}", redissonConf);
-        return createRedissonClient(redissonConf);
+        return generateRedissonClient(redissonConf);
     }
 
 }
