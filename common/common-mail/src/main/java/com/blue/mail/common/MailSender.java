@@ -4,6 +4,7 @@ import com.blue.base.common.base.BlueCheck;
 import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailSenderConf;
 import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.MimeMessage;
@@ -16,7 +17,9 @@ import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.blue.base.common.base.BlueCheck.isBlank;
@@ -25,6 +28,7 @@ import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrow
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static com.blue.mail.common.SenderComponentGenerator.generateSession;
+import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -36,7 +40,11 @@ public final class MailSender {
 
     private static final Logger LOGGER = getLogger(MailSender.class);
 
-    private final Session session;
+    private Session session;
+
+    private final AtomicBoolean TRANSPORT_CONTROL = new AtomicBoolean(true);
+
+    private volatile Transport transport;
 
     private final ExecutorService executorService;
 
@@ -60,21 +68,9 @@ public final class MailSender {
 
         this.session = generateSession(conf);
 
-        String threadNamePre = ofNullable(conf.getThreadNamePre())
-                .map(p -> p + PAR_CONCATENATION_DATABASE_URL.identity)
-                .orElse(DEFAULT_THREAD_NAME_PRE);
+        TRANSPORT_CONNECTOR.accept(this.session);
 
-        RejectedExecutionHandler rejectedExecutionHandler = (r, executor) -> {
-            LOGGER.warn("Trigger the thread pool rejection strategy and hand it over to the calling thread for execution");
-            r.run();
-        };
-
-        this.executorService = new ThreadPoolExecutor(conf.getCorePoolSize(),
-                conf.getMaximumPoolSize(), conf.getKeepAliveSeconds(), SECONDS,
-                new ArrayBlockingQueue<>(conf.getBlockingQueueCapacity()),
-                r ->
-                        new Thread(r, threadNamePre + randomAlphabetic(RANDOM_LEN)),
-                rejectedExecutionHandler);
+        this.executorService = EXEC_GENERATOR.apply(conf);
 
         this.throwableForRetry = ofNullable(conf.getThrowableForRetry())
                 .filter(BlueCheck::isNotEmpty).map(HashSet::new).orElseGet(HashSet::new);
@@ -89,18 +85,40 @@ public final class MailSender {
         }
     }
 
+
+    private final Consumer<Session> TRANSPORT_CONNECTOR = sn -> {
+        if (TRANSPORT_CONTROL.compareAndSet(true, false)) {
+            try {
+                Transport transport = session.getTransport();
+                transport.connect();
+
+                this.transport = transport;
+                TRANSPORT_CONTROL.compareAndSet(false, true);
+            } catch (MessagingException e) {
+                LOGGER.error("transport connect failed, e = {}", e);
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "transport connect failed, e = " + e);
+            }
+        } else {
+            while (!TRANSPORT_CONTROL.get())
+                onSpinWait();
+        }
+    };
+
+
     private final Predicate<Throwable> RETRY_PREDICATE = throwable ->
             throwable != null && throwableForRetry.contains(getOriginalThrowable(throwable).getClass().getName());
 
     private final Consumer<Message> MESSAGE_SENDER = message -> {
         try {
-            Transport.send(message);
+            this.transport.sendMessage(message, message.getAllRecipients());
         } catch (Throwable throwable) {
+            TRANSPORT_CONNECTOR.accept(session);
+
             if (RETRY_PREDICATE.test(throwable)) {
                 LOGGER.error("CompletableFuture<Void> sendMessage(Message message) failed, retry, throwable = {0}", throwable);
                 for (int i = 0; i < retryTimes; i++)
                     try {
-                        Transport.send(message);
+                        this.transport.sendMessage(message, message.getAllRecipients());
                         break;
                     } catch (Exception ex) {
                         LOGGER.error("CompletableFuture<Void> sendMessage(Message message) retry failed, retryTimes = {}, throwable = {}", retryTimes, throwable);
@@ -152,6 +170,26 @@ public final class MailSender {
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "get domain key failed");
         }
     }
+
+    private static final Function<MailSenderConf, ExecutorService> EXEC_GENERATOR = conf -> {
+        confAsserter(conf);
+
+        String threadNamePre = ofNullable(conf.getThreadNamePre())
+                .map(p -> p + PAR_CONCATENATION_DATABASE_URL.identity)
+                .orElse(DEFAULT_THREAD_NAME_PRE);
+
+        RejectedExecutionHandler rejectedExecutionHandler = (r, executor) -> {
+            LOGGER.warn("Trigger the thread pool rejection strategy and hand it over to the calling thread for execution");
+            r.run();
+        };
+
+        return new ThreadPoolExecutor(conf.getCorePoolSize(),
+                conf.getMaximumPoolSize(), conf.getKeepAliveSeconds(), SECONDS,
+                new ArrayBlockingQueue<>(conf.getBlockingQueueCapacity()),
+                r ->
+                        new Thread(r, threadNamePre + randomAlphabetic(RANDOM_LEN)),
+                rejectedExecutionHandler);
+    };
 
     /**
      * assert params

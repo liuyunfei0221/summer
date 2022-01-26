@@ -9,7 +9,6 @@ import reactor.util.Logger;
 
 import java.util.Properties;
 
-import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -33,14 +32,16 @@ public final class SenderComponentGenerator {
             MailSSLSocketFactory sf = new MailSSLSocketFactory();
             sf.setTrustAllHosts(true);
 
-            props.put("mail.imap.ssl.socketFactory", sf);
+            props.put("mail.smtp.ssl.socketFactory", sf);
 
-            props.setProperty("mail.smtp.host", mailSenderConf.getSmtpServerHost());
-            props.setProperty("mail.smtp.port", String.valueOf(mailSenderConf.getSmtpServerPort()));
-            props.setProperty("mail.smtp.ssl", String.valueOf(ofNullable(mailSenderConf.getMailSmtpSsl()).orElse(true)));
-            props.setProperty("mail.smtp.starttls.enable", String.valueOf(ofNullable(mailSenderConf.getMailSmtpStarttlsEnable()).orElse(false)));
+            props.put("mail.smtp.auth", true);
+            props.put("mail.smtp.host", mailSenderConf.getSmtpServerHost());
+            props.put("mail.smtp.port", mailSenderConf.getSmtpServerPort());
 
-            Session session = Session.getInstance(props,
+            props.put("mail.smtp.ssl", mailSenderConf.getMailSmtpSsl());
+            props.put("mail.smtp.starttls.enable", mailSenderConf.getMailSmtpStarttlsEnable());
+
+            return Session.getInstance(props,
                     new Authenticator() {
                         @Override
                         protected PasswordAuthentication getPasswordAuthentication() {
@@ -48,7 +49,6 @@ public final class SenderComponentGenerator {
                         }
                     });
 
-            return Session.getInstance(props);
         } catch (Exception e) {
             LOGGER.error("Session generateSession(MailSenderConf mailSenderConf) failed, e = {}", e);
             throw new RuntimeException(e);
