@@ -5,6 +5,7 @@ import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import reactor.util.Logger;
 
@@ -31,8 +32,11 @@ final class Transporter {
 
     private final AtomicBoolean TRANSPORT_CONTROL = new AtomicBoolean(false);
 
-    public Transporter(Session session) {
+    private String FROM_ADDRESS;
+
+    public Transporter(Session session, String fromAddress) {
         this.session = session;
+        this.FROM_ADDRESS = fromAddress;
     }
 
     private final Consumer<Session> TRANSPORT_CONNECTOR = sn -> {
@@ -47,6 +51,15 @@ final class Transporter {
         } catch (MessagingException e) {
             LOGGER.error("transport connect failed, e = {}", e);
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "transport connect failed, e = " + e);
+        }
+    };
+
+    private final Consumer<Message> MESSAGE_COMPLETER = message -> {
+        try {
+            message.setFrom(new InternetAddress(FROM_ADDRESS));
+        } catch (MessagingException e) {
+            LOGGER.error("MESSAGE_COMPLETER failed, e = {}", e);
+            throw new RuntimeException(e);
         }
     };
 
@@ -91,6 +104,7 @@ final class Transporter {
     }
 
     public void sendMessage(Message message) {
+        MESSAGE_COMPLETER.accept(message);
         sendMsg(message);
     }
 

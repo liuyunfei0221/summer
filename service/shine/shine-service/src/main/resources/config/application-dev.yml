@@ -111,7 +111,7 @@ data:
 
 mongo:
   addressAttrs:
-    - address: localhost
+    - address: 172.16.201.160
       port: 27017
   databaseName: shine
   retryReads: true

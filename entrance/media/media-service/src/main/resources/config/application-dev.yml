@@ -248,12 +248,13 @@ sender:
       mailSmtpSsl: true
       mailSmtpStarttlsEnable: true
 
+
   corePoolSize: 2
   maximumPoolSize: 8
   keepAliveSeconds: 64
   blockingQueueCapacity: 2048
   threadNamePre: blue-mail-sender
-  bufferSize: 128
+  bufferSize: 8
   throwableForRetry: [ jakarta.mail.FolderClosedException ]
   retryTimes: 1
   withDKIM: false

@@ -94,8 +94,6 @@ public class MailManagerHandler {
         Message message = mailSender.initMessage();
 
         try {
-            message.setFrom(new InternetAddress(FROM));
-
             InternetAddress[] tos = RECEIVERS.stream().map(r -> {
                 try {
                     return new InternetAddress(r);

@@ -89,6 +89,14 @@ public final class MailReader {
             throwable != null && throwableForRetry.contains(getOriginalThrowable(throwable).getClass().getName());
 
 
+    public static void parse(Message message){
+
+
+
+
+    }
+
+
     public static void parseMessage(Message message) {
         try {
             String subject = message.getSubject();

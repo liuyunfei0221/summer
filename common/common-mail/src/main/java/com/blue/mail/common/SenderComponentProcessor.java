@@ -41,7 +41,7 @@ public final class SenderComponentProcessor {
     private static final String DEFAULT_THREAD_NAME_PRE = "blue-mail-sender-thread" + PAR_CONCATENATION_DATABASE_URL.identity;
     private static final int RANDOM_LEN = 6;
 
-    public static final int MAXIMUM_BUFFER_SIZE = 128;
+    public static final int MAXIMUM_BUFFER_SIZE = 16;
 
     private static final String PRI_KEY_BEGIN = "-----BEGIN PRIVATE KEY-----";
     private static final String PRI_KEY_END = "-----END PRIVATE KEY-----";
