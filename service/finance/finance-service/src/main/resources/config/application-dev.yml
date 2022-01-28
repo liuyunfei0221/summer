@@ -43,7 +43,7 @@ eureka:
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://localhost:3306/finance_0
+    - url: jdbc:mysql://172.16.201.160:3306/finance_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -57,7 +57,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://localhost:3306/finance_1
+    - url: jdbc:mysql://172.16.201.160:3306/finance_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -179,7 +179,7 @@ seata:
     vgroup-mapping:
       summer_group: default
     grouplist:
-      default: 127.0.0.1:8091
+      default: 172.16.201.160:8091
     enable-degrade: false
     disable-global-transaction: false
   transport:
@@ -204,9 +204,9 @@ seata:
   config:
     type: zk
     zk:
-      server-addr: 127.0.0.1:2181
-      session-timeout: 6000
-      connect-timeout: 2000
+      server-addr: 172.16.201.160:2181
+      session-timeout: 60000
+      connect-timeout: 60000
       username: ""
       password: ""
     #      nodePath:
@@ -216,9 +216,9 @@ seata:
     type: zk
     zk:
       cluster: default
-      server-addr: 127.0.0.1:2181
-      session-timeout: 6000
-      connect-timeout: 2000
+      server-addr: 172.16.201.160:2181
+      session-timeout: 60000
+      connect-timeout: 60000
       username: ""
       password: ""
     custom:
@@ -232,7 +232,7 @@ cache:
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
   maxRedirects: 4
-  host: 172.16.201.9
+  host: 172.16.201.160
   port: 6379
   minIdle: 4
   maxIdle: 64
@@ -245,7 +245,7 @@ cache:
   requestQueueSize: 64
   publishOnScheduler: true
   tcpNoDelay: true
-  connectTimeout: 4
+  connectTimeout: 10
   keepAlive: false
   suspendReconnectOnProtocolFailure: false
   fixedTimeout: 4
@@ -272,13 +272,13 @@ scheduler:
 
 
 curator:
-  connectString: 127.0.0.1:2181
-  connectionTimeoutMs: 6000
-  sessionTimeoutMs: 6000
+  connectString: 172.16.201.160:2181
+  connectionTimeoutMs: 60000
+  sessionTimeoutMs: 60000
   maxCloseWaitMs: 12000
   namespace: finance
-  retryBaseSleepTimeMs: 1000
-  retryMaxSleepTimeMs: 2000
+  retryBaseSleepTimeMs: 3000
+  retryMaxSleepTimeMs: 5000
   retryMaxRetries: 2
 
 
@@ -286,7 +286,7 @@ redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
-  host: 172.16.201.9
+  host: 172.16.201.160
   port: 6379
   scanInterval: 8000
   checkSlotsCoverage: false
@@ -299,8 +299,8 @@ redisson:
   subscriptionConnectionPoolSize: 2
   subscriptionsPerConnection: 2
   subscriptionMode: MASTER
-  timeout: 8000
-  connectTimeout: 8000
+  timeout: 60000
+  connectTimeout: 60000
   idleConnectionTimeout: 32000
   retryAttempts: 2
   retryInterval: 4000
@@ -343,7 +343,7 @@ dubbo:
     id: summer-registry
     zone: summer
     protocol: zookeeper
-    address: zookeeper://127.0.0.1:2181
+    address: zookeeper://172.16.201.160:2181
     file: D:/locallogs/dubbo/finance/registry.properties
     check: false
     timeout: 60000
@@ -360,12 +360,12 @@ dubbo:
     accesslog: D:/locallogs/dubbo/finance/access.log
   provider:
     retries: 0
-    timeout: 5000
+    timeout: 10000
     loadbalance: random
     filter: -exception
   consumer:
     retries: 0
-    timeout: 5000
+    timeout: 10000
     loadbalance: random
     check: false
 

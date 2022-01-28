@@ -10,17 +10,7 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class MailSenderConfParams implements MailSenderConf {
 
-    protected String smtpServerHost;
-
-    protected Integer smtpServerPort;
-
-    protected String smtpUsername;
-
-    protected String smtpPassword;
-
-    protected Boolean mailSmtpSsl;
-
-    protected Boolean mailSmtpStarttlsEnable;
+    protected List<SmtpAttr> smtpAttrs;
 
     protected Integer corePoolSize;
 
@@ -31,6 +21,8 @@ public abstract class MailSenderConfParams implements MailSenderConf {
     protected Integer blockingQueueCapacity;
 
     protected String threadNamePre;
+
+    protected Integer bufferSize;
 
     protected List<String> throwableForRetry;
 
@@ -50,33 +42,8 @@ public abstract class MailSenderConfParams implements MailSenderConf {
     }
 
     @Override
-    public String getSmtpServerHost() {
-        return smtpServerHost;
-    }
-
-    @Override
-    public Integer getSmtpServerPort() {
-        return smtpServerPort;
-    }
-
-    @Override
-    public String getSmtpUsername() {
-        return smtpUsername;
-    }
-
-    @Override
-    public String getSmtpPassword() {
-        return smtpPassword;
-    }
-
-    @Override
-    public Boolean getMailSmtpSsl() {
-        return mailSmtpSsl;
-    }
-
-    @Override
-    public Boolean getMailSmtpStarttlsEnable() {
-        return mailSmtpStarttlsEnable;
+    public List<SmtpAttr> getSmtpAttrs() {
+        return smtpAttrs;
     }
 
     @Override
@@ -102,6 +69,11 @@ public abstract class MailSenderConfParams implements MailSenderConf {
     @Override
     public String getThreadNamePre() {
         return threadNamePre;
+    }
+
+    @Override
+    public Integer getBufferSize() {
+        return bufferSize;
     }
 
     @Override
@@ -139,28 +111,8 @@ public abstract class MailSenderConfParams implements MailSenderConf {
         return debug;
     }
 
-    public void setSmtpServerHost(String smtpServerHost) {
-        this.smtpServerHost = smtpServerHost;
-    }
-
-    public void setSmtpServerPort(Integer smtpServerPort) {
-        this.smtpServerPort = smtpServerPort;
-    }
-
-    public void setSmtpUsername(String smtpUsername) {
-        this.smtpUsername = smtpUsername;
-    }
-
-    public void setSmtpPassword(String smtpPassword) {
-        this.smtpPassword = smtpPassword;
-    }
-
-    public void setMailSmtpSsl(Boolean mailSmtpSsl) {
-        this.mailSmtpSsl = mailSmtpSsl;
-    }
-
-    public void setMailSmtpStarttlsEnable(Boolean mailSmtpStarttlsEnable) {
-        this.mailSmtpStarttlsEnable = mailSmtpStarttlsEnable;
+    public void setSmtpAttrs(List<SmtpAttr> smtpAttrs) {
+        this.smtpAttrs = smtpAttrs;
     }
 
     public void setCorePoolSize(Integer corePoolSize) {
@@ -181,6 +133,10 @@ public abstract class MailSenderConfParams implements MailSenderConf {
 
     public void setThreadNamePre(String threadNamePre) {
         this.threadNamePre = threadNamePre;
+    }
+
+    public void setBufferSize(Integer bufferSize) {
+        this.bufferSize = bufferSize;
     }
 
     public void setThrowableForRetry(List<String> throwableForRetry) {
@@ -214,17 +170,13 @@ public abstract class MailSenderConfParams implements MailSenderConf {
     @Override
     public String toString() {
         return "MailSenderConfParams{" +
-                "smtpServerHost='" + smtpServerHost + '\'' +
-                ", smtpServerPort=" + smtpServerPort +
-                ", smtpUsername='" + smtpUsername + '\'' +
-                ", smtpPassword='" + smtpPassword + '\'' +
-                ", mailSmtpSsl=" + mailSmtpSsl +
-                ", mailSmtpStarttlsEnable=" + mailSmtpStarttlsEnable +
+                "smtpAttrs=" + smtpAttrs +
                 ", corePoolSize=" + corePoolSize +
                 ", maximumPoolSize=" + maximumPoolSize +
                 ", keepAliveSeconds=" + keepAliveSeconds +
                 ", blockingQueueCapacity=" + blockingQueueCapacity +
                 ", threadNamePre='" + threadNamePre + '\'' +
+                ", bufferSize=" + bufferSize +
                 ", throwableForRetry=" + throwableForRetry +
                 ", retryTimes=" + retryTimes +
                 ", withDKIM=" + withDKIM +

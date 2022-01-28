@@ -9,6 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import static com.blue.identity.constant.SnowflakeBufferThreshold.MAX_PADDING_FACTOR;
 import static com.blue.identity.constant.SnowflakeBufferThreshold.MIN_PADDING_FACTOR;
+import static java.lang.Integer.bitCount;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static reactor.util.Loggers.getLogger;
@@ -84,7 +85,7 @@ public final class SnowflakeIdentityBuffer {
 
         int bufferSize = idBufferParam.getBufferSize();
         int paddingFactor = idBufferParam.getPaddingFactor();
-        if (bufferSize < 0L || Integer.bitCount(bufferSize) != 1)
+        if (bufferSize < 0L || bitCount(bufferSize) != 1)
             throw new IdentityException("bufferSize must be positive and a power of 2");
         if (paddingFactor < MIN_PADDING_FACTOR.threshold || paddingFactor > MAX_PADDING_FACTOR.threshold)
             throw new IdentityException("paddingFactor range must be in (" + MIN_PADDING_FACTOR.threshold + " - " + MAX_PADDING_FACTOR.threshold + ")");

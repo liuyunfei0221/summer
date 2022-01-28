@@ -16,9 +16,9 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
-public final class ReaderComponentGenerator {
+public final class ReaderComponentProcessor {
 
-    private static final Logger LOGGER = getLogger(ReaderComponentGenerator.class);
+    private static final Logger LOGGER = getLogger(ReaderComponentProcessor.class);
 
     private static final String PROTOCOL = "imap";
 
@@ -85,7 +85,6 @@ public final class ReaderComponentGenerator {
         try {
             String folderName = mailReaderConf.getFolderName();
             Folder folder = store.getFolder(folderName);
-
 
             if (!folder.exists())
                 throw new RuntimeException("folder with name (" + folderName + ") is not exist");

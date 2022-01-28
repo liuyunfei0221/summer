@@ -1,26 +1,30 @@
 package com.blue.mail.api.conf;
 
+import java.util.List;
+
 /**
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
 public class MailReaderConfParams implements MailReaderConf {
 
-    private String imapHost;
+    protected String imapHost;
 
-    private Integer imapPort;
+    protected Integer imapPort;
 
-    private Boolean imapSslEnable;
+    protected Boolean imapSslEnable;
 
-    private String user;
+    protected String user;
 
-    private String password;
+    protected String password;
 
-    private String folderName;
+    protected String folderName;
 
-    private Integer maxWaitingMillisForRefresh;
+    protected List<String> throwableForRetry;
 
-    private Boolean debug;
+    protected Integer maxWaitingMillisForRefresh;
+
+    protected Boolean debug;
 
     public MailReaderConfParams() {
     }
@@ -67,6 +71,11 @@ public class MailReaderConfParams implements MailReaderConf {
     }
 
     @Override
+    public List<String> getThrowableForRetry() {
+        return throwableForRetry;
+    }
+
+    @Override
     public Integer getMaxWaitingMillisForRefresh() {
         return maxWaitingMillisForRefresh;
     }
@@ -100,6 +109,10 @@ public class MailReaderConfParams implements MailReaderConf {
         this.folderName = folderName;
     }
 
+    public void setThrowableForRetry(List<String> throwableForRetry) {
+        this.throwableForRetry = throwableForRetry;
+    }
+
     public void setMaxWaitingMillisForRefresh(Integer maxWaitingMillisForRefresh) {
         this.maxWaitingMillisForRefresh = maxWaitingMillisForRefresh;
     }
@@ -117,6 +130,7 @@ public class MailReaderConfParams implements MailReaderConf {
                 ", user='" + user + '\'' +
                 ", password='" + password + '\'' +
                 ", folderName='" + folderName + '\'' +
+                ", throwableForRetry=" + throwableForRetry +
                 ", maxWaitingMillisForRefresh=" + maxWaitingMillisForRefresh +
                 ", debug=" + debug +
                 '}';

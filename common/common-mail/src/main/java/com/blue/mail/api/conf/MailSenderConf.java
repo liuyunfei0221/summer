@@ -10,17 +10,7 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaLowerCamelCaseVariableNaming"})
 public interface MailSenderConf {
 
-    String getSmtpServerHost();
-
-    Integer getSmtpServerPort();
-
-    String getSmtpUsername();
-
-    String getSmtpPassword();
-
-    Boolean getMailSmtpSsl();
-
-    Boolean getMailSmtpStarttlsEnable();
+    List<SmtpAttr> getSmtpAttrs();
 
     Integer getCorePoolSize();
 
@@ -31,6 +21,8 @@ public interface MailSenderConf {
     Integer getBlockingQueueCapacity();
 
     String getThreadNamePre();
+
+    Integer getBufferSize();
 
     List<String> getThrowableForRetry();
 

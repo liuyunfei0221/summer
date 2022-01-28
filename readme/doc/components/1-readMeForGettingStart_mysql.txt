@@ -9,11 +9,30 @@
 
     下面以本机开发环境为例,请根据需要自行修改:
 
+    sudo apt install mysql-server
+
+
+
+    CREATE USER 'root'@'%' IDENTIFIED BY 'root';
+
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
+
 	use mysql;
-	修改加密方式:	ALTER USER'root'@'localhost' IDENTIFIED BY 'password' PASSWORD EXPIRE NEVER;
-	修改用户密码:	ALTER USER'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+	修改加密方式:	ALTER USER 'root'@'%' IDENTIFIED BY '1024' PASSWORD EXPIRE NEVER;
+	            -- UPDATE USER SET host='%' WHERE USER = 'root';
+	修改用户密码:	ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '1024';
 	刷新权限:		FLUSH PRIVILEGES;
+
+
+	use mysql;
+    	修改加密方式:	ALTER USER 'root'@'%' IDENTIFIED BY '1024' PASSWORD EXPIRE NEVER;
+    	            -- UPDATE USER SET host='%' WHERE USER = 'root';
+    	修改用户密码:	ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '1024';
+    	刷新权限:		FLUSH PRIVILEGES;
+
 	使用navicat等相关工具测试连接。
 
+    sudo apt autoremove
 
 5.请自行修改yml中相关的数据库配置

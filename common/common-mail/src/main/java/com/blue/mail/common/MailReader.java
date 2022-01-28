@@ -1,5 +1,6 @@
 package com.blue.mail.common;
 
+import com.blue.base.common.base.BlueCheck;
 import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailReaderConf;
 import jakarta.mail.*;
@@ -9,61 +10,83 @@ import jakarta.mail.event.MessageChangedListener;
 import jakarta.mail.event.MessageCountListener;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.search.SearchTerm;
+import reactor.util.Logger;
 
-import java.util.function.Function;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.mail.common.ReaderComponentProcessor.*;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
+import static java.util.Optional.ofNullable;
+import static reactor.util.Loggers.getLogger;
 
+/**
+ * mail reader
+ *
+ * @author DarkBlue
+ */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "unused", "SpellCheckingInspection", "DuplicatedCode"})
 public final class MailReader {
 
-    private MailReaderConf mailReaderConf;
+    private static final Logger LOGGER = getLogger(MailReader.class);
+
+    private MailReaderConf conf;
+
+    private Session session;
 
     private Folder folder;
 
-    public MailReader(MailReaderConf mailReaderConf) {
-        this.mailReaderConf = mailReaderConf;
-        this.folder = FOLDER_GENERATOR.apply(this.mailReaderConf);
-        this.maxWaitingMillisForRefresh = mailReaderConf.getMaxWaitingMillisForRefresh();
-    }
+    private Set<String> throwableForRetry;
 
-    private final Function<MailReaderConf, Folder> FOLDER_GENERATOR = ReaderComponentGenerator::generateFolder;
-
-    private volatile boolean refreshing = false;
     private long maxWaitingMillisForRefresh;
 
+    public MailReader(MailReaderConf conf) {
+        this.conf = conf;
+        this.session = generateSession(this.conf);
+
+        this.folder = openFolder(generateStore(session, this.conf), this.conf);
+
+        this.throwableForRetry = ofNullable(conf.getThrowableForRetry())
+                .filter(BlueCheck::isNotEmpty).map(HashSet::new).orElseGet(HashSet::new);
+        this.maxWaitingMillisForRefresh = this.conf.getMaxWaitingMillisForRefresh();
+    }
+
+    private volatile boolean folderComplete = true;
+
     private final Supplier<Folder> FOLDER_SUP = () -> {
-        if (refreshing) {
-            long start = currentTimeMillis();
-            while (refreshing) {
-                if (currentTimeMillis() - start > maxWaitingMillisForRefresh)
-                    throw new BlueException(INTERNAL_SERVER_ERROR);
-                onSpinWait();
-            }
+        if (folderComplete)
+            return this.folder;
+
+        long start = currentTimeMillis();
+        while (!folderComplete) {
+            if (currentTimeMillis() - start > maxWaitingMillisForRefresh)
+                throw new BlueException(INTERNAL_SERVER_ERROR);
+            onSpinWait();
         }
 
-        return folder;
+        return this.folder;
     };
 
-    private final Supplier<Folder> FOLDER_REFRESHER = () -> {
-        if (!refreshing)
+    private final Supplier<Folder> FOLDER_SUP_WITH_REFRESHER = () -> {
+        if (folderComplete)
             synchronized (this) {
-                if (!refreshing) {
-                    refreshing = true;
-                    this.folder = FOLDER_GENERATOR.apply(this.mailReaderConf);
-                    refreshing = false;
+                if (folderComplete) {
+                    this.folderComplete = false;
+                    this.folder = openFolder(generateStore(session, this.conf), this.conf);
+                    this.folderComplete = true;
                 }
             }
 
         return FOLDER_SUP.get();
     };
 
-    private final Predicate<Exception> REFRESH_PREDICATE = e ->
-            e instanceof IllegalStateException;
+    private final Predicate<Throwable> REFRESH_PREDICATE = throwable ->
+            throwable != null && throwableForRetry.contains(getOriginalThrowable(throwable).getClass().getName());
 
 
     public static void parseMessage(Message message) {
@@ -98,20 +121,19 @@ public final class MailReader {
     }
 
 
-    //=============================================================================================
-
     public int getMessageCount() {
         try {
             return FOLDER_SUP.get().getMessageCount();
-        } catch (Exception e) {
-            if (REFRESH_PREDICATE.test(e)) {
+        } catch (Throwable throwable) {
+            LOGGER.error(" throwable = {}", throwable);
+            if (REFRESH_PREDICATE.test(throwable)) {
                 try {
-                    return FOLDER_REFRESHER.get().getMessageCount();
+                    return FOLDER_SUP_WITH_REFRESHER.get().getMessageCount();
                 } catch (MessagingException ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
             }
-            throw new RuntimeException("handle failed, e = {}", e);
+            throw new RuntimeException("handle failed, throwable = {}", throwable);
         }
     }
 
@@ -121,7 +143,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    return FOLDER_REFRESHER.get().getNewMessageCount();
+                    return FOLDER_SUP_WITH_REFRESHER.get().getNewMessageCount();
                 } catch (MessagingException ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -136,7 +158,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    return FOLDER_REFRESHER.get().getUnreadMessageCount();
+                    return FOLDER_SUP_WITH_REFRESHER.get().getUnreadMessageCount();
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -151,7 +173,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    return FOLDER_REFRESHER.get().getUnreadMessageCount();
+                    return FOLDER_SUP_WITH_REFRESHER.get().getUnreadMessageCount();
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -166,7 +188,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    return FOLDER_REFRESHER.get().getMessage(index);
+                    return FOLDER_SUP_WITH_REFRESHER.get().getMessage(index);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -181,7 +203,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    return FOLDER_REFRESHER.get().getMessages(start, end);
+                    return FOLDER_SUP_WITH_REFRESHER.get().getMessages(start, end);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -196,7 +218,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    return FOLDER_REFRESHER.get().getMessages(msgnums);
+                    return FOLDER_SUP_WITH_REFRESHER.get().getMessages(msgnums);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -211,7 +233,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    return FOLDER_REFRESHER.get().getMessages();
+                    return FOLDER_SUP_WITH_REFRESHER.get().getMessages();
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -226,7 +248,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().appendMessages(messages);
+                    FOLDER_SUP_WITH_REFRESHER.get().appendMessages(messages);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -241,7 +263,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().fetch(msgs, fp);
+                    FOLDER_SUP_WITH_REFRESHER.get().fetch(msgs, fp);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -256,7 +278,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().setFlags(msgs, flag, value);
+                    FOLDER_SUP_WITH_REFRESHER.get().setFlags(msgs, flag, value);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -271,7 +293,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().setFlags(start, end, flag, value);
+                    FOLDER_SUP_WITH_REFRESHER.get().setFlags(start, end, flag, value);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -286,7 +308,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().setFlags(msgnums, flag, value);
+                    FOLDER_SUP_WITH_REFRESHER.get().setFlags(msgnums, flag, value);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -301,7 +323,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().copyMessages(msgs, folder);
+                    FOLDER_SUP_WITH_REFRESHER.get().copyMessages(msgs, folder);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -316,7 +338,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    return FOLDER_REFRESHER.get().expunge();
+                    return FOLDER_SUP_WITH_REFRESHER.get().expunge();
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -331,7 +353,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    return FOLDER_REFRESHER.get().search(term);
+                    return FOLDER_SUP_WITH_REFRESHER.get().search(term);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -346,7 +368,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    return FOLDER_REFRESHER.get().search(term, msgs);
+                    return FOLDER_SUP_WITH_REFRESHER.get().search(term, msgs);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -361,7 +383,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().addConnectionListener(l);
+                    FOLDER_SUP_WITH_REFRESHER.get().addConnectionListener(l);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -376,7 +398,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().removeConnectionListener(l);
+                    FOLDER_SUP_WITH_REFRESHER.get().removeConnectionListener(l);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -391,7 +413,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().addFolderListener(l);
+                    FOLDER_SUP_WITH_REFRESHER.get().addFolderListener(l);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -406,7 +428,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().removeFolderListener(l);
+                    FOLDER_SUP_WITH_REFRESHER.get().removeFolderListener(l);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -421,7 +443,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().addMessageCountListener(l);
+                    FOLDER_SUP_WITH_REFRESHER.get().addMessageCountListener(l);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -436,7 +458,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().removeMessageCountListener(l);
+                    FOLDER_SUP_WITH_REFRESHER.get().removeMessageCountListener(l);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -451,7 +473,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().addMessageChangedListener(l);
+                    FOLDER_SUP_WITH_REFRESHER.get().addMessageChangedListener(l);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
@@ -466,7 +488,7 @@ public final class MailReader {
         } catch (Exception e) {
             if (REFRESH_PREDICATE.test(e)) {
                 try {
-                    FOLDER_REFRESHER.get().removeMessageChangedListener(l);
+                    FOLDER_SUP_WITH_REFRESHER.get().removeMessageChangedListener(l);
                 } catch (Exception ex) {
                     throw new RuntimeException("handle failed, e = {}", ex);
                 }
