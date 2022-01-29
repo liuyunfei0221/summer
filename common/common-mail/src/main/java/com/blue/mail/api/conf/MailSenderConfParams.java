@@ -10,7 +10,7 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class MailSenderConfParams implements MailSenderConf {
 
-    protected List<SmtpAttr> smtpAttrs;
+    protected List<SenderAttr> senderAttrs;
 
     protected Integer corePoolSize;
 
@@ -36,14 +36,12 @@ public abstract class MailSenderConfParams implements MailSenderConf {
 
     protected String selector;
 
-    protected Boolean debug;
-
     public MailSenderConfParams() {
     }
 
     @Override
-    public List<SmtpAttr> getSmtpAttrs() {
-        return smtpAttrs;
+    public List<SenderAttr> getSmtpAttrs() {
+        return senderAttrs;
     }
 
     @Override
@@ -106,13 +104,8 @@ public abstract class MailSenderConfParams implements MailSenderConf {
         return selector;
     }
 
-    @Override
-    public Boolean getDebug() {
-        return debug;
-    }
-
-    public void setSmtpAttrs(List<SmtpAttr> smtpAttrs) {
-        this.smtpAttrs = smtpAttrs;
+    public void setSmtpAttrs(List<SenderAttr> senderAttrs) {
+        this.senderAttrs = senderAttrs;
     }
 
     public void setCorePoolSize(Integer corePoolSize) {
@@ -163,14 +156,10 @@ public abstract class MailSenderConfParams implements MailSenderConf {
         this.selector = selector;
     }
 
-    public void setDebug(Boolean debug) {
-        this.debug = debug;
-    }
-
     @Override
     public String toString() {
         return "MailSenderConfParams{" +
-                "smtpAttrs=" + smtpAttrs +
+                "smtpAttrs=" + senderAttrs +
                 ", corePoolSize=" + corePoolSize +
                 ", maximumPoolSize=" + maximumPoolSize +
                 ", keepAliveSeconds=" + keepAliveSeconds +
@@ -183,7 +172,6 @@ public abstract class MailSenderConfParams implements MailSenderConf {
                 ", domainKeyFile='" + domainKeyFile + '\'' +
                 ", domain='" + domain + '\'' +
                 ", selector='" + selector + '\'' +
-                ", debug=" + debug +
                 '}';
     }
 

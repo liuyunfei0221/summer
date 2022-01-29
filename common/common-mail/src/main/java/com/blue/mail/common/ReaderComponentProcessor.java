@@ -1,15 +1,17 @@
 package com.blue.mail.common;
 
+import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailReaderConf;
 import com.sun.mail.util.MailSSLSocketFactory;
-import jakarta.mail.Folder;
-import jakarta.mail.Session;
-import jakarta.mail.Store;
+import jakarta.mail.*;
 import reactor.util.Logger;
 
 import java.util.Properties;
 
-import static java.util.Optional.ofNullable;
+import static com.blue.base.common.base.BlueCheck.isBlank;
+import static com.blue.base.common.base.BlueCheck.isEmpty;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static jakarta.mail.Session.getInstance;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -25,24 +27,26 @@ public final class ReaderComponentProcessor {
     /**
      * generate a session
      *
-     * @param mailReaderConf
+     * @param conf
      * @return
      */
-    public static Session generateSession(MailReaderConf mailReaderConf) {
-        try {
-            Properties props = new Properties();
+    public static Session generateSession(MailReaderConf conf) {
+        confAsserter(conf);
 
+        try {
             MailSSLSocketFactory sf = new MailSSLSocketFactory();
             sf.setTrustAllHosts(true);
 
+            Properties props = new Properties();
             props.put("mail.imap.ssl.socketFactory", sf);
-            props.setProperty("mail.imap.host", mailReaderConf.getImapHost());
-            props.setProperty("mail.imap.port", String.valueOf(mailReaderConf.getImapPort()));
-            props.setProperty("mail.imapStore.protocol", PROTOCOL);
-            props.setProperty("mail.imap.ssl.enable", String.valueOf(ofNullable(mailReaderConf.getImapSslEnable()).orElse(true)));
-            props.setProperty("mail.debug", String.valueOf(ofNullable(mailReaderConf.getDebug()).orElse(false)));
+            props.putAll(conf.getProps());
 
-            return Session.getInstance(props);
+            return getInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(conf.getUser(), conf.getPassword());
+                }
+            });
         } catch (Exception e) {
             LOGGER.error("Session generateSession(MailReaderConf mailReaderConf) failed, e = {}", e);
             throw new RuntimeException(e);
@@ -53,16 +57,15 @@ public final class ReaderComponentProcessor {
      * connect store
      *
      * @param session
-     * @param mailReaderConf
      * @return
      */
-    public static Store generateStore(Session session, MailReaderConf mailReaderConf) {
-        if (session == null || mailReaderConf == null)
-            throw new RuntimeException("session or mailReaderConf can't be null");
+    public static Store generateStore(Session session) {
+        if (session == null)
+            throw new RuntimeException("session can't be null");
 
         try {
             Store store = session.getStore(PROTOCOL);
-            store.connect(mailReaderConf.getImapHost(), mailReaderConf.getImapPort(), mailReaderConf.getUser(), mailReaderConf.getPassword());
+            store.connect();
 
             return store;
         } catch (Exception e) {
@@ -75,15 +78,14 @@ public final class ReaderComponentProcessor {
      * open a folder
      *
      * @param store
-     * @param mailReaderConf
+     * @param folderName
      * @return
      */
-    public static Folder openFolder(Store store, MailReaderConf mailReaderConf) {
-        if (store == null || mailReaderConf == null)
+    public static Folder openFolder(Store store, String folderName) {
+        if (store == null || isBlank(folderName))
             throw new RuntimeException("store or mailReaderConf can't be null");
 
         try {
-            String folderName = mailReaderConf.getFolderName();
             Folder folder = store.getFolder(folderName);
 
             if (!folder.exists())
@@ -99,24 +101,29 @@ public final class ReaderComponentProcessor {
     }
 
     /**
-     * generate a folder
+     * assert params
      *
-     * @param mailReaderConf
-     * @return
+     * @param conf
      */
-    public static Folder generateFolder(MailReaderConf mailReaderConf) {
-        if (mailReaderConf == null)
-            throw new RuntimeException("mailReaderConf can't be null");
+    public static void confAsserter(MailReaderConf conf) {
+        if (conf == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
-        try {
-            Session session = generateSession(mailReaderConf);
-            Store store = generateStore(session, mailReaderConf);
+        if (isBlank(conf.getUser()))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "user can't be blank");
 
-            return openFolder(store, mailReaderConf);
-        } catch (Exception e) {
-            LOGGER.error("Folder generateFolder(MailReaderConf mailReaderConf) failed, e = {}", e);
-            throw new RuntimeException(e);
-        }
+        if (isBlank(conf.getPassword()))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "password can't be blank");
+
+        if (isEmpty(conf.getProps()))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "props can't be empty");
+
+        if (isBlank(conf.getFolderName()))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "folder name can't be empty");
+
+        Integer maxWaitingMillisForRefresh = conf.getMaxWaitingMillisForRefresh();
+        if (maxWaitingMillisForRefresh == null || maxWaitingMillisForRefresh < 1)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxWaitingMillisForRefresh can't be null or empty");
     }
 
 }

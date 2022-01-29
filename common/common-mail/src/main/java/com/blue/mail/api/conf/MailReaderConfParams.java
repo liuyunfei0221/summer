@@ -1,6 +1,7 @@
 package com.blue.mail.api.conf;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author DarkBlue
@@ -8,15 +9,11 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class MailReaderConfParams implements MailReaderConf {
 
-    protected String imapHost;
+    protected transient String user;
 
-    protected Integer imapPort;
+    protected transient String password;
 
-    protected Boolean imapSslEnable;
-
-    protected String user;
-
-    protected String password;
+    protected Map<String, String> props;
 
     protected String folderName;
 
@@ -24,35 +21,7 @@ public class MailReaderConfParams implements MailReaderConf {
 
     protected Integer maxWaitingMillisForRefresh;
 
-    protected Boolean debug;
-
     public MailReaderConfParams() {
-    }
-
-    public MailReaderConfParams(String imapHost, Integer imapPort, Boolean imapSslEnable, String user, String password, String folderName, Integer maxWaitingMillisForRefresh, Boolean debug) {
-        this.imapHost = imapHost;
-        this.imapPort = imapPort;
-        this.imapSslEnable = imapSslEnable;
-        this.user = user;
-        this.password = password;
-        this.folderName = folderName;
-        this.maxWaitingMillisForRefresh = maxWaitingMillisForRefresh;
-        this.debug = debug;
-    }
-
-    @Override
-    public String getImapHost() {
-        return imapHost;
-    }
-
-    @Override
-    public Integer getImapPort() {
-        return imapPort;
-    }
-
-    @Override
-    public Boolean getImapSslEnable() {
-        return imapSslEnable;
     }
 
     @Override
@@ -63,6 +32,11 @@ public class MailReaderConfParams implements MailReaderConf {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public Map<String, String> getProps() {
+        return props;
     }
 
     @Override
@@ -80,29 +54,16 @@ public class MailReaderConfParams implements MailReaderConf {
         return maxWaitingMillisForRefresh;
     }
 
-    @Override
-    public Boolean getDebug() {
-        return debug;
-    }
-
-    public void setImapHost(String imapHost) {
-        this.imapHost = imapHost;
-    }
-
-    public void setImapPort(Integer imapPort) {
-        this.imapPort = imapPort;
-    }
-
-    public void setImapSslEnable(Boolean imapSslEnable) {
-        this.imapSslEnable = imapSslEnable;
-    }
-
     public void setUser(String user) {
         this.user = user;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setProps(Map<String, String> props) {
+        this.props = props;
     }
 
     public void setFolderName(String folderName) {
@@ -117,22 +78,15 @@ public class MailReaderConfParams implements MailReaderConf {
         this.maxWaitingMillisForRefresh = maxWaitingMillisForRefresh;
     }
 
-    public void setDebug(Boolean debug) {
-        this.debug = debug;
-    }
-
     @Override
     public String toString() {
         return "MailReaderConfParams{" +
-                "imapHost='" + imapHost + '\'' +
-                ", imapPort=" + imapPort +
-                ", imapSslEnable=" + imapSslEnable +
-                ", user='" + user + '\'' +
-                ", password='" + password + '\'' +
+                "user='" + ":)" + '\'' +
+                ", password='" + "(:" + '\'' +
+                ", props=" + props +
                 ", folderName='" + folderName + '\'' +
                 ", throwableForRetry=" + throwableForRetry +
                 ", maxWaitingMillisForRefresh=" + maxWaitingMillisForRefresh +
-                ", debug=" + debug +
                 '}';
     }
 

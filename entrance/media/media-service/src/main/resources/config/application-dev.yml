@@ -228,11 +228,12 @@ encrypt:
 
 
 reader:
-  imapHost: outlook.office365.com
-  imapPort: 993
-  imapSslEnable: true
   user: yunfei0221@outlook.com
   password: Fei19890116
+  props:
+    mail.imap.host: outlook.office365.com
+    mail.imap.port: 993
+    mail.imap.ssl.enable: true
   folderName: INBOX
   throwableForRetry: [ jakarta.mail.FolderClosedException ]
   maxWaitingMillisForRefresh: 5000
@@ -241,12 +242,15 @@ reader:
 
 sender:
   smtpAttrs:
-    - smtpServerHost: smtp.office365.com
-      smtpServerPort: 587
-      smtpUsername: yunfei0221@outlook.com
-      smtpPassword: Fei19890116
-      mailSmtpSsl: true
-      mailSmtpStarttlsEnable: true
+    - user: yunfei0221@outlook.com
+      password: Fei19890116
+      props:
+        mail.smtp.auth: true
+        mail.smtp.host: smtp.office365.com
+        mail.smtp.port: 587
+        mail.smtp.ssl: true
+        mail.smtp.starttls.enable: true
+        mail.debug: false
 
 
   corePoolSize: 2
@@ -261,7 +265,6 @@ sender:
   domainKeyFile: classpath:dkim/selector1.pem
   domain: outlook.com
   selector: selector1
-  debug: false
 
 
 dubbo:

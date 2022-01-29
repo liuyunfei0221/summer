@@ -1,36 +1,17 @@
-import com.blue.mail.api.conf.MailReaderConfParams;
-import com.blue.mail.common.MailReader;
+package com.blue.mail.common;
+
 import jakarta.mail.BodyPart;
 import jakarta.mail.Message;
 import jakarta.mail.internet.MimeMultipart;
 
-public class ReaderTest {
+/**
+ * message parser
+ *
+ * @author DarkBlue
+ */
+public class MessageParser {
 
-    public static void main(String[] args) {
-        
-        MailReaderConfParams params = new MailReaderConfParams();
-        params.setImapHost("outlook.office365.com");
-        params.setImapPort(993);
-        params.setImapSslEnable(true);
-        params.setUser("yunfei0221@outlook.com");
-        params.setPassword("Fei19890116");
-        params.setFolderName("INBOX");
-        params.setMaxWaitingMillisForRefresh(5000);
-        params.setDebug(false);
-
-        MailReader mailReader = new MailReader(params);
-
-        System.err.println("COUNT = " + mailReader.getMessageCount());
-
-        Message[] messages = mailReader.getMessages();
-
-        for (Message msg : messages) {
-            messageParse(msg);
-        }
-
-    }
-
-    private static void messageParse(Message message) {
+    public static void parseMessage(Message message) {
         try {
             String subject = message.getSubject();
             String from = (message.getFrom()[0]).toString();
@@ -60,6 +41,5 @@ public class ReaderTest {
             e.printStackTrace();
         }
     }
-
 
 }

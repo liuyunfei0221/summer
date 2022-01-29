@@ -20,9 +20,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"JavaDoc", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
-public class RpcSecureServiceConsumer {
+public class RpcResourceServiceConsumer {
 
-    private static final Logger LOGGER = getLogger(RpcSecureServiceConsumer.class);
+    private static final Logger LOGGER = getLogger(RpcResourceServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-secure"},
@@ -33,7 +33,7 @@ public class RpcSecureServiceConsumer {
 
     private final Scheduler scheduler;
 
-    public RpcSecureServiceConsumer(Scheduler scheduler) {
+    public RpcResourceServiceConsumer(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 

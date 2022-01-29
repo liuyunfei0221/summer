@@ -1,7 +1,7 @@
 package com.blue.gateway.config.filter.global;
 
 import com.blue.base.model.exps.BlueException;
-import com.blue.gateway.remote.consumer.RpcSecureServiceConsumer;
+import com.blue.gateway.remote.consumer.RpcResourceServiceConsumer;
 import com.blue.secure.api.model.AssertAuth;
 import com.blue.secure.api.model.AuthAsserted;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -33,9 +33,9 @@ import static java.util.Optional.ofNullable;
 @Component
 public final class BlueSecureFilter implements GlobalFilter, Ordered {
 
-    private final RpcSecureServiceConsumer rpcSecureServiceConsumer;
+    private final RpcResourceServiceConsumer rpcSecureServiceConsumer;
 
-    public BlueSecureFilter(RpcSecureServiceConsumer rpcSecureServiceConsumer) {
+    public BlueSecureFilter(RpcResourceServiceConsumer rpcSecureServiceConsumer) {
         this.rpcSecureServiceConsumer = rpcSecureServiceConsumer;
     }
 

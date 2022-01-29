@@ -15,6 +15,13 @@ import java.util.concurrent.CompletableFuture;
 public interface RpcRoleService {
 
     /**
+     * select all role infos
+     *
+     * @return
+     */
+    CompletableFuture<List<RoleInfo>> selectRoleInfo();
+
+    /**
      * get member's role info by member id
      *
      * @param memberId

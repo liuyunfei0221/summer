@@ -1,6 +1,7 @@
 package com.blue.mail.api.conf;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author DarkBlue
@@ -8,22 +9,16 @@ import java.util.List;
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface MailReaderConf {
 
-    String getImapHost();
-
-    Integer getImapPort();
-
-    Boolean getImapSslEnable();
-
     String getUser();
 
     String getPassword();
+
+    Map<String, String> getProps();
 
     String getFolderName();
 
     List<String> getThrowableForRetry();
 
     Integer getMaxWaitingMillisForRefresh();
-
-    Boolean getDebug();
 
 }

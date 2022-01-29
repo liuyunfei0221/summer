@@ -10,7 +10,7 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaLowerCamelCaseVariableNaming"})
 public interface MailSenderConf {
 
-    List<SmtpAttr> getSmtpAttrs();
+    List<SenderAttr> getSmtpAttrs();
 
     Integer getCorePoolSize();
 
@@ -35,7 +35,5 @@ public interface MailSenderConf {
     String getDomain();
 
     String getSelector();
-
-    Boolean getDebug();
 
 }

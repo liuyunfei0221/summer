@@ -8,7 +8,6 @@ import jakarta.mail.event.ConnectionListener;
 import jakarta.mail.event.FolderListener;
 import jakarta.mail.event.MessageChangedListener;
 import jakarta.mail.event.MessageCountListener;
-import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.search.SearchTerm;
 import reactor.util.Logger;
 
@@ -35,9 +34,9 @@ public final class MailReader {
 
     private static final Logger LOGGER = getLogger(MailReader.class);
 
-    private MailReaderConf conf;
-
     private Session session;
+
+    private String folderName;
 
     private Folder folder;
 
@@ -46,14 +45,14 @@ public final class MailReader {
     private long maxWaitingMillisForRefresh;
 
     public MailReader(MailReaderConf conf) {
-        this.conf = conf;
-        this.session = generateSession(this.conf);
+        this.session = generateSession(conf);
+        this.folderName = conf.getFolderName();
 
-        this.folder = openFolder(generateStore(session, this.conf), this.conf);
+        this.folder = openFolder(generateStore(session), folderName);
 
         this.throwableForRetry = ofNullable(conf.getThrowableForRetry())
                 .filter(BlueCheck::isNotEmpty).map(HashSet::new).orElseGet(HashSet::new);
-        this.maxWaitingMillisForRefresh = this.conf.getMaxWaitingMillisForRefresh();
+        this.maxWaitingMillisForRefresh = conf.getMaxWaitingMillisForRefresh();
     }
 
     private volatile boolean folderComplete = true;
@@ -77,7 +76,7 @@ public final class MailReader {
             synchronized (this) {
                 if (folderComplete) {
                     this.folderComplete = false;
-                    this.folder = openFolder(generateStore(session, this.conf), this.conf);
+                    this.folder = openFolder(generateStore(session), folderName);
                     this.folderComplete = true;
                 }
             }
@@ -89,45 +88,9 @@ public final class MailReader {
             throwable != null && throwableForRetry.contains(getOriginalThrowable(throwable).getClass().getName());
 
 
-    public static void parse(Message message){
-
-
-
-
+    public void parseMessage(Message message) {
+        MessageParser.parseMessage(message);
     }
-
-
-    public static void parseMessage(Message message) {
-        try {
-            String subject = message.getSubject();
-            String from = (message.getFrom()[0]).toString();
-            System.err.println("邮件的主题：" + subject);
-            System.err.println("邮件的发件人地址：" + from);
-
-            String contentType = message.getContentType();
-            System.err.println("邮件的内容类型：" + contentType);
-
-            if (contentType.startsWith("multipart")) {
-                MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
-
-                int count = mimeMultipart.getCount();
-                System.err.println("邮件的parts：" + count);
-
-                for (int i = 0; i < count; i++) {
-                    BodyPart bodyPart = mimeMultipart.getBodyPart(i);
-                    Object content = bodyPart.getContent();
-
-                    System.err.println("邮件的内容" + i + ": " + content);
-                }
-            } else {
-                Object content = message.getContent();
-                System.err.println("邮件的内容：" + content);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public int getMessageCount() {
         try {

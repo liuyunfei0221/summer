@@ -19,7 +19,6 @@ import java.util.stream.Stream;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static com.blue.base.constant.media.MailHeader.LIST_UNSUBSCRIBE;
-import static com.blue.mail.common.MailReader.parseMessage;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -79,7 +78,7 @@ public class MailManagerHandler {
     public Mono<ServerResponse> testRead(ServerRequest serverRequest) {
         Message[] messages = mailReader.getMessages();
         for (Message msg : messages)
-            parseMessage(msg);
+            mailReader.parseMessage(msg);
 
         return just(true)
                 .flatMap(t ->

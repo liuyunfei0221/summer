@@ -2,7 +2,7 @@ package com.blue.mail.common;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailSenderConf;
-import com.blue.mail.api.conf.SmtpAttr;
+import com.blue.mail.api.conf.SenderAttr;
 import com.sun.mail.util.MailSSLSocketFactory;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
@@ -25,6 +25,7 @@ import static com.blue.base.common.base.BlueCheck.isEmpty;
 import static com.blue.base.common.base.FileProcessor.getFile;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
+import static jakarta.mail.Session.getInstance;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -49,32 +50,24 @@ public final class SenderComponentProcessor {
     /**
      * generate a session
      *
-     * @param smtpAttr
+     * @param senderAttr
      * @return
      */
-    public static Session generateSession(SmtpAttr smtpAttr) {
+    public static Session generateSession(SenderAttr senderAttr) {
         try {
-            Properties props = new Properties();
-
             MailSSLSocketFactory sf = new MailSSLSocketFactory();
             sf.setTrustAllHosts(true);
 
+            Properties props = new Properties();
             props.put("mail.smtp.ssl.socketFactory", sf);
+            props.putAll(senderAttr.getProps());
 
-            props.put("mail.smtp.auth", true);
-            props.put("mail.smtp.host", smtpAttr.getSmtpServerHost());
-            props.put("mail.smtp.port", smtpAttr.getSmtpServerPort());
-
-            props.put("mail.smtp.ssl", smtpAttr.getMailSmtpSsl());
-            props.put("mail.smtp.starttls.enable", smtpAttr.getMailSmtpStarttlsEnable());
-
-            return Session.getInstance(props,
-                    new Authenticator() {
-                        @Override
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(smtpAttr.getSmtpUsername(), smtpAttr.getSmtpPassword());
-                        }
-                    });
+            return getInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(senderAttr.getUser(), senderAttr.getPassword());
+                }
+            });
 
         } catch (Exception e) {
             LOGGER.error("Session generateSession(MailSenderConf mailSenderConf) failed, e = {}", e);

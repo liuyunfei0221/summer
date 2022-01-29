@@ -1,4 +1,4 @@
-package com.blue.secure.remote.consumer;
+package com.blue.analyze.remote.consumer;
 
 import com.blue.member.api.inter.RpcMemberService;
 import com.blue.member.api.model.MemberBasicInfo;

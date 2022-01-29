@@ -32,6 +32,7 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @DubboService(interfaceClass = RpcRoleService.class, version = "1.0", methods = {
+        @Method(name = "selectRoleInfo", async = true),
         @Method(name = "selectRoleInfoByMemberId", async = true),
         @Method(name = "selectRoleInfoByMemberIds", async = true)
 })
@@ -49,6 +50,21 @@ public class RpcRoleServiceProvider implements RpcRoleService {
         this.roleService = roleService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.scheduler = scheduler;
+    }
+
+    /**
+     * select all role infos
+     *
+     * @return
+     */
+    @Override
+    public CompletableFuture<List<RoleInfo>> selectRoleInfo() {
+        LOGGER.info("CompletableFuture<RoleInfo> selectRoleInfo()");
+        return just(true)
+                .publishOn(scheduler)
+                .flatMap(v -> roleService.selectRole())
+                .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))
+                .toFuture();
     }
 
     /**

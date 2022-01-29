@@ -3,9 +3,8 @@ package com.blue.mail.core;
 import com.blue.base.common.base.BlueCheck;
 import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailSenderConf;
-import com.blue.mail.api.conf.SmtpAttr;
+import com.blue.mail.api.conf.SenderAttr;
 import jakarta.mail.Message;
-import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;
 import reactor.util.Logger;
 
@@ -22,6 +21,7 @@ import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrow
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.mail.common.SenderComponentProcessor.*;
 import static java.lang.Integer.bitCount;
+import static java.lang.Integer.numberOfLeadingZeros;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.stream.Collectors.toList;
@@ -62,34 +62,34 @@ public final class BatchSender {
 
         this.executorService = generateExecutorService(conf);
 
-        List<SmtpAttr> smtpAttrs = conf.getSmtpAttrs();
+        List<SenderAttr> senderAttrs = conf.getSmtpAttrs();
 
-        List<SessionWithAddress> sessionAndAddress = smtpAttrs.stream().map(attr ->
-                new SessionWithAddress(generateSession(attr), attr.getSmtpUsername())
+        List<Transporter> transporters = senderAttrs.stream().map(attr ->
+                new Transporter(generateSession(attr), attr.getUser())
         ).collect(toList());
 
-        int sessionSize = sessionAndAddress.size();
+        int transporterSize = transporters.size();
 
         int bufferSize = conf.getBufferSize();
         if (bufferSize > MAXIMUM_BUFFER_SIZE)
             bufferSize = MAXIMUM_BUFFER_SIZE;
 
-        bufferSize = bufferSize * sessionSize;
+        bufferSize = bufferSize * transporterSize;
 
         if (bufferSize < 0L || bitCount(bufferSize) != 1) {
-            int n = -1 >>> Integer.numberOfLeadingZeros(bufferSize - 1);
+            int n = -1 >>> numberOfLeadingZeros(bufferSize - 1);
             bufferSize = (n < 0) ? 1 : n;
         }
 
         this.indexMask = bufferSize - 1;
 
         this.transporters = new Transporter[bufferSize];
-        SessionWithAddress sessionWithAddress;
+
+        int c = 0;
         for (int i = 0; i < bufferSize; i++) {
-            sessionWithAddress = sessionAndAddress.get(i % sessionSize);
-            Transporter transporter = new Transporter(sessionWithAddress.getSession(), sessionWithAddress.address);
-            this.transporters[i] = transporter;
+            Transporter transporter = transporters.get((c++) % transporterSize);
             this.executorService.submit(transporter::init);
+            this.transporters[i] = transporter;
         }
 
         this.throwableForRetry = ofNullable(conf.getThrowableForRetry())
@@ -142,37 +142,6 @@ public final class BatchSender {
 
         signDkim(message);
         return runAsync(() -> MESSAGE_SENDER.accept(transporters[indexMask & CURSOR.incrementAndGet()], message), executorService);
-    }
-
-    private static class SessionWithAddress {
-
-        private Session session;
-
-        private String address;
-
-        public SessionWithAddress() {
-        }
-
-        public SessionWithAddress(Session session, String address) {
-            this.session = session;
-            this.address = address;
-        }
-
-        public Session getSession() {
-            return session;
-        }
-
-        public void setSession(Session session) {
-            this.session = session;
-        }
-
-        public String getAddress() {
-            return address;
-        }
-
-        public void setAddress(String address) {
-            this.address = address;
-        }
     }
 
 }
