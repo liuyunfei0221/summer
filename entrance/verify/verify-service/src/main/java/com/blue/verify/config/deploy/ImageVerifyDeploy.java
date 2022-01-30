@@ -5,29 +5,26 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * verify deploy
+ * image verify deploy
  *
  * @author DarkBlue
  */
+@SuppressWarnings("SpellCheckingInspection")
 @Component
-@ConfigurationProperties(prefix = "verify")
-public class VerifyDeploy {
+@ConfigurationProperties(prefix = "imagev")
+public class ImageVerifyDeploy {
 
     private Integer keyLength;
 
-    private RandomType randomType;
+    private RandomType keyRandomType;
 
     private Integer verifyLength;
 
-    private Integer minLength;
-
-    private Integer maxLength;
-
     private Integer expireMillis;
 
-    private Boolean repeatable;
+    private String imageType;
 
-    public VerifyDeploy() {
+    public ImageVerifyDeploy() {
     }
 
     public Integer getKeyLength() {
@@ -38,12 +35,12 @@ public class VerifyDeploy {
         this.keyLength = keyLength;
     }
 
-    public RandomType getRandomType() {
-        return randomType;
+    public RandomType getKeyRandomType() {
+        return keyRandomType;
     }
 
-    public void setRandomType(RandomType randomType) {
-        this.randomType = randomType;
+    public void setKeyRandomType(RandomType keyRandomType) {
+        this.keyRandomType = keyRandomType;
     }
 
     public Integer getVerifyLength() {
@@ -54,22 +51,6 @@ public class VerifyDeploy {
         this.verifyLength = verifyLength;
     }
 
-    public Integer getMinLength() {
-        return minLength;
-    }
-
-    public void setMinLength(Integer minLength) {
-        this.minLength = minLength;
-    }
-
-    public Integer getMaxLength() {
-        return maxLength;
-    }
-
-    public void setMaxLength(Integer maxLength) {
-        this.maxLength = maxLength;
-    }
-
     public Integer getExpireMillis() {
         return expireMillis;
     }
@@ -78,24 +59,22 @@ public class VerifyDeploy {
         this.expireMillis = expireMillis;
     }
 
-    public Boolean getRepeatable() {
-        return repeatable;
+    public String getImageType() {
+        return imageType;
     }
 
-    public void setRepeatable(Boolean repeatable) {
-        this.repeatable = repeatable;
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
     }
 
     @Override
     public String toString() {
-        return "VerifyDeploy{" +
+        return "ImageVerifyDeploy{" +
                 "keyLength=" + keyLength +
-                ", randomType=" + randomType +
+                ", keyRandomType=" + keyRandomType +
                 ", verifyLength=" + verifyLength +
-                ", minLength=" + minLength +
-                ", maxLength=" + maxLength +
                 ", expireMillis=" + expireMillis +
-                ", repeatable=" + repeatable +
+                ", imageType='" + imageType + '\'' +
                 '}';
     }
 

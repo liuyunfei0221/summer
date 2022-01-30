@@ -22,7 +22,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.REQUEST_IDEN
 import static com.blue.base.constant.base.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.media.config.filter.BlueFilterOrder.BLUE_RATE_LIMIT;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
-import static com.blue.redis.constant.RedisScripts.RATE_LIMITER;
+import static com.blue.redis.constant.RedisScripts.TOKEN_BUCKET_RATE_LIMITER;
 import static java.lang.String.valueOf;
 import static java.time.Instant.now;
 import static java.util.Arrays.asList;
@@ -45,18 +45,18 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.scheduler = scheduler;
 
-        REPLENISH_RATE = valueOf(rateLimiterDeploy.getReplenishRate());
-        BURST_CAPACITY = valueOf(rateLimiterDeploy.getBurstCapacity());
+        replenishRate = valueOf(rateLimiterDeploy.getReplenishRate());
+        burstCapacity = valueOf(rateLimiterDeploy.getBurstCapacity());
     }
 
-    private static final RedisScript<Long> SCRIPT = generateScriptByScriptStr(RATE_LIMITER.str, Long.class);
+    private static final RedisScript<Long> SCRIPT = generateScriptByScriptStr(TOKEN_BUCKET_RATE_LIMITER.str, Long.class);
 
-    private static String REPLENISH_RATE, BURST_CAPACITY;
+    private String replenishRate, burstCapacity;
 
-    private static final Supplier<String> CURRENT_SEC_STAMP_SUP = () -> now().getEpochSecond() + "";
+    private static final Supplier<String> CURRENT_SEC_STAMP_SUP = () -> String.valueOf(now().getEpochSecond());
 
-    private static final Supplier<List<String>> SCRIPT_ARGS_SUP = () ->
-            asList(REPLENISH_RATE, BURST_CAPACITY, CURRENT_SEC_STAMP_SUP.get());
+    private final Supplier<List<String>> SCRIPT_ARGS_SUP = () ->
+            asList(replenishRate, burstCapacity, CURRENT_SEC_STAMP_SUP.get());
 
     private static final Function<Throwable, Flux<Long>> FALL_BACKER = e ->
             Flux.just(1L);

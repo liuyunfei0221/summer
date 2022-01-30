@@ -374,11 +374,27 @@ consumers:
 
 
 verify:
+  keyLength: 16
+  randomType: ALPHANUMERIC
   verifyLength: 16
-  minLength: 6
+  minLength: 4
   maxLength: 32
   expireMillis: 600000
   repeatable: true
+
+
+imagev:
+  keyLength: 16
+  keyRandomType: ALPHANUMERIC
+  randomType: ALPHANUMERIC
+  verifyLength: 7
+  expireMillis: 600000
+  imageType: png
+
+
+smsv:
+  verifyLength: 7
+  expireMillis: 600000
 
 
 image:

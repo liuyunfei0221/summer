@@ -22,11 +22,10 @@ public interface RpcVerifyService {
      * @param type
      * @param key
      * @param length
-     * @param toUpperCase
      * @param expire
      * @return
      */
-    CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase, Duration expire);
+    CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire);
 
     /**
      * validate pair
@@ -36,6 +35,6 @@ public interface RpcVerifyService {
      * @param repeatable
      * @return
      */
-    CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, boolean repeatable);
+    CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, Boolean repeatable);
 
 }

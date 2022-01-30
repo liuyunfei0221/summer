@@ -5,7 +5,7 @@ package com.blue.base.constant.base;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "SpellCheckingInspection"})
 public enum BlueCacheKey {
 
     //prefix
@@ -39,7 +39,6 @@ public enum BlueCacheKey {
      */
     SIGN_IN_KEY_PRE("SI_N:"),
 
-    //key
     /**
      * portal key
      */

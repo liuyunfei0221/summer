@@ -11,9 +11,9 @@ package com.blue.redis.constant;
 public enum RedisScripts {
 
     /**
-     * limiter script
+     * token bucket limiter script
      */
-    RATE_LIMITER("local tokens_key = KEYS[1]\n" +
+    TOKEN_BUCKET_RATE_LIMITER("local tokens_key = KEYS[1]\n" +
             "local timestamp_key = KEYS[2]\n" +
             "\n" +
             "local rate = tonumber(ARGV[1])\n" +

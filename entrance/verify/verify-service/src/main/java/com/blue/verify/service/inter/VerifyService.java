@@ -20,6 +20,14 @@ public interface VerifyService {
      * generate pair
      *
      * @param type
+     * @return
+     */
+    Mono<VerifyPair> generate(VerifyType type);
+
+    /**
+     * generate pair
+     *
+     * @param type
      * @param key
      * @return
      */
@@ -41,33 +49,10 @@ public interface VerifyService {
      * @param type
      * @param key
      * @param length
-     * @param toUpperCase
-     * @return
-     */
-    Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase);
-
-    /**
-     * generate pair
-     *
-     * @param type
-     * @param key
-     * @param length
      * @param expire
      * @return
      */
     Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire);
-
-    /**
-     * generate pair
-     *
-     * @param type
-     * @param key
-     * @param length
-     * @param toUpperCase
-     * @param expire
-     * @return
-     */
-    Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase, Duration expire);
 
     /**
      * validate pair

@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "Duplicates"})
+@SuppressWarnings({"JavaDoc"})
 @Component
 public final class VerifyApiHandler {
 

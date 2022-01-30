@@ -45,15 +45,14 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      * @param type
      * @param key
      * @param length
-     * @param toUpperCase
      * @param expire
      * @return
      */
     @Override
-    public CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase, Duration expire) {
-        LOGGER.info("CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Boolean toUpperCase, Duration expire), type = {}, key = {}, length = {}, toUpperCase = {}, expire = {}",
-                type, key, length, toUpperCase, expire);
-        return just(true).publishOn(scheduler).flatMap(v -> verifyService.generate(type, key, length, toUpperCase, expire)).toFuture();
+    public CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire) {
+        LOGGER.info("CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire), type = {}, key = {}, length = {}, toUpperCase = {}, expire = {}",
+                type, key, length, expire);
+        return just(true).publishOn(scheduler).flatMap(v -> verifyService.generate(type, key, length, expire)).toFuture();
     }
 
     /**
@@ -64,7 +63,7 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      * @return
      */
     @Override
-    public CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, boolean repeatable) {
+    public CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, Boolean repeatable) {
         LOGGER.info("CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, boolean repeatable), type = {}, verifyPair = {}, repeatable = {}",
                 type, verifyPair, repeatable);
         return just(true).publishOn(scheduler).flatMap(v -> verifyService.validate(type, verifyPair, repeatable)).toFuture();

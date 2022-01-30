@@ -44,14 +44,13 @@ public class RpcVerifyServiceConsumer {
      * @param type
      * @param key
      * @param length
-     * @param toUpperCase
      * @param expire
      * @return
      */
-    Mono<VerifyPair> generate(VerifyType type, String key, int length, Boolean toUpperCase, Duration expire) {
-        LOGGER.info("Mono<VerifyPair> generate(VerifyType type, String key, int length, Duration expire), type = {}, key = {}, length = {}, expire ={}",
+    Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire) {
+        LOGGER.info("Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire), type = {}, key = {}, length = {}, expire ={}",
                 key, type, length, expire);
-        return fromFuture(rpcVerifyService.generate(type, key, length, toUpperCase, expire))
+        return fromFuture(rpcVerifyService.generate(type, key, length, expire))
                 .publishOn(scheduler);
     }
 
@@ -63,7 +62,7 @@ public class RpcVerifyServiceConsumer {
      * @param repeatable
      * @return
      */
-    Mono<Boolean> validate(VerifyType type, VerifyPair verifyPair, boolean repeatable) {
+    Mono<Boolean> validate(VerifyType type, VerifyPair verifyPair, Boolean repeatable) {
         LOGGER.info("Mono<Boolean> validate(VerifyType type,VerifyPair verifyPair, boolean repeatable), type = {} verifyPair = {}, repeatable = {}",
                 type, verifyPair, repeatable);
         return fromFuture(rpcVerifyService.validate(type, verifyPair, repeatable)).publishOn(scheduler);
