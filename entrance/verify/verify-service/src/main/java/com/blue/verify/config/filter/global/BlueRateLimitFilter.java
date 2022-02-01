@@ -14,6 +14,7 @@ import reactor.core.scheduler.Scheduler;
 
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.REQUEST_IDENTITY_GETTER;
 import static com.blue.base.constant.base.ResponseElement.TOO_MANY_REQUESTS;
+import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateTokenBucketRateLimiter;
 import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_RATE_LIMIT;
 import static java.lang.String.valueOf;
 import static reactor.core.publisher.Mono.error;
@@ -30,7 +31,7 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
     private final BlueTokenBucketRateLimiter blueTokenBucketRateLimiter;
 
     public BlueRateLimitFilter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, RateLimiterDeploy rateLimiterDeploy) {
-        this.blueTokenBucketRateLimiter = new BlueTokenBucketRateLimiter(reactiveStringRedisTemplate, scheduler,
+        this.blueTokenBucketRateLimiter = generateTokenBucketRateLimiter(reactiveStringRedisTemplate, scheduler,
                 valueOf(rateLimiterDeploy.getReplenishRate()), valueOf(rateLimiterDeploy.getBurstCapacity()));
     }
 
