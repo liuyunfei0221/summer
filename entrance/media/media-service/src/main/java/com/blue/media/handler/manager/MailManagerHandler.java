@@ -45,8 +45,6 @@ public class MailManagerHandler {
         this.mailReader = mailReader;
     }
 
-    private static final String FROM = "yunfei0221@outlook.com";
-
     private static final List<String> RECEIVERS = Stream.of(
             "liuyunfei19890221@gmail.com",
             "liuyunfei198902210221@163.com",

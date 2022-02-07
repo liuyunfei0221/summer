@@ -56,7 +56,6 @@
         <apollo.version>1.9.2</apollo.version>
         <kaptcha.version>2.3.2</kaptcha.version>
         <jakarta.version>2.0.1</jakarta.version>
-        <simple-mail.version>7.0.1</simple-mail.version>
     </properties>
 
     <dependencyManagement>

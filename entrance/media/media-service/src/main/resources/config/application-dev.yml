@@ -187,8 +187,8 @@ cache:
 
 
 limit:
-  replenishRate: 100000
-  burstCapacity: 200000
+  replenishRate: 1
+  burstCapacity: 3
 
 
 risk:
@@ -229,7 +229,7 @@ encrypt:
 
 reader:
   user: yunfei0221@outlook.com
-  password: Fei19890116
+  password: abc
   props:
     mail.imap.host: outlook.office365.com
     mail.imap.port: 993
@@ -243,7 +243,7 @@ reader:
 sender:
   smtpAttrs:
     - user: yunfei0221@outlook.com
-      password: Fei19890116
+      password: abc
       props:
         mail.smtp.auth: true
         mail.smtp.host: smtp.office365.com
