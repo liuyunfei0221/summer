@@ -35,14 +35,13 @@ public enum RedisScripts {
             "end\n" +
             "\n" +
             "local delta = math.max(0, now-last_refreshed)\n" +
-            "local filled_tokens = math.min(capacity, last_tokens+(delta*rate))\n" +
-            "local allowed = filled_tokens >= 1\n" +
-            "local new_tokens = filled_tokens\n" +
+            "local tokens = math.min(capacity, last_tokens+(delta*rate))\n" +
+            "local allowed = tokens >= 1\n" +
             "if allowed then\n" +
-            "  new_tokens = filled_tokens - 1\n" +
+            "  tokens = tokens - 1\n" +
             "end\n" +
             "\n" +
-            "redis.call(\"setex\", tokens_key, ttl, new_tokens)\n" +
+            "redis.call(\"setex\", tokens_key, ttl, tokens)\n" +
             "redis.call(\"setex\", timestamp_key, ttl, now)\n" +
             "\n" +
             "return allowed", "limiter script"),

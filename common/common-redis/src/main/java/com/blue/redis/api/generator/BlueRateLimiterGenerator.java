@@ -22,7 +22,7 @@ public final class BlueRateLimiterGenerator {
      * @param burstCapacity
      * @return
      */
-    public static BlueTokenBucketRateLimiter generateTokenBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, String replenishRate, String burstCapacity) {
+    public static BlueTokenBucketRateLimiter generateTokenBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Integer replenishRate, Integer burstCapacity) {
         return new BlueTokenBucketRateLimiter(reactiveStringRedisTemplate, boundedElastic(), replenishRate, burstCapacity);
     }
 
@@ -35,7 +35,7 @@ public final class BlueRateLimiterGenerator {
      * @param burstCapacity
      * @return
      */
-    public static BlueTokenBucketRateLimiter generateTokenBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, String replenishRate, String burstCapacity) {
+    public static BlueTokenBucketRateLimiter generateTokenBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, Integer replenishRate, Integer burstCapacity) {
         return new BlueTokenBucketRateLimiter(reactiveStringRedisTemplate, scheduler, replenishRate, burstCapacity);
     }
 
