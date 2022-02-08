@@ -44,12 +44,27 @@ public enum RedisScripts {
             "redis.call(\"setex\", tokens_key, ttl, tokens)\n" +
             "redis.call(\"setex\", timestamp_key, ttl, now)\n" +
             "\n" +
-            "return allowed", "limiter script"),
+            "return allowed"),
+
 
     /**
-     * validator script
+     * leaky bucket limiter script
      */
-    VALIDATION("redis.replicate_commands()\n" +
+    LEAKY_BUCKET_RATE_LIMITER("redis.replicate_commands()\n" +
+            "local tokens_key = KEYS[1]\n" +
+            "\n" +
+            "local allowed_tokens = tonumber(redis.call(\"incr\", tokens_key))\n" +
+            "if allowed_tokens == 1 then\n" +
+            "  redis.call(\"pexpire\", tokens_key, tonumber(ARGV[2]))\n" +
+            "end\n" +
+            "\n" +
+            "return tonumber(ARGV[1]) >= allowed_tokens"),
+
+
+    /**
+     * unrepeatable validator script
+     */
+    UNREPEATABLE_VALIDATION("redis.replicate_commands()\n" +
             "local key = KEYS[1]\n" +
             "\n" +
             "local v = redis.call(\"get\", key)\n" +
@@ -57,14 +72,26 @@ public enum RedisScripts {
             "  redis.call(\"del\", key)\n" +
             "end\n" +
             "\n" +
-            "return v == ARGV[1]", "validator script");
+            "return v == ARGV[1]"),
+
+
+    /**
+     * repeatable validator script
+     */
+    REPEATABLE_UNTIL_SUCCESS_OR_TIMEOUT_VALIDATION("redis.replicate_commands()\n" +
+            "local key = KEYS[1]\n" +
+            "\n" +
+            "local allowed = ARGV[1] == redis.call(\"get\", key)\n" +
+            "if allowed then\n" +
+            "  redis.call(\"del\", key)\n" +
+            "end\n" +
+            "\n" +
+            "return allowed");
 
     public final String str;
 
-    public final String disc;
-
-    RedisScripts(String str, String disc) {
+    RedisScripts(String str) {
         this.str = str;
-        this.disc = disc;
     }
+
 }

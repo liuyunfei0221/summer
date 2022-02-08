@@ -1152,7 +1152,10 @@
 			"response": []
 		},
 		{
-			"name": "生成图形验证码",
+			"name": "生成验证码",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [
@@ -1162,6 +1165,10 @@
 						"type": "text"
 					}
 				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"verifyType\":\"IMAGE\",\r\n    \"destination\":\"13131693996\"\r\n}"
+				},
 				"url": {
 					"raw": "localhost:16000/blue-verify/verify/generate",
 					"host": [
@@ -1228,6 +1235,32 @@
 						"blue-media",
 						"mail",
 						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "测试邮件读取",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:13000/blue-media/mail/read",
+					"host": [
+						"localhost"
+					],
+					"port": "13000",
+					"path": [
+						"blue-media",
+						"mail",
+						"read"
 					]
 				}
 			},

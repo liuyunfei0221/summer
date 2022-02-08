@@ -18,11 +18,15 @@ public class ImageVerifyDeploy {
 
     private RandomType keyRandomType;
 
+    private String imageType;
+
     private Integer verifyLength;
 
     private Integer expireMillis;
 
-    private String imageType;
+    private Integer allow;
+
+    private Long sendIntervalMillis;
 
     public ImageVerifyDeploy() {
     }
@@ -43,6 +47,14 @@ public class ImageVerifyDeploy {
         this.keyRandomType = keyRandomType;
     }
 
+    public String getImageType() {
+        return imageType;
+    }
+
+    public void setImageType(String imageType) {
+        this.imageType = imageType;
+    }
+
     public Integer getVerifyLength() {
         return verifyLength;
     }
@@ -59,12 +71,20 @@ public class ImageVerifyDeploy {
         this.expireMillis = expireMillis;
     }
 
-    public String getImageType() {
-        return imageType;
+    public Integer getAllow() {
+        return allow;
     }
 
-    public void setImageType(String imageType) {
-        this.imageType = imageType;
+    public void setAllow(Integer allow) {
+        this.allow = allow;
+    }
+
+    public Long getSendIntervalMillis() {
+        return sendIntervalMillis;
+    }
+
+    public void setSendIntervalMillis(Long sendIntervalMillis) {
+        this.sendIntervalMillis = sendIntervalMillis;
     }
 
     @Override
@@ -72,9 +92,11 @@ public class ImageVerifyDeploy {
         return "ImageVerifyDeploy{" +
                 "keyLength=" + keyLength +
                 ", keyRandomType=" + keyRandomType +
+                ", imageType='" + imageType + '\'' +
                 ", verifyLength=" + verifyLength +
                 ", expireMillis=" + expireMillis +
-                ", imageType='" + imageType + '\'' +
+                ", allow=" + allow +
+                ", sendIntervalMillis=" + sendIntervalMillis +
                 '}';
     }
 

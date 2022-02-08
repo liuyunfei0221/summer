@@ -49,7 +49,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
     /**
      * request identity getter func
      */
-    public static final Function<ServerHttpRequest, Mono<String>> REQUEST_IDENTITY_GETTER = request ->
+    public static final Function<ServerHttpRequest, Mono<String>> SERVER_HTTP_REQUEST_IDENTITY_GETTER = request ->
             just(RATE_LIMIT_KEY_PREFIX + ofNullable(request)
                     .map(ServerHttpRequest::getHeaders)
                     .map(h -> h.getFirst(AUTHORIZATION))
@@ -57,7 +57,17 @@ public class ReactiveCommonFunctions extends CommonFunctions {
                     .map(String::hashCode)
                     .map(String::valueOf)
                     .orElseGet(() ->
-                            ReactiveCommonFunctions.getIp(request)).hashCode());
+                            getIp(request)).hashCode());
+
+    public static final Function<ServerRequest, Mono<String>> SERVER_REQUEST_IDENTITY_GETTER = request ->
+            just(RATE_LIMIT_KEY_PREFIX + ofNullable(request)
+                    .map(ServerRequest::headers)
+                    .map(h -> h.firstHeader(AUTHORIZATION))
+                    .filter(StringUtils::isNotEmpty)
+                    .map(String::hashCode)
+                    .map(String::valueOf)
+                    .orElseGet(() ->
+                            getIp(request)).hashCode());
 
 
     private static final int MAX_LANGUAGE_COUNT = 32;

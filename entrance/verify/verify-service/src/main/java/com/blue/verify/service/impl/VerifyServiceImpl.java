@@ -3,32 +3,26 @@ package com.blue.verify.service.impl;
 import com.blue.base.constant.base.RandomType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
+import com.blue.redis.api.generator.BlueValidatorGenerator;
+import com.blue.redis.common.BlueValidator;
 import com.blue.verify.api.model.VerifyPair;
 import com.blue.verify.config.deploy.VerifyDeploy;
 import com.blue.verify.service.inter.VerifyService;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
-import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueCheck.isNotBlank;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
-import static com.blue.base.constant.base.BlueCacheKey.VERIFY_KEY_PRE;
 import static com.blue.base.constant.base.ResponseElement.ILLEGAL_REQUEST;
-import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
-import static com.blue.redis.constant.RedisScripts.VALIDATION;
 import static java.time.temporal.ChronoUnit.MILLIS;
-import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
@@ -45,7 +39,7 @@ public class VerifyServiceImpl implements VerifyService {
 
     private static final Logger LOGGER = getLogger(VerifyServiceImpl.class);
 
-    private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
+    private BlueValidator blueValidator;
 
     private final int KEY_LEN;
     private final RandomType RANDOM_TYPE;
@@ -55,9 +49,10 @@ public class VerifyServiceImpl implements VerifyService {
     private final Duration DEFAULT_DURATION;
     private final boolean DEFAULT_REPEATABLE;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    public VerifyServiceImpl(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, VerifyDeploy verifyDeploy) {
+        this.blueValidator = BlueValidatorGenerator.generateValidator(reactiveStringRedisTemplate, scheduler);
 
-    public VerifyServiceImpl(ReactiveStringRedisTemplate reactiveStringRedisTemplate, VerifyDeploy verifyDeploy) {
-        this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         if (verifyDeploy == null)
             throw new RuntimeException("verifyDeploy can't be null");
 
@@ -103,31 +98,15 @@ public class VerifyServiceImpl implements VerifyService {
 
     private static final int MAX_KEY_LEN = 512;
 
-    /**
-     * verify assert script
-     */
-    private static final RedisScript<Boolean> SCRIPT = generateScriptByScriptStr(VALIDATION.str, Boolean.class);
-    private static final Function<String, List<String>> LIST_GENERATOR = List::of;
-
-    private static final Function<Throwable, Flux<Boolean>> FALL_BACKER = e -> {
-        LOGGER.error("e = {}", e);
-        return Flux.just(false);
-    };
-
-    private final UnaryOperator<String> KEY_WRAPPER = key -> VERIFY_KEY_PRE.key + key;
-
     private final BiFunction<String, String, Mono<Boolean>> UN_REPEATABLE_VALIDATOR = (k, v) ->
             isNotBlank(k) && isNotBlank(v) ?
-                    reactiveStringRedisTemplate.execute(SCRIPT, LIST_GENERATOR.apply(KEY_WRAPPER.apply(k)), LIST_GENERATOR.apply(v))
-                            .onErrorResume(FALL_BACKER)
-                            .elementAt(0, false)
+                    blueValidator.unrepeatableValidate(k, v)
                     :
                     just(false);
 
     private final BiFunction<String, String, Mono<Boolean>> REPEATABLE_VALIDATOR = (k, v) ->
             isNotBlank(k) && isNotBlank(v) ?
-                    reactiveStringRedisTemplate.opsForValue().get(KEY_WRAPPER.apply(k)).switchIfEmpty(just(""))
-                            .flatMap(val -> just(v.equals(val)))
+                    blueValidator.repeatableValidateUntilSuccessOrTimeout(k, v)
                     :
                     just(false);
 
@@ -187,14 +166,12 @@ public class VerifyServiceImpl implements VerifyService {
 
         if (type != null) {
             String k = isNotBlank(key) ? key : generateRandom(RANDOM_TYPE, KEY_LEN);
-            String v = of(generateRandom(type.randomType, length != null && length >= MIN_LEN && length <= MAX_LEN ? length : VERIFY_LEN))
-                    .get();
+            String v = generateRandom(type.randomType, length != null && length >= MIN_LEN && length <= MAX_LEN ? length : VERIFY_LEN);
 
             LOGGER.info("Mono<VerifyPair> generate(RandomType type, int length, Duration expire), k = {}, v = {}", k, v);
 
-            return reactiveStringRedisTemplate.opsForValue()
-                    .set(KEY_WRAPPER.apply(k), v, expire != null ? expire : DEFAULT_DURATION)
-                    .flatMap(s -> just(new VerifyPair(key, v)));
+            return blueValidator.setKeyValueWithExpire(k, v, expire != null ? expire : DEFAULT_DURATION)
+                    .flatMap(s -> just(new VerifyPair(k, v)));
         }
 
         return error(() -> new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type can't be null"));

@@ -15,7 +15,11 @@ public class SmsVerifyDeploy {
 
     private Integer verifyLength;
 
-    private Integer expireMillis;
+    private Long expireMillis;
+
+    private Integer allow;
+
+    private Long sendIntervalMillis;
 
     public SmsVerifyDeploy() {
     }
@@ -28,19 +32,37 @@ public class SmsVerifyDeploy {
         this.verifyLength = verifyLength;
     }
 
-    public Integer getExpireMillis() {
+    public Long getExpireMillis() {
         return expireMillis;
     }
 
-    public void setExpireMillis(Integer expireMillis) {
+    public void setExpireMillis(Long expireMillis) {
         this.expireMillis = expireMillis;
+    }
+
+    public Integer getAllow() {
+        return allow;
+    }
+
+    public void setAllow(Integer allow) {
+        this.allow = allow;
+    }
+
+    public Long getSendIntervalMillis() {
+        return sendIntervalMillis;
+    }
+
+    public void setSendIntervalMillis(Long sendIntervalMillis) {
+        this.sendIntervalMillis = sendIntervalMillis;
     }
 
     @Override
     public String toString() {
-        return "ImageVerifyDeploy{" +
-                ", verifyLength=" + verifyLength +
+        return "SmsVerifyDeploy{" +
+                "verifyLength=" + verifyLength +
                 ", expireMillis=" + expireMillis +
+                ", allow=" + allow +
+                ", sendIntervalMillis=" + sendIntervalMillis +
                 '}';
     }
 

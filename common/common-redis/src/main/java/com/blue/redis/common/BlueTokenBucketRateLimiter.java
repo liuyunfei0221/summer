@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.CommonFunctions.LIMIT_KEYS_GENERATOR;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.TOKEN_BUCKET_RATE_LIMITER;
@@ -48,6 +47,14 @@ public final class BlueTokenBucketRateLimiter {
 
     private static final RedisScript<Boolean> SCRIPT = generateScriptByScriptStr(TOKEN_BUCKET_RATE_LIMITER.str, Boolean.class);
 
+    private static final String KEY_PREFIX = "tb_rli_";
+    private static final String TOKEN_SUFFIX = "_tks", STAMP_SUFFIX = "_tst";
+
+    private static final Function<String, List<String>> SCRIPT_KEYS_WRAPPER = id -> {
+        String prefix = KEY_PREFIX + id;
+        return asList(prefix + TOKEN_SUFFIX, prefix + STAMP_SUFFIX);
+    };
+
     private final Supplier<List<String>> SCRIPT_ARGS_SUP = () ->
             asList(replenishRate, burstCapacity, CURRENT_SEC_STAMP_SUP.get());
 
@@ -55,7 +62,7 @@ public final class BlueTokenBucketRateLimiter {
             Flux.just(true);
 
     private final Function<String, Mono<Boolean>> ALLOWED_GETTER = limitKey ->
-            reactiveStringRedisTemplate.execute(SCRIPT, LIMIT_KEYS_GENERATOR.apply(limitKey),
+            reactiveStringRedisTemplate.execute(SCRIPT, SCRIPT_KEYS_WRAPPER.apply(limitKey),
                             SCRIPT_ARGS_SUP.get())
                     .onErrorResume(FALL_BACKER)
                     .elementAt(0)

@@ -379,7 +379,7 @@ verify:
   verifyLength: 16
   minLength: 4
   maxLength: 32
-  expireMillis: 600000
+  expireMillis: 60000
   repeatable: true
 
 
@@ -387,14 +387,17 @@ imagev:
   keyLength: 16
   keyRandomType: ALPHANUMERIC
   randomType: ALPHANUMERIC
-  verifyLength: 7
-  expireMillis: 600000
   imageType: png
-
+  verifyLength: 7
+  expireMillis: 60000
+  allow: 10
+  sendIntervalMillis: 60000
 
 smsv:
   verifyLength: 7
-  expireMillis: 600000
+  expireMillis: 60000
+  allow: 1
+  sendIntervalMillis: 60000
 
 
 image:

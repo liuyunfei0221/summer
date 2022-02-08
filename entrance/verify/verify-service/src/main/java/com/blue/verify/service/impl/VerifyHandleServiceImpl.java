@@ -57,7 +57,7 @@ public class VerifyHandleServiceImpl implements VerifyHandleService, Application
                     .flatMap(cp ->
                             ofNullable(cp.getVerifyType())
                                     .map(verifyHandlers::get)
-                                    .map(h -> h.handle(cp.getDestination()))
+                                    .map(h -> h.handle(cp.getDestination(), serverRequest))
                                     .orElseThrow(() -> new BlueException(INVALID_PARAM)));
 
     /**

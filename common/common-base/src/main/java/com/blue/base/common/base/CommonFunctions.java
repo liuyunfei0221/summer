@@ -23,7 +23,6 @@ import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Symbol.PAIR_SEPARATOR;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Instant.now;
-import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -76,12 +75,6 @@ public class CommonFunctions {
      * clock
      */
     public static final Clock CLOCK = SummerAttr.CLOCK;
-
-    /**
-     * limiter script keys prefix and suffix
-     */
-    public static final String KEY_PREFIX = "r_r_li_";
-    public static final String TOKEN_SUFFIX = "_tks", STAMP_SUFFIX = "_tst";
 
     /**
      * valid freemarker /.html/.js
@@ -163,14 +156,6 @@ public class CommonFunctions {
      * stamp getter/seconds
      */
     public static final Supplier<Long> TIME_STAMP_GETTER = () -> now(CLOCK).getEpochSecond();
-
-    /**
-     * limit key generator
-     */
-    public static final Function<String, List<String>> LIMIT_KEYS_GENERATOR = id -> {
-        String prefix = KEY_PREFIX + id;
-        return asList(prefix + TOKEN_SUFFIX, prefix + STAMP_SUFFIX);
-    };
 
     /**
      * resource key generator for request
