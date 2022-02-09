@@ -113,7 +113,10 @@ mongo:
   addressAttrs:
     - address: 172.16.201.160
       port: 27017
-  databaseName: shine
+  auth: false
+  userName:
+  password:
+  database: shine
   retryReads: true
   retryWrites: false
   applicationName: blue-shine

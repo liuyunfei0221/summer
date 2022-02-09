@@ -15,13 +15,14 @@ import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueCheck.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.SyncKey.MEMBER_ROLE_REL_UPDATE_PRE;
+import static com.blue.base.constant.base.SyncKeyPrefix.MEMBER_ROLE_REL_UPDATE_PRE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -53,6 +54,8 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         this.memberRoleRelationMapper = memberRoleRelationMapper;
         this.redissonClient = redissonClient;
     }
+
+    private static final Function<Long, String> SYNC_KEY_WRAPPER = key -> MEMBER_ROLE_REL_UPDATE_PRE.prefix + key;
 
     /**
      * get role id by member id
@@ -148,9 +151,8 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
             throw new BlueException(INVALID_IDENTITY);
 
         memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
-        String syncKey = MEMBER_ROLE_REL_UPDATE_PRE.key + memberId;
 
-        RLock lock = redissonClient.getLock(syncKey);
+        RLock lock = redissonClient.getLock(SYNC_KEY_WRAPPER.apply(memberId));
         lock.lock();
 
         try {
@@ -188,9 +190,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        String syncKey = MEMBER_ROLE_REL_UPDATE_PRE.key + memberId;
-
-        RLock lock = redissonClient.getLock(syncKey);
+        RLock lock = redissonClient.getLock(SYNC_KEY_WRAPPER.apply(memberId));
         lock.lock();
 
         try {

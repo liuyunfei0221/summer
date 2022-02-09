@@ -33,7 +33,7 @@ import java.util.function.Function;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.constant.base.BlueCacheKey.PORTALS_PRE;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.SyncKey.PORTALS_REFRESH_PRE;
+import static com.blue.base.constant.base.SyncKeyPrefix.PORTALS_REFRESH_PRE;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
@@ -154,7 +154,7 @@ public class PortalServiceImpl implements PortalService {
             ofNullable(REDIS_CACHE_PORTAL_GETTER.apply(type))
                     .filter(bvs -> bvs.size() > 0)
                     .orElseGet(() -> {
-                        RLock lock = redissonClient.getLock(PORTALS_REFRESH_PRE.key + type.identity);
+                        RLock lock = redissonClient.getLock(PORTALS_REFRESH_PRE.prefix + type.identity);
                         boolean tryLock = true;
                         try {
                             tryLock = lock.tryLock();

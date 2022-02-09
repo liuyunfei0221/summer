@@ -6,8 +6,8 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.redis.api.generator.BlueRateLimiterGenerator;
 import com.blue.redis.common.BlueLeakyBucketRateLimiter;
 import com.blue.verify.component.verify.inter.VerifyHandler;
-import com.blue.verify.config.deploy.SmsVerifyDeploy;
-import com.blue.verify.service.inter.SmsService;
+import com.blue.verify.config.deploy.MailVerifyDeploy;
+import com.blue.verify.service.inter.MailService;
 import com.blue.verify.service.inter.VerifyService;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -25,8 +25,8 @@ import java.util.function.UnaryOperator;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.SyncKeyPrefix.SMS_VERIFY_RATE_LIMIT_KEY_PRE;
-import static com.blue.base.constant.verify.VerifyType.SMS;
+import static com.blue.base.constant.base.SyncKeyPrefix.MAIL_VERIFY_RATE_LIMIT_KEY_PRE;
+import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -35,7 +35,7 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * sms verify handler
+ * mail verify handler
  *
  * @author liuyunfei
  * @date 2021/12/23
@@ -44,11 +44,11 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
-public class SmsVerifyHandler implements VerifyHandler {
+public class MailVerifyHandler implements VerifyHandler {
 
-    private static final Logger LOGGER = getLogger(SmsVerifyHandler.class);
+    private static final Logger LOGGER = getLogger(MailVerifyHandler.class);
 
-    private final SmsService smsService;
+    private final MailService mailService;
 
     private final VerifyService verifyService;
 
@@ -59,25 +59,25 @@ public class SmsVerifyHandler implements VerifyHandler {
     private final int ALLOW;
     private final long SEND_INTERVAL_MILLIS;
 
-    public SmsVerifyHandler(SmsService smsService, VerifyService verifyService, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
-                            Scheduler scheduler, SmsVerifyDeploy smsVerifyDeploy) {
-        this.smsService = smsService;
+    public MailVerifyHandler(MailService mailService, VerifyService verifyService, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
+                             Scheduler scheduler, MailVerifyDeploy mailVerifyDeploy) {
+        this.mailService = mailService;
         this.verifyService = verifyService;
         this.blueLeakyBucketRateLimiter = BlueRateLimiterGenerator.generateLeakyBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
 
-        Integer verifyLength = smsVerifyDeploy.getVerifyLength();
+        Integer verifyLength = mailVerifyDeploy.getVerifyLength();
         if (verifyLength == null || verifyLength < 1)
             throw new RuntimeException("verifyLength can't be null or less than 1");
 
-        Long expireMillis = smsVerifyDeploy.getExpireMillis();
+        Long expireMillis = mailVerifyDeploy.getExpireMillis();
         if (expireMillis == null || expireMillis < 1L)
             throw new RuntimeException("expireMillis can't be null or less than 1");
 
-        Integer allow = smsVerifyDeploy.getAllow();
+        Integer allow = mailVerifyDeploy.getAllow();
         if (allow == null || allow < 1)
             throw new RuntimeException("allow can't be null or less than 1");
 
-        Long sendIntervalMillis = smsVerifyDeploy.getSendIntervalMillis();
+        Long sendIntervalMillis = mailVerifyDeploy.getSendIntervalMillis();
         if (sendIntervalMillis == null || sendIntervalMillis < 1L)
             throw new RuntimeException("sendIntervalMillis can't be null or less than 1");
 
@@ -91,7 +91,7 @@ public class SmsVerifyHandler implements VerifyHandler {
         if (key == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
 
-        return SMS_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
+        return MAIL_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
     /**
@@ -103,21 +103,21 @@ public class SmsVerifyHandler implements VerifyHandler {
      */
     @Override
     public Mono<ServerResponse> handle(String destination, ServerRequest serverRequest) {
-        LOGGER.info("Mono<ServerResponse> handle(String destination, ServerRequest serverRequest), phone = {}", destination);
-        //TODO verify destination/phone
+        LOGGER.info("Mono<ServerResponse> handle(String destination, ServerRequest serverRequest), email = {}", destination);
+        //TODO verify destination/email
 
         return blueLeakyBucketRateLimiter.isAllowed(KEY_WRAPPER.apply(destination), ALLOW, SEND_INTERVAL_MILLIS)
                 .flatMap(allowed ->
                         allowed ?
-                                verifyService.generate(SMS, destination, VERIFY_LEN, DEFAULT_DURATION)
+                                verifyService.generate(MAIL, destination, VERIFY_LEN, DEFAULT_DURATION)
                                         .flatMap(vp -> {
                                             String key = vp.getKey();
 
-                                            return smsService.send(key, vp.getVerify())
+                                            return mailService.send(key, vp.getVerify())
                                                     .flatMap(success -> success ?
                                                             just(key)
                                                             :
-                                                            error(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "send sms verify failed")));
+                                                            error(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "send email verify failed")));
                                         })
                                         .flatMap(key ->
                                                 ok().contentType(APPLICATION_JSON)
@@ -131,7 +131,7 @@ public class SmsVerifyHandler implements VerifyHandler {
 
     @Override
     public VerifyType targetType() {
-        return SMS;
+        return MAIL;
     }
 
 }

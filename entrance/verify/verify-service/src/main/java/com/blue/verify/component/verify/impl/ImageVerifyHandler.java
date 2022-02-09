@@ -35,6 +35,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUE
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseElement.TOO_MANY_REQUESTS;
+import static com.blue.base.constant.base.SyncKeyPrefix.IMAGE_VERIFY_RATE_LIMIT_KEY_PRE;
 import static com.blue.base.constant.verify.VerifyType.IMAGE;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -119,13 +120,11 @@ public class ImageVerifyHandler implements VerifyHandler {
         this.SEND_INTERVAL_MILLIS = sendIntervalMillis;
     }
 
-    private static final String KEY_PREFIX = "image_v_";
-
     private static final UnaryOperator<String> KEY_WRAPPER = key -> {
         if (key == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
 
-        return KEY_PREFIX + key;
+        return IMAGE_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
     private static final String CACHE_CONTROL_VALUE = "no-store, no-cache, must-revalidate, must-revalidate";

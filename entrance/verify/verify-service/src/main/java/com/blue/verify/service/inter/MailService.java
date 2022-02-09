@@ -3,22 +3,22 @@ package com.blue.verify.service.inter;
 import reactor.core.publisher.Mono;
 
 /**
- * sms service
+ * mail service
  *
  * @author liuyunfei
  * @date 2021/12/23
  * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public interface SmsService {
+public interface MailService {
 
     /**
-     * send sms verify
+     * send email verify
      *
-     * @param phone
+     * @param email
      * @param text
      * @return
      */
-    Mono<Boolean> send(String phone, String text);
+    Mono<Boolean> send(String email, String text);
 
 }

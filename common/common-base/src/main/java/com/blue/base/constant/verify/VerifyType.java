@@ -15,17 +15,17 @@ public enum VerifyType {
     /**
      * image verify
      */
-    IMAGE("image", ALPHANUMERIC),
+    IMAGE("IMAGE", ALPHANUMERIC),
 
     /**
      * sms code verify
      */
-    SMS("sms", NUMERIC),
+    SMS("SMS", NUMERIC),
 
     /**
      * mail verify
      */
-    MAIL("mail", ALPHANUMERIC);
+    MAIL("MAIL", ALPHANUMERIC);
 
     public final String identity;
 

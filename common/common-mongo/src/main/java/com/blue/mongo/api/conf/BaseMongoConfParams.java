@@ -1,13 +1,8 @@
 package com.blue.mongo.api.conf;
 
-import com.mongodb.ReadConcern;
-import com.mongodb.ReadPreference;
-import com.mongodb.WriteConcern;
 import com.mongodb.connection.ClusterConnectionMode;
 import com.mongodb.connection.ClusterType;
-import com.mongodb.connection.StreamFactoryFactory;
 import org.bson.UuidRepresentation;
-import org.bson.codecs.configuration.CodecRegistry;
 
 import java.util.List;
 
@@ -23,7 +18,13 @@ public abstract class BaseMongoConfParams implements MongoConf {
 
     protected List<AddressAttr> addressAttrs;
 
-    protected String databaseName;
+    protected Boolean auth;
+
+    protected String userName;
+
+    protected String password;
+
+    protected String database;
 
     protected Boolean retryReads;
 
@@ -69,8 +70,6 @@ public abstract class BaseMongoConfParams implements MongoConf {
 
     protected Boolean sslInvalidHostNameAllowed;
 
-    protected String sslProvider;
-
     public BaseMongoConfParams() {
     }
 
@@ -80,29 +79,29 @@ public abstract class BaseMongoConfParams implements MongoConf {
     }
 
     @Override
-    public String getDatabaseName() {
-        return databaseName;
+    public Boolean getAuth() {
+        return auth;
     }
 
     @Override
-    public abstract CodecRegistry getCodecRegistry();
+    public String getUserName() {
+        return userName;
+    }
 
     @Override
-    public abstract StreamFactoryFactory getStreamFactoryFactory();
+    public String getPassword() {
+        return password;
+    }
 
     @Override
-    public abstract ReadPreference getReadPreference();
-
-    @Override
-    public abstract ReadConcern getReadConcern();
+    public String getDatabase() {
+        return database;
+    }
 
     @Override
     public Boolean getRetryReads() {
         return retryReads;
     }
-
-    @Override
-    public abstract WriteConcern getWriteConcern();
 
     @Override
     public Boolean getRetryWrites() {
@@ -209,17 +208,24 @@ public abstract class BaseMongoConfParams implements MongoConf {
         return sslInvalidHostNameAllowed;
     }
 
-    @Override
-    public String getSslProvider() {
-        return sslProvider;
-    }
-
     public void setAddressAttrs(List<AddressAttr> addressAttrs) {
         this.addressAttrs = addressAttrs;
     }
 
-    public void setDatabaseName(String databaseName) {
-        this.databaseName = databaseName;
+    public void setAuth(Boolean auth) {
+        this.auth = auth;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
     }
 
     public void setRetryReads(Boolean retryReads) {
@@ -310,15 +316,14 @@ public abstract class BaseMongoConfParams implements MongoConf {
         this.sslInvalidHostNameAllowed = sslInvalidHostNameAllowed;
     }
 
-    public void setSslProvider(String sslProvider) {
-        this.sslProvider = sslProvider;
-    }
-
     @Override
     public String toString() {
-        return "MongoConfParams{" +
+        return "BaseMongoConfParams{" +
                 "addressAttrs=" + addressAttrs +
-                ", databaseName='" + databaseName + '\'' +
+                ", auth=" + auth +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", database='" + database + '\'' +
                 ", retryReads=" + retryReads +
                 ", retryWrites=" + retryWrites +
                 ", applicationName='" + applicationName + '\'' +
@@ -341,7 +346,6 @@ public abstract class BaseMongoConfParams implements MongoConf {
                 ", poolMaintenanceFrequencyMillis=" + poolMaintenanceFrequencyMillis +
                 ", sslEnabled=" + sslEnabled +
                 ", sslInvalidHostNameAllowed=" + sslInvalidHostNameAllowed +
-                ", sslProvider='" + sslProvider + '\'' +
                 '}';
     }
 

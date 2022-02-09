@@ -4,18 +4,19 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.mongo.api.conf.AddressAttr;
 import com.blue.mongo.api.conf.MongoConf;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
-import org.springframework.data.mongodb.core.MongoClientSettingsFactoryBean;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import reactor.util.Logger;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
@@ -27,104 +28,92 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/9/15
  * @apiNote
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "AlibabaAvoidComplexCondition"})
 public final class BlueMongoGenerator {
 
     private static final Logger LOGGER = getLogger(BlueMongoGenerator.class);
 
     /**
-     * generate clientSettingFactoryBean
+     * generate clientSettings
      *
      * @param mongoConf
      * @return
      */
-    public static MongoClientSettingsFactoryBean generateMongoClientSettingsFactoryBean(MongoConf mongoConf) {
+    public static MongoClientSettings generateMongoClientSettings(MongoConf mongoConf) {
         confAsserter(mongoConf);
 
-        MongoClientSettingsFactoryBean mongoClientSettingsFactoryBean = new MongoClientSettingsFactoryBean();
+        MongoClientSettings.Builder builder = MongoClientSettings.builder();
 
-        mongoClientSettingsFactoryBean.setClusterHosts(
-                mongoConf.getAddressAttrs().stream().map(aa -> new ServerAddress(aa.getAddress(), aa.getPort())).collect(Collectors.toList()).toArray(ServerAddress[]::new));
-        ofNullable(mongoConf.getCodecRegistry())
-                .ifPresent(mongoClientSettingsFactoryBean::setCodecRegistry);
-        ofNullable(mongoConf.getStreamFactoryFactory())
-                .ifPresent(mongoClientSettingsFactoryBean::setStreamFactoryFactory);
-        ofNullable(mongoConf.getReadPreference())
-                .ifPresent(mongoClientSettingsFactoryBean::setReadPreference);
-        ofNullable(mongoConf.getReadConcern())
-                .ifPresent(mongoClientSettingsFactoryBean::setReadConcern);
-        ofNullable(mongoConf.getRetryReads())
-                .ifPresent(mongoClientSettingsFactoryBean::setRetryReads);
-        ofNullable(mongoConf.getWriteConcern())
-                .ifPresent(mongoClientSettingsFactoryBean::setWriteConcern);
-        ofNullable(mongoConf.getRetryWrites())
-                .ifPresent(mongoClientSettingsFactoryBean::setRetryWrites);
-        ofNullable(mongoConf.getApplicationName())
-                .ifPresent(mongoClientSettingsFactoryBean::setApplicationName);
-        ofNullable(mongoConf.getUuidRepresentation())
-                .ifPresent(mongoClientSettingsFactoryBean::setuUidRepresentation);
-        ofNullable(mongoConf.getSocketConnectTimeoutMillis())
-                .ifPresent(mongoClientSettingsFactoryBean::setSocketConnectTimeoutMS);
-        ofNullable(mongoConf.getSocketConnectTimeoutMillis())
-                .ifPresent(mongoClientSettingsFactoryBean::setSocketConnectTimeoutMS);
-        ofNullable(mongoConf.getSocketReadTimeoutMillis())
-                .ifPresent(mongoClientSettingsFactoryBean::setSocketReadTimeoutMS);
-        ofNullable(mongoConf.getSocketReceiveBufferSize())
-                .ifPresent(mongoClientSettingsFactoryBean::setSocketReceiveBufferSize);
-        ofNullable(mongoConf.getSocketSendBufferSize())
-                .ifPresent(mongoClientSettingsFactoryBean::setSocketSendBufferSize);
-        ofNullable(mongoConf.getClusterConnectionMode())
-                .ifPresent(mongoClientSettingsFactoryBean::setClusterConnectionMode);
-        ofNullable(mongoConf.getClusterType())
-                .ifPresent(mongoClientSettingsFactoryBean::setCusterRequiredClusterType);
-        ofNullable(mongoConf.getRequiredReplicaSetName())
-                .ifPresent(mongoClientSettingsFactoryBean::setClusterRequiredReplicaSetName);
-        ofNullable(mongoConf.getClusterLocalThresholdMillis())
-                .ifPresent(mongoClientSettingsFactoryBean::setClusterLocalThresholdMS);
-        ofNullable(mongoConf.getServerSelectionTimeoutMillis())
-                .ifPresent(mongoClientSettingsFactoryBean::setClusterServerSelectionTimeoutMS);
-        ofNullable(mongoConf.getPoolMaxSize())
-                .ifPresent(mongoClientSettingsFactoryBean::setPoolMaxSize);
-        ofNullable(mongoConf.getPoolMinSize())
-                .ifPresent(mongoClientSettingsFactoryBean::setPoolMinSize);
-        ofNullable(mongoConf.getPoolMaxWaitTimeMillis())
-                .ifPresent(mongoClientSettingsFactoryBean::setPoolMaxWaitTimeMS);
-        ofNullable(mongoConf.getPoolMaxConnectionLifeTimeMillis())
-                .ifPresent(mongoClientSettingsFactoryBean::setPoolMaxConnectionLifeTimeMS);
-        ofNullable(mongoConf.getPoolMaxConnectionIdleTimeMillis())
-                .ifPresent(mongoClientSettingsFactoryBean::setPoolMaxConnectionIdleTimeMS);
-        ofNullable(mongoConf.getPoolMaintenanceInitialDelayMillis())
-                .ifPresent(mongoClientSettingsFactoryBean::setPoolMaintenanceInitialDelayMS);
-        ofNullable(mongoConf.getPoolMaintenanceFrequencyMillis())
-                .ifPresent(mongoClientSettingsFactoryBean::setPoolMaintenanceFrequencyMS);
+        if (ofNullable(mongoConf.getAuth()).orElse(false))
+            builder.credential(MongoCredential.createCredential(mongoConf.getUserName(), mongoConf.getDatabase(), mongoConf.getPassword().toCharArray()));
+
+        builder.applyToClusterSettings(b -> {
+            b.hosts(mongoConf.getAddressAttrs().stream().map(aa -> new ServerAddress(aa.getAddress(), aa.getPort())).collect(toList()));
+            ofNullable(mongoConf.getClusterConnectionMode()).ifPresent(b::mode);
+            ofNullable(mongoConf.getClusterType()).ifPresent(b::requiredClusterType);
+            ofNullable(mongoConf.getRequiredReplicaSetName()).ifPresent(b::requiredReplicaSetName);
+            ofNullable(mongoConf.getClusterLocalThresholdMillis()).ifPresent(p -> b.localThreshold(p, MILLISECONDS));
+            ofNullable(mongoConf.getServerSelectionTimeoutMillis()).ifPresent(p -> b.serverSelectionTimeout(p, MILLISECONDS));
+        });
+
+        builder.applyToConnectionPoolSettings(b -> {
+            ofNullable(mongoConf.getPoolMaxSize()).ifPresent(b::maxSize);
+            ofNullable(mongoConf.getPoolMinSize()).ifPresent(b::minSize);
+            ofNullable(mongoConf.getPoolMaxWaitTimeMillis()).ifPresent(p -> b.maxWaitTime(p, MILLISECONDS));
+            ofNullable(mongoConf.getPoolMaxConnectionLifeTimeMillis()).ifPresent(p -> b.maxConnectionLifeTime(p, MILLISECONDS));
+            ofNullable(mongoConf.getPoolMaxConnectionIdleTimeMillis()).ifPresent(p -> b.maxConnectionIdleTime(p, MILLISECONDS));
+            ofNullable(mongoConf.getPoolMaintenanceInitialDelayMillis()).ifPresent(p -> b.maintenanceInitialDelay(p, MILLISECONDS));
+            ofNullable(mongoConf.getPoolMaintenanceFrequencyMillis()).ifPresent(p -> b.maintenanceFrequency(p, MILLISECONDS));
+        });
+
+        builder.applyToSocketSettings(b -> {
+            ofNullable(mongoConf.getSocketConnectTimeoutMillis()).ifPresent(p -> b.connectTimeout(p, MILLISECONDS));
+            ofNullable(mongoConf.getSocketReadTimeoutMillis()).ifPresent(p -> b.readTimeout(p, MILLISECONDS));
+            ofNullable(mongoConf.getSocketReceiveBufferSize()).ifPresent(b::receiveBufferSize);
+            ofNullable(mongoConf.getSocketSendBufferSize()).ifPresent(b::sendBufferSize);
+        });
 
         if (ofNullable(mongoConf.getSslEnabled()).orElse(false)) {
-            mongoClientSettingsFactoryBean.setSslEnabled(true);
-            mongoClientSettingsFactoryBean.setSslInvalidHostNameAllowed(mongoConf.getSslInvalidHostNameAllowed());
-            mongoClientSettingsFactoryBean.setSslProvider(mongoConf.getSslProvider());
+            builder.applyToSslSettings(b -> {
+                b.enabled(true);
+                b.invalidHostNameAllowed(mongoConf.getSslInvalidHostNameAllowed());
+            });
         }
 
-        return mongoClientSettingsFactoryBean;
+        ofNullable(mongoConf.getCodecRegistry())
+                .ifPresent(builder::codecRegistry);
+        ofNullable(mongoConf.getStreamFactoryFactory())
+                .ifPresent(builder::streamFactoryFactory);
+        ofNullable(mongoConf.getReadPreference())
+                .ifPresent(builder::readPreference);
+        ofNullable(mongoConf.getReadConcern())
+                .ifPresent(builder::readConcern);
+        ofNullable(mongoConf.getRetryReads())
+                .ifPresent(builder::retryReads);
+        ofNullable(mongoConf.getWriteConcern())
+                .ifPresent(builder::writeConcern);
+        ofNullable(mongoConf.getRetryWrites())
+                .ifPresent(builder::retryWrites);
+        ofNullable(mongoConf.getApplicationName())
+                .ifPresent(builder::applicationName);
+        ofNullable(mongoConf.getUuidRepresentation())
+                .ifPresent(builder::uuidRepresentation);
+
+        return builder.build();
     }
 
     /**
      * generate mongoClient
      *
-     * @param mongoClientSettingsFactoryBean
+     * @param mongoClientSettings
      * @return
      */
-    public static MongoClient generateMongoClient(MongoClientSettingsFactoryBean mongoClientSettingsFactoryBean) {
-        LOGGER.info("MongoClient generateMongoClient(MongoClientSettingsFactoryBean mongoClientSettingsFactoryBean), mongoClientSettingsFactoryBean = {}", mongoClientSettingsFactoryBean);
+    public static MongoClient generateMongoClient(MongoClientSettings mongoClientSettings) {
+        LOGGER.info("MongoClient generateMongoClient(MongoClientSettings mongoClientSettings), mongoClientSettings = {}", mongoClientSettings);
+        if (mongoClientSettings == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "mongoClientSettings can't be null");
 
-        try {
-            MongoClientSettings mongoClientSettings = mongoClientSettingsFactoryBean.getObject();
-            if (mongoClientSettings == null)
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "mongoClientSettings can't be null");
-
-            return MongoClients.create(mongoClientSettings);
-        } catch (Exception e) {
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "MongoClients.create() failed, e = " + e);
-        }
+        return MongoClients.create(mongoClientSettings);
     }
 
     /**
@@ -138,7 +127,7 @@ public final class BlueMongoGenerator {
         LOGGER.info("generateReactiveMongoTemplate(MongoClient mongoClient, String databaseName), mongoClient = {}, mongoConf = {}", mongoClient, mongoConf);
         confAsserter(mongoConf);
 
-        return new ReactiveMongoTemplate(mongoClient, mongoConf.getDatabaseName());
+        return new ReactiveMongoTemplate(mongoClient, mongoConf.getDatabase());
     }
 
     /**
@@ -154,9 +143,12 @@ public final class BlueMongoGenerator {
         if (isEmpty(addressAttrs))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "addressAttrs can't be null or empty");
 
-        String databaseName = conf.getDatabaseName();
-        if (isBlank(databaseName))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "databaseName can't be null or ''");
+        String database = conf.getDatabase();
+        if (isBlank(database))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database can't be null or ''");
+
+        if (ofNullable(conf.getAuth()).orElse(false) && (isBlank(conf.getUserName()) || isBlank(conf.getPassword())))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "if auth, username and password can't be blank");
     }
 
 }

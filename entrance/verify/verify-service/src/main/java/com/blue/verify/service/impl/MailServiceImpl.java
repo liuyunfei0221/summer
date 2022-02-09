@@ -1,6 +1,6 @@
 package com.blue.verify.service.impl;
 
-import com.blue.verify.service.inter.SmsService;
+import com.blue.verify.service.inter.MailService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -9,7 +9,7 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * sms service impl
+ * mail service impl
  *
  * @author liuyunfei
  * @date 2021/12/23
@@ -17,21 +17,21 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings("JavaDoc")
 @Service
-public class SmsServiceImpl implements SmsService {
+public class MailServiceImpl implements MailService {
 
-    private static final Logger LOGGER = getLogger(SmsServiceImpl.class);
+    private static final Logger LOGGER = getLogger(MailServiceImpl.class);
 
     /**
-     * send sms verify
+     * send email verify
      *
-     * @param phone
+     * @param email
      * @param text
      * @return
      */
     @Override
-    public Mono<Boolean> send(String phone, String text) {
+    public Mono<Boolean> send(String email, String text) {
 
-        LOGGER.warn("send sms verify, phone = {}, text = {}", phone, text);
+        LOGGER.warn("send email verify, email = {}, text = {}", email, text);
 
         return just(true);
     }

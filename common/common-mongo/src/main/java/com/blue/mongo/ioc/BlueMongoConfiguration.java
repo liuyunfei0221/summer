@@ -1,11 +1,11 @@
 package com.blue.mongo.ioc;
 
 import com.blue.mongo.api.conf.MongoConf;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.reactivestreams.client.MongoClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.MongoClientSettingsFactoryBean;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 
 import static com.blue.mongo.api.generator.BlueMongoGenerator.*;
@@ -21,13 +21,13 @@ import static com.blue.mongo.api.generator.BlueMongoGenerator.*;
 public class BlueMongoConfiguration {
 
     @Bean
-    MongoClientSettingsFactoryBean mongoClientSettingsFactoryBean(MongoConf mongoConf) {
-        return generateMongoClientSettingsFactoryBean(mongoConf);
+    MongoClientSettings mongoClientSettings(MongoConf mongoConf) {
+        return generateMongoClientSettings(mongoConf);
     }
 
     @Bean
-    MongoClient mongoClient(MongoClientSettingsFactoryBean mongoClientSettingsFactoryBean) {
-        return generateMongoClient(mongoClientSettingsFactoryBean);
+    MongoClient mongoClient(MongoClientSettings mongoClientSettings) {
+        return generateMongoClient(mongoClientSettings);
     }
 
     @Bean

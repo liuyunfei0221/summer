@@ -395,7 +395,13 @@ imagev:
 
 smsv:
   verifyLength: 7
-  expireMillis: 60000
+  expireMillis: 120000
+  allow: 1
+  sendIntervalMillis: 60000
+
+mailv:
+  verifyLength: 7
+  expireMillis: 300000
   allow: 1
   sendIntervalMillis: 60000
 

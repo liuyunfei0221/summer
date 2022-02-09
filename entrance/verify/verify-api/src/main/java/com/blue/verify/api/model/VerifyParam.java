@@ -1,7 +1,5 @@
 package com.blue.verify.api.model;
 
-import com.blue.base.constant.verify.VerifyType;
-
 import java.io.Serializable;
 
 /**
@@ -14,23 +12,31 @@ public final class VerifyParam implements Serializable {
 
     private static final long serialVersionUID = -4952556683651447255L;
 
-    private VerifyType verifyType;
+    /**
+     * @see com.blue.base.constant.verify.VerifyType
+     */
+    private String verifyType;
 
+    /**
+     * if verifyType is IMAGE, destination will be ignored.
+     * if verifyType is SMS, destination should be a phone num.
+     * if verifyType is MAIL, destination should be an email address.
+     */
     private String destination;
 
     public VerifyParam() {
     }
 
-    public VerifyParam(VerifyType verifyType, String destination) {
+    public VerifyParam(String verifyType, String destination) {
         this.verifyType = verifyType;
         this.destination = destination;
     }
 
-    public VerifyType getVerifyType() {
+    public String getVerifyType() {
         return verifyType;
     }
 
-    public void setVerifyType(VerifyType verifyType) {
+    public void setVerifyType(String verifyType) {
         this.verifyType = verifyType;
     }
 

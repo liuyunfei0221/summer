@@ -22,7 +22,13 @@ public interface MongoConf {
 
     List<AddressAttr> getAddressAttrs();
 
-    String getDatabaseName();
+    Boolean getAuth();
+
+    String getUserName();
+
+    String getPassword();
+
+    String getDatabase();
 
     CodecRegistry getCodecRegistry();
 
@@ -77,7 +83,5 @@ public interface MongoConf {
     Boolean getSslEnabled();
 
     Boolean getSslInvalidHostNameAllowed();
-
-    String getSslProvider();
 
 }

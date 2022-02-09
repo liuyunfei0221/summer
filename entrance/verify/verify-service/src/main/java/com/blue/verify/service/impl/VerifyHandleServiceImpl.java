@@ -1,6 +1,5 @@
 package com.blue.verify.service.impl;
 
-import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.verify.api.model.VerifyParam;
 import com.blue.verify.component.verify.inter.VerifyHandler;
@@ -36,7 +35,7 @@ public class VerifyHandleServiceImpl implements VerifyHandleService, Application
     /**
      * verify type -> verify handler
      */
-    private Map<VerifyType, VerifyHandler> verifyHandlers;
+    private Map<String, VerifyHandler> verifyHandlers;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -46,10 +45,10 @@ public class VerifyHandleServiceImpl implements VerifyHandleService, Application
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "verifyHandlers is empty");
 
         verifyHandlers = beansOfType.values().stream()
-                .collect(toMap(VerifyHandler::targetType, vh -> vh, (a, b) -> a));
+                .collect(toMap(vh -> vh.targetType().identity, vh -> vh, (a, b) -> a));
     }
 
-    private static final VerifyParam DEFAULT_PARAM = new VerifyParam(IMAGE, "");
+    private static final VerifyParam DEFAULT_PARAM = new VerifyParam(IMAGE.identity, "");
 
     private final Function<ServerRequest, Mono<ServerResponse>> verifyHandler = serverRequest ->
             serverRequest.bodyToMono(VerifyParam.class)
