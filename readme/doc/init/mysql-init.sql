@@ -1837,115 +1837,115 @@ VALUES (151397629962, '31th reward', 'Im a reward...', 'www.baidu.com', 1, '{}',
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982722, 185757335558, 2022, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982722, 185757335558, 2022, 2, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237505, 151397629954, 2022, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237505, 151397629954, 2022, 2, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665667, 235157848067, 2022, 1, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665667, 235157848067, 2022, 2, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469505, 185757335559, 2022, 1, 5, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469505, 185757335559, 2022, 2, 5, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982728, 151397629959, 2022, 1, 6, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982728, 151397629959, 2022, 2, 6, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237507, 235157848072, 2022, 1, 7, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237507, 235157848072, 2022, 2, 7, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665672, 127783698440, 2022, 1, 8, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665672, 127783698440, 2022, 2, 8, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469511, 185757335554, 2022, 1, 9, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469511, 185757335554, 2022, 2, 9, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982721, 151397629957, 2022, 1, 10, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982721, 151397629957, 2022, 2, 10, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237512, 235157848065, 2022, 1, 11, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237512, 235157848065, 2022, 2, 11, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665671, 127783698439, 2022, 1, 12, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665671, 127783698439, 2022, 2, 12, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469506, 185757335553, 2022, 1, 13, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469506, 185757335553, 2022, 2, 13, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982725, 235157848068, 2022, 1, 15, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982725, 235157848068, 2022, 2, 15, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237511, 127783698438, 2022, 1, 16, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237511, 127783698438, 2022, 2, 16, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665668, 185757335561, 2022, 1, 17, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665668, 185757335561, 2022, 2, 17, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469507, 151397629955, 2022, 1, 18, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469507, 151397629955, 2022, 2, 18, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982726, 235157848066, 2022, 1, 19, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982726, 235157848066, 2022, 2, 19, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237510, 127783698437, 2022, 1, 20, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237510, 127783698437, 2022, 2, 20, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665670, 185757335556, 2022, 1, 21, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665670, 185757335556, 2022, 2, 21, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469508, 151397629960, 2022, 1, 22, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469508, 151397629960, 2022, 2, 22, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982729, 235157848069, 2022, 1, 23, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982729, 235157848069, 2022, 2, 23, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237506, 185757335560, 2022, 1, 25, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237506, 185757335560, 2022, 2, 25, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665669, 151397629956, 2022, 1, 26, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665669, 151397629956, 2022, 2, 26, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469512, 235157848071, 2022, 1, 27, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469512, 235157848071, 2022, 2, 27, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982724, 127783698442, 2022, 1, 28, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982724, 127783698442, 2022, 2, 28, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237508, 185757335555, 2022, 1, 29, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237508, 185757335555, 2022, 2, 29, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665665, 151397629958, 2022, 1, 30, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665665, 151397629958, 2022, 2, 30, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469510, 151397629962, 2022, 1, 31, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469510, 151397629962, 2022, 2, 31, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 
 -- member0

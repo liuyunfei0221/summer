@@ -44,7 +44,7 @@ public class IllegalRequestValidateRiskHandler implements RiskHandler {
             if (i % 9 == 0) {
                 illegalMarkProducer.send(new IllegalMarkEvent("", ip, REQ_RES_KEY_GENERATOR.apply(
                         ofNullable(dataEvent.getData(METHOD.key)).map(String::valueOf).orElse(""),
-                        ofNullable(dataEvent.getData(URI.key)).map(String::valueOf).orElse("")), true));
+                        ofNullable(dataEvent.getData(URI.key)).map(String::valueOf).orElse("")), true, 100L));
                 LOGGER.error("test mark");
             }
         }
