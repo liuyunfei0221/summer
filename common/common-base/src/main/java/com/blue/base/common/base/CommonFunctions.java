@@ -253,7 +253,7 @@ public class CommonFunctions {
         if (TIME_STAMP_GETTER.get() - ofNullable(dataWrapper.getTimeStamp()).orElse(0L) <= expire)
             return ofNullable(dataWrapper.getOriginal()).orElse("");
 
-        throw new BlueException(RSA_FAILED);
+        throw new BlueException(DECRYPTION_FAILED);
     };
 
     private static final Set<String> UN_PACK_KEYS = Stream.of(REQUEST_BODY.key, RESPONSE_STATUS.key, RESPONSE_BODY.key)
@@ -290,7 +290,7 @@ public class CommonFunctions {
         String encrypted = encryptedRequest.getEncrypted();
 
         if (!verify(encrypted, encryptedRequest.getSignature(), secKey))
-            throw new BlueException(RSA_FAILED);
+            throw new BlueException(DECRYPTION_FAILED);
 
         return DATA_CONVERTER.apply(GSON.fromJson(decryptByPublicKey(encrypted, secKey), DataWrapper.class), expire);
     }

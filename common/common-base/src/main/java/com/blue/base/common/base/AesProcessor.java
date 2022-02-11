@@ -78,7 +78,7 @@ public final class AesProcessor {
             return ENCODER.encodeToString(ENCRYPT.doFinal(originalData.getBytes(UTF_8)));
         } catch (Exception e) {
             LOGGER.error("String encrypt(String originalData) failed, e = {}", e);
-            throw new BlueException(RSA_FAILED);
+            throw new BlueException(DECRYPTION_FAILED);
         }
     }
 
@@ -96,7 +96,7 @@ public final class AesProcessor {
             return new String(DECRYPT.doFinal(DECODER.decode(encryptData.getBytes(UTF_8))), UTF_8);
         } catch (Exception e) {
             LOGGER.error("String decrypt(String encryptData) failed, e = {}", e);
-            throw new BlueException(RSA_FAILED);
+            throw new BlueException(DECRYPTION_FAILED);
         }
     }
 
@@ -115,7 +115,7 @@ public final class AesProcessor {
             return ENCRYPT.doFinal(originalData);
         } catch (Exception e) {
             LOGGER.error("byte[] encrypt(byte[] originalData) failed, e = {}", e);
-            throw new BlueException(RSA_FAILED);
+            throw new BlueException(DECRYPTION_FAILED);
         }
     }
 
@@ -133,7 +133,7 @@ public final class AesProcessor {
             return DECRYPT.doFinal(encryptData);
         } catch (Exception e) {
             LOGGER.error("byte[] decrypt(byte[] encryptData) failed, e = {}", e);
-            throw new BlueException(RSA_FAILED);
+            throw new BlueException(DECRYPTION_FAILED);
         }
     }
 
