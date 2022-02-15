@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.blue.base.common.base.BlueCheck.isBlank;
 import static com.blue.base.common.base.BlueCheck.isEmpty;
-import static com.blue.base.common.base.FileProcessor.getFile;
+import static com.blue.base.common.base.FileGetter.getFile;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static jakarta.mail.Session.getInstance;

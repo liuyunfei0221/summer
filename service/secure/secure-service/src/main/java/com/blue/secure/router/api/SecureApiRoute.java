@@ -27,10 +27,10 @@ public class SecureApiRoute {
         RequestPredicate pathPredicate = path("/blue-secure/auth");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/loginByAcctAndPwd", accept(APPLICATION_JSON), secureApiHandler::loginByClient)
+                .POST("/login", accept(APPLICATION_JSON), secureApiHandler::login)
+                .DELETE("/logout", secureApiHandler::logout)
                 .PUT("/updateSecret", accept(APPLICATION_JSON), secureApiHandler::updateSecret)
                 .GET("/authority", secureApiHandler::selectAuthority)
-                .DELETE("/logout", secureApiHandler::logout)
                 .build();
 
         return nest(pathPredicate, routerFunction);

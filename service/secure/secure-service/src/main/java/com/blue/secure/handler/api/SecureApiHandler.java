@@ -1,8 +1,7 @@
 package com.blue.secure.handler.api;
 
 import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.exps.BlueException;
-import com.blue.secure.api.model.ClientLoginParam;
+import com.blue.secure.service.inter.LoginService;
 import com.blue.secure.service.inter.SecureService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -13,11 +12,9 @@ import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessRea
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.SECRET;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import static reactor.core.publisher.Mono.error;
 
 /**
  * secure api handler
@@ -30,8 +27,11 @@ public final class SecureApiHandler {
 
     private final SecureService secureService;
 
-    public SecureApiHandler(SecureService secureService) {
+    private final LoginService loginService;
+
+    public SecureApiHandler(SecureService secureService, LoginService loginService) {
         this.secureService = secureService;
+        this.loginService = loginService;
     }
 
     /**
@@ -40,16 +40,26 @@ public final class SecureApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> loginByClient(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(ClientLoginParam.class)
-                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
-                .flatMap(secureService::loginByClient)
-                .flatMap(ma ->
-                        ok().contentType(APPLICATION_JSON)
-                                .header(AUTHORIZATION.name, ma.getAuth())
-                                .header(SECRET.name, ma.getSecKey())
-                                .body(generate(OK.code, serverRequest)
-                                        , BlueResponse.class));
+    public Mono<ServerResponse> login(ServerRequest serverRequest) {
+        return loginService.login(serverRequest);
+    }
+
+    /**
+     * logout
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> logout(ServerRequest serverRequest) {
+        return getAccessReact(serverRequest)
+                .flatMap(acc ->
+                        secureService.invalidAuthByAccess(acc)
+                                .flatMap(success ->
+                                        ok().contentType(APPLICATION_JSON)
+                                                .header(AUTHORIZATION.name, "")
+                                                .body(
+                                                        generate(OK.code, serverRequest)
+                                                        , BlueResponse.class)));
     }
 
     /**
@@ -82,24 +92,6 @@ public final class SecureApiHandler {
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(generate(OK.code, authority, serverRequest)
-                                                        , BlueResponse.class)));
-    }
-
-    /**
-     * logout
-     *
-     * @param serverRequest
-     * @return
-     */
-    public Mono<ServerResponse> logout(ServerRequest serverRequest) {
-        return getAccessReact(serverRequest)
-                .flatMap(acc ->
-                        secureService.invalidAuthByAccess(acc)
-                                .flatMap(success ->
-                                        ok().contentType(APPLICATION_JSON)
-                                                .header(AUTHORIZATION.name, "")
-                                                .body(
-                                                        generate(OK.code, serverRequest)
                                                         , BlueResponse.class)));
     }
 

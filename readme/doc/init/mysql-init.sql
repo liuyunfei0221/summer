@@ -320,8 +320,8 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
                                     `name`,
                                     `description`,
                                     `create_time`, `update_time`, `creator`, `updater`)
-VALUES (9505726846205953, 'POST', 'blue-secure', '/auth/loginByAcctAndPwd', b'0', b'1', b'1', b'1', b'1', 1,
-        'login by account and pwd', 'login by account and pwd', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (9505726846205953, 'POST', 'blue-secure', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
+        'login', 'login', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,

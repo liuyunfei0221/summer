@@ -14,16 +14,16 @@ import static org.springframework.util.ResourceUtils.getURL;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * file processor
+ * file getter
  *
  * @author liuyunfei
  * @date 2021/12/10
  * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
-public final class FileProcessor {
+public final class FileGetter {
 
-    private static final Logger LOGGER = getLogger(FileProcessor.class);
+    private static final Logger LOGGER = getLogger(FileGetter.class);
 
     /**
      * find all files

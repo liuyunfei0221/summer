@@ -1,7 +1,6 @@
 package com.blue.secure.service.inter;
 
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.secure.api.model.ClientLoginParam;
 import reactor.core.publisher.Mono;
 
 
@@ -14,27 +13,29 @@ import reactor.core.publisher.Mono;
 public interface MemberService {
 
     /**
-     * get member by phone and check verify
+     * get member by phone
      *
-     * @param clientLoginParam
+     * @param phone
      * @return
      */
-    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam);
+    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertVerify(String phone);
 
     /**
      * get member by phone and check password
      *
-     * @param clientLoginParam
+     * @param phone
+     * @param password
      * @return
      */
-    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam);
+    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertPwd(String phone, String password);
 
     /**
      * get member by email and check password
      *
-     * @param clientLoginParam
+     * @param email
+     * @param password
      * @return
      */
-    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam);
+    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByEmailWithAssertPwd(String email, String password);
 
 }

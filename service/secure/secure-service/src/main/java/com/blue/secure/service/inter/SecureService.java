@@ -1,8 +1,9 @@
 package com.blue.secure.service.inter;
 
 import com.blue.base.model.base.Access;
-import com.blue.secure.api.model.*;
-import com.blue.secure.model.AuthGenElement;
+import com.blue.secure.api.model.AssertAuth;
+import com.blue.secure.api.model.AuthAsserted;
+import com.blue.secure.api.model.AuthorityBaseOnRole;
 import com.blue.secure.model.MemberAuth;
 import reactor.core.publisher.Mono;
 
@@ -11,7 +12,7 @@ import reactor.core.publisher.Mono;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue", "GrazieInspection"})
+@SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
 public interface SecureService {
 
     /**
@@ -20,30 +21,6 @@ public interface SecureService {
      * @return
      */
     void refreshSystemAuthorityInfos();
-
-    /**
-     * login by client
-     *
-     * @param clientLoginParam
-     * @return
-     */
-    Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam);
-
-    /**
-     * login by wechat mini program
-     *
-     * @param miniProLoginParam
-     * @return
-     */
-    Mono<MemberAuth> loginByMiniPro(MiniProLoginParam miniProLoginParam);
-
-    /**
-     * login by wechat
-     *
-     * @param wechatProLoginParam
-     * @return
-     */
-    Mono<MemberAuth> loginByWechat(WechatProLoginParam wechatProLoginParam);
 
     /**
      * assert auth
@@ -56,10 +33,12 @@ public interface SecureService {
     /**
      * generate member auth
      *
-     * @param authGenElement
+     * @param memberId
+     * @param loginType
+     * @param deviceType
      * @return
      */
-    Mono<MemberAuth> generateAuthMono(AuthGenElement authGenElement);
+    Mono<MemberAuth> generateAuthMono(Long memberId, String loginType, String deviceType);
 
     /**
      * invalid auth by access

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import static com.blue.pulsar.constant.CommonException.*;
 import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateClient;
 import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateProducer;
 import static java.lang.System.currentTimeMillis;
@@ -57,10 +56,10 @@ public final class BluePulsarProducer<T extends Serializable> {
                 return pulsarProducer.send(data);
             } catch (PulsarClientException e) {
                 LOGGER.error("send failed, data = {}, e = {}", data, e);
-                throw SEND_FAILED_EXP.exp;
+                throw new RuntimeException("producer send failed");
             }
 
-        throw NON_PARAM_EXP.exp;
+        throw new RuntimeException("data or params can't be null");
     }
 
     /**
@@ -73,7 +72,7 @@ public final class BluePulsarProducer<T extends Serializable> {
         if (data != null)
             return pulsarProducer.sendAsync(data);
 
-        throw NON_PARAM_EXP.exp;
+        throw new RuntimeException("data or params can't be null");
     }
 
     /**
@@ -91,10 +90,10 @@ public final class BluePulsarProducer<T extends Serializable> {
                 return pulsarProducer.newMessage().value(data).deliverAfter(delay, unit).send();
             } catch (PulsarClientException e) {
                 LOGGER.error("send failed, data = {}, delay = {}, unit = {} , e = {}", data, delay, unit, e);
-                throw SEND_FAILED_EXP.exp;
+                throw new RuntimeException("producer send failed");
             }
 
-        throw NON_PARAM_EXP.exp;
+        throw new RuntimeException("data or params can't be null");
     }
 
     /**
@@ -110,7 +109,7 @@ public final class BluePulsarProducer<T extends Serializable> {
         if (data != null && delay != null && delay > 0L && unit != null)
             return pulsarProducer.newMessage().value(data).deliverAfter(delay, unit).sendAsync();
 
-        throw NON_PARAM_EXP.exp;
+        throw new RuntimeException("data or params can't be null");
     }
 
     /**
@@ -127,10 +126,10 @@ public final class BluePulsarProducer<T extends Serializable> {
                 return pulsarProducer.newMessage().value(data).deliverAt(timestamp).send();
             } catch (PulsarClientException e) {
                 LOGGER.error("send failed, data = {}, timestamp = {}, e = {}", data, timestamp, e);
-                throw SEND_FAILED_EXP.exp;
+                throw new RuntimeException("producer send failed");
             }
 
-        throw NON_PARAM_EXP.exp;
+        throw new RuntimeException("data or params can't be null");
     }
 
     /**
@@ -145,7 +144,7 @@ public final class BluePulsarProducer<T extends Serializable> {
         if (data != null && timestamp != null && timestamp > currentTimeMillis())
             return pulsarProducer.newMessage().value(data).deliverAt(timestamp).sendAsync();
 
-        throw NON_PARAM_EXP.exp;
+        throw new RuntimeException("data or params can't be null");
     }
 
 

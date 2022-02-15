@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static com.blue.base.common.base.FileProcessor.getFiles;
+import static com.blue.base.common.base.FileGetter.getFiles;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;

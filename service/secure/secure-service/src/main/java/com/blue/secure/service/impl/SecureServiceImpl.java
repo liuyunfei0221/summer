@@ -9,13 +9,11 @@ import com.blue.base.model.base.Access;
 import com.blue.base.model.base.KeyPair;
 import com.blue.base.model.exps.BlueException;
 import com.blue.jwt.common.JwtProcessor;
-import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.secure.api.model.*;
 import com.blue.secure.component.auth.AuthInfoCache;
 import com.blue.secure.config.deploy.BlockingDeploy;
 import com.blue.secure.config.deploy.SessionKeyDeploy;
 import com.blue.secure.event.producer.InvalidLocalAuthProducer;
-import com.blue.secure.model.AuthGenElement;
 import com.blue.secure.model.AuthInfo;
 import com.blue.secure.model.AuthInfoRefreshElement;
 import com.blue.secure.model.MemberAuth;
@@ -48,7 +46,7 @@ import static com.blue.base.constant.base.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
 import static com.blue.base.constant.secure.AuthInfoRefreshElementType.PUB_KEY;
 import static com.blue.base.constant.secure.AuthInfoRefreshElementType.ROLE;
 import static com.blue.base.constant.secure.DeviceType.UNKNOWN;
-import static com.blue.base.constant.secure.LoginType.*;
+import static com.blue.base.constant.secure.LoginType.NOT_LOGGED_IN;
 import static com.blue.secure.converter.SecureModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER;
 import static com.blue.secure.converter.SecureModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
 import static java.lang.Long.parseLong;
@@ -71,7 +69,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "GrazieInspection"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class SecureServiceImpl implements SecureService {
 
@@ -87,8 +85,6 @@ public class SecureServiceImpl implements SecureService {
 
     private final ResourceService resourceService;
 
-    private final MemberService memberService;
-
     private final RoleResRelationService roleResRelationService;
 
     private final MemberRoleRelationService memberRoleRelationService;
@@ -100,8 +96,7 @@ public class SecureServiceImpl implements SecureService {
     private final RedissonClient redissonClient;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public SecureServiceImpl(JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCache authInfoCache, StringRedisTemplate stringRedisTemplate,
-                             RoleService roleService, ResourceService resourceService, MemberService memberService,
+    public SecureServiceImpl(JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCache authInfoCache, StringRedisTemplate stringRedisTemplate, RoleService roleService, ResourceService resourceService,
                              RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService, InvalidLocalAuthProducer invalidLocalAuthProducer,
                              ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
         this.jwtProcessor = jwtProcessor;
@@ -109,7 +104,6 @@ public class SecureServiceImpl implements SecureService {
         this.stringRedisTemplate = stringRedisTemplate;
         this.roleService = roleService;
         this.resourceService = resourceService;
-        this.memberService = memberService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.invalidLocalAuthProducer = invalidLocalAuthProducer;
@@ -271,38 +265,6 @@ public class SecureServiceImpl implements SecureService {
                     false, true, true,
                     resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                     NOT_LOGGED_IN_SEC_KEY.value, NO_AUTH_ACCESS, NO_AUTH_REQUIRED_RESOURCE.message));
-
-    /**
-     * login func
-     */
-    private Map<String, Function<ClientLoginParam, Mono<MemberBasicInfo>>> clientLoginHandlers;
-
-    /**
-     * init login handler
-     */
-    private void initLoginHandler() {
-        clientLoginHandlers = new HashMap<>(16, 1.0f);
-        clientLoginHandlers.put(SMS_VERIFY.identity, memberService::selectMemberBasicInfoMonoByPhoneWithAssertVerify);
-        clientLoginHandlers.put(PHONE_PWD.identity, memberService::selectMemberBasicInfoMonoByPhoneWithAssertPwd);
-        clientLoginHandlers.put(EMAIL_PWD.identity, memberService::selectMemberBasicInfoMonoByEmailWithAssertPwd);
-
-        LOGGER.info("generateLoginHandler(), clientLoginHandlers = {}", clientLoginHandlers);
-    }
-
-    /**
-     * get login handler
-     */
-    private final Function<String, Function<ClientLoginParam, Mono<MemberBasicInfo>>> LOGIN_HANDLER_GETTER = loginType -> {
-        LOGGER.info("LOGIN_HANDLER_GETTER, loginType = {}", loginType);
-        if (loginType == null || "".equals(loginType))
-            throw new BlueException(BAD_REQUEST);
-
-        Function<ClientLoginParam, Mono<MemberBasicInfo>> loginFunc = clientLoginHandlers.get(loginType);
-        if (loginFunc != null)
-            return loginFunc;
-
-        throw new BlueException(BAD_REQUEST);
-    };
 
     /**
      * refresh element type -> authInfo packagers
@@ -546,7 +508,6 @@ public class SecureServiceImpl implements SecureService {
     @PostConstruct
     public void init() {
         refreshSystemAuthorityInfos();
-        initLoginHandler();
     }
 
     /**
@@ -621,67 +582,6 @@ public class SecureServiceImpl implements SecureService {
     }
 
     /**
-     * login by client
-     *
-     * @param clientLoginParam
-     * @return
-     */
-    @Override
-    public Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam) {
-        LOGGER.info("Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
-        if (clientLoginParam == null)
-            throw new BlueException(EMPTY_PARAM);
-
-        String loginType = clientLoginParam.getLoginType().intern();
-        String deviceType = clientLoginParam.getDeviceType().intern();
-
-        return LOGIN_HANDLER_GETTER.apply(loginType).apply(clientLoginParam)
-                .flatMap(mbi -> {
-                    LOGGER.info("mbi = {}", mbi);
-                    Long mid = mbi.getId();
-
-                    return memberRoleRelationService.getRoleIdMonoByMemberId(mid)
-                            .flatMap(ridOpt ->
-                                    ridOpt.map(rid ->
-                                                    just(new AuthGenElement(mid, rid, loginType, deviceType)))
-                                            .orElseGet(() -> {
-                                                LOGGER.error("Mono<MemberAuth> loginByClient(ClientLoginParam clientLoginParam) failed, member has no role, memberId = {}", mid);
-                                                return error(() -> new BlueException(MEMBER_NOT_HAS_A_ROLE));
-                                            }));
-                }).flatMap(this::generateAuthMono);
-    }
-
-    /**
-     * login by wechat mini program
-     *
-     * @param miniProLoginParam
-     * @return
-     */
-    @Override
-    public Mono<MemberAuth> loginByMiniPro(MiniProLoginParam miniProLoginParam) {
-        LOGGER.info("Mono<MemberAuth> loginByMiniPro(MiniProLoginParam miniProLoginParam), miniProLoginParam = {}", miniProLoginParam);
-        if (miniProLoginParam == null)
-            throw new BlueException(EMPTY_PARAM);
-
-        return null;
-    }
-
-    /**
-     * login by wechat
-     *
-     * @param wechatProLoginParam
-     * @return
-     */
-    @Override
-    public Mono<MemberAuth> loginByWechat(WechatProLoginParam wechatProLoginParam) {
-        LOGGER.info("Mono<MemberAuth> loginByWechat(WechatProLoginParam wechatProLoginParam), wechatProLoginParam = {}", wechatProLoginParam);
-        if (wechatProLoginParam == null)
-            throw new BlueException(EMPTY_PARAM);
-
-        return null;
-    }
-
-    /**
      * assert auth
      *
      * @param assertAuth
@@ -731,43 +631,44 @@ public class SecureServiceImpl implements SecureService {
     /**
      * generate member auth
      *
-     * @param authGenElement
+     * @param memberId
+     * @param loginType
+     * @param deviceType
      * @return
      */
     @Override
-    public Mono<MemberAuth> generateAuthMono(AuthGenElement authGenElement) {
-        LOGGER.info("Mono<MemberAuth> generateAuthMono(AuthGenParam authGenParam), authGenParam = {}", authGenElement);
-        return authGenElement != null ?
-                just(authGenElement)
-                        .flatMap(agp -> {
-                            Long memberId = agp.getMemberId();
-                            String loginType = agp.getLoginType().intern();
-                            String deviceType = agp.getDeviceType().intern();
-                            KeyPair keyPair = initKeyPair();
+    public Mono<MemberAuth> generateAuthMono(Long memberId, String loginType, String deviceType) {
+        LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, String loginType, String deviceType), memberId = {}, loginType = {}, deviceType", memberId, loginType, deviceType);
 
-                            return just(new MemberPayload(
-                                    randomAlphanumeric(RANDOM_ID_LENGTH),
-                                    genSessionKey(memberId, loginType, deviceType),
-                                    valueOf(memberId),
-                                    loginType, deviceType,
-                                    valueOf(TIME_STAMP_GETTER.get()))
-                            ).flatMap(mp -> {
-                                String jwt = jwtProcessor.create(mp);
-                                String authInfoJson = GSON.toJson(new AuthInfo(jwt, authGenElement.getRoleId(), keyPair.getPubKey()));
+        return isValidIdentity(memberId) && isNotBlank(loginType) && isNotBlank(deviceType) ?
+                zip(just(new MemberPayload(
+                                randomAlphanumeric(RANDOM_ID_LENGTH),
+                                genSessionKey(memberId, loginType, deviceType),
+                                valueOf(memberId),
+                                loginType, deviceType,
+                                valueOf(TIME_STAMP_GETTER.get()))),
+                        memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
+                                .map(ridOpt -> ridOpt.orElseThrow(() -> new BlueException(MEMBER_NOT_HAS_A_ROLE)))
+                ).flatMap(tuple2 -> {
+                    MemberPayload memberPayload = tuple2.getT1();
+                    Long roleId = tuple2.getT2();
 
-                                return authInfoCache.setAuthInfo(mp.getKeyId(), authInfoJson)
-                                        .flatMap(b -> {
-                                            LOGGER.info("authInfoJson = {}, keyPairDTO = {}", authInfoJson, keyPair);
-                                            if (b)
-                                                return just(new MemberAuth(jwt, keyPair.getPriKey()));
+                    String jwt = jwtProcessor.create(memberPayload);
+                    KeyPair keyPair = initKeyPair();
+                    String authInfoJson = GSON.toJson(new AuthInfo(jwt, roleId, keyPair.getPubKey()));
 
-                                            LOGGER.error("authInfoCache.setAuthInfo(mp.getKeyId(), authInfoJson), failed, mp = {}", mp);
-                                            return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
-                                        });
+                    return authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson)
+                            .flatMap(b -> {
+                                LOGGER.info("authInfoJson = {}, keyPairDTO = {}", authInfoJson, keyPair);
+                                if (b)
+                                    return just(new MemberAuth(jwt, keyPair.getPriKey()));
+
+                                LOGGER.error("authInfoCache.setAuthInfo(mp.getKeyId(), authInfoJson), failed, memberPayload = {}, roleId = {}, keyPair = {}, authInfoJson = {}", memberPayload, roleId, keyPair, authInfoJson);
+                                return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
                             });
-                        })
+                })
                 :
-                error(() -> new BlueException(INTERNAL_SERVER_ERROR));
+                error(() -> new BlueException(BAD_REQUEST));
     }
 
     /**

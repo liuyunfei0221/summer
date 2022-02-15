@@ -2,7 +2,6 @@ package com.blue.secure.service.impl;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.secure.api.model.ClientLoginParam;
 import com.blue.secure.remote.consumer.RpcMemberServiceConsumer;
 import com.blue.secure.service.inter.MemberService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,8 +13,7 @@ import reactor.util.Logger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static com.blue.base.common.base.BlueCheck.isInvalidStatus;
-import static com.blue.base.common.base.BlueCheck.isNull;
+import static com.blue.base.common.base.BlueCheck.*;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
@@ -50,21 +48,18 @@ public class MemberServiceImpl implements MemberService {
     };
 
     /**
-     * get member by phone and check verify
+     * get member by phone
      *
-     * @param clientLoginParam
+     * @param phone
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
-        if (isNull(clientLoginParam))
+    public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertVerify(String phone) {
+        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(String phone), phone = {}", phone);
+        if (isBlank(phone))
             throw new BlueException(EMPTY_PARAM);
 
-        //TODO check verify
-        //TODO check message verify
-
-        return rpcMemberServiceConsumer.selectMemberBasicByPhone(clientLoginParam.getIdentity())
+        return rpcMemberServiceConsumer.selectMemberBasicByPhone(phone)
                 .onErrorMap(t -> new BlueException(INVALID_ACCT_OR_PWD))
                 .flatMap(memberBasicInfo -> {
                     LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
@@ -78,22 +73,21 @@ public class MemberServiceImpl implements MemberService {
     /**
      * get member by phone and check password
      *
-     * @param clientLoginParam
+     * @param phone
+     * @param password
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
-        if (isNull(clientLoginParam))
+    public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertPwd(String phone, String password) {
+        LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertPwd(String phone, String password), phone = {}, password = {}", phone, password);
+        if (isBlank(phone) || isBlank(password))
             throw new BlueException(EMPTY_PARAM);
 
-        //TODO check verify
-
-        return rpcMemberServiceConsumer.selectMemberBasicByPhone(clientLoginParam.getIdentity())
+        return rpcMemberServiceConsumer.selectMemberBasicByPhone(phone)
                 .onErrorMap(t -> new BlueException(INVALID_ACCT_OR_PWD))
                 .flatMap(memberBasicInfo -> {
                     LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertPwd(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
-                    PWD_ASSERTER.accept(clientLoginParam.getAccess(), memberBasicInfo);
+                    PWD_ASSERTER.accept(password, memberBasicInfo);
                     MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
 
                     memberBasicInfo.setPassword("");
@@ -104,22 +98,21 @@ public class MemberServiceImpl implements MemberService {
     /**
      * get member by email and check password
      *
-     * @param clientLoginParam
+     * @param email
+     * @param password
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam), clientLoginParam = {}", clientLoginParam);
-        if (isNull(clientLoginParam))
+    public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByEmailWithAssertPwd(String email, String password) {
+        LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicInfoMonoByEmailWithAssertPwd(String email, String password), email = {}, password = {}", email, password);
+        if (isBlank(email) || isBlank(password))
             throw new BlueException(EMPTY_PARAM);
 
-        //TODO check verify
-
-        return rpcMemberServiceConsumer.selectMemberBasicByEmail(clientLoginParam.getIdentity())
+        return rpcMemberServiceConsumer.selectMemberBasicByEmail(email)
                 .onErrorMap(t -> new BlueException(INVALID_ACCT_OR_PWD))
                 .flatMap(memberBasicInfo -> {
                     LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByEmailWithAssertPwd(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
-                    PWD_ASSERTER.accept(clientLoginParam.getAccess(), memberBasicInfo);
+                    PWD_ASSERTER.accept(password, memberBasicInfo);
                     MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
 
                     memberBasicInfo.setPassword("");

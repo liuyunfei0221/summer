@@ -9,7 +9,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.FileProcessor.getFiles;
+import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.parseProp;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;

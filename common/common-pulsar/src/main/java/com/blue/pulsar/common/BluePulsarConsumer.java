@@ -14,7 +14,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.blue.pulsar.constant.CommonException.NON_PARAM_EXP;
 import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateClient;
 import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateConsumer;
 import static java.lang.Thread.onSpinWait;
@@ -56,14 +55,14 @@ public final class BluePulsarConsumer<T extends Serializable> {
         if (ackType != null)
             return ACK_CONSUMER_GENERATOR_HOLDER.get(ackType);
 
-        throw NON_PARAM_EXP.exp;
+        throw new RuntimeException("data or params can't be null");
     };
     private final Function<Boolean, BiFunction<Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
             Consumer<Messages<T>>>> ACK_BATCH_CONSUMER_GENERATOR = ackType -> {
         if (ackType != null)
             return ACK_BATCH_CONSUMER_GENERATOR_HOLDER.get(ackType);
 
-        throw NON_PARAM_EXP.exp;
+        throw new RuntimeException("data or params can't be null");
     };
 
     /**
