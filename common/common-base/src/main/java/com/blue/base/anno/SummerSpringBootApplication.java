@@ -78,7 +78,7 @@ public @interface SummerSpringBootApplication {
     };
 
     @AliasFor(annotation = ComponentScan.class, attribute = "basePackages")
-    String[] scanBasePackages() default {"com.blue"};
+    String[] scanBasePackages() default {};
 
     @AliasFor(annotation = ComponentScan.class, attribute = "basePackageClasses")
     Class<?>[] scanBasePackageClasses() default {};

@@ -1,4 +1,4 @@
-package com.blue.secure.api.component.auth;
+package com.blue.secure.api.conf.auth;
 
 import java.util.List;
 

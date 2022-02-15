@@ -1,7 +1,7 @@
 package com.blue.secure.config.auth;
 
-import com.blue.secure.api.component.auth.MemberJwtConf;
-import com.blue.secure.api.component.auth.MemberJwtConfParams;
+import com.blue.secure.api.conf.auth.MemberJwtConf;
+import com.blue.secure.api.conf.auth.MemberJwtConfParams;
 import com.blue.secure.component.auth.AuthBatchExpireProcessor;
 import com.blue.secure.component.auth.AuthInfoCache;
 import com.blue.secure.config.deploy.AuthDeploy;

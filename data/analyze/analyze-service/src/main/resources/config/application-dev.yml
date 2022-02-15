@@ -327,7 +327,7 @@ consumers:
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000
       negativeAckRedeliveryDelayMillis: 100
-      subscriptionType: Shared
+      subscriptionType: Failover
       subscriptionMode: Durable
       receiverQueueSize: 1000
       acknowledgementsGroupTimeMillis: 100

@@ -1,6 +1,7 @@
 package com.blue.base.anno;
 
 import com.blue.base.component.lifecycle.ioc.BlueLifecycleBeanDefinitionRegistrar;
+import com.blue.base.component.lifecycle.ioc.BlueSmartLifecycleController;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
@@ -18,7 +19,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(TYPE)
 @Retention(RUNTIME)
 @Configuration
-@Import(BlueLifecycleBeanDefinitionRegistrar.class)
+@Import({BlueLifecycleBeanDefinitionRegistrar.class, BlueSmartLifecycleController.class})
 public @interface EnableBlueLifecycle {
 
     String[] basePackages() default {};

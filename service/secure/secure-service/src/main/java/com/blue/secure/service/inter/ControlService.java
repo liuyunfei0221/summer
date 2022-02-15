@@ -1,5 +1,6 @@
 package com.blue.secure.service.inter;
 
+import com.blue.secure.api.model.AuthorityBaseOnResource;
 import com.blue.secure.api.model.AuthorityBaseOnRole;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.api.model.RoleInfo;

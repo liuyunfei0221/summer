@@ -225,7 +225,7 @@ public final class PulsarCommonsGenerator {
 
         //noinspection unchecked
         Class<T> clz = (Class<T>) getConsumerParameterType(consumer);
-        return generateTransConsumer(pulsarClient, conf, clz, messageListener, consumerEventListener, interceptors, keySharedPolicy);
+        return generateConsumer(pulsarClient, conf, clz, messageListener, consumerEventListener, interceptors, keySharedPolicy);
     }
 
     /**
@@ -236,7 +236,7 @@ public final class PulsarCommonsGenerator {
      * @param <T>
      * @return
      */
-    public static <T> Consumer<T> generateTransConsumer(PulsarClient pulsarClient, ConsumerConf conf, Class<T> clz, MessageListener<T> messageListener,
+    public static <T> Consumer<T> generateConsumer(PulsarClient pulsarClient, ConsumerConf conf, Class<T> clz, MessageListener<T> messageListener,
                                                         ConsumerEventListener consumerEventListener, List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
         assertConsumerConf(pulsarClient, conf);
         if (clz == null)

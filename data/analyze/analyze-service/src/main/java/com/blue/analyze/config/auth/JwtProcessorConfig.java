@@ -1,8 +1,8 @@
 package com.blue.analyze.config.auth;
 
 import com.blue.analyze.config.deploy.JwtDeploy;
-import com.blue.secure.api.component.auth.MemberJwtConf;
-import com.blue.secure.api.component.auth.MemberJwtConfParams;
+import com.blue.secure.api.conf.auth.MemberJwtConf;
+import com.blue.secure.api.conf.auth.MemberJwtConfParams;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.util.Logger;
@@ -10,7 +10,7 @@ import reactor.util.Logger;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * jwt prosessor config
+ * jwt processor config
  *
  * @author DarkBlue
  */

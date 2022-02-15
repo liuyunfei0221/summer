@@ -1,7 +1,4 @@
-package com.blue.secure.model;
-
-import com.blue.secure.api.model.ResourceInfo;
-import com.blue.secure.api.model.RoleInfo;
+package com.blue.secure.api.model;
 
 import java.io.Serializable;
 import java.util.List;

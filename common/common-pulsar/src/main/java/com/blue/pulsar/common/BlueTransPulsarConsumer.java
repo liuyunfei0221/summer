@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateTransConsumer;
+import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateConsumer;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -33,7 +33,7 @@ public final class BlueTransPulsarConsumer<T extends Serializable> {
             throw new RuntimeException("pulsarClient can't be null");
 
         this.client = pulsarClient;
-        this.consumer = generateTransConsumer(client, conf, clz, messageListener, consumerEventListener, interceptors, keySharedPolicy);
+        this.consumer = generateConsumer(client, conf, clz, messageListener, consumerEventListener, interceptors, keySharedPolicy);
     }
 
     public String getTopic() {

@@ -2,10 +2,14 @@ package com.blue.secure.service.impl;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.secure.api.model.AuthorityBaseOnResource;
 import com.blue.secure.api.model.AuthorityBaseOnRole;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.api.model.RoleInfo;
-import com.blue.secure.model.*;
+import com.blue.secure.model.ResourceInsertParam;
+import com.blue.secure.model.ResourceUpdateParam;
+import com.blue.secure.model.RoleInsertParam;
+import com.blue.secure.model.RoleUpdateParam;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.repository.entity.RoleResRelation;

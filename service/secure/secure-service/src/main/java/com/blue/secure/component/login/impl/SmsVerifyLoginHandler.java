@@ -35,15 +35,15 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Component
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
-public class SmsAndVerifyLoginHandler implements LoginHandler {
+public class SmsVerifyLoginHandler implements LoginHandler {
 
-    private static final Logger LOGGER = getLogger(SmsAndVerifyLoginHandler.class);
+    private static final Logger LOGGER = getLogger(SmsVerifyLoginHandler.class);
 
     private final MemberService memberService;
 
     private final SecureService secureService;
 
-    public SmsAndVerifyLoginHandler(MemberService memberService, SecureService secureService) {
+    public SmsVerifyLoginHandler(MemberService memberService, SecureService secureService) {
         this.memberService = memberService;
         this.secureService = secureService;
     }
