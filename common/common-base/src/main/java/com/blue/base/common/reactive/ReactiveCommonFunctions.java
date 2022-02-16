@@ -43,7 +43,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
     private static final String HTTP_X_FORWARDED_FOR = "HTTP_X_FORWARDED_FOR";
     private static final String X_REAL_IP = "X-Real-IP";
 
-    private static final Predicate<String> VALID_HEADER_ASSERTER = h ->
+    private static final Predicate<String> VALID_IP_PRE = h ->
             h != null && !"".equals(h) && !UNKNOWN.equalsIgnoreCase(h);
 
     /**
@@ -186,28 +186,28 @@ public class ReactiveCommonFunctions extends CommonFunctions {
         ServerRequest.Headers headers = serverRequest.headers();
 
         String ip = headers.firstHeader(X_FORWARDED_FOR);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             //noinspection ConstantConditions
             return split(ip, LIST_ELEMENT_SEPARATOR.identity)[0];
 
         ip = headers.firstHeader(PROXY_CLIENT_IP);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             return ip;
 
         ip = headers.firstHeader(WL_PROXY_CLIENT_IP);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             return ip;
 
         ip = headers.firstHeader(HTTP_CLIENT_IP);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             return ip;
 
         ip = headers.firstHeader(HTTP_X_FORWARDED_FOR);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             return ip;
 
         ip = headers.firstHeader(X_REAL_IP);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             return ip;
 
         return serverRequest.remoteAddress().map(InetSocketAddress::getAddress)
@@ -229,28 +229,28 @@ public class ReactiveCommonFunctions extends CommonFunctions {
         HttpHeaders headers = serverHttpRequest.getHeaders();
 
         String ip = headers.getFirst(X_FORWARDED_FOR);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             //noinspection ConstantConditions
             return split(ip, LIST_ELEMENT_SEPARATOR.identity)[0];
 
         ip = headers.getFirst(PROXY_CLIENT_IP);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             return ip;
 
         ip = headers.getFirst(WL_PROXY_CLIENT_IP);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             return ip;
 
         ip = headers.getFirst(HTTP_CLIENT_IP);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             return ip;
 
         ip = headers.getFirst(HTTP_X_FORWARDED_FOR);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             return ip;
 
         ip = headers.getFirst(X_REAL_IP);
-        if (VALID_HEADER_ASSERTER.test(ip))
+        if (VALID_IP_PRE.test(ip))
             return ip;
 
         return ofNullable(serverHttpRequest.getRemoteAddress())

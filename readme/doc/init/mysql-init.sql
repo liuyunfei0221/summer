@@ -1958,13 +1958,13 @@ member_0;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone number',
-    `email`       varchar(256) NOT NULL COMMENT 'email',
-    `password`    varchar(256) DEFAULT NULL COMMENT 'password',
-    `name`        varchar(256) DEFAULT NULL COMMENT 'name',
-    `icon`        varchar(255) DEFAULT NULL COMMENT 'icon link',
-    `gender`      tinyint      DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
+    `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
+    `password`    varchar(256)          DEFAULT NULL COMMENT 'password',
+    `name`        varchar(256)          DEFAULT NULL COMMENT 'name',
+    `icon`        varchar(255)          DEFAULT NULL COMMENT 'icon link',
+    `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
+    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
@@ -1976,8 +1976,8 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone number',
-    `email`       varchar(256) NOT NULL COMMENT 'email',
+    `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
+    `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
     `password`    varchar(256) DEFAULT NULL COMMENT 'password',
     `name`        varchar(256) DEFAULT NULL COMMENT 'name',
     `icon`        varchar(255) DEFAULT NULL COMMENT 'icon link',
@@ -2070,8 +2070,8 @@ member_1;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone number',
-    `email`       varchar(256) NOT NULL COMMENT 'email',
+    `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
+    `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
     `password`    varchar(256) DEFAULT NULL COMMENT 'password',
     `name`        varchar(256) DEFAULT NULL COMMENT 'name',
     `icon`        varchar(255) DEFAULT NULL COMMENT 'icon link',
@@ -2088,8 +2088,8 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone number',
-    `email`       varchar(256) NOT NULL COMMENT 'email',
+    `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
+    `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
     `password`    varchar(256) DEFAULT NULL COMMENT 'password',
     `name`        varchar(256) DEFAULT NULL COMMENT 'name',
     `icon`        varchar(255) DEFAULT NULL COMMENT 'icon link',

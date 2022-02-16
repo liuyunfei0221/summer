@@ -6,7 +6,6 @@ import com.blue.secure.component.login.inter.LoginHandler;
 import com.blue.secure.model.LoginParam;
 import com.blue.secure.service.inter.LoginService;
 import com.blue.secure.service.inter.SecureService;
-import com.blue.verify.api.model.VerifyParam;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -23,7 +22,6 @@ import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessRea
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.verify.VerifyType.IMAGE;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -60,8 +58,6 @@ public class LoginServiceImpl implements LoginService, ApplicationListener<Conte
         loginHandlers = beansOfType.values().stream()
                 .collect(toMap(lh -> lh.targetType().identity, lh -> lh, (a, b) -> a));
     }
-
-    private static final VerifyParam DEFAULT_PARAM = new VerifyParam(IMAGE.identity, "");
 
     private final Function<ServerRequest, Mono<ServerResponse>> loginHandler = serverRequest ->
             serverRequest.bodyToMono(LoginParam.class)
