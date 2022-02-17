@@ -1,15 +1,17 @@
-package com.blue.analyze.common.statistics.impl;
+package com.blue.analyze.component.statistics.impl;
 
+import com.blue.analyze.component.statistics.inter.StatisticsCommand;
+import com.blue.analyze.service.inter.ActiveStatisticsService;
 import com.blue.base.common.auth.AuthProcessor;
 import com.blue.base.constant.base.BlueDataAttrKey;
-import com.blue.base.constant.analyze.StatisticsRange;
 import com.blue.base.model.base.Access;
-import com.blue.analyze.common.statistics.inter.StatisticsCommand;
-import com.blue.analyze.service.inter.MemberActiveStatisticsService;
 import reactor.util.Logger;
 
 import java.util.Map;
 
+import static com.blue.base.constant.analyze.StatisticsRange.DAY;
+import static com.blue.base.constant.analyze.StatisticsRange.MONTH;
+import static com.blue.base.constant.analyze.StatisticsType.MEMBER_ACTIVE;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -25,10 +27,10 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
 
     private static final Logger LOGGER = getLogger(ActiveMemberStatisticsCommand.class);
 
-    private final MemberActiveStatisticsService memberActiveStatisticsService;
+    private final ActiveStatisticsService activeStatisticsService;
 
-    public ActiveMemberStatisticsCommand(MemberActiveStatisticsService memberActiveStatisticsService) {
-        this.memberActiveStatisticsService = memberActiveStatisticsService;
+    public ActiveMemberStatisticsCommand(ActiveStatisticsService activeStatisticsService) {
+        this.activeStatisticsService = activeStatisticsService;
     }
 
     private static final String MEMBER_ID_KEY = "memberId";
@@ -44,9 +46,10 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
             ofNullable(data.get(BlueDataAttrKey.ACCESS.key))
                     .map(AuthProcessor::jsonToAccess)
                     .map(Access::getId)
+                    .filter(id -> id >= 1L)
                     .ifPresent(memberId -> {
-                        memberActiveStatisticsService.markActive(memberId, StatisticsRange.DAY);
-                        memberActiveStatisticsService.markActive(memberId, StatisticsRange.MONTH);
+                        activeStatisticsService.markActive(memberId, MEMBER_ACTIVE, DAY);
+                        activeStatisticsService.markActive(memberId, MEMBER_ACTIVE, MONTH);
                         data.put(MEMBER_ID_KEY, String.valueOf(memberId));
                     });
         } catch (Exception e) {
@@ -59,8 +62,8 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
         ofNullable(data)
                 .map(d -> d.get(MEMBER_ID_KEY))
                 .ifPresent(memberId -> {
-                            LOGGER.info("dayActiveCount = " + memberActiveStatisticsService.selectActive(Long.parseLong(memberId), StatisticsRange.DAY));
-                            LOGGER.info("monthActiveCount = " + memberActiveStatisticsService.selectActive(Long.parseLong(memberId), StatisticsRange.MONTH));
+                            LOGGER.info("dayActiveCount = " + activeStatisticsService.selectActiveSimple(MEMBER_ACTIVE, DAY));
+                            LOGGER.info("monthActiveCount = " + activeStatisticsService.selectActiveSimple(MEMBER_ACTIVE, MONTH));
                         }
                 );
     }

@@ -3,7 +3,6 @@ package com.blue.lake.service.impl;
 import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.base.LimitModelRequest;
 import com.blue.identity.common.BlueIdentityProcessor;
-import com.blue.lake.converter.LakeModelConverters;
 import com.blue.lake.repository.entity.OptEvent;
 import com.blue.lake.repository.mapper.OptEventMapper;
 import com.blue.lake.service.inter.LakeService;
@@ -15,6 +14,7 @@ import java.util.List;
 
 import static com.blue.base.constant.base.BlueNumericalValue.LIMIT;
 import static com.blue.base.constant.base.BlueNumericalValue.ROWS;
+import static com.blue.lake.converter.LakeModelConverters.DATA_EVENT_2_OPT_EVENT;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -46,7 +46,7 @@ public class LakeServiceImpl implements LakeService {
      */
     @Override
     public void insertEvent(DataEvent dataEvent) {
-        OptEvent optEvent = LakeModelConverters.DATA_EVENT_2_OPT_EVENT.apply(dataEvent);
+        OptEvent optEvent = DATA_EVENT_2_OPT_EVENT.apply(dataEvent);
         optEvent.setId(blueIdentityProcessor.generate(OptEvent.class));
         optEventMapper.insert(optEvent);
     }

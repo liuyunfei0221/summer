@@ -703,6 +703,33 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (24244842351558660, 'POST', 'blue-lake', '/event/list', b'0', b'1', b'1', b'1', b'1', 2,
         'test lake event', 'test lake event', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+
+
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (28251575466065921, 'POST', 'blue-analyze', '/statistics/active/simple', b'0', b'1', b'1', b'1', b'1', 2,
+        'statistics active simple', 'statistics active simple', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (28251575466065922, 'POST', 'blue-analyze', '/statistics/active/merge', b'0', b'1', b'1', b'1', b'1', 2,
+        'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (28251575466065923, 'POST', 'blue-analyze', '/statistics/active/summary', b'0', b'1', b'1', b'0', b'1', 2,
+        'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+
 -- role
 
 INSERT INTO `secure_1`.`role_1`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,
@@ -1978,11 +2005,11 @@ CREATE TABLE `member_basic_1`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
     `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
-    `password`    varchar(256) DEFAULT NULL COMMENT 'password',
-    `name`        varchar(256) DEFAULT NULL COMMENT 'name',
-    `icon`        varchar(255) DEFAULT NULL COMMENT 'icon link',
-    `gender`      tinyint      DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `password`    varchar(256)          DEFAULT NULL COMMENT 'password',
+    `name`        varchar(256)          DEFAULT NULL COMMENT 'name',
+    `icon`        varchar(255)          DEFAULT NULL COMMENT 'icon link',
+    `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
+    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
@@ -2072,11 +2099,11 @@ CREATE TABLE `member_basic_0`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
     `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
-    `password`    varchar(256) DEFAULT NULL COMMENT 'password',
-    `name`        varchar(256) DEFAULT NULL COMMENT 'name',
-    `icon`        varchar(255) DEFAULT NULL COMMENT 'icon link',
-    `gender`      tinyint      DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `password`    varchar(256)          DEFAULT NULL COMMENT 'password',
+    `name`        varchar(256)          DEFAULT NULL COMMENT 'name',
+    `icon`        varchar(255)          DEFAULT NULL COMMENT 'icon link',
+    `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
+    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
@@ -2090,11 +2117,11 @@ CREATE TABLE `member_basic_1`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
     `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
-    `password`    varchar(256) DEFAULT NULL COMMENT 'password',
-    `name`        varchar(256) DEFAULT NULL COMMENT 'name',
-    `icon`        varchar(255) DEFAULT NULL COMMENT 'icon link',
-    `gender`      tinyint      DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `password`    varchar(256)          DEFAULT NULL COMMENT 'password',
+    `name`        varchar(256)          DEFAULT NULL COMMENT 'name',
+    `icon`        varchar(255)          DEFAULT NULL COMMENT 'icon link',
+    `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
+    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),

@@ -2,7 +2,7 @@ package com.blue.analyze.event.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.model.base.DataEvent;
-import com.blue.analyze.common.statistics.StatisticsProcessor;
+import com.blue.analyze.component.statistics.StatisticsProcessor;
 import com.blue.analyze.config.blue.BlueConsumerConfig;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import reactor.util.Logger;

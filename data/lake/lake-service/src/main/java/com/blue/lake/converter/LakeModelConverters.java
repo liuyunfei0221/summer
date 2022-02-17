@@ -1,5 +1,7 @@
 package com.blue.lake.converter;
 
+import com.blue.base.common.auth.AuthProcessor;
+import com.blue.base.common.base.BlueCheck;
 import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.exps.BlueException;
 import com.blue.lake.config.deploy.NestingResponseDeploy;
@@ -91,7 +93,17 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
         optEvent.setRequestId(ofNullable(entries.get(REQUEST_ID.key)).orElse(""));
         optEvent.setMetadata(ofNullable(entries.get(METADATA.key)).orElse(""));
         optEvent.setJwt(ofNullable(entries.get(JWT.key)).orElse(""));
-        optEvent.setAccess(ofNullable(entries.get(ACCESS.key)).orElse(""));
+
+        ofNullable(entries.get(ACCESS.key)).filter(BlueCheck::isNotBlank)
+                .map(AuthProcessor::jsonToAccess)
+                .ifPresent(access -> {
+                    optEvent.setMemberId(access.getId());
+                    optEvent.setRoleId(access.getRoleId());
+                    optEvent.setLoginType(access.getLoginType());
+                    optEvent.setDeviceType(access.getDeviceType());
+                    optEvent.setLoginTime(access.getLoginTime());
+                });
+
         optEvent.setClientIp(ofNullable(entries.get(CLIENT_IP.key)).orElse(""));
         optEvent.setUserAgent(ofNullable(entries.get(USER_AGENT.key)).orElse(""));
         optEvent.setSecKey(ofNullable(entries.get(SEC_KEY.key)).orElse(""));

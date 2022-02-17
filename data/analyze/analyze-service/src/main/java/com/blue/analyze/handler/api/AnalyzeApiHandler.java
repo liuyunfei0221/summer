@@ -13,7 +13,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 /**
- * data api handler
+ * analyze api handler
  *
  * @author DarkBlue
  */
@@ -22,7 +22,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 public final class AnalyzeApiHandler {
 
     /**
-     * test endpoint
+     * test analyze
      *
      * @param serverRequest
      * @return

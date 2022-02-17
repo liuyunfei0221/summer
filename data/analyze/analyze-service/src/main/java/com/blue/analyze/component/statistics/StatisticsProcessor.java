@@ -1,7 +1,7 @@
-package com.blue.analyze.common.statistics;
+package com.blue.analyze.component.statistics;
 
 import com.blue.base.component.common.BlueBeanDefinitionScanner;
-import com.blue.analyze.common.statistics.inter.StatisticsCommand;
+import com.blue.analyze.component.statistics.inter.StatisticsCommand;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -37,7 +37,7 @@ public final class StatisticsProcessor implements ResourceLoaderAware, ImportBea
 
     private ResourceLoader resourceLoader;
 
-    private static final String[] SCAN_PACKAGES = new String[]{"com.blue.data.common.statistics.impl"};
+    private static final String[] SCAN_PACKAGES = new String[]{"com.blue.analyze.component.statistics.impl"};
     private static final boolean USE_DEFAULT_FILTERS = false;
 
     private List<StatisticsCommand> commands;

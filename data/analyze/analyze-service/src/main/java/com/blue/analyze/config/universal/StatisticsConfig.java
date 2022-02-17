@@ -1,6 +1,6 @@
 package com.blue.analyze.config.universal;
 
-import com.blue.analyze.common.statistics.StatisticsProcessor;
+import com.blue.analyze.component.statistics.StatisticsProcessor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 

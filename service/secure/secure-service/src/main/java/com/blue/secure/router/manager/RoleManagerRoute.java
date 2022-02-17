@@ -32,7 +32,7 @@ public class RoleManagerRoute {
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("", accept(APPLICATION_JSON), roleManagerHandler::insert)
                 .PUT("", accept(APPLICATION_JSON), roleManagerHandler::update)
-                .DELETE("/{" + ID.key + "}", accept(APPLICATION_JSON), roleManagerHandler::delete)
+                .DELETE("/{" + ID.key + "}", roleManagerHandler::delete)
                 .POST("/list", accept(APPLICATION_JSON), roleManagerHandler::select)
                 .POST("/auth", accept(APPLICATION_JSON), roleManagerHandler::selectAuthority)
                 .build();

@@ -16,7 +16,11 @@
         <result column="request_id" jdbcType="VARCHAR" property="requestId"/>
         <result column="metadata" jdbcType="VARCHAR" property="metadata"/>
         <result column="jwt" jdbcType="VARCHAR" property="jwt"/>
-        <result column="access" jdbcType="VARCHAR" property="access"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="role_id" jdbcType="BIGINT" property="roleId"/>
+        <result column="login_type" jdbcType="VARCHAR" property="loginType"/>
+        <result column="device_type" jdbcType="VARCHAR" property="deviceType"/>
+        <result column="login_time" jdbcType="BIGINT" property="loginTime"/>
         <result column="client_ip" jdbcType="VARCHAR" property="clientIp"/>
         <result column="user_agent" jdbcType="VARCHAR" property="userAgent"/>
         <result column="sec_key" jdbcType="VARCHAR" property="secKey"/>
@@ -29,7 +33,7 @@
     <sql id="Base_Column_List">
         id
         , data_event_type, stamp, create_date, method, uri, real_uri, request_body, response_status,response_body,request_id, metadata, jwt,
-        access, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body
+        member_id, role_id, login_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -47,44 +51,51 @@
 
     <insert id="insert" parameterType="com.blue.lake.repository.entity.OptEvent">
         insert into opt_event (id, data_event_type, stamp, create_date,
-                               method, uri, real_uri,
-                               request_body, response_status, response_body, request_id,
-                               metadata, jwt, access, client_ip,
+                               method, uri, real_uri, request_body, response_status,
+                               response_body, request_id, metadata, jwt, member_id,
+                               role_id, login_type, device_type, login_time, client_ip,
                                user_agent, sec_key, request_un_decryption,
                                response_un_encryption, existence_request_body,
                                existence_response_body)
         values (#{id,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
                 #{createDate,jdbcType=VARCHAR},
                 #{method,jdbcType=VARCHAR}, #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
-                #{requestBody,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR},
-                #{requestId,jdbcType=VARCHAR}, #{metadata,jdbcType=VARCHAR}, #{jwt,jdbcType=VARCHAR},
-                #{access,jdbcType=VARCHAR}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
-                #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
-                #{responseUnEncryption,jdbcType=INTEGER}, #{existenceRequestBody,jdbcType=INTEGER},
+                #{requestBody,jdbcType=VARCHAR},
+                #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR},
+                #{metadata,jdbcType=VARCHAR},
+                #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT},
+                #{loginType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
+                #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
+                #{secKey,jdbcType=VARCHAR},
+                #{requestUnDecryption,jdbcType=INTEGER}, #{responseUnEncryption,jdbcType=INTEGER},
+                #{existenceRequestBody,jdbcType=INTEGER},
                 #{existenceResponseBody,jdbcType=INTEGER})
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
         <if test="list != null and list.size > 0">
-            INSERT INTO opt_event (
-            id, data_event_type, stamp,
-            create_date, method, uri, real_uri,
-            request_body, response_status,response_body, request_id,
-            metadata, jwt, access, client_ip, user_agent, sec_key, request_un_decryption,
+            INSERT INTO opt_event (id, data_event_type, stamp, create_date,
+            method, uri, real_uri, request_body, response_status,
+            response_body, request_id, metadata, jwt, member_id,
+            role_id, login_type, device_type, login_time, client_ip,
+            user_agent, sec_key, request_un_decryption,
             response_un_encryption, existence_request_body,
             existence_response_body)
             values
             <foreach collection="list" index="index" item="item" separator=",">
-                (
-                #{id,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
+                (#{id,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
                 #{createDate,jdbcType=VARCHAR},
                 #{method,jdbcType=VARCHAR}, #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
-                #{requestBody,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER},#{responseBody,jdbcType=VARCHAR},
-                #{requestId,jdbcType=VARCHAR},#{metadata,jdbcType=VARCHAR}, #{jwt,jdbcType=VARCHAR},
-                #{access,jdbcType=VARCHAR},#{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
-                #{secKey,jdbcType=VARCHAR},#{requestUnDecryption,jdbcType=INTEGER},#{responseUnEncryption,jdbcType=INTEGER},
-                #{existenceRequestBody,jdbcType=INTEGER},#{existenceResponseBody,jdbcType=INTEGER}
-                )
+                #{requestBody,jdbcType=VARCHAR},
+                #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR},
+                #{metadata,jdbcType=VARCHAR},
+                #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT},
+                #{loginType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
+                #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
+                #{secKey,jdbcType=VARCHAR},
+                #{requestUnDecryption,jdbcType=INTEGER}, #{responseUnEncryption,jdbcType=INTEGER},
+                #{existenceRequestBody,jdbcType=INTEGER},
+                #{existenceResponseBody,jdbcType=INTEGER})
             </foreach>
         </if>
     </insert>
@@ -131,8 +142,20 @@
             <if test="jwt != null">
                 jwt,
             </if>
-            <if test="access != null">
-                access,
+            <if test="memberId != null">
+                member_id,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="loginType != null">
+                login_type,
+            </if>
+            <if test="deviceType != null">
+                device_type,
+            </if>
+            <if test="loginTime != null">
+                login_time,
             </if>
             <if test="clientIp != null">
                 client_ip,
@@ -196,8 +219,20 @@
             <if test="jwt != null">
                 #{jwt,jdbcType=VARCHAR},
             </if>
-            <if test="access != null">
-                #{access,jdbcType=VARCHAR},
+            <if test="memberId != null">
+                #{member_id,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                #{role_id,jdbcType=BIGINT},
+            </if>
+            <if test="loginType != null">
+                #{login_type,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                #{device_type,jdbcType=VARCHAR},
+            </if>
+            <if test="loginTime != null">
+                #{login_time,jdbcType=BIGINT},
             </if>
             <if test="clientIp != null">
                 #{clientIp,jdbcType=VARCHAR},
@@ -262,8 +297,20 @@
             <if test="jwt != null">
                 jwt = #{jwt,jdbcType=VARCHAR},
             </if>
-            <if test="access != null">
-                access = #{access,jdbcType=VARCHAR},
+            <if test="memberId != null">
+                member_id = #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=BIGINT},
+            </if>
+            <if test="loginType != null">
+                login_type = #{loginType,jdbcType=VARCHAR},
+            </if>
+            <if test="deviceType != null">
+                device_type = #{deviceType,jdbcType=VARCHAR},
+            </if>
+            <if test="loginTime != null">
+                login_time = #{loginTime,jdbcType=BIGINT},
             </if>
             <if test="clientIp != null">
                 client_ip = #{clientIp,jdbcType=VARCHAR},
@@ -292,26 +339,30 @@
 
     <update id="updateByPrimaryKey" parameterType="com.blue.lake.repository.entity.OptEvent">
         update opt_event
-        set data_event_type         = #{dataEventType,jdbcType=VARCHAR},
-            stamp                   = #{stamp,jdbcType=BIGINT},
-            create_date             = #{createDate,jdbcType=VARCHAR},
-            method                  = #{method,jdbcType=VARCHAR},
-            uri                     = #{uri,jdbcType=VARCHAR},
-            real_uri                = #{realUri,jdbcType=VARCHAR},
-            request_body            = #{requestBody,jdbcType=VARCHAR},
-            response_status         = #{responseStatus,jdbcType=INTEGER},
-            response_body           = #{responseBody,jdbcType=VARCHAR},
-            request_id              = #{requestId,jdbcType=VARCHAR},
-            metadata                = #{metadata,jdbcType=VARCHAR},
-            jwt                     = #{jwt,jdbcType=VARCHAR},
-            access                  = #{access,jdbcType=VARCHAR},
-            client_ip               = #{clientIp,jdbcType=VARCHAR},
-            user_agent              = #{userAgent,jdbcType=VARCHAR},
-            sec_key                 = #{secKey,jdbcType=VARCHAR},
-            request_un_decryption   = #{requestUnDecryption,jdbcType=INTEGER},
-            response_un_encryption  = #{responseUnEncryption,jdbcType=INTEGER},
-            existence_request_body  = #{existenceRequestBody,jdbcType=INTEGER},
-            existence_response_body = #{existenceResponseBody,jdbcType=INTEGER}
+        set data_event_type = #{dataEventType,jdbcType=VARCHAR},
+        stamp = #{stamp,jdbcType=BIGINT},
+        create_date = #{createDate,jdbcType=VARCHAR},
+        method = #{method,jdbcType=VARCHAR},
+        uri = #{uri,jdbcType=VARCHAR},
+        real_uri = #{realUri,jdbcType=VARCHAR},
+        request_body = #{requestBody,jdbcType=VARCHAR},
+        response_status = #{responseStatus,jdbcType=INTEGER},
+        response_body = #{responseBody,jdbcType=VARCHAR},
+        request_id = #{requestId,jdbcType=VARCHAR},
+        metadata = #{metadata,jdbcType=VARCHAR},
+        jwt = #{jwt,jdbcType=VARCHAR},
+        member_id = #{memberId,jdbcType=BIGINT},
+        role_id = #{roleId,jdbcType=BIGINT},
+        login_type = #{loginType,jdbcType=VARCHAR},
+        device_type = #{deviceType,jdbcType=VARCHAR},
+        login_time = #{loginTime,jdbcType=BIGINT},
+        client_ip = #{clientIp,jdbcType=VARCHAR},
+        user_agent = #{userAgent,jdbcType=VARCHAR},
+        sec_key = #{secKey,jdbcType=VARCHAR},
+        request_un_decryption = #{requestUnDecryption,jdbcType=INTEGER},
+        response_un_encryption = #{responseUnEncryption,jdbcType=INTEGER},
+        existence_request_body = #{existenceRequestBody,jdbcType=INTEGER},
+        existence_response_body = #{existenceResponseBody,jdbcType=INTEGER}
         where id = #{id,jdbcType=BIGINT}
     </update>
 

@@ -12,7 +12,13 @@ public enum StatisticsType {
     /**
      * for member active
      */
-    MEMBER_ACTIVE("MA", "for member active");
+    MEMBER_ACTIVE("MA", "for member active"),
+
+    /**
+     * for role active
+     */
+    ROLE_ACTIVE("RA", "for role active");
+
 
     /**
      * identity

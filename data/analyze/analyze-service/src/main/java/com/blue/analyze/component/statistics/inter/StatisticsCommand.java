@@ -1,4 +1,4 @@
-package com.blue.analyze.common.statistics.inter;
+package com.blue.analyze.component.statistics.inter;
 
 import java.util.Map;
 

@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class OptEvent implements Serializable {
 
     private static final long serialVersionUID = 2594284948929033405L;
-    
+
     private Long id;
 
     private String dataEventType;
@@ -38,7 +38,15 @@ public class OptEvent implements Serializable {
 
     private String jwt;
 
-    private String access;
+    private Long memberId;
+
+    private Long roleId;
+
+    private String loginType;
+
+    private String deviceType;
+
+    private Long loginTime;
 
     private String clientIp;
 
@@ -158,12 +166,44 @@ public class OptEvent implements Serializable {
         this.jwt = jwt;
     }
 
-    public String getAccess() {
-        return access;
+    public Long getMemberId() {
+        return memberId;
     }
 
-    public void setAccess(String access) {
-        this.access = access;
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
+    }
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(String loginType) {
+        this.loginType = loginType;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
+
+    public Long getLoginTime() {
+        return loginTime;
+    }
+
+    public void setLoginTime(Long loginTime) {
+        this.loginTime = loginTime;
     }
 
     public String getClientIp() {
@@ -238,7 +278,11 @@ public class OptEvent implements Serializable {
                 ", requestId='" + requestId + '\'' +
                 ", metadata='" + metadata + '\'' +
                 ", jwt='" + jwt + '\'' +
-                ", access='" + access + '\'' +
+                ", memberId=" + memberId +
+                ", roleId=" + roleId +
+                ", loginType='" + loginType + '\'' +
+                ", deviceType='" + deviceType + '\'' +
+                ", loginTime=" + loginTime +
                 ", clientIp='" + clientIp + '\'' +
                 ", userAgent='" + userAgent + '\'' +
                 ", secKey='" + secKey + '\'' +

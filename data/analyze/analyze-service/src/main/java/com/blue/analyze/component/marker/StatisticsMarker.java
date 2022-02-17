@@ -1,4 +1,4 @@
-package com.blue.analyze.common.marker;
+package com.blue.analyze.component.marker;
 
 import com.blue.base.constant.analyze.StatisticsRange;
 import com.blue.base.constant.analyze.StatisticsType;
@@ -40,7 +40,6 @@ public final class StatisticsMarker {
 
     private ExecutorService executorService;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public StatisticsMarker(StringRedisTemplate stringRedisTemplate, ExecutorService executorService) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.executorService = executorService;
