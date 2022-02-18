@@ -1,4 +1,4 @@
-package com.blue.media.component;
+package com.blue.media.component.illegal;
 
 import com.blue.base.common.base.BlueCheck;
 import com.blue.base.model.base.IllegalMarkEvent;

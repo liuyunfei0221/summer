@@ -7,7 +7,6 @@ import com.blue.secure.component.login.inter.LoginHandler;
 import com.blue.secure.model.LoginParam;
 import com.blue.secure.service.inter.MemberService;
 import com.blue.secure.service.inter.SecureService;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -23,6 +22,7 @@ import static com.blue.base.constant.base.ResponseElement.OK;
 import static com.blue.base.constant.secure.LoginType.EMAIL_PWD;
 import static com.blue.secure.constant.LoginAttribute.ACCESS;
 import static com.blue.secure.constant.LoginAttribute.IDENTITY;
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.util.Loggers.getLogger;
@@ -34,7 +34,7 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Component
-@Order(Ordered.LOWEST_PRECEDENCE - 1)
+@Order(LOWEST_PRECEDENCE - 1)
 public class EmailAndPwdLoginHandler implements LoginHandler {
 
     private static final Logger LOGGER = getLogger(EmailAndPwdLoginHandler.class);

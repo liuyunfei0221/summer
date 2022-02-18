@@ -1,7 +1,7 @@
 package com.blue.media.config.filter.global;
 
 import com.blue.base.model.exps.BlueException;
-import com.blue.media.component.IllegalAsserter;
+import com.blue.media.component.illegal.IllegalAsserter;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;

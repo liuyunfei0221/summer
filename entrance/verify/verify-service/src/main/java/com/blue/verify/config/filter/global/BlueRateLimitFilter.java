@@ -23,7 +23,6 @@ import static reactor.core.publisher.Mono.error;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Component
 public final class BlueRateLimitFilter implements WebFilter, Ordered {
 

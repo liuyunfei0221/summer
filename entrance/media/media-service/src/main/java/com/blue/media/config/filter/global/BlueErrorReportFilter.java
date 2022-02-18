@@ -5,7 +5,7 @@ import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.base.ExceptionResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.common.request.body.RequestBodyGetter;
-import com.blue.media.component.RequestEventReporter;
+import com.blue.media.component.event.RequestEventReporter;
 import com.blue.media.config.deploy.ErrorReportDeploy;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
@@ -45,7 +45,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection", "UnusedAssignment"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "UnusedAssignment"})
 @Component
 public final class BlueErrorReportFilter implements WebFilter, Ordered {
 

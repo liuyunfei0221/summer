@@ -63,6 +63,31 @@ public enum BlueDataAttrKey {
     ACCESS("access"),
 
     /**
+     * member id in access(id)
+     */
+    MEMBER_ID("memberId"),
+
+    /**
+     * role id in access(roleId)
+     */
+    ROLE_ID("roleId"),
+
+    /**
+     * login type in access(loginType)
+     */
+    LOGIN_TYPE("loginType"),
+
+    /**
+     * device type in access(deviceType)
+     */
+    DEVICE_TYPE("deviceType"),
+
+    /**
+     * login time in access(loginTime)
+     */
+    LOGIN_TIME("loginTime"),
+
+    /**
      * client ip
      */
     CLIENT_IP("clientIp"),

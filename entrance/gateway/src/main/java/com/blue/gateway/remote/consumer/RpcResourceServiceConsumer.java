@@ -18,7 +18,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "unused"})
 @Component
 public class RpcResourceServiceConsumer {
 

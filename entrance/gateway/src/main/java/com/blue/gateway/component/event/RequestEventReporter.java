@@ -1,7 +1,7 @@
-package com.blue.media.component;
+package com.blue.gateway.component.event;
 
 import com.blue.base.model.base.DataEvent;
-import com.blue.media.event.producer.RequestEventProducer;
+import com.blue.gateway.event.producer.RequestEventProducer;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
 
@@ -40,7 +40,7 @@ public final class RequestEventReporter {
             executorService.execute(() ->
                     requestEventProducer.send(event));
         } catch (Exception e) {
-            LOGGER.error("MESSAGE_SENDER send failed, event = {},e = {}", event, e);
+            LOGGER.error("MESSAGE_SENDER send failed, event = {}, e = {}", event, e);
         }
     };
 

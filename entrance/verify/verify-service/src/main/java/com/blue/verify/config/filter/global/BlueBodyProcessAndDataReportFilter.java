@@ -3,7 +3,7 @@ package com.blue.verify.config.filter.global;
 import com.blue.base.common.content.common.RequestBodyProcessor;
 import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.base.ExceptionResponse;
-import com.blue.verify.component.RequestEventReporter;
+import com.blue.verify.component.event.RequestEventReporter;
 import com.blue.verify.config.deploy.ResponseDeploy;
 import org.reactivestreams.Publisher;
 import org.springframework.core.Ordered;

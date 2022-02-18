@@ -5,7 +5,7 @@ import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.base.ExceptionResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.common.request.body.ReportWithRequestBodyProcessor;
-import com.blue.media.component.RequestEventReporter;
+import com.blue.media.component.event.RequestEventReporter;
 import com.blue.media.config.deploy.EncryptDeploy;
 import org.reactivestreams.Publisher;
 import org.springframework.core.Ordered;

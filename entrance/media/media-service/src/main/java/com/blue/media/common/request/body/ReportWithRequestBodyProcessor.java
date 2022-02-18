@@ -1,7 +1,7 @@
 package com.blue.media.common.request.body;
 
 import com.blue.base.model.base.DataEvent;
-import com.blue.media.component.RequestEventReporter;
+import com.blue.media.component.event.RequestEventReporter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;

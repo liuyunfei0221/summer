@@ -20,7 +20,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/12/23
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
 @Component
 public class RpcVerifyServiceConsumer {
 

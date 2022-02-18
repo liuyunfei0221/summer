@@ -1,7 +1,7 @@
 package com.blue.gateway.config.filter.global;
 
 import com.blue.base.model.exps.BlueException;
-import com.blue.gateway.component.IllegalAsserter;
+import com.blue.gateway.component.illegal.IllegalAsserter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;

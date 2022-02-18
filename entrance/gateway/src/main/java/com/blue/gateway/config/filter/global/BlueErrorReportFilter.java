@@ -3,7 +3,7 @@ package com.blue.gateway.config.filter.global;
 import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.base.ExceptionResponse;
-import com.blue.gateway.component.RequestEventReporter;
+import com.blue.gateway.component.event.RequestEventReporter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -37,7 +37,7 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @Component
-@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "AliControlFlowStatementWithoutBraces", "UnusedAssignment"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "UnusedAssignment"})
 public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
 
     private static final Logger LOGGER = getLogger(BlueErrorReportFilter.class);

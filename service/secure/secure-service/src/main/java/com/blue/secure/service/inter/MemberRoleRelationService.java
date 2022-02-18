@@ -64,6 +64,16 @@ public interface MemberRoleRelationService {
     int insertMemberRoleRelation(MemberRoleRelation memberRoleRelation);
 
     /**
+     * insert member role relation
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     * @return
+     */
+    int insertMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
+
+    /**
      * update member role relation
      *
      * @param memberId

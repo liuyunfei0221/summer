@@ -23,7 +23,7 @@ import static reactor.util.Loggers.getLogger;
  * @apiNote
  */
 
-@SuppressWarnings({"JavaDoc", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "unused"})
 @Component
 public class RpcRoleServiceConsumer {
 

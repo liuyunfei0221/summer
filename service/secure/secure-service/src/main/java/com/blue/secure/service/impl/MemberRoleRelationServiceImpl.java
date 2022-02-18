@@ -161,11 +161,58 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
                 throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE.status);
 
             return memberRoleRelationMapper.insertSelective(memberRoleRelation);
-//            if (1 == 1) {
-//                throw new BlueException(500, 500, "test rollback on exception");
-//            }
         } catch (Exception e) {
             LOGGER.error("void insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) failed, memberRoleRelation = {}, e = {}", memberRoleRelation, e);
+            throw e;
+        } finally {
+            try {
+                lock.unlock();
+            } catch (Exception e) {
+                LOGGER.error("lock.unlock() fail, e = {0}", e);
+            }
+        }
+    }
+
+    /**
+     * insert member role relation
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @GlobalLock
+    public int insertMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
+        LOGGER.info("int insertMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        long epochSecond = TIME_STAMP_GETTER.get();
+
+        MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
+
+        memberRoleRelation.setMemberId(memberId);
+        memberRoleRelation.setRoleId(roleId);
+        memberRoleRelation.setCreateTime(epochSecond);
+        memberRoleRelation.setUpdateTime(epochSecond);
+        memberRoleRelation.setCreator(operatorId);
+        memberRoleRelation.setUpdater(operatorId);
+
+        memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
+
+        RLock lock = redissonClient.getLock(SYNC_KEY_WRAPPER.apply(memberId));
+        lock.lock();
+
+        try {
+            MemberRoleRelation existRelation = memberRoleRelationMapper.getByMemberId(memberId);
+            if (isNotNull(existRelation))
+                throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE.status);
+
+            return memberRoleRelationMapper.insertSelective(memberRoleRelation);
+        } catch (Exception e) {
+            LOGGER.error("int insertMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}, e = {}", memberId, roleId, operatorId, e);
             throw e;
         } finally {
             try {
@@ -186,7 +233,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
-        LOGGER.info("void updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
+        LOGGER.info("int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 

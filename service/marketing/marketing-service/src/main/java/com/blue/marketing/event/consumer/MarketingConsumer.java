@@ -1,7 +1,6 @@
 package com.blue.marketing.event.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.marketing.api.model.EventHandleResult;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.config.blue.BlueConsumerConfig;
 import com.blue.marketing.service.inter.MarketingEventHandleService;
@@ -43,12 +42,11 @@ public final class MarketingConsumer implements BlueLifecycle {
     private void init() {
         Consumer<MarketingEvent> marketingDataConsumer = marketingEvent ->
                 ofNullable(marketingEvent)
-                        .ifPresent(me -> {
-                            LOGGER.info("marketingDataConsumer received, me = {}", me);
-                            EventHandleResult eventHandleResult = marketingEventHandleService.handleEvent(me);
-                            LOGGER.info("marketingEventHandleService.handleEvent(marketingEvent), me = {}. eventHandleResult = {}",
-                                    me, eventHandleResult);
-                        });
+                        .ifPresent(me ->
+                                marketingEventHandleService.handleEvent(me)
+                                        .subscribe(eventHandleResult ->
+                                                LOGGER.info("marketingEventHandleService.handleEvent(marketingEvent), me = {}. eventHandleResult = {}", me, eventHandleResult))
+                        );
 
         this.marketingConsumer = generateConsumer(blueConsumerConfig.getByKey(MARKETING.name), marketingDataConsumer);
     }

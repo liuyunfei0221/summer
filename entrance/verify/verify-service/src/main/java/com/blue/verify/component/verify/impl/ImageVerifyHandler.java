@@ -9,11 +9,8 @@ import com.blue.verify.common.CaptchaProcessor;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import com.blue.verify.config.deploy.ImageVerifyDeploy;
 import com.blue.verify.service.inter.VerifyService;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -53,9 +50,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/12/23
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
-@Component
-@Order(Ordered.LOWEST_PRECEDENCE - 1)
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
 public class ImageVerifyHandler implements VerifyHandler {
 
     private static final Logger LOGGER = getLogger(ImageVerifyHandler.class);

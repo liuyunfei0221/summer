@@ -3,7 +3,7 @@ package com.blue.verify.config.filter.global;
 import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.base.ExceptionResponse;
-import com.blue.verify.component.RequestEventReporter;
+import com.blue.verify.component.event.RequestEventReporter;
 import org.springframework.core.Ordered;
 import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -36,7 +36,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection", "UnusedAssignment"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "UnusedAssignment"})
 @Component
 public final class BlueErrorReportFilter implements WebFilter, Ordered {
 

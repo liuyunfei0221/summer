@@ -1,13 +1,14 @@
-package com.blue.verify.component;
+package com.blue.gateway.component.illegal;
 
 import com.blue.base.common.base.BlueCheck;
 import com.blue.base.model.base.IllegalMarkEvent;
 import com.blue.base.model.exps.BlueException;
-import com.blue.verify.config.deploy.RiskControlDeploy;
+import com.blue.gateway.config.deploy.RiskControlDeploy;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
+import static reactor.util.Loggers.getLogger;
 
 /**
  * illegal request asserter
@@ -38,6 +40,8 @@ import static reactor.core.publisher.Mono.zip;
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal"})
 @Component
 public final class IllegalAsserter {
+
+    private static final Logger LOGGER = getLogger(IllegalAsserter.class);
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
@@ -146,14 +150,12 @@ public final class IllegalAsserter {
 
         return zip(
                 ofNullable(attributes.get(JWT.key))
-                        .map(String::valueOf)
-                        .filter(BlueCheck::isNotBlank)
+                        .map(String::valueOf).filter(BlueCheck::isNotBlank)
                         .map(JWT_KEY_WRAPPER)
                         .map(key -> KEY_VALIDATOR.apply(key, resKey))
                         .orElseGet(() -> just(true)),
                 ofNullable(attributes.get(CLIENT_IP.key))
-                        .map(String::valueOf)
-                        .filter(BlueCheck::isNotBlank)
+                        .map(String::valueOf).filter(BlueCheck::isNotBlank)
                         .map(IP_KEY_WRAPPER)
                         .map(key -> KEY_VALIDATOR.apply(key, resKey))
                         .orElseGet(() -> just(true))
@@ -182,6 +184,7 @@ public final class IllegalAsserter {
      * @param event
      */
     public Mono<Boolean> handleIllegalMarkEvent(IllegalMarkEvent event) {
+        LOGGER.info("Mono<Boolean> handleIllegalMarkEvent(IllegalMarkEvent event), event = {}", event);
         return ILLEGAL_MARKER.apply(event);
     }
 

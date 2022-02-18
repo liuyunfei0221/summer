@@ -9,8 +9,10 @@ import reactor.util.Logger;
 
 import java.util.Map;
 
-import static com.blue.base.constant.analyze.StatisticsRange.*;
-import static com.blue.base.constant.analyze.StatisticsType.MEMBER_ACTIVE;
+import static com.blue.base.constant.analyze.StatisticsRange.D;
+import static com.blue.base.constant.analyze.StatisticsRange.M;
+import static com.blue.base.constant.analyze.StatisticsType.MA;
+import static com.blue.base.constant.base.BlueDataAttrKey.MEMBER_ID;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -32,7 +34,7 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
         this.activeStatisticsService = activeStatisticsService;
     }
 
-    private static final String MEMBER_ID_KEY = "memberId";
+    private static final String MEMBER_ID_KEY = MEMBER_ID.key;
 
     @Override
     public int getPrecedence() {
@@ -46,10 +48,10 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
                     .map(AuthProcessor::jsonToAccess)
                     .map(Access::getId)
                     .filter(id -> id >= 1L)
-                    .ifPresent(memberId -> {
-                        activeStatisticsService.markActive(memberId, MEMBER_ACTIVE, D).subscribe();
-                        activeStatisticsService.markActive(memberId, MEMBER_ACTIVE, M).subscribe();
-                        data.put(MEMBER_ID_KEY, String.valueOf(memberId));
+                    .ifPresent(mid -> {
+                        activeStatisticsService.markActive(mid, MA, D).subscribe();
+                        activeStatisticsService.markActive(mid, MA, M).subscribe();
+                        data.put(MEMBER_ID_KEY, String.valueOf(mid));
                     });
         } catch (Exception e) {
             LOGGER.error("analyzeAndPackage(Map<String, String> data), data = {}, e = {}", data, e);
@@ -61,8 +63,8 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
         ofNullable(data)
                 .map(d -> d.get(MEMBER_ID_KEY))
                 .ifPresent(memberId -> {
-                            LOGGER.info("dayActiveCount = " + activeStatisticsService.selectActiveSimple(MEMBER_ACTIVE, D).subscribe());
-                            LOGGER.info("monthActiveCount = " + activeStatisticsService.selectActiveSimple(MEMBER_ACTIVE, M).subscribe());
+                            LOGGER.info("dayActiveCount = " + activeStatisticsService.selectActiveSimple(MA, D).subscribe());
+                            LOGGER.info("monthActiveCount = " + activeStatisticsService.selectActiveSimple(MA, M).subscribe());
                         }
                 );
     }

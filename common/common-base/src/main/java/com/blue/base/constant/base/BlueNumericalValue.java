@@ -140,7 +140,12 @@ public enum BlueNumericalValue {
     /**
      * qr logo height
      */
-    QR_CODE_LOGO_ROUND_ARCH(20L);
+    QR_CODE_LOGO_ROUND_ARCH(20L),
+
+    /**
+     * system default id
+     */
+    BLUE_ID(1L);
 
 
     /**

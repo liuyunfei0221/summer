@@ -1,7 +1,7 @@
 package com.blue.verify.config.filter.global;
 
 import com.blue.base.model.exps.BlueException;
-import com.blue.verify.component.IllegalAsserter;
+import com.blue.verify.component.illegal.IllegalAsserter;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;

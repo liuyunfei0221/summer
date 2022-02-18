@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static com.blue.base.common.base.BlueCheck.isValidIdentity;
@@ -33,19 +32,6 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
 
     public ActiveStatisticsServiceImpl(StatisticsMarker statisticsMarker) {
         this.statisticsMarker = statisticsMarker;
-    }
-
-    @PostConstruct
-    private void init() {
-        long offset = 99999999913413413L;
-        long end = 99999999913413413L + 9999L;
-
-        for (long l = offset; l < end; l++) {
-            statisticsMarker.mark(StatisticsType.MEMBER_ACTIVE, StatisticsRange.D, String.valueOf(l)).subscribe();
-            statisticsMarker.mark(StatisticsType.MEMBER_ACTIVE, StatisticsRange.M, String.valueOf(l)).subscribe();
-        }
-
-        LOGGER.warn("add test data complete!!!!!!!!");
     }
 
     /**
