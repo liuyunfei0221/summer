@@ -5,6 +5,7 @@ import com.blue.base.constant.analyze.StatisticsType;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -17,10 +18,13 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.blue.base.common.base.BlueCheck.isNotBlank;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 import static org.springframework.util.CollectionUtils.isEmpty;
+import static reactor.core.publisher.Mono.error;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -95,6 +99,19 @@ public final class StatisticsMarker {
     public static final Supplier<String> UNION_PF_KEY_GETTER = () ->
             UNION_PF_KEY_PREFIX + randomAlphanumeric(RAN_KEY_STR_LEN);
 
+    private final BiFunction<List<StatisticsType>, List<StatisticsRange>, String[]> KEYS_GENERATOR = (types, ranges) -> {
+        if (isEmpty(types) || isEmpty(ranges))
+            throw new BlueException(BAD_REQUEST);
+
+        String[] keys = new String[types.size() * ranges.size()];
+        int index = 0;
+        for (StatisticsType statisticsType : types)
+            for (StatisticsRange statisticsRange : ranges)
+                keys[index++] = STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange);
+
+        return keys;
+    };
+
     /**
      * mark
      *
@@ -103,15 +120,15 @@ public final class StatisticsMarker {
      * @param value
      * @return
      */
-    public boolean mark(StatisticsType statisticsType, StatisticsRange statisticsRange, String value) {
+    public Mono<Boolean> mark(StatisticsType statisticsType, StatisticsRange statisticsRange, String value) {
         LOGGER.info("mark(StatisticsType statisticsType, StatisticsRange statisticsRange, String value), statisticsType = {}, statisticsRange = {}, value = {}",
                 statisticsType, statisticsRange, value);
 
-        if (isNotBlank(value))
-            return stringRedisTemplate.opsForHyperLogLog()
-                    .add(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange), value) > 0L;
-
-        throw new BlueException(BAD_REQUEST);
+        return statisticsType != null && statisticsRange != null && isNotBlank(value) ?
+                just(stringRedisTemplate.opsForHyperLogLog()
+                        .add(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange), value) > 0L)
+                :
+                error(() -> new BlueException(BAD_REQUEST));
     }
 
     /**
@@ -121,9 +138,9 @@ public final class StatisticsMarker {
      * @param statisticsRange
      * @return
      */
-    public long count(StatisticsType statisticsType, StatisticsRange statisticsRange) {
+    public Mono<Long> count(StatisticsType statisticsType, StatisticsRange statisticsRange) {
         LOGGER.info("count(StatisticsType statisticsType, StatisticsRange statisticsRange), statisticsType = {}, statisticsRange = {}", statisticsType, statisticsRange);
-        return stringRedisTemplate.opsForHyperLogLog().size(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange));
+        return just(stringRedisTemplate.opsForHyperLogLog().size(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange)));
     }
 
     /**
@@ -133,30 +150,13 @@ public final class StatisticsMarker {
      * @param statisticsRanges
      * @return
      */
-    public long mergeCount(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges) {
+    public Mono<Long> mergeCount(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges) {
         LOGGER.info("mergeCount(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges), statisticsTypes = {}, statisticsRanges = {}", statisticsTypes, statisticsRanges);
 
-        if (isEmpty(statisticsTypes) && isEmpty(statisticsRanges))
-            return 0L;
-
-        String[] keys = new String[statisticsTypes.size() * statisticsRanges.size()];
-        int index = 0;
-        for (StatisticsType statisticsType : statisticsTypes)
-            for (StatisticsRange statisticsRange : statisticsRanges)
-                keys[index++] = STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange);
-
         String tempKey = UNION_PF_KEY_GETTER.get();
-
-        long count = 0L;
-        try {
-            count = stringRedisTemplate.opsForHyperLogLog().union(tempKey, keys);
-        } catch (Exception e) {
-            LOGGER.error("mergeCount(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges) failed, e = {0}", e);
-        } finally {
-            stringRedisTemplate.delete(tempKey);
-        }
-
-        return count;
+        return just(KEYS_GENERATOR.apply(statisticsTypes, statisticsRanges))
+                .flatMap(keys -> just(stringRedisTemplate.opsForHyperLogLog().union(tempKey, keys)))
+                .doFinally(signalType -> stringRedisTemplate.delete(tempKey));
     }
 
 
