@@ -6,8 +6,10 @@ import com.blue.base.constant.analyze.StatisticsRange;
 import com.blue.base.constant.analyze.StatisticsType;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static com.blue.base.common.base.BlueCheck.isValidIdentity;
@@ -33,6 +35,19 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
         this.statisticsMarker = statisticsMarker;
     }
 
+    @PostConstruct
+    private void init() {
+        long offset = 99999999913413413L;
+        long end = 99999999913413413L + 9999L;
+
+        for (long l = offset; l < end; l++) {
+            statisticsMarker.mark(StatisticsType.MEMBER_ACTIVE, StatisticsRange.D, String.valueOf(l)).subscribe();
+            statisticsMarker.mark(StatisticsType.MEMBER_ACTIVE, StatisticsRange.M, String.valueOf(l)).subscribe();
+        }
+
+        LOGGER.warn("add test data complete!!!!!!!!");
+    }
+
     /**
      * mark an id active
      *
@@ -42,7 +57,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
      * @return
      */
     @Override
-    public Boolean markActive(Long id, StatisticsType statisticsType, StatisticsRange statisticsRange) {
+    public Mono<Boolean> markActive(Long id, StatisticsType statisticsType, StatisticsRange statisticsRange) {
         LOGGER.info("Boolean markActive(Long id, StatisticsType statisticsType, StatisticsRange statisticsRange), id = {}, statisticsType = {}, statisticsRange = {}", id, statisticsType, statisticsRange);
 
         if (isValidIdentity(id))
@@ -59,7 +74,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
      * @return
      */
     @Override
-    public Long selectActiveSimple(StatisticsType statisticsType, StatisticsRange statisticsRange) {
+    public Mono<Long> selectActiveSimple(StatisticsType statisticsType, StatisticsRange statisticsRange) {
         LOGGER.info("Long selectActive(StatisticsType statisticsType, StatisticsRange statisticsRange), statisticsType = {}, statisticsRange = {}", statisticsType, statisticsRange);
 
         return statisticsMarker.count(statisticsType, statisticsRange);
@@ -73,7 +88,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
      * @return
      */
     @Override
-    public Long selectActiveMerge(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges) {
+    public Mono<Long> selectActiveMerge(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges) {
         LOGGER.info("Long selectMultiActive(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges), statisticsTypes = {}, statisticsRanges = {}", statisticsTypes, statisticsRanges);
 
         return statisticsMarker.mergeCount(statisticsTypes, statisticsRanges);

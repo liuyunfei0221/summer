@@ -2,6 +2,7 @@ package com.blue.analyze.service.inter;
 
 import com.blue.base.constant.analyze.StatisticsRange;
 import com.blue.base.constant.analyze.StatisticsType;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface ActiveStatisticsService {
      * @param statisticsRange
      * @return
      */
-    Boolean markActive(Long id, StatisticsType statisticsType, StatisticsRange statisticsRange);
+    Mono<Boolean> markActive(Long id, StatisticsType statisticsType, StatisticsRange statisticsRange);
 
     /**
      * select active
@@ -32,7 +33,7 @@ public interface ActiveStatisticsService {
      * @param statisticsRange
      * @return
      */
-    Long selectActiveSimple(StatisticsType statisticsType, StatisticsRange statisticsRange);
+    Mono<Long> selectActiveSimple(StatisticsType statisticsType, StatisticsRange statisticsRange);
 
     /**
      * select multi active
@@ -41,6 +42,6 @@ public interface ActiveStatisticsService {
      * @param statisticsRanges
      * @return
      */
-    Long selectActiveMerge(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges);
+    Mono<Long> selectActiveMerge(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges);
 
 }

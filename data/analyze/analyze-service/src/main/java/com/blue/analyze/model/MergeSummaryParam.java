@@ -1,8 +1,5 @@
 package com.blue.analyze.model;
 
-import com.blue.base.constant.analyze.StatisticsRange;
-import com.blue.base.constant.analyze.StatisticsType;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -14,32 +11,38 @@ import java.util.List;
 public class MergeSummaryParam implements Serializable {
 
     private static final long serialVersionUID = -916119028631172684L;
-    
-    List<StatisticsType> statisticsTypes;
 
-    List<StatisticsRange> statisticsRanges;
+    /**
+     * @see com.blue.base.constant.analyze.StatisticsType
+     */
+    List<String> statisticsTypes;
+
+    /**
+     * @see com.blue.base.constant.analyze.StatisticsRange
+     */
+    List<String> statisticsRanges;
 
     public MergeSummaryParam() {
     }
 
-    public MergeSummaryParam(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges) {
+    public MergeSummaryParam(List<String> statisticsTypes, List<String> statisticsRanges) {
         this.statisticsTypes = statisticsTypes;
         this.statisticsRanges = statisticsRanges;
     }
 
-    public List<StatisticsType> getStatisticsTypes() {
+    public List<String> getStatisticsTypes() {
         return statisticsTypes;
     }
 
-    public void setStatisticsTypes(List<StatisticsType> statisticsTypes) {
+    public void setStatisticsTypes(List<String> statisticsTypes) {
         this.statisticsTypes = statisticsTypes;
     }
 
-    public List<StatisticsRange> getStatisticsRanges() {
+    public List<String> getStatisticsRanges() {
         return statisticsRanges;
     }
 
-    public void setStatisticsRanges(List<StatisticsRange> statisticsRanges) {
+    public void setStatisticsRanges(List<String> statisticsRanges) {
         this.statisticsRanges = statisticsRanges;
     }
 

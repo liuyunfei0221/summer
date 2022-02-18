@@ -17,13 +17,13 @@ public enum StatisticsRange {
     /**
      * by day
      */
-    DAY("DAY", "by day", () ->
+    D("D", "by day", () ->
             ("D" + PAR_CONCATENATION.identity + now().getDayOfMonth()).intern()),
 
     /**
      * by month
      */
-    MONTH("MONTH", "by month", () ->
+    M("M", "by month", () ->
             ("M" + PAR_CONCATENATION.identity + now().getMonthValue()).intern());
 
     /**
