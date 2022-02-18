@@ -43,7 +43,7 @@ eureka:
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://172.16.201.160:3306/marketing_0
+    - url: jdbc:mysql://192.168.0.122:3306/marketing_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -57,7 +57,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://172.16.201.160:3306/marketing_1
+    - url: jdbc:mysql://192.168.0.122:3306/marketing_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -137,7 +137,7 @@ cache:
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
   maxRedirects: 4
-  host: 172.16.201.160
+  host: 192.168.0.122
   port: 6379
   minIdle: 4
   maxIdle: 64
@@ -179,7 +179,7 @@ redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
-  host: 172.16.201.160
+  host: 192.168.0.122
   port: 6379
   scanInterval: 8000
   checkSlotsCoverage: false
@@ -212,61 +212,8 @@ blocking:
 
 producers:
   configs:
-    signExpire:
-      services: [ 172.16.201.160:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60000
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 1
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 512
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 50000
-      maxLookupRedirects: 3
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 60000
-      startingBackoffIntervalMillis: 300
-      maxBackoffIntervalMillis: 600
-      enableBusyWait: false
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
-      topic: signExpire
-      producerName: signExpireProducer000
-      accessMode: Shared
-      sendTimeoutMillis: 30000
-      maxPendingMessages: 1000
-      maxPendingMessagesAcrossPartitions: 5000
-      blockIfQueueFull: false
-      messageRoutingMode: RoundRobinPartition
-      compressionType: NONE
-      enableBatching: true
-      enableChunking: false
-      batchingMaxPublishDelayMillis: 1000
-      roundRobinRouterBatchingPartitionSwitchFrequency: 2
-      batchingMaxMessages: 512
-      batchingMaxBytes: 512
-      initialSequenceId: 0
-      autoUpdatePartitions: true
-      autoUpdatePartitionsIntervalMillis: 30000
-      enableMultiSchema: false
-      hashingSchemes: [ JavaStringHash ]
-      enableEncrypt: false
-      encryptionKey:
-      producerCryptoFailureAction: FAIL
     marketing:
-      services: [ 172.16.201.160:6650 ]
+      services: [ 192.168.0.122:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -322,81 +269,8 @@ producers:
 
 consumers:
   configs:
-    signExpire:
-      services: [ 172.16.201.160:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 2
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 1024
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 1000
-      maxLookupRedirects: 2
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 10000
-      startingBackoffIntervalMillis: 1000
-      maxBackoffIntervalMillis: 30000
-      enableBusyWait: true
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
-      topics: [ signExpire ]
-      topicsPattern:
-      subscriptionName: signExpireSubscription
-      ackTimeoutMillis: 2000
-      enableAckReceipt: true
-      ackTimeoutTickTimeMillis: 1000
-      negativeAckRedeliveryDelayMillis: 100
-      subscriptionType: Shared
-      subscriptionMode: Durable
-      receiverQueueSize: 1000
-      acknowledgementsGroupTimeMillis: 100
-      replicateSubscriptionState: false
-      maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: signExpireConsumer000
-      readCompacted: false
-      patternAutoDiscoveryPeriodMillis: 1
-      priorityLevel: 0
-      subscriptionInitialPosition: Latest
-      regexSubscriptionMode: PersistentOnly
-      autoUpdatePartitions: true
-      autoUpdatePartitionsIntervalMillis: 30000
-      batchReceivePolicy: DEFAULT_POLICY
-      enableRetry: true
-      enableBatchIndexAcknowledgment: false
-      maxPendingChunkedMessage: 10
-      autoAckOldestChunkedMessageOnQueueFull: true
-      expireTimeOfIncompleteChunkedMessageMillis: 2000
-      poolMessages: false
-      enableEncrypt: false
-      encryptionKey:
-      consumerCryptoFailureAction: FAIL
-      enableDeadLetter: true
-      deadLetterTopic: signExpire
-      retryLetterTopic: signExpire
-      maxRedeliverCount: 1000
-      startMessageIdInclusive: false
-      enableBatchReceive: false
-      batchReceiveMaxNumMessages: -1
-      batchReceiveMaxNumBytes: 10485760
-      batchReceiveTimeoutMillis: 100
-      pollDurationMills: 1000
-      workingThreads: 2
-      enableNegativeAcknowledge: true
     marketing:
-      services: [ 172.16.201.160:6650 ]
+      services: [ 192.168.0.122:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -475,7 +349,7 @@ dubbo:
     id: summer-registry
     zone: summer
     protocol: zookeeper
-    address: zookeeper://172.16.201.160:2181
+    address: zookeeper://192.168.0.122:2181
     file: D:/locallogs/dubbo/marketing/registry.properties
     check: false
     timeout: 60000

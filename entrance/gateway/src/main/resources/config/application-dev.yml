@@ -60,7 +60,7 @@ cache:
   nodes: [ 172.18.7.1:6379, 172.18.7.1:6380, 172.18.7.2:6379, 172.18.7.2:6380, 172.18.7.3:6379, 172.18.7.3:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
   maxRedirects: 4
-  host: 172.16.201.160
+  host: 192.168.0.122
   port: 6379
   minIdle: 4
   maxIdle: 64
@@ -138,7 +138,7 @@ dubbo:
     id: summer-registry
     zone: summer
     protocol: zookeeper
-    address: zookeeper://172.16.201.160:2181
+    address: zookeeper://192.168.0.122:2181
     file: D:/locallogs/dubbo/gateway/registry.properties
     check: false
     timeout: 60000
@@ -168,7 +168,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 172.16.201.160:6650 ]
+      services: [ 192.168.0.122:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -226,7 +226,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 172.16.201.160:6650 ]
+      services: [ 192.168.0.122:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

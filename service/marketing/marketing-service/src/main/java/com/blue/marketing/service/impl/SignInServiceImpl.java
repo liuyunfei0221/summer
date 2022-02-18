@@ -3,28 +3,23 @@ package com.blue.marketing.service.impl;
 import com.blue.base.constant.base.BlueCacheKey;
 import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.base.Symbol;
-import com.blue.base.model.base.KeyExpireParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.marketing.api.model.*;
 import com.blue.marketing.config.deploy.BlockingDeploy;
 import com.blue.marketing.event.producer.MarketingEventProducer;
-import com.blue.marketing.event.producer.SignExpireProducer;
 import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.entity.SignRewardTodayRelation;
 import com.blue.marketing.service.inter.RewardService;
 import com.blue.marketing.service.inter.SignInService;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -36,9 +31,12 @@ import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
+import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
+import static com.blue.redis.constant.RedisScripts.SET_BIT_WITH_EXPIRE;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.nio.ByteBuffer.wrap;
+import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -61,16 +59,13 @@ public class SignInServiceImpl implements SignInService {
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    private final SignExpireProducer signExpireProducer;
-
     private final MarketingEventProducer marketingEventProducer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public SignInServiceImpl(RewardService rewardService, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
-                             SignExpireProducer signExpireProducer, MarketingEventProducer marketingEventProducer, BlockingDeploy blockingDeploy) {
+                             MarketingEventProducer marketingEventProducer, BlockingDeploy blockingDeploy) {
         this.rewardService = rewardService;
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
-        this.signExpireProducer = signExpireProducer;
         this.marketingEventProducer = marketingEventProducer;
 
         MAX_WAITING_FOR_REFRESH = blockingDeploy.getMillis();
@@ -83,9 +78,9 @@ public class SignInServiceImpl implements SignInService {
      */
     private static final int MAX_EXPIRE_DAYS_FOR_SIGN = (int) BlueNumericalValue.MAX_EXPIRE_DAYS_FOR_SIGN.value;
 
-    private static final ChronoUnit EXPIRE_UNIT = ChronoUnit.DAYS;
+    private static final int SECONDS_OF_DAY = 60 * 60 * 24;
 
-    private static volatile boolean rewardInfoRefreshing = false;
+    private volatile boolean rewardInfoRefreshing = false;
 
     private static long MAX_WAITING_FOR_REFRESH;
 
@@ -132,7 +127,7 @@ public class SignInServiceImpl implements SignInService {
         tempMapping = null;
     };
 
-    private static final Supplier<String> BLOCKER = () -> {
+    private final Supplier<String> BLOCKER = () -> {
         if (rewardInfoRefreshing) {
             long start = currentTimeMillis();
             while (rewardInfoRefreshing) {
@@ -144,7 +139,7 @@ public class SignInServiceImpl implements SignInService {
         return "refreshed";
     };
 
-    private static final Function<Integer, SignInReward> TODAY_REWARD_GETTER = day -> {
+    private final Function<Integer, SignInReward> TODAY_REWARD_GETTER = day -> {
         BLOCKER.get();
         return TODAY_REWARD_MAPPING.get(day);
     };
@@ -196,8 +191,17 @@ public class SignInServiceImpl implements SignInService {
     private final BiFunction<String, Long, Mono<Boolean>> BITMAP_BIT_GETTER = (key, offset) ->
             reactiveStringRedisTemplate.opsForValue().getBit(key, offset);
 
-    private final BiFunction<String, Long, Mono<Boolean>> BITMAP_TRUE_BIT_SETTER = (key, offset) ->
-            reactiveStringRedisTemplate.opsForValue().setBit(key, offset, true);
+    private static final RedisScript<Boolean> BIT_SET_SCRIPT = generateScriptByScriptStr(SET_BIT_WITH_EXPIRE.str, Boolean.class);
+
+    private static final Function<String, List<String>> SCRIPT_KEYS_WRAPPER = Arrays::asList;
+
+    private static final BiFunction<Integer, Integer, List<String>> SCRIPT_ARGS_WRAPPER = (offset, bit) ->
+            asList(String.valueOf(offset), String.valueOf(bit), String.valueOf((MAX_EXPIRE_DAYS_FOR_SIGN - offset) * SECONDS_OF_DAY));
+
+    private final BiFunction<String, Integer, Mono<Boolean>> BITMAP_TRUE_BIT_SETTER = (key, offset) ->
+            reactiveStringRedisTemplate.execute(BIT_SET_SCRIPT, SCRIPT_KEYS_WRAPPER.apply(key),
+                            SCRIPT_ARGS_WRAPPER.apply(offset, 1))
+                    .elementAt(FLUX_ELEMENT_INDEX);
 
     private static final BiFunction<Integer, Boolean, SignInRewardRecord> DAY_REWARD_RECORD_GENERATOR = (day, sign) ->
             new SignInRewardRecord(TODAY_REWARD_MAPPING.get(day), sign);
@@ -243,35 +247,27 @@ public class SignInServiceImpl implements SignInService {
         LOGGER.info("key = {}, year = {}, month = {}, dayOfMonth = {}", key, year, month, dayOfMonth);
 
         return BITMAP_BIT_GETTER.apply(key, (long) dayOfMonth)
-                .flatMap(b ->
-                        b ?
-                                error(new BlueException(REPEAT_SIGN_IN))
-                                :
-                                BITMAP_TRUE_BIT_SETTER.apply(key, (long) dayOfMonth)
-                                        .flatMap(f -> {
-                                            if (f)
-                                                return error(new BlueException(REPEAT_SIGN_IN));
-
-                                            try {
-                                                signExpireProducer.send(new KeyExpireParam(key, (long) (MAX_EXPIRE_DAYS_FOR_SIGN - dayOfMonth), EXPIRE_UNIT));
-                                            } catch (Exception e) {
-                                                LOGGER.error("sign in key expire failed, key = {}, expire = {}, e = {}", key, (MAX_EXPIRE_DAYS_FOR_SIGN - dayOfMonth), e);
-                                            }
-
-                                            return just(getDayReward(year, month, dayOfMonth));
-                                        })
-                                        .flatMap(signInReward -> {
-                                            try {
-                                                LOGGER.info("sign in success, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}",
-                                                        memberId, year, month, dayOfMonth, signInReward);
-                                                marketingEventProducer.send(new MarketingEvent(SIGN_IN_REWARD, memberId,
-                                                        GSON.toJson(new SignRewardEvent(memberId, year, month, dayOfMonth, signInReward)), TIME_STAMP_GETTER.get()));
-                                            } catch (Exception e) {
-                                                LOGGER.error("marketingEventProducer send sign event failed, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}, e = {}",
-                                                        memberId, year, month, dayOfMonth, signInReward, e);
-                                            }
-                                            return just(signInReward);
-                                        })
+                .flatMap(b -> b ?
+                        error(new BlueException(REPEAT_SIGN_IN))
+                        :
+                        BITMAP_TRUE_BIT_SETTER.apply(key, dayOfMonth)
+                                .flatMap(f -> f ?
+                                        just(getDayReward(year, month, dayOfMonth))
+                                        :
+                                        error(() -> new BlueException(REPEAT_SIGN_IN))
+                                )
+                                .flatMap(signInReward -> {
+                                    try {
+                                        LOGGER.info("sign in success, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}",
+                                                memberId, year, month, dayOfMonth, signInReward);
+                                        marketingEventProducer.send(new MarketingEvent(SIGN_IN_REWARD, memberId,
+                                                GSON.toJson(new SignRewardEvent(memberId, year, month, dayOfMonth, signInReward)), TIME_STAMP_GETTER.get()));
+                                    } catch (Exception e) {
+                                        LOGGER.error("marketingEventProducer send sign event failed, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}, e = {}",
+                                                memberId, year, month, dayOfMonth, signInReward, e);
+                                    }
+                                    return just(signInReward);
+                                })
                 );
     }
 
