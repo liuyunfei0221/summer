@@ -174,6 +174,7 @@ public class SignInServiceImpl implements SignInService {
     }
 
     private static final long MARK_BIT = 1L;
+    private static final int BIT_TRUE = 1;
     private static final int DAY_0F_MONTH_START = 1;
 
     private static final int FLUX_ELEMENT_INDEX = 0, LIST_ELEMENT_INDEX = 0;
@@ -200,7 +201,7 @@ public class SignInServiceImpl implements SignInService {
 
     private final BiFunction<String, Integer, Mono<Boolean>> BITMAP_TRUE_BIT_SETTER = (key, offset) ->
             reactiveStringRedisTemplate.execute(BIT_SET_SCRIPT, SCRIPT_KEYS_WRAPPER.apply(key),
-                            SCRIPT_ARGS_WRAPPER.apply(offset, 1))
+                            SCRIPT_ARGS_WRAPPER.apply(offset, BIT_TRUE))
                     .elementAt(FLUX_ELEMENT_INDEX);
 
     private static final BiFunction<Integer, Boolean, SignInRewardRecord> DAY_REWARD_RECORD_GENERATOR = (day, sign) ->

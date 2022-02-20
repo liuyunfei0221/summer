@@ -68,7 +68,7 @@ public final class StatisticsMarker {
 
     private final Consumer<String> REDIS_KEY_DELETER = key -> {
         try {
-            stringRedisTemplate.opsForHyperLogLog().delete(key);
+            stringRedisTemplate.delete(key);
         } catch (Exception e) {
             LOGGER.error("REDIS_KEY_DELETER -> key delete failed, key = {}, e = {}", key, e);
         }

@@ -44,7 +44,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
      */
     @Override
     public Mono<Boolean> markActive(Long id, StatisticsType statisticsType, StatisticsRange statisticsRange) {
-        LOGGER.info("Boolean markActive(Long id, StatisticsType statisticsType, StatisticsRange statisticsRange), id = {}, statisticsType = {}, statisticsRange = {}", id, statisticsType, statisticsRange);
+        LOGGER.info("Mono<Boolean> markActive(Long id, StatisticsType statisticsType, StatisticsRange statisticsRange), id = {}, statisticsType = {}, statisticsRange = {}", id, statisticsType, statisticsRange);
 
         if (isValidIdentity(id))
             return statisticsMarker.mark(statisticsType, statisticsRange, id.toString());
@@ -61,7 +61,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
      */
     @Override
     public Mono<Long> selectActiveSimple(StatisticsType statisticsType, StatisticsRange statisticsRange) {
-        LOGGER.info("Long selectActive(StatisticsType statisticsType, StatisticsRange statisticsRange), statisticsType = {}, statisticsRange = {}", statisticsType, statisticsRange);
+        LOGGER.info("Mono<Long> selectActiveSimple(StatisticsType statisticsType, StatisticsRange statisticsRange), statisticsType = {}, statisticsRange = {}", statisticsType, statisticsRange);
 
         return statisticsMarker.count(statisticsType, statisticsRange);
     }
@@ -75,7 +75,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
      */
     @Override
     public Mono<Long> selectActiveMerge(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges) {
-        LOGGER.info("Long selectMultiActive(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges), statisticsTypes = {}, statisticsRanges = {}", statisticsTypes, statisticsRanges);
+        LOGGER.info("Mono<Long> selectActiveMerge(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges), statisticsTypes = {}, statisticsRanges = {}", statisticsTypes, statisticsRanges);
 
         return statisticsMarker.mergeCount(statisticsTypes, statisticsRanges);
     }
