@@ -37,7 +37,7 @@ public class RequestAttributeDeploy {
     /**
      * max content length
      */
-    private Long maxContentLength;
+    private Integer maxContentLength;
 
     /**
      * max headers size
@@ -99,11 +99,11 @@ public class RequestAttributeDeploy {
         this.maxHeaderLength = maxHeaderLength;
     }
 
-    public Long getMaxContentLength() {
+    public Integer getMaxContentLength() {
         return maxContentLength;
     }
 
-    public void setMaxContentLength(Long maxContentLength) {
+    public void setMaxContentLength(Integer maxContentLength) {
         this.maxContentLength = maxContentLength;
     }
 

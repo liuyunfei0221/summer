@@ -15,15 +15,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static com.blue.base.common.base.CommonFunctions.HEADER_VALUE_GETTER;
-import static com.blue.base.constant.base.ResponseElement.PAYLOAD_TOO_LARGE;
-import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_REQUEST_ATTR;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * request attr filter
@@ -46,23 +46,21 @@ public final class BlueRequestAttrFilter implements GlobalFilter, Ordered {
 
     private static int MAX_URI_LENGTH, MAX_HEADER_COUNT, MAX_HEADER_LENGTH, MAX_CONTENT_LENGTH;
 
-    private static final Consumer<ServerHttpRequest> URI_ASSERTER = request -> {
-        if (request.getURI().getRawPath().length() > MAX_URI_LENGTH)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
-    };
+    private static final Function<ServerHttpRequest, Mono<Boolean>> URI_ASSERTER = request ->
+            request.getURI().getRawPath().length() <= MAX_URI_LENGTH
+                    ?
+                    just(true)
+                    :
+                    error(() -> new BlueException(PAYLOAD_TOO_LARGE));
 
-    private static final Consumer<HttpHeaders> CONTENT_TYPE_ASSERTER = headers -> {
-        if (VALID_CONTENT_TYPES.contains(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE)))
-            return;
+    private static final Function<HttpHeaders, Mono<Boolean>> CONTENT_TYPE_ASSERTER = headers ->
+            VALID_CONTENT_TYPES.contains(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE))
+                    ?
+                    just(true)
+                    :
+                    error(() -> new BlueException(UNSUPPORTED_MEDIA_TYPE));
 
-        throw new BlueException(UNSUPPORTED_MEDIA_TYPE);
-    };
-
-    private static final Consumer<ServerHttpRequest> HEADER_ASSERTER = request -> {
-        HttpHeaders headers = request.getHeaders();
-
-        CONTENT_TYPE_ASSERTER.accept(headers);
-
+    private static final Function<HttpHeaders, Mono<Boolean>> HEADER_LENGTH_ASSERTER = headers -> {
         int headerCount = 0;
         int headerLength = 0;
         List<String> headerValues;
@@ -78,23 +76,35 @@ public final class BlueRequestAttrFilter implements GlobalFilter, Ordered {
                     throw new BlueException(PAYLOAD_TOO_LARGE);
             }
         }
+
+        return just(true);
     };
 
-    private static final Consumer<ServerHttpRequest> CONTENT_ASSERTER = request -> {
-        if (ofNullable(request.getHeaders().getFirst(CONTENT_LENGTH))
-                .map(Integer::valueOf).orElse(1) > MAX_CONTENT_LENGTH)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
+    private static final Function<ServerHttpRequest, Mono<Boolean>> HEADER_ASSERTER = request -> {
+        HttpHeaders headers = request.getHeaders();
+
+        return zip(CONTENT_TYPE_ASSERTER.apply(headers), HEADER_LENGTH_ASSERTER.apply(headers))
+                .flatMap(b -> just(true));
     };
+
+    private static final Function<ServerHttpRequest, Mono<Boolean>> CONTENT_ASSERTER = request ->
+            ofNullable(request.getHeaders().getFirst(CONTENT_LENGTH)).map(Integer::valueOf).orElse(1) <= MAX_CONTENT_LENGTH
+                    ?
+                    just(true)
+                    :
+                    error(() -> new BlueException(PAYLOAD_TOO_LARGE));
+
+    private static final Function<ServerHttpRequest, Mono<Boolean>> REQUEST_ASSERTER = request ->
+            request != null
+                    ?
+                    zip(URI_ASSERTER.apply(request), HEADER_ASSERTER.apply(request), CONTENT_ASSERTER.apply(request)).flatMap(tuple3 -> just(true))
+                    :
+                    error(() -> new BlueException(INTERNAL_SERVER_ERROR));
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
-
-        URI_ASSERTER.accept(request);
-        HEADER_ASSERTER.accept(request);
-        CONTENT_ASSERTER.accept(request);
-
-        return chain.filter(exchange);
+        return REQUEST_ASSERTER.apply(exchange.getRequest())
+                .flatMap(b -> chain.filter(exchange));
     }
 
     @Override

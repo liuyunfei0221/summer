@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.base.repository.mapper.CityMapper">
+    <resultMap id="BaseResultMap" type="com.blue.base.repository.entity.City">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="country_id" jdbcType="BIGINT" property="countryId"/>
+        <result column="state_id" jdbcType="BIGINT" property="stateId"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="country_code" jdbcType="CHAR" property="countryCode"/>
+        <result column="state_code" jdbcType="CHAR" property="stateCode"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , country_id, state_id, name, country_code, state_code, status, create_time, update_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from city
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from city
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.blue.base.repository.entity.City">
+        insert into city (id, country_id, state_id,
+                          name, country_code, state_code,
+                          status, create_time, update_time)
+        values (#{id,jdbcType=BIGINT}, #{countryId,jdbcType=BIGINT}, #{stateId,jdbcType=BIGINT},
+                #{name,jdbcType=VARCHAR}, #{countryCode,jdbcType=CHAR}, #{stateCode,jdbcType=CHAR},
+                #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.blue.base.repository.entity.City">
+        insert into city
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="countryId != null">
+                country_id,
+            </if>
+            <if test="stateId != null">
+                state_id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="countryCode != null">
+                country_code,
+            </if>
+            <if test="stateCode != null">
+                state_code,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="countryId != null">
+                #{countryId,jdbcType=BIGINT},
+            </if>
+            <if test="stateId != null">
+                #{stateId,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="countryCode != null">
+                #{countryCode,jdbcType=CHAR},
+            </if>
+            <if test="stateCode != null">
+                #{stateCode,jdbcType=CHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.base.repository.entity.City">
+        update city
+        <set>
+            <if test="countryId != null">
+                country_id = #{countryId,jdbcType=BIGINT},
+            </if>
+            <if test="stateId != null">
+                state_id = #{stateId,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="countryCode != null">
+                country_code = #{countryCode,jdbcType=CHAR},
+            </if>
+            <if test="stateCode != null">
+                state_code = #{stateCode,jdbcType=CHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.City">
+        update city
+        set country_id   = #{countryId,jdbcType=BIGINT},
+            state_id     = #{stateId,jdbcType=BIGINT},
+            name         = #{name,jdbcType=VARCHAR},
+            country_code = #{countryCode,jdbcType=CHAR},
+            state_code   = #{stateCode,jdbcType=CHAR},
+            status       = #{status,jdbcType=TINYINT},
+            create_time  = #{createTime,jdbcType=BIGINT},
+            update_time  = #{updateTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

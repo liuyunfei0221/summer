@@ -43,7 +43,9 @@
         </javaClientGenerator>
 
         <!-- tables -->
-        <table tableName="opt_event" domainObjectName="OptEvent"/>
+        <table tableName="country" domainObjectName="Country"/>
+        <table tableName="state" domainObjectName="State"/>
+        <table tableName="city" domainObjectName="City"/>
 
     </context>
 </generatorConfiguration>

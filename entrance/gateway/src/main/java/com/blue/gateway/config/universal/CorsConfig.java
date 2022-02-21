@@ -81,7 +81,6 @@ public class CorsConfig {
                 Duration.of(ofNullable(corsDeploy.getMaxAgeSeconds())
                         .orElse(DEFAULT_MAX_AGE_SECONDS), SECONDS));
 
-
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
 
         ofNullable(corsDeploy.getAllowedOriginPatterns())

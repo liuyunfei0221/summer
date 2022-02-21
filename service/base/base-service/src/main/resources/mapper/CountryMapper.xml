@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.base.repository.mapper.CountryMapper">
+    <resultMap id="BaseResultMap" type="com.blue.base.repository.entity.Country">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="native_name" jdbcType="VARCHAR" property="nativeName"/>
+        <result column="numeric_code" jdbcType="CHAR" property="numericCode"/>
+        <result column="country_code" jdbcType="CHAR" property="countryCode"/>
+        <result column="phone_code" jdbcType="VARCHAR" property="phoneCode"/>
+        <result column="capital" jdbcType="VARCHAR" property="capital"/>
+        <result column="currency" jdbcType="VARCHAR" property="currency"/>
+        <result column="currency_symbol" jdbcType="VARCHAR" property="currencySymbol"/>
+        <result column="top_level_domain" jdbcType="VARCHAR" property="topLevelDomain"/>
+        <result column="region" jdbcType="VARCHAR" property="region"/>
+        <result column="emoji" jdbcType="VARCHAR" property="emoji"/>
+        <result column="emojiU" jdbcType="VARCHAR" property="emojiu"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , name, native_name, numeric_code, country_code, phone_code, capital, currency,
+    currency_symbol, top_level_domain, region, emoji, emojiU, status, create_time, update_time
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from country
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from country
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.blue.base.repository.entity.Country">
+        insert into country (id, name, native_name,
+                             numeric_code, country_code, phone_code,
+                             capital, currency, currency_symbol,
+                             top_level_domain, region, emoji,
+                             emojiU, status, create_time,
+                             update_time)
+        values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{nativeName,jdbcType=VARCHAR},
+                #{numericCode,jdbcType=CHAR}, #{countryCode,jdbcType=CHAR}, #{phoneCode,jdbcType=VARCHAR},
+                #{capital,jdbcType=VARCHAR}, #{currency,jdbcType=VARCHAR}, #{currencySymbol,jdbcType=VARCHAR},
+                #{topLevelDomain,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, #{emoji,jdbcType=VARCHAR},
+                #{emojiu,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.blue.base.repository.entity.Country">
+        insert into country
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="nativeName != null">
+                native_name,
+            </if>
+            <if test="numericCode != null">
+                numeric_code,
+            </if>
+            <if test="countryCode != null">
+                country_code,
+            </if>
+            <if test="phoneCode != null">
+                phone_code,
+            </if>
+            <if test="capital != null">
+                capital,
+            </if>
+            <if test="currency != null">
+                currency,
+            </if>
+            <if test="currencySymbol != null">
+                currency_symbol,
+            </if>
+            <if test="topLevelDomain != null">
+                top_level_domain,
+            </if>
+            <if test="region != null">
+                region,
+            </if>
+            <if test="emoji != null">
+                emoji,
+            </if>
+            <if test="emojiu != null">
+                emojiU,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="nativeName != null">
+                #{nativeName,jdbcType=VARCHAR},
+            </if>
+            <if test="numericCode != null">
+                #{numericCode,jdbcType=CHAR},
+            </if>
+            <if test="countryCode != null">
+                #{countryCode,jdbcType=CHAR},
+            </if>
+            <if test="phoneCode != null">
+                #{phoneCode,jdbcType=VARCHAR},
+            </if>
+            <if test="capital != null">
+                #{capital,jdbcType=VARCHAR},
+            </if>
+            <if test="currency != null">
+                #{currency,jdbcType=VARCHAR},
+            </if>
+            <if test="currencySymbol != null">
+                #{currencySymbol,jdbcType=VARCHAR},
+            </if>
+            <if test="topLevelDomain != null">
+                #{topLevelDomain,jdbcType=VARCHAR},
+            </if>
+            <if test="region != null">
+                #{region,jdbcType=VARCHAR},
+            </if>
+            <if test="emoji != null">
+                #{emoji,jdbcType=VARCHAR},
+            </if>
+            <if test="emojiu != null">
+                #{emojiu,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.base.repository.entity.Country">
+        update country
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="nativeName != null">
+                native_name = #{nativeName,jdbcType=VARCHAR},
+            </if>
+            <if test="numericCode != null">
+                numeric_code = #{numericCode,jdbcType=CHAR},
+            </if>
+            <if test="countryCode != null">
+                country_code = #{countryCode,jdbcType=CHAR},
+            </if>
+            <if test="phoneCode != null">
+                phone_code = #{phoneCode,jdbcType=VARCHAR},
+            </if>
+            <if test="capital != null">
+                capital = #{capital,jdbcType=VARCHAR},
+            </if>
+            <if test="currency != null">
+                currency = #{currency,jdbcType=VARCHAR},
+            </if>
+            <if test="currencySymbol != null">
+                currency_symbol = #{currencySymbol,jdbcType=VARCHAR},
+            </if>
+            <if test="topLevelDomain != null">
+                top_level_domain = #{topLevelDomain,jdbcType=VARCHAR},
+            </if>
+            <if test="region != null">
+                region = #{region,jdbcType=VARCHAR},
+            </if>
+            <if test="emoji != null">
+                emoji = #{emoji,jdbcType=VARCHAR},
+            </if>
+            <if test="emojiu != null">
+                emojiU = #{emojiu,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.Country">
+        update country
+        set name             = #{name,jdbcType=VARCHAR},
+            native_name      = #{nativeName,jdbcType=VARCHAR},
+            numeric_code     = #{numericCode,jdbcType=CHAR},
+            country_code     = #{countryCode,jdbcType=CHAR},
+            phone_code       = #{phoneCode,jdbcType=VARCHAR},
+            capital          = #{capital,jdbcType=VARCHAR},
+            currency         = #{currency,jdbcType=VARCHAR},
+            currency_symbol  = #{currencySymbol,jdbcType=VARCHAR},
+            top_level_domain = #{topLevelDomain,jdbcType=VARCHAR},
+            region           = #{region,jdbcType=VARCHAR},
+            emoji            = #{emoji,jdbcType=VARCHAR},
+            emojiU           = #{emojiu,jdbcType=VARCHAR},
+            status           = #{status,jdbcType=TINYINT},
+            create_time      = #{createTime,jdbcType=BIGINT},
+            update_time      = #{updateTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>
