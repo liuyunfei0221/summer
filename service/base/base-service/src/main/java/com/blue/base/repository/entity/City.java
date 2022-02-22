@@ -19,7 +19,7 @@ public class City {
 
     private String stateCode;
 
-    private Byte status;
+    private Integer status;
 
     private Long createTime;
 
@@ -73,11 +73,11 @@ public class City {
         this.stateCode = stateCode == null ? null : stateCode.trim();
     }
 
-    public Byte getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -95,6 +95,21 @@ public class City {
 
     public void setUpdateTime(Long updateTime) {
         this.updateTime = updateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "City{" +
+                "id=" + id +
+                ", countryId=" + countryId +
+                ", stateId=" + stateId +
+                ", name='" + name + '\'' +
+                ", countryCode='" + countryCode + '\'' +
+                ", stateCode='" + stateCode + '\'' +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
     }
 
 }

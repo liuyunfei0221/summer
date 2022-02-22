@@ -34,7 +34,7 @@ public class Country {
 
     private String emojiu;
 
-    private Byte status;
+    private Integer status;
 
     private Long createTime;
 
@@ -144,11 +144,11 @@ public class Country {
         this.emojiu = emojiu == null ? null : emojiu.trim();
     }
 
-    public Byte getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -166,6 +166,28 @@ public class Country {
 
     public void setUpdateTime(Long updateTime) {
         this.updateTime = updateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Country{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", nativeName='" + nativeName + '\'' +
+                ", numericCode='" + numericCode + '\'' +
+                ", countryCode='" + countryCode + '\'' +
+                ", phoneCode='" + phoneCode + '\'' +
+                ", capital='" + capital + '\'' +
+                ", currency='" + currency + '\'' +
+                ", currencySymbol='" + currencySymbol + '\'' +
+                ", topLevelDomain='" + topLevelDomain + '\'' +
+                ", region='" + region + '\'' +
+                ", emoji='" + emoji + '\'' +
+                ", emojiu='" + emojiu + '\'' +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
     }
 
 }

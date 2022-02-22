@@ -186,45 +186,68 @@ public final class BlueDataAccessGenerator {
      */
     @SuppressWarnings("AlibabaMethodTooLong")
     private static DataAccessConfElements generateDataConfAttr(DataAccessConf dataAccessConf, IdentityConf identityConf, List<UnaryOperator<DataSource>> proxiesChain) {
+        //prepare
         if (dataAccessConf == null || identityConf == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingConf or shardingIdentityConf can't be null");
 
-        List<UnaryOperator<DataSource>> tarChain = ofNullable(proxiesChain).map(pc -> pc.stream().filter(Objects::nonNull).collect(toList())).orElseGet(Collections::emptyList);
-        boolean enableProxy = !isEmpty(tarChain);
+        int shardingSize = ofNullable(dataAccessConf.getShardingDatabases()).map(List::size).orElse(0);
+        if (shardingSize > MAX_DATA_CENTER_ID.max)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingDatabases can't be more than max datacenter size -> " + MAX_DATA_CENTER_ID.max);
 
-        //<editor-fold desc="generate sharding datasource">
+        int totalSize = shardingSize + ofNullable(dataAccessConf.getSingleDatabasesWithTables()).map(List::size).orElse(0);
+        if (totalSize < 1)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingDatabase can't be null");
+
+        Map<String, DataSource> dataSources = new HashMap<>(totalSize);
+        Set<String> existDatabases = new HashSet<>(totalSize);
+        ShardingRuleConfiguration shardingRuleConfiguration = new ShardingRuleConfiguration();
+
+        //process sharding db
+        processShardingDb(shardingRuleConfiguration, dataSources, existDatabases, dataAccessConf, identityConf, proxiesChain);
+
+        //process single db
+        processSingleDb(shardingRuleConfiguration, dataSources, existDatabases, dataAccessConf, identityConf, proxiesChain);
+
+        //additional attributes
+        Properties props = new Properties();
+        ofNullable(dataAccessConf.getProps()).ifPresent(props::putAll);
+
+        return new DataAccessConfElements(dataSources, shardingRuleConfiguration, props);
+    }
+
+    /**
+     * process sharding db
+     *
+     * @param shardingRuleConfiguration
+     * @param dataSources
+     * @param existDatabases
+     * @param dataAccessConf
+     * @param identityConf
+     * @param proxiesChain
+     */
+    @SuppressWarnings("AlibabaMethodTooLong")
+    private static void processShardingDb(ShardingRuleConfiguration shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf dataAccessConf, IdentityConf identityConf, List<UnaryOperator<DataSource>> proxiesChain) {
+        if (shardingRuleConfiguration == null || dataSources == null || existDatabases == null || dataAccessConf == null || identityConf == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingRuleConfiguration or dataSources or existDatabases or dataAccessConf or identityConf can't be null");
+
         List<ShardingDatabaseAttr> shardingDatabases = dataAccessConf.getShardingDatabases();
 
-        int shardingSize;
-        if (shardingDatabases == null || (shardingSize = shardingDatabases.size()) < 1 || shardingSize > MAX_DATA_CENTER_ID.max)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingDatabases can't be empty or more than max datacenter size -> " + MAX_DATA_CENTER_ID.max);
+        int shardingSize = ofNullable(shardingDatabases).map(List::size).orElse(0);
+        if (shardingSize < 1)
+            return;
 
-        List<SingleDatabaseWithTablesAttr> singleDatabasesWithTables = dataAccessConf.getSingleDatabasesWithTables();
+        List<UnaryOperator<DataSource>> tarChain = ofNullable(proxiesChain).map(pc -> pc.stream().filter(Objects::nonNull).collect(toList())).orElseGet(Collections::emptyList);
 
-        int totalSize = shardingSize + ofNullable(singleDatabasesWithTables).map(List::size).orElse(0);
-        Map<String, DataSource> dataSources = new HashMap<>(totalSize);
         List<Integer> assertIndexList = new ArrayList<>(shardingSize);
 
-        Set<String> existDatabases = new HashSet<>(totalSize);
-
-        String[] urlParts;
-        String url, dataBaseName, tempLogicDataBaseName, dataBaseIndexStr;
+        String tempLogicDataBaseName, dataBaseIndexStr;
         int dataBaseNameLen, nameAndIndexConcatenationIdx, dataBaseIndex;
         String logicDataBaseName = null;
+
+        String dataBaseName;
         DataSource dataSource;
-
         for (ShardingDatabaseAttr shardingDatabase : shardingDatabases) {
-            if (shardingDatabase == null)
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingDatabase can't be null");
-
-            if (isBlank(url = shardingDatabase.getUrl()))
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "url can't be blank");
-
-            if ((urlParts = url.split(PATH_SEPARATOR.identity)).length < MIN_VALID_DB_URL_PARTS_LEN)
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid url, url = " + url);
-
-            if (isBlank(dataBaseName = urlParts[urlParts.length - 1]))
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database name can't be blank, dataBaseName = " + dataBaseName);
+            dataBaseName = parseDbName(shardingDatabase);
 
             if (!existDatabases.add(dataBaseName))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database name dupicates, dataBaseName = " + dataBaseName);
@@ -251,16 +274,16 @@ public final class BlueDataAccessGenerator {
 
             assertIndexList.add(dataBaseIndex);
 
-            if (logicDataBaseName == null) {
-                logicDataBaseName = tempLogicDataBaseName;
-            } else {
+            if (logicDataBaseName != null) {
                 if (!tempLogicDataBaseName.equals(logicDataBaseName))
                     throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "sharding db in same micro service must has the same prefix, " + tempLogicDataBaseName + "/" + logicDataBaseName);
+            } else {
+                logicDataBaseName = tempLogicDataBaseName;
             }
 
             dataSource = DATA_SOURCE_GENERATOR.apply(shardingDatabase);
 
-            if (enableProxy)
+            if (!isEmpty(tarChain))
                 for (UnaryOperator<DataSource> proxy : tarChain)
                     dataSource = proxy.apply(dataSource);
 
@@ -272,11 +295,7 @@ public final class BlueDataAccessGenerator {
 
         if (!assertDisorderIntegerContinuous(assertIndexList))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "The database index set should be a continuous number starting from 0");
-        //</editor-fold>
 
-        ShardingRuleConfiguration shardingRuleConfiguration = new ShardingRuleConfiguration();
-
-        //<editor-fold desc="db shards">
         Integer shardingTableSizePerDataBase = dataAccessConf.getShardingTableSizePerDataBase();
         if (shardingTableSizePerDataBase == null || shardingTableSizePerDataBase < 1 || shardingTableSizePerDataBase > MAX_WORKER_ID.max)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "the number of table splits in each database cannot be less than 1 or greater than the maximum number of machines in each data center -> " + MAX_WORKER_ID.max);
@@ -346,9 +365,7 @@ public final class BlueDataAccessGenerator {
 
                     return conf;
                 }).collect(toList()));
-        //</editor-fold>
 
-        //<editor-fold desc="broadcast">
         ofNullable(dataAccessConf.getBroadcastTables())
                 .filter(sbts -> sbts.size() > 0)
                 .ifPresent(sbts ->
@@ -358,60 +375,87 @@ public final class BlueDataAccessGenerator {
                                         .distinct()
                                         .collect(toList())
                         ));
-        //</editor-fold>
+    }
 
-        //<editor-fold desc="single db and tables">
-        if (!isEmpty(singleDatabasesWithTables)) {
-            List<String> singleTables;
-            for (SingleDatabaseWithTablesAttr single : singleDatabasesWithTables) {
-                if (single == null)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "single db can't be null");
+    /**
+     * process single db
+     *
+     * @param shardingRuleConfiguration
+     * @param dataSources
+     * @param existDatabases
+     * @param dataAccessConf
+     * @param identityConf
+     * @param proxiesChain
+     */
+    private static void processSingleDb(ShardingRuleConfiguration shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf dataAccessConf, IdentityConf identityConf, List<UnaryOperator<DataSource>> proxiesChain) {
+        if (shardingRuleConfiguration == null || dataSources == null || existDatabases == null || dataAccessConf == null || identityConf == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingRuleConfiguration or dataSources or existDatabases or dataAccessConf or identityConf can't be null");
 
-                if (isBlank(url = single.getUrl()))
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "url can't be blank");
+        List<SingleDatabaseWithTablesAttr> singleDatabasesWithTables = dataAccessConf.getSingleDatabasesWithTables();
+        int singleSize = ofNullable(singleDatabasesWithTables).map(List::size).orElse(0);
 
-                if ((urlParts = url.split(PATH_SEPARATOR.identity)).length < MIN_VALID_DB_URL_PARTS_LEN)
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid url, url = " + url);
+        if (singleSize < 1)
+            return;
 
-                if (isBlank(dataBaseName = urlParts[urlParts.length - 1]))
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database name can't be blank, dataBaseName = " + dataBaseName);
+        List<UnaryOperator<DataSource>> tarChain = ofNullable(proxiesChain).map(pc -> pc.stream().filter(Objects::nonNull).collect(toList())).orElseGet(Collections::emptyList);
 
-                if (!existDatabases.add(dataBaseName))
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database name dupicates, dataBaseName = " + dataBaseName);
+        String dataBaseName;
+        DataSource dataSource;
+        for (SingleDatabaseWithTablesAttr single : singleDatabasesWithTables) {
+            dataBaseName = parseDbName(single);
 
-                singleTables = single.getSingleTables();
-                if (isEmpty(shardingTables))
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "singleTables can't be empty");
+            if (!existDatabases.add(dataBaseName))
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database name dupicates, dataBaseName = " + dataBaseName);
 
-                dataSource = DATA_SOURCE_GENERATOR.apply(single);
+            List<String> singleTables = single.getSingleTables();
+            if (isEmpty(singleTables))
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "singleTables can't be empty");
 
-                if (enableProxy)
-                    for (UnaryOperator<DataSource> proxy : tarChain)
-                        dataSource = proxy.apply(dataSource);
+            dataSource = DATA_SOURCE_GENERATOR.apply(single);
 
-                dataSources.put(dataBaseName, dataSource);
+            if (!isEmpty(tarChain))
+                for (UnaryOperator<DataSource> proxy : tarChain)
+                    dataSource = proxy.apply(dataSource);
 
-                String singleDataBaseName = dataBaseName;
+            dataSources.put(dataBaseName, dataSource);
 
-                ShardingStrategyConfiguration noneShardingStrategyConfiguration = new NoneShardingStrategyConfiguration();
-                shardingRuleConfiguration.getTableRuleConfigs().addAll(
-                        singleTables.stream().distinct().map(tableName -> {
-                            TableRuleConfiguration conf = new TableRuleConfiguration(tableName, singleDataBaseName + "." + tableName);
-                            conf.setDatabaseShardingStrategyConfig(noneShardingStrategyConfiguration);
-                            conf.setTableShardingStrategyConfig(noneShardingStrategyConfiguration);
+            String singleDataBaseName = dataBaseName;
 
-                            return conf;
-                        }).collect(toList()));
-            }
+            ShardingStrategyConfiguration noneShardingStrategyConfiguration = new NoneShardingStrategyConfiguration();
+            shardingRuleConfiguration.getTableRuleConfigs().addAll(
+                    singleTables.stream().distinct().map(tableName -> {
+                        TableRuleConfiguration conf = new TableRuleConfiguration(tableName, singleDataBaseName + "." + tableName);
+                        conf.setDatabaseShardingStrategyConfig(noneShardingStrategyConfiguration);
+                        conf.setTableShardingStrategyConfig(noneShardingStrategyConfiguration);
+
+                        return conf;
+                    }).collect(toList()));
         }
-        //</editor-fold>
+    }
 
-        //<editor-fold desc="additional attributes">
-        Properties props = new Properties();
-        ofNullable(dataAccessConf.getProps()).ifPresent(props::putAll);
-        //</editor-fold>
+    /**
+     * parse database name
+     *
+     * @param attr
+     * @return
+     */
+    private static String parseDbName(ShardingDatabaseAttr attr) {
+        if (attr == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "attr can't be null");
 
-        return new DataAccessConfElements(dataSources, shardingRuleConfiguration, props);
+        String[] urlParts;
+        String url, dataBaseName;
+
+        if (isBlank(url = attr.getUrl()))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "url can't be blank");
+
+        if ((urlParts = url.split(PATH_SEPARATOR.identity)).length < MIN_VALID_DB_URL_PARTS_LEN)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid url, url = " + url);
+
+        if (isBlank(dataBaseName = urlParts[urlParts.length - 1]))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database name can't be blank, dataBaseName = " + dataBaseName);
+
+        return dataBaseName;
     }
 
     static final class DataAccessConfElements {

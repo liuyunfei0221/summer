@@ -2798,12 +2798,69 @@ CREATE TABLE `reply_1`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reply 1';
 
 
--- the_data测试独立库表
+-- base
 
 CREATE
-DATABASE dict CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DATABASE base CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
-dict;
+base;
+
+CREATE TABLE `country`
+(
+    `id`               bigint(20) NOT NULL COMMENT 'id',
+    `name`             varchar(255) NOT NULL COMMENT 'name',
+    `native_name`      varchar(255) DEFAULT NULL COMMENT 'native',
+    `numeric_code`     char(4)      DEFAULT NULL COMMENT 'numeric code',
+    `country_code`     char(4)      DEFAULT NULL COMMENT 'iso2',
+    `phone_code`       varchar(255) DEFAULT NULL COMMENT 'phone_code',
+    `capital`          varchar(255) DEFAULT NULL COMMENT 'capital',
+    `currency`         varchar(255) DEFAULT NULL COMMENT 'currency',
+    `currency_symbol`  varchar(255) DEFAULT NULL COMMENT 'currency_symbol',
+    `top_level_domain` varchar(255) DEFAULT NULL COMMENT 'top-level domain',
+    `region`           varchar(255) DEFAULT NULL COMMENT 'region',
+    `emoji`            varchar(255) DEFAULT NULL COMMENT 'emoji',
+    `emojiU`           varchar(255) DEFAULT NULL COMMENT 'emoji U',
+    `status`           tinyint(4) DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`      bigint(20) DEFAULT '1' COMMENT 'data create time',
+    `update_time`      bigint(20) DEFAULT '1' COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    KEY                `idx_phone_code`(`phone_code`) USING BTREE,
+    KEY                `idx_status`(`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `state`
+(
+    `id`           bigint(20) NOT NULL COMMENT 'id',
+    `country_id`   bigint(20) NOT NULL COMMENT 'country id',
+    `name`         varchar(255) NOT NULL COMMENT 'name',
+    `fips_code`    varchar(255) DEFAULT NULL COMMENT 'fips code',
+    `country_code` char(16)     NOT NULL COMMENT 'country code',
+    `state_code`   char(16)     DEFAULT NULL COMMENT 'state code',
+    `status`       tinyint(4) DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`  bigint(20) DEFAULT '1' COMMENT 'data create time',
+    `update_time`  bigint(20) DEFAULT '1' COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    KEY            `idx_country_id`(`country_id`) USING BTREE,
+    KEY            `idx_status`(`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `city`
+(
+    `id`           bigint(20) NOT NULL COMMENT 'id',
+    `country_id`   bigint(20) NOT NULL COMMENT 'country id',
+    `state_id`     bigint(20) NOT NULL COMMENT 'state id',
+    `name`         varchar(255) NOT NULL COMMENT 'name',
+    `country_code` char(16)     NOT NULL COMMENT 'country code',
+    `state_code`   char(16)     NOT NULL COMMENT 'state code',
+    `status`       tinyint(4) DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`  bigint(20) DEFAULT '1' COMMENT 'data create time',
+    `update_time`  bigint(20) DEFAULT '1' COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    KEY            `idx_country_id`(`country_id`) USING BTREE,
+    KEY            `idx_state_id`(`state_id`) USING BTREE,
+    UNIQUE KEY `idx_country_state`(`country_id`,`state_id`) USING BTREE,
+    KEY            `idx_status`(`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `dict_type`
 (
@@ -2835,10 +2892,15 @@ CREATE TABLE `dict`
 
 
 
+CREATE
+DATABASE base_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+USE
+base_0;
 
-
-
-
+CREATE
+DATABASE base_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+USE
+base_1;
 
 
 

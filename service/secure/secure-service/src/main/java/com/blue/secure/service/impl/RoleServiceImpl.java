@@ -442,7 +442,7 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(ofNullable(roleMapper.selectByPrimaryKey(id)));
+        return just(getRoleById(id));
     }
 
     /**

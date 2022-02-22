@@ -1,6 +1,9 @@
 package com.blue.base.repository.mapper;
 
 import com.blue.base.repository.entity.State;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * state mapper
@@ -10,15 +13,20 @@ import com.blue.base.repository.entity.State;
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface StateMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(State record);
 
     int insertSelective(State record);
 
-    State selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(State record);
 
     int updateByPrimaryKeySelective(State record);
 
-    int updateByPrimaryKey(State record);
+    int deleteByPrimaryKey(Long id);
+
+    State selectByPrimaryKey(Long id);
+
+    List<State> select();
+
+    List<State> selectByCountryId(@Param("countryId") Long countryId);
+
 }

@@ -22,6 +22,7 @@ import java.util.function.BiFunction;
 import static com.blue.base.common.base.BlueCheck.isNotBlank;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.constant.base.ResponseElement.ILLEGAL_REQUEST;
+import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.error;
@@ -49,7 +50,6 @@ public class VerifyServiceImpl implements VerifyService {
     private final Duration DEFAULT_DURATION;
     private final boolean DEFAULT_REPEATABLE;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public VerifyServiceImpl(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, VerifyDeploy verifyDeploy) {
         this.blueValidator = BlueValidatorGenerator.generateValidator(reactiveStringRedisTemplate, scheduler);
 
@@ -112,6 +112,13 @@ public class VerifyServiceImpl implements VerifyService {
 
     private final Map<Boolean, BiFunction<String, String, Mono<Boolean>>> VALIDATORS = new HashMap<>(4, 1.0f);
 
+    private static final BiFunction<VerifyType, String, String> KEY_WRAPPER = (type, k) -> {
+        if (type != null && isNotBlank(k) && k.length() <= MAX_KEY_LEN)
+            return type.identity + PAR_CONCATENATION_DATABASE_URL.identity + k;
+
+        throw new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type,key can't be null and key len can't be greater than " + MAX_KEY_LEN);
+    };
+
     /**
      * generate pair
      *
@@ -161,11 +168,8 @@ public class VerifyServiceImpl implements VerifyService {
     public Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire) {
         LOGGER.info("Mono<VerifyPair> generate(VerifyType type, String key, Integer length,  Duration expire) , type = {}, key = {}, length = {}, expire = {}", type, key, length, expire);
 
-        if (key != null && key.length() > MAX_KEY_LEN)
-            throw new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "key len can't be greater than " + MAX_KEY_LEN);
-
         if (type != null) {
-            String k = isNotBlank(key) ? key : generateRandom(RANDOM_TYPE, KEY_LEN);
+            String k = KEY_WRAPPER.apply(type, isNotBlank(key) ? key : generateRandom(RANDOM_TYPE, KEY_LEN));
             String v = generateRandom(type.randomType, length != null && length >= MIN_LEN && length <= MAX_LEN ? length : VERIFY_LEN);
 
             LOGGER.info("Mono<VerifyPair> generate(RandomType type, int length, Duration expire), k = {}, v = {}", k, v);

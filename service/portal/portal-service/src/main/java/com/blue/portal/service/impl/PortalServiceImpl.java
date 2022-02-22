@@ -37,6 +37,7 @@ import static com.blue.base.constant.base.SyncKeyPrefix.PORTALS_REFRESH_PRE;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
+import static com.blue.portal.converter.PortalModelConverters.BULLETINS_2_BULLETIN_INFOS_CONVERTER;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.emptyList;
@@ -68,7 +69,6 @@ public class PortalServiceImpl implements PortalService {
 
     private final static TimeUnit EXPIRE_UNIT = TimeUnit.SECONDS;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public PortalServiceImpl(BulletinService bulletinService, ExecutorService executorService, StringRedisTemplate stringRedisTemplate,
                              RedissonClient redissonClient, BlueRedisConfig blueRedisConfig, CaffeineDeploy caffeineDeploy) {
         this.bulletinService = bulletinService;
@@ -86,11 +86,6 @@ public class PortalServiceImpl implements PortalService {
     }
 
     private static final long MAX_WAIT_MILLIS_FOR_REDISSON_SYNC = BlueNumericalValue.MAX_WAIT_MILLIS_FOR_REDISSON_SYNC.value;
-
-    private static final Function<List<Bulletin>, List<BulletinInfo>> VO_LIST_CONVERTER = bl ->
-            bl != null && bl.size() > 0 ? bl.stream()
-                    .map(b -> new BulletinInfo(b.getId(), b.getTitle(), b.getContent(), b.getLink(), b.getType()))
-                    .collect(toList()) : emptyList();
 
     private static Cache<BulletinType, List<BulletinInfo>> LOCAL_CACHE;
 
@@ -116,21 +111,21 @@ public class PortalServiceImpl implements PortalService {
     /**
      * list bulletin infos from db
      */
-    private final Function<BulletinType, List<BulletinInfo>> DB_CACHE_PORTAL_GETTER = type -> {
+    private final Function<BulletinType, List<BulletinInfo>> DB_PORTAL_GETTER = type -> {
         List<Bulletin> bulletins = bulletinService.selectTargetActiveBulletinByType(type);
-        LOGGER.info("DB_CACHE_PORTAL_GETTER, bulletins = {}, type = {}", bulletins, type);
-        return VO_LIST_CONVERTER.apply(bulletins);
+        LOGGER.info("DB_PORTAL_GETTER, bulletins = {}, type = {}", bulletins, type);
+        return BULLETINS_2_BULLETIN_INFOS_CONVERTER.apply(bulletins);
     };
 
     /**
      * list bulletin infos from redis
      */
-    private final Function<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_GETTER = type -> {
+    private final Function<BulletinType, List<BulletinInfo>> REDIS_PORTAL_GETTER = type -> {
         List<String> bulletins = ofNullable(stringRedisTemplate.opsForList().range(ofNullable(type)
                 .map(BULLETIN_CACHE_KEY_GENERATOR)
                 .orElseGet(() -> PORTALS_PRE.key + POPULAR.identity), 0, -1))
                 .orElseGet(Collections::emptyList);
-        LOGGER.info("REDIS_CACHE_PORTAL_GETTER, type = {}, bulletins = {}", type, bulletins);
+        LOGGER.info("REDIS_PORTAL_GETTER, type = {}, bulletins = {}", type, bulletins);
         return bulletins
                 .stream().map(s -> GSON.fromJson(s, BulletinInfo.class)).collect(toList());
     };
@@ -138,7 +133,7 @@ public class PortalServiceImpl implements PortalService {
     /**
      * set bulletin info to redis
      */
-    private final BiConsumer<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_SETTER = (type, list) -> {
+    private final BiConsumer<BulletinType, List<BulletinInfo>> REDIS_PORTAL_SETTER = (type, list) -> {
         if (!isEmpty(list)) {
             String key = BULLETIN_CACHE_KEY_GENERATOR.apply(type);
             stringRedisTemplate.opsForList().rightPushAll(key, list.stream().map(GSON::toJson).collect(toList()));
@@ -150,8 +145,8 @@ public class PortalServiceImpl implements PortalService {
     /**
      * list bulletin infos from redis, if not exist, set
      */
-    private final Function<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_GETTER_WITH_CACHE = type ->
-            ofNullable(REDIS_CACHE_PORTAL_GETTER.apply(type))
+    private final Function<BulletinType, List<BulletinInfo>> REDIS_PORTAL_GETTER_WITH_CACHE = type ->
+            ofNullable(REDIS_PORTAL_GETTER.apply(type))
                     .filter(bvs -> bvs.size() > 0)
                     .orElseGet(() -> {
                         RLock lock = redissonClient.getLock(PORTALS_REFRESH_PRE.prefix + type.identity);
@@ -159,8 +154,8 @@ public class PortalServiceImpl implements PortalService {
                         try {
                             tryLock = lock.tryLock();
                             if (tryLock) {
-                                List<BulletinInfo> vos = DB_CACHE_PORTAL_GETTER.apply(type);
-                                REDIS_CACHE_PORTAL_SETTER.accept(type, vos);
+                                List<BulletinInfo> vos = DB_PORTAL_GETTER.apply(type);
+                                REDIS_PORTAL_SETTER.accept(type, vos);
                                 return vos;
                             }
 
@@ -168,7 +163,7 @@ public class PortalServiceImpl implements PortalService {
                             while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= MAX_WAIT_MILLIS_FOR_REDISSON_SYNC)
                                 onSpinWait();
 
-                            return tryLock ? REDIS_CACHE_PORTAL_GETTER.apply(type) : emptyList();
+                            return tryLock ? REDIS_PORTAL_GETTER.apply(type) : emptyList();
                         } catch (Exception e) {
                             return emptyList();
                         } finally {
@@ -188,7 +183,7 @@ public class PortalServiceImpl implements PortalService {
         if (type == null)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null");
 
-        return justOrEmpty(LOCAL_CACHE.get(type, REDIS_CACHE_PORTAL_GETTER_WITH_CACHE)).switchIfEmpty(just(emptyList()));
+        return justOrEmpty(LOCAL_CACHE.get(type, REDIS_PORTAL_GETTER_WITH_CACHE)).switchIfEmpty(just(emptyList()));
     };
 
 

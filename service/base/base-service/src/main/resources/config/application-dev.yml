@@ -88,7 +88,7 @@ data:
       index: 1
   broadcastTables: [ ]
   singleDatabasesWithTables:
-    - url: jdbc:mysql://172.16.201.160:3306/dict
+    - url: jdbc:mysql://172.16.201.160:3306/base
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -101,7 +101,7 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-      singleTables: [ dict_type,dict ]
+      singleTables: [ country,state,city,dict_type,dict ]
   cacheEnabled: false
   lazyLoadingEnabled: false
   aggressiveLazyLoading: false
@@ -279,9 +279,11 @@ dubbo:
     check: false
 
 
-caffeine:
-  maximumSize: 1024
-  expireSeconds: 10
+area:
+  countryMaximumSize: 256
+  stateMaximumSize: 1024
+  cityMaximumSize: 65536
+  expireSeconds: 259200
 
 
 debug: false

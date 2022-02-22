@@ -20,22 +20,13 @@
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id
         , name, native_name, numeric_code, country_code, phone_code, capital, currency,
     currency_symbol, top_level_domain, region, emoji, emojiU, status, create_time, update_time
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from country
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from country
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
+
     <insert id="insert" parameterType="com.blue.base.repository.entity.Country">
         insert into country (id, name, native_name,
                              numeric_code, country_code, phone_code,
@@ -50,6 +41,7 @@
                 #{emojiu,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
                 #{updateTime,jdbcType=BIGINT})
     </insert>
+
     <insert id="insertSelective" parameterType="com.blue.base.repository.entity.Country">
         insert into country
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -153,6 +145,27 @@
             </if>
         </trim>
     </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.Country">
+        update country
+        set name             = #{name,jdbcType=VARCHAR},
+            native_name      = #{nativeName,jdbcType=VARCHAR},
+            numeric_code     = #{numericCode,jdbcType=CHAR},
+            country_code     = #{countryCode,jdbcType=CHAR},
+            phone_code       = #{phoneCode,jdbcType=VARCHAR},
+            capital          = #{capital,jdbcType=VARCHAR},
+            currency         = #{currency,jdbcType=VARCHAR},
+            currency_symbol  = #{currencySymbol,jdbcType=VARCHAR},
+            top_level_domain = #{topLevelDomain,jdbcType=VARCHAR},
+            region           = #{region,jdbcType=VARCHAR},
+            emoji            = #{emoji,jdbcType=VARCHAR},
+            emojiU           = #{emojiu,jdbcType=VARCHAR},
+            status           = #{status,jdbcType=TINYINT},
+            create_time      = #{createTime,jdbcType=BIGINT},
+            update_time      = #{updateTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.base.repository.entity.Country">
         update country
         <set>
@@ -204,23 +217,37 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.Country">
-        update country
-        set name             = #{name,jdbcType=VARCHAR},
-            native_name      = #{nativeName,jdbcType=VARCHAR},
-            numeric_code     = #{numericCode,jdbcType=CHAR},
-            country_code     = #{countryCode,jdbcType=CHAR},
-            phone_code       = #{phoneCode,jdbcType=VARCHAR},
-            capital          = #{capital,jdbcType=VARCHAR},
-            currency         = #{currency,jdbcType=VARCHAR},
-            currency_symbol  = #{currencySymbol,jdbcType=VARCHAR},
-            top_level_domain = #{topLevelDomain,jdbcType=VARCHAR},
-            region           = #{region,jdbcType=VARCHAR},
-            emoji            = #{emoji,jdbcType=VARCHAR},
-            emojiU           = #{emojiu,jdbcType=VARCHAR},
-            status           = #{status,jdbcType=TINYINT},
-            create_time      = #{createTime,jdbcType=BIGINT},
-            update_time      = #{updateTime,jdbcType=BIGINT}
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from country
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from country
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="select" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        country
+    </select>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        country
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
 </mapper>

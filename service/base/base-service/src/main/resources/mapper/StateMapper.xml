@@ -13,21 +13,12 @@
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
     </resultMap>
+
     <sql id="Base_Column_List">
         id
         , country_id, name, fips_code, country_code, state_code, status, create_time, update_time
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from state
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from state
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
+
     <insert id="insert" parameterType="com.blue.base.repository.entity.State">
         insert into state (id, country_id, name,
                            fips_code, country_code, state_code,
@@ -36,6 +27,7 @@
                 #{fipsCode,jdbcType=VARCHAR}, #{countryCode,jdbcType=CHAR}, #{stateCode,jdbcType=CHAR},
                 #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
     </insert>
+
     <insert id="insertSelective" parameterType="com.blue.base.repository.entity.State">
         insert into state
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -97,6 +89,20 @@
             </if>
         </trim>
     </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.State">
+        update state
+        set country_id   = #{countryId,jdbcType=BIGINT},
+            name         = #{name,jdbcType=VARCHAR},
+            fips_code    = #{fipsCode,jdbcType=VARCHAR},
+            country_code = #{countryCode,jdbcType=CHAR},
+            state_code   = #{stateCode,jdbcType=CHAR},
+            status       = #{status,jdbcType=TINYINT},
+            create_time  = #{createTime,jdbcType=BIGINT},
+            update_time  = #{updateTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.base.repository.entity.State">
         update state
         <set>
@@ -127,16 +133,34 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.State">
-        update state
-        set country_id   = #{countryId,jdbcType=BIGINT},
-            name         = #{name,jdbcType=VARCHAR},
-            fips_code    = #{fipsCode,jdbcType=VARCHAR},
-            country_code = #{countryCode,jdbcType=CHAR},
-            state_code   = #{stateCode,jdbcType=CHAR},
-            status       = #{status,jdbcType=TINYINT},
-            create_time  = #{createTime,jdbcType=BIGINT},
-            update_time  = #{updateTime,jdbcType=BIGINT}
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from state
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from state
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="select" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        state
+    </select>
+
+    <select id="selectByCountryId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        state FORCE INDEX(idx_country_id)
+        WHERE
+        country_id = #{countryId,jdbcType=BIGINT}
+    </select>
+
 </mapper>

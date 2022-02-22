@@ -1,6 +1,9 @@
 package com.blue.base.repository.mapper;
 
 import com.blue.base.repository.entity.City;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * city mapper
@@ -10,15 +13,21 @@ import com.blue.base.repository.entity.City;
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface CityMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(City record);
 
     int insertSelective(City record);
 
-    City selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(City record);
 
     int updateByPrimaryKeySelective(City record);
 
-    int updateByPrimaryKey(City record);
+    int deleteByPrimaryKey(Long id);
+
+    City selectByPrimaryKey(Long id);
+
+    List<City> select();
+
+    List<City> selectByCountryId(@Param("countryId") Long countryId);
+
+    List<City> selectByStateId(@Param("stateId") Long stateId);
 }
