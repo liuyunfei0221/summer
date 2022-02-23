@@ -23,7 +23,7 @@ CREATE TABLE `country`
 
 
 
-INSERT INTO `temp_data`.`country`(`id`, `name`, `native_name`, `numeric_code`, `country_code`, `phone_code`, `capital`,
+INSERT INTO `country`(`id`, `name`, `native_name`, `numeric_code`, `country_code`, `phone_code`, `capital`,
                                   `currency`, `currency_symbol`, `top_level_domain`, `region`, `emoji`, `emojiU`,
                                   `status`, `create_time`, `update_time`)
 VALUES (1, 'Afghanistan', 'افغانستان', '004', 'AF', '93', 'Kabul', 'AFN', '؋', '.af', 'Asia', '🇦🇫', 'U+1F1E6 U+1F1EB',

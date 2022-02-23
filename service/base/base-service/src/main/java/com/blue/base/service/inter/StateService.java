@@ -12,7 +12,7 @@ import java.util.Optional;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface StateService {
 
     /**
@@ -47,7 +47,7 @@ public interface StateService {
     Mono<List<StateInfo>> selectStateInfoByCountryId(Long countryId);
 
     /**
-     * expire state infos
+     * invalid state infos
      *
      * @return
      */

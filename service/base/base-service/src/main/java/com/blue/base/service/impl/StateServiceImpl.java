@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -24,9 +24,11 @@ import static com.blue.base.common.base.BlueCheck.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.converter.BaseModelConverters.STATES_2_STATE_INFOS_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
-import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
+import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -48,8 +50,8 @@ public class StateServiceImpl implements StateService {
         this.stateMapper = stateMapper;
 
         COUNTRY_ID_STATE_CACHE = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
-                AFTER_WRITE, executorService));
+                areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                AFTER_ACCESS, executorService));
     }
 
     private static Cache<Long, List<StateInfo>> COUNTRY_ID_STATE_CACHE;
@@ -58,7 +60,8 @@ public class StateServiceImpl implements StateService {
         List<State> states = this.selectStateByCountryId(cid);
 
         LOGGER.info("DB_STATE_GETTER, cid = {}, states = {}", cid, states);
-        return STATES_2_STATE_INFOS_CONVERTER.apply(states);
+        return STATES_2_STATE_INFOS_CONVERTER.apply(
+                states.stream().sorted(Comparator.comparing(State::getStateCode)).collect(toList()));
     };
 
     /**
@@ -110,6 +113,8 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<List<StateInfo>> selectStateInfoByCountryId(Long countryId) {
+        LOGGER.info("Mono<List<StateInfo>> selectStateInfoByCountryId(Long countryId), countryId = {}", countryId);
+
         return isValidIdentity(countryId)
                 ?
                 justOrEmpty(COUNTRY_ID_STATE_CACHE.get(countryId, DB_STATE_GETTER)).switchIfEmpty(just(emptyList()))
@@ -118,12 +123,14 @@ public class StateServiceImpl implements StateService {
     }
 
     /**
-     * expire state infos
+     * invalid state infos
      *
      * @return
      */
     @Override
     public void invalidStateInfosCache() {
+        LOGGER.info("void invalidStateInfosCache()");
+
         COUNTRY_ID_STATE_CACHE.invalidateAll();
     }
 

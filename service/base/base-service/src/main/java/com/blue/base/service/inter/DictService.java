@@ -1,5 +1,7 @@
 package com.blue.base.service.inter;
 
+import com.blue.base.api.model.DictInfo;
+import com.blue.base.api.model.DictTypeInfo;
 import com.blue.base.repository.entity.Dict;
 import com.blue.base.repository.entity.DictType;
 import reactor.core.publisher.Mono;
@@ -21,14 +23,14 @@ public interface DictService {
      *
      * @return
      */
-    Mono<List<DictType>> selectDictType();
+    List<DictType> selectDictType();
 
     /**
      * select all dict
      *
      * @return
      */
-    Mono<List<Dict>> selectDict();
+    List<Dict> selectDict();
 
     /**
      * select dict by dict type code
@@ -36,6 +38,35 @@ public interface DictService {
      * @param code
      * @return
      */
-    Mono<List<Dict>> selectDictByTypeCode(String code);
+    List<Dict> selectDictByTypeCode(String code);
+
+    /**
+     * select all dict types
+     *
+     * @return
+     */
+    Mono<List<DictTypeInfo>> selectDictTypeInfo();
+
+    /**
+     * select dict by type code
+     *
+     * @param code
+     * @return
+     */
+    Mono<List<DictInfo>> selectDictInfoByTypeCode(String code);
+
+    /**
+     * invalid dict type infos
+     *
+     * @return
+     */
+    void invalidDictTypeInfosCache();
+
+    /**
+     * invalid dict infos
+     *
+     * @return
+     */
+    void invalidDictInfosCache();
 
 }

@@ -703,8 +703,6 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (24244842351558660, 'POST', 'blue-lake', '/event/list', b'0', b'1', b'1', b'1', b'1', 2,
         'test lake event', 'test lake event', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-
-
 INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                                     response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
                                     `name`,
@@ -728,6 +726,30 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
                                     `create_time`, `update_time`, `creator`, `updater`)
 VALUES (28251575466065923, 'POST', 'blue-analyze', '/statistics/active/summary', b'0', b'1', b'1', b'0', b'1', 2,
         'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (28786229101199361, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 1,
+        'countries', 'countries', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (28786229101199362, 'GET', 'blue-base', '/states/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
+        'states', 'states', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (28786229101199363, 'GET', 'blue-base', '/cities/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
+        'cities', 'cities', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 
 -- role
@@ -2858,7 +2880,7 @@ CREATE TABLE `city`
     PRIMARY KEY (`id`),
     KEY            `idx_country_id`(`country_id`) USING BTREE,
     KEY            `idx_state_id`(`state_id`) USING BTREE,
-    UNIQUE KEY `idx_country_state`(`country_id`,`state_id`) USING BTREE,
+    KEY            `idx_country_state`(`country_id`,`state_id`) USING BTREE,
     KEY            `idx_status`(`status`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

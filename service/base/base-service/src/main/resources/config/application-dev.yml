@@ -280,9 +280,14 @@ dubbo:
 
 
 area:
-  countryMaximumSize: 256
+  countryMaximumSize: 1
   stateMaximumSize: 1024
   cityMaximumSize: 65536
+  expireSeconds: 259200
+
+dict:
+  dictTypeMaximumSize: 1
+  dictMaximumSize: 1024
   expireSeconds: 259200
 
 

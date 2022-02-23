@@ -1,6 +1,6 @@
 package com.blue.base.router.api;
 
-import com.blue.base.handler.api.PortalApiHandler;
+import com.blue.base.handler.api.DictApiHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -12,21 +12,22 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * portal api routes
+ * base api routes
  *
  * @author DarkBlue
  */
 @Configuration
-public class PortalApiRoute {
+public class DictApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> portalApiRouter(PortalApiHandler portalApiHandler) {
+    RouterFunction<ServerResponse> dictRouter(DictApiHandler dictApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-base/bulletin");
+        RequestPredicate pathPredicate = path("/blue-base");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("/{bulletinType}", portalApiHandler::getBulletin)
+                .GET("/dictType", dictApiHandler::selectDictType)
+                .POST("/dict", dictApiHandler::selectDict)
                 .build();
 
         return nest(pathPredicate, routerFunction);

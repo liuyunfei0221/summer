@@ -1,12 +1,8 @@
 package com.blue.base.converter;
 
-import com.blue.base.api.model.CityInfo;
-import com.blue.base.api.model.CountryInfo;
-import com.blue.base.api.model.StateInfo;
+import com.blue.base.api.model.*;
 import com.blue.base.model.exps.BlueException;
-import com.blue.base.repository.entity.City;
-import com.blue.base.repository.entity.Country;
-import com.blue.base.repository.entity.State;
+import com.blue.base.repository.entity.*;
 
 import java.util.List;
 import java.util.function.Function;
@@ -76,6 +72,43 @@ public final class BaseModelConverters {
     public static final Function<List<City>, List<CityInfo>> CITIES_2_CITY_INFOS_CONVERTER = cs ->
             cs != null && cs.size() > 0 ? cs.stream()
                     .map(CITY_2_CITY_INFO_CONVERTER)
+                    .collect(toList()) : emptyList();
+
+
+    /**
+     * type -> type info
+     */
+    public static final Function<DictType, DictTypeInfo> DICT_TYPE_2_DICT_TYPE_INFO_CONVERTER = type -> {
+        if (type == null)
+            throw new BlueException(EMPTY_PARAM);
+
+        return new DictTypeInfo(type.getId(), type.getCode(), type.getName());
+    };
+
+    /**
+     * types -> type infos
+     */
+    public static final Function<List<DictType>, List<DictTypeInfo>> DICT_TYPES_2_DICT_TYPE_INFOS_CONVERTER = ts ->
+            ts != null && ts.size() > 0 ? ts.stream()
+                    .map(DICT_TYPE_2_DICT_TYPE_INFO_CONVERTER)
+                    .collect(toList()) : emptyList();
+
+    /**
+     * dict -> dict info
+     */
+    public static final Function<Dict, DictInfo> DICT_2_DICT_INFO_CONVERTER = dict -> {
+        if (dict == null)
+            throw new BlueException(EMPTY_PARAM);
+
+        return new DictInfo(dict.getId(), dict.getName(), dict.getValue());
+    };
+
+    /**
+     * dict -> dict infos
+     */
+    public static final Function<List<Dict>, List<DictInfo>> DICT_2_DICT_INFOS_CONVERTER = d ->
+            d != null && d.size() > 0 ? d.stream()
+                    .map(DICT_2_DICT_INFO_CONVERTER)
                     .collect(toList()) : emptyList();
 
 }

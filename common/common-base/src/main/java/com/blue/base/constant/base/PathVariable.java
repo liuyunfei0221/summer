@@ -15,6 +15,11 @@ public enum PathVariable {
     ID("id"),
 
     /**
+     * pid
+     */
+    PID("pid"),
+
+    /**
      * type
      */
     TYPE("type");

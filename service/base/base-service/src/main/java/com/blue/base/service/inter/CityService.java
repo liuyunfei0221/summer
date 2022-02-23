@@ -12,7 +12,7 @@ import java.util.Optional;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface CityService {
 
     /**
@@ -55,7 +55,7 @@ public interface CityService {
     Mono<List<CityInfo>> selectCityInfoByStateId(Long stateId);
 
     /**
-     * expire city infos
+     * invalid city infos
      *
      * @return
      */

@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -20,9 +20,11 @@ import java.util.function.Function;
 
 import static com.blue.base.converter.BaseModelConverters.COUNTRIES_2_COUNTRY_INFOS_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
-import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
+import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.justOrEmpty;
 import static reactor.util.Loggers.getLogger;
@@ -45,8 +47,8 @@ public class CountryServiceImpl implements CountryService {
         this.countryMapper = countryMapper;
 
         ALL_COUNTRIES_CACHE = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
-                AFTER_WRITE, executorService));
+                areaCaffeineDeploy.getCountryMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                AFTER_ACCESS, executorService));
     }
 
     private static final Long ALL_COUNTRIES_CACHE_ID = 1L;
@@ -56,8 +58,9 @@ public class CountryServiceImpl implements CountryService {
     private final Function<Long, List<CountryInfo>> DB_COUNTRY_GETTER = id -> {
         List<Country> countries = this.selectCountry();
 
-        LOGGER.info("DB_COUNTRY_GETTER, id = {}, countries = {}", id, countries);
-        return COUNTRIES_2_COUNTRY_INFOS_CONVERTER.apply(countries);
+        LOGGER.info("DB_COUNTRY_GETTER, countries = {}", countries);
+        return COUNTRIES_2_COUNTRY_INFOS_CONVERTER.apply(
+                countries.stream().sorted(Comparator.comparing(Country::getCountryCode)).collect(toList()));
     };
 
     /**
@@ -80,7 +83,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public List<Country> selectCountry() {
-        LOGGER.info(" List<Country> selectCountry()");
+        LOGGER.info("List<Country> selectCountry()");
 
         return countryMapper.select();
     }
@@ -92,16 +95,21 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<List<CountryInfo>> selectCountryInfo() {
+        LOGGER.info("Mono<List<CountryInfo>> selectCountryInfo()");
+
         return justOrEmpty(ALL_COUNTRIES_CACHE.get(ALL_COUNTRIES_CACHE_ID, DB_COUNTRY_GETTER)).switchIfEmpty(just(emptyList()));
     }
 
     /**
-     * expire country infos
+     * invalid country infos
      *
      * @return
      */
     @Override
     public void invalidCountryInfosCache() {
+        LOGGER.info("void invalidCountryInfosCache()");
+
         ALL_COUNTRIES_CACHE.invalidateAll();
     }
+
 }

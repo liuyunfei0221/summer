@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings({"SpellCheckingInspection", "unused"})
 public final class CountryInfo implements Serializable {
 
     private static final long serialVersionUID = 8711166488625462662L;

@@ -1,32 +1,34 @@
 package com.blue.base.router.api;
 
-import com.blue.base.handler.api.DictApiHandler;
+import com.blue.base.handler.api.CountryApiHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
 import static org.springframework.web.reactive.function.server.RouterFunctions.nest;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * base api routes
+ * secure api route
  *
  * @author DarkBlue
  */
 @Configuration
-public class BaseApiRoute {
+public class CountryApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> dictRouter(DictApiHandler dictApiHandler) {
+    RouterFunction<ServerResponse> countryRouter(CountryApiHandler countryApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-base/dictType");
+        RequestPredicate pathPredicate = path("/blue-base/countries");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("", dictApiHandler::selectDictType)
+                .GET("", accept(APPLICATION_JSON), countryApiHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

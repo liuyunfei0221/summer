@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1235e739-1ec8-4de5-a118-64164357c062",
+		"_postman_id": "8aa85370-3d04-4fd1-8258-5b93e67e5ad0",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -108,7 +108,7 @@
 					},
 					{
 						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDE5NDg5ZDcxZTQ1NWZmMTg5YTYzNzFkMzllYmUzYjE2NWRmZDMxMWI1NTkwZWIyZjM4NDJlOTlmZmQ1ZjQwYTRkMTJlMTY2ZjllZDMxZDA0OGU4ZThkOTU5Mjk5NWUxNGNiZThmMzNiM2QyZmNjN2Q1NmFiZDg4ZWE4ZjY1MWUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwMzU3NDQ3Njk1MDczMjlfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTgwNDkwMzYyLCJpIjoiMjgwMzU3NDQ3Njk1MDczMjkiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTAyMDkwIiwibmJmIjoxNjQ0OTAyMDkwLCJ0IjoiRVhuWXlSRlZVOEMiLCJleHAiOjE2NDc1ODA0OTAsImlhdCI6MTY0NDkwMjA5MCwianRpIjoiMG95NXRKNnFocVZueWFyRWY5aE9uMTNwejVFR0pJWXIifQ.kXDAwmWygzCpgfieYpK3QsqUiTvD2KjJuwlQ4XUXFY3sExA_qla4714lOgKsewSxefDT85U3k9MtXcgU5ViHOQ",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMzE3MmViNjUyOWYzZTc1Njk1NDQ0MGY5NmQxNTQ3OGQ0ZWM1ZjE5MjYyMzk3ZjA5YTA1YjYxMzQ1NzI2ZDBmZjU2ZjMzYzQxNTk3YmU3MWYxNmQxZDBlZGM0MjM5YmNiNmE3YmE4MWY5MDZjYjRhMDUyODAxN2Y4ZDA3ZGZjOWYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgzMTM4ODU3Nzc4NTQ0NjVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ4Mjg4MzE4OTY2LCJpIjoiMjgzMTM4ODU3Nzc4NTQ0NjUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ1NjA5OTE4IiwibmJmIjoxNjQ1NjA5OTE4LCJ0IjoidjhGUkpDbjdaNm8iLCJleHAiOjE2NDgyODgzMTgsImlhdCI6MTY0NTYwOTkxOCwianRpIjoiUzVDd21sR0RVQnlUbnFrYXhzV0NMR2dtNGpRU09mMmQifQ.cONa5Hnv8Oiic5_2xPw0wXs6GFaIwIV4EWcdcQtdKTdbJtAb20CXWmLM2-zd_mUbjZZNfCDx0kHxE037czNE1g",
 						"type": "text"
 					}
 				],
@@ -1287,7 +1287,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"statisticsType\":\"MEMBER_ACTIVE\",\r\n    \"statisticsRange\":\"DAY\"\r\n}"
+					"raw": "{\r\n    \"statisticsType\":\"MA\",\r\n    \"statisticsRange\":\"D\"\r\n}"
 				},
 				"url": {
 					"raw": "localhost:10000/blue-analyze/statistics/active/simple",
@@ -1362,6 +1362,83 @@
 						"statistics",
 						"active",
 						"summary"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "查询国家列表",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:10000/blue-base/countries",
+					"host": [
+						"localhost"
+					],
+					"port": "10000",
+					"path": [
+						"blue-base",
+						"countries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "根据国家id查询省/州列表",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:10000/blue-base/states/45",
+					"host": [
+						"localhost"
+					],
+					"port": "10000",
+					"path": [
+						"blue-base",
+						"states",
+						"45"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "根据省/州id查询城市列表",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:10000/blue-base/cities/2271",
+					"host": [
+						"localhost"
+					],
+					"port": "10000",
+					"path": [
+						"blue-base",
+						"cities",
+						"2271"
 					]
 				}
 			},
