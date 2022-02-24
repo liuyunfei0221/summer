@@ -82,7 +82,18 @@ public enum RedisScripts {
             "local k = KEYS[1]\n" +
             "local v = tonumber(redis.call(\"setbit\", k, tonumber(ARGV[1]), tonumber(ARGV[2])))\n" +
             "redis.call(\"expire\", k, tonumber(ARGV[3]))\n" +
-            "return v == 0");
+            "return v == 0"),
+
+    /**
+     * if HyperLogLog exist, expire. or init, then expire
+     */
+    EXPIRE_HLL_OR_WITH_INIT("redis.replicate_commands()\n" +
+            "local k = KEYS[1]\n" +
+            "local b = redis.call(\"pfadd\", k, ARGV[1]) == 1\n" +
+            "if b then\n" +
+            "  redis.call(\"expire\", k, tonumber(ARGV[2]))\n" +
+            "end\n" +
+            "return b");
 
     public final String str;
 

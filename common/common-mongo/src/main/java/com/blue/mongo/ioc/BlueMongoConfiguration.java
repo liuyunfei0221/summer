@@ -15,7 +15,7 @@ import static com.blue.mongo.api.generator.BlueMongoGenerator.*;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AlibabaRemoveCommentedCode", "SpringFacetCodeInspection", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"AlibabaRemoveCommentedCode"})
 @ConditionalOnBean(value = {MongoConf.class})
 @Configuration
 public class BlueMongoConfiguration {

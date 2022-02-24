@@ -1,10 +1,10 @@
 package com.blue.analyze.service.impl;
 
-import com.blue.analyze.component.marker.ValueMarker;
 import com.blue.analyze.service.inter.ActiveStatisticsService;
 import com.blue.base.constant.analyze.StatisticsRange;
 import com.blue.base.constant.analyze.StatisticsType;
 import com.blue.base.model.exps.BlueException;
+import com.blue.redis.common.BlueValueMarker;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -17,12 +17,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 import static com.blue.base.common.base.BlueCheck.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
+import static com.blue.redis.api.generator.BlueValueMarkerGenerator.generateValueMarker;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
@@ -41,15 +41,12 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
 
     private static final Logger LOGGER = getLogger(ActiveStatisticsServiceImpl.class);
 
-    private final ValueMarker valueMarker;
-
-    private StringRedisTemplate stringRedisTemplate;
+    private BlueValueMarker blueValueMarker;
 
     private ExecutorService executorService;
 
-    public ActiveStatisticsServiceImpl(ValueMarker valueMarker, StringRedisTemplate stringRedisTemplate, ExecutorService executorService) {
-        this.valueMarker = valueMarker;
-        this.stringRedisTemplate = stringRedisTemplate;
+    public ActiveStatisticsServiceImpl(StringRedisTemplate stringRedisTemplate, ExecutorService executorService) {
+        this.blueValueMarker = generateValueMarker(stringRedisTemplate);
         this.executorService = executorService;
 
         for (StatisticsType statisticsType : StatisticsType.values())
@@ -70,14 +67,6 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
     private static final BiFunction<StatisticsType, StatisticsRange, String> REDIS_KEY_GENERATOR = (type, range) ->
             type.identity.intern() + PAR_CONCATENATION.identity.intern() + range.keyGenerator.get().intern();
 
-    private final Consumer<String> REDIS_KEY_DELETER = key -> {
-        try {
-            stringRedisTemplate.delete(key);
-        } catch (Exception e) {
-            LOGGER.error("REDIS_KEY_DELETER -> key delete failed, key = {}, e = {}", key, e);
-        }
-    };
-
     private final BiFunction<StatisticsType, StatisticsRange, String> STATISTICS_KEY_GENERATOR = (type, range) -> {
         PARAMS_ASSERTER.accept(type, range);
 
@@ -89,7 +78,10 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
                 String holdingRedisKey = CURRENT_KEY_VALUE_HOLDER.get(holdingKey);
                 if (currentRedisKey.equals(holdingRedisKey)) {
                     CURRENT_KEY_VALUE_HOLDER.put(holdingKey, currentRedisKey);
-                    executorService.execute(() -> REDIS_KEY_DELETER.accept(holdingRedisKey));
+                    executorService.execute(() -> blueValueMarker.delete(holdingRedisKey).subscribe(b -> {
+                        if (b)
+                            LOGGER.info("delete key, key = {}", holdingRedisKey);
+                    }));
                 }
             }
 
@@ -122,7 +114,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
         LOGGER.info("Mono<Boolean> markActive(Long id, StatisticsType statisticsType, StatisticsRange statisticsRange), id = {}, statisticsType = {}, statisticsRange = {}", id, statisticsType, statisticsRange);
 
         return isValidIdentity(id) && statisticsType != null && statisticsRange != null ?
-                valueMarker.mark(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange), id.toString())
+                blueValueMarker.mark(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange), id.toString())
                 :
                 error(() -> new BlueException(INVALID_IDENTITY));
     }
@@ -138,7 +130,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
     public Mono<Long> selectActiveSimple(StatisticsType statisticsType, StatisticsRange statisticsRange) {
         LOGGER.info("Mono<Long> selectActiveSimple(StatisticsType statisticsType, StatisticsRange statisticsRange), statisticsType = {}, statisticsRange = {}", statisticsType, statisticsRange);
 
-        return valueMarker.count(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange));
+        return blueValueMarker.count(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange));
     }
 
     /**
@@ -153,7 +145,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
         LOGGER.info("Mono<Long> selectActiveMerge(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges), statisticsTypes = {}, statisticsRanges = {}", statisticsTypes, statisticsRanges);
 
         return just(KEYS_GENERATOR.apply(statisticsTypes, statisticsRanges))
-                .flatMap(valueMarker::mergeCount);
+                .flatMap(blueValueMarker::mergeCount);
     }
 
 }

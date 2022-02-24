@@ -16,10 +16,10 @@ import static java.time.Clock.system;
 import static java.time.ZoneId.of;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.pulsar.client.api.DeadLetterPolicy.builder;
 import static org.apache.pulsar.client.api.Schema.JSON;
 import static org.apache.pulsar.client.api.SizeUnit.KILO_BYTES;
-import static org.apache.pulsar.shade.org.apache.commons.lang3.StringUtils.isBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -237,7 +237,7 @@ public final class PulsarCommonsGenerator {
      * @return
      */
     public static <T> Consumer<T> generateConsumer(PulsarClient pulsarClient, ConsumerConf conf, Class<T> clz, MessageListener<T> messageListener,
-                                                        ConsumerEventListener consumerEventListener, List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
+                                                   ConsumerEventListener consumerEventListener, List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
         assertConsumerConf(pulsarClient, conf);
         if (clz == null)
             throw new RuntimeException("clz can't be null");

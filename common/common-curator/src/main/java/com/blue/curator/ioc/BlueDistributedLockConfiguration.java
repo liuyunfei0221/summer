@@ -14,7 +14,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AlibabaRemoveCommentedCode", "SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"AlibabaRemoveCommentedCode", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @ConditionalOnBean(value = {DistributedLockConf.class})
 @Configuration
 public class BlueDistributedLockConfiguration {

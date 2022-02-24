@@ -24,7 +24,7 @@ import static reactor.core.scheduler.Schedulers.boundedElastic;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "unused"})
 public final class BlueValidator {
 
     private final ReactiveStringRedisTemplate reactiveStringRedisTemplate;

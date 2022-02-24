@@ -15,7 +15,6 @@ import static com.blue.es.api.generator.BlueEsGenerator.generateRestHighLevelCli
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
 @ConditionalOnBean(value = {EsConf.class})
 @Configuration
 public class BlueEsConfiguration {

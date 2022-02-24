@@ -13,7 +13,6 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"SpringFacetCodeInspection", "SpringJavaInjectionPointsAutowiringInspection"})
 @Configuration
 public class BlueIdentityConfiguration {
 

@@ -29,12 +29,10 @@ public class PathVariableGetter {
      * @return
      */
     public static Long getLongVariable(ServerRequest serverRequest, String placeHolder) {
-        if (isBlank(placeHolder))
-            throw new BlueException(EMPTY_PATH_VARIABLE);
+        assertParam(serverRequest, placeHolder);
 
         String pathVariable = serverRequest.pathVariable(placeHolder);
-        if (isBlank(pathVariable))
-            throw new BlueException(EMPTY_PATH_VARIABLE);
+        assertPathVariable(pathVariable);
 
         try {
             return parseLong(pathVariable);
@@ -62,12 +60,10 @@ public class PathVariableGetter {
      * @return
      */
     public static Integer getIntegerVariable(ServerRequest serverRequest, String placeHolder) {
-        if (isBlank(placeHolder))
-            throw new BlueException(EMPTY_PATH_VARIABLE);
+        assertParam(serverRequest, placeHolder);
 
         String pathVariable = serverRequest.pathVariable(placeHolder);
-        if (isBlank(pathVariable))
-            throw new BlueException(EMPTY_PATH_VARIABLE);
+        assertPathVariable(pathVariable);
 
         try {
             return parseInt(pathVariable);
@@ -95,12 +91,10 @@ public class PathVariableGetter {
      * @return
      */
     public static String getStringVariable(ServerRequest serverRequest, String placeHolder) {
-        if (isBlank(placeHolder))
-            throw new BlueException(EMPTY_PATH_VARIABLE);
+        assertParam(serverRequest, placeHolder);
 
         String pathVariable = serverRequest.pathVariable(placeHolder);
-        if (isBlank(pathVariable))
-            throw new BlueException(EMPTY_PATH_VARIABLE);
+        assertPathVariable(pathVariable);
 
         return pathVariable;
     }
@@ -114,6 +108,31 @@ public class PathVariableGetter {
      */
     public static Mono<String> getStringVariableReact(ServerRequest serverRequest, String placeHolder) {
         return just(getStringVariable(serverRequest, placeHolder));
+    }
+
+
+    /**
+     * asserter
+     *
+     * @param serverRequest
+     * @param placeHolder
+     */
+    private static void assertParam(ServerRequest serverRequest, String placeHolder) {
+        if (isBlank(placeHolder))
+            throw new BlueException(EMPTY_PATH_VARIABLE);
+
+        if (serverRequest == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * asserter
+     *
+     * @param pathVariable
+     */
+    private static void assertPathVariable(String pathVariable) {
+        if (isBlank(pathVariable))
+            throw new BlueException(EMPTY_PATH_VARIABLE);
     }
 
 }

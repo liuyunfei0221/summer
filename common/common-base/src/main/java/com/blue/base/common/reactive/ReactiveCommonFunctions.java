@@ -178,7 +178,6 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @param serverRequest
      * @return
      */
-    @SuppressWarnings("DuplicatedCode")
     public static String getIp(ServerRequest serverRequest) {
         if (serverRequest == null)
             return UNKNOWN;
@@ -221,7 +220,6 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @param serverHttpRequest
      * @return
      */
-    @SuppressWarnings("DuplicatedCode")
     public static String getIp(ServerHttpRequest serverHttpRequest) {
         if (serverHttpRequest == null)
             return UNKNOWN;
@@ -264,7 +262,6 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @param serverRequest
      * @return
      */
-    @SuppressWarnings("DuplicatedCode")
     public static List<String> getAcceptLanguages(ServerRequest serverRequest) {
         return parseAcceptLanguages(serverRequest.headers().acceptLanguage());
     }
@@ -275,7 +272,6 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @param serverHttpRequest
      * @return
      */
-    @SuppressWarnings("DuplicatedCode")
     public static List<String> getAcceptLanguages(ServerHttpRequest serverHttpRequest) {
         return parseAcceptLanguages(serverHttpRequest.getHeaders().getAcceptLanguage());
     }
