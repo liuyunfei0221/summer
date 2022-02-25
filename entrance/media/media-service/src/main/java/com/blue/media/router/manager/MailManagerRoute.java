@@ -22,7 +22,7 @@ public class MailManagerRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> mailRouter(MailManagerHandler mailManagerHandler) {
+    RouterFunction<ServerResponse> mailManagerRouter(MailManagerHandler mailManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-media/mail");
 

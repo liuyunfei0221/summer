@@ -41,6 +41,7 @@ public final class PropertiesProcessor {
         if (file != null && file.isFile() && file.canRead()) {
             try (InputStream inputStream = new FileInputStream(file)) {
                 prop.load(inputStream);
+                LOGGER.info("Properties loadProp(File file), prop = {}", prop);
             } catch (IOException e) {
                 LOGGER.error("Properties loadProp(File file) failed, e = {0}", e);
             }

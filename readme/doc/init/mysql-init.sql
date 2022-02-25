@@ -751,6 +751,13 @@ INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `au
 VALUES (28786229101199363, 'GET', 'blue-base', '/cities/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
         'cities', 'cities', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                    `name`,
+                                    `description`,
+                                    `create_time`, `update_time`, `creator`, `updater`)
+VALUES (28786229101199364, 'GET', 'blue-base', '/language', b'0', b'1', b'1', b'0', b'1', 1,
+        'language', 'language', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role
 

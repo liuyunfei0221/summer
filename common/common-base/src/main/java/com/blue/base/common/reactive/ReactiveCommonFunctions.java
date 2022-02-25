@@ -2,6 +2,7 @@ package com.blue.base.common.reactive;
 
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.exps.BlueException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -16,6 +17,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.blue.base.common.message.MessageProcessor.resolveToMessage;
+import static com.blue.base.constant.base.ResponseElement.INVALID_ACCEPT_LANGUAGE;
 import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
 import static com.blue.base.constant.base.Symbol.LIST_ELEMENT_SEPARATOR;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
@@ -50,7 +52,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * request identity getter func
      */
     public static final Function<ServerHttpRequest, Mono<String>> SERVER_HTTP_REQUEST_IDENTITY_GETTER = request ->
-            just(RATE_LIMIT_KEY_PREFIX + ofNullable(request)
+            just(RATE_LIMIT_KEY_PRE + ofNullable(request)
                     .map(ServerHttpRequest::getHeaders)
                     .map(h -> h.getFirst(AUTHORIZATION))
                     .filter(StringUtils::isNotEmpty)
@@ -60,7 +62,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
                             getIp(request)).hashCode());
 
     public static final Function<ServerRequest, Mono<String>> SERVER_REQUEST_IDENTITY_GETTER = request ->
-            just(RATE_LIMIT_KEY_PREFIX + ofNullable(request)
+            just(RATE_LIMIT_KEY_PRE + ofNullable(request)
                     .map(ServerRequest::headers)
                     .map(h -> h.firstHeader(AUTHORIZATION))
                     .filter(StringUtils::isNotEmpty)
@@ -80,7 +82,6 @@ public class ReactiveCommonFunctions extends CommonFunctions {
             return languageRanges.stream()
                     .sorted((a, b) -> compare(b.getWeight(), a.getWeight()))
                     .map(Locale.LanguageRange::getRange)
-                    .map(StringUtils::lowerCase)
                     .collect(toList());
 
         return DEFAULT_LANGUAGES;
@@ -263,7 +264,14 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @return
      */
     public static List<String> getAcceptLanguages(ServerRequest serverRequest) {
-        return parseAcceptLanguages(serverRequest.headers().acceptLanguage());
+        List<Locale.LanguageRange> languageRanges;
+        try {
+            languageRanges = serverRequest.headers().acceptLanguage();
+        } catch (Exception e) {
+            throw new BlueException(INVALID_ACCEPT_LANGUAGE);
+        }
+
+        return parseAcceptLanguages(languageRanges);
     }
 
     /**
@@ -273,7 +281,13 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @return
      */
     public static List<String> getAcceptLanguages(ServerHttpRequest serverHttpRequest) {
-        return parseAcceptLanguages(serverHttpRequest.getHeaders().getAcceptLanguage());
+        List<Locale.LanguageRange> languageRanges;
+        try {
+            languageRanges = serverHttpRequest.getHeaders().getAcceptLanguage();
+        } catch (Exception e) {
+            throw new BlueException(INVALID_ACCEPT_LANGUAGE);
+        }
+        return parseAcceptLanguages(languageRanges);
     }
 
 }

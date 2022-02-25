@@ -23,7 +23,7 @@ public class WithdrawApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> withdrawRouter(WithdrawApiHandler withdrawApiHandler) {
+    RouterFunction<ServerResponse> withdrawApiRouter(WithdrawApiHandler withdrawApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-finance/withdraw");
 

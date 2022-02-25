@@ -1,6 +1,6 @@
 package com.blue.secure.service.impl;
 
-import com.blue.base.common.base.BlueCheck;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.BlueCheck.*;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
@@ -215,7 +215,7 @@ public class RoleServiceImpl implements RoleService {
             throw new BlueException(INVALID_IDENTITY);
 
         ofNullable(rup.getName())
-                .filter(BlueCheck::isNotBlank)
+                .filter(BlueChecker::isNotBlank)
                 .map(roleMapper::selectByName)
                 .map(Role::getId)
                 .ifPresent(eid -> {

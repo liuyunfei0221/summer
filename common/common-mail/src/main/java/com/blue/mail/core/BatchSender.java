@@ -1,6 +1,6 @@
 package com.blue.mail.core;
 
-import com.blue.base.common.base.BlueCheck;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailSenderConf;
 import com.blue.mail.api.conf.SenderAttr;
@@ -93,7 +93,7 @@ public final class BatchSender {
         }
 
         this.throwableForRetry = ofNullable(conf.getThrowableForRetry())
-                .filter(BlueCheck::isNotEmpty).map(HashSet::new).orElseGet(HashSet::new);
+                .filter(BlueChecker::isNotEmpty).map(HashSet::new).orElseGet(HashSet::new);
 
         this.retryTimes = ofNullable(conf.getRetryTimes()).filter(rt -> rt >= 0).orElse(0);
 

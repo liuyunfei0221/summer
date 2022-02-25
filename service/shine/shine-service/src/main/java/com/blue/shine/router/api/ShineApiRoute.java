@@ -21,7 +21,7 @@ public class ShineApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> shineRouter(ShineApiHandler shineApiHandler) {
+    RouterFunction<ServerResponse> shineApiRouter(ShineApiHandler shineApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-shine/shine");
 

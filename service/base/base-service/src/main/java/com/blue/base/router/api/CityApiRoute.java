@@ -24,7 +24,7 @@ public class CityApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> cityRouter(CityApiHandler cityApiHandler) {
+    RouterFunction<ServerResponse> cityApiRouter(CityApiHandler cityApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-base/cities");
 

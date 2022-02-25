@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import static com.blue.base.common.base.BlueCheck.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.constant.base.ResponseElement.ILLEGAL_REQUEST;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;

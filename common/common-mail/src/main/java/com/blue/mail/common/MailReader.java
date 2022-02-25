@@ -1,6 +1,6 @@
 package com.blue.mail.common;
 
-import com.blue.base.common.base.BlueCheck;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailReaderConf;
 import jakarta.mail.*;
@@ -51,7 +51,7 @@ public final class MailReader {
         this.folder = openFolder(generateStore(session), folderName);
 
         this.throwableForRetry = ofNullable(conf.getThrowableForRetry())
-                .filter(BlueCheck::isNotEmpty).map(HashSet::new).orElseGet(HashSet::new);
+                .filter(BlueChecker::isNotEmpty).map(HashSet::new).orElseGet(HashSet::new);
         this.maxWaitingMillisForRefresh = conf.getMaxWaitingMillisForRefresh();
     }
 

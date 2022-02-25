@@ -22,7 +22,7 @@ public class SecureApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> secureRouter(SecureApiHandler secureApiHandler) {
+    RouterFunction<ServerResponse> secureApiRouter(SecureApiHandler secureApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-secure/auth");
 

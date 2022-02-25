@@ -1,6 +1,5 @@
 package com.blue.identity.core;
 
-import com.blue.base.constant.base.SummerAttr;
 import com.blue.identity.core.exp.IdentityException;
 import com.blue.identity.core.param.SnowIdGenParam;
 import reactor.util.Logger;
@@ -10,6 +9,8 @@ import java.time.ZoneId;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
+import static com.blue.base.constant.base.SummerAttr.DATE_TIME_FORMATTER;
+import static com.blue.base.constant.base.SummerAttr.TIME_ZONE;
 import static com.blue.identity.constant.SnowflakeBits.*;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Instant.now;
@@ -137,13 +138,13 @@ public final class SnowflakeIdentityGenerator {
         this.secondsRecorder = snowIdGenParam.getSecondsRecorder();
         this.notRecord = this.secondsRecorder == null;
 
-        ZoneId zoneId = ZoneId.of(SummerAttr.TIME_ZONE);
+        ZoneId zoneId = ZoneId.of(TIME_ZONE);
         LOGGER.info(
                 "Initialized BlueIdentityBuffer successfully, snowIdGenParam = {}, dataCenter = {}, worker = {}, maxStepTimestamp = {}, maxSequence = {}, sequence = {}, stepSeconds = {}, bootTime = {}, lastTime = {}, stepTime = {}",
                 snowIdGenParam, dataCenter, worker, maxStepTimestamp, maxSequence, sequence, this.stepSeconds,
-                ofInstant(Instant.ofEpochSecond(bootSeconds), zoneId).format(SummerAttr.DATE_TIME_FORMATTER),
-                ofInstant(Instant.ofEpochSecond(lastSeconds), zoneId).format(SummerAttr.DATE_TIME_FORMATTER),
-                ofInstant(Instant.ofEpochSecond(stepSeconds), zoneId).format(SummerAttr.DATE_TIME_FORMATTER)
+                ofInstant(Instant.ofEpochSecond(bootSeconds), zoneId).format(DATE_TIME_FORMATTER),
+                ofInstant(Instant.ofEpochSecond(lastSeconds), zoneId).format(DATE_TIME_FORMATTER),
+                ofInstant(Instant.ofEpochSecond(stepSeconds), zoneId).format(DATE_TIME_FORMATTER)
         );
     }
 

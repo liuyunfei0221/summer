@@ -2,7 +2,7 @@ package com.blue.base.service.impl;
 
 import com.blue.base.api.model.DictInfo;
 import com.blue.base.api.model.DictTypeInfo;
-import com.blue.base.common.base.BlueCheck;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.config.deploy.DictCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Dict;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueCheck.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.converter.BaseModelConverters.DICT_2_DICT_INFOS_CONVERTER;
@@ -120,7 +120,7 @@ public class DictServiceImpl implements DictService {
         LOGGER.info("Mono<List<Dict>> selectDictByTypeCode(String code), code = {}", code);
 
         return ofNullable(code)
-                .filter(BlueCheck::isNotBlank)
+                .filter(BlueChecker::isNotBlank)
                 .map(dictTypeMapper::getByCode)
                 .map(DictType::getId)
                 .map(dictMapper::selectByDictTypeId)

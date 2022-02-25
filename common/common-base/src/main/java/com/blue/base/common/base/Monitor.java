@@ -60,8 +60,9 @@ public final class Monitor<T> {
 
         synchronized (this) {
             monitored = combiner.apply(monitored, data);
-            return predicate.test(monitored);
         }
+
+        return predicate.test(monitored);
     }
 
 }

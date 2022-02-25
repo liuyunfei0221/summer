@@ -13,7 +13,7 @@ import reactor.util.Logger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static com.blue.base.common.base.BlueCheck.*;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;

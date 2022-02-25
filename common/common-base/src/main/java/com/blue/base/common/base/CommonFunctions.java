@@ -59,7 +59,7 @@ public class CommonFunctions {
     /**
      * rate limiter key prefix
      */
-    public static final String RATE_LIMIT_KEY_PREFIX = Symbol.RATE_LIMIT_KEY_PRE.identity;
+    public static final String RATE_LIMIT_KEY_PRE = Symbol.RATE_LIMIT_KEY_PRE.identity;
 
     /**
      * random key length
@@ -87,11 +87,11 @@ public class CommonFunctions {
      */
     public static final UnaryOperator<String> REST_URI_PROCESSOR = uri -> {
         if (uri == null || "".equals(uri))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uri can't be null");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be null");
 
         int lastPartIdx = lastIndexOf(uri, PATH_SEPARATOR);
         if (lastPartIdx == -1 || lastPartIdx == length(uri))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid uri, not contains / -> " + uri);
 
         String maybePathVariable = substring(uri, lastPartIdx + 1);
         if (isDigits(maybePathVariable))
@@ -110,17 +110,16 @@ public class CommonFunctions {
      */
     public static final Consumer<String> REST_URI_ASSERTER = uri -> {
         if (uri == null || "".equals(uri))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uri can't be null");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be null");
 
-        String tar = trim(uri);
-        int idx = indexOf(tar, PATH_SEPARATOR);
+        int idx = indexOf(uri, PATH_SEPARATOR);
 
         if (idx == -1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid uri, not contains / -> " + uri);
         if (idx != 0)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not start with / -> " + uri);
-        if (isBlank(substring(tar, idx)))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, non content but / -> " + uri);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid uri, not start with / -> " + uri);
+        if (isBlank(substring(uri, idx)))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid uri, non content but / -> " + uri);
     };
 
     /**
@@ -131,7 +130,7 @@ public class CommonFunctions {
 
         int lastPartIdx = lastIndexOf(uri, PATH_SEPARATOR);
         if (lastPartIdx == -1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
+            throw new BlueException(BAD_REQUEST.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
 
         String maybePathVariable = substring(uri, lastPartIdx);
 
@@ -149,7 +148,7 @@ public class CommonFunctions {
         if (VALID_TAILS.contains(schema))
             return (substring(uri, 0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD + schema.intern()).intern();
 
-        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid uri, freemarker unsupported -> " + uri);
+        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid uri, freemarker unsupported -> " + uri);
     };
 
     /**
@@ -160,20 +159,14 @@ public class CommonFunctions {
     /**
      * resource key generator for request
      */
-    public static final BinaryOperator<String> REQ_RES_KEY_CONVERTER = (method, uri) ->
-            ((upperCase(method).intern() + PAR_CONCATENATION + REST_URI_PROCESSOR.apply(uri).intern()).intern()).intern();
-
-    /**
-     * resource key generator for request
-     */
     public static final BinaryOperator<String> REQ_RES_KEY_GENERATOR = (method, uri) ->
             (upperCase(method).intern() + PAR_CONCATENATION + uri).intern();
 
     /**
-     * resource key generator for init
+     * resource key generator
      */
-    public static final BinaryOperator<String> INIT_RES_KEY_GENERATOR = (method, uri) ->
-            (upperCase(method).intern() + PAR_CONCATENATION + REST_URI_CONVERTER.apply(uri).intern()).intern();
+    public static final BinaryOperator<String> RES_KEY_GENERATOR = (method, uri) ->
+            ((upperCase(method).intern() + PAR_CONCATENATION + REST_URI_PROCESSOR.apply(uri).intern()).intern()).intern();
 
     /**
      * header value getter
@@ -205,7 +198,7 @@ public class CommonFunctions {
         if (VALID_SCHEMAS.contains(lowerCase(schema)))
             return;
 
-        throw new BlueException(INVALID_REQUEST_METHOD);
+        throw new BlueException(BAD_REQUEST);
     };
 
     /**
@@ -215,7 +208,7 @@ public class CommonFunctions {
         if (VALID_METHODS.contains(upperCase(method)))
             return;
 
-        throw new BlueException(INVALID_REQUEST_METHOD);
+        throw new BlueException(BAD_REQUEST);
     };
 
     /**
@@ -280,19 +273,16 @@ public class CommonFunctions {
      * @return
      */
     public static String decryptRequestBody(String requestBody, String secKey, long expire) {
-        if (requestBody == null || "".equals(requestBody))
-            throw new BlueException(BAD_REQUEST);
-
-        if (secKey == null || "".equals(secKey))
+        if (requestBody == null || "".equals(requestBody) || secKey == null || "".equals(secKey))
             throw new BlueException(BAD_REQUEST);
 
         EncryptedRequest encryptedRequest = GSON.fromJson(requestBody, EncryptedRequest.class);
         String encrypted = encryptedRequest.getEncrypted();
 
-        if (!verify(encrypted, encryptedRequest.getSignature(), secKey))
-            throw new BlueException(DECRYPTION_FAILED);
+        if (verify(encrypted, encryptedRequest.getSignature(), secKey))
+            return DATA_CONVERTER.apply(GSON.fromJson(decryptByPublicKey(encrypted, secKey), DataWrapper.class), expire);
 
-        return DATA_CONVERTER.apply(GSON.fromJson(decryptByPublicKey(encrypted, secKey), DataWrapper.class), expire);
+        throw new BlueException(DECRYPTION_FAILED);
     }
 
     /**
@@ -303,10 +293,7 @@ public class CommonFunctions {
      * @return
      */
     public static String encryptResponseBody(String responseBody, String secKey) {
-        if (responseBody == null || "".equals(responseBody))
-            throw new BlueException(BAD_REQUEST);
-
-        if (secKey == null || "".equals(secKey))
+        if (responseBody == null || "".equals(responseBody) || secKey == null || "".equals(secKey))
             throw new BlueException(BAD_REQUEST);
 
         return GSON.toJson(new EncryptedResponse(encryptByPublicKey(GSON.toJson(new DataWrapper(responseBody, TIME_STAMP_GETTER.get())), secKey)));

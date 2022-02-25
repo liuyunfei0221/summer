@@ -12,12 +12,15 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.nest;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
+/**
+ * @author DarkBlue
+ */
 @Configuration
 public class FallbackRoute {
 
     @SuppressWarnings("NullableProblems")
     @Bean
-    RouterFunction<ServerResponse> fallbackRouter(FallbackHandler fallbackHandler) {
+    RouterFunction<ServerResponse> fallbackApiRouter(FallbackHandler fallbackHandler) {
 
         RequestPredicate pathPredicate = path("/fallback");
 

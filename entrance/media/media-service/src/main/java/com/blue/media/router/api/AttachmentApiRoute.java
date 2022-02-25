@@ -22,7 +22,7 @@ public class AttachmentApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> attachmentRouter(AttachmentApiHandler attachmentApiHandler) {
+    RouterFunction<ServerResponse> attachmentApiRouter(AttachmentApiHandler attachmentApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-media/attachment");
 

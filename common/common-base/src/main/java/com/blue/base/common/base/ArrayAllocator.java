@@ -44,7 +44,7 @@ public final class ArrayAllocator {
         checkArgs(list, max);
 
         int size = list.size();
-        if (size < max)
+        if (size <= max)
             return singletonList(list);
 
         return allotByRows(list, (size + max - 1) / max, fair);

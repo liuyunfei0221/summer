@@ -23,7 +23,7 @@ public class CountryApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> countryRouter(CountryApiHandler countryApiHandler) {
+    RouterFunction<ServerResponse> countryApiRouter(CountryApiHandler countryApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-base/countries");
 

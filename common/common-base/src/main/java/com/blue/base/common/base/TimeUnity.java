@@ -9,8 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import static com.blue.base.constant.base.SummerAttr.DATE_TIME_FORMATTER;
+import static com.blue.base.constant.base.SummerAttr.TIME_ZONE;
 import static java.time.Instant.now;
-import static java.time.ZoneId.systemDefault;
 
 
 /**
@@ -23,7 +23,7 @@ public final class TimeUnity {
 
     private static final DateTimeFormatter FORMATTER = DATE_TIME_FORMATTER;
 
-    public static final ZoneId ZONE_ID = systemDefault();
+    public static final ZoneId ZONE_ID = ZoneId.of(TIME_ZONE);
 
     /**
      * Get the current timestamp (seconds)

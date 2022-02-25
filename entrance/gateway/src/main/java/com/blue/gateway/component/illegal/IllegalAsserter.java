@@ -1,6 +1,6 @@
 package com.blue.gateway.component.illegal;
 
-import com.blue.base.common.base.BlueCheck;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.IllegalMarkEvent;
 import com.blue.base.model.exps.BlueException;
 import com.blue.gateway.config.deploy.RiskControlDeploy;
@@ -18,8 +18,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueCheck.isBlank;
-import static com.blue.base.common.base.BlueCheck.isEmpty;
+import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
 import static com.blue.base.constant.base.BlueCacheKey.ILLEGAL_IP_PRE;
 import static com.blue.base.constant.base.BlueCacheKey.ILLEGAL_JWT_PRE;
@@ -97,12 +97,12 @@ public final class IllegalAsserter {
             MARKER = event -> {
                 String resKey = ofNullable(event.getResourceKey()).orElse(ALL_RESOURCE);
                 return zip(ofNullable(event.getJwt())
-                                .filter(BlueCheck::isNotBlank)
+                                .filter(BlueChecker::isNotBlank)
                                 .map(JWT_KEY_WRAPPER)
                                 .map(key -> markWithExpire(key, resKey, event.getIllegalExpireSeconds()))
                                 .orElseGet(() -> just(false)),
                         ofNullable(event.getIp())
-                                .filter(BlueCheck::isNotBlank)
+                                .filter(BlueChecker::isNotBlank)
                                 .map(IP_KEY_WRAPPER)
                                 .map(key -> markWithExpire(key, resKey, event.getIllegalExpireSeconds()))
                                 .orElseGet(() -> just(false))
@@ -111,12 +111,12 @@ public final class IllegalAsserter {
             CLEARER = event -> {
                 String resKey = ofNullable(event.getResourceKey()).orElse(ALL_RESOURCE);
                 return zip(ofNullable(event.getJwt())
-                                .filter(BlueCheck::isNotBlank)
+                                .filter(BlueChecker::isNotBlank)
                                 .map(JWT_KEY_WRAPPER)
                                 .map(key -> clearMark(key, resKey))
                                 .orElseGet(() -> just(false)),
                         ofNullable(event.getIp())
-                                .filter(BlueCheck::isNotBlank)
+                                .filter(BlueChecker::isNotBlank)
                                 .map(IP_KEY_WRAPPER)
                                 .map(key -> clearMark(key, resKey))
                                 .orElseGet(() -> just(false))
@@ -150,12 +150,12 @@ public final class IllegalAsserter {
 
         return zip(
                 ofNullable(attributes.get(JWT.key))
-                        .map(String::valueOf).filter(BlueCheck::isNotBlank)
+                        .map(String::valueOf).filter(BlueChecker::isNotBlank)
                         .map(JWT_KEY_WRAPPER)
                         .map(key -> KEY_VALIDATOR.apply(key, resKey))
                         .orElseGet(() -> just(true)),
                 ofNullable(attributes.get(CLIENT_IP.key))
-                        .map(String::valueOf).filter(BlueCheck::isNotBlank)
+                        .map(String::valueOf).filter(BlueChecker::isNotBlank)
                         .map(IP_KEY_WRAPPER)
                         .map(key -> KEY_VALIDATOR.apply(key, resKey))
                         .orElseGet(() -> just(true))

@@ -114,7 +114,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
 
         String realUri = request.getPath().value();
 
-        attributes.put(REQUEST_ID.key, RANDOM_KEY_GETTER.get());
+        attributes.put(REQUEST_ID.key, request.getId());
         attributes.put(CLIENT_IP.key, getIp(request));
         attributes.put(METHOD.key, method);
         attributes.put(REAL_URI.key, realUri);

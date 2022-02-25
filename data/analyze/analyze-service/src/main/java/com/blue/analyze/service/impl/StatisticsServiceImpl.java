@@ -5,7 +5,7 @@ import com.blue.analyze.model.MergeSummaryParam;
 import com.blue.analyze.model.SummaryParam;
 import com.blue.analyze.service.inter.ActiveStatisticsService;
 import com.blue.analyze.service.inter.StatisticsService;
-import com.blue.base.common.base.BlueCheck;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.common.base.ConstantProcessor;
 import com.blue.base.constant.analyze.StatisticsRange;
 import com.blue.base.constant.analyze.StatisticsType;
@@ -103,10 +103,10 @@ public class StatisticsServiceImpl implements StatisticsService {
         return activeStatisticsService.selectActiveMerge(
                 ofNullable(mergeSummaryParam.getStatisticsTypes())
                         .map(types -> types.stream().map(ConstantProcessor::getStatisticsTypeByIdentity).collect(toList()))
-                        .filter(BlueCheck::isNotEmpty).orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "statisticsTypes can't be empty")),
+                        .filter(BlueChecker::isNotEmpty).orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "statisticsTypes can't be empty")),
                 ofNullable(mergeSummaryParam.getStatisticsRanges())
                         .map(types -> types.stream().map(ConstantProcessor::getStatisticsRangeByIdentity).collect(toList()))
-                        .filter(BlueCheck::isNotEmpty).orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "statisticsRanges can't be empty")));
+                        .filter(BlueChecker::isNotEmpty).orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "statisticsRanges can't be empty")));
     }
 
     /**

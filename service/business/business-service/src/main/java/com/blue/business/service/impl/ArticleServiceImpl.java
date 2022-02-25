@@ -13,7 +13,7 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Optional;
 
-import static com.blue.base.common.base.BlueCheck.isValidIdentity;
+import static com.blue.base.common.base.BlueChecker.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
@@ -23,7 +23,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal"})
 @Service
 public class ArticleServiceImpl implements ArticleService {
 

@@ -21,7 +21,7 @@ public class DictApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> dictRouter(DictApiHandler dictApiHandler) {
+    RouterFunction<ServerResponse> dictApiRouter(DictApiHandler dictApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-base");
 

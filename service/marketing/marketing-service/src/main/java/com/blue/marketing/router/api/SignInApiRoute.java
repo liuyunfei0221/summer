@@ -22,7 +22,7 @@ public class SignInApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> signInRouter(SignInApiHandler signInApiHandler) {
+    RouterFunction<ServerResponse> signInApiRouter(SignInApiHandler signInApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-marketing/signIn");
 

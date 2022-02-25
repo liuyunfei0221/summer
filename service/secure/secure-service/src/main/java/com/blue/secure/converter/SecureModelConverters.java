@@ -10,7 +10,7 @@ import com.blue.secure.repository.entity.Role;
 
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueCheck.isBlank;
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;

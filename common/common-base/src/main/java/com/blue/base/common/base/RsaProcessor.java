@@ -32,7 +32,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "UnusedAssignment"})
 public final class RsaProcessor {
 
     private static final Logger LOGGER = getLogger(RsaProcessor.class);
@@ -100,28 +100,24 @@ public final class RsaProcessor {
      * @return
      */
     private static byte[] handleBySegment(byte[] source, Cipher cipher, HandleMode handleMode) {
-
         try (FastByteArrayOutputStream outputStream = new FastByteArrayOutputStream()) {
 
             int len = source.length;
             int limit = 0;
             int rows = min(len, handleMode.length);
-            int last;
             byte[] segmentData;
+            int lastStep = len - rows;
 
             while (limit < len) {
-                if ((last = len - limit) < rows)
-                    rows = last;
+                if (limit > lastStep)
+                    rows = len - limit;
 
                 segmentData = cipher.doFinal(source, limit, rows);
                 limit += rows;
                 outputStream.write(segmentData);
-
-                //noinspection UnusedAssignment
-                segmentData = null;
             }
 
-            //noinspection UnusedAssignment
+            segmentData = null;
             source = null;
             return outputStream.toByteArray();
         } catch (Exception e) {
@@ -142,18 +138,16 @@ public final class RsaProcessor {
             int len = source.length;
             int limit = 0;
             int rows = min(len, handleMode.length);
-            int last;
+            int lastStep = len - rows;
 
             while (limit < len) {
-                if ((last = len - limit) < rows) {
-                    rows = last;
-                }
+                if (limit > lastStep)
+                    rows = len - limit;
 
                 signature.update(source, limit, rows);
                 limit += rows;
             }
 
-            //noinspection UnusedAssignment
             source = null;
             return signature;
         } catch (Exception e) {
@@ -171,6 +165,7 @@ public final class RsaProcessor {
      */
     public static String encryptByPrivateKey(String data, String priKey) {
         PAR_ASSERT.accept(data, priKey);
+
         Cipher cipher = CIPHER_SUP.get();
         try {
             cipher.init(ENCRYPT_MODE, KEY_FACTORY_SUP.get()
@@ -192,6 +187,7 @@ public final class RsaProcessor {
      */
     public static String decryptByPublicKey(String secData, String pubKey) {
         PAR_ASSERT.accept(secData, pubKey);
+
         Cipher cipher = CIPHER_SUP.get();
         try {
             cipher.init(DECRYPT_MODE, KEY_FACTORY_SUP.get()
@@ -213,6 +209,7 @@ public final class RsaProcessor {
      */
     public static String encryptByPublicKey(String data, String pubKey) {
         PAR_ASSERT.accept(data, pubKey);
+
         Cipher cipher = CIPHER_SUP.get();
         try {
             cipher.init(ENCRYPT_MODE, KEY_FACTORY_SUP.get()
@@ -234,6 +231,7 @@ public final class RsaProcessor {
      */
     public static String decryptByPrivateKey(String secData, String priKey) {
         PAR_ASSERT.accept(secData, priKey);
+
         Cipher cipher = CIPHER_SUP.get();
         try {
             cipher.init(DECRYPT_MODE, KEY_FACTORY_SUP.get()
@@ -255,6 +253,7 @@ public final class RsaProcessor {
      */
     public static String sign(String data, String priKey) {
         PAR_ASSERT.accept(data, priKey);
+
         Signature signature = SIGNATURE_SUP.get();
         try {
             signature.initSign(KEY_FACTORY_SUP.get()
@@ -276,9 +275,9 @@ public final class RsaProcessor {
      * @return
      */
     public static boolean verify(String data, String sign, String pubKey) {
+        PAR_ASSERT.accept(data, pubKey);
         if (sign == null || "".equals(sign))
             throw new BlueException(BAD_REQUEST);
-        PAR_ASSERT.accept(data, pubKey);
 
         Signature signature = SIGNATURE_SUP.get();
         try {

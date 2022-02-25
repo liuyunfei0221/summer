@@ -34,9 +34,7 @@ public final class BlueBeanCopier {
      * @return
      */
     private static String generateKey(Class source, Class target, boolean useConverter) {
-        if (source == null)
-            throw new BlueException(BAD_REQUEST);
-        if (target == null)
+        if (source == null || target == null)
             throw new BlueException(BAD_REQUEST);
 
         return source.getName() + PAR_CONCATENATION + target.getName() + PAR_CONCATENATION + useConverter;

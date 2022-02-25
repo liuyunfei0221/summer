@@ -23,7 +23,7 @@ public class FileApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> fileRouter(FileApiHandler fileApiHandler) {
+    RouterFunction<ServerResponse> fileApiRouter(FileApiHandler fileApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-media/file");
 

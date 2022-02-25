@@ -26,7 +26,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueCheck.isBlank;
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IDENTITY_GETTER;
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;

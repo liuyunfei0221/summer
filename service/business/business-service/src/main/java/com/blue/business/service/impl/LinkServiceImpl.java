@@ -10,8 +10,8 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Optional;
 
-import static com.blue.base.common.base.BlueCheck.isInvalidIdentity;
-import static com.blue.base.common.base.BlueCheck.isValidIdentity;
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.common.base.BlueChecker.isValidIdentity;
 import static com.blue.base.common.base.ConstantProcessor.assertSubjectType;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Optional.ofNullable;

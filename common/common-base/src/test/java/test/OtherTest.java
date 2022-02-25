@@ -1,12 +1,14 @@
 package test;
 
-import java.time.Instant;
+import com.blue.base.common.metadata.MetadataProcessor;
+
+import static java.util.Collections.emptyMap;
 
 public class OtherTest {
 
     public static void main(String[] args) {
 
-        System.err.println(Instant.now().getEpochSecond());
+        System.err.println(MetadataProcessor.metadataToJson(emptyMap()));
 
     }
 

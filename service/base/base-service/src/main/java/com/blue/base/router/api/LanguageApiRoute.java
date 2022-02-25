@@ -1,31 +1,33 @@
-package com.blue.business.router.api;
+package com.blue.base.router.api;
 
-import com.blue.business.handler.api.FallbackHandler;
+import com.blue.base.handler.api.LanguageApiHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static org.springframework.web.reactive.function.server.RequestPredicates.all;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
 import static org.springframework.web.reactive.function.server.RouterFunctions.nest;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
+ * base api routes
+ *
  * @author DarkBlue
  */
 @Configuration
-public class FallbackRoute {
+public class LanguageApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> fallbackApiRouter(FallbackHandler fallbackHandler) {
+    RouterFunction<ServerResponse> languageApiRouter(LanguageApiHandler languageApiHandler) {
 
-        RequestPredicate pathPredicate = path("/fallBack");
+        RequestPredicate pathPredicate = path("/blue-base");
 
-        RouterFunction<ServerResponse> routerFunction = route(
-                all(), fallbackHandler::fallback);
+        RouterFunction<ServerResponse> routerFunction = route()
+                .GET("/language", languageApiHandler::selectLanguage)
+                .build();
 
         return nest(pathPredicate, routerFunction);
     }

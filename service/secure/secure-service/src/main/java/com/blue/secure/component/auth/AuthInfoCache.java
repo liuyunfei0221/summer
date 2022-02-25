@@ -18,7 +18,7 @@ import java.util.concurrent.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueCheck.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;

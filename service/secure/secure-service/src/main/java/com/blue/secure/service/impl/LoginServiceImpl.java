@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueCheck.isEmpty;
+import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;

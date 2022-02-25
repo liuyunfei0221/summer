@@ -18,7 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-import static com.blue.base.common.base.BlueCheck.isValidIdentity;
+import static com.blue.base.common.base.BlueChecker.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;

@@ -28,6 +28,11 @@ public final class MetadataProcessor {
     private static final Supplier<Map<String, String>> EMPTY_METADATA_SUP = HashMap::new;
 
     /**
+     * empty json
+     */
+    private static final String EMPTY_JSON = "{}";
+
+    /**
      * metadata map -> json
      *
      * @param metadata
@@ -37,7 +42,7 @@ public final class MetadataProcessor {
         if (metadata != null)
             return GSON.toJson(metadata);
 
-        throw new BlueException(INVALID_METADATA_PARAM);
+        return EMPTY_JSON;
     }
 
     /**

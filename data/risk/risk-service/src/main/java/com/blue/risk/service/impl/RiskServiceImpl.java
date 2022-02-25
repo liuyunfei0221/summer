@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import static com.blue.base.common.base.BlueCheck.isEmpty;
+import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Comparator.comparingInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -29,7 +29,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "AliControlFlowStatementWithoutBraces", "JavaDoc"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 @Service
 public class RiskServiceImpl implements RiskService, ApplicationListener<ContextRefreshedEvent> {
 

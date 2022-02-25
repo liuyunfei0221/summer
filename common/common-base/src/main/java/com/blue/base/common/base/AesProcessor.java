@@ -15,6 +15,7 @@ import static com.blue.base.constant.base.ResponseElement.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getDecoder;
 import static java.util.Base64.getEncoder;
+import static javax.crypto.Cipher.*;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static reactor.util.Loggers.getLogger;
 
@@ -53,11 +54,11 @@ public final class AesProcessor {
             SecretKey secretKey = keyGenerator.generateKey();
             Key key = new SecretKeySpec(secretKey.getEncoded(), ALGORITHM);
 
-            ENCRYPT = Cipher.getInstance(ALGORITHM);
-            ENCRYPT.init(Cipher.ENCRYPT_MODE, key);
+            ENCRYPT = getInstance(ALGORITHM);
+            ENCRYPT.init(ENCRYPT_MODE, key);
 
-            DECRYPT = Cipher.getInstance(ALGORITHM);
-            DECRYPT.init(Cipher.DECRYPT_MODE, key);
+            DECRYPT = getInstance(ALGORITHM);
+            DECRYPT.init(DECRYPT_MODE, key);
         } catch (Exception e) {
             LOGGER.error("AesProcessor(String salt) failed, e = {}", e);
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "AesProcessor(String salt) failed, e = " + e);

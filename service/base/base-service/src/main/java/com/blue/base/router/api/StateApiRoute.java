@@ -24,7 +24,7 @@ public class StateApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> stateRouter(StateApiHandler stateApiHandler) {
+    RouterFunction<ServerResponse> stateApiRouter(StateApiHandler stateApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-base/states");
 

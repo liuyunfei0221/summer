@@ -23,7 +23,7 @@ public class FallbackRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> fallbackRouter(FallbackHandler fallbackHandler) {
+    RouterFunction<ServerResponse> fallbackApiRouter(FallbackHandler fallbackHandler) {
 
         RequestPredicate pathPredicate = path("/fallback");
 

@@ -23,7 +23,7 @@ public class VerifyApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> verifyRouter(VerifyApiHandler verifyApiHandler) {
+    RouterFunction<ServerResponse> verifyApiRouter(VerifyApiHandler verifyApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-verify/verify");
 

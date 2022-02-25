@@ -47,7 +47,7 @@ public final class ExceptionProcessor {
      */
     private static Map<String, ExceptionHandler> generatorMapping(String dirName) {
         List<Class<?>> classes = getClassesByPackage(dirName, true);
-        LOGGER.info("Map<String, ExceptionHandler> generatorMapping(String dirName), dirName = {}", dirName);
+        LOGGER.info("Map<String, ExceptionHandler> generatorMapping(String dirName), dirName = {}, classes = {}", dirName, classes);
         String expHandlerName = ExceptionHandler.class.getName();
         return classes
                 .stream()

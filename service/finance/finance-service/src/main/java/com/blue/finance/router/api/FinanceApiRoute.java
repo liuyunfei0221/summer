@@ -21,7 +21,7 @@ public class FinanceApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> memberRouter(FinanceApiHandler financeApiHandler) {
+    RouterFunction<ServerResponse> financeApiRouter(FinanceApiHandler financeApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-finance/finance");
 

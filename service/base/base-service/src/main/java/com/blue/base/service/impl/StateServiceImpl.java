@@ -19,8 +19,8 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueCheck.isInvalidIdentity;
-import static com.blue.base.common.base.BlueCheck.isValidIdentity;
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.common.base.BlueChecker.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.converter.BaseModelConverters.STATES_2_STATE_INFOS_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;

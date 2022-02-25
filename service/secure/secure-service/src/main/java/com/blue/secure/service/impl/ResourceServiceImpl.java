@@ -1,6 +1,6 @@
 package com.blue.secure.service.impl;
 
-import com.blue.base.common.base.BlueCheck;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -28,7 +28,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.BlueCheck.*;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.REST_URI_ASSERTER;
 import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
@@ -153,7 +153,7 @@ public class ResourceServiceImpl implements ResourceService {
             throw new BlueException(INVALID_IDENTITY);
 
         ofNullable(rup.getName())
-                .filter(BlueCheck::isNotBlank)
+                .filter(BlueChecker::isNotBlank)
                 .map(resourceMapper::selectByName)
                 .map(Resource::getId)
                 .ifPresent(eid -> {
@@ -166,9 +166,9 @@ public class ResourceServiceImpl implements ResourceService {
             throw new BlueException(DATA_NOT_EXIST);
 
         ofNullable(resourceMapper.selectByUnique(
-                ofNullable(rup.getRequestMethod()).filter(BlueCheck::isNotBlank).map(String::trim).map(String::toUpperCase).orElseGet(resource::getRequestMethod),
-                ofNullable(rup.getModule()).filter(BlueCheck::isNotBlank).map(String::trim).map(String::toLowerCase).orElseGet(resource::getModule),
-                ofNullable(rup.getUri()).filter(BlueCheck::isNotBlank).map(String::trim).map(String::toLowerCase).map(uri -> {
+                ofNullable(rup.getRequestMethod()).filter(BlueChecker::isNotBlank).map(String::trim).map(String::toUpperCase).orElseGet(resource::getRequestMethod),
+                ofNullable(rup.getModule()).filter(BlueChecker::isNotBlank).map(String::trim).map(String::toLowerCase).orElseGet(resource::getModule),
+                ofNullable(rup.getUri()).filter(BlueChecker::isNotBlank).map(String::trim).map(String::toLowerCase).map(uri -> {
                     REST_URI_ASSERTER.accept(uri);
                     return uri;
                 }).orElseGet(resource::getUri))

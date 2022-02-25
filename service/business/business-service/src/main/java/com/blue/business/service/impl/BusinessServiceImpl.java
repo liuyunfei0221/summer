@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
-import static com.blue.base.common.base.BlueCheck.isInvalidIdentity;
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.business.SubjectType.ARTICLE;
@@ -38,7 +38,7 @@ import static reactor.core.publisher.Mono.just;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal"})
 @Service
 public class BusinessServiceImpl implements BusinessService {
 
@@ -54,7 +54,6 @@ public class BusinessServiceImpl implements BusinessService {
 
     private final ExecutorService executorService;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public BusinessServiceImpl(ArticleService articleService, LinkService linkService, CommonService commonService,
                                ReplyService replyService, BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService) {
         this.articleService = articleService;

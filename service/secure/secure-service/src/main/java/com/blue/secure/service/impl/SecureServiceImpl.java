@@ -37,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.*;
 
-import static com.blue.base.common.base.BlueCheck.*;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.base.RsaProcessor.initKeyPair;
 import static com.blue.base.constant.base.BlueNumericalValue.*;
@@ -542,7 +542,7 @@ public class SecureServiceImpl implements SecureService {
                                 .map(idAndResourceMapping::get)
                                 .filter(Objects::nonNull)
                                 .map(r ->
-                                        INIT_RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
+                                        RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
                                                 REAL_URI_GETTER.apply(r).intern()).intern())
                                 .collect(toSet()), (a, b) -> a));
 
@@ -562,7 +562,7 @@ public class SecureServiceImpl implements SecureService {
 
         Map<String, Resource> tempKeyAndResourceMapping = resources
                 .parallelStream()
-                .collect(toMap(r -> INIT_RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
+                .collect(toMap(r -> RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
                         REAL_URI_GETTER.apply(r).intern()), r -> r, (a, b) -> a));
 
         List<Role> roles = roleListCf.join();
