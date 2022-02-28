@@ -1,34 +1,29 @@
 package com.blue.secure.api.model;
 
-import com.blue.base.model.exps.BlueException;
-
 import java.io.Serializable;
-
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
  * member credential info without member id
  *
  * @author DarkBlue
  */
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
+@SuppressWarnings("unused")
 public final class CredentialInfo implements Serializable {
 
     private static final long serialVersionUID = -1783008101958304961L;
 
-    private final String credential;
+    private String credential;
 
-    private final String type;
+    private String type;
 
-    private final String access;
+    private String access;
 
-    private final String extra;
+    private String extra;
+
+    public CredentialInfo() {
+    }
 
     public CredentialInfo(String credential, String type, String access, String extra) {
-        if (isBlank(type))
-            throw new BlueException(BAD_REQUEST);
-
         this.credential = credential;
         this.type = type;
         this.access = access;
@@ -39,16 +34,32 @@ public final class CredentialInfo implements Serializable {
         return credential;
     }
 
+    public void setCredential(String credential) {
+        this.credential = credential;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getAccess() {
         return access;
     }
 
+    public void setAccess(String access) {
+        this.access = access;
+    }
+
     public String getExtra() {
         return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
     }
 
     @Override
@@ -56,7 +67,7 @@ public final class CredentialInfo implements Serializable {
         return "CredentialInfo{" +
                 "credential='" + credential + '\'' +
                 ", type='" + type + '\'' +
-                ", access='" + access + '\'' +
+                ", access='" + ":)" + '\'' +
                 ", extra='" + extra + '\'' +
                 '}';
     }

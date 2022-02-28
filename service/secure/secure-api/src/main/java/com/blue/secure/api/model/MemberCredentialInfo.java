@@ -8,13 +8,17 @@ import java.util.List;
  *
  * @author DarkBlue
  */
+@SuppressWarnings("unused")
 public final class MemberCredentialInfo implements Serializable {
 
     private static final long serialVersionUID = 8079056879120261243L;
 
-    private final Long memberId;
+    private Long memberId;
 
-    private final List<CredentialInfo> credentials;
+    private List<CredentialInfo> credentials;
+
+    public MemberCredentialInfo() {
+    }
 
     public MemberCredentialInfo(Long memberId, List<CredentialInfo> credentials) {
         this.memberId = memberId;
@@ -25,8 +29,16 @@ public final class MemberCredentialInfo implements Serializable {
         return memberId;
     }
 
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
+    }
+
     public List<CredentialInfo> getCredentials() {
         return credentials;
+    }
+
+    public void setCredentials(List<CredentialInfo> credentials) {
+        this.credentials = credentials;
     }
 
     @Override

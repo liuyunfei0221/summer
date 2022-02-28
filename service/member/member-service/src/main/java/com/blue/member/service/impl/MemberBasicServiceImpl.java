@@ -37,6 +37,7 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.secure.LoginType.*;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static java.util.Collections.emptyList;
@@ -181,11 +182,18 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     }
 
     private static final Function<MemberBasic, List<CredentialInfo>> CREDENTIAL_INFO_GEN = memberBasic -> {
-
-        //noinspection UnnecessaryLocalVariable
         List<CredentialInfo> credentials = new ArrayList<>();
 
-        //TODO
+        String phone = memberBasic.getPhone();
+        String email = memberBasic.getEmail();
+        String access = memberBasic.getAccess();
+
+        credentials.add(new CredentialInfo(phone, SMS_VERIFY.identity, access, "from registry"));
+        credentials.add(new CredentialInfo(phone, PHONE_PWD.identity, access, "from registry"));
+        credentials.add(new CredentialInfo(email, EMAIL_PWD.identity, access, "from registry"));
+        credentials.add(new CredentialInfo(phone, WECHAT.identity, access, "from registry"));
+        credentials.add(new CredentialInfo(phone, MINI_PRO.identity, access, "from registry"));
+
         return credentials;
     };
 

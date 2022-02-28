@@ -7,6 +7,7 @@ import com.blue.secure.repository.mapper.CredentialMapper;
 import com.blue.secure.service.inter.CredentialService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.Optional;
@@ -14,11 +15,11 @@ import java.util.Optional;
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.ConstantProcessor.assertLoginType;
-import static com.blue.base.constant.base.ResponseElement.DATA_ALREADY_EXIST;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static java.util.Optional.ofNullable;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -41,6 +42,22 @@ public class CredentialServiceImpl implements CredentialService {
     public CredentialServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CredentialMapper credentialMapper) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.credentialMapper = credentialMapper;
+    }
+
+    /**
+     * get by credential and type
+     *
+     * @param credential
+     * @param type
+     * @return
+     */
+    @Override
+    public Mono<Optional<Credential>> getCredentialByCredentialAndType(String credential, String type) {
+        LOGGER.info("Mono<Optional<Credential>> getCredentialByCredentialAndType(String credential, String type), credential = {}, type = {}", credential, type);
+
+        assertLoginType(type, false);
+
+        return just(ofNullable(credentialMapper.getByCredentialAndType(credential, type)));
     }
 
     /**
@@ -80,9 +97,9 @@ public class CredentialServiceImpl implements CredentialService {
         String type = credential.getType();
         assertLoginType(type, false);
 
-        Optional<Credential> existOptional = this.getCredentialByMemberIdAndType(memberId, type);
-        if (existOptional.isPresent())
-            throw new BlueException(DATA_ALREADY_EXIST);
+//        Optional<Credential> existOptional = this.getCredentialByMemberIdAndType(memberId, type);
+//        if (existOptional.isPresent())
+//            throw new BlueException(DATA_ALREADY_EXIST);
 
         credential.setId(blueIdentityProcessor.generate(Credential.class));
 

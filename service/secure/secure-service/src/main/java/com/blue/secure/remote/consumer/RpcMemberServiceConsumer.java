@@ -45,7 +45,7 @@ public class RpcMemberServiceConsumer {
      * @param id
      * @return
      */
-    Mono<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id) {
+    public Mono<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id) {
         LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
         return fromFuture(rpcMemberService.selectMemberBasicMonoByPrimaryKey(id)).publishOn(scheduler);
     }
@@ -56,7 +56,7 @@ public class RpcMemberServiceConsumer {
      * @param ids
      * @return
      */
-    Mono<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids) {
+    public Mono<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids), ids = {}", ids);
         return fromFuture(rpcMemberService.selectMemberBasicMonoByIds(ids)).publishOn(scheduler);
     }

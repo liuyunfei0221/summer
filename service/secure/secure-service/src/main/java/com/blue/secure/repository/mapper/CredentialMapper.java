@@ -23,6 +23,8 @@ public interface CredentialMapper {
 
     int updateByPrimaryKey(Credential record);
 
+    Credential getByCredentialAndType(@Param("credential") String credential, @Param("type") String type);
+
     Credential getByMemberIdAndType(@Param("memberId") Long memberId, @Param("type") String type);
 
 }

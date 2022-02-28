@@ -13,6 +13,14 @@ import reactor.core.publisher.Mono;
 public interface MemberService {
 
     /**
+     * get member by id
+     *
+     * @param id
+     * @return
+     */
+    Mono<MemberBasicInfo> selectMemberBasicById(Long id);
+
+    /**
      * get member by phone
      *
      * @param phone

@@ -28,7 +28,7 @@ public class RpcControlServiceConsumer {
     @DubboReference(version = "1.0",
             providedBy = {"summer-member"},
             methods = {
-                    @Method(name = "insertDefaultMemberRoleRelation", async = false),
+                    @Method(name = "initMemberSecureInfo", async = false),
                     @Method(name = "getAuthorityByAccess", async = true),
                     @Method(name = "getAuthorityByMemberId", async = true)
             })

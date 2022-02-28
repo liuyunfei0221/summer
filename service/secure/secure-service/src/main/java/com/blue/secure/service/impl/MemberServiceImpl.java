@@ -48,6 +48,29 @@ public class MemberServiceImpl implements MemberService {
     };
 
     /**
+     * get member by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Mono<MemberBasicInfo> selectMemberBasicById(Long id) {
+        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicById(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(EMPTY_PARAM);
+
+        return rpcMemberServiceConsumer.selectMemberBasicMonoByPrimaryKey(id)
+                .onErrorMap(t -> new BlueException(INVALID_ACCT_OR_PWD))
+                .flatMap(memberBasicInfo -> {
+                    LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
+                    MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
+
+                    memberBasicInfo.setAccess("");
+                    return just(memberBasicInfo);
+                });
+    }
+
+    /**
      * get member by phone
      *
      * @param phone

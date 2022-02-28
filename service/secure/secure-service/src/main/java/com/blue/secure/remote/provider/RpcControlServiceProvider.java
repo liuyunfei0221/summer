@@ -24,7 +24,7 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
 @DubboService(interfaceClass = RpcControlService.class, version = "1.0", methods = {
-        @Method(name = "initMemberSecureInfo", async = false),
+        @Method(name = "initMemberSecureInfo", async = false, timeout = 60000, retries = 0),
         @Method(name = "updateMemberRoleById", async = false),
         @Method(name = "getAuthorityByAccess", async = true),
         @Method(name = "getAuthorityByMemberId", async = true)

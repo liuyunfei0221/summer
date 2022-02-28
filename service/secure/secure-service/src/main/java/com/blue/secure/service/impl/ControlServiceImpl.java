@@ -69,6 +69,27 @@ public class ControlServiceImpl implements ControlService {
         this.executorService = executorService;
     }
 
+    private final Function<Long, MemberRoleRelation> RELATION_GEN = memberId -> {
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
+
+        Role role = roleResRelationService.getDefaultRole();
+        if (role == null)
+            throw new BlueException(DATA_NOT_EXIST);
+
+        long epochSecond = TIME_STAMP_GETTER.get();
+
+        MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
+        memberRoleRelation.setMemberId(memberId);
+        memberRoleRelation.setRoleId(role.getId());
+        memberRoleRelation.setCreateTime(epochSecond);
+        memberRoleRelation.setUpdateTime(epochSecond);
+        memberRoleRelation.setCreator(memberId);
+        memberRoleRelation.setUpdater(memberId);
+
+        return memberRoleRelation;
+    };
+
     private Role getRoleByRoleId(Long roleId) {
         return roleService.getRoleById(roleId).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     }
@@ -147,27 +168,6 @@ public class ControlServiceImpl implements ControlService {
 
         return i;
     }
-
-    private final Function<Long, MemberRoleRelation> RELATION_GEN = memberId -> {
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
-
-        Role role = roleResRelationService.getDefaultRole();
-        if (role == null)
-            throw new BlueException(DATA_NOT_EXIST);
-
-        long epochSecond = TIME_STAMP_GETTER.get();
-
-        MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
-        memberRoleRelation.setMemberId(memberId);
-        memberRoleRelation.setRoleId(role.getId());
-        memberRoleRelation.setCreateTime(epochSecond);
-        memberRoleRelation.setUpdateTime(epochSecond);
-        memberRoleRelation.setCreator(memberId);
-        memberRoleRelation.setUpdater(memberId);
-
-        return memberRoleRelation;
-    };
 
     /**
      * init secure infos for a new member
