@@ -14,7 +14,7 @@ public final class MemberBasic {
 
     private String email;
 
-    private String password;
+    private String access;
 
     private String name;
 
@@ -48,7 +48,7 @@ public final class MemberBasic {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+        this.phone = phone;
     }
 
     public String getEmail() {
@@ -56,15 +56,15 @@ public final class MemberBasic {
     }
 
     public void setEmail(String email) {
-        this.email = email == null ? null : email.trim();
+        this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getAccess() {
+        return access;
     }
 
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
+    public void setAccess(String access) {
+        this.access = access;
     }
 
     public String getName() {
@@ -72,7 +72,7 @@ public final class MemberBasic {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = name;
     }
 
     public String getIcon() {
@@ -80,7 +80,7 @@ public final class MemberBasic {
     }
 
     public void setIcon(String icon) {
-        this.icon = icon == null ? null : icon.trim();
+        this.icon = icon;
     }
 
     public Integer getGender() {
@@ -115,14 +115,13 @@ public final class MemberBasic {
         this.updateTime = updateTime;
     }
 
-
     @Override
     public String toString() {
         return "MemberBasic{" +
                 "id=" + id +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
+                ", access='" + access + '\'' +
                 ", name='" + name + '\'' +
                 ", icon='" + icon + '\'' +
                 ", gender=" + gender +

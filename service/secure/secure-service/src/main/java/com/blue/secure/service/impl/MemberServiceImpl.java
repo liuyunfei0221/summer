@@ -38,7 +38,7 @@ public class MemberServiceImpl implements MemberService {
     private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
 
     private static final BiConsumer<String, MemberBasicInfo> PWD_ASSERTER = (access, mb) -> {
-        if (isNull(access) || isNull(mb) || !ENCODER.matches(access, mb.getPassword()))
+        if (isNull(access) || isNull(mb) || !ENCODER.matches(access, mb.getAccess()))
             throw new BlueException(INVALID_ACCT_OR_PWD);
     };
 
@@ -65,7 +65,7 @@ public class MemberServiceImpl implements MemberService {
                     LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPhoneWithAssertVerify(ClientLoginParam clientLoginParam), memberBasicInfo = {}", memberBasicInfo);
                     MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
 
-                    memberBasicInfo.setPassword("");
+                    memberBasicInfo.setAccess("");
                     return just(memberBasicInfo);
                 });
     }
@@ -90,7 +90,7 @@ public class MemberServiceImpl implements MemberService {
                     PWD_ASSERTER.accept(password, memberBasicInfo);
                     MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
 
-                    memberBasicInfo.setPassword("");
+                    memberBasicInfo.setAccess("");
                     return just(memberBasicInfo);
                 });
     }
@@ -115,7 +115,7 @@ public class MemberServiceImpl implements MemberService {
                     PWD_ASSERTER.accept(password, memberBasicInfo);
                     MEMBER_STATUS_ASSERTER.accept(memberBasicInfo);
 
-                    memberBasicInfo.setPassword("");
+                    memberBasicInfo.setAccess("");
                     return just(memberBasicInfo);
                 });
     }

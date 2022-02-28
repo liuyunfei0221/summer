@@ -3,6 +3,7 @@ package com.blue.secure.remote.provider;
 import com.blue.base.model.base.Access;
 import com.blue.secure.api.inter.RpcControlService;
 import com.blue.secure.api.model.AuthorityBaseOnRole;
+import com.blue.secure.api.model.MemberCredentialInfo;
 import com.blue.secure.service.inter.ControlService;
 import com.blue.secure.service.inter.SecureService;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -23,7 +24,7 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
 @DubboService(interfaceClass = RpcControlService.class, version = "1.0", methods = {
-        @Method(name = "insertDefaultMemberRoleRelation", async = false),
+        @Method(name = "initMemberSecureInfo", async = false),
         @Method(name = "updateMemberRoleById", async = false),
         @Method(name = "getAuthorityByAccess", async = true),
         @Method(name = "getAuthorityByMemberId", async = true)
@@ -45,14 +46,14 @@ public class RpcControlServiceProvider implements RpcControlService {
     }
 
     /**
-     * assign default roles to member
+     * init secure infos for a new member
      *
-     * @param memberId
+     * @param memberCredentialInfo
      */
     @Override
-    public void insertDefaultMemberRoleRelation(Long memberId) {
-        LOGGER.info("void insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
-        controlService.insertDefaultMemberRoleRelation(memberId);
+    public void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo) {
+        LOGGER.info("void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
+        controlService.initMemberSecureInfo(memberCredentialInfo);
     }
 
     /**

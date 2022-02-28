@@ -16,15 +16,15 @@ public final class LanguageInfo implements Serializable {
 
     private String identity;
 
-    private String link;
+    private String icon;
 
     public LanguageInfo() {
     }
 
-    public LanguageInfo(String name, String identity, String link) {
+    public LanguageInfo(String name, String identity, String icon) {
         this.name = name;
         this.identity = identity;
-        this.link = link;
+        this.icon = icon;
     }
 
     public String getName() {
@@ -43,12 +43,12 @@ public final class LanguageInfo implements Serializable {
         this.identity = identity;
     }
 
-    public String getLink() {
-        return link;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     @Override
@@ -56,7 +56,7 @@ public final class LanguageInfo implements Serializable {
         return "LanguageInfo{" +
                 "name='" + name + '\'' +
                 ", identity='" + identity + '\'' +
-                ", link='" + link + '\'' +
+                ", icon='" + icon + '\'' +
                 '}';
     }
 

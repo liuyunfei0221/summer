@@ -14,19 +14,22 @@ import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.repository.mapper.MemberBasicMapper;
 import com.blue.member.service.inter.MemberBasicService;
+import com.blue.secure.api.model.CredentialInfo;
+import com.blue.secure.api.model.MemberCredentialInfo;
 import io.seata.spring.annotation.GlobalLock;
 import io.seata.spring.annotation.GlobalTransactional;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
@@ -71,8 +74,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         this.rpcControlServiceConsumer = rpcControlServiceConsumer;
         this.rpcFinanceAccountServiceConsumer = rpcFinanceAccountServiceConsumer;
     }
-
-    private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder();
 
     /**
      * is a number exist?
@@ -179,6 +180,15 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         throw new BlueException(INVALID_IDENTITY);
     }
 
+    private static final Function<MemberBasic, List<CredentialInfo>> CREDENTIAL_INFO_GEN = memberBasic -> {
+
+        //noinspection UnnecessaryLocalVariable
+        List<CredentialInfo> credentials = new ArrayList<>();
+
+        //TODO
+        return credentials;
+    };
+
     /**
      * member registry
      *
@@ -203,10 +213,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         long id = blueIdentityProcessor.generate(MemberBasic.class);
 
         memberBasic.setId(id);
-        memberBasic.setPassword(ENCODER.encode(memberBasic.getPassword()));
+        memberBasic.setAccess(memberBasic.getAccess());
 
-        //init default role
-        rpcControlServiceConsumer.insertDefaultMemberRoleRelation(id);
+        //init secure info
+        rpcControlServiceConsumer.initMemberSecureInfo(new MemberCredentialInfo(id, CREDENTIAL_INFO_GEN.apply(memberBasic)));
 
         //init finance account
         rpcFinanceAccountServiceConsumer.insertInitFinanceAccount(id);

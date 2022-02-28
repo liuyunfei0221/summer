@@ -292,8 +292,7 @@ public class RoleServiceImpl implements RoleService {
         INSERT_ROLE_VALIDATOR.accept(roleInsertParam);
         Role role = ROLE_INSERT_PARAM_2_ROLE_CONVERTER.apply(roleInsertParam);
 
-        long id = blueIdentityProcessor.generate(Role.class);
-        role.setId(id);
+        role.setId(blueIdentityProcessor.generate(Role.class));
         role.setCreator(operatorId);
         role.setUpdater(operatorId);
 

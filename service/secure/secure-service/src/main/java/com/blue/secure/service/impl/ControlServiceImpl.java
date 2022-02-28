@@ -1,30 +1,32 @@
 package com.blue.secure.service.impl;
 
 import com.blue.base.model.exps.BlueException;
-import com.blue.secure.api.model.AuthorityBaseOnResource;
-import com.blue.secure.api.model.AuthorityBaseOnRole;
-import com.blue.secure.api.model.ResourceInfo;
-import com.blue.secure.api.model.RoleInfo;
+import com.blue.secure.api.model.*;
 import com.blue.secure.event.producer.SystemAuthorityInfosRefreshProducer;
 import com.blue.secure.model.*;
 import com.blue.secure.repository.entity.MemberRoleRelation;
 import com.blue.secure.repository.entity.Role;
 import com.blue.secure.service.inter.*;
+import io.seata.spring.annotation.GlobalLock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
+import static com.blue.secure.converter.SecureModelConverters.CREDENTIAL_INFO_AND_MEMBER_ID_2_CREDENTIAL_CONVERTER;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -45,7 +47,9 @@ public class ControlServiceImpl implements ControlService {
 
     private final RoleService roleService;
 
-    private final RoleResRelationService roleResRelationService;
+    private final CredentialService credentialService;
+
+    private RoleResRelationService roleResRelationService;
 
     private final MemberRoleRelationService memberRoleRelationService;
 
@@ -54,10 +58,11 @@ public class ControlServiceImpl implements ControlService {
     private final ExecutorService executorService;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ControlServiceImpl(SecureService secureService, RoleService roleService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
-                              SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService) {
+    public ControlServiceImpl(SecureService secureService, RoleService roleService, CredentialService credentialService, RoleResRelationService roleResRelationService,
+                              MemberRoleRelationService memberRoleRelationService, SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService) {
         this.secureService = secureService;
         this.roleService = roleService;
+        this.credentialService = credentialService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
@@ -143,17 +148,9 @@ public class ControlServiceImpl implements ControlService {
         return i;
     }
 
-    /**
-     * set a default role to member
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public int insertDefaultMemberRoleRelation(Long memberId) {
-        LOGGER.info("void insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
+    private final Function<Long, MemberRoleRelation> RELATION_GEN = memberId -> {
         if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
+            throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
 
         Role role = roleResRelationService.getDefaultRole();
         if (role == null)
@@ -169,7 +166,31 @@ public class ControlServiceImpl implements ControlService {
         memberRoleRelation.setCreator(memberId);
         memberRoleRelation.setUpdater(memberId);
 
-        return memberRoleRelationService.insertMemberRoleRelation(memberRoleRelation);
+        return memberRoleRelation;
+    };
+
+    /**
+     * init secure infos for a new member
+     *
+     * @param memberCredentialInfo
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @GlobalLock
+    public void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo) {
+        if (isNull(memberCredentialInfo))
+            throw new BlueException(EMPTY_PARAM);
+
+        Long memberId = memberCredentialInfo.getMemberId();
+        List<CredentialInfo> credentials = memberCredentialInfo.getCredentials();
+        if (isInvalidIdentity(memberId) || isEmpty(credentials))
+            throw new BlueException(INVALID_PARAM);
+
+        memberRoleRelationService.insertMemberRoleRelation(RELATION_GEN.apply(memberId));
+
+        credentials.stream()
+                .map(c -> CREDENTIAL_INFO_AND_MEMBER_ID_2_CREDENTIAL_CONVERTER.apply(c, memberId))
+                .forEach(credentialService::insertCredential);
     }
 
     /**

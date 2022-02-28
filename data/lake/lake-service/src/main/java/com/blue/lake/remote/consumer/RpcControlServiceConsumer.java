@@ -18,7 +18,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam", "FieldCanBeLocal"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "FieldCanBeLocal"})
 @Component
 public class RpcControlServiceConsumer {
 
@@ -27,21 +27,10 @@ public class RpcControlServiceConsumer {
     @DubboReference(version = "1.0",
             providedBy = {"summer-member"},
             methods = {
-                    @Method(name = "insertDefaultMemberRoleRelation", async = false),
                     @Method(name = "getAuthorityByAccess", async = true),
-                    @Method(name = "getAuthorityByMemberId", async = true),
+                    @Method(name = "getAuthorityByMemberId", async = true)
             })
     private RpcControlService rpcControlService;
-
-    /**
-     * assign default roles to member
-     *
-     * @param memberId
-     */
-    public void insertDefaultMemberRoleRelation(Long memberId) {
-        LOGGER.info("void insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
-        rpcControlService.insertDefaultMemberRoleRelation(memberId);
-    }
 
     /**
      * query authority by access

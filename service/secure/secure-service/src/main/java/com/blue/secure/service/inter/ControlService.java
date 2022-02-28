@@ -1,9 +1,6 @@
 package com.blue.secure.service.inter;
 
-import com.blue.secure.api.model.AuthorityBaseOnResource;
-import com.blue.secure.api.model.AuthorityBaseOnRole;
-import com.blue.secure.api.model.ResourceInfo;
-import com.blue.secure.api.model.RoleInfo;
+import com.blue.secure.api.model.*;
 import com.blue.secure.model.*;
 import reactor.core.publisher.Mono;
 
@@ -51,12 +48,11 @@ public interface ControlService {
     int updateMemberRoleById(Long memberId, Long roleId, Long operatorId);
 
     /**
-     * set a default role to member
+     * init secure infos for a new member
      *
-     * @param memberId
-     * @return
+     * @param memberCredentialInfo
      */
-    int insertDefaultMemberRoleRelation(Long memberId);
+    void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo);
 
     /**
      * update default role by role id

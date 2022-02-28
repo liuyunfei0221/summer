@@ -3,6 +3,7 @@ package com.blue.risk.remote.consumer;
 import com.blue.base.model.base.Access;
 import com.blue.secure.api.inter.RpcControlService;
 import com.blue.secure.api.model.AuthorityBaseOnRole;
+import com.blue.secure.api.model.MemberCredentialInfo;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -29,18 +30,18 @@ public class RpcControlServiceConsumer {
             methods = {
                     @Method(name = "insertDefaultMemberRoleRelation", async = false),
                     @Method(name = "getAuthorityByAccess", async = true),
-                    @Method(name = "getAuthorityByMemberId", async = true),
+                    @Method(name = "getAuthorityByMemberId", async = true)
             })
     private RpcControlService rpcControlService;
 
     /**
-     * assign default roles to member
+     * init secure infos for a new member
      *
-     * @param memberId
+     * @param memberCredentialInfo
      */
-    public void insertDefaultMemberRoleRelation(Long memberId) {
-        LOGGER.info("void insertDefaultMemberRoleRelation(Long memberId), memberId = {}", memberId);
-        rpcControlService.insertDefaultMemberRoleRelation(memberId);
+    public void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo) {
+        LOGGER.info("void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
+        rpcControlService.initMemberSecureInfo(memberCredentialInfo);
     }
 
     /**

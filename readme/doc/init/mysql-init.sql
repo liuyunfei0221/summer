@@ -4,118 +4,73 @@
 
 -- noinspection SqlNoDataSourceInspectionForFile
 
+-- secure
+
+CREATE
+DATABASE secure CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+USE
+secure;
+
+CREATE TABLE `resource`
+(
+    `id`                      bigint       NOT NULL COMMENT 'id',
+    `request_method`          varchar(16)  NOT NULL COMMENT 'request method/upper',
+    `module`                  varchar(256) NOT NULL COMMENT 'module/service',
+    `uri`                     varchar(256) NOT NULL COMMENT 'resource uri/lower',
+    `authenticate`            bit          NOT NULL COMMENT 'need auth? 1-yes 2-no',
+    `request_un_decryption`   bit          NOT NULL COMMENT 'do not decrypt request body? 1-not 0-yes',
+    `response_un_encryption`  bit          NOT NULL COMMENT 'do not encrypt response body? 1-not 0-yes',
+    `existence_request_body`  bit          NOT NULL COMMENT 'has request body? 1-yes 2-no',
+    `existence_response_body` bit          NOT NULL COMMENT 'has response body? 1-yes 2-no',
+    `type`                    tinyint      NOT NULL COMMENT 'resource type, 1-api 2-manage api 3-open api',
+    `name`                    varchar(128) NOT NULL COMMENT 'resource name',
+    `description`             varchar(256) NOT NULL DEFAULT '' COMMENT 'resource disc',
+    `create_time`             bigint       NOT NULL COMMENT 'data create time',
+    `update_time`             bigint       NOT NULL COMMENT 'data update time',
+    `creator`                 bigint       NOT NULL COMMENT 'creator id',
+    `updater`                 bigint       NOT NULL COMMENT 'updater id',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_method_module_uri`(`request_method`,`module`,`uri`) USING BTREE,
+    UNIQUE KEY `idx_name`(`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of resource';
+
+CREATE TABLE `role`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `name`        varchar(64)  NOT NULL COMMENT 'role name',
+    `description` varchar(128) NOT NULL DEFAULT '' COMMENT 'role disc',
+    `level`       int          NOT NULL COMMENT 'roles level',
+    `is_default`  bit          NOT NULL COMMENT 'is default role? 1-yes 0-no',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `creator`     bigint       NOT NULL COMMENT 'creator id',
+    `updater`     bigint       NOT NULL COMMENT 'updater id',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_level`(`level`) USING BTREE,
+    UNIQUE KEY `idx_name`(`name`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role';
+
+CREATE TABLE `role_res_relation`
+(
+    `id`          bigint NOT NULL COMMENT 'id',
+    `role_id`     bigint NOT NULL COMMENT 'role id',
+    `res_id`      bigint NOT NULL COMMENT 'resource id',
+    `create_time` bigint NOT NULL COMMENT 'data create time',
+    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `creator`     bigint NOT NULL COMMENT 'creator id',
+    `updater`     bigint NOT NULL COMMENT 'updater id',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE,
+    UNIQUE KEY `idx_res_role`(`res_id`,`role_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role and resource relation';
+
+
 -- secure0
 
 CREATE
 DATABASE secure_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 secure_0;
-
-CREATE TABLE `resource_0`
-(
-    `id`                      bigint       NOT NULL COMMENT 'id',
-    `request_method`          varchar(16)  NOT NULL COMMENT 'request method/upper',
-    `module`                  varchar(256) NOT NULL COMMENT 'module/service',
-    `uri`                     varchar(256) NOT NULL COMMENT 'resource uri/lower',
-    `authenticate`            bit          NOT NULL COMMENT 'need auth? 1-yes 2-no',
-    `request_un_decryption`   bit          NOT NULL COMMENT 'do not decrypt request body? 1-not 0-yes',
-    `response_un_encryption`  bit          NOT NULL COMMENT 'do not encrypt response body? 1-not 0-yes',
-    `existence_request_body`  bit          NOT NULL COMMENT 'has request body? 1-yes 2-no',
-    `existence_response_body` bit          NOT NULL COMMENT 'has response body? 1-yes 2-no',
-    `type`                    tinyint      NOT NULL COMMENT 'resource type, 1-api 2-manage api 3-open api',
-    `name`                    varchar(128) DEFAULT NULL COMMENT 'resource name',
-    `description`             varchar(256) DEFAULT NULL COMMENT 'resource disc',
-    `create_time`             bigint       NOT NULL COMMENT 'data create time',
-    `update_time`             bigint       NOT NULL COMMENT 'data update time',
-    `creator`                 bigint       NOT NULL COMMENT 'creator id',
-    `updater`                 bigint       NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_method_module_uri`(`request_method`,`module`,`uri`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of resource 0';
-
-CREATE TABLE `resource_1`
-(
-    `id`                      bigint       NOT NULL COMMENT 'id',
-    `request_method`          varchar(16)  NOT NULL COMMENT 'request method/upper',
-    `module`                  varchar(256) NOT NULL COMMENT 'module/service',
-    `uri`                     varchar(256) NOT NULL COMMENT 'resource uri/lower',
-    `authenticate`            bit          NOT NULL COMMENT 'need auth? 1-yes 2-no',
-    `request_un_decryption`   bit          NOT NULL COMMENT 'do not decrypt request body? 1-not 0-yes',
-    `response_un_encryption`  bit          NOT NULL COMMENT 'do not encrypt response body? 1-not 0-yes',
-    `existence_request_body`  bit          NOT NULL COMMENT 'has request body? 1-yes 2-no',
-    `existence_response_body` bit          NOT NULL COMMENT 'has response body? 1-yes 2-no',
-    `type`                    tinyint      NOT NULL COMMENT 'resource type, 1-api 2-manage api 3-open api',
-    `name`                    varchar(128) DEFAULT NULL COMMENT 'resource name',
-    `description`             varchar(256) DEFAULT NULL COMMENT 'resource disc',
-    `create_time`             bigint       NOT NULL COMMENT 'data create time',
-    `update_time`             bigint       NOT NULL COMMENT 'data update time',
-    `creator`                 bigint       NOT NULL COMMENT 'creator id',
-    `updater`                 bigint       NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_method_module_uri`(`request_method`,`module`,`uri`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of resource 1';
-
-CREATE TABLE `role_0`
-(
-    `id`          bigint      NOT NULL COMMENT 'id',
-    `name`        varchar(64) NOT NULL COMMENT 'role name',
-    `description` varchar(128) DEFAULT NULL COMMENT 'role disc',
-    `level`       int         NOT NULL COMMENT 'roles level',
-    `is_default`  bit         NOT NULL COMMENT 'is default role? 1-yes 0-no',
-    `create_time` bigint      NOT NULL COMMENT 'data create time',
-    `update_time` bigint      NOT NULL COMMENT 'data update time',
-    `creator`     bigint      NOT NULL COMMENT 'creator id',
-    `updater`     bigint      NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_level`(`level`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role 0';
-
-CREATE TABLE `role_1`
-(
-    `id`          bigint      NOT NULL COMMENT 'id',
-    `name`        varchar(64) NOT NULL COMMENT 'role name',
-    `description` varchar(128) DEFAULT NULL COMMENT 'role disc',
-    `level`       int         NOT NULL COMMENT 'roles level',
-    `is_default`  bit         NOT NULL COMMENT 'is default role? 1-yes 0-no',
-    `create_time` bigint      NOT NULL COMMENT 'data create time',
-    `update_time` bigint      NOT NULL COMMENT 'data update time',
-    `creator`     bigint      NOT NULL COMMENT 'creator id',
-    `updater`     bigint      NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_level`(`level`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role 1';
-
-CREATE TABLE `role_res_relation_0`
-(
-    `id`          bigint NOT NULL COMMENT 'id',
-    `role_id`     bigint NOT NULL COMMENT 'role id',
-    `res_id`      bigint NOT NULL COMMENT 'resource id',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
-    `creator`     bigint NOT NULL COMMENT 'creator id',
-    `updater`     bigint NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE,
-    UNIQUE KEY `idx_res_role`(`res_id`,`role_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role and resource relation 0';
-
-CREATE TABLE `role_res_relation_1`
-(
-    `id`          bigint NOT NULL COMMENT 'id',
-    `role_id`     bigint NOT NULL COMMENT 'role id',
-    `res_id`      bigint NOT NULL COMMENT 'resource id',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
-    `creator`     bigint NOT NULL COMMENT 'creator id',
-    `updater`     bigint NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE,
-    UNIQUE KEY `idx_res_role`(`res_id`,`role_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role and resource relation 1';
 
 CREATE TABLE `member_role_relation_0`
 (
@@ -142,6 +97,38 @@ CREATE TABLE `member_role_relation_1`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 1';
+
+CREATE TABLE `credential_0`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `credential`  varchar(128) NOT NULL DEFAULT '' COMMENT 'credential',
+    `type`        varchar(32)  NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `access`      varchar(255) NOT NULL DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `extra`       varchar(255) NOT NULL DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_credential_type_access_member`(`credential`,`type`,`access`,`member_id`) USING BTREE,
+    UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 0';
+
+CREATE TABLE `credential_1`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `credential`  varchar(128) NOT NULL DEFAULT '' COMMENT 'credential',
+    `type`        varchar(32)  NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `access`      varchar(255) NOT NULL DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `extra`       varchar(255) NOT NULL DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_credential_type_access_member`(`credential`,`type`,`access`,`member_id`) USING BTREE,
+    UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 1';
 
 -- seata undo log
 
@@ -165,112 +152,6 @@ DATABASE secure_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 secure_1;
 
-CREATE TABLE `resource_0`
-(
-    `id`                      bigint       NOT NULL COMMENT 'id',
-    `request_method`          varchar(16)  NOT NULL COMMENT 'request method/upper',
-    `module`                  varchar(256) NOT NULL COMMENT 'module/service',
-    `uri`                     varchar(256) NOT NULL COMMENT 'resource uri/lower',
-    `authenticate`            bit          NOT NULL COMMENT 'need auth? 1-yes 2-no',
-    `request_un_decryption`   bit          NOT NULL COMMENT 'do not decrypt request body? 1-not 0-yes',
-    `response_un_encryption`  bit          NOT NULL COMMENT 'do not encrypt response body? 1-not 0-yes',
-    `existence_request_body`  bit          NOT NULL COMMENT 'has request body? 1-yes 2-no',
-    `existence_response_body` bit          NOT NULL COMMENT 'has response body? 1-yes 2-no',
-    `type`                    tinyint      NOT NULL COMMENT 'resource type, 1-api 2-manage api 3-open api',
-    `name`                    varchar(128) DEFAULT NULL COMMENT 'resource name',
-    `description`             varchar(256) DEFAULT NULL COMMENT 'resource disc',
-    `create_time`             bigint       NOT NULL COMMENT 'data create time',
-    `update_time`             bigint       NOT NULL COMMENT 'data update time',
-    `creator`                 bigint       NOT NULL COMMENT 'creator id',
-    `updater`                 bigint       NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_method_module_uri`(`request_method`,`module`,`uri`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of resource 0';
-
-CREATE TABLE `resource_1`
-(
-    `id`                      bigint       NOT NULL COMMENT 'id',
-    `request_method`          varchar(16)  NOT NULL COMMENT 'request method/upper',
-    `module`                  varchar(256) NOT NULL COMMENT 'module/service',
-    `uri`                     varchar(256) NOT NULL COMMENT 'resource uri/lower',
-    `authenticate`            bit          NOT NULL COMMENT 'need auth? 1-yes 2-no',
-    `request_un_decryption`   bit          NOT NULL COMMENT 'do not decrypt request body? 1-not 0-yes',
-    `response_un_encryption`  bit          NOT NULL COMMENT 'do not encrypt response body? 1-not 0-yes',
-    `existence_request_body`  bit          NOT NULL COMMENT 'has request body? 1-yes 2-no',
-    `existence_response_body` bit          NOT NULL COMMENT 'has response body? 1-yes 2-no',
-    `type`                    tinyint      NOT NULL COMMENT 'resource type, 1-api 2-manage api 3-open api',
-    `name`                    varchar(128) DEFAULT NULL COMMENT 'resource name',
-    `description`             varchar(256) DEFAULT NULL COMMENT 'resource disc',
-    `create_time`             bigint       NOT NULL COMMENT 'data create time',
-    `update_time`             bigint       NOT NULL COMMENT 'data update time',
-    `creator`                 bigint       NOT NULL COMMENT 'creator id',
-    `updater`                 bigint       NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_method_module_uri`(`request_method`,`module`,`uri`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of resource 1';
-
-CREATE TABLE `role_0`
-(
-    `id`          bigint      NOT NULL COMMENT 'id',
-    `name`        varchar(64) NOT NULL COMMENT 'role name',
-    `description` varchar(128) DEFAULT NULL COMMENT 'role disc',
-    `level`       int         NOT NULL COMMENT 'roles level',
-    `is_default`  bit         NOT NULL COMMENT 'is default role? 1-yes 0-no',
-    `create_time` bigint      NOT NULL COMMENT 'data create time',
-    `update_time` bigint      NOT NULL COMMENT 'data update time',
-    `creator`     bigint      NOT NULL COMMENT 'creator id',
-    `updater`     bigint      NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_level`(`level`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role 0';
-
-CREATE TABLE `role_1`
-(
-    `id`          bigint      NOT NULL COMMENT 'id',
-    `name`        varchar(64) NOT NULL COMMENT 'role name',
-    `description` varchar(128) DEFAULT NULL COMMENT 'role disc',
-    `level`       int         NOT NULL COMMENT 'roles level',
-    `is_default`  bit         NOT NULL COMMENT 'is default role? 1-yes 0-no',
-    `create_time` bigint      NOT NULL COMMENT 'data create time',
-    `update_time` bigint      NOT NULL COMMENT 'data update time',
-    `creator`     bigint      NOT NULL COMMENT 'creator id',
-    `updater`     bigint      NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_level`(`level`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role 1';
-
-CREATE TABLE `role_res_relation_0`
-(
-    `id`          bigint NOT NULL COMMENT 'id',
-    `role_id`     bigint NOT NULL COMMENT 'role id',
-    `res_id`      bigint NOT NULL COMMENT 'resource id',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
-    `creator`     bigint NOT NULL COMMENT 'creator id',
-    `updater`     bigint NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE,
-    UNIQUE KEY `idx_res_role`(`res_id`,`role_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role and resource relation 0';
-
-CREATE TABLE `role_res_relation_1`
-(
-    `id`          bigint NOT NULL COMMENT 'id',
-    `role_id`     bigint NOT NULL COMMENT 'role id',
-    `res_id`      bigint NOT NULL COMMENT 'resource id',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
-    `creator`     bigint NOT NULL COMMENT 'creator id',
-    `updater`     bigint NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE,
-    UNIQUE KEY `idx_res_role`(`res_id`,`role_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role and resource relation 1';
-
 CREATE TABLE `member_role_relation_0`
 (
     `id`          bigint NOT NULL COMMENT 'id',
@@ -297,6 +178,38 @@ CREATE TABLE `member_role_relation_1`
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 1';
 
+CREATE TABLE `credential_0`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `credential`  varchar(128) NOT NULL DEFAULT '' COMMENT 'credential',
+    `type`        varchar(32)  NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `access`      varchar(255) NOT NULL DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `extra`       varchar(255) NOT NULL DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_credential_type_access_member`(`credential`,`type`,`access`,`member_id`) USING BTREE,
+    UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 0';
+
+CREATE TABLE `credential_1`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `credential`  varchar(128) NOT NULL DEFAULT '' COMMENT 'credential',
+    `type`        varchar(32)  NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `access`      varchar(255) NOT NULL DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `extra`       varchar(255) NOT NULL DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_credential_type_access_member`(`credential`,`type`,`access`,`member_id`) USING BTREE,
+    UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 1';
+
 -- seata undo log
 
 CREATE TABLE `undo_log`
@@ -315,694 +228,695 @@ CREATE TABLE `undo_log`
 -- init
 -- resources
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9505726846205953, 'POST', 'blue-secure', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         'login', 'login', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506121983229953, 'PUT', 'blue-secure', '/auth/updateSecret', b'1', b'1', b'1', b'0', b'1', 1,
         'refresh private key', 'refresh private key', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506477400129537, 'GET', 'blue-secure', '/auth/authority', b'1', b'1', b'1', b'0', b'1', 1,
         'query authority', 'query authority', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506557930799110, 'GET', 'blue-member', '/member', b'1', b'1', b'1', b'0', b'1', 1,
         'member info', 'member info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9505726846205957, 'DELETE', 'blue-secure', '/auth/logout', b'1', b'1', b'1', b'0', b'1', 1,
         'logout', 'logout', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506121983229954, 'GET', 'blue-portal', '/fallBack', b'0', b'1', b'1', b'0', b'1', 1,
         'GET fallback', 'GET fallback', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506477400129538, 'POST', 'blue-portal', '/fallBack', b'0', b'1', b'1', b'1', b'1', 1,
         'POST fallback', 'POST fallback', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506557930799111, 'GET', 'blue-portal', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'bulletin list of api', 'bulletin list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 
-INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506121983229955, 'POST', 'blue-media', '/file/upload', b'1', b'1', b'1', b'1', b'1', 1,
         'media upload of api', 'media upload of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506477400129539, 'POST', 'blue-media', '/file/download', b'1', b'1', b'1', b'1', b'0', 1,
         'file download of api', 'file download of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506557930799112, 'POST', 'blue-media', '/attachment/list', b'1', b'1', b'1', b'1', b'1', 1,
         'attachment list of api', 'attachment list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9505726846205965, 'POST', 'blue-marketing', '/signIn', b'1', b'1', b'1', b'0', b'1', 1,
         'sign in', 'sign in', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506121983229956, 'GET', 'blue-marketing', '/signIn', b'1', b'1', b'1', b'0', b'1', 1,
         'query sign in record by month', 'query sign in record by month', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506477400129540, 'GET', 'blue-media', '/file/downloadTest/{id}', b'1', b'1', b'1', b'1', b'0', 1,
         'download test', 'download test', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506557930799113, 'GET', 'blue-finance', '/finance/balance', b'1', b'1', b'1', b'0', b'1', 1,
         'query balance', 'query balance', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9505726846205969, 'POST', 'blue-member', '/member/registry', b'0', b'1', b'1', b'1', b'1', 1,
         'member registry', 'member registry', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    `response_un_encryption`, `existence_request_body`, `existence_response_body`,
-                                    `type`,
-                                    `name`, `description`, `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                `response_un_encryption`, `existence_request_body`, `existence_response_body`,
+                                `type`,
+                                `name`, `description`, `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9505726846205970, 'GET', 'blue-portal', '/formatter/{formatter}.html', b'1', b'1', b'1', b'0', b'1', 1,
         'formatter test', 'formatter test', 1629253160, 1629253160, 1, 1);
 
-INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506121983229957, 'POST', 'blue-finance', '/withdraw', b'1', b'0', b'0', 1, b'1', b'1',
-        'withdraw/test encrypt', 'withdraw/test encrypt', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+        'withdraw/test encrypt in finance', 'withdraw/test encrypt in finance', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1);
 
-INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506477400129541, 'POST', 'blue-media', '/attachment/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
-        'withdraw/test encrypt', 'withdraw/test encrypt', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+        'withdraw/test encrypt in media', 'withdraw/test encrypt in media', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9506557930799114, 'GET', 'blue-shine', '/shine', b'0', b'1', b'1', b'0', b'1', 1,
         'commonweal information', 'commonweal information', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (14978349487128577, 'GET', 'blue-base', '/dictType', b'0', b'1', b'1', b'0',
         b'1', 1,
         'query dict types', 'query dict types', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (19029083459420161, 'GET', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
-        'test endpoint', 'test endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+        'test get endpoint', 'test get endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (19028988970172419, 'POST', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
-        'test endpoint', 'test endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+        'test post endpoint', 'test post endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- dynamic resources
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (13739721721151489, 'GET', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
         3,
         'GET dynamic endpoint', 'GET dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (13739721721151490, 'HEAD', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
         3,
         'HEAD dynamic endpoint', 'HEAD dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (13739721721151491, 'POST', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
         3,
         'POST dynamic endpoint', 'POST dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (13739721721151492, 'PUT', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
         3,
         'PUT dynamic endpoint', 'PUT dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (13739721721151493, 'PATCH', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
         3,
         'PATCH dynamic endpoint', 'PATCH dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (13739721721151495, 'DELETE', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1',
         b'1', 3,
         'DELETE dynamic endpoint', 'DELETE dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (13739721721151496, 'OPTIONS', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1',
         b'1', 3,
         'OPTIONS dynamic endpoint', 'OPTIONS dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- manage resources
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (17727588109647875, 'POST', 'blue-secure', '/manager/resource/list', b'1', b'1', b'1', b'1', b'1', 2,
         'resource list', 'resource list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (17727698705088515, 'POST', 'blue-secure', '/manager/role/list', b'1', b'1', b'1', b'1', b'1', 2,
         'role list', 'role list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (17727756695502851, 'POST', 'blue-member', '/manager/member/list', b'1', b'1', b'1', b'1', b'1', 2,
         'member list', 'member list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (17727776022888453, 'POST', 'blue-member', '/manager/authority/list', b'1', b'1', b'1', b'1', b'1', 2,
         'authority list', 'authority list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (18497721916719105, 'POST', 'blue-secure', '/manager/role', b'1', b'1', b'1', b'1', b'1', 2,
         'insert role', 'insert role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (18497740170362881, 'PUT', 'blue-secure', '/manager/role', b'1', b'1', b'1', b'1', b'1', 2,
         'update role', 'update role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (19026881223327750, 'DELETE', 'blue-secure', '/manager/role/{id}', b'1', b'1', b'1', b'0', b'1', 2,
         'delete role', 'delete role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (18497811045679105, 'POST', 'blue-secure', '/manager/resource', b'1', b'1', b'1', b'1', b'1', 2,
         'insert resource', 'insert resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (18497870101512195, 'PUT', 'blue-secure', '/manager/resource', b'1', b'1', b'1', b'1', b'1', 2,
         'update resource', 'update resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (19027366546243585, 'DELETE', 'blue-secure', '/manager/resource/{id}', b'1', b'1', b'1', b'0', b'1', 2,
         'delete resource', 'delete resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (18500844357943298, 'POST', 'blue-secure', '/manager/role/auth', b'1', b'1', b'1', b'1', b'1', 2,
         'role auth', 'role auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (18501349016633350, 'POST', 'blue-secure', '/manager/resource/auth', b'1', b'1', b'1', b'1', b'1', 2,
         'resource auth', 'resource auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (19028252391636995, 'PUT', 'blue-secure', '/manager/relation/role-res', b'1', b'1', b'1', b'1', b'1', 2,
         'update role-resources-relation', 'update role-resources-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`resource_1`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (19028471435001859, 'PUT', 'blue-secure', '/manager/relation/mem-role', b'1', b'1', b'1', b'1', b'1', 2,
         'update member-role-relation', 'update member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (24244842351558658, 'GET', 'blue-media', '/mail/send', b'0', b'1', b'1', b'0', b'1', 2,
         'test send', 'test send', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (24244842351558659, 'GET', 'blue-media', '/mail/read', b'0', b'1', b'1', b'0', b'1', 2,
         'test read', 'test read', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (24244842351558660, 'POST', 'blue-lake', '/event/list', b'0', b'1', b'1', b'1', b'1', 2,
         'test lake event', 'test lake event', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (28251575466065921, 'POST', 'blue-analyze', '/statistics/active/simple', b'0', b'1', b'1', b'1', b'1', 2,
         'statistics active simple', 'statistics active simple', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (28251575466065922, 'POST', 'blue-analyze', '/statistics/active/merge', b'0', b'1', b'1', b'1', b'1', 2,
         'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (28251575466065923, 'POST', 'blue-analyze', '/statistics/active/summary', b'0', b'1', b'1', b'0', b'1', 2,
         'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (28786229101199361, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 1,
         'countries', 'countries', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (28786229101199362, 'GET', 'blue-base', '/states/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
         'states', 'states', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (28786229101199363, 'GET', 'blue-base', '/cities/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
         'cities', 'cities', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`resource_0`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                                    response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                                    `name`,
-                                    `description`,
-                                    `create_time`, `update_time`, `creator`, `updater`)
+INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
+                                response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
+                                `name`,
+                                `description`,
+                                `create_time`, `update_time`, `creator`, `updater`)
 VALUES (28786229101199364, 'GET', 'blue-base', '/language', b'0', b'1', b'1', b'0', b'1', 1,
         'language', 'language', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role
 
-INSERT INTO `secure_1`.`role_1`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,
-                                `creator`,
-                                `updater`)
+INSERT INTO `secure`.`role`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,
+                            `creator`,
+                            `updater`)
 VALUES (9507591944175638, 'normal', 'normal', 999999999, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_0`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,
-                                `creator`,
-                                `updater`)
+INSERT INTO `secure`.`role`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,
+                            `creator`,
+                            `updater`)
 VALUES (17558421159018501, 'summer admin', 'summer admin', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role resource relations
 
 -- admin auth
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282820, 17558421159018501, 9505726846205953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507452349349900, 17558421159018501, 9506121983229953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507496381120540, 17558421159018501, 9506477400129537, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507591944175640, 17558421159018501, 9506557930799110, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282821, 17558421159018501, 9505726846205957, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507452349349901, 17558421159018501, 9506121983229954, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507496381120541, 17558421159018501, 9506477400129538, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507591944175641, 17558421159018501, 9506557930799111, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282822, 17558421159018501, 9505726846205961, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507452349349902, 17558421159018501, 9506121983229955, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507496381120542, 17558421159018501, 9506477400129539, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507591944175642, 17558421159018501, 9506557930799112, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282825, 17558421159018501, 9505726846205965, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507452349349903, 17558421159018501, 9506121983229956, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507496381120543, 17558421159018501, 9506477400129540, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507591944175643, 17558421159018501, 9506557930799113, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282829, 17558421159018501, 9505726846205969, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507452349349904, 17558421159018501, 9506121983229957, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507496381120544, 17558421159018501, 9506477400129541, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507591944175644, 17558421159018501, 9506557930799114, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282827, 17558421159018501, 9505726846205973, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282828, 17558421159018501, 9505726846205970, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (12445829528846376, 17558421159018501, 9507591944175638, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (17727873733361666, 17558421159018501, 17727588109647875, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (17727823267528708, 17558421159018501, 17727698705088515, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (17727870503747586, 17558421159018501, 17727756695502851, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (17727973582995466, 17558421159018501, 17727776022888453, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (18497811045679106, 17558421159018501, 18497721916719105, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (18497870101512196, 17558421159018501, 18497740170362881, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (18497721916719106, 17558421159018501, 18497811045679105, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (18497740170362882, 17558421159018501, 18497870101512195, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (18501196553650180, 17558421159018501, 18500844357943298, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (18501308222832650, 17558421159018501, 18501349016633350, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (19027040128729089, 17558421159018501, 19026881223327750, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (19027459961815050, 17558421159018501, 19027366546243585, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (19028462836678660, 17558421159018501, 19028252391636995, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (19028617463857155, 17558421159018501, 19028471435001859, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- normal auth
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282830, 9507591944175638, 9505726846205953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507452349349921, 9507591944175638, 9506121983229953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507496381120551, 9507591944175638, 9506477400129537, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507591944175651, 9507591944175638, 9506557930799110, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282831, 9507591944175638, 9505726846205957, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507452349349922, 9507591944175638, 9506121983229954, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507496381120552, 9507591944175638, 9506477400129538, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507591944175652, 9507591944175638, 9506557930799111, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282832, 9507591944175638, 9505726846205961, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507452349349923, 9507591944175638, 9506121983229955, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507496381120553, 9507591944175638, 9506477400129539, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507591944175653, 9507591944175638, 9506557930799112, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282833, 9507591944175638, 9505726846205965, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507452349349925, 9507591944175638, 9506121983229956, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507496381120554, 9507591944175638, 9506477400129540, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507591944175654, 9507591944175638, 9506557930799113, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507161365282834, 9507591944175638, 9505726846205969, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_0`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507452349349926, 9507591944175638, 9506121983229957, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_0`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507496381120556, 9507591944175638, 9506477400129541, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-INSERT INTO `secure_1`.`role_res_relation_1`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                             `updater`)
+INSERT INTO `secure`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                         `updater`)
 VALUES (9507591944175656, 9507591944175638, 9506557930799114, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- noinspection SqlDialectInspectionForFile
@@ -1206,8 +1120,8 @@ CREATE TABLE `organization_0`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
-    `name`        varchar(128) DEFAULT NULL COMMENT 'organization name',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `name`        varchar(128) NOT NULL DEFAULT '0' COMMENT 'organization name',
+    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
@@ -1223,8 +1137,8 @@ CREATE TABLE `organization_1`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
-    `name`        varchar(128) DEFAULT NULL COMMENT 'organization name',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `name`        varchar(128) NOT NULL DEFAULT '0' COMMENT 'organization name',
+    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
@@ -1361,8 +1275,8 @@ CREATE TABLE `organization_0`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
-    `name`        varchar(128) DEFAULT NULL COMMENT 'organization name',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `name`        varchar(128) NOT NULL DEFAULT '0' COMMENT 'organization name',
+    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
@@ -1378,8 +1292,8 @@ CREATE TABLE `organization_1`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
-    `name`        varchar(128) DEFAULT NULL COMMENT 'organization name',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `name`        varchar(128) NOT NULL DEFAULT '0' COMMENT 'organization name',
+    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
@@ -2016,9 +1930,9 @@ CREATE TABLE `member_basic_0`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
     `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
-    `password`    varchar(256)          DEFAULT NULL COMMENT 'password',
-    `name`        varchar(256)          DEFAULT NULL COMMENT 'name',
-    `icon`        varchar(255)          DEFAULT NULL COMMENT 'icon link',
+    `password`    varchar(256) NOT NULL DEFAULT '' COMMENT 'password',
+    `name`        varchar(256) NOT NULL DEFAULT '' COMMENT 'name',
+    `icon`        varchar(255) NOT NULL DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
     `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
@@ -2034,9 +1948,9 @@ CREATE TABLE `member_basic_1`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
     `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
-    `password`    varchar(256)          DEFAULT NULL COMMENT 'password',
-    `name`        varchar(256)          DEFAULT NULL COMMENT 'name',
-    `icon`        varchar(255)          DEFAULT NULL COMMENT 'icon link',
+    `password`    varchar(256) NOT NULL DEFAULT '' COMMENT 'password',
+    `name`        varchar(256) NOT NULL DEFAULT '' COMMENT 'name',
+    `icon`        varchar(255) NOT NULL DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
     `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
@@ -2049,13 +1963,13 @@ CREATE TABLE `member_basic_1`
 
 CREATE TABLE `member_detail_0`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `real_name`   varchar(50)  DEFAULT NULL COMMENT 'read name',
-    `id_card_no`  varchar(50)  DEFAULT NULL COMMENT 'id card number',
-    `address`     varchar(256) DEFAULT NULL COMMENT 'address',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `real_name`   varchar(50)  NOT NULL DEFAULT '' COMMENT 'read name',
+    `id_card_no`  varchar(50)  NOT NULL DEFAULT '' COMMENT 'id card number',
+    `address`     varchar(256) NOT NULL DEFAULT '' COMMENT 'address',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_name`(`real_name`) USING BTREE,
@@ -2064,13 +1978,13 @@ CREATE TABLE `member_detail_0`
 
 CREATE TABLE `member_detail_1`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `real_name`   varchar(50)  DEFAULT NULL COMMENT 'read name',
-    `id_card_no`  varchar(50)  DEFAULT NULL COMMENT 'id card number',
-    `address`     varchar(256) DEFAULT NULL COMMENT 'address',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `real_name`   varchar(50)  NOT NULL DEFAULT '' COMMENT 'read name',
+    `id_card_no`  varchar(50)  NOT NULL DEFAULT '' COMMENT 'id card number',
+    `address`     varchar(256) NOT NULL DEFAULT '' COMMENT 'address',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_name`(`real_name`) USING BTREE,
@@ -2079,22 +1993,22 @@ CREATE TABLE `member_detail_1`
 
 CREATE TABLE `member_business_0`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(512) DEFAULT NULL COMMENT 'qrcode link',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `qr_code`     varchar(512) NOT NULL DEFAULT '' COMMENT 'qrcode link',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 0';
 
 CREATE TABLE `member_business_1`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(512) DEFAULT NULL COMMENT 'qrcode link',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `qr_code`     varchar(512) NOT NULL DEFAULT '' COMMENT 'qrcode link',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 1';
@@ -2128,9 +2042,9 @@ CREATE TABLE `member_basic_0`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
     `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
-    `password`    varchar(256)          DEFAULT NULL COMMENT 'password',
-    `name`        varchar(256)          DEFAULT NULL COMMENT 'name',
-    `icon`        varchar(255)          DEFAULT NULL COMMENT 'icon link',
+    `password`    varchar(256) NOT NULL DEFAULT '' COMMENT 'password',
+    `name`        varchar(256) NOT NULL DEFAULT '' COMMENT 'name',
+    `icon`        varchar(255) NOT NULL DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
     `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
@@ -2146,9 +2060,9 @@ CREATE TABLE `member_basic_1`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
     `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
-    `password`    varchar(256)          DEFAULT NULL COMMENT 'password',
-    `name`        varchar(256)          DEFAULT NULL COMMENT 'name',
-    `icon`        varchar(255)          DEFAULT NULL COMMENT 'icon link',
+    `password`    varchar(256) NOT NULL DEFAULT '' COMMENT 'password',
+    `name`        varchar(256) NOT NULL DEFAULT '' COMMENT 'name',
+    `icon`        varchar(255) NOT NULL DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
     `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
@@ -2161,13 +2075,13 @@ CREATE TABLE `member_basic_1`
 
 CREATE TABLE `member_detail_0`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `real_name`   varchar(50)  DEFAULT NULL COMMENT 'read name',
-    `id_card_no`  varchar(50)  DEFAULT NULL COMMENT 'id card number',
-    `address`     varchar(256) DEFAULT NULL COMMENT 'address',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `real_name`   varchar(50)  NOT NULL DEFAULT '' COMMENT 'read name',
+    `id_card_no`  varchar(50)  NOT NULL DEFAULT '' COMMENT 'id card number',
+    `address`     varchar(256) NOT NULL DEFAULT '' COMMENT 'address',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_name`(`real_name`) USING BTREE,
@@ -2176,13 +2090,13 @@ CREATE TABLE `member_detail_0`
 
 CREATE TABLE `member_detail_1`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `real_name`   varchar(50)  DEFAULT NULL COMMENT 'read name',
-    `id_card_no`  varchar(50)  DEFAULT NULL COMMENT 'id card number',
-    `address`     varchar(256) DEFAULT NULL COMMENT 'address',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `real_name`   varchar(50)  NOT NULL DEFAULT '' COMMENT 'read name',
+    `id_card_no`  varchar(50)  NOT NULL DEFAULT '' COMMENT 'id card number',
+    `address`     varchar(256) NOT NULL DEFAULT '' COMMENT 'address',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_name`(`real_name`) USING BTREE,
@@ -2191,22 +2105,22 @@ CREATE TABLE `member_detail_1`
 
 CREATE TABLE `member_business_0`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(512) DEFAULT NULL COMMENT 'qrcode link',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `qr_code`     varchar(512) NOT NULL DEFAULT '' COMMENT 'qrcode link',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 0';
 
 CREATE TABLE `member_business_1`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(512) DEFAULT NULL COMMENT 'qrcode link',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `qr_code`     varchar(512) NOT NULL DEFAULT '' COMMENT 'qrcode link',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 1';
@@ -2239,7 +2153,7 @@ CREATE TABLE `bulletin_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `title`       varchar(128) NOT NULL COMMENT 'bulletin title',
-    `content`     varchar(256) DEFAULT NULL COMMENT 'bulletin content',
+    `content`     varchar(256) NOT NULL DEFAULT '' COMMENT 'bulletin content',
     `link`        varchar(256) NOT NULL COMMENT 'bulletin link',
     `type`        tinyint      NOT NULL COMMENT 'bulletin type: 1-popular 2-newest 3-recommend',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
@@ -2257,7 +2171,7 @@ CREATE TABLE `bulletin_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `title`       varchar(128) NOT NULL COMMENT 'bulletin title',
-    `content`     varchar(256) DEFAULT NULL COMMENT 'bulletin content',
+    `content`     varchar(256) NOT NULL DEFAULT '' COMMENT 'bulletin content',
     `link`        varchar(256) NOT NULL COMMENT 'bulletin link',
     `type`        tinyint      NOT NULL COMMENT 'bulletin type: 1-popular 2-newest 3-recommend',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
@@ -2298,7 +2212,7 @@ CREATE TABLE `bulletin_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `title`       varchar(128) NOT NULL COMMENT 'bulletin title',
-    `content`     varchar(256) DEFAULT NULL COMMENT 'bulletin content',
+    `content`     varchar(256) NOT NULL DEFAULT '' COMMENT 'bulletin content',
     `link`        varchar(256) NOT NULL COMMENT 'bulletin link',
     `type`        tinyint      NOT NULL COMMENT 'bulletin type: 1-popular 2-newest 3-recommend',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
@@ -2316,7 +2230,7 @@ CREATE TABLE `bulletin_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `title`       varchar(128) NOT NULL COMMENT 'bulletin title',
-    `content`     varchar(256) DEFAULT NULL COMMENT 'bulletin content',
+    `content`     varchar(256) NOT NULL DEFAULT '' COMMENT 'bulletin content',
     `link`        varchar(256) NOT NULL COMMENT 'bulletin link',
     `type`        tinyint      NOT NULL COMMENT 'bulletin type: 1-popular 2-newest 3-recommend',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
@@ -2838,17 +2752,17 @@ CREATE TABLE `country`
 (
     `id`               bigint(20) NOT NULL COMMENT 'id',
     `name`             varchar(255) NOT NULL COMMENT 'name',
-    `native_name`      varchar(255) DEFAULT NULL COMMENT 'native',
-    `numeric_code`     char(4)      DEFAULT NULL COMMENT 'numeric code',
-    `country_code`     char(4)      DEFAULT NULL COMMENT 'iso2',
-    `phone_code`       varchar(255) DEFAULT NULL COMMENT 'phone_code',
-    `capital`          varchar(255) DEFAULT NULL COMMENT 'capital',
-    `currency`         varchar(255) DEFAULT NULL COMMENT 'currency',
-    `currency_symbol`  varchar(255) DEFAULT NULL COMMENT 'currency_symbol',
-    `top_level_domain` varchar(255) DEFAULT NULL COMMENT 'top-level domain',
-    `region`           varchar(255) DEFAULT NULL COMMENT 'region',
-    `emoji`            varchar(255) DEFAULT NULL COMMENT 'emoji',
-    `emojiU`           varchar(255) DEFAULT NULL COMMENT 'emoji U',
+    `native_name`      varchar(255) NOT NULL DEFAULT '' COMMENT 'native',
+    `numeric_code`     char(4)      NOT NULL DEFAULT '' COMMENT 'numeric code',
+    `country_code`     char(4)      NOT NULL DEFAULT '' COMMENT 'iso2',
+    `phone_code`       varchar(255) NOT NULL DEFAULT '' COMMENT 'phone_code',
+    `capital`          varchar(255) NOT NULL DEFAULT '' COMMENT 'capital',
+    `currency`         varchar(255) NOT NULL DEFAULT '' COMMENT 'currency',
+    `currency_symbol`  varchar(255) NOT NULL DEFAULT '' COMMENT 'currency_symbol',
+    `top_level_domain` varchar(255) NOT NULL DEFAULT '' COMMENT 'top-level domain',
+    `region`           varchar(255) NOT NULL DEFAULT '' COMMENT 'region',
+    `emoji`            varchar(255) NOT NULL DEFAULT '' COMMENT 'emoji',
+    `emojiU`           varchar(255) NOT NULL DEFAULT '' COMMENT 'emoji U',
     `status`           tinyint(4) DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time`      bigint(20) DEFAULT '1' COMMENT 'data create time',
     `update_time`      bigint(20) DEFAULT '1' COMMENT 'data update time',
@@ -2862,9 +2776,9 @@ CREATE TABLE `state`
     `id`           bigint(20) NOT NULL COMMENT 'id',
     `country_id`   bigint(20) NOT NULL COMMENT 'country id',
     `name`         varchar(255) NOT NULL COMMENT 'name',
-    `fips_code`    varchar(255) DEFAULT NULL COMMENT 'fips code',
+    `fips_code`    varchar(255) NOT NULL DEFAULT '' COMMENT 'fips code',
     `country_code` char(16)     NOT NULL COMMENT 'country code',
-    `state_code`   char(16)     DEFAULT NULL COMMENT 'state code',
+    `state_code`   char(16)     NOT NULL DEFAULT '' COMMENT 'state code',
     `status`       tinyint(4) DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time`  bigint(20) DEFAULT '1' COMMENT 'data create time',
     `update_time`  bigint(20) DEFAULT '1' COMMENT 'data update time',
@@ -2895,7 +2809,7 @@ CREATE TABLE `dict_type`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `code`        varchar(128) NOT NULL COMMENT 'dict type code',
-    `name`        varchar(256) DEFAULT NULL COMMENT 'dict type name',
+    `name`        varchar(256) NOT NULL DEFAULT '' COMMENT 'dict type name',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
@@ -2909,7 +2823,7 @@ CREATE TABLE `dict`
 (
     `id`           bigint       NOT NULL COMMENT 'id',
     `dict_type_id` bigint       NOT NULL COMMENT 'dict type id',
-    `name`         varchar(256) DEFAULT NULL COMMENT 'dict name',
+    `name`         varchar(256) NOT NULL DEFAULT '' COMMENT 'dict name',
     `value`        varchar(128) NOT NULL COMMENT 'dict value',
     `create_time`  bigint       NOT NULL COMMENT 'data create time',
     `update_time`  bigint       NOT NULL COMMENT 'data update time',

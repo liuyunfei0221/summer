@@ -1,3 +1,4 @@
+DROP DATABASE secure;
 DROP DATABASE secure_0;
 DROP DATABASE secure_1;
 

@@ -1,20 +1,26 @@
 package com.blue.secure.converter;
 
 import com.blue.base.model.exps.BlueException;
+import com.blue.secure.api.model.CredentialInfo;
 import com.blue.secure.api.model.ResourceInfo;
 import com.blue.secure.api.model.RoleInfo;
 import com.blue.secure.model.ResourceInsertParam;
 import com.blue.secure.model.RoleInsertParam;
+import com.blue.secure.repository.entity.Credential;
 import com.blue.secure.repository.entity.Resource;
 import com.blue.secure.repository.entity.Role;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
 
 /**
@@ -66,6 +72,32 @@ public final class SecureModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault());
+    };
+
+    /**
+     * credential info, member id -> credential
+     */
+    public static final BiFunction<CredentialInfo, Long, Credential> CREDENTIAL_INFO_AND_MEMBER_ID_2_CREDENTIAL_CONVERTER = (credentialInfo, memberId) -> {
+        if (credentialInfo == null || isInvalidIdentity(memberId))
+            throw new BlueException(EMPTY_PARAM);
+
+        String type = credentialInfo.getType();
+        assertLoginType(type, false);
+
+        Credential credential = new Credential();
+
+        credential.setCredential(credentialInfo.getCredential());
+        credential.setType(type);
+        credential.setAccess(credentialInfo.getAccess());
+        credential.setMemberId(memberId);
+        credential.setExtra(credentialInfo.getExtra());
+        credential.setStatus(VALID.status);
+
+        Long stamp = TIME_STAMP_GETTER.get();
+        credential.setCreateTime(stamp);
+        credential.setUpdateTime(stamp);
+
+        return credential;
     };
 
     /**

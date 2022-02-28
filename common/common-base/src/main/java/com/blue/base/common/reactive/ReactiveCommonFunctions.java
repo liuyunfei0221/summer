@@ -2,7 +2,6 @@ package com.blue.base.common.reactive;
 
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.exps.BlueException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -17,15 +16,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.blue.base.common.message.MessageProcessor.resolveToMessage;
-import static com.blue.base.constant.base.ResponseElement.INVALID_ACCEPT_LANGUAGE;
-import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
 import static com.blue.base.constant.base.Symbol.LIST_ELEMENT_SEPARATOR;
-import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.lang.Double.compare;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.split;
 import static reactor.core.publisher.Mono.just;
 
@@ -73,9 +67,6 @@ public class ReactiveCommonFunctions extends CommonFunctions {
 
 
     private static final int MAX_LANGUAGE_COUNT = 32;
-
-    private static final String DEFAULT_LANGUAGE = lowerCase(LANGUAGE.replace(PAR_CONCATENATION, PAR_CONCATENATION_DATABASE_URL.identity));
-    private static final List<String> DEFAULT_LANGUAGES = singletonList(DEFAULT_LANGUAGE);
 
     private static List<String> parseAcceptLanguages(List<Locale.LanguageRange> languageRanges) {
         if (languageRanges != null && languageRanges.size() <= MAX_LANGUAGE_COUNT)
@@ -264,14 +255,11 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @return
      */
     public static List<String> getAcceptLanguages(ServerRequest serverRequest) {
-        List<Locale.LanguageRange> languageRanges;
         try {
-            languageRanges = serverRequest.headers().acceptLanguage();
+            return parseAcceptLanguages(serverRequest.headers().acceptLanguage());
         } catch (Exception e) {
-            throw new BlueException(INVALID_ACCEPT_LANGUAGE);
+            return DEFAULT_LANGUAGES;
         }
-
-        return parseAcceptLanguages(languageRanges);
     }
 
     /**
@@ -281,13 +269,11 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @return
      */
     public static List<String> getAcceptLanguages(ServerHttpRequest serverHttpRequest) {
-        List<Locale.LanguageRange> languageRanges;
         try {
-            languageRanges = serverHttpRequest.getHeaders().getAcceptLanguage();
+            return parseAcceptLanguages(serverHttpRequest.getHeaders().getAcceptLanguage());
         } catch (Exception e) {
-            throw new BlueException(INVALID_ACCEPT_LANGUAGE);
+            return DEFAULT_LANGUAGES;
         }
-        return parseAcceptLanguages(languageRanges);
     }
 
 }

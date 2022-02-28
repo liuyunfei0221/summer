@@ -43,9 +43,7 @@
         </javaClientGenerator>
 
         <!-- tables -->
-        <table tableName="country" domainObjectName="Country"/>
-        <table tableName="state" domainObjectName="State"/>
-        <table tableName="city" domainObjectName="City"/>
+        <table tableName="credential" domainObjectName="Credential"/>
 
     </context>
 </generatorConfiguration>

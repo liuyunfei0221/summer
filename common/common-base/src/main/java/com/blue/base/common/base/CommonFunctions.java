@@ -20,9 +20,12 @@ import java.util.stream.Stream;
 import static com.blue.base.common.base.RsaProcessor.*;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
 import static com.blue.base.constant.base.Symbol.PAIR_SEPARATOR;
+import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Instant.now;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -50,6 +53,9 @@ public class CommonFunctions {
             PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity,
             SCHEME_SEPARATOR = Symbol.SCHEME_SEPARATOR.identity,
             UNKNOWN = Symbol.UNKNOWN.identity;
+
+    public static final String DEFAULT_LANGUAGE = lowerCase(LANGUAGE.replace(PAR_CONCATENATION, PAR_CONCATENATION_DATABASE_URL.identity));
+    public static final List<String> DEFAULT_LANGUAGES = singletonList(DEFAULT_LANGUAGE);
 
     /**
      * auth header key

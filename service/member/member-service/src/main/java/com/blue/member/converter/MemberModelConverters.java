@@ -7,6 +7,7 @@ import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.repository.entity.MemberBasic;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.Instant;
 import java.util.function.Function;
@@ -22,6 +23,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class MemberModelConverters {
+
+    private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder();
 
     public static final Function<MemberRegistryParam, MemberBasic> MEMBER_REGISTRY_INFO_2_MEMBER_BASIC = memberRegistryParam -> {
         if (memberRegistryParam == null)
@@ -43,13 +46,13 @@ public final class MemberModelConverters {
         if (email.length() < BlueNumericalValue.EMAIL_LEN_MIN.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too short");
 
-        String password = memberRegistryParam.getPassword();
-        if (isBlank(password))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password can't be blank");
-        if (password.length() > BlueNumericalValue.ACS_LEN_MAX.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password length is too long");
-        if (password.length() < BlueNumericalValue.ACS_LEN_MIN.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "password length is too short");
+        String access = memberRegistryParam.getAccess();
+        if (isBlank(access))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
+        if (access.length() > BlueNumericalValue.ACS_LEN_MAX.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too long");
+        if (access.length() < BlueNumericalValue.ACS_LEN_MIN.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
 
         String name = memberRegistryParam.getName();
         if (isBlank(name))
@@ -65,7 +68,7 @@ public final class MemberModelConverters {
         MemberBasic memberBasic = new MemberBasic();
         memberBasic.setPhone(phone);
         memberBasic.setEmail(email);
-        memberBasic.setPassword(password);
+        memberBasic.setAccess(ENCODER.encode(access));
         memberBasic.setName(name);
         memberBasic.setIcon(icon);
         memberBasic.setGender(gender);
@@ -79,7 +82,7 @@ public final class MemberModelConverters {
     public static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = memberBasic ->
             memberBasic != null ?
                     new MemberBasicInfo(memberBasic.getId(),
-                            memberBasic.getPassword(), memberBasic.getPhone(), memberBasic.getEmail(),
+                            memberBasic.getAccess(), memberBasic.getPhone(), memberBasic.getEmail(),
                             memberBasic.getName(), memberBasic.getIcon(),
                             memberBasic.getGender(), memberBasic.getStatus(),
                             memberBasic.getCreateTime(), memberBasic.getUpdateTime())

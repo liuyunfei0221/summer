@@ -71,16 +71,9 @@ data:
       readOnly: false
       autoCommit: false
   shardingTables:
-    - tableName: resource
-      shardingColumn: id
-
-    - tableName: role
-      shardingColumn: id
-
-    - tableName: role_res_relation
-      shardingColumn: id
-
     - tableName: member_role_relation
+      shardingColumn: id
+    - tableName: credential
       shardingColumn: id
   shardingTableSizePerDataBase: 2
   dataCenterToDatabaseMappings:
@@ -97,6 +90,20 @@ data:
       index: 1
   broadcastTables: [ undo_log ]
   singleDatabasesWithTables:
+    - url: jdbc:mysql://172.16.201.160:3306/secure
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+      singleTables: [ resource,role,role_res_relation ]
   cacheEnabled: false
   lazyLoadingEnabled: false
   aggressiveLazyLoading: false

@@ -2,6 +2,7 @@ package com.blue.secure.api.inter;
 
 import com.blue.base.model.base.Access;
 import com.blue.secure.api.model.AuthorityBaseOnRole;
+import com.blue.secure.api.model.MemberCredentialInfo;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -14,11 +15,11 @@ import java.util.concurrent.CompletableFuture;
 public interface RpcControlService {
 
     /**
-     * assign default roles to member
+     * init secure infos for a new member
      *
-     * @param memberId
+     * @param memberCredentialInfo
      */
-    void insertDefaultMemberRoleRelation(Long memberId);
+    void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo);
 
     /**
      * update member's auth by member id

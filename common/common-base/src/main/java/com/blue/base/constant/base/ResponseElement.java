@@ -41,7 +41,6 @@ public enum ResponseElement {
     DATA_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400000013, "Data not exist"),
     DATA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400000014, "Data already exist"),
     DATA_HAS_NOT_CHANGED(HttpStatus.BAD_REQUEST.value(), 400000015, "Data has not changed"),
-    INVALID_ACCEPT_LANGUAGE(HttpStatus.BAD_REQUEST.value(), 400000016, "Invalid accept language"),
     //</editor-fold>
 
 
