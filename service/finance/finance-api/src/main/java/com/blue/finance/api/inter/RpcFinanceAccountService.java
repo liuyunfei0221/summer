@@ -1,6 +1,8 @@
 package com.blue.finance.api.inter;
 
 
+import com.blue.finance.api.model.MemberFinanceInfo;
+
 /**
  * rpc finance interface
  *
@@ -11,10 +13,10 @@ public interface RpcFinanceAccountService {
 
 
     /**
-     * init finance account for member
+     * init finance info for member
      *
-     * @param memberId
+     * @param memberFinanceInfo
      */
-    void insertInitFinanceAccount(Long memberId);
+    void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo);
 
 }

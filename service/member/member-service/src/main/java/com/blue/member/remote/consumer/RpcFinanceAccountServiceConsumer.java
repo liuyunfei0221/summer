@@ -1,6 +1,7 @@
 package com.blue.member.remote.consumer;
 
 import com.blue.finance.api.inter.RpcFinanceAccountService;
+import com.blue.finance.api.model.MemberFinanceInfo;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ public class RpcFinanceAccountServiceConsumer {
     private static final Logger LOGGER = getLogger(RpcFinanceAccountServiceConsumer.class);
 
     @DubboReference(version = "1.0", providedBy = {"summer-finance"}, methods = {
-            @Method(name = "insertInitFinanceAccount", async = false)
+            @Method(name = "initMemberFinanceInfo", async = false)
     })
     private RpcFinanceAccountService rpcFinanceAccountService;
 
@@ -33,12 +34,12 @@ public class RpcFinanceAccountServiceConsumer {
     }
 
     /**
-     * init finance account for member
+     * init finance info for member
      *
-     * @param memberId
+     * @param memberFinanceInfo
      */
-    public void insertInitFinanceAccount(Long memberId) {
-        LOGGER.info("void insertInitFinanceAccount(Long memberId), memberId = {}", memberId);
-        rpcFinanceAccountService.insertInitFinanceAccount(memberId);
+    public void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo) {
+        LOGGER.info("void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo), memberFinanceInfo = {}", memberFinanceInfo);
+        rpcFinanceAccountService.initMemberFinanceInfo(memberFinanceInfo);
     }
 }

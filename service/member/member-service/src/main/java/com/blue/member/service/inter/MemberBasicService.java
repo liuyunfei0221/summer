@@ -3,7 +3,6 @@ package com.blue.member.service.inter;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.member.api.model.MemberInfo;
-import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.model.MemberCondition;
 import com.blue.member.repository.entity.MemberBasic;
 import reactor.core.publisher.Mono;
@@ -20,12 +19,20 @@ import java.util.Optional;
 public interface MemberBasicService {
 
     /**
+     * query member by id
+     *
+     * @param id
+     * @return
+     */
+    Mono<Optional<MemberBasic>> selectMemberBasicMonoByPrimaryKey(Long id);
+
+    /**
      * query member by phone
      *
      * @param phone
      * @return
      */
-    Mono<Optional<MemberBasic>> selectMemberBasicMonoByPhone(String phone);
+    Optional<MemberBasic> selectMemberBasicByPhone(String phone);
 
     /**
      * query member by email
@@ -33,15 +40,23 @@ public interface MemberBasicService {
      * @param email
      * @return
      */
-    Mono<Optional<MemberBasic>> selectMemberBasicMonoByEmail(String email);
+    Optional<MemberBasic> selectMemberBasicByEmail(String email);
 
     /**
-     * query member by id
+     * query member mono by phone
      *
-     * @param id
+     * @param phone
      * @return
      */
-    Mono<Optional<MemberBasic>> selectMemberBasicMonoByPrimaryKey(Long id);
+    Mono<Optional<MemberBasic>> selectMemberBasicMonoByPhone(String phone);
+
+    /**
+     * query member mono by email
+     *
+     * @param email
+     * @return
+     */
+    Mono<Optional<MemberBasic>> selectMemberBasicMonoByEmail(String email);
 
     /**
      * query member by id with assert
@@ -52,12 +67,12 @@ public interface MemberBasicService {
     Mono<MemberInfo> selectMemberInfoMonoByPrimaryKeyWithAssert(Long id);
 
     /**
-     * member registry
+     * insert member
      *
-     * @param memberRegistryParam
+     * @param memberBasic
      * @return
      */
-    MemberInfo insertMemberBasic(MemberRegistryParam memberRegistryParam);
+    MemberInfo insertMemberBasic(MemberBasic memberBasic);
 
     /**
      * select members by ids

@@ -3,6 +3,7 @@ package com.blue.secure.service.inter;
 import com.blue.secure.repository.entity.Credential;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -32,16 +33,16 @@ public interface CredentialService {
      */
     Optional<Credential> getCredentialByMemberIdAndType(Long memberId, String type);
 
-//    /**
-//     * insert a new role
-//     *
-//     * @param credential
-//     * @return
-//     */
-//    void insertCredentials(Credential credential);
+    /**
+     * insert credential batch
+     *
+     * @param credentials
+     * @return
+     */
+    void insertCredentials(List<Credential> credentials);
 
     /**
-     * insert a new role
+     * insert credential
      *
      * @param credential
      * @return

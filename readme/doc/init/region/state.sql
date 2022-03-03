@@ -1,21 +1,3 @@
-CREATE TABLE `state`
-(
-    `id`           bigint(20) NOT NULL COMMENT 'id',
-    `country_id`   bigint(20) NOT NULL COMMENT 'country id',
-    `name`         varchar(255) NOT NULL COMMENT 'name',
-    `fips_code`    varchar(255) DEFAULT NULL COMMENT 'fips code',
-    `country_code` char(16)     NOT NULL COMMENT 'country code',
-    `state_code`   char(16)     DEFAULT NULL COMMENT 'state code',
-    `status`       tinyint(4) DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time`  bigint(20) DEFAULT '1' COMMENT 'data create time',
-    `update_time`  bigint(20) DEFAULT '1' COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    KEY            `idx_country_id`(`country_id`) USING BTREE,
-    KEY            `idx_status`(`status`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
 INSERT INTO `state`(`id`, `country_id`, `name`, `fips_code`, `country_code`, `state_code`, `status`, `create_time`,
                     `update_time`)
 VALUES (1, 70, 'Southern Nations, Nationalities, and Peoples\' Region', '54', 'ET', 'SN', 1, 1, 1),

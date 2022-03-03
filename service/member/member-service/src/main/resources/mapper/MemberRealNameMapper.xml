@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.member.repository.mapper.MemberRealNameMapper">
+
+    <resultMap id="BaseResultMap" type="com.blue.member.repository.entity.MemberRealName">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="gender" jdbcType="TINYINT" property="gender"/>
+        <result column="birthday" jdbcType="VARCHAR" property="birthday"/>
+        <result column="nationality_id" jdbcType="BIGINT" property="nationalityId"/>
+        <result column="ethnic_id" jdbcType="BIGINT" property="ethnicId"/>
+        <result column="id_card_no" jdbcType="VARCHAR" property="idCardNo"/>
+        <result column="residence_address" jdbcType="VARCHAR" property="residenceAddress"/>
+        <result column="issuing_authority" jdbcType="VARCHAR" property="issuingAuthority"/>
+        <result column="since_date" jdbcType="VARCHAR" property="sinceDate"/>
+        <result column="expire_date" jdbcType="VARCHAR" property="expireDate"/>
+        <result column="extra" jdbcType="VARCHAR" property="extra"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , member_id, real_name, gender, birthday, nationality_id, ethnic_id, id_card_no,
+    residence_address, issuing_authority, since_date, expire_date, extra, status, create_time, 
+    update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from member_real_name
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from member_real_name
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" parameterType="com.blue.member.repository.entity.MemberRealName">
+        insert into member_real_name (id, member_id, real_name,
+                                      gender, birthday, nationality_id,
+                                      ethnic_id, id_card_no, residence_address,
+                                      issuing_authority, since_date, expire_date,
+                                      extra, status, create_time,
+                                      update_time)
+        values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{realName,jdbcType=VARCHAR},
+                #{gender,jdbcType=TINYINT}, #{birthday,jdbcType=VARCHAR}, #{nationalityId,jdbcType=BIGINT},
+                #{ethnicId,jdbcType=BIGINT}, #{idCardNo,jdbcType=VARCHAR}, #{residenceAddress,jdbcType=VARCHAR},
+                #{issuingAuthority,jdbcType=VARCHAR}, #{sinceDate,jdbcType=VARCHAR}, #{expireDate,jdbcType=VARCHAR},
+                #{extra,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.member.repository.entity.MemberRealName">
+        insert into member_real_name
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="memberId != null">
+                member_id,
+            </if>
+            <if test="realName != null">
+                real_name,
+            </if>
+            <if test="gender != null">
+                gender,
+            </if>
+            <if test="birthday != null">
+                birthday,
+            </if>
+            <if test="nationalityId != null">
+                nationality_id,
+            </if>
+            <if test="ethnicId != null">
+                ethnic_id,
+            </if>
+            <if test="idCardNo != null">
+                id_card_no,
+            </if>
+            <if test="residenceAddress != null">
+                residence_address,
+            </if>
+            <if test="issuingAuthority != null">
+                issuing_authority,
+            </if>
+            <if test="sinceDate != null">
+                since_date,
+            </if>
+            <if test="expireDate != null">
+                expire_date,
+            </if>
+            <if test="extra != null">
+                extra,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="memberId != null">
+                #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="realName != null">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                #{gender,jdbcType=TINYINT},
+            </if>
+            <if test="birthday != null">
+                #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="nationalityId != null">
+                #{nationalityId,jdbcType=BIGINT},
+            </if>
+            <if test="ethnicId != null">
+                #{ethnicId,jdbcType=BIGINT},
+            </if>
+            <if test="idCardNo != null">
+                #{idCardNo,jdbcType=VARCHAR},
+            </if>
+            <if test="residenceAddress != null">
+                #{residenceAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="issuingAuthority != null">
+                #{issuingAuthority,jdbcType=VARCHAR},
+            </if>
+            <if test="sinceDate != null">
+                #{sinceDate,jdbcType=VARCHAR},
+            </if>
+            <if test="expireDate != null">
+                #{expireDate,jdbcType=VARCHAR},
+            </if>
+            <if test="extra != null">
+                #{extra,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.member.repository.entity.MemberRealName">
+        update member_real_name
+        <set>
+            <if test="memberId != null">
+                member_id = #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="realName != null">
+                real_name = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="gender != null">
+                gender = #{gender,jdbcType=TINYINT},
+            </if>
+            <if test="birthday != null">
+                birthday = #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="nationalityId != null">
+                nationality_id = #{nationalityId,jdbcType=BIGINT},
+            </if>
+            <if test="ethnicId != null">
+                ethnic_id = #{ethnicId,jdbcType=BIGINT},
+            </if>
+            <if test="idCardNo != null">
+                id_card_no = #{idCardNo,jdbcType=VARCHAR},
+            </if>
+            <if test="residenceAddress != null">
+                residence_address = #{residenceAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="issuingAuthority != null">
+                issuing_authority = #{issuingAuthority,jdbcType=VARCHAR},
+            </if>
+            <if test="sinceDate != null">
+                since_date = #{sinceDate,jdbcType=VARCHAR},
+            </if>
+            <if test="expireDate != null">
+                expire_date = #{expireDate,jdbcType=VARCHAR},
+            </if>
+            <if test="extra != null">
+                extra = #{extra,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.MemberRealName">
+        update member_real_name
+        set member_id         = #{memberId,jdbcType=BIGINT},
+            real_name         = #{realName,jdbcType=VARCHAR},
+            gender            = #{gender,jdbcType=TINYINT},
+            birthday          = #{birthday,jdbcType=VARCHAR},
+            nationality_id    = #{nationalityId,jdbcType=BIGINT},
+            ethnic_id         = #{ethnicId,jdbcType=BIGINT},
+            id_card_no        = #{idCardNo,jdbcType=VARCHAR},
+            residence_address = #{residenceAddress,jdbcType=VARCHAR},
+            issuing_authority = #{issuingAuthority,jdbcType=VARCHAR},
+            since_date        = #{sinceDate,jdbcType=VARCHAR},
+            expire_date       = #{expireDate,jdbcType=VARCHAR},
+            extra             = #{extra,jdbcType=VARCHAR},
+            status            = #{status,jdbcType=TINYINT},
+            create_time       = #{createTime,jdbcType=BIGINT},
+            update_time       = #{updateTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

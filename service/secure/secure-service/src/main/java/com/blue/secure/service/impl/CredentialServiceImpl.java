@@ -10,13 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Consumer;
 
-import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.assertLoginType;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.*;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.just;
@@ -36,13 +37,38 @@ public class CredentialServiceImpl implements CredentialService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private final CredentialMapper credentialMapper;
+    private CredentialMapper credentialMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public CredentialServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CredentialMapper credentialMapper) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.credentialMapper = credentialMapper;
     }
+
+    private final Consumer<List<Credential>> CREDENTIALS_ASSERTER = credentials -> {
+        if (isEmpty(credentials))
+            throw new BlueException(EMPTY_PARAM);
+
+        Map<Long, Set<String>> memberIdAndTypes = credentials.stream().collect(groupingBy(Credential::getMemberId))
+                .entrySet().stream().collect(toMap(Map.Entry::getKey, e -> e.getValue().stream().map(Credential::getType).collect(toSet())));
+
+        List<Credential> existCredentials = credentialMapper.selectByMemberIds(new ArrayList<>(memberIdAndTypes.keySet()));
+
+        for (Credential credential : existCredentials) {
+            if (memberIdAndTypes.get(credential.getMemberId()).contains(credential.getType()))
+                throw new BlueException(DATA_ALREADY_EXIST);
+        }
+
+        Map<String, Set<String>> credentialAndTypes = credentials.stream().collect(groupingBy(Credential::getCredential))
+                .entrySet().stream().collect(toMap(Map.Entry::getKey, e -> e.getValue().stream().map(Credential::getType).collect(toSet())));
+
+        existCredentials = credentialMapper.selectByCredentials(new ArrayList<>(credentialAndTypes.keySet()));
+
+        for (Credential credential : existCredentials) {
+            if (credentialAndTypes.get(credential.getCredential()).contains(credential.getType()))
+                throw new BlueException(DATA_ALREADY_EXIST);
+        }
+    };
 
     /**
      * get by credential and type
@@ -54,6 +80,9 @@ public class CredentialServiceImpl implements CredentialService {
     @Override
     public Mono<Optional<Credential>> getCredentialByCredentialAndType(String credential, String type) {
         LOGGER.info("Mono<Optional<Credential>> getCredentialByCredentialAndType(String credential, String type), credential = {}, type = {}", credential, type);
+
+        if (isBlank(credential))
+            throw new BlueException(EMPTY_PARAM);
 
         assertLoginType(type, false);
 
@@ -80,13 +109,35 @@ public class CredentialServiceImpl implements CredentialService {
     }
 
     /**
+     * insert credential batch
+     *
+     * @param credentials
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public void insertCredentials(List<Credential> credentials) {
+        LOGGER.info("void insertCredentials(List<Credential> credentials), credential = {}", credentials);
+
+        if (isEmpty(credentials))
+            return;
+
+        CREDENTIALS_ASSERTER.accept(credentials);
+
+        credentials.parallelStream()
+                .forEach(c -> c.setId(blueIdentityProcessor.generate(Credential.class)));
+
+        credentialMapper.insertBatch(credentials);
+    }
+
+    /**
      * insert a new role
      *
      * @param credential
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void insertCredential(Credential credential) {
         LOGGER.info("void insertCredential(Credential credential, Long operatorId), credential = {}", credential);
 
@@ -97,9 +148,9 @@ public class CredentialServiceImpl implements CredentialService {
         String type = credential.getType();
         assertLoginType(type, false);
 
-//        Optional<Credential> existOptional = this.getCredentialByMemberIdAndType(memberId, type);
-//        if (existOptional.isPresent())
-//            throw new BlueException(DATA_ALREADY_EXIST);
+        Optional<Credential> existOptional = this.getCredentialByMemberIdAndType(memberId, type);
+        if (existOptional.isPresent())
+            throw new BlueException(DATA_ALREADY_EXIST);
 
         credential.setId(blueIdentityProcessor.generate(Credential.class));
 
@@ -114,7 +165,15 @@ public class CredentialServiceImpl implements CredentialService {
      */
     @Override
     public void updateCredential(Credential credential) {
+        LOGGER.info("void updateCredential(Credential credential), credential = {}", credential);
 
+        if (credential == null)
+            throw new BlueException(EMPTY_PARAM);
+
+        if (isInvalidIdentity(credential.getId()))
+            throw new BlueException(INVALID_IDENTITY);
+
+        credentialMapper.updateByPrimaryKeySelective(credential);
     }
 
     /**
@@ -125,7 +184,12 @@ public class CredentialServiceImpl implements CredentialService {
      */
     @Override
     public void deleteCredentialById(Long id) {
+        LOGGER.info("void deleteCredentialById(Long id), id = {}", id);
 
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        credentialMapper.deleteByPrimaryKey(id);
     }
 
 }

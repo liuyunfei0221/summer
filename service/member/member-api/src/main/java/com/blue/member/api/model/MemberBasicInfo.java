@@ -14,8 +14,6 @@ public final class MemberBasicInfo implements Serializable {
 
     private Long id;
 
-    private String access;
-
     private String phone;
 
     private String email;
@@ -41,9 +39,8 @@ public final class MemberBasicInfo implements Serializable {
     public MemberBasicInfo() {
     }
 
-    public MemberBasicInfo(Long id, String access, String phone, String email, String name, String icon, Integer gender, Integer status, Long createTime, Long updateTime) {
+    public MemberBasicInfo(Long id, String phone, String email, String name, String icon, Integer gender, Integer status, Long createTime, Long updateTime) {
         this.id = id;
-        this.access = access;
         this.phone = phone;
         this.email = email;
         this.name = name;
@@ -60,14 +57,6 @@ public final class MemberBasicInfo implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getAccess() {
-        return access;
-    }
-
-    public void setAccess(String access) {
-        this.access = access;
     }
 
     public String getPhone() {
@@ -138,7 +127,6 @@ public final class MemberBasicInfo implements Serializable {
     public String toString() {
         return "MemberBasicInfo{" +
                 "id=" + id +
-                ", access='" + access + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +

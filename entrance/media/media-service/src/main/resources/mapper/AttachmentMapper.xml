@@ -139,7 +139,7 @@
     <insert id="insertBatch" parameterType="java.util.List">
         <if test="list != null and list.size > 0">
             INSERT INTO attachment (
-            id, link, name, file_type, size, status, create_time, creator
+            <include refid="Base_Column_List"/>
             ) values
             <foreach collection="list" index="index" item="item" separator=",">
                 (

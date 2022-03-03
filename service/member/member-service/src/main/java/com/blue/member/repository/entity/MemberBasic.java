@@ -1,20 +1,22 @@
 package com.blue.member.repository.entity;
 
+import java.io.Serializable;
+
 /**
  * member basic
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class MemberBasic {
+public final class MemberBasic implements Serializable {
+
+    private static final long serialVersionUID = 6361053486435728060L;
 
     private Long id;
 
     private String phone;
 
     private String email;
-
-    private String access;
 
     private String name;
 
@@ -57,14 +59,6 @@ public final class MemberBasic {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getAccess() {
-        return access;
-    }
-
-    public void setAccess(String access) {
-        this.access = access;
     }
 
     public String getName() {
@@ -121,7 +115,6 @@ public final class MemberBasic {
                 "id=" + id +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
-                ", access='" + access + '\'' +
                 ", name='" + name + '\'' +
                 ", icon='" + icon + '\'' +
                 ", gender=" + gender +

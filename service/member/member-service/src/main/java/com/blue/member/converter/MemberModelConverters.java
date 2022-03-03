@@ -7,13 +7,15 @@ import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.repository.entity.MemberBasic;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.Instant;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.member.Gender.UNKNOWN;
+import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -23,8 +25,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class MemberModelConverters {
-
-    private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder();
 
     public static final Function<MemberRegistryParam, MemberBasic> MEMBER_REGISTRY_INFO_2_MEMBER_BASIC = memberRegistryParam -> {
         if (memberRegistryParam == null)
@@ -38,14 +38,6 @@ public final class MemberModelConverters {
         if (phone.length() < BlueNumericalValue.PHONE_LEN_MIN.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too short");
 
-        String email = memberRegistryParam.getEmail();
-        if (isBlank(email))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank");
-        if (email.length() > BlueNumericalValue.EMAIL_LEN_MAX.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too long");
-        if (email.length() < BlueNumericalValue.EMAIL_LEN_MIN.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too short");
-
         String access = memberRegistryParam.getAccess();
         if (isBlank(access))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
@@ -58,20 +50,18 @@ public final class MemberModelConverters {
         if (isBlank(name))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
-        Integer gender = memberRegistryParam.getGender();
-        assertGenderIdentity(gender, false);
-
-        String icon = memberRegistryParam.getIcon();
-
         long epochSecond = Instant.now().getEpochSecond();
 
         MemberBasic memberBasic = new MemberBasic();
         memberBasic.setPhone(phone);
-        memberBasic.setEmail(email);
-        memberBasic.setAccess(ENCODER.encode(access));
+        memberBasic.setEmail(memberRegistryParam.getEmail());
         memberBasic.setName(name);
-        memberBasic.setIcon(icon);
-        memberBasic.setGender(gender);
+        memberBasic.setIcon(memberRegistryParam.getIcon());
+        memberBasic.setGender(ofNullable(memberRegistryParam.getGender())
+                .map(gender -> {
+                    assertGenderIdentity(gender, false);
+                    return gender;
+                }).orElseGet(() -> UNKNOWN.identity));
         memberBasic.setStatus(Status.VALID.status);
         memberBasic.setCreateTime(epochSecond);
         memberBasic.setUpdateTime(epochSecond);
@@ -82,7 +72,7 @@ public final class MemberModelConverters {
     public static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = memberBasic ->
             memberBasic != null ?
                     new MemberBasicInfo(memberBasic.getId(),
-                            memberBasic.getAccess(), memberBasic.getPhone(), memberBasic.getEmail(),
+                            memberBasic.getPhone(), memberBasic.getEmail(),
                             memberBasic.getName(), memberBasic.getIcon(),
                             memberBasic.getGender(), memberBasic.getStatus(),
                             memberBasic.getCreateTime(), memberBasic.getUpdateTime())

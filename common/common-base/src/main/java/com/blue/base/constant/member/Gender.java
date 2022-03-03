@@ -21,7 +21,12 @@ public enum Gender {
     /**
      * other
      */
-    OTHER(2, "other");
+    OTHER(2, "other"),
+
+    /**
+     * unknown
+     */
+    UNKNOWN(3, "unknown");
 
     /**
      * identity

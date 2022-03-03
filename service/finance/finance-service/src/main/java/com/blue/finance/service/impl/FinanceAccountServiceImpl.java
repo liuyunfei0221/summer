@@ -1,25 +1,19 @@
 package com.blue.finance.service.impl;
 
-import com.blue.base.constant.base.Status;
 import com.blue.base.model.exps.BlueException;
 import com.blue.finance.repository.entity.FinanceAccount;
 import com.blue.finance.repository.mapper.FinanceAccountMapper;
 import com.blue.finance.service.inter.FinanceAccountService;
-import com.blue.identity.common.BlueIdentityProcessor;
-import io.seata.spring.annotation.GlobalLock;
-import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
-import java.time.Instant;
 import java.util.Optional;
 
-import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.common.base.BlueChecker.isValidIdentity;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -36,12 +30,9 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
 
     private final FinanceAccountMapper financeAccountMapper;
 
-    private final BlueIdentityProcessor blueIdentityProcessor;
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public FinanceAccountServiceImpl(FinanceAccountMapper financeAccountMapper, BlueIdentityProcessor blueIdentityProcessor) {
+    public FinanceAccountServiceImpl(FinanceAccountMapper financeAccountMapper) {
         this.financeAccountMapper = financeAccountMapper;
-        this.blueIdentityProcessor = blueIdentityProcessor;
     }
 
     /**
@@ -49,10 +40,8 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
      *
      * @param financeAccount
      */
-    @GlobalTransactional
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 15)
-    @GlobalLock
     @Override
     public int insertFinanceAccount(FinanceAccount financeAccount) {
         LOGGER.info("insertFinanceAccount(FinanceAccount financeAccount), financeAccount = {}", financeAccount);
@@ -67,41 +56,6 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
         //if (1 == 1) {
         //    throw new RuntimeException("test rollback");
         //}
-    }
-
-    /**
-     * init finance account for a member
-     *
-     * @param memberId
-     */
-    @GlobalTransactional
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 15)
-    @GlobalLock
-    @Override
-    public int insertInitFinanceAccount(Long memberId) {
-        LOGGER.info("insertInitFinanceAccount(Long memberId), memberId = {}", memberId);
-        if (isInvalidIdentity(memberId)) {
-            throw new BlueException(INVALID_IDENTITY);
-        }
-
-        long epochSecond = Instant.now().getEpochSecond();
-
-        FinanceAccount financeAccount = new FinanceAccount();
-
-        long id = blueIdentityProcessor.generate(FinanceAccount.class);
-        financeAccount.setId(id);
-
-        financeAccount.setMemberId(memberId);
-        financeAccount.setBalance(0L);
-        financeAccount.setFrozen(0L);
-        financeAccount.setIncome(0L);
-        financeAccount.setOutlay(0L);
-        financeAccount.setStatus(Status.VALID.status);
-        financeAccount.setCreateTime(epochSecond);
-        financeAccount.setUpdateTime(epochSecond);
-
-        return insertFinanceAccount(financeAccount);
     }
 
     /**

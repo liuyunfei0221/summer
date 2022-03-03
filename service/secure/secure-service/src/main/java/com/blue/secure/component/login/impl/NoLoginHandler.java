@@ -5,6 +5,8 @@ import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.secure.component.login.inter.LoginHandler;
 import com.blue.secure.model.LoginParam;
+import com.blue.secure.repository.entity.Credential;
+import com.blue.secure.service.inter.CredentialService;
 import com.blue.secure.service.inter.MemberService;
 import com.blue.secure.service.inter.SecureService;
 import org.springframework.core.annotation.Order;
@@ -17,18 +19,18 @@ import reactor.util.Logger;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.SECRET;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseElement.OK;
-import static com.blue.base.constant.secure.LoginType.EMAIL_PWD;
-import static com.blue.base.constant.secure.LoginType.NOT_LOGGED_IN;
+import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.secure.LoginType.*;
+import static com.blue.secure.constant.LoginAttribute.ACCESS;
 import static com.blue.secure.constant.LoginAttribute.IDENTITY;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * no login handler
+ * no login handler,for temp visitor
  *
  * @author DarkBlue
  */
@@ -39,11 +41,14 @@ public class NoLoginHandler implements LoginHandler {
 
     private static final Logger LOGGER = getLogger(NoLoginHandler.class);
 
+    private final CredentialService credentialService;
+
     private final MemberService memberService;
 
     private final SecureService secureService;
 
-    public NoLoginHandler(MemberService memberService, SecureService secureService) {
+    public NoLoginHandler(CredentialService credentialService, MemberService memberService, SecureService secureService) {
+        this.credentialService = credentialService;
         this.memberService = memberService;
         this.secureService = secureService;
     }
@@ -54,12 +59,17 @@ public class NoLoginHandler implements LoginHandler {
         if (loginParam == null)
             throw new BlueException(EMPTY_PARAM);
 
-        String email = loginParam.getData(IDENTITY.key);
+        String phone = loginParam.getData(IDENTITY.key);
+        String access = loginParam.getData(ACCESS.key);
 
-        //TODO verify
-
-        return memberService.selectMemberBasicInfoMonoByEmailWithAssertPwd(email, loginParam.getData(IDENTITY.key))
-                .flatMap(mbi -> secureService.generateAuthMono(mbi.getId(), EMAIL_PWD.identity, loginParam.getDeviceType().intern())
+        return credentialService.getCredentialByCredentialAndType(phone, PHONE_PWD.identity)
+                .flatMap(credentialOpt ->
+                        just(credentialOpt
+                                .map(Credential::getMemberId)
+                                .orElseThrow(() -> new BlueException(INVALID_ACCT_OR_PWD)))
+                ).flatMap(memberService::selectMemberBasicInfoMonoById)
+                .flatMap(mbi ->
+                        secureService.generateAuthMono(mbi.getId(), EMAIL_PWD.identity, loginParam.getDeviceType().intern())
                 )
                 .flatMap(ma ->
                         ok().contentType(APPLICATION_JSON)

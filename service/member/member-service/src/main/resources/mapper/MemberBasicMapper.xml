@@ -9,7 +9,6 @@
                 typeHandler="com.blue.member.repository.type.SecretStringTypeHandler"/>
         <result column="email" jdbcType="VARCHAR" property="email"
                 typeHandler="com.blue.member.repository.type.SecretStringTypeHandler"/>
-        <result column="access" jdbcType="VARCHAR" property="access"/>
         <result column="name" jdbcType="VARCHAR" property="name"
                 typeHandler="com.blue.member.repository.type.SecretStringTypeHandler"/>
         <result column="icon" jdbcType="VARCHAR" property="icon"/>
@@ -21,18 +20,17 @@
 
     <sql id="Base_Column_List">
         id
-        , phone, email, access, name, icon, gender, status, create_time, update_time
+        , phone, email, name, icon, gender, status, create_time, update_time
     </sql>
 
     <insert id="insert" parameterType="com.blue.member.repository.entity.MemberBasic">
         insert into member_basic (id, phone,
-                                  email, access, name,
+                                  email, name,
                                   icon, gender, status,
                                   create_time, update_time)
         values (#{id,jdbcType=BIGINT},
                 #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
                 #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
-                #{access,jdbcType=VARCHAR},
                 #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
                 #{icon,jdbcType=VARCHAR}, #{gender,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
                 #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
@@ -49,9 +47,6 @@
             </if>
             <if test="email != null">
                 email,
-            </if>
-            <if test="access != null">
-                access,
             </if>
             <if test="name != null">
                 name,
@@ -82,9 +77,6 @@
             <if test="email != null">
                 #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
             </if>
-            <if test="access != null">
-                #{access,jdbcType=VARCHAR},
-            </if>
             <if test="name != null">
                 #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
             </if>
@@ -110,7 +102,6 @@
         update member_basic
         set phone       = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
             email       = #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
-            access      = #{access,jdbcType=VARCHAR},
             name        = #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
             icon        = #{icon,jdbcType=VARCHAR},
             gender      = #{gender,jdbcType=TINYINT},
@@ -128,9 +119,6 @@
             </if>
             <if test="email != null">
                 email = #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
-            </if>
-            <if test="access != null">
-                access = #{access,jdbcType=VARCHAR},
             </if>
             <if test="name != null">
                 name = #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},

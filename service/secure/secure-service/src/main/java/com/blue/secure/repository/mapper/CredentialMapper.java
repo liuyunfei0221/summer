@@ -3,6 +3,8 @@ package com.blue.secure.repository.mapper;
 import com.blue.secure.repository.entity.Credential;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * credential dao
  *
@@ -26,5 +28,13 @@ public interface CredentialMapper {
     Credential getByCredentialAndType(@Param("credential") String credential, @Param("type") String type);
 
     Credential getByMemberIdAndType(@Param("memberId") Long memberId, @Param("type") String type);
+
+    List<Credential> selectByMemberId(@Param("memberId") Long memberId);
+
+    List<Credential> selectByMemberIds(@Param("memberIds") List<Long> memberIds);
+
+    List<Credential> selectByCredentials(@Param("credentials") List<String> credentials);
+
+    int insertBatch(@Param("list") List<Credential> list);
 
 }

@@ -18,7 +18,7 @@ public interface MemberService {
      * @param id
      * @return
      */
-    Mono<MemberBasicInfo> selectMemberBasicById(Long id);
+    Mono<MemberBasicInfo> selectMemberBasicInfoMonoById(Long id);
 
     /**
      * get member by phone
@@ -26,24 +26,14 @@ public interface MemberService {
      * @param phone
      * @return
      */
-    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertVerify(String phone);
+    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhone(String phone);
 
     /**
-     * get member by phone and check password
-     *
-     * @param phone
-     * @param password
-     * @return
-     */
-    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPhoneWithAssertPwd(String phone, String password);
-
-    /**
-     * get member by email and check password
+     * get member by email
      *
      * @param email
-     * @param password
      * @return
      */
-    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByEmailWithAssertPwd(String email, String password);
+    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByEmail(String email);
 
 }

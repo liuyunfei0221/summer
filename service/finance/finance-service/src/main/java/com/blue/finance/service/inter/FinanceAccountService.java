@@ -22,14 +22,6 @@ public interface FinanceAccountService {
     int insertFinanceAccount(FinanceAccount financeAccount);
 
     /**
-     * init finance account for a member
-     *
-     * @param memberId
-     * @return
-     */
-    int insertInitFinanceAccount(Long memberId);
-
-    /**
      * get finance account by member id
      *
      * @param memberId

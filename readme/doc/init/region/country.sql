@@ -1,28 +1,3 @@
-CREATE TABLE `country`
-(
-    `id`               bigint(20) NOT NULL COMMENT 'id',
-    `name`             varchar(255) NOT NULL COMMENT 'name',
-    `native_name`      varchar(255) DEFAULT NULL COMMENT 'native',
-    `numeric_code`     char(4)      DEFAULT NULL COMMENT 'numeric code',
-    `country_code`     char(4)      DEFAULT NULL COMMENT 'iso2',
-    `phone_code`       varchar(255) DEFAULT NULL COMMENT 'phone_code',
-    `capital`          varchar(255) DEFAULT NULL COMMENT 'capital',
-    `currency`         varchar(255) DEFAULT NULL COMMENT 'currency',
-    `currency_symbol`  varchar(255) DEFAULT NULL COMMENT 'currency_symbol',
-    `top_level_domain` varchar(255) DEFAULT NULL COMMENT 'top-level domain',
-    `region`           varchar(255) DEFAULT NULL COMMENT 'region',
-    `emoji`            varchar(255) DEFAULT NULL COMMENT 'emoji',
-    `emojiU`           varchar(255) DEFAULT NULL COMMENT 'emoji U',
-    `status`           tinyint(4) DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time`      bigint(20) DEFAULT '1' COMMENT 'data create time',
-    `update_time`      bigint(20) DEFAULT '1' COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    KEY                `idx_phone_code`(`phone_code`) USING BTREE,
-    KEY                `idx_status`(`status`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
 INSERT INTO `country`(`id`, `name`, `native_name`, `numeric_code`, `country_code`, `phone_code`, `capital`,
                                   `currency`, `currency_symbol`, `top_level_domain`, `region`, `emoji`, `emojiU`,
                                   `status`, `create_time`, `update_time`)

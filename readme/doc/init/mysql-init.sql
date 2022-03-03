@@ -24,7 +24,7 @@ CREATE TABLE `resource`
     `existence_response_body` bit          NOT NULL COMMENT 'has response body? 1-yes 2-no',
     `type`                    tinyint      NOT NULL COMMENT 'resource type, 1-api 2-manage api 3-open api',
     `name`                    varchar(128) NOT NULL COMMENT 'resource name',
-    `description`             varchar(256) NOT NULL DEFAULT '' COMMENT 'resource disc',
+    `description`             varchar(256) DEFAULT '' COMMENT 'resource disc',
     `create_time`             bigint       NOT NULL COMMENT 'data create time',
     `update_time`             bigint       NOT NULL COMMENT 'data update time',
     `creator`                 bigint       NOT NULL COMMENT 'creator id',
@@ -36,15 +36,15 @@ CREATE TABLE `resource`
 
 CREATE TABLE `role`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `name`        varchar(64)  NOT NULL COMMENT 'role name',
-    `description` varchar(128) NOT NULL DEFAULT '' COMMENT 'role disc',
-    `level`       int          NOT NULL COMMENT 'roles level',
-    `is_default`  bit          NOT NULL COMMENT 'is default role? 1-yes 0-no',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
-    `creator`     bigint       NOT NULL COMMENT 'creator id',
-    `updater`     bigint       NOT NULL COMMENT 'updater id',
+    `id`          bigint      NOT NULL COMMENT 'id',
+    `name`        varchar(64) NOT NULL COMMENT 'role name',
+    `description` varchar(128) DEFAULT '' COMMENT 'role disc',
+    `level`       int         NOT NULL COMMENT 'roles level',
+    `is_default`  bit         NOT NULL COMMENT 'is default role? 1-yes 0-no',
+    `create_time` bigint      NOT NULL COMMENT 'data create time',
+    `update_time` bigint      NOT NULL COMMENT 'data update time',
+    `creator`     bigint      NOT NULL COMMENT 'creator id',
+    `updater`     bigint      NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_level`(`level`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
@@ -112,33 +112,35 @@ CREATE TABLE `member_role_relation_1`
 
 CREATE TABLE `credential_0`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `credential`  varchar(128) NOT NULL DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32)  NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
-    `access`      varchar(255) NOT NULL DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `extra`       varchar(255) NOT NULL DEFAULT '' COMMENT 'extra infos',
-    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint      NOT NULL COMMENT 'id',
+    `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
+    `type`        varchar(32) NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
+    `member_id`   bigint      NOT NULL COMMENT 'member id',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint      NOT NULL COMMENT 'data create time',
+    `update_time` bigint      NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_credential_type_access_member`(`credential`,`type`,`access`,`member_id`) USING BTREE,
+    UNIQUE KEY `idx_credential_type`(`credential`,`type`) USING BTREE,
     UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 0';
 
 CREATE TABLE `credential_1`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `credential`  varchar(128) NOT NULL DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32)  NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
-    `access`      varchar(255) NOT NULL DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `extra`       varchar(255) NOT NULL DEFAULT '' COMMENT 'extra infos',
-    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint      NOT NULL COMMENT 'id',
+    `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
+    `type`        varchar(32) NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
+    `member_id`   bigint      NOT NULL COMMENT 'member id',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint      NOT NULL COMMENT 'data create time',
+    `update_time` bigint      NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_credential_type_access_member`(`credential`,`type`,`access`,`member_id`) USING BTREE,
+    UNIQUE KEY `idx_credential_type`(`credential`,`type`) USING BTREE,
     UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 1';
 
@@ -192,33 +194,35 @@ CREATE TABLE `member_role_relation_1`
 
 CREATE TABLE `credential_0`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `credential`  varchar(128) NOT NULL DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32)  NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
-    `access`      varchar(255) NOT NULL DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `extra`       varchar(255) NOT NULL DEFAULT '' COMMENT 'extra infos',
-    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint      NOT NULL COMMENT 'id',
+    `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
+    `type`        varchar(32) NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
+    `member_id`   bigint      NOT NULL COMMENT 'member id',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint      NOT NULL COMMENT 'data create time',
+    `update_time` bigint      NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_credential_type_access_member`(`credential`,`type`,`access`,`member_id`) USING BTREE,
+    UNIQUE KEY `idx_credential_type`(`credential`,`type`) USING BTREE,
     UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 0';
 
 CREATE TABLE `credential_1`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `credential`  varchar(128) NOT NULL DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32)  NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
-    `access`      varchar(255) NOT NULL DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `extra`       varchar(255) NOT NULL DEFAULT '' COMMENT 'extra infos',
-    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint      NOT NULL COMMENT 'id',
+    `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
+    `type`        varchar(32) NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
+    `member_id`   bigint      NOT NULL COMMENT 'member id',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint      NOT NULL COMMENT 'data create time',
+    `update_time` bigint      NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_credential_type_access_member`(`credential`,`type`,`access`,`member_id`) USING BTREE,
+    UNIQUE KEY `idx_credential_type`(`credential`,`type`) USING BTREE,
     UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 1';
 
@@ -366,7 +370,7 @@ INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authen
                                 `name`,
                                 `description`,
                                 `create_time`, `update_time`, `creator`, `updater`)
-VALUES (9505726846205969, 'POST', 'blue-member', '/member/registry', b'0', b'1', b'1', b'1', b'1', 1,
+VALUES (9505726846205969, 'POST', 'blue-member', '/registry', b'0', b'1', b'1', b'1', b'1', 1,
         'member registry', 'member registry', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `secure`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
@@ -1132,8 +1136,8 @@ CREATE TABLE `organization_0`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
-    `name`        varchar(128) NOT NULL DEFAULT '0' COMMENT 'organization name',
-    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `name`        varchar(128) DEFAULT '0' COMMENT 'organization name',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
@@ -1149,8 +1153,8 @@ CREATE TABLE `organization_1`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
-    `name`        varchar(128) NOT NULL DEFAULT '0' COMMENT 'organization name',
-    `status`      tinyint      NOT NULL DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `name`        varchar(128) DEFAULT '0' COMMENT 'organization name',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
@@ -1287,8 +1291,8 @@ CREATE TABLE `organization_0`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
-    `name`        varchar(128) NOT NULL DEFAULT '0' COMMENT 'organization name',
-    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `name`        varchar(128) DEFAULT '0' COMMENT 'organization name',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
@@ -1304,8 +1308,8 @@ CREATE TABLE `organization_1`
     `id`          bigint       NOT NULL COMMENT 'id',
     `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
-    `name`        varchar(128) NOT NULL DEFAULT '0' COMMENT 'organization name',
-    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `name`        varchar(128) DEFAULT '0' COMMENT 'organization name',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
@@ -1819,115 +1823,143 @@ VALUES (151397629962, '31th reward', 'Im a reward...', 'www.baidu.com', 1, '{}',
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982722, 185757335558, 2022, 3, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982722, 185757335558, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 1,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237505, 151397629954, 2022, 3, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237505, 151397629954, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 2,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665667, 235157848067, 2022, 3, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665667, 235157848067, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 3,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469505, 185757335559, 2022, 3, 5, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469505, 185757335559, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 5,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982728, 151397629959, 2022, 3, 6, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982728, 151397629959, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 6,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237507, 235157848072, 2022, 3, 7, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237507, 235157848072, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 7,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665672, 127783698440, 2022, 3, 8, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665672, 127783698440, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 8,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469511, 185757335554, 2022, 3, 9, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469511, 185757335554, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 9,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982721, 151397629957, 2022, 3, 10, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982721, 151397629957, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 10,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237512, 235157848065, 2022, 3, 11, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237512, 235157848065, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 11,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665671, 127783698439, 2022, 3, 12, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665671, 127783698439, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 12,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469506, 185757335553, 2022, 3, 13, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469506, 185757335553, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 13,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982725, 235157848068, 2022, 3, 15, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982725, 235157848068, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 15,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237511, 127783698438, 2022, 3, 16, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237511, 127783698438, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 16,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665668, 185757335561, 2022, 3, 17, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665668, 185757335561, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 17,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469507, 151397629955, 2022, 3, 18, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469507, 151397629955, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 18,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982726, 235157848066, 2022, 3, 19, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982726, 235157848066, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 19,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237510, 127783698437, 2022, 3, 20, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237510, 127783698437, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 20,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665670, 185757335556, 2022, 3, 21, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665670, 185757335556, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 21,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469508, 151397629960, 2022, 3, 22, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469508, 151397629960, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 22,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982729, 235157848069, 2022, 3, 23, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982729, 235157848069, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 23,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237506, 185757335560, 2022, 3, 25, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237506, 185757335560, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 25,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665669, 151397629956, 2022, 3, 26, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665669, 151397629956, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 26,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469512, 235157848071, 2022, 3, 27, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469512, 235157848071, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 27,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (166429982724, 127783698442, 2022, 3, 28, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (166429982724, 127783698442, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 28,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_0`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (202937237508, 185757335555, 2022, 3, 29, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (202937237508, 185757335555, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 29,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_0`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (127783665665, 151397629958, 2022, 3, 30, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (127783665665, 151397629958, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 30,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
                                                          `update_time`, `creator`, `updater`)
-VALUES (157848469510, 151397629962, 2022, 3, 31, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+VALUES (157848469510, 151397629962, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 31,
+        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 
 -- member0
@@ -1939,92 +1971,219 @@ member_0;
 
 CREATE TABLE `member_basic_0`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
-    `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) NOT NULL DEFAULT '' COMMENT 'access',
-    `name`        varchar(256) NOT NULL DEFAULT '' COMMENT 'name',
-    `icon`        varchar(255) NOT NULL DEFAULT '' COMMENT 'icon link',
-    `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
-    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint NOT NULL COMMENT 'id',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `name`        varchar(256) DEFAULT '' COMMENT 'name',
+    `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
+    `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint NOT NULL COMMENT 'data create time',
+    `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_phone`(`phone`) USING BTREE,
-    UNIQUE KEY `idx_email`(`email`) USING BTREE,
+    KEY           `idx_email`(`email`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
 
 CREATE TABLE `member_basic_1`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
-    `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) NOT NULL DEFAULT '' COMMENT 'access',
-    `name`        varchar(256) NOT NULL DEFAULT '' COMMENT 'name',
-    `icon`        varchar(255) NOT NULL DEFAULT '' COMMENT 'icon link',
-    `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
-    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint NOT NULL COMMENT 'id',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `name`        varchar(256) DEFAULT '' COMMENT 'name',
+    `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
+    `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint NOT NULL COMMENT 'data create time',
+    `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_phone`(`phone`) USING BTREE,
-    UNIQUE KEY `idx_email`(`email`) USING BTREE,
+    KEY           `idx_email`(`email`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
-CREATE TABLE `member_detail_0`
+CREATE TABLE `member_real_name_0`
+(
+    `id`                bigint NOT NULL COMMENT 'id',
+    `member_id`         bigint NOT NULL COMMENT 'member id',
+    `real_name`         varchar(256) DEFAULT '' COMMENT 'read name',
+    `gender`            tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
+    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `ethnic_id`         bigint       DEFAULT '0' COMMENT 'ethnic id',
+    `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
+    `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
+    `issuing_authority` varchar(512) DEFAULT '' COMMENT 'issuing authority',
+    `since_date`        varchar(32)  DEFAULT '' COMMENT 'card since date, format: yyyy-MM-dd',
+    `expire_date`       varchar(32)  DEFAULT '' COMMENT 'card expire date, format: yyyy-MM-dd',
+    `extra`             varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`            tinyint      DEFAULT '0' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`       bigint NOT NULL COMMENT 'data create time',
+    `update_time`       bigint NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY                 `idx_real_name`(`real_name`) USING BTREE,
+    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
+    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member real name detail 0';
+
+CREATE TABLE `member_real_name_1`
+(
+    `id`                bigint NOT NULL COMMENT 'id',
+    `member_id`         bigint NOT NULL COMMENT 'member id',
+    `real_name`         varchar(256) DEFAULT '' COMMENT 'read name',
+    `gender`            tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
+    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `ethnic_id`         bigint       DEFAULT '0' COMMENT 'ethnic id',
+    `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
+    `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
+    `issuing_authority` varchar(512) DEFAULT '' COMMENT 'issuing authority',
+    `since_date`        varchar(32)  DEFAULT '' COMMENT 'card since date, format: yyyy-MM-dd',
+    `expire_date`       varchar(32)  DEFAULT '' COMMENT 'card expire date, format: yyyy-MM-dd',
+    `extra`             varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`            tinyint      DEFAULT '0' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`       bigint NOT NULL COMMENT 'data create time',
+    `update_time`       bigint NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY                 `idx_real_name`(`real_name`) USING BTREE,
+    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
+    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member real name detail 1';
+
+CREATE TABLE `member_address_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `real_name`   varchar(50)  NOT NULL DEFAULT '' COMMENT 'read name',
-    `id_card_no`  varchar(50)  NOT NULL DEFAULT '' COMMENT 'id card number',
-    `address`     varchar(256) NOT NULL DEFAULT '' COMMENT 'address',
+    `member_name` varchar(256) DEFAULT '' COMMENT 'member name',
+    `gender`      tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone',
+    `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `country_id`  bigint       NOT NULL COMMENT 'country id',
+    `country`     varchar(256) NOT NULL COMMENT 'country name',
+    `state_id`    bigint       NOT NULL COMMENT 'state id',
+    `state`       varchar(256) NOT NULL COMMENT 'state name',
+    `city_id`     bigint       NOT NULL COMMENT 'city id',
+    `city`        varchar(256) NOT NULL COMMENT 'city name',
+    `address`     varchar(512) NOT NULL COMMENT 'address',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_name`(`real_name`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+    KEY           `idx_phone`(`phone`) USING BTREE,
+    KEY           `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 0';
+
+CREATE TABLE `member_address_1`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `member_name` varchar(256) NOT NULL COMMENT 'member name',
+    `gender`      tinyint      NOT NULL COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone',
+    `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `country_id`  bigint       NOT NULL COMMENT 'country id',
+    `country`     varchar(256) NOT NULL COMMENT 'country name',
+    `state_id`    bigint       NOT NULL COMMENT 'state id',
+    `state`       varchar(256) NOT NULL COMMENT 'state name',
+    `city_id`     bigint       NOT NULL COMMENT 'city id',
+    `city`        varchar(256) NOT NULL COMMENT 'city name',
+    `address`     varchar(512) NOT NULL COMMENT 'address',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY           `idx_phone`(`phone`) USING BTREE,
+    KEY           `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 1';
+
+CREATE TABLE `member_detail_0`
+(
+    `id`         bigint NOT NULL COMMENT 'id',
+    `member_id`  bigint NOT NULL COMMENT 'member id',
+    `name`       varchar(256) DEFAULT '' COMMENT 'name',
+    `gender`     tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `phone`      varchar(256) DEFAULT '' COMMENT 'phone',
+    `email`      varchar(256) DEFAULT '' COMMENT 'email',
+    `country_id` bigint       DEFAULT "0" COMMENT 'country id',
+    `country`    varchar(256) DEFAULT '' COMMENT 'country name',
+    `state_id`   bigint       DEFAULT "0" COMMENT 'state id',
+    `state`      varchar(256) DEFAULT '' COMMENT 'state name',
+    `city_id`    bigint       DEFAULT "0" COMMENT 'city id',
+    `city`       varchar(256) DEFAULT '' COMMENT 'city name',
+    `address`    varchar(512) DEFAULT '' COMMENT 'address',
+    `profile`    varchar(512) DEFAULT '' COMMENT 'profile',
+    `hobby`      varchar(512) DEFAULT '' COMMENT 'hobby',
+    `homepage`   varchar(255) DEFAULT '' COMMENT 'personal home page',
+    `extra`      varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`     tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY          `idx_name`(`name`) USING BTREE,
+    KEY          `idx_phone`(`phone`) USING BTREE,
+    KEY          `idx_email`(`email`) USING BTREE,
+    KEY          `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member detail 0';
 
 CREATE TABLE `member_detail_1`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `real_name`   varchar(50)  NOT NULL DEFAULT '' COMMENT 'read name',
-    `id_card_no`  varchar(50)  NOT NULL DEFAULT '' COMMENT 'id card number',
-    `address`     varchar(256) NOT NULL DEFAULT '' COMMENT 'address',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`         bigint NOT NULL COMMENT 'id',
+    `member_id`  bigint NOT NULL COMMENT 'member id',
+    `name`       varchar(256) DEFAULT '' COMMENT 'name',
+    `gender`     tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `phone`      varchar(256) DEFAULT '' COMMENT 'phone',
+    `email`      varchar(256) DEFAULT '' COMMENT 'email',
+    `country_id` bigint       DEFAULT "0" COMMENT 'country id',
+    `country`    varchar(256) DEFAULT '' COMMENT 'country name',
+    `state_id`   bigint       DEFAULT "0" COMMENT 'state id',
+    `state`      varchar(256) DEFAULT '' COMMENT 'state name',
+    `city_id`    bigint       DEFAULT "0" COMMENT 'city id',
+    `city`       varchar(256) DEFAULT '' COMMENT 'city name',
+    `address`    varchar(512) DEFAULT '' COMMENT 'address',
+    `profile`    varchar(512) DEFAULT '' COMMENT 'profile',
+    `hobby`      varchar(512) DEFAULT '' COMMENT 'hobby',
+    `homepage`   varchar(255) DEFAULT '' COMMENT 'personal home page',
+    `extra`      varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`     tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_name`(`real_name`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+    KEY          `idx_name`(`name`) USING BTREE,
+    KEY          `idx_phone`(`phone`) USING BTREE,
+    KEY          `idx_email`(`email`) USING BTREE,
+    KEY          `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member detail 1';
 
 CREATE TABLE `member_business_0`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(512) NOT NULL DEFAULT '' COMMENT 'qrcode link',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint NOT NULL COMMENT 'id',
+    `member_id`   bigint NOT NULL COMMENT 'member id',
+    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
+    `profile`     varchar(256) DEFAULT '' COMMENT 'profile',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `create_time` bigint NOT NULL COMMENT 'data create time',
+    `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member`(`member_id`) USING BTREE
+    UNIQUE KEY `idx_member_code_profile`(`member_id`,`qr_code`,`profile`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 0';
 
 CREATE TABLE `member_business_1`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(512) NOT NULL DEFAULT '' COMMENT 'qrcode link',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint NOT NULL COMMENT 'id',
+    `member_id`   bigint NOT NULL COMMENT 'member id',
+    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
+    `profile`     varchar(256) DEFAULT '' COMMENT 'profile',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `create_time` bigint NOT NULL COMMENT 'data create time',
+    `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member`(`member_id`) USING BTREE
+    UNIQUE KEY `idx_member_code_profile`(`member_id`,`qr_code`,`profile`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 1';
-
 
 -- seata undo log
 
@@ -2051,92 +2210,225 @@ member_1;
 
 CREATE TABLE `member_basic_0`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
-    `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) NOT NULL DEFAULT '' COMMENT 'access',
-    `name`        varchar(256) NOT NULL DEFAULT '' COMMENT 'name',
-    `icon`        varchar(255) NOT NULL DEFAULT '' COMMENT 'icon link',
-    `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
-    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint NOT NULL COMMENT 'id',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `name`        varchar(256) DEFAULT '' COMMENT 'name',
+    `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
+    `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint NOT NULL COMMENT 'data create time',
+    `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_phone`(`phone`) USING BTREE,
-    UNIQUE KEY `idx_email`(`email`) USING BTREE,
+    KEY           `idx_email`(`email`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
 
 CREATE TABLE `member_basic_1`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(256) NOT NULL DEFAULT '' COMMENT 'phone',
-    `email`       varchar(256) NOT NULL DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) NOT NULL DEFAULT '' COMMENT 'access',
-    `name`        varchar(256) NOT NULL DEFAULT '' COMMENT 'name',
-    `icon`        varchar(255) NOT NULL DEFAULT '' COMMENT 'icon link',
-    `gender`      tinyint               DEFAULT '1' COMMENT 'gender: 1-male 2-female 3-other',
-    `status`      tinyint               DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint NOT NULL COMMENT 'id',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `name`        varchar(256) DEFAULT '' COMMENT 'name',
+    `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
+    `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint NOT NULL COMMENT 'data create time',
+    `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_phone`(`phone`) USING BTREE,
-    UNIQUE KEY `idx_email`(`email`) USING BTREE,
+    KEY           `idx_email`(`email`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
-CREATE TABLE `member_detail_0`
+CREATE TABLE `member_real_name_0`
+(
+    `id`                bigint NOT NULL COMMENT 'id',
+    `member_id`         bigint NOT NULL COMMENT 'member id',
+    `real_name`         varchar(256) DEFAULT '' COMMENT 'read name',
+    `gender`            tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
+    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `ethnic_id`         bigint       DEFAULT '0' COMMENT 'ethnic id',
+    `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
+    `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
+    `issuing_authority` varchar(512) DEFAULT '' COMMENT 'issuing authority',
+    `since_date`        varchar(32)  DEFAULT '' COMMENT 'card since date, format: yyyy-MM-dd',
+    `expire_date`       varchar(32)  DEFAULT '' COMMENT 'card expire date, format: yyyy-MM-dd',
+    `extra`             varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`            tinyint      DEFAULT '0' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`       bigint NOT NULL COMMENT 'data create time',
+    `update_time`       bigint NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY                 `idx_real_name`(`real_name`) USING BTREE,
+    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
+    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member real name 0';
+
+CREATE TABLE `member_real_name_1`
+(
+    `id`                bigint NOT NULL COMMENT 'id',
+    `member_id`         bigint NOT NULL COMMENT 'member id',
+    `real_name`         varchar(256) DEFAULT '' COMMENT 'read name',
+    `gender`            tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
+    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `ethnic_id`         bigint       DEFAULT '0' COMMENT 'ethnic id',
+    `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
+    `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
+    `issuing_authority` varchar(512) DEFAULT '' COMMENT 'issuing authority',
+    `since_date`        varchar(32)  DEFAULT '' COMMENT 'card since date, format: yyyy-MM-dd',
+    `expire_date`       varchar(32)  DEFAULT '' COMMENT 'card expire date, format: yyyy-MM-dd',
+    `extra`             varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`            tinyint      DEFAULT '0' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`       bigint NOT NULL COMMENT 'data create time',
+    `update_time`       bigint NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY                 `idx_real_name`(`real_name`) USING BTREE,
+    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
+    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member real name 1';
+
+CREATE TABLE `member_address_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `real_name`   varchar(50)  NOT NULL DEFAULT '' COMMENT 'read name',
-    `id_card_no`  varchar(50)  NOT NULL DEFAULT '' COMMENT 'id card number',
-    `address`     varchar(256) NOT NULL DEFAULT '' COMMENT 'address',
+    `member_name` varchar(256) DEFAULT '' COMMENT 'member name',
+    `gender`      tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone',
+    `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `country_id`  bigint       NOT NULL COMMENT 'country id',
+    `country`     varchar(256) NOT NULL COMMENT 'country name',
+    `state_id`    bigint       NOT NULL COMMENT 'state id',
+    `state`       varchar(256) NOT NULL COMMENT 'state name',
+    `city_id`     bigint       NOT NULL COMMENT 'city id',
+    `city`        varchar(256) NOT NULL COMMENT 'city name',
+    `address`     varchar(512) NOT NULL COMMENT 'address',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_name`(`real_name`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+    KEY           `idx_phone`(`phone`) USING BTREE,
+    KEY           `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 0';
+
+CREATE TABLE `member_address_1`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `member_name` varchar(256) NOT NULL COMMENT 'member name',
+    `gender`      tinyint      NOT NULL COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone',
+    `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `country_id`  bigint       NOT NULL COMMENT 'country id',
+    `country`     varchar(256) NOT NULL COMMENT 'country name',
+    `state_id`    bigint       NOT NULL COMMENT 'state id',
+    `state`       varchar(256) NOT NULL COMMENT 'state name',
+    `city_id`     bigint       NOT NULL COMMENT 'city id',
+    `city`        varchar(256) NOT NULL COMMENT 'city name',
+    `address`     varchar(512) NOT NULL COMMENT 'address',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY           `idx_phone`(`phone`) USING BTREE,
+    KEY           `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 1';
+
+CREATE TABLE `member_detail_0`
+(
+    `id`          bigint NOT NULL COMMENT 'id',
+    `member_id`   bigint NOT NULL COMMENT 'member id',
+    `name`        varchar(256) DEFAULT '' COMMENT 'name',
+    `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `country_id`  bigint       DEFAULT "0" COMMENT 'country id',
+    `country`     varchar(256) DEFAULT '' COMMENT 'country name',
+    `state_id`    bigint       DEFAULT "0" COMMENT 'state id',
+    `state`       varchar(256) DEFAULT '' COMMENT 'state name',
+    `city_id`     bigint       DEFAULT "0" COMMENT 'city id',
+    `city`        varchar(256) DEFAULT '' COMMENT 'city name',
+    `address`     varchar(512) DEFAULT '' COMMENT 'address',
+    `profile`     varchar(512) DEFAULT '' COMMENT 'profile',
+    `hobby`       varchar(512) DEFAULT '' COMMENT 'hobby',
+    `homepage`    varchar(255) DEFAULT '' COMMENT 'personal home page',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint NOT NULL COMMENT 'data create time',
+    `update_time` bigint NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY           `idx_name`(`name`) USING BTREE,
+    KEY           `idx_phone`(`phone`) USING BTREE,
+    KEY           `idx_email`(`email`) USING BTREE,
+    KEY           `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member detail 0';
 
 CREATE TABLE `member_detail_1`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `real_name`   varchar(50)  NOT NULL DEFAULT '' COMMENT 'read name',
-    `id_card_no`  varchar(50)  NOT NULL DEFAULT '' COMMENT 'id card number',
-    `address`     varchar(256) NOT NULL DEFAULT '' COMMENT 'address',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint NOT NULL COMMENT 'id',
+    `member_id`   bigint NOT NULL COMMENT 'member id',
+    `name`        varchar(256) DEFAULT '' COMMENT 'name',
+    `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `country_id`  bigint       DEFAULT "0" COMMENT 'country id',
+    `country`     varchar(256) DEFAULT '' COMMENT 'country name',
+    `state_id`    bigint       DEFAULT "0" COMMENT 'state id',
+    `state`       varchar(256) DEFAULT '' COMMENT 'state name',
+    `city_id`     bigint       DEFAULT "0" COMMENT 'city id',
+    `city`        varchar(256) DEFAULT '' COMMENT 'city name',
+    `address`     varchar(512) DEFAULT '' COMMENT 'address',
+    `profile`     varchar(512) DEFAULT '' COMMENT 'profile',
+    `hobby`       varchar(512) DEFAULT '' COMMENT 'hobby',
+    `homepage`    varchar(255) DEFAULT '' COMMENT 'personal home page',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint NOT NULL COMMENT 'data create time',
+    `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_name`(`real_name`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE,
+    KEY           `idx_phone`(`phone`) USING BTREE,
+    KEY           `idx_email`(`email`) USING BTREE,
+    KEY           `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member detail 1';
 
 CREATE TABLE `member_business_0`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(512) NOT NULL DEFAULT '' COMMENT 'qrcode link',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint NOT NULL COMMENT 'id',
+    `member_id`   bigint NOT NULL COMMENT 'member id',
+    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
+    `profile`     varchar(256) DEFAULT '' COMMENT 'profile',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint NOT NULL COMMENT 'data create time',
+    `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member`(`member_id`) USING BTREE
+    UNIQUE KEY `idx_member_code_profile`(`member_id`,`qr_code`,`profile`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 0';
 
 CREATE TABLE `member_business_1`
 (
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(512) NOT NULL DEFAULT '' COMMENT 'qrcode link',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`          bigint NOT NULL COMMENT 'id',
+    `member_id`   bigint NOT NULL COMMENT 'member id',
+    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
+    `profile`     varchar(256) DEFAULT '' COMMENT 'profile',
+    `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
+    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint NOT NULL COMMENT 'data create time',
+    `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member`(`member_id`) USING BTREE
+    UNIQUE KEY `idx_member_code_profile`(`member_id`,`qr_code`,`profile`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 1';
-
 
 -- seata undo log
 
@@ -2165,7 +2457,7 @@ CREATE TABLE `bulletin_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `title`       varchar(128) NOT NULL COMMENT 'bulletin title',
-    `content`     varchar(256) NOT NULL DEFAULT '' COMMENT 'bulletin content',
+    `content`     varchar(256) DEFAULT '' COMMENT 'bulletin content',
     `link`        varchar(256) NOT NULL COMMENT 'bulletin link',
     `type`        tinyint      NOT NULL COMMENT 'bulletin type: 1-popular 2-newest 3-recommend',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
@@ -2183,7 +2475,7 @@ CREATE TABLE `bulletin_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `title`       varchar(128) NOT NULL COMMENT 'bulletin title',
-    `content`     varchar(256) NOT NULL DEFAULT '' COMMENT 'bulletin content',
+    `content`     varchar(256) DEFAULT '' COMMENT 'bulletin content',
     `link`        varchar(256) NOT NULL COMMENT 'bulletin link',
     `type`        tinyint      NOT NULL COMMENT 'bulletin type: 1-popular 2-newest 3-recommend',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
@@ -2224,7 +2516,7 @@ CREATE TABLE `bulletin_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `title`       varchar(128) NOT NULL COMMENT 'bulletin title',
-    `content`     varchar(256) NOT NULL DEFAULT '' COMMENT 'bulletin content',
+    `content`     varchar(256) DEFAULT '' COMMENT 'bulletin content',
     `link`        varchar(256) NOT NULL COMMENT 'bulletin link',
     `type`        tinyint      NOT NULL COMMENT 'bulletin type: 1-popular 2-newest 3-recommend',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
@@ -2242,7 +2534,7 @@ CREATE TABLE `bulletin_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `title`       varchar(128) NOT NULL COMMENT 'bulletin title',
-    `content`     varchar(256) NOT NULL DEFAULT '' COMMENT 'bulletin content',
+    `content`     varchar(256) DEFAULT '' COMMENT 'bulletin content',
     `link`        varchar(256) NOT NULL COMMENT 'bulletin link',
     `type`        tinyint      NOT NULL COMMENT 'bulletin type: 1-popular 2-newest 3-recommend',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
@@ -2319,11 +2611,11 @@ CREATE TABLE `article_0`
     `title`       varchar(256) NOT NULL COMMENT 'article title',
     `author`      varchar(256) NOT NULL COMMENT 'author id',
     `content`     mediumtext   NOT NULL COMMENT 'article content',
-    `favorites`   bigint       NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `readings`    bigint       NOT NULL DEFAULT '0' COMMENT 'readings count',
-    `comments`    bigint       NOT NULL DEFAULT '0' COMMENT 'comments count',
-    `likes`       bigint       NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`      bigint       NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`   bigint DEFAULT '0' COMMENT 'favorites count',
+    `readings`    bigint DEFAULT '0' COMMENT 'readings count',
+    `comments`    bigint DEFAULT '0' COMMENT 'comments count',
+    `likes`       bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`      bigint DEFAULT '0' COMMENT 'boring count',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
@@ -2346,11 +2638,11 @@ CREATE TABLE `article_1`
     `title`       varchar(256) NOT NULL COMMENT 'article title',
     `author`      varchar(256) NOT NULL COMMENT 'author id',
     `content`     mediumtext   NOT NULL COMMENT 'article content',
-    `favorites`   bigint       NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `readings`    bigint       NOT NULL DEFAULT '0' COMMENT 'readings count',
-    `comments`    bigint       NOT NULL DEFAULT '0' COMMENT 'comments count',
-    `likes`       bigint       NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`      bigint       NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`   bigint DEFAULT '0' COMMENT 'favorites count',
+    `readings`    bigint DEFAULT '0' COMMENT 'readings count',
+    `comments`    bigint DEFAULT '0' COMMENT 'comments count',
+    `likes`       bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`      bigint DEFAULT '0' COMMENT 'boring count',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
@@ -2375,11 +2667,11 @@ CREATE TABLE `link_0`
     `link_url`      varchar(1024) NOT NULL COMMENT 'link url',
     `content`       varchar(1024) NOT NULL COMMENT 'link content',
     `priority`      int           NOT NULL COMMENT 'link priority',
-    `favorites`     bigint        NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `readings`      bigint        NOT NULL DEFAULT '0' COMMENT 'readings count',
-    `comments`      bigint        NOT NULL DEFAULT '0' COMMENT 'comments count',
-    `likes`         bigint        NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint        NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `readings`      bigint DEFAULT '0' COMMENT 'readings count',
+    `comments`      bigint DEFAULT '0' COMMENT 'comments count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint       NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint        NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2402,11 +2694,11 @@ CREATE TABLE `link_1`
     `link_url`      varchar(1024) NOT NULL COMMENT 'link url',
     `content`       varchar(1024) NOT NULL COMMENT 'link content',
     `priority`      int           NOT NULL COMMENT 'link priority',
-    `favorites`     bigint        NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `readings`      bigint        NOT NULL DEFAULT '0' COMMENT 'readings count',
-    `comments`      bigint        NOT NULL DEFAULT '0' COMMENT 'comments count',
-    `likes`         bigint        NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint        NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `readings`      bigint DEFAULT '0' COMMENT 'readings count',
+    `comments`      bigint DEFAULT '0' COMMENT 'comments count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint       NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint        NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2429,10 +2721,10 @@ CREATE TABLE `comment_0`
     `sub_author_id` bigint     NOT NULL COMMENT 'subject author id',
     `from_id`       bigint     NOT NULL COMMENT 'commenter id',
     `content`       mediumtext NOT NULL COMMENT 'comment content',
-    `favorites`     bigint     NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `replies`       bigint     NOT NULL DEFAULT '0' COMMENT 'replies count',
-    `likes`         bigint     NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint     NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `replies`       bigint DEFAULT '0' COMMENT 'replies count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint    NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint     NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2453,10 +2745,10 @@ CREATE TABLE `comment_1`
     `sub_author_id` bigint     NOT NULL COMMENT 'subject author id',
     `from_id`       bigint     NOT NULL COMMENT 'commenter id',
     `content`       mediumtext NOT NULL COMMENT 'comment content',
-    `favorites`     bigint     NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `replies`       bigint     NOT NULL DEFAULT '0' COMMENT 'replies count',
-    `likes`         bigint     NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint     NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `replies`       bigint DEFAULT '0' COMMENT 'replies count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint    NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint     NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2482,9 +2774,9 @@ CREATE TABLE `reply_0`
     `to_id`         bigint     NOT NULL COMMENT 'reply of comment/reply id',
     `type`          tinyint    NOT NULL COMMENT 'reply type: 1-reply to comment 2-reply to other reply',
     `content`       mediumtext NOT NULL COMMENT 'reply content',
-    `favorites`     bigint     NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `likes`         bigint     NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint     NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint    NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint     NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2510,9 +2802,9 @@ CREATE TABLE `reply_1`
     `to_id`         bigint     NOT NULL COMMENT 'reply of comment/reply id',
     `type`          tinyint    NOT NULL COMMENT 'reply type: 1-reply to comment 2-reply to other reply',
     `content`       mediumtext NOT NULL COMMENT 'reply content',
-    `favorites`     bigint     NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `likes`         bigint     NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint     NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint    NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint     NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2543,11 +2835,11 @@ CREATE TABLE `article_0`
     `title`       varchar(256) NOT NULL COMMENT 'article title',
     `author`      varchar(256) NOT NULL COMMENT 'author id',
     `content`     mediumtext   NOT NULL COMMENT 'article content',
-    `favorites`   bigint       NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `readings`    bigint       NOT NULL DEFAULT '0' COMMENT 'readings count',
-    `comments`    bigint       NOT NULL DEFAULT '0' COMMENT 'comments count',
-    `likes`       bigint       NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`      bigint       NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`   bigint DEFAULT '0' COMMENT 'favorites count',
+    `readings`    bigint DEFAULT '0' COMMENT 'readings count',
+    `comments`    bigint DEFAULT '0' COMMENT 'comments count',
+    `likes`       bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`      bigint DEFAULT '0' COMMENT 'boring count',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
@@ -2561,7 +2853,6 @@ CREATE TABLE `article_0`
     KEY           `idx_create`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of article 0';
 
-
 CREATE TABLE `article_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
@@ -2570,11 +2861,11 @@ CREATE TABLE `article_1`
     `title`       varchar(256) NOT NULL COMMENT 'article title',
     `author`      varchar(256) NOT NULL COMMENT 'author id',
     `content`     mediumtext   NOT NULL COMMENT 'article content',
-    `favorites`   bigint       NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `readings`    bigint       NOT NULL DEFAULT '0' COMMENT 'readings count',
-    `comments`    bigint       NOT NULL DEFAULT '0' COMMENT 'comments count',
-    `likes`       bigint       NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`      bigint       NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`   bigint DEFAULT '0' COMMENT 'favorites count',
+    `readings`    bigint DEFAULT '0' COMMENT 'readings count',
+    `comments`    bigint DEFAULT '0' COMMENT 'comments count',
+    `likes`       bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`      bigint DEFAULT '0' COMMENT 'boring count',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
@@ -2588,8 +2879,6 @@ CREATE TABLE `article_1`
     KEY           `idx_create`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of article 1';
 
-
-
 CREATE TABLE `link_0`
 (
     `id`            bigint        NOT NULL COMMENT 'id',
@@ -2599,11 +2888,11 @@ CREATE TABLE `link_0`
     `link_url`      varchar(1024) NOT NULL COMMENT 'link url',
     `content`       varchar(1024) NOT NULL COMMENT 'link content',
     `priority`      int           NOT NULL COMMENT 'link priority',
-    `favorites`     bigint        NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `readings`      bigint        NOT NULL DEFAULT '0' COMMENT 'readings count',
-    `comments`      bigint        NOT NULL DEFAULT '0' COMMENT 'comments count',
-    `likes`         bigint        NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint        NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `readings`      bigint DEFAULT '0' COMMENT 'readings count',
+    `comments`      bigint DEFAULT '0' COMMENT 'comments count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint       NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint        NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2616,7 +2905,6 @@ CREATE TABLE `link_0`
     KEY             `idx_boring`(`boring`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of link 0';
 
-
 CREATE TABLE `link_1`
 (
     `id`            bigint        NOT NULL COMMENT 'id',
@@ -2626,11 +2914,11 @@ CREATE TABLE `link_1`
     `link_url`      varchar(1024) NOT NULL COMMENT 'link url',
     `content`       varchar(1024) NOT NULL COMMENT 'link content',
     `priority`      int           NOT NULL COMMENT 'link priority',
-    `favorites`     bigint        NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `readings`      bigint        NOT NULL DEFAULT '0' COMMENT 'readings count',
-    `comments`      bigint        NOT NULL DEFAULT '0' COMMENT 'comments count',
-    `likes`         bigint        NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint        NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `readings`      bigint DEFAULT '0' COMMENT 'readings count',
+    `comments`      bigint DEFAULT '0' COMMENT 'comments count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint       NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint        NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2643,8 +2931,6 @@ CREATE TABLE `link_1`
     KEY             `idx_boring`(`boring`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of link 1';
 
-
-
 CREATE TABLE `comment_0`
 (
     `id`            bigint     NOT NULL COMMENT 'id',
@@ -2653,10 +2939,10 @@ CREATE TABLE `comment_0`
     `sub_author_id` bigint     NOT NULL COMMENT 'subject author id',
     `from_id`       bigint     NOT NULL COMMENT 'commenter id',
     `content`       mediumtext NOT NULL COMMENT 'comment content',
-    `favorites`     bigint     NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `replies`       bigint     NOT NULL DEFAULT '0' COMMENT 'replies count',
-    `likes`         bigint     NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint     NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `replies`       bigint DEFAULT '0' COMMENT 'replies count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint    NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint     NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2669,7 +2955,6 @@ CREATE TABLE `comment_0`
     KEY             `idx_create`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reply 0';
 
-
 CREATE TABLE `comment_1`
 (
     `id`            bigint     NOT NULL COMMENT 'id',
@@ -2678,10 +2963,10 @@ CREATE TABLE `comment_1`
     `sub_author_id` bigint     NOT NULL COMMENT 'subject author id',
     `from_id`       bigint     NOT NULL COMMENT 'commenter id',
     `content`       mediumtext NOT NULL COMMENT 'comment content',
-    `favorites`     bigint     NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `replies`       bigint     NOT NULL DEFAULT '0' COMMENT 'replies count',
-    `likes`         bigint     NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint     NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `replies`       bigint DEFAULT '0' COMMENT 'replies count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint    NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint     NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2694,8 +2979,6 @@ CREATE TABLE `comment_1`
     KEY             `idx_create`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reply 1';
 
-
-
 CREATE TABLE `reply_0`
 (
     `id`            bigint     NOT NULL COMMENT 'id',
@@ -2707,9 +2990,9 @@ CREATE TABLE `reply_0`
     `to_id`         bigint     NOT NULL COMMENT 'reply of comment/reply id',
     `type`          tinyint    NOT NULL COMMENT 'reply type: 1-reply to comment 2-reply to other reply',
     `content`       mediumtext NOT NULL COMMENT 'reply content',
-    `favorites`     bigint     NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `likes`         bigint     NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint     NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint    NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint     NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2735,9 +3018,9 @@ CREATE TABLE `reply_1`
     `to_id`         bigint     NOT NULL COMMENT 'reply of comment/reply id',
     `type`          tinyint    NOT NULL COMMENT 'reply type: 1-reply to comment 2-reply to other reply',
     `content`       mediumtext NOT NULL COMMENT 'reply content',
-    `favorites`     bigint     NOT NULL DEFAULT '0' COMMENT 'favorites count',
-    `likes`         bigint     NOT NULL DEFAULT '0' COMMENT 'likes count',
-    `boring`        bigint     NOT NULL DEFAULT '0' COMMENT 'boring count',
+    `favorites`     bigint DEFAULT '0' COMMENT 'favorites count',
+    `likes`         bigint DEFAULT '0' COMMENT 'likes count',
+    `boring`        bigint DEFAULT '0' COMMENT 'boring count',
     `status`        tinyint    NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time`   bigint     NOT NULL COMMENT 'data create time',
     PRIMARY KEY (`id`),
@@ -2752,7 +3035,6 @@ CREATE TABLE `reply_1`
     KEY             `idx_create`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reply 1';
 
-
 -- base
 
 CREATE
@@ -2762,22 +3044,22 @@ base;
 
 CREATE TABLE `country`
 (
-    `id`               bigint(20) NOT NULL COMMENT 'id',
+    `id`               bigint       NOT NULL COMMENT 'id',
     `name`             varchar(255) NOT NULL COMMENT 'name',
-    `native_name`      varchar(255) NOT NULL DEFAULT '' COMMENT 'native',
-    `numeric_code`     char(4)      NOT NULL DEFAULT '' COMMENT 'numeric code',
-    `country_code`     char(4)      NOT NULL DEFAULT '' COMMENT 'iso2',
-    `phone_code`       varchar(255) NOT NULL DEFAULT '' COMMENT 'phone_code',
-    `capital`          varchar(255) NOT NULL DEFAULT '' COMMENT 'capital',
-    `currency`         varchar(255) NOT NULL DEFAULT '' COMMENT 'currency',
-    `currency_symbol`  varchar(255) NOT NULL DEFAULT '' COMMENT 'currency_symbol',
-    `top_level_domain` varchar(255) NOT NULL DEFAULT '' COMMENT 'top-level domain',
-    `region`           varchar(255) NOT NULL DEFAULT '' COMMENT 'region',
-    `emoji`            varchar(255) NOT NULL DEFAULT '' COMMENT 'emoji',
-    `emojiU`           varchar(255) NOT NULL DEFAULT '' COMMENT 'emoji U',
-    `status`           tinyint(4) DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time`      bigint(20) DEFAULT '1' COMMENT 'data create time',
-    `update_time`      bigint(20) DEFAULT '1' COMMENT 'data update time',
+    `native_name`      varchar(255) DEFAULT '' COMMENT 'native',
+    `numeric_code`     char(4)      DEFAULT '' COMMENT 'numeric code',
+    `country_code`     char(4)      DEFAULT '' COMMENT 'iso2',
+    `phone_code`       varchar(255) DEFAULT '' COMMENT 'phone_code',
+    `capital`          varchar(255) DEFAULT '' COMMENT 'capital',
+    `currency`         varchar(255) DEFAULT '' COMMENT 'currency',
+    `currency_symbol`  varchar(255) DEFAULT '' COMMENT 'currency_symbol',
+    `top_level_domain` varchar(255) DEFAULT '' COMMENT 'top-level domain',
+    `region`           varchar(255) DEFAULT '' COMMENT 'region',
+    `emoji`            varchar(255) DEFAULT '' COMMENT 'emoji',
+    `emojiU`           varchar(255) DEFAULT '' COMMENT 'emoji U',
+    `status`           tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`      bigint       DEFAULT '1' COMMENT 'data create time',
+    `update_time`      bigint       DEFAULT '1' COMMENT 'data update time',
     PRIMARY KEY (`id`),
     KEY                `idx_phone_code`(`phone_code`) USING BTREE,
     KEY                `idx_status`(`status`) USING BTREE
@@ -2785,15 +3067,15 @@ CREATE TABLE `country`
 
 CREATE TABLE `state`
 (
-    `id`           bigint(20) NOT NULL COMMENT 'id',
-    `country_id`   bigint(20) NOT NULL COMMENT 'country id',
+    `id`           bigint       NOT NULL COMMENT 'id',
+    `country_id`   bigint       NOT NULL COMMENT 'country id',
     `name`         varchar(255) NOT NULL COMMENT 'name',
-    `fips_code`    varchar(255) NOT NULL DEFAULT '' COMMENT 'fips code',
+    `fips_code`    varchar(255) DEFAULT '' COMMENT 'fips code',
     `country_code` char(16)     NOT NULL COMMENT 'country code',
-    `state_code`   char(16)     NOT NULL DEFAULT '' COMMENT 'state code',
-    `status`       tinyint(4) DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time`  bigint(20) DEFAULT '1' COMMENT 'data create time',
-    `update_time`  bigint(20) DEFAULT '1' COMMENT 'data update time',
+    `state_code`   char(16)     DEFAULT '' COMMENT 'state code',
+    `status`       tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`  bigint       DEFAULT '1' COMMENT 'data create time',
+    `update_time`  bigint       DEFAULT '1' COMMENT 'data update time',
     PRIMARY KEY (`id`),
     KEY            `idx_country_id`(`country_id`) USING BTREE,
     KEY            `idx_status`(`status`) USING BTREE
@@ -2801,15 +3083,15 @@ CREATE TABLE `state`
 
 CREATE TABLE `city`
 (
-    `id`           bigint(20) NOT NULL COMMENT 'id',
-    `country_id`   bigint(20) NOT NULL COMMENT 'country id',
-    `state_id`     bigint(20) NOT NULL COMMENT 'state id',
+    `id`           bigint       NOT NULL COMMENT 'id',
+    `country_id`   bigint       NOT NULL COMMENT 'country id',
+    `state_id`     bigint       NOT NULL COMMENT 'state id',
     `name`         varchar(255) NOT NULL COMMENT 'name',
     `country_code` char(16)     NOT NULL COMMENT 'country code',
     `state_code`   char(16)     NOT NULL COMMENT 'state code',
-    `status`       tinyint(4) DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time`  bigint(20) DEFAULT '1' COMMENT 'data create time',
-    `update_time`  bigint(20) DEFAULT '1' COMMENT 'data update time',
+    `status`       tinyint DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`  bigint  DEFAULT '1' COMMENT 'data create time',
+    `update_time`  bigint  DEFAULT '1' COMMENT 'data update time',
     PRIMARY KEY (`id`),
     KEY            `idx_country_id`(`country_id`) USING BTREE,
     KEY            `idx_state_id`(`state_id`) USING BTREE,
@@ -2821,7 +3103,7 @@ CREATE TABLE `dict_type`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
     `code`        varchar(128) NOT NULL COMMENT 'dict type code',
-    `name`        varchar(256) NOT NULL DEFAULT '' COMMENT 'dict type name',
+    `name`        varchar(256) DEFAULT '' COMMENT 'dict type name',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
@@ -2835,7 +3117,7 @@ CREATE TABLE `dict`
 (
     `id`           bigint       NOT NULL COMMENT 'id',
     `dict_type_id` bigint       NOT NULL COMMENT 'dict type id',
-    `name`         varchar(256) NOT NULL DEFAULT '' COMMENT 'dict name',
+    `name`         varchar(256) DEFAULT '' COMMENT 'dict name',
     `value`        varchar(128) NOT NULL COMMENT 'dict value',
     `create_time`  bigint       NOT NULL COMMENT 'data create time',
     `update_time`  bigint       NOT NULL COMMENT 'data update time',
