@@ -75,8 +75,8 @@ public final class SummerAttr {
 
     static {
         List<File> files = getFiles(MESSAGES_URI, false);
-        if (files == null || files.size() != 1)
-            throw new RuntimeException("summer.properties is not exist or more than 1");
+        if (files == null || files.size() < 1)
+            throw new RuntimeException("summer.properties is not exist");
 
         Properties properties = loadProp(files.get(0));
 

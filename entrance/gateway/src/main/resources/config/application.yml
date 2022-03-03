@@ -40,7 +40,7 @@ spring:
     gateway:
       httpclient:
         connectTimeout: 100000
-        responseTimeout: 10s
+        responseTimeout: 30s
         maxHeaderSize: 2048
         maxInitialLineLength: 2048
         pool:
@@ -59,6 +59,8 @@ spring:
         websocket:
           maxFramePayloadLength: 4096
           proxyPing: false
+
+
 
       discovery:
         locator:

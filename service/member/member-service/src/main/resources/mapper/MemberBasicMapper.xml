@@ -6,11 +6,11 @@
     <resultMap id="BaseResultMap" type="com.blue.member.repository.entity.MemberBasic">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"
-                typeHandler="com.blue.member.repository.type.SecretStringTypeHandler"/>
+                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
         <result column="email" jdbcType="VARCHAR" property="email"
-                typeHandler="com.blue.member.repository.type.SecretStringTypeHandler"/>
+                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
         <result column="name" jdbcType="VARCHAR" property="name"
-                typeHandler="com.blue.member.repository.type.SecretStringTypeHandler"/>
+                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
         <result column="icon" jdbcType="VARCHAR" property="icon"/>
         <result column="gender" jdbcType="TINYINT" property="gender"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
@@ -29,9 +29,9 @@
                                   icon, gender, status,
                                   create_time, update_time)
         values (#{id,jdbcType=BIGINT},
-                #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
-                #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
-                #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
+                #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
                 #{icon,jdbcType=VARCHAR}, #{gender,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
                 #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
     </insert>
@@ -72,13 +72,13 @@
                 #{id,jdbcType=BIGINT},
             </if>
             <if test="phone != null">
-                #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
+                #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="email != null">
-                #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
+                #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="name != null">
-                #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
+                #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="icon != null">
                 #{icon,jdbcType=VARCHAR},
@@ -100,9 +100,9 @@
 
     <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.MemberBasic">
         update member_basic
-        set phone       = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
-            email       = #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
-            name        = #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
+        set phone       = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            email       = #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            name        = #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             icon        = #{icon,jdbcType=VARCHAR},
             gender      = #{gender,jdbcType=TINYINT},
             status      = #{status,jdbcType=TINYINT},
@@ -115,13 +115,13 @@
         update member_basic
         <set>
             <if test="phone != null">
-                phone = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
+                phone = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="email != null">
-                email = #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
+                email = #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="name != null">
-                name = #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler},
+                name = #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="icon != null">
                 icon = #{icon,jdbcType=VARCHAR},
@@ -161,7 +161,7 @@
         FROM
         member_basic FORCE INDEX(idx_phone)
         WHERE
-        `phone` = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
+        `phone` = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
     </select>
 
     <select id="selectByEmail" resultMap="BaseResultMap">
@@ -170,7 +170,7 @@
         FROM
         member_basic FORCE INDEX(idx_email)
         WHERE
-        `email` = #{email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
+        `email` = #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
     </select>
 
     <select id="selectByName" resultMap="BaseResultMap">
@@ -179,7 +179,7 @@
         FROM
         member_basic FORCE INDEX(idx_name)
         WHERE
-        `name` = #{name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
+        `name` = #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
     </select>
 
     <select id="select" resultMap="BaseResultMap" parameterType="com.blue.member.model.MemberCondition">
@@ -211,17 +211,17 @@
                 <if test="memberCondition.phone != null">
                     AND
                     phone =
-                    #{memberCondition.phone,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
+                    #{memberCondition.phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
                 </if>
                 <if test="memberCondition.email != null">
                     AND
                     email =
-                    #{memberCondition.email,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
+                    #{memberCondition.email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
                 </if>
                 <if test="memberCondition.name != null">
                     AND
                     name =
-                    #{memberCondition.name,jdbcType=VARCHAR,typeHandler=com.blue.member.repository.type.SecretStringTypeHandler}
+                    #{memberCondition.name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
                 </if>
                 <if test="memberCondition.icon != null">
                     AND

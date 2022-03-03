@@ -6,17 +6,21 @@
     <resultMap id="BaseResultMap" type="com.blue.member.repository.entity.MemberAddress">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="member_id" jdbcType="BIGINT" property="memberId"/>
-        <result column="member_name" jdbcType="VARCHAR" property="memberName"/>
+        <result column="member_name" jdbcType="VARCHAR" property="memberName"
+                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
         <result column="gender" jdbcType="TINYINT" property="gender"/>
-        <result column="phone" jdbcType="VARCHAR" property="phone"/>
-        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"
+                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+        <result column="email" jdbcType="VARCHAR" property="email"
+                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
         <result column="country_id" jdbcType="BIGINT" property="countryId"/>
         <result column="country" jdbcType="VARCHAR" property="country"/>
         <result column="state_id" jdbcType="BIGINT" property="stateId"/>
         <result column="state" jdbcType="VARCHAR" property="state"/>
         <result column="city_id" jdbcType="BIGINT" property="cityId"/>
         <result column="city" jdbcType="VARCHAR" property="city"/>
-        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="address" jdbcType="VARCHAR" property="address"
+                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
         <result column="extra" jdbcType="VARCHAR" property="extra"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
@@ -29,19 +33,6 @@
     state, city_id, city, address, extra, status, create_time, update_time
     </sql>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from member_address
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from member_address
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
-
     <insert id="insert" parameterType="com.blue.member.repository.entity.MemberAddress">
         insert into member_address (id, member_id, member_name,
                                     gender, phone, email,
@@ -49,11 +40,15 @@
                                     state, city_id, city,
                                     address, extra, status,
                                     create_time, update_time)
-        values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{memberName,jdbcType=VARCHAR},
-                #{gender,jdbcType=TINYINT}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+        values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
+                #{memberName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{gender,jdbcType=TINYINT},
+                #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
                 #{countryId,jdbcType=BIGINT}, #{country,jdbcType=VARCHAR}, #{stateId,jdbcType=BIGINT},
                 #{state,jdbcType=VARCHAR}, #{cityId,jdbcType=BIGINT}, #{city,jdbcType=VARCHAR},
-                #{address,jdbcType=VARCHAR}, #{extra,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+                #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{extra,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
                 #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
     </insert>
 
@@ -120,16 +115,16 @@
                 #{memberId,jdbcType=BIGINT},
             </if>
             <if test="memberName != null">
-                #{memberName,jdbcType=VARCHAR},
+                #{memberName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="gender != null">
                 #{gender,jdbcType=TINYINT},
             </if>
             <if test="phone != null">
-                #{phone,jdbcType=VARCHAR},
+                #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="email != null">
-                #{email,jdbcType=VARCHAR},
+                #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="countryId != null">
                 #{countryId,jdbcType=BIGINT},
@@ -150,7 +145,7 @@
                 #{city,jdbcType=VARCHAR},
             </if>
             <if test="address != null">
-                #{address,jdbcType=VARCHAR},
+                #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="extra != null">
                 #{extra,jdbcType=VARCHAR},
@@ -167,6 +162,27 @@
         </trim>
     </insert>
 
+    <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.MemberAddress">
+        update member_address
+        set member_id   = #{memberId,jdbcType=BIGINT},
+            member_name = #{memberName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            gender      = #{gender,jdbcType=TINYINT},
+            phone       = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            email       = #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            country_id  = #{countryId,jdbcType=BIGINT},
+            country     = #{country,jdbcType=VARCHAR},
+            state_id    = #{stateId,jdbcType=BIGINT},
+            state       = #{state,jdbcType=VARCHAR},
+            city_id     = #{cityId,jdbcType=BIGINT},
+            city        = #{city,jdbcType=VARCHAR},
+            address     = #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            extra       = #{extra,jdbcType=VARCHAR},
+            status      = #{status,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.member.repository.entity.MemberAddress">
         update member_address
         <set>
@@ -174,16 +190,17 @@
                 member_id = #{memberId,jdbcType=BIGINT},
             </if>
             <if test="memberName != null">
-                member_name = #{memberName,jdbcType=VARCHAR},
+                member_name =
+                #{memberName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="gender != null">
                 gender = #{gender,jdbcType=TINYINT},
             </if>
             <if test="phone != null">
-                phone = #{phone,jdbcType=VARCHAR},
+                phone = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="email != null">
-                email = #{email,jdbcType=VARCHAR},
+                email = #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="countryId != null">
                 country_id = #{countryId,jdbcType=BIGINT},
@@ -204,7 +221,8 @@
                 city = #{city,jdbcType=VARCHAR},
             </if>
             <if test="address != null">
-                address = #{address,jdbcType=VARCHAR},
+                address =
+                #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             </if>
             <if test="extra != null">
                 extra = #{extra,jdbcType=VARCHAR},
@@ -222,25 +240,17 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.MemberAddress">
-        update member_address
-        set member_id   = #{memberId,jdbcType=BIGINT},
-            member_name = #{memberName,jdbcType=VARCHAR},
-            gender      = #{gender,jdbcType=TINYINT},
-            phone       = #{phone,jdbcType=VARCHAR},
-            email       = #{email,jdbcType=VARCHAR},
-            country_id  = #{countryId,jdbcType=BIGINT},
-            country     = #{country,jdbcType=VARCHAR},
-            state_id    = #{stateId,jdbcType=BIGINT},
-            state       = #{state,jdbcType=VARCHAR},
-            city_id     = #{cityId,jdbcType=BIGINT},
-            city        = #{city,jdbcType=VARCHAR},
-            address     = #{address,jdbcType=VARCHAR},
-            extra       = #{extra,jdbcType=VARCHAR},
-            status      = #{status,jdbcType=TINYINT},
-            create_time = #{createTime,jdbcType=BIGINT},
-            update_time = #{updateTime,jdbcType=BIGINT}
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from member_address
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from member_address
+        where id = #{id,jdbcType=BIGINT}
+    </select>
 
 </mapper>

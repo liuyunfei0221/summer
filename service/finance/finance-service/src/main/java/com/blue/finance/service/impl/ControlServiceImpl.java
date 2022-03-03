@@ -7,7 +7,6 @@ import com.blue.finance.repository.entity.FinanceAccount;
 import com.blue.finance.service.inter.ControlService;
 import com.blue.finance.service.inter.FinanceAccountService;
 import com.blue.identity.common.BlueIdentityProcessor;
-import io.seata.spring.annotation.GlobalLock;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -50,7 +49,6 @@ public class ControlServiceImpl implements ControlService {
     @GlobalTransactional
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
-    @GlobalLock
     @Override
     public void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo) {
         LOGGER.info("void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo), memberFinanceInfo = {}", memberFinanceInfo);

@@ -2,17 +2,24 @@ package com.blue.member.repository.mapper;
 
 import com.blue.member.repository.entity.MemberDetail;
 
+/**
+ * member detail dao
+ *
+ * @author blue
+ */
+@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface MemberDetailMapper {
-
-    int deleteByPrimaryKey(Long id);
 
     int insert(MemberDetail record);
 
     int insertSelective(MemberDetail record);
 
-    MemberDetail selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(MemberDetail record);
 
     int updateByPrimaryKeySelective(MemberDetail record);
 
-    int updateByPrimaryKey(MemberDetail record);
+    int deleteByPrimaryKey(Long id);
+
+    MemberDetail selectByPrimaryKey(Long id);
+
 }
