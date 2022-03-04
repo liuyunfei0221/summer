@@ -1,12 +1,16 @@
 package com.blue.base.repository.entity;
 
+import java.io.Serializable;
+
 /**
  * country entity
  *
  * @author DarkBlue
  */
-@SuppressWarnings("SpellCheckingInspection")
-public class Country {
+@SuppressWarnings({"SpellCheckingInspection", "unused"})
+public final class Country implements Serializable {
+
+    private static final long serialVersionUID = 8387327953062438082L;
 
     private Long id;
 

@@ -1,13 +1,17 @@
 package com.blue.media.repository.entity;
 
 
+import java.io.Serializable;
+
 /**
  * attachment
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class Attachment {
+public final class Attachment implements Serializable {
+
+    private static final long serialVersionUID = -9017169609442683728L;
 
     private Long id;
 
@@ -87,6 +91,20 @@ public final class Attachment {
 
     public void setCreator(Long creator) {
         this.creator = creator;
+    }
+
+    @Override
+    public String toString() {
+        return "Attachment{" +
+                "id=" + id +
+                ", link='" + link + '\'' +
+                ", name='" + name + '\'' +
+                ", fileType='" + fileType + '\'' +
+                ", size=" + size +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                ", creator=" + creator +
+                '}';
     }
 
 }

@@ -3,11 +3,12 @@ package com.blue.member.repository.entity;
 import java.io.Serializable;
 
 /**
- * member business
+ * member business entity
  *
  * @author DarkBlue
  */
-public class MemberBusiness implements Serializable {
+@SuppressWarnings("unused")
+public final class MemberBusiness implements Serializable {
 
     private static final long serialVersionUID = -3568992912805360682L;
 

@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * reward mapper
+ * reward dao
  *
  * @author DarkBlue
  */

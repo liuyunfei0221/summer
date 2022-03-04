@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * dict type mapper
+ * dict type dao
  *
  * @author DarkBlue
  */

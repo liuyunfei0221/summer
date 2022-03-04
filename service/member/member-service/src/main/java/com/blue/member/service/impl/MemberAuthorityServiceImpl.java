@@ -3,7 +3,7 @@ package com.blue.member.service.impl;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.member.model.MemberAuthorityInfo;
-import com.blue.member.model.MemberCondition;
+import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.remote.consumer.RpcControlServiceConsumer;
 import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
@@ -58,13 +58,13 @@ public class MemberAuthorityServiceImpl implements MemberAuthorityService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest) {
+    public Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
 
-        MemberCondition memberCondition = pageModelRequest.getParam();
+        MemberBasicCondition memberBasicCondition = pageModelRequest.getParam();
 
-        return zip(memberBasicService.selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberCondition), memberBasicService.countMemberBasicMonoByCondition(memberCondition))
+        return zip(memberBasicService.selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), memberBasicService.countMemberBasicMonoByCondition(memberBasicCondition))
                 .flatMap(tuple2 -> {
                     List<MemberBasic> members = tuple2.getT1();
                     Mono<List<MemberAuthorityInfo>> memberAuthorityInfosMono = members.size() > 0 ?

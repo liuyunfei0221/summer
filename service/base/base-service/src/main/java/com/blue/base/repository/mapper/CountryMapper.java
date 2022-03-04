@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * country mapper
+ * country dao
  *
  * @author DarkBlue
  */

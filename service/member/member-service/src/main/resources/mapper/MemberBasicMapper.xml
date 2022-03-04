@@ -182,7 +182,7 @@
         `name` = #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
     </select>
 
-    <select id="select" resultMap="BaseResultMap" parameterType="com.blue.member.model.MemberCondition">
+    <select id="select" resultMap="BaseResultMap" parameterType="com.blue.member.model.MemberBasicCondition">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -202,75 +202,71 @@
     </select>
 
     <sql id="Member_Conditions">
-        <if test="memberCondition != null">
+        <if test="memberBasicCondition != null">
             <where>
-                <if test="memberCondition.id != null">
+                <if test="memberBasicCondition.id != null">
                     AND
-                    id = #{memberCondition.id,jdbcType=BIGINT}
+                    id = #{memberBasicCondition.id,jdbcType=BIGINT}
                 </if>
-                <if test="memberCondition.phone != null">
+                <if test="memberBasicCondition.phone != null">
                     AND
                     phone =
-                    #{memberCondition.phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
+                    #{memberBasicCondition.phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
                 </if>
-                <if test="memberCondition.email != null">
+                <if test="memberBasicCondition.email != null">
                     AND
                     email =
-                    #{memberCondition.email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
+                    #{memberBasicCondition.email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
                 </if>
-                <if test="memberCondition.name != null">
+                <if test="memberBasicCondition.name != null">
                     AND
                     name =
-                    #{memberCondition.name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
+                    #{memberBasicCondition.name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
                 </if>
-                <if test="memberCondition.icon != null">
+                <if test="memberBasicCondition.gender != null">
                     AND
-                    icon = #{memberCondition.icon,jdbcType=VARCHAR}
+                    gender = #{memberBasicCondition.gender,jdbcType=TINYINT}
                 </if>
-                <if test="memberCondition.gender != null">
+                <if test="memberBasicCondition.status != null">
                     AND
-                    gender = #{memberCondition.gender,jdbcType=TINYINT}
+                    status = #{memberBasicCondition.status,jdbcType=TINYINT}
                 </if>
-                <if test="memberCondition.status != null">
+                <if test="memberBasicCondition.createTimeBegin != null">
                     AND
-                    status = #{memberCondition.status,jdbcType=TINYINT}
+                    create_time &gt;= #{memberBasicCondition.createTimeBegin,jdbcType=BIGINT}
                 </if>
-                <if test="memberCondition.createTimeBegin != null">
+                <if test="memberBasicCondition.createTimeEnd != null">
                     AND
-                    create_time &gt;= #{memberCondition.createTimeBegin,jdbcType=BIGINT}
+                    create_time &lt;= #{memberBasicCondition.createTimeEnd,jdbcType=BIGINT}
                 </if>
-                <if test="memberCondition.createTimeEnd != null">
+                <if test="memberBasicCondition.updateTimeBegin != null">
                     AND
-                    create_time &lt;= #{memberCondition.createTimeEnd,jdbcType=BIGINT}
+                    update_time &gt;= #{memberBasicCondition.updateTimeBegin,jdbcType=BIGINT}
                 </if>
-                <if test="memberCondition.updateTimeBegin != null">
+                <if test="memberBasicCondition.updateTimeEnd != null">
                     AND
-                    update_time &gt;= #{memberCondition.updateTimeBegin,jdbcType=BIGINT}
-                </if>
-                <if test="memberCondition.updateTimeEnd != null">
-                    AND
-                    update_time &lt;= #{memberCondition.updateTimeEnd,jdbcType=BIGINT}
+                    update_time &lt;= #{memberBasicCondition.updateTimeEnd,jdbcType=BIGINT}
                 </if>
             </where>
         </if>
     </sql>
 
     <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
-            parameterType="com.blue.member.model.MemberCondition">
+            parameterType="com.blue.member.model.MemberBasicCondition">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
         member_basic
         <include refid="Member_Conditions"/>
-        <if test="memberCondition != null and memberCondition.sortAttribute != null and memberCondition.sortAttribute != '' and memberCondition.sortType != null and memberCondition.sortType != ''">
+        <if test="memberBasicCondition != null and memberBasicCondition.sortAttribute != null and memberBasicCondition.sortAttribute != '' and memberBasicCondition.sortType != null and memberBasicCondition.sortType != ''">
             ORDER BY
-            ${memberCondition.sortAttribute,jdbcType=VARCHAR} ${memberCondition.sortType,jdbcType=VARCHAR}
+            ${memberBasicCondition.sortAttribute,jdbcType=VARCHAR} ${memberBasicCondition.sortType,jdbcType=VARCHAR}
         </if>
         LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>
 
     <select id="countByCondition" resultType="java.lang.Long"
-            parameterType="com.blue.member.model.MemberCondition">
+            parameterType="com.blue.member.model.MemberBasicCondition">
         SELECT COUNT(*)
         FROM
         member_basic

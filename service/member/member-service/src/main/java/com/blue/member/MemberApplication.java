@@ -16,7 +16,7 @@ import static org.springframework.boot.SpringApplication.run;
 @SummerSpringBootApplication
 @EnableDiscoveryClient
 @EnableBlueLifecycle(basePackages = "com.blue.member.config.mq")
-@EnableBlueDataAccess(typeHandlerPackages = "com.blue.member.repository.type", basePackages = "com.blue.member.repository.mapper")
+@EnableBlueDataAccess(basePackages = "com.blue.member.repository.mapper")
 @EnableBlueTransaction
 @DubboComponentScan(basePackages = "com.blue.member.remote")
 public class MemberApplication {

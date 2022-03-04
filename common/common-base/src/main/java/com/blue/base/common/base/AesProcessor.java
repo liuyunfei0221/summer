@@ -29,16 +29,16 @@ public final class AesProcessor {
 
     private static final Logger LOGGER = getLogger(AesProcessor.class);
 
-    private static final int KEY_LEN = 128;
+    private static final transient int KEY_LEN = 128;
 
-    private static final String RAN_ALGORITHM = "SHA1PRNG";
-    private static final String ALGORITHM = "AES";
+    private static final transient String RAN_ALGORITHM = "SHA1PRNG";
+    private static final transient String ALGORITHM = "AES";
 
-    private final Cipher ENCRYPT;
-    private final Cipher DECRYPT;
+    private final transient Cipher ENCRYPT;
+    private final transient Cipher DECRYPT;
 
-    private static final Base64.Encoder ENCODER = getEncoder();
-    private static final Base64.Decoder DECODER = getDecoder();
+    private static final transient Base64.Encoder ENCODER = getEncoder();
+    private static final transient Base64.Decoder DECODER = getDecoder();
 
     public AesProcessor(String salt) {
         if (isBlank(salt))

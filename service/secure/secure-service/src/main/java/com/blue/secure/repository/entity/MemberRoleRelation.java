@@ -3,7 +3,7 @@ package com.blue.secure.repository.entity;
 import java.io.Serializable;
 
 /**
- * member role relation
+ * member role relation entity
  *
  * @author DarkBlue
  */
@@ -25,7 +25,6 @@ public final class MemberRoleRelation implements Serializable {
     private Long creator;
 
     private Long updater;
-
 
     public Long getId() {
         return id;
@@ -81,6 +80,19 @@ public final class MemberRoleRelation implements Serializable {
 
     public void setUpdater(Long updater) {
         this.updater = updater;
+    }
+
+    @Override
+    public String toString() {
+        return "MemberRoleRelation{" +
+                "id=" + id +
+                ", memberId=" + memberId +
+                ", roleId=" + roleId +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", creator=" + creator +
+                ", updater=" + updater +
+                '}';
     }
 
 }

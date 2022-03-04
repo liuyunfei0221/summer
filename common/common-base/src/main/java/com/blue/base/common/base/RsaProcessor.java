@@ -37,12 +37,12 @@ public final class RsaProcessor {
 
     private static final Logger LOGGER = getLogger(RsaProcessor.class);
 
-    private static final String KEY_ALGORITHM = "RSA";
-    public static final String SIGN_ALGORITHM = "SHA1WithRSA";
-    private static final Charset DEFAULT_CHARSET = UTF_8;
+    private static final transient String KEY_ALGORITHM = "RSA";
+    private static final transient String SIGN_ALGORITHM = "SHA1WithRSA";
+    private static final transient Charset DEFAULT_CHARSET = UTF_8;
 
-    private static final Base64.Encoder ENCODER = getEncoder();
-    private static final Base64.Decoder DECODER = getDecoder();
+    private static final transient Base64.Encoder ENCODER = getEncoder();
+    private static final transient Base64.Decoder DECODER = getDecoder();
 
     private static final Supplier<Cipher> CIPHER_SUP = () -> {
         try {

@@ -1,12 +1,16 @@
 package com.blue.business.repository.entity;
 
+import java.io.Serializable;
+
 /**
- * comment
+ * comment entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class Comment {
+public final class Comment implements Serializable {
+
+    private static final long serialVersionUID = 7089856147035171817L;
 
     private Long id;
 

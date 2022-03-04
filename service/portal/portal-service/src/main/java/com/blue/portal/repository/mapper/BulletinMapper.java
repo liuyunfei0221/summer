@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * bulletin mapper
+ * bulletin dao
  *
  * @author DarkBlue
  */
@@ -29,7 +29,6 @@ public interface BulletinMapper {
 
     List<Bulletin> selectByIds(@Param("ids") List<Long> ids);
 
-    List<Bulletin> selectByRowsAndCondition(@Param("type") Integer type,
-                                            @Param("status") Integer status, @Param("rows") Long rows);
+    List<Bulletin> selectByRowsAndCondition(@Param("type") Integer type, @Param("status") Integer status, @Param("rows") Long rows);
 
 }

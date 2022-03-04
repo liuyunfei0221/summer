@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * attachment mapper
+ * attachment dao
  *
  * @author DarkBlue
  */

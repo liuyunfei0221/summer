@@ -7,7 +7,7 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberInfo;
 import com.blue.member.constant.MemberBasicSortAttribute;
-import com.blue.member.model.MemberCondition;
+import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.repository.mapper.MemberBasicMapper;
 import com.blue.member.service.inter.MemberBasicService;
@@ -21,11 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.ConstantProcessor.assertSortType;
+import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
@@ -86,19 +87,21 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Consumer<MemberCondition> CONDITION_REPACKAGER = condition -> {
+    private static final UnaryOperator<MemberBasicCondition> MEMBER_CONDITION_PROCESSOR = condition -> {
         if (condition != null) {
-            ofNullable(condition.getSortAttribute())
-                    .filter(BlueChecker::isNotBlank)
-                    .map(SORT_ATTRIBUTE_MAPPING::get)
-                    .filter(BlueChecker::isNotBlank)
-                    .ifPresent(condition::setSortAttribute);
+            condition.setSortAttribute(
+                    ofNullable(condition.getSortAttribute())
+                            .filter(BlueChecker::isNotBlank)
+                            .map(SORT_ATTRIBUTE_MAPPING::get)
+                            .filter(BlueChecker::isNotBlank)
+                            .orElseThrow(() -> new BlueException(INVALID_PARAM)));
 
-            assertSortType(condition.getSortType(), true);
+            condition.setSortType(getSortTypeByIdentity(condition.getSortType()).identity);
 
-            ofNullable(condition.getName())
-                    .filter(BlueChecker::isNotBlank).ifPresent(n -> condition.setName("%" + n + "%"));
+            return condition;
         }
+
+        return new MemberBasicCondition();
     };
 
     /**
@@ -245,26 +248,30 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      *
      * @param limit
      * @param rows
-     * @param memberCondition
+     * @param memberBasicCondition
      * @return
      */
     @Override
-    public Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition) {
+    public Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberBasicCondition memberBasicCondition) {
         LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition), " +
-                "limit = {}, rows = {}, memberCondition = {}", limit, rows, memberCondition);
-        return just(memberBasicMapper.selectByLimitAndCondition(limit, rows, memberCondition));
+                "limit = {}, rows = {}, memberCondition = {}", limit, rows, memberBasicCondition);
+
+        if (limit != null && limit >= 0 && rows != null && rows >= 1)
+            return just(memberBasicMapper.selectByLimitAndCondition(limit, rows, memberBasicCondition));
+
+        throw new BlueException(INVALID_PARAM);
     }
 
     /**
      * count member by condition
      *
-     * @param memberCondition
+     * @param memberBasicCondition
      * @return
      */
     @Override
-    public Mono<Long> countMemberBasicMonoByCondition(MemberCondition memberCondition) {
-        LOGGER.info("Mono<Long> countMemberBasicMonoByCondition(MemberCondition memberCondition), memberCondition = {}", memberCondition);
-        return just(ofNullable(memberBasicMapper.countByCondition(memberCondition)).orElse(0L));
+    public Mono<Long> countMemberBasicMonoByCondition(MemberBasicCondition memberBasicCondition) {
+        LOGGER.info("Mono<Long> countMemberBasicMonoByCondition(MemberCondition memberCondition), memberCondition = {}", memberBasicCondition);
+        return just(ofNullable(memberBasicMapper.countByCondition(memberBasicCondition)).orElse(0L));
     }
 
     /**
@@ -274,14 +281,13 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest) {
+    public Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
 
-        MemberCondition memberCondition = pageModelRequest.getParam();
-        CONDITION_REPACKAGER.accept(memberCondition);
+        MemberBasicCondition memberBasicCondition = MEMBER_CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
-        return zip(selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberCondition), countMemberBasicMonoByCondition(memberCondition))
+        return zip(selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), countMemberBasicMonoByCondition(memberBasicCondition))
                 .flatMap(tuple2 -> {
                     List<MemberBasic> members = tuple2.getT1();
                     Mono<List<MemberInfo>> memberInfosMono = members.size() > 0 ?

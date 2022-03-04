@@ -1,12 +1,16 @@
 package com.blue.finance.repository.entity;
 
+import java.io.Serializable;
+
 /**
- * organization
+ * organization entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class Organization {
+public final class Organization implements Serializable {
+
+    private static final long serialVersionUID = -2209322103033115639L;
 
     private Long id;
 

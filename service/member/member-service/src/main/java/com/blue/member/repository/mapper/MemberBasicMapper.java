@@ -1,6 +1,6 @@
 package com.blue.member.repository.mapper;
 
-import com.blue.member.model.MemberCondition;
+import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;
 import org.apache.ibatis.annotations.Param;
 
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
 public interface MemberBasicMapper {
 
     int insert(MemberBasic record);
@@ -26,18 +26,61 @@ public interface MemberBasicMapper {
 
     MemberBasic selectByPrimaryKey(Long id);
 
+    /**
+     * select by phone
+     *
+     * @param phone
+     * @return
+     */
     MemberBasic selectByPhone(@Param("phone") String phone);
 
+    /**
+     * select by email
+     *
+     * @param email
+     * @return
+     */
     MemberBasic selectByEmail(@Param("email") String email);
 
+    /**
+     * select by name
+     *
+     * @param name
+     * @return
+     */
     MemberBasic selectByName(@Param("name") String name);
 
+    /**
+     * select all
+     *
+     * @return
+     */
     List<MemberBasic> select();
 
+    /**
+     * select by ids
+     *
+     * @param ids
+     * @return
+     */
     List<MemberBasic> selectByIds(@Param("ids") List<Long> ids);
 
-    List<MemberBasic> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("memberCondition") MemberCondition memberCondition);
+    /**
+     * select by limit and condition
+     *
+     * @param limit
+     * @param rows
+     * @param memberBasicCondition
+     * @return
+     */
+    List<MemberBasic> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("memberCondition") MemberBasicCondition memberBasicCondition);
 
-    Long countByCondition(@Param("memberCondition") MemberCondition memberCondition);
+    /**
+     * count by condition
+     *
+     * @param memberBasicCondition
+     * @return
+     */
+    Long countByCondition(@Param("memberCondition") MemberBasicCondition memberBasicCondition);
 
 }

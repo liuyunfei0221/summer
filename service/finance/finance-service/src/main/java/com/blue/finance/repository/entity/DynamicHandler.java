@@ -1,12 +1,16 @@
 package com.blue.finance.repository.entity;
 
+import java.io.Serializable;
+
 /**
- * dynamic handler config
+ * dynamic handler config entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class DynamicHandler {
+public final class DynamicHandler implements Serializable {
+
+    private static final long serialVersionUID = 3165687168951987180L;
 
     private Long id;
 

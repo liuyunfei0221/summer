@@ -24,6 +24,9 @@ public final class MemberInfo implements Serializable {
      */
     private Integer gender;
 
+    public MemberInfo() {
+    }
+
     public MemberInfo(Long id, String name, String icon, Integer gender) {
         this.id = id;
         this.name = name;

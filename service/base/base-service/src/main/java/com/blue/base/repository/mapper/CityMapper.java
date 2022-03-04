@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * city mapper
+ * city dao
  *
  * @author DarkBlue
  */

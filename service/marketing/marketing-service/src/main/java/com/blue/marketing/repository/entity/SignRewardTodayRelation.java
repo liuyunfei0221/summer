@@ -1,13 +1,17 @@
 package com.blue.marketing.repository.entity;
 
 
+import java.io.Serializable;
+
 /**
- * reward and date relation
+ * reward and date relation entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class SignRewardTodayRelation {
+public final class SignRewardTodayRelation implements Serializable {
+
+    private static final long serialVersionUID = -8500374113111573256L;
 
     private Long id;
 

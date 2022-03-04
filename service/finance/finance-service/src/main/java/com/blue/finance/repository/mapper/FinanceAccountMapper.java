@@ -4,7 +4,7 @@ import com.blue.finance.repository.entity.FinanceAccount;
 import org.apache.ibatis.annotations.Param;
 
 /**
- * finance account mapper
+ * finance account dao
  *
  * @author DarkBlue
  */

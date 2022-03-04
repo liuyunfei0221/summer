@@ -1,12 +1,16 @@
 package com.blue.finance.repository.entity;
 
+import java.io.Serializable;
+
 /**
- * dynamic resource
+ * dynamic resource entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class DynamicResource {
+public final class DynamicResource implements Serializable {
+
+    private static final long serialVersionUID = -6495520302462631712L;
 
     private Long id;
 

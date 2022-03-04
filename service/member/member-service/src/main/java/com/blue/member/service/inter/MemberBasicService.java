@@ -3,7 +3,7 @@ package com.blue.member.service.inter;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.member.api.model.MemberInfo;
-import com.blue.member.model.MemberCondition;
+import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;
 import reactor.core.publisher.Mono;
 
@@ -15,7 +15,7 @@ import java.util.Optional;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface MemberBasicService {
 
     /**
@@ -87,18 +87,18 @@ public interface MemberBasicService {
      *
      * @param limit
      * @param rows
-     * @param memberCondition
+     * @param memberBasicCondition
      * @return
      */
-    Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition);
+    Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberBasicCondition memberBasicCondition);
 
     /**
      * count member by condition
      *
-     * @param memberCondition
+     * @param memberBasicCondition
      * @return
      */
-    Mono<Long> countMemberBasicMonoByCondition(MemberCondition memberCondition);
+    Mono<Long> countMemberBasicMonoByCondition(MemberBasicCondition memberBasicCondition);
 
     /**
      * select member info page by condition
@@ -106,6 +106,6 @@ public interface MemberBasicService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest);
+    Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest);
 
 }

@@ -1,12 +1,16 @@
 package com.blue.base.repository.entity;
 
+import java.io.Serializable;
+
 /**
- * dict
+ * dict entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class Dict {
+public final class Dict implements Serializable {
+
+    private static final long serialVersionUID = 2603734767826275087L;
 
     private Long id;
 

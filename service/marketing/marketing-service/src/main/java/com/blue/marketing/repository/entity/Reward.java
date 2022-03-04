@@ -1,12 +1,16 @@
 package com.blue.marketing.repository.entity;
 
+import java.io.Serializable;
+
 /**
- * reward
+ * reward entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class Reward {
+public final class Reward implements Serializable {
+
+    private static final long serialVersionUID = 5585565777762900601L;
 
     private Long id;
 

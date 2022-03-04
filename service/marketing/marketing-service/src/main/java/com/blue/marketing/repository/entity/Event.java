@@ -1,12 +1,16 @@
 package com.blue.marketing.repository.entity;
 
+import java.io.Serializable;
+
 /**
- * marketing event
+ * marketing event entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class Event {
+public final class Event implements Serializable {
+
+    private static final long serialVersionUID = 4304981563007771288L;
 
     private Long id;
 
@@ -85,6 +89,18 @@ public final class Event {
 
     public void setCreator(Long creator) {
         this.creator = creator;
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", type=" + type +
+                ", data='" + data + '\'' +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                ", creator=" + creator +
+                '}';
     }
 
 }

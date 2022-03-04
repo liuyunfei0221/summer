@@ -3,7 +3,7 @@ package com.blue.member.service.inter;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.member.model.MemberAuthorityInfo;
-import com.blue.member.model.MemberCondition;
+import com.blue.member.model.MemberBasicCondition;
 import reactor.core.publisher.Mono;
 
 /**
@@ -22,6 +22,6 @@ public interface MemberAuthorityService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest);
+    Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest);
 
 }

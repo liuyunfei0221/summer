@@ -3,11 +3,12 @@ package com.blue.member.repository.entity;
 import java.io.Serializable;
 
 /**
- * member address
+ * member address entity
  *
  * @author DarkBlue
  */
-public class MemberAddress implements Serializable {
+@SuppressWarnings("unused")
+public final class MemberAddress implements Serializable {
 
     private static final long serialVersionUID = -8696202344611000378L;
 
@@ -19,6 +20,9 @@ public class MemberAddress implements Serializable {
 
     private Integer gender;
 
+    /**
+     * phone format: 86-13131693996
+     */
     private String phone;
 
     private String email;

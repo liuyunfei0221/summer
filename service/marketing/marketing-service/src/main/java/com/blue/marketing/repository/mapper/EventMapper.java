@@ -3,7 +3,7 @@ package com.blue.marketing.repository.mapper;
 import com.blue.marketing.repository.entity.Event;
 
 /**
- * event mapper
+ * event dao
  *
  * @author DarkBlue
  */

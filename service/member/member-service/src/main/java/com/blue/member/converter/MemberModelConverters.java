@@ -3,17 +3,18 @@ package com.blue.member.converter;
 import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.base.Status;
 import com.blue.base.model.exps.BlueException;
+import com.blue.member.api.model.MemberAddressInfo;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberInfo;
 import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.repository.entity.MemberAddress;
 import com.blue.member.repository.entity.MemberBasic;
 
 import java.time.Instant;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.member.Gender.UNKNOWN;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -69,19 +70,32 @@ public final class MemberModelConverters {
         return memberBasic;
     };
 
-    public static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = memberBasic ->
-            memberBasic != null ?
-                    new MemberBasicInfo(memberBasic.getId(),
-                            memberBasic.getPhone(), memberBasic.getEmail(),
-                            memberBasic.getName(), memberBasic.getIcon(),
-                            memberBasic.getGender(), memberBasic.getStatus(),
-                            memberBasic.getCreateTime(), memberBasic.getUpdateTime())
-                    : null;
+    public static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = memberBasic -> {
+        if (memberBasic != null)
+            return new MemberBasicInfo(memberBasic.getId(),
+                    memberBasic.getPhone(), memberBasic.getEmail(),
+                    memberBasic.getName(), memberBasic.getIcon(),
+                    memberBasic.getGender(), memberBasic.getStatus(),
+                    memberBasic.getCreateTime(), memberBasic.getUpdateTime());
 
-    public static final Function<MemberBasic, MemberInfo> MEMBER_BASIC_2_MEMBER_INFO = memberBasic ->
-            memberBasic != null ?
-                    new MemberInfo(memberBasic.getId(), memberBasic.getName(), memberBasic.getIcon(), memberBasic.getGender())
-                    : null;
+        throw new BlueException(EMPTY_PARAM);
+    };
+
+    public static final Function<MemberBasic, MemberInfo> MEMBER_BASIC_2_MEMBER_INFO = memberBasic -> {
+        if (memberBasic != null)
+            return new MemberInfo(memberBasic.getId(), memberBasic.getName(), memberBasic.getIcon(), memberBasic.getGender());
+
+        throw new BlueException(EMPTY_PARAM);
+    };
+
+    public static final Function<MemberAddress, MemberAddressInfo> MEMBER_ADDRESS_2_MEMBER_ADDRESS_INFO = memberAddress -> {
+        if (memberAddress != null)
+            return new MemberAddressInfo(memberAddress.getId(), memberAddress.getMemberId(), memberAddress.getMemberName(), memberAddress.getGender(),
+                    memberAddress.getPhone(), memberAddress.getEmail(), memberAddress.getCountryId(), memberAddress.getCountry(), memberAddress.getStateId(),
+                    memberAddress.getState(), memberAddress.getCityId(), memberAddress.getCity(), memberAddress.getAddress(), memberAddress.getExtra());
+
+        throw new BlueException(EMPTY_PARAM);
+    };
 
 
 }

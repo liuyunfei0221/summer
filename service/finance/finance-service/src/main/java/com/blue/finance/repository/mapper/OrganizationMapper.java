@@ -3,7 +3,7 @@ package com.blue.finance.repository.mapper;
 import com.blue.finance.repository.entity.Organization;
 
 /**
- * organization mapper
+ * organization dao
  *
  * @author DarkBlue
  */

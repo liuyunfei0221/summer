@@ -5,7 +5,7 @@ import com.blue.finance.repository.entity.DynamicHandler;
 import java.util.List;
 
 /**
- * dynamic handler mapper
+ * dynamic handler dao
  *
  * @author DarkBlue
  */

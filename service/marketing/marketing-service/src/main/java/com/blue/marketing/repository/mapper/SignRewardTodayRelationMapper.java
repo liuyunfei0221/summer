@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * reward and date relation mapper
+ * reward and date relation dao
  *
  * @author DarkBlue
  */

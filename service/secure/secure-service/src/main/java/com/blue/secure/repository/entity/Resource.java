@@ -3,7 +3,7 @@ package com.blue.secure.repository.entity;
 import java.io.Serializable;
 
 /**
- * resource
+ * resource entity
  *
  * @author DarkBlue
  */

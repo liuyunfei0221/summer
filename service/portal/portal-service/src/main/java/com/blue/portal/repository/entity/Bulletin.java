@@ -1,12 +1,16 @@
 package com.blue.portal.repository.entity;
 
+import java.io.Serializable;
+
 /**
- * bulletin
+ * bulletin entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class Bulletin {
+public final class Bulletin implements Serializable {
+
+    private static final long serialVersionUID = -2824111999296702124L;
 
     private Long id;
 
@@ -33,7 +37,7 @@ public final class Bulletin {
     private Long updateTime;
 
     private Long creator;
-    
+
     private Long updater;
 
     public Long getId() {

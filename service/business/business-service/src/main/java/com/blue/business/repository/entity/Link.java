@@ -1,12 +1,16 @@
 package com.blue.business.repository.entity;
 
+import java.io.Serializable;
+
 /**
- * link
+ * link entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class Link {
+public final class Link implements Serializable {
+
+    private static final long serialVersionUID = 2701055869814489877L;
 
     private Long id;
 

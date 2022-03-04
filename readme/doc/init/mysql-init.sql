@@ -1094,6 +1094,27 @@ CREATE TABLE `undo_log`
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 
+-- finance
+
+CREATE
+DATABASE finance CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+USE
+finance;
+
+CREATE TABLE `undo_log`
+(
+    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
+    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
+    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
+    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
+    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
+    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
+    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
+    PRIMARY KEY (`branch_id`),
+    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
+
+
 -- finance0
 
 CREATE
@@ -1134,7 +1155,7 @@ CREATE TABLE `finance_account_1`
 CREATE TABLE `organization_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
+    `phone`       varchar(16)  NOT NULL COMMENT 'organization phone format: 86-13131693996',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
     `name`        varchar(128) DEFAULT '0' COMMENT 'organization name',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
@@ -1151,7 +1172,7 @@ CREATE TABLE `organization_0`
 CREATE TABLE `organization_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
+    `phone`       varchar(16)  NOT NULL COMMENT 'organization phone format: 86-13131693996',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
     `name`        varchar(128) DEFAULT '0' COMMENT 'organization name',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
@@ -1233,7 +1254,6 @@ CREATE TABLE `dynamic_resource_1`
     UNIQUE KEY `idx_method_placeholder_content`(`request_method`,`uri_placeholder`,`content_type`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dynamic resource 1';
 
-
 -- seata undo log
 
 CREATE TABLE `undo_log`
@@ -1289,7 +1309,7 @@ CREATE TABLE `finance_account_1`
 CREATE TABLE `organization_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
+    `phone`       varchar(16)  NOT NULL COMMENT 'organization phone format: 86-13131693996',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
     `name`        varchar(128) DEFAULT '0' COMMENT 'organization name',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
@@ -1306,7 +1326,7 @@ CREATE TABLE `organization_0`
 CREATE TABLE `organization_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `phone`       varchar(16)  NOT NULL COMMENT 'organization phone',
+    `phone`       varchar(16)  NOT NULL COMMENT 'organization phone format: 86-13131693996',
     `email`       varchar(256) NOT NULL COMMENT 'organization email',
     `name`        varchar(128) DEFAULT '0' COMMENT 'organization name',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
@@ -1961,6 +1981,25 @@ INSERT INTO `marketing_1`.`sign_reward_today_relation_1`(`id`, `reward_id`, `yea
 VALUES (157848469510, 151397629962, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 31,
         UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+-- member
+
+CREATE
+DATABASE member CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+USE
+member;
+
+CREATE TABLE `undo_log`
+(
+    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
+    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
+    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
+    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
+    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
+    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
+    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
+    PRIMARY KEY (`branch_id`),
+    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 -- member0
 
@@ -1972,7 +2011,7 @@ member_0;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
@@ -1989,7 +2028,7 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
@@ -2059,7 +2098,7 @@ CREATE TABLE `member_address_0`
     `member_id`   bigint       NOT NULL COMMENT 'member id',
     `member_name` varchar(256) DEFAULT '' COMMENT 'member name',
     `gender`      tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone format: 86-13131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `country_id`  bigint       NOT NULL COMMENT 'country id',
     `country`     varchar(256) NOT NULL COMMENT 'country name',
@@ -2073,7 +2112,7 @@ CREATE TABLE `member_address_0`
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY           `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 0';
@@ -2084,7 +2123,7 @@ CREATE TABLE `member_address_1`
     `member_id`   bigint       NOT NULL COMMENT 'member id',
     `member_name` varchar(256) NOT NULL COMMENT 'member name',
     `gender`      tinyint      NOT NULL COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone format: 86-13131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `country_id`  bigint       NOT NULL COMMENT 'country id',
     `country`     varchar(256) NOT NULL COMMENT 'country name',
@@ -2098,7 +2137,7 @@ CREATE TABLE `member_address_1`
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY           `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 1';
@@ -2109,7 +2148,7 @@ CREATE TABLE `member_detail_0`
     `member_id`  bigint NOT NULL COMMENT 'member id',
     `name`       varchar(256) DEFAULT '' COMMENT 'name',
     `gender`     tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`      varchar(256) DEFAULT '' COMMENT 'phone',
+    `phone`      varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
     `email`      varchar(256) DEFAULT '' COMMENT 'email',
     `country_id` bigint       DEFAULT "0" COMMENT 'country id',
     `country`    varchar(256) DEFAULT '' COMMENT 'country name',
@@ -2137,7 +2176,7 @@ CREATE TABLE `member_detail_1`
     `member_id`  bigint NOT NULL COMMENT 'member id',
     `name`       varchar(256) DEFAULT '' COMMENT 'name',
     `gender`     tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`      varchar(256) DEFAULT '' COMMENT 'phone',
+    `phone`      varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
     `email`      varchar(256) DEFAULT '' COMMENT 'email',
     `country_id` bigint       DEFAULT "0" COMMENT 'country id',
     `country`    varchar(256) DEFAULT '' COMMENT 'country name',
@@ -2211,7 +2250,7 @@ member_1;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
@@ -2228,7 +2267,7 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
@@ -2298,7 +2337,7 @@ CREATE TABLE `member_address_0`
     `member_id`   bigint       NOT NULL COMMENT 'member id',
     `member_name` varchar(256) DEFAULT '' COMMENT 'member name',
     `gender`      tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone format: 86-13131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `country_id`  bigint       NOT NULL COMMENT 'country id',
     `country`     varchar(256) NOT NULL COMMENT 'country name',
@@ -2312,7 +2351,7 @@ CREATE TABLE `member_address_0`
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY           `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 0';
@@ -2323,7 +2362,7 @@ CREATE TABLE `member_address_1`
     `member_id`   bigint       NOT NULL COMMENT 'member id',
     `member_name` varchar(256) NOT NULL COMMENT 'member name',
     `gender`      tinyint      NOT NULL COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone',
+    `phone`       varchar(256) NOT NULL COMMENT 'phone format: 86-13131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `country_id`  bigint       NOT NULL COMMENT 'country id',
     `country`     varchar(256) NOT NULL COMMENT 'country name',
@@ -2337,7 +2376,7 @@ CREATE TABLE `member_address_1`
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
+    KEY           `idx_member`(`member_id`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 1';
@@ -2348,7 +2387,7 @@ CREATE TABLE `member_detail_0`
     `member_id`   bigint NOT NULL COMMENT 'member id',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `country_id`  bigint       DEFAULT "0" COMMENT 'country id',
     `country`     varchar(256) DEFAULT '' COMMENT 'country name',
@@ -2378,7 +2417,7 @@ CREATE TABLE `member_detail_1`
     `member_id`   bigint NOT NULL COMMENT 'member id',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `country_id`  bigint       DEFAULT "0" COMMENT 'country id',
     `country`     varchar(256) DEFAULT '' COMMENT 'country name',

@@ -3,11 +3,12 @@ package com.blue.secure.repository.entity;
 import java.io.Serializable;
 
 /**
- * credential
+ * credential entity
  *
  * @author DarkBlue
  */
-public class Credential implements Serializable {
+@SuppressWarnings("unused")
+public final class Credential implements Serializable {
 
     private static final long serialVersionUID = 1182928716554934110L;
 

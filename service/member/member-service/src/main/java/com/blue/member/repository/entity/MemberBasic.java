@@ -3,7 +3,7 @@ package com.blue.member.repository.entity;
 import java.io.Serializable;
 
 /**
- * member basic
+ * member basic entity
  *
  * @author DarkBlue
  */
@@ -14,6 +14,9 @@ public final class MemberBasic implements Serializable {
 
     private Long id;
 
+    /**
+     * phone format: 86-13131693996
+     */
     private String phone;
 
     private String email;

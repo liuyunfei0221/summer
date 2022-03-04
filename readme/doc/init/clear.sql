@@ -5,12 +5,14 @@ DROP DATABASE secure_1;
 DROP DATABASE media_0;
 DROP DATABASE media_1;
 
+DROP DATABASE finance;
 DROP DATABASE finance_0;
 DROP DATABASE finance_1;
 
 DROP DATABASE marketing_0;
 DROP DATABASE marketing_1;
 
+DROP DATABASE member;
 DROP DATABASE member_0;
 DROP DATABASE member_1;
 

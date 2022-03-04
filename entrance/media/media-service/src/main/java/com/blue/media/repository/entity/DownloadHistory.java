@@ -1,12 +1,16 @@
 package com.blue.media.repository.entity;
 
+import java.io.Serializable;
+
 /**
  * download history
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class DownloadHistory {
+public final class DownloadHistory implements Serializable {
+
+    private static final long serialVersionUID = -1824231125493320466L;
 
     private Long id;
 
@@ -46,6 +50,16 @@ public final class DownloadHistory {
 
     public void setCreator(Long creator) {
         this.creator = creator;
+    }
+
+    @Override
+    public String toString() {
+        return "DownloadHistory{" +
+                "id=" + id +
+                ", attachmentId=" + attachmentId +
+                ", createTime=" + createTime +
+                ", creator=" + creator +
+                '}';
     }
 
 }

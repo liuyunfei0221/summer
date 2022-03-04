@@ -3,7 +3,7 @@ package com.blue.secure.repository.entity;
 import java.io.Serializable;
 
 /**
- * role resource relation
+ * role resource relation entity
  *
  * @author DarkBlue
  */

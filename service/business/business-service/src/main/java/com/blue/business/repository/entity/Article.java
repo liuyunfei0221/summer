@@ -2,13 +2,17 @@ package com.blue.business.repository.entity;
 
 import org.springframework.data.annotation.Id;
 
+import java.io.Serializable;
+
 /**
- * article
+ * article entity
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public class Article {
+public final class Article implements Serializable {
+
+    private static final long serialVersionUID = -275993441797630645L;
 
     @Id
     private Long id;

@@ -1,12 +1,16 @@
 package com.blue.finance.repository.entity;
 
+import java.io.Serializable;
+
 /**
- * finance account/unit is fen
+ * finance account entity, unit is fen
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class FinanceAccount {
+public final class FinanceAccount implements Serializable {
+
+    private static final long serialVersionUID = -1876205283121721508L;
 
     private Long id;
 

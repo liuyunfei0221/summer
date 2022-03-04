@@ -3,7 +3,7 @@ package com.blue.media.repository.mapper;
 import com.blue.media.repository.entity.DownloadHistory;
 
 /**
- * download history mapper
+ * download history dao
  *
  * @author DarkBlue
  */

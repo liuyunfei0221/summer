@@ -1,11 +1,16 @@
 package com.blue.base.repository.entity;
 
+import java.io.Serializable;
+
 /**
  * state entity
  *
  * @author DarkBlue
  */
-public class State {
+@SuppressWarnings("unused")
+public final class State implements Serializable {
+
+    private static final long serialVersionUID = 6517561062109132738L;
 
     private Long id;
 

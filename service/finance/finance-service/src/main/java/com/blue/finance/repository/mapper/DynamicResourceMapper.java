@@ -5,7 +5,7 @@ import com.blue.finance.repository.entity.DynamicResource;
 import java.util.List;
 
 /**
- * dynamic resource mapper
+ * dynamic resource dao
  *
  * @author DarkBlue
  */
