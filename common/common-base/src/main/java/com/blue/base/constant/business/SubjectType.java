@@ -30,12 +30,12 @@ public enum SubjectType {
     /**
      * identity
      */
-    public int identity;
+    public final int identity;
 
     /**
      * disc
      */
-    public String disc;
+    public final String disc;
 
     SubjectType(int identity, String disc) {
         this.identity = identity;

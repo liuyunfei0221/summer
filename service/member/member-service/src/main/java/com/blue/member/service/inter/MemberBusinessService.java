@@ -1,9 +1,6 @@
 package com.blue.member.service.inter;
 
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
 import com.blue.member.api.model.MemberBusinessInfo;
-import com.blue.member.model.MemberBusinessCondition;
 import com.blue.member.repository.entity.MemberBusiness;
 import reactor.core.publisher.Mono;
 
@@ -40,7 +37,7 @@ public interface MemberBusinessService {
      * @param memberId
      * @return
      */
-    List<MemberBusiness> selectMemberBusinessByMemberId(Long memberId);
+    Optional<MemberBusiness> selectMemberBusinessByMemberId(Long memberId);
 
     /**
      * query member business mono by member id
@@ -48,7 +45,7 @@ public interface MemberBusinessService {
      * @param memberId
      * @return
      */
-    Mono<List<MemberBusiness>> selectMemberBusinessMonoByMemberId(Long memberId);
+    Mono<Optional<MemberBusiness>> selectMemberBusinessMonoByMemberId(Long memberId);
 
     /**
      * query member business by id with assert
@@ -59,6 +56,14 @@ public interface MemberBusinessService {
     Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByPrimaryKeyWithAssert(Long id);
 
     /**
+     * query member business by member id with assert
+     *
+     * @param memberId
+     * @return
+     */
+    Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByMemberIdWithAssert(Long memberId);
+
+    /**
      * insert member business
      *
      * @param memberBusiness
@@ -67,37 +72,11 @@ public interface MemberBusinessService {
     MemberBusinessInfo insertMemberBusiness(MemberBusiness memberBusiness);
 
     /**
-     * select member business by ids
+     * select business by ids
      *
      * @param ids
      * @return
      */
-    Mono<List<MemberBusiness>> selectMemberBusinessMonoByIds(List<Long> ids);
-
-    /**
-     * select member business by page and condition
-     *
-     * @param limit
-     * @param rows
-     * @param memberBusinessCondition
-     * @return
-     */
-    Mono<List<MemberBusiness>> selectMemberBusinessMonoByLimitAndCondition(Long limit, Long rows, MemberBusinessCondition memberBusinessCondition);
-
-    /**
-     * count member business by condition
-     *
-     * @param memberBusinessCondition
-     * @return
-     */
-    Mono<Long> countMemberBusinessMonoByCondition(MemberBusinessCondition memberBusinessCondition);
-
-    /**
-     * select member business info page by condition
-     *
-     * @param pageModelRequest
-     * @return
-     */
-    Mono<PageModelResponse<MemberBusinessInfo>> selectMemberBusinessInfoPageMonoByPageAndCondition(PageModelRequest<MemberBusinessCondition> pageModelRequest);
+    Mono<List<MemberBusinessInfo>> selectMemberBusinessInfoMonoByIds(List<Long> ids);
 
 }

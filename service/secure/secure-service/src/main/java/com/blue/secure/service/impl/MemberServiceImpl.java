@@ -44,7 +44,7 @@ public class MemberServiceImpl implements MemberService {
         if (isInvalidIdentity(id))
             throw new BlueException(EMPTY_PARAM);
 
-        return rpcMemberServiceConsumer.selectMemberBasicMonoByPrimaryKey(id)
+        return rpcMemberServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(id)
                 .onErrorMap(t -> new BlueException(INVALID_ACCT_OR_PWD))
                 .flatMap(memberBasicInfo -> {
                     LOGGER.info("memberBasicInfo = {}", memberBasicInfo);
@@ -64,7 +64,7 @@ public class MemberServiceImpl implements MemberService {
         if (isBlank(phone))
             throw new BlueException(EMPTY_PARAM);
 
-        return rpcMemberServiceConsumer.selectMemberBasicByPhone(phone)
+        return rpcMemberServiceConsumer.selectMemberBasicInfoByPhone(phone)
                 .onErrorMap(t -> new BlueException(INVALID_ACCT_OR_PWD))
                 .flatMap(memberBasicInfo -> {
                     LOGGER.info("memberBasicInfo = {}", memberBasicInfo);
@@ -84,7 +84,7 @@ public class MemberServiceImpl implements MemberService {
         if (isBlank(email))
             throw new BlueException(EMPTY_PARAM);
 
-        return rpcMemberServiceConsumer.selectMemberBasicByEmail(email)
+        return rpcMemberServiceConsumer.selectMemberBasicInfoByEmail(email)
                 .onErrorMap(t -> new BlueException(INVALID_ACCT_OR_PWD))
                 .flatMap(memberBasicInfo -> {
                     LOGGER.info("memberBasicInfo = {}", memberBasicInfo);

@@ -20,7 +20,7 @@ public enum IdentitySchema {
      */
     MAX_WORKER_ID(~(-1 << WORKER.len));
 
-    public int max;
+    public final int max;
 
     IdentitySchema(int max) {
         this.max = max;

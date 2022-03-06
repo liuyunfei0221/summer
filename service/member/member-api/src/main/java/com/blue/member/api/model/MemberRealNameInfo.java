@@ -17,8 +17,6 @@ public final class MemberRealNameInfo implements Serializable {
 
     private Long memberId;
 
-    private String name;
-
     private String realName;
 
     private Integer gender;
@@ -46,12 +44,11 @@ public final class MemberRealNameInfo implements Serializable {
     public MemberRealNameInfo() {
     }
 
-    public MemberRealNameInfo(Long id, Long memberId, String name, String realName, Integer gender, String birthday,
+    public MemberRealNameInfo(Long id, Long memberId, String realName, Integer gender, String birthday,
                               Long nationalityId, Long ethnicId, String idCardNo, String residenceAddress,
                               String issuingAuthority, String sinceDate, String expireDate, String extra, Integer status) {
         this.id = id;
         this.memberId = memberId;
-        this.name = name;
         this.realName = realName;
         this.gender = gender;
         this.birthday = birthday;
@@ -80,14 +77,6 @@ public final class MemberRealNameInfo implements Serializable {
 
     public void setMemberId(Long memberId) {
         this.memberId = memberId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getRealName() {
@@ -191,7 +180,6 @@ public final class MemberRealNameInfo implements Serializable {
         return "MemberRealNameInfo{" +
                 "id=" + id +
                 ", memberId=" + memberId +
-                ", name='" + name + '\'' +
                 ", realName='" + realName + '\'' +
                 ", gender=" + gender +
                 ", birthday='" + birthday + '\'' +

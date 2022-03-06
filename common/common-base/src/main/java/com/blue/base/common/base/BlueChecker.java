@@ -165,7 +165,7 @@ public final class BlueChecker {
      * @param identities
      */
     public static boolean isInvalidIdentities(List<Long> identities) {
-        return identities == null || identities.size() < 1;
+        return identities == null || identities.size() <= 0 || identities.parallelStream().anyMatch(BlueChecker::isInvalidIdentity);
     }
 
     /**
@@ -174,7 +174,7 @@ public final class BlueChecker {
      * @param identities
      */
     public static boolean isValidIdentities(List<Long> identities) {
-        return identities != null && identities.size() > 0;
+        return identities != null && identities.size() > 0 && identities.parallelStream().anyMatch(BlueChecker::isValidIdentity);
     }
 
     /**

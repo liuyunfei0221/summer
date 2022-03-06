@@ -2,6 +2,7 @@ package com.blue.member.service.inter;
 
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
+import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberInfo;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;
@@ -80,7 +81,7 @@ public interface MemberBasicService {
      * @param ids
      * @return
      */
-    Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids);
+    Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids);
 
     /**
      * select member by page and condition
@@ -101,11 +102,11 @@ public interface MemberBasicService {
     Mono<Long> countMemberBasicMonoByCondition(MemberBasicCondition memberBasicCondition);
 
     /**
-     * select member info page by condition
+     * select member basic info page by condition
      *
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest);
+    Mono<PageModelResponse<MemberBasicInfo>> selectMemberBasicInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest);
 
 }

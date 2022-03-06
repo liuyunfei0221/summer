@@ -7,17 +7,17 @@ package com.blue.database.api.conf;
  * @date 2021/10/19
  * @apiNote
  */
-public final class ShardingTableAttr {
+public class ShardingTableAttr {
 
     /**
      * table name
      */
-    private String tableName;
+    protected String tableName;
 
     /**
      * column name for sharding
      */
-    private String shardingColumn;
+    protected String shardingColumn;
 
     public ShardingTableAttr() {
     }

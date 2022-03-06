@@ -2,6 +2,8 @@ package com.blue.base.constant.base;
 
 import org.springframework.http.HttpMethod;
 
+import java.io.Serializable;
+
 /**
  * http methods
  *
@@ -51,8 +53,9 @@ public enum BlueHttpMethod {
      */
     TRACE(HttpMethod.TRACE.name().toUpperCase(), HttpMethod.TRACE);
 
-    public String value;
-    public HttpMethod method;
+    public final String value;
+
+    public final HttpMethod method;
 
     BlueHttpMethod(String value, HttpMethod method) {
         this.value = value;

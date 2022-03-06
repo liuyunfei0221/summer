@@ -182,13 +182,6 @@
         `name` = #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
     </select>
 
-    <select id="select" resultMap="BaseResultMap" parameterType="com.blue.member.model.MemberBasicCondition">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM
-        member_basic
-    </select>
-
     <select id="selectByIds" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>

@@ -1,3 +1,6 @@
+USE
+base;
+
 INSERT INTO `state`(`id`, `country_id`, `name`, `fips_code`, `country_code`, `state_code`, `status`, `create_time`,
                     `update_time`)
 VALUES (1, 70, 'Southern Nations, Nationalities, and Peoples\' Region', '54', 'ET', 'SN', 1, 1, 1),

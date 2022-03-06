@@ -23,7 +23,7 @@ public class IdentityPerfomanceTest {
         System.err.println(1L << WORKER.len);
         System.err.println(1L << SEQUENCE.len);
 
-        ExecutorService executorService = new ThreadPoolExecutor(4, 64,
+        ExecutorService executorService = new ThreadPoolExecutor(16, 64,
                 64, TimeUnit.SECONDS, new LinkedBlockingDeque<>(),
                 Thread::new, (r, executor) -> {
         });
@@ -39,10 +39,10 @@ public class IdentityPerfomanceTest {
 
         int times = 20;
         List<Long> durations = new LinkedList<>();
-        for (int i = 0; i < times; i++) {
+        for (int i = 0; i < times; i++)
 //            durations.add(test(idGenParam, executorService));
             durations.add(testPerformance(idGenParam, executorService));
-        }
+
         System.err.println();
         System.err.println();
         System.err.println();
@@ -57,12 +57,13 @@ public class IdentityPerfomanceTest {
 
 //        int count = 10000000;
         int count = 1000000;
-        Set<Long> set = new HashSet<>();
+        Set<Long> set = new HashSet<>(count);
 
         CountDownLatch countDownLatch = new CountDownLatch(count);
 
         long s = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
+
             executorService.execute(() -> {
                 long id = blueIdentityGenerator.generate();
                 synchronized (blueIdentityGenerator) {
@@ -75,6 +76,7 @@ public class IdentityPerfomanceTest {
                 }
                 countDownLatch.countDown();
             });
+
         }
         try {
             countDownLatch.await();

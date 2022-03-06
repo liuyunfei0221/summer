@@ -45,8 +45,9 @@ public final class SnowflakeIdentityBuffer {
     /**
      * pointer
      */
-    private final IdentityAtomicLong head = new IdentityAtomicLong(0L);
-    private final IdentityAtomicLong tail = new IdentityAtomicLong(0L);
+    private final IdentityAtomicLong
+            head = new IdentityAtomicLong(0L),
+            tail = new IdentityAtomicLong(0L);
 
     /**
      * padding mark
@@ -62,8 +63,6 @@ public final class SnowflakeIdentityBuffer {
      * padding executors
      */
     private final ExecutorService bufferPadExecutor;
-    @SuppressWarnings({"FieldCanBeLocal"})
-    private final ScheduledExecutorService bufferPadSchedule;
 
     /**
      * constructor
@@ -97,9 +96,9 @@ public final class SnowflakeIdentityBuffer {
             this.slots[i] = new IdentityAtomicLong(INVALID);
         this.paddingThreshold = bufferSize * paddingFactor / 100;
 
-        this.bufferPadSchedule = idBufferParam.getBufferPadSchedule();
         if (ofNullable(idBufferParam.getPaddingScheduled()).orElse(false)) {
-            if (this.bufferPadSchedule == null)
+            ScheduledExecutorService bufferPadSchedule = idBufferParam.getBufferPadSchedule();
+            if (bufferPadSchedule == null)
                 throw new IdentityException("when paddingScheduled is true, bufferPadSchedule must not be null");
 
             long paddingScheduledInitialDelayMillis = ofNullable(idBufferParam.getPaddingScheduledInitialDelayMillis()).orElse(-1L);
@@ -110,36 +109,11 @@ public final class SnowflakeIdentityBuffer {
             if (paddingScheduledDelayMillis < 1L)
                 throw new IdentityException("when paddingScheduled is true, paddingScheduledDelay can't be less than 1");
 
-            this.bufferPadSchedule.scheduleWithFixedDelay(this::paddingBuffer, paddingScheduledInitialDelayMillis, paddingScheduledDelayMillis, MILLISECONDS);
+            bufferPadSchedule.scheduleWithFixedDelay(this::asyncPadding, paddingScheduledInitialDelayMillis, paddingScheduledDelayMillis, MILLISECONDS);
         }
 
-        this.paddingBuffer();
+        this.asyncPadding();
         LOGGER.info("Initialized BlueIdentityBuffer successfully, idBufferParam = {}, indexMask = {}, slots.length = {}, paddingThreshold = {}", idBufferParam, indexMask, slots.length, paddingThreshold);
-    }
-
-
-    /**
-     * padding async
-     */
-    private void asyncPadding(long head, long tail) {
-        bufferPadExecutor.submit(() -> {
-            if (tail - head < paddingThreshold)
-                paddingBuffer();
-        });
-    }
-
-    /**
-     * padding
-     */
-    private void paddingBuffer() {
-        if (!padding.compareAndSet(false, true))
-            return;
-
-        //noinspection StatementWithEmptyBody
-        while (put()) {
-        }
-
-        padding.compareAndSet(true, false);
     }
 
     /**
@@ -153,6 +127,48 @@ public final class SnowflakeIdentityBuffer {
     }
 
     /**
+     * padding async
+     */
+    private void asyncPaddingWithThreshold(long head, long tail) {
+        bufferPadExecutor.submit(() -> {
+            if (tail - head < paddingThreshold)
+                put();
+        });
+    }
+
+    /**
+     * padding async
+     */
+    private void asyncPadding() {
+        bufferPadExecutor.submit(this::put);
+    }
+
+    /**
+     * put
+     */
+    private void put() {
+        if (!padding.compareAndSet(false, true))
+            return;
+
+        long curTail;
+        for (; ; ) {
+            curTail = tail.get();
+
+            if (curTail - head.get() >= indexMask)
+                break;
+
+            if (slots[index(curTail + 1)].compareAndSet(INVALID, snowflakeIdentityGenerator.generate())) {
+                tail.incrementAndGet();
+                continue;
+            }
+
+            break;
+        }
+
+        padding.compareAndSet(true, false);
+    }
+
+    /**
      * take id
      *
      * @return
@@ -162,31 +178,12 @@ public final class SnowflakeIdentityBuffer {
         long curTail = tail.get();
         long nextHead = head.updateAndGet(old -> old != curTail ? old + 1 : old);
 
-        asyncPadding(nextHead, curTail);
+        asyncPaddingWithThreshold(curHead, curTail);
 
         if (nextHead != curHead)
             return slots[index(nextHead)].getAndUpdate(old -> INVALID);
 
         return snowflakeIdentityGenerator.generate();
-    }
-
-    /**
-     * put id
-     *
-     * @return
-     */
-    private synchronized boolean put() {
-        long curTail = tail.get();
-
-        if (curTail - head.get() == indexMask)
-            return false;
-
-        if (slots[index(curTail + 1)].compareAndSet(INVALID, snowflakeIdentityGenerator.generate())) {
-            tail.incrementAndGet();
-            return true;
-        }
-
-        return false;
     }
 
 }

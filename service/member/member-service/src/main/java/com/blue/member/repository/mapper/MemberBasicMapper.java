@@ -51,13 +51,6 @@ public interface MemberBasicMapper {
     MemberBasic selectByName(@Param("name") String name);
 
     /**
-     * select all
-     *
-     * @return
-     */
-    List<MemberBasic> select();
-
-    /**
      * select by ids
      *
      * @param ids

@@ -46,7 +46,6 @@ public enum BlueHeader {
 
     public final String name;
 
-
     BlueHeader(String name) {
         this.name = name;
     }

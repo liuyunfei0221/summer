@@ -95,6 +95,7 @@ data:
 
     - id: 1
       index: 1
+  forceWriteTables:
   broadcastTables: [ ]
   singleDatabasesWithTables:
     - url: jdbc:mysql://172.16.201.160:3306/finance
@@ -110,7 +111,7 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-      singleTables: [ undo_log ]
+      singleTables: [ ]
   cacheEnabled: false
   lazyLoadingEnabled: false
   aggressiveLazyLoading: false

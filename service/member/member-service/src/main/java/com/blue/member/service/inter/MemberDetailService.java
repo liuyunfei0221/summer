@@ -1,9 +1,6 @@
 package com.blue.member.service.inter;
 
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
 import com.blue.member.api.model.MemberDetailInfo;
-import com.blue.member.model.MemberDetailCondition;
 import com.blue.member.repository.entity.MemberDetail;
 import reactor.core.publisher.Mono;
 
@@ -40,7 +37,7 @@ public interface MemberDetailService {
      * @param memberId
      * @return
      */
-    List<MemberDetail> selectMemberDetailByMemberId(Long memberId);
+    Optional<MemberDetail> selectMemberDetailByMemberId(Long memberId);
 
     /**
      * query member detail mono by member id
@@ -48,7 +45,7 @@ public interface MemberDetailService {
      * @param memberId
      * @return
      */
-    Mono<List<MemberDetail>> selectMemberDetailMonoByMemberId(Long memberId);
+    Mono<Optional<MemberDetail>> selectMemberDetailMonoByMemberId(Long memberId);
 
     /**
      * query member detail by id with assert
@@ -57,6 +54,14 @@ public interface MemberDetailService {
      * @return
      */
     Mono<MemberDetailInfo> selectMemberDetailInfoMonoByPrimaryKeyWithAssert(Long id);
+
+    /**
+     * query member detail by member id with assert
+     *
+     * @param memberId
+     * @return
+     */
+    Mono<MemberDetailInfo> selectMemberDetailInfoMonoByMemberIdWithAssert(Long memberId);
 
     /**
      * insert member detail
@@ -72,32 +77,6 @@ public interface MemberDetailService {
      * @param ids
      * @return
      */
-    Mono<List<MemberDetail>> selectMemberDetailMonoByIds(List<Long> ids);
-
-    /**
-     * select member detail by page and condition
-     *
-     * @param limit
-     * @param rows
-     * @param memberDetailCondition
-     * @return
-     */
-    Mono<List<MemberDetail>> selectMemberDetailMonoByLimitAndCondition(Long limit, Long rows, MemberDetailCondition memberDetailCondition);
-
-    /**
-     * count member detail by condition
-     *
-     * @param memberDetailCondition
-     * @return
-     */
-    Mono<Long> countMemberDetailMonoByCondition(MemberDetailCondition memberDetailCondition);
-
-    /**
-     * select member detail info page by condition
-     *
-     * @param pageModelRequest
-     * @return
-     */
-    Mono<PageModelResponse<MemberDetailInfo>> selectMemberDetailInfoPageMonoByPageAndCondition(PageModelRequest<MemberDetailCondition> pageModelRequest);
+    Mono<List<MemberDetailInfo>> selectMemberDetailInfoMonoByIds(List<Long> ids);
 
 }

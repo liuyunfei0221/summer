@@ -39,7 +39,7 @@
         <zkclient.version>0.11</zkclient.version>
         <seata-spring.version>1.4.2</seata-spring.version>
         <spring-mybatis.version>2.2.2</spring-mybatis.version>
-        <apache.curator.version>5.2.0</apache.curator.version>
+        <apache.curator.version>5.1.0</apache.curator.version>
         <commons-pool2.version>2.11.1</commons-pool2.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-codec.version>1.15</commons-codec.version>
@@ -50,7 +50,7 @@
         <elasticsearch.version>7.17.1</elasticsearch.version>
         <zxing.version>3.4.1</zxing.version>
         <caffeine.version>3.0.5</caffeine.version>
-        <apache.poi.version>5.2.0</apache.poi.version>
+        <apache.poi.version>5.2.1</apache.poi.version>
         <pulsar.version>2.9.1</pulsar.version>
         <slf4j.version>1.7.36</slf4j.version>
         <apollo.version>1.9.2</apollo.version>

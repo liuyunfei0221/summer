@@ -18,7 +18,12 @@ import java.util.function.UnaryOperator;
 public class BlueDataAccessConfig extends BaseDataAccessConfParams {
 
     @Override
-    public List<UnaryOperator<DataSource>> getProxiesChain() {
+    public List<UnaryOperator<DataSource>> getShardingProxiesChain() {
+        return null;
+    }
+
+    @Override
+    public List<UnaryOperator<DataSource>> getSingleProxiesChain() {
         return null;
     }
 

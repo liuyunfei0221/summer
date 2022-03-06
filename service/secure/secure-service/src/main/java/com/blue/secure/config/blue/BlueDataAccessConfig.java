@@ -16,19 +16,18 @@ import static java.util.Collections.singletonList;
  *
  * @author DarkBlue
  */
-@SuppressWarnings("JavaDoc")
 @Component
 @ConfigurationProperties(prefix = "data")
 public class BlueDataAccessConfig extends BaseDataAccessConfParams {
 
-    /**
-     * seata proxy
-     *
-     * @return
-     */
     @Override
-    public List<UnaryOperator<DataSource>> getProxiesChain() {
+    public List<UnaryOperator<DataSource>> getShardingProxiesChain() {
         return singletonList(DataSourceProxy::new);
+    }
+
+    @Override
+    public List<UnaryOperator<DataSource>> getSingleProxiesChain() {
+        return null;
     }
 
 }

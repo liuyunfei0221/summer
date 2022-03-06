@@ -44,12 +44,12 @@ public enum ArticleType {
     /**
      * identity
      */
-    public int identity;
+    public final int identity;
 
     /**
      * disc
      */
-    public String disc;
+    public final String disc;
 
     ArticleType(int identity, String disc) {
         this.identity = identity;

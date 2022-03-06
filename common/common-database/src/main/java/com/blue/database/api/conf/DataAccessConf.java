@@ -52,6 +52,13 @@ public interface DataAccessConf {
     List<IdentityToShardingMappingAttr> getWorkerToTableMappings();
 
     /**
+     * force write tables
+     *
+     * @return
+     */
+    List<ForceWriteTableAttr> getForceWriteTables();
+
+    /**
      * broadcast tables
      *
      * @return
@@ -64,6 +71,20 @@ public interface DataAccessConf {
      * @return
      */
     List<SingleDatabaseWithTablesAttr> getSingleDatabasesWithTables();
+
+    /**
+     * datasource proxy, for example : seata proxy
+     *
+     * @return
+     */
+    List<UnaryOperator<DataSource>> getShardingProxiesChain();
+
+    /**
+     * datasource proxy, for example : seata proxy
+     *
+     * @return
+     */
+    List<UnaryOperator<DataSource>> getSingleProxiesChain();
 
     /**
      * enable cache
@@ -141,13 +162,6 @@ public interface DataAccessConf {
      * @return
      */
     Map<String, String> getProps();
-
-    /**
-     * datasource proxy, for example : seata proxy
-     *
-     * @return
-     */
-    List<UnaryOperator<DataSource>> getProxiesChain();
 
     /**
      * show sql log?

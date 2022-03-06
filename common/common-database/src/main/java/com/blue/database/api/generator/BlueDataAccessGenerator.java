@@ -2,7 +2,9 @@ package com.blue.database.api.generator;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.database.api.conf.*;
+import com.blue.database.common.DatabaseForceAlgorithm;
 import com.blue.database.common.DatabaseShardingAlgorithm;
+import com.blue.database.common.TableForceAlgorithm;
 import com.blue.database.common.TableShardingAlgorithm;
 import com.blue.identity.api.conf.IdentityConf;
 import com.zaxxer.hikari.HikariConfig;
@@ -35,6 +37,7 @@ import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.*;
 import static com.blue.identity.constant.IdentitySchema.MAX_DATA_CENTER_ID;
 import static com.blue.identity.constant.IdentitySchema.MAX_WORKER_ID;
+import static java.lang.Integer.parseInt;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -66,13 +69,7 @@ public final class BlueDataAccessGenerator {
 
         try {
             DataAccessConfElements dataAccessConfElements = generateDataConfAttr(dataAccessConf, identityConf);
-            DataSource dataSource = ShardingDataSourceFactory.createDataSource(dataAccessConfElements.getDataSources(), dataAccessConfElements.getShardingRuleConfiguration(), dataAccessConfElements.getProps());
-            List<UnaryOperator<DataSource>> tarChain = ofNullable(dataAccessConf.getProxiesChain()).map(pc -> pc.stream().filter(Objects::nonNull).collect(toList())).orElseGet(Collections::emptyList);
-            if (!isEmpty(tarChain))
-                for (UnaryOperator<DataSource> proxy : tarChain)
-                    dataSource = proxy.apply(dataSource);
-
-            return dataSource;
+            return ShardingDataSourceFactory.createDataSource(dataAccessConfElements.getDataSources(), dataAccessConfElements.getShardingRuleConfiguration(), dataAccessConfElements.getProps());
         } catch (Exception e) {
             LOGGER.error("createDataSource(ShardingConf shardingConf, ShardingIdentityConf shardingIdentityConf, List<UnaryOperator<DataSource>> proxiesChain) failed, e = {}", e);
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "createDataSource(ShardingConf shardingConf, ShardingIdentityConf shardingIdentityConf, List<UnaryOperator<DataSource>> proxiesChain) failed, e = " + e);
@@ -208,10 +205,9 @@ public final class BlueDataAccessGenerator {
         ShardingRuleConfiguration shardingRuleConfiguration = new ShardingRuleConfiguration();
 
         //process sharding db
-        processShardingDb(shardingRuleConfiguration, dataSources, existDatabases, dataAccessConf, identityConf);
-
+        processShardingDb(shardingRuleConfiguration, dataSources, existDatabases, dataAccessConf, identityConf, dataAccessConf.getShardingProxiesChain());
         //process single db
-        processSingleDb(shardingRuleConfiguration, dataSources, existDatabases, dataAccessConf, identityConf);
+        processSingleDb(shardingRuleConfiguration, dataSources, existDatabases, dataAccessConf, identityConf, dataAccessConf.getSingleProxiesChain());
 
         //additional attributes
         Properties props = new Properties();
@@ -230,7 +226,7 @@ public final class BlueDataAccessGenerator {
      * @param identityConf
      */
     @SuppressWarnings("AlibabaMethodTooLong")
-    private static void processShardingDb(ShardingRuleConfiguration shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf dataAccessConf, IdentityConf identityConf) {
+    private static void processShardingDb(ShardingRuleConfiguration shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf dataAccessConf, IdentityConf identityConf, List<UnaryOperator<DataSource>> shardingProxiesChain) {
         if (shardingRuleConfiguration == null || dataSources == null || existDatabases == null || dataAccessConf == null || identityConf == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingRuleConfiguration or dataSources or existDatabases or dataAccessConf or identityConf can't be null");
 
@@ -239,6 +235,8 @@ public final class BlueDataAccessGenerator {
         int shardingSize = ofNullable(shardingDatabases).map(List::size).orElse(0);
         if (shardingSize < 1)
             return;
+
+        List<UnaryOperator<DataSource>> tarChain = ofNullable(shardingProxiesChain).map(pc -> pc.stream().filter(Objects::nonNull).collect(toList())).orElseGet(Collections::emptyList);
 
         List<Integer> assertIndexList = new ArrayList<>(shardingSize);
 
@@ -266,7 +264,7 @@ public final class BlueDataAccessGenerator {
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database index number can't be null, for example -> member_0");
 
             try {
-                dataBaseIndex = Integer.parseInt(dataBaseIndexStr);
+                dataBaseIndex = parseInt(dataBaseIndexStr);
             } catch (NumberFormatException e) {
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database index number only number, for example -> member_0");
             }
@@ -284,6 +282,10 @@ public final class BlueDataAccessGenerator {
             }
 
             dataSource = DATA_SOURCE_GENERATOR.apply(shardingDatabase);
+
+            if (!isEmpty(tarChain))
+                for (UnaryOperator<DataSource> proxy : tarChain)
+                    dataSource = proxy.apply(dataSource);
 
             dataSources.put(dataBaseName, dataSource);
         }
@@ -364,6 +366,33 @@ public final class BlueDataAccessGenerator {
                     return conf;
                 }).collect(toList()));
 
+        ofNullable(dataAccessConf.getForceWriteTables())
+                .filter(fwts -> fwts.size() > 0)
+                .ifPresent(fwts ->
+                        shardingRuleConfiguration.getTableRuleConfigs().addAll(
+                                fwts.stream().distinct().map(tableAttr -> {
+                                    String logicTableName = tableAttr.getTableName();
+                                    if (logicTableName == null || "".equals(logicTableName))
+                                        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "logicTableName can't be blank");
+
+                                    String shardingColumn = tableAttr.getShardingColumn();
+                                    if (shardingColumn == null || "".equals(shardingColumn))
+                                        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingColumn can't be blank");
+
+                                    String expression = shardingLogicDataBaseName + "_$->{0.." + maxDataBaseIndex + "}." + logicTableName + "_$->{0.." + maxTableIndex + "}";
+
+                                    TableRuleConfiguration conf = new TableRuleConfiguration(logicTableName, expression);
+                                    conf.setDatabaseShardingStrategyConfig(
+                                            new StandardShardingStrategyConfiguration(shardingColumn,
+                                                    new DatabaseForceAlgorithm(shardingLogicDataBaseName, dataCenterToDatabaseMappings, dataCenter)));
+                                    conf.setTableShardingStrategyConfig(
+                                            new StandardShardingStrategyConfiguration(shardingColumn,
+                                                    new TableForceAlgorithm(logicTableName, workerToTableMappings, worker)));
+
+                                    return conf;
+                                }).collect(toList()))
+                );
+
         ofNullable(dataAccessConf.getBroadcastTables())
                 .filter(sbts -> sbts.size() > 0)
                 .ifPresent(sbts ->
@@ -384,7 +413,7 @@ public final class BlueDataAccessGenerator {
      * @param dataAccessConf
      * @param identityConf
      */
-    private static void processSingleDb(ShardingRuleConfiguration shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf dataAccessConf, IdentityConf identityConf) {
+    private static void processSingleDb(ShardingRuleConfiguration shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf dataAccessConf, IdentityConf identityConf, List<UnaryOperator<DataSource>> singleProxiesChain) {
         if (shardingRuleConfiguration == null || dataSources == null || existDatabases == null || dataAccessConf == null || identityConf == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingRuleConfiguration or dataSources or existDatabases or dataAccessConf or identityConf can't be null");
 
@@ -393,6 +422,8 @@ public final class BlueDataAccessGenerator {
 
         if (singleSize < 1)
             return;
+
+        List<UnaryOperator<DataSource>> tarChain = ofNullable(singleProxiesChain).map(pc -> pc.stream().filter(Objects::nonNull).collect(toList())).orElseGet(Collections::emptyList);
 
         String dataBaseName;
         DataSource dataSource;
@@ -407,6 +438,10 @@ public final class BlueDataAccessGenerator {
                 continue;
 
             dataSource = DATA_SOURCE_GENERATOR.apply(single);
+
+            if (!isEmpty(tarChain))
+                for (UnaryOperator<DataSource> proxy : tarChain)
+                    dataSource = proxy.apply(dataSource);
 
             dataSources.put(dataBaseName, dataSource);
 

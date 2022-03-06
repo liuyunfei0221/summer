@@ -34,13 +34,13 @@ public final class BlueIdentityProcessor {
     /**
      * key parts
      */
-    private static final String HANDLER_KEY_PRE = "GEN:";
+    private static final String GEN_KEY_PRE = "GEN:";
     private static final String PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity;
 
     /**
-     * service name
+     * key pre
      */
-    private String serviceName;
+    private String handlerKeyPre;
 
     /**
      * param
@@ -67,7 +67,8 @@ public final class BlueIdentityProcessor {
             throw new IdentityException("identityConf can't be null");
         assertConf(identityConf);
 
-        serviceName = identityConf.getServiceName() + PAR_CONCATENATION + identityConf.getDataCenter() + PAR_CONCATENATION + identityConf.getWorker();
+        String serviceName = identityConf.getServiceName() + PAR_CONCATENATION + identityConf.getDataCenter() + PAR_CONCATENATION + identityConf.getWorker();
+        handlerKeyPre = (GEN_KEY_PRE + serviceName + PAR_CONCATENATION).intern();
 
         ThreadFactory threadFactory = r -> {
             Thread thread = new Thread(r, THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN));
@@ -103,7 +104,7 @@ public final class BlueIdentityProcessor {
      */
     private final Function<Class<?>, String> KEY_GEN = entityClz -> {
         if (entityClz != null)
-            return (HANDLER_KEY_PRE + serviceName.intern() + PAR_CONCATENATION + entityClz.getName().intern()).intern();
+            return (handlerKeyPre + entityClz.getName().intern()).intern();
 
         throw new IdentityException("entityClz can't be null");
     };
@@ -113,14 +114,17 @@ public final class BlueIdentityProcessor {
      */
     private final Function<String, BlueIdentityGenerator> HANDLER_GETTER = key -> {
         BlueIdentityGenerator generator = GENERATORS.get(key.intern());
-        if (generator == null)
-            synchronized (key.intern()) {
-                if ((generator = GENERATORS.get(key)) == null) {
-                    generator = new BlueIdentityGenerator(idGenParam);
-                    GENERATORS.put(key, generator);
-                    LOGGER.info("processor init, key = {}", key);
-                }
+        if (generator != null)
+            return generator;
+
+        synchronized (key.intern()) {
+            if ((generator = GENERATORS.get(key)) == null) {
+                generator = new BlueIdentityGenerator(idGenParam);
+                GENERATORS.put(key, generator);
+                LOGGER.info("processor init, key = {}", key);
             }
+        }
+
         return generator;
     };
 
