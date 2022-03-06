@@ -293,4 +293,26 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
+    <select id="selectByMemberId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        member_detail FORCE INDEX(idx_member)
+        WHERE
+        `member_id` = #{memberId,jdbcType=BIGINT}
+        LIMIT 1;
+    </select>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        member_detail
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
 </mapper>

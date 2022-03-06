@@ -1,13 +1,16 @@
 package com.blue.member.repository.mapper;
 
 import com.blue.member.repository.entity.MemberDetail;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * member detail dao
  *
  * @author blue
  */
-@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
 public interface MemberDetailMapper {
 
     int insert(MemberDetail record);
@@ -21,5 +24,21 @@ public interface MemberDetailMapper {
     int deleteByPrimaryKey(Long id);
 
     MemberDetail selectByPrimaryKey(Long id);
+
+    /**
+     * select by member id
+     *
+     * @param memberId
+     * @return
+     */
+    MemberDetail selectByMemberId(@Param("memberId") Long memberId);
+
+    /**
+     * select by ids
+     *
+     * @param ids
+     * @return
+     */
+    List<MemberDetail> selectByIds(@Param("ids") List<Long> ids);
 
 }

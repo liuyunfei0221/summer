@@ -1,4 +1,4 @@
-package com.blue.database.api.generator;
+package com.blue.database.temp;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.database.api.conf.*;

@@ -25,10 +25,10 @@ public class CountryApiRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> countryApiRouter(CountryApiHandler countryApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-base/countries");
+        RequestPredicate pathPredicate = path("/blue-base");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("", accept(APPLICATION_JSON), countryApiHandler::select)
+                .GET("/countries", accept(APPLICATION_JSON), countryApiHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

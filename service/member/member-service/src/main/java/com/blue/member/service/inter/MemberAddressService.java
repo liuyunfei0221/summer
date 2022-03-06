@@ -72,7 +72,7 @@ public interface MemberAddressService {
      * @param ids
      * @return
      */
-    Mono<List<MemberAddress>> selectMemberAddressMonoByIds(List<Long> ids);
+    Mono<List<MemberAddressInfo>> selectMemberAddressInfoMonoByIds(List<Long> ids);
 
     /**
      * select address by page and condition

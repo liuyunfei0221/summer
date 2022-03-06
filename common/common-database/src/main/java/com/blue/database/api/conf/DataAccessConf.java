@@ -52,6 +52,13 @@ public interface DataAccessConf {
     List<IdentityToShardingMappingAttr> getWorkerToTableMappings();
 
     /**
+     * force write tables
+     *
+     * @return
+     */
+    List<ForceWriteTableAttr> getForceWriteTables();
+
+    /**
      * broadcast tables
      *
      * @return

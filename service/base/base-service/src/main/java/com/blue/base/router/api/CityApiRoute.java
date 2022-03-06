@@ -26,10 +26,10 @@ public class CityApiRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> cityApiRouter(CityApiHandler cityApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-base/cities");
+        RequestPredicate pathPredicate = path("/blue-base");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("/{" + PID.key + "}", accept(APPLICATION_JSON), cityApiHandler::selectByStateId)
+                .GET("/cities/{" + PID.key + "}", accept(APPLICATION_JSON), cityApiHandler::selectByStateId)
                 .build();
 
         return nest(pathPredicate, routerFunction);

@@ -13,9 +13,8 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.DATA_NOT_EXIST;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
-import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -26,10 +25,10 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @DubboService(interfaceClass = RpcMemberService.class, version = "1.0", methods = {
-        @Method(name = "selectMemberBasicMonoByPrimaryKey", async = true),
-        @Method(name = "selectMemberBasicMonoByIds", async = true),
-        @Method(name = "selectMemberBasicByPhone", async = true),
-        @Method(name = "selectMemberBasicByEmail", async = true)
+        @Method(name = "selectMemberBasicInfoMonoByPrimaryKey", async = true),
+        @Method(name = "selectMemberBasicInfoMonoByIds", async = true),
+        @Method(name = "selectMemberBasicInfoByPhone", async = true),
+        @Method(name = "selectMemberBasicInfoByEmail", async = true)
 })
 public class RpcMemberServiceProvider implements RpcMemberService {
 
@@ -51,8 +50,8 @@ public class RpcMemberServiceProvider implements RpcMemberService {
      * @return
      */
     @Override
-    public CompletableFuture<MemberBasicInfo> selectMemberBasicMonoByPrimaryKey(Long id) {
-        LOGGER.info("CompletableFuture<Optional<MemberBasicInfo>> selectMemberBasicMonoByPrimaryKey(Long id), id = {},", id);
+    public CompletableFuture<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id) {
+        LOGGER.info("CompletableFuture<Optional<MemberBasicInfo>> selectMemberBasicInfoMonoByPrimaryKey(Long id), id = {},", id);
         return just(id).publishOn(scheduler)
                 .flatMap(memberBasicService::selectMemberBasicMonoByPrimaryKey)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
@@ -68,12 +67,10 @@ public class RpcMemberServiceProvider implements RpcMemberService {
      * @return
      */
     @Override
-    public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids) {
-        LOGGER.info("CompletableFuture<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids), ids = {},", ids);
+    public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
+        LOGGER.info("CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids), ids = {},", ids);
         return just(ids).publishOn(scheduler)
-                .flatMap(memberBasicService::selectMemberBasicMonoByIds)
-                .flatMap(l -> just(l.stream().map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
-                        .collect(toList())))
+                .flatMap(memberBasicService::selectMemberBasicInfoMonoByIds)
                 .toFuture();
     }
 
@@ -84,8 +81,8 @@ public class RpcMemberServiceProvider implements RpcMemberService {
      * @return
      */
     @Override
-    public CompletableFuture<MemberBasicInfo> selectMemberBasicByPhone(String phone) {
-        LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicByPhone(String phone), phone = {},", phone);
+    public CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByPhone(String phone) {
+        LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByPhone(String phone), phone = {},", phone);
         return just(phone).publishOn(scheduler)
                 .flatMap(memberBasicService::selectMemberBasicMonoByPhone)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
@@ -101,8 +98,8 @@ public class RpcMemberServiceProvider implements RpcMemberService {
      * @return
      */
     @Override
-    public CompletableFuture<MemberBasicInfo> selectMemberBasicByEmail(String email) {
-        LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicByEmail(String email), email = {},", email);
+    public CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByEmail(String email) {
+        LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByEmail(String email), email = {},", email);
         return just(email).publishOn(scheduler)
                 .flatMap(memberBasicService::selectMemberBasicMonoByEmail)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)

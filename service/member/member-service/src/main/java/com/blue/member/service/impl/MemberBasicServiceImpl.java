@@ -5,6 +5,7 @@ import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberInfo;
 import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.model.MemberBasicCondition;
@@ -29,6 +30,7 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -184,6 +186,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     public Mono<MemberInfo> selectMemberInfoMonoByPrimaryKeyWithAssert(Long id) {
         LOGGER.info("Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         if (isValidIdentity(id))
+            //noinspection DuplicatedCode
             return just(id)
                     .flatMap(this::selectMemberBasicMonoByPrimaryKey)
                     .flatMap(mbOpt ->
@@ -233,11 +236,11 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids) {
+    public Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids), ids = {}", ids);
         return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(memberBasicMapper::selectByIds)
-                .flatMap(List::stream)
+                .flatMap(l -> l.stream().map(MEMBER_BASIC_2_MEMBER_BASIC_INFO))
                 .collect(toList()))
                 :
                 just(emptyList());
@@ -281,7 +284,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
+    public Mono<PageModelResponse<MemberBasicInfo>> selectMemberBasicInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
 
@@ -290,9 +293,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         return zip(selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), countMemberBasicMonoByCondition(memberBasicCondition))
                 .flatMap(tuple2 -> {
                     List<MemberBasic> members = tuple2.getT1();
-                    Mono<List<MemberInfo>> memberInfosMono = members.size() > 0 ?
+                    Mono<List<MemberBasicInfo>> memberInfosMono = members.size() > 0 ?
                             just(members.stream()
-                                    .map(MEMBER_BASIC_2_MEMBER_INFO).collect(toList()))
+                                    .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO).collect(toList()))
                             :
                             just(emptyList());
 

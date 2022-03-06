@@ -1,3 +1,6 @@
+USE
+base;
+
 INSERT INTO `country`(`id`, `name`, `native_name`, `numeric_code`, `country_code`, `phone_code`, `capital`,
                                   `currency`, `currency_symbol`, `top_level_domain`, `region`, `emoji`, `emojiU`,
                                   `status`, `create_time`, `update_time`)

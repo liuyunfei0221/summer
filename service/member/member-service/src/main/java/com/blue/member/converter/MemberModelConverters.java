@@ -3,18 +3,15 @@ package com.blue.member.converter;
 import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.base.Status;
 import com.blue.base.model.exps.BlueException;
-import com.blue.member.api.model.MemberAddressInfo;
-import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.member.api.model.MemberInfo;
-import com.blue.member.api.model.MemberRegistryParam;
-import com.blue.member.repository.entity.MemberAddress;
-import com.blue.member.repository.entity.MemberBasic;
+import com.blue.member.api.model.*;
+import com.blue.member.repository.entity.*;
 
 import java.time.Instant;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.member.Gender.UNKNOWN;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -97,5 +94,39 @@ public final class MemberModelConverters {
         throw new BlueException(EMPTY_PARAM);
     };
 
+    public static final Function<MemberBusiness, MemberBusinessInfo> MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO = memberBusiness -> {
+        if (memberBusiness != null)
+            return new MemberBusinessInfo(memberBusiness.getId(), memberBusiness.getMemberId(), memberBusiness.getQrCode(), memberBusiness.getProfile(),
+                    memberBusiness.getExtra(), memberBusiness.getStatus(), memberBusiness.getCreateTime(), memberBusiness.getUpdateTime());
+
+        throw new BlueException(EMPTY_PARAM);
+    };
+
+    public static final Function<MemberDetail, MemberDetailInfo> MEMBER_DETAIL_2_MEMBER_DETAIL_INFO = memberDetail -> {
+        if (memberDetail != null)
+            return new MemberDetailInfo(
+                    memberDetail.getId(), memberDetail.getMemberId(), memberDetail.getName(),
+                    memberDetail.getGender(), memberDetail.getPhone(), memberDetail.getEmail(),
+                    memberDetail.getCountryId(), memberDetail.getCountry(),
+                    memberDetail.getStateId(), memberDetail.getState(), memberDetail.getCityId(),
+                    memberDetail.getCity(), memberDetail.getAddress(), memberDetail.getProfile(),
+                    memberDetail.getHobby(), memberDetail.getHomepage(), memberDetail.getExtra()
+            );
+
+        throw new BlueException(EMPTY_PARAM);
+    };
+
+    public static final Function<MemberRealName, MemberRealNameInfo> MEMBER_REAL_NAME_2_MEMBER_REAL_NAME_INFO = memberRealName -> {
+        if (memberRealName != null)
+            return new MemberRealNameInfo(
+                    memberRealName.getId(), memberRealName.getMemberId(), memberRealName.getRealName(),
+                    memberRealName.getGender(), memberRealName.getBirthday(), memberRealName.getNationalityId(),
+                    memberRealName.getEthnicId(), memberRealName.getIdCardNo(), memberRealName.getResidenceAddress(),
+                    memberRealName.getIssuingAuthority(), memberRealName.getSinceDate(), memberRealName.getExpireDate(),
+                    memberRealName.getExtra(), memberRealName.getStatus()
+            );
+
+        throw new BlueException(EMPTY_PARAM);
+    };
 
 }

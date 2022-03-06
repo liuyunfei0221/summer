@@ -62,9 +62,11 @@ public class MemberAddressServiceImpl implements MemberAddressService {
      * is a number's address too many?
      */
     private final Consumer<MemberAddress> ADDRESS_TOO_MANY_VALIDATOR = md -> {
-
         Long count = memberAddressMapper.countByMemberId(md.getMemberId());
 
+        //TODO
+        if (count > 10L)
+            throw new BlueException(DATA_ALREADY_EXIST);
     };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberAddressSortAttribute.values())
@@ -202,11 +204,11 @@ public class MemberAddressServiceImpl implements MemberAddressService {
      * @return
      */
     @Override
-    public Mono<List<MemberAddress>> selectMemberAddressMonoByIds(List<Long> ids) {
+    public Mono<List<MemberAddressInfo>> selectMemberAddressInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids), ids = {}", ids);
         return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(memberAddressMapper::selectByIds)
-                .flatMap(List::stream)
+                .flatMap(l -> l.stream().map(MEMBER_ADDRESS_2_MEMBER_ADDRESS_INFO))
                 .collect(toList()))
                 :
                 just(emptyList());

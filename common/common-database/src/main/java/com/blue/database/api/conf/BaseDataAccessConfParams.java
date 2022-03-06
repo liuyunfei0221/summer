@@ -42,6 +42,11 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     protected List<IdentityToShardingMappingAttr> workerToTableMappings;
 
     /**
+     * force write tables
+     */
+    protected List<ForceWriteTableAttr> forceWriteTables;
+
+    /**
      * broadcast tables, now supply for seata undolog
      */
     protected List<String> broadcastTables;
@@ -140,6 +145,11 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     }
 
     @Override
+    public List<ForceWriteTableAttr> getForceWriteTables() {
+        return forceWriteTables;
+    }
+
+    @Override
     public List<String> getBroadcastTables() {
         return broadcastTables;
     }
@@ -227,6 +237,10 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
 
     public void setWorkerToTableMappings(List<IdentityToShardingMappingAttr> workerToTableMappings) {
         this.workerToTableMappings = workerToTableMappings;
+    }
+
+    public void setForceWriteTables(List<ForceWriteTableAttr> forceWriteTables) {
+        this.forceWriteTables = forceWriteTables;
     }
 
     public void setBroadcastTables(List<String> broadcastTables) {
