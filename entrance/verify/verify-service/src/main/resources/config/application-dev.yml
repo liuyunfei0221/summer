@@ -57,7 +57,7 @@ web:
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://192.168.0.123:3306/media_0
+    - url: jdbc:mysql://192.168.0.124:3306/media_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -71,7 +71,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://192.168.0.123:3306/media_1
+    - url: jdbc:mysql://192.168.0.124:3306/media_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -163,7 +163,7 @@ cache:
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
   maxRedirects: 4
-  host: 192.168.0.123
+  host: 192.168.0.124
   port: 6379
   minIdle: 4
   maxIdle: 64
@@ -210,9 +210,10 @@ response:
 dubbo:
   registry:
     id: summer-registry
+    client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://192.168.0.123:2181
+    address: zookeeper://192.168.0.124:2181
     file: D:/locallogs/dubbo/verify/registry.properties
     check: false
     timeout: 60000
@@ -242,7 +243,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.0.123:6650 ]
+      services: [ 192.168.0.124:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -299,7 +300,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.0.123:6650 ]
+      services: [ 192.168.0.124:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

@@ -39,7 +39,7 @@
         <zkclient.version>0.11</zkclient.version>
         <seata-spring.version>1.4.2</seata-spring.version>
         <spring-mybatis.version>2.2.2</spring-mybatis.version>
-        <apache.curator.version>5.1.0</apache.curator.version>
+        <apache.curator.version>5.2.0</apache.curator.version>
         <commons-pool2.version>2.11.1</commons-pool2.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-codec.version>1.15</commons-codec.version>
