@@ -1,5 +1,7 @@
 package com.blue.verify.component.verify;
 
+import com.blue.base.constant.verify.VerifyBusinessType;
+import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.verify.api.model.VerifyParam;
 import com.blue.verify.component.verify.inter.VerifyHandler;
@@ -12,15 +14,15 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
-import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseElement.INVALID_PARAM;
-import static com.blue.base.constant.verify.VerifyType.IMAGE;
+import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.common.base.ConstantProcessor.getVerifyBusinessTypeByIdentity;
+import static com.blue.base.common.base.ConstantProcessor.getVerifyTypeByIdentity;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.error;
 
 /**
  * verify processor
@@ -34,7 +36,7 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
     /**
      * verify type -> verify handler
      */
-    private Map<String, VerifyHandler> verifyHandlers;
+    private Map<VerifyType, VerifyHandler> verifyHandlers;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -44,28 +46,60 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "verifyHandlers is empty");
 
         verifyHandlers = beansOfType.values().stream()
-                .collect(toMap(vh -> vh.targetType().identity, vh -> vh, (a, b) -> a));
+                .collect(toMap(VerifyHandler::targetType, vh -> vh, (a, b) -> a));
     }
 
-    private static final VerifyParam DEFAULT_PARAM = new VerifyParam(IMAGE.identity, "");
+    /**
+     * generate for api
+     *
+     * @param verifyType
+     * @param verifyBusinessType
+     * @param destination
+     * @return
+     */
+    public Mono<String> handle(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination) {
+        if (verifyType != null && verifyBusinessType != null)
+            return ofNullable(verifyHandlers.get(verifyType))
+                    .map(h -> h.handle(verifyBusinessType, destination))
+                    .orElseThrow(() -> new BlueException(INVALID_PARAM));
 
-    private final Function<ServerRequest, Mono<ServerResponse>> verifyHandler = serverRequest ->
-            serverRequest.bodyToMono(VerifyParam.class)
-                    .switchIfEmpty(just(DEFAULT_PARAM))
-                    .flatMap(cp ->
-                            ofNullable(cp.getVerifyType())
-                                    .map(verifyHandlers::get)
-                                    .map(h -> h.handle(cp.getDestination(), serverRequest))
-                                    .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+        return error(() -> new BlueException(INVALID_PARAM));
+    }
 
     /**
-     * generate verify
+     * generate for endpoint
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> generate(ServerRequest serverRequest) {
-        return verifyHandler.apply(serverRequest);
+    public Mono<ServerResponse> handle(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(VerifyParam.class)
+                .switchIfEmpty(
+                        error(() -> new BlueException(EMPTY_PARAM)))
+                .flatMap(vp ->
+                        ofNullable(vp.getVerifyType())
+                                .map(verifyType -> verifyHandlers.get(getVerifyTypeByIdentity(verifyType)))
+                                .map(h -> h.handle(getVerifyBusinessTypeByIdentity(vp.getBusinessType()), vp.getDestination(), serverRequest))
+                                .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+    }
+
+    /**
+     * validate verify
+     *
+     * @param verifyType
+     * @param verifyBusinessType
+     * @param key
+     * @param verify
+     * @param repeatable
+     * @return
+     */
+    public Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
+        if (verifyType != null && verifyBusinessType != null && isNotBlank(key) && isNotBlank(verify))
+            return ofNullable(verifyHandlers.get(verifyType))
+                    .map(h -> h.validate(verifyBusinessType, key, verify, repeatable))
+                    .orElseThrow(() -> new BlueException(INVALID_PARAM));
+
+        return error(() -> new BlueException(INVALID_PARAM));
     }
 
 }

@@ -3,7 +3,6 @@ package com.blue.verify.remote.provider;
 
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.verify.api.inter.RpcVerifyService;
-import com.blue.verify.api.model.VerifyPair;
 import com.blue.verify.service.inter.VerifyService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
@@ -49,8 +48,8 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      * @return
      */
     @Override
-    public CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire) {
-        LOGGER.info("CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire), type = {}, key = {}, length = {}, toUpperCase = {}, expire = {}",
+    public CompletableFuture<String> generate(VerifyType type, String key, Integer length, Duration expire) {
+        LOGGER.info("CompletableFuture<String> generate(VerifyType type, String key, Integer length, Duration expire), type = {}, key = {}, length = {}, toUpperCase = {}, expire = {}",
                 type, key, length, expire);
         return just(true).publishOn(scheduler).flatMap(v -> verifyService.generate(type, key, length, expire)).toFuture();
     }
@@ -58,15 +57,17 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
     /**
      * validate pair
      *
-     * @param verifyPair
+     * @param type
+     * @param key
+     * @param verify
      * @param repeatable
      * @return
      */
     @Override
-    public CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, Boolean repeatable) {
-        LOGGER.info("CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, boolean repeatable), type = {}, verifyPair = {}, repeatable = {}",
-                type, verifyPair, repeatable);
-        return just(true).publishOn(scheduler).flatMap(v -> verifyService.validate(type, verifyPair, repeatable)).toFuture();
+    public CompletableFuture<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable) {
+        LOGGER.info("CompletableFuture<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable), type = {}, key = {}, verify = {}, repeatable = {}",
+                type, key, verify, repeatable);
+        return just(true).publishOn(scheduler).flatMap(v -> verifyService.validate(type, key, verify, repeatable)).toFuture();
     }
 
 }

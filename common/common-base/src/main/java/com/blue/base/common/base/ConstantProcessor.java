@@ -1,22 +1,25 @@
 package com.blue.base.common.base;
 
+import com.blue.base.constant.analyze.StatisticsRange;
+import com.blue.base.constant.analyze.StatisticsType;
 import com.blue.base.constant.base.*;
 import com.blue.base.constant.business.ArticleType;
 import com.blue.base.constant.business.SubjectType;
-import com.blue.base.constant.analyze.StatisticsRange;
-import com.blue.base.constant.analyze.StatisticsType;
 import com.blue.base.constant.member.Gender;
 import com.blue.base.constant.portal.BulletinType;
 import com.blue.base.constant.secure.DeviceType;
 import com.blue.base.constant.secure.LoginType;
 import com.blue.base.constant.secure.ResourceType;
+import com.blue.base.constant.verify.VerifyBusinessType;
+import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
 import java.util.Map;
 
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -123,6 +126,18 @@ public final class ConstantProcessor {
      */
     private static final Map<Integer, ArticleType> ARTICLE_TYPE_MAPPING =
             of(ArticleType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+
+    /**
+     * business verify type identity and type mapping
+     */
+    private static final Map<String, VerifyBusinessType> VERIFY_BUSINESS_TYPE_MAPPING =
+            of(VerifyBusinessType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+
+    /**
+     * verify type identity and type mapping
+     */
+    private static final Map<String, VerifyType> VERIFY_TYPE_MAPPING =
+            of(VerifyType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
     //</editor-fold>
 
     //<editor-fold desc="asserter">
@@ -308,6 +323,32 @@ public final class ConstantProcessor {
             return;
 
         if (!ARTICLE_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert verify business type
+     *
+     * @param identity
+     */
+    public static void assertVerifyBusinessType(String identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
+        if (!VERIFY_BUSINESS_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert verify type
+     *
+     * @param identity
+     */
+    public static void assertVerifyType(String identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
+        if (!VERIFY_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
     //</editor-fold>
@@ -582,6 +623,41 @@ public final class ConstantProcessor {
 
         return type;
     }
+
+    /**
+     * get business verify type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static VerifyBusinessType getVerifyBusinessTypeByIdentity(String identity) {
+        if (identity == null)
+            throw new BlueException(INVALID_IDENTITY);
+
+        VerifyBusinessType type = VERIFY_BUSINESS_TYPE_MAPPING.get(identity);
+        if (type == null)
+            throw new BlueException(INVALID_IDENTITY);
+
+        return type;
+    }
+
+    /**
+     * get verify type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static VerifyType getVerifyTypeByIdentity(String identity) {
+        if (identity == null)
+            throw new BlueException(INVALID_IDENTITY);
+
+        VerifyType type = VERIFY_TYPE_MAPPING.get(identity);
+        if (type == null)
+            throw new BlueException(INVALID_IDENTITY);
+
+        return type;
+    }
+
     //</editor-fold>
 
 }

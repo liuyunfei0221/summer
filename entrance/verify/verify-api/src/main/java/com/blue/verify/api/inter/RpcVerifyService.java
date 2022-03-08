@@ -1,7 +1,6 @@
 package com.blue.verify.api.inter;
 
 import com.blue.base.constant.verify.VerifyType;
-import com.blue.verify.api.model.VerifyPair;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
@@ -25,16 +24,17 @@ public interface RpcVerifyService {
      * @param expire
      * @return
      */
-    CompletableFuture<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire);
+    CompletableFuture<String> generate(VerifyType type, String key, Integer length, Duration expire);
 
     /**
      * validate pair
      *
      * @param type
-     * @param verifyPair
+     * @param key
+     * @param verify
      * @param repeatable
      * @return
      */
-    CompletableFuture<Boolean> validate(VerifyType type, VerifyPair verifyPair, Boolean repeatable);
+    CompletableFuture<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable);
 
 }

@@ -6,6 +6,8 @@ import static com.blue.base.constant.base.RandomType.ALPHANUMERIC;
 import static com.blue.base.constant.base.RandomType.NUMERIC;
 
 /**
+ * verify type
+ *
  * @author liuyunfei
  * @date 2021/12/23
  * @apiNote

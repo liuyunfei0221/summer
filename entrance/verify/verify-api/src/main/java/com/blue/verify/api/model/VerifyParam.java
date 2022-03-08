@@ -18,6 +18,11 @@ public final class VerifyParam implements Serializable {
     private String verifyType;
 
     /**
+     * @see com.blue.base.constant.verify.VerifyBusinessType
+     */
+    private String businessType;
+
+    /**
      * if verifyType is IMAGE, destination will be ignored.
      * if verifyType is SMS, destination should be a phone num.
      * if verifyType is MAIL, destination should be an email address.
@@ -27,8 +32,9 @@ public final class VerifyParam implements Serializable {
     public VerifyParam() {
     }
 
-    public VerifyParam(String verifyType, String destination) {
+    public VerifyParam(String verifyType, String businessType, String destination) {
         this.verifyType = verifyType;
+        this.businessType = businessType;
         this.destination = destination;
     }
 
@@ -38,6 +44,14 @@ public final class VerifyParam implements Serializable {
 
     public void setVerifyType(String verifyType) {
         this.verifyType = verifyType;
+    }
+
+    public String getBusinessType() {
+        return businessType;
+    }
+
+    public void setBusinessType(String businessType) {
+        this.businessType = businessType;
     }
 
     public String getDestination() {
@@ -51,7 +65,8 @@ public final class VerifyParam implements Serializable {
     @Override
     public String toString() {
         return "VerifyParam{" +
-                "verifyType=" + verifyType +
+                "verifyType='" + verifyType + '\'' +
+                ", businessType='" + businessType + '\'' +
                 ", destination='" + destination + '\'' +
                 '}';
     }

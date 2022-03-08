@@ -1,7 +1,6 @@
 package com.blue.verify.service.inter;
 
 import com.blue.base.constant.verify.VerifyType;
-import com.blue.verify.api.model.VerifyPair;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -17,34 +16,34 @@ import java.time.Duration;
 public interface VerifyService {
 
     /**
-     * generate pair
+     * generate verify
      *
      * @param type
      * @return
      */
-    Mono<VerifyPair> generate(VerifyType type);
+    Mono<String> generate(VerifyType type);
 
     /**
-     * generate pair
+     * generate verify
      *
      * @param type
      * @param key
      * @return
      */
-    Mono<VerifyPair> generate(VerifyType type, String key);
+    Mono<String> generate(VerifyType type, String key);
 
     /**
-     * generate pair
+     * generate verify
      *
      * @param type
      * @param key
      * @param length
      * @return
      */
-    Mono<VerifyPair> generate(VerifyType type, String key, Integer length);
+    Mono<String> generate(VerifyType type, String key, Integer length);
 
     /**
-     * generate pair
+     * generate verify
      *
      * @param type
      * @param key
@@ -52,25 +51,27 @@ public interface VerifyService {
      * @param expire
      * @return
      */
-    Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire);
+    Mono<String> generate(VerifyType type, String key, Integer length, Duration expire);
 
     /**
-     * validate pair
+     * validate verify
      *
      * @param type
-     * @param verifyPair
+     * @param key
+     * @param verify
      * @return
      */
-    Mono<Boolean> validate(VerifyType type, VerifyPair verifyPair);
+    Mono<Boolean> validate(VerifyType type, String key, String verify);
 
     /**
-     * validate pair
+     * validate verify
      *
      * @param type
-     * @param verifyPair
+     * @param key
+     * @param verify
      * @param repeatable
      * @return
      */
-    Mono<Boolean> validate(VerifyType type, VerifyPair verifyPair, Boolean repeatable);
+    Mono<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable);
 
 }

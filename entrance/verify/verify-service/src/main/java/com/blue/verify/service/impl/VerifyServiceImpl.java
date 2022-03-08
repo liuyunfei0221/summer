@@ -5,7 +5,6 @@ import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.redis.api.generator.BlueValidatorGenerator;
 import com.blue.redis.common.BlueValidator;
-import com.blue.verify.api.model.VerifyPair;
 import com.blue.verify.config.deploy.VerifyDeploy;
 import com.blue.verify.service.inter.VerifyService;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
@@ -22,9 +21,8 @@ import java.util.function.BiFunction;
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.constant.base.ResponseElement.ILLEGAL_REQUEST;
-import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
+import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static java.time.temporal.ChronoUnit.MILLIS;
-import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
@@ -114,36 +112,36 @@ public class VerifyServiceImpl implements VerifyService {
 
     private static final BiFunction<VerifyType, String, String> KEY_WRAPPER = (type, k) -> {
         if (type != null && isNotBlank(k) && k.length() <= MAX_KEY_LEN)
-            return type.identity + PAR_CONCATENATION_DATABASE_URL.identity + k;
+            return type.identity + PAR_CONCATENATION.identity + k;
 
         throw new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type,key can't be null and key len can't be greater than " + MAX_KEY_LEN);
     };
 
     /**
-     * generate pair
+     * generate verify
      *
      * @param type
      * @return
      */
     @Override
-    public Mono<VerifyPair> generate(VerifyType type) {
+    public Mono<String> generate(VerifyType type) {
         return this.generate(type, null, null, null);
     }
 
     /**
-     * generate pair
+     * generate verify
      *
      * @param type
      * @param key
      * @return
      */
     @Override
-    public Mono<VerifyPair> generate(VerifyType type, String key) {
+    public Mono<String> generate(VerifyType type, String key) {
         return this.generate(type, key, null, null);
     }
 
     /**
-     * generate pair
+     * generate verify
      *
      * @param type
      * @param key
@@ -151,12 +149,12 @@ public class VerifyServiceImpl implements VerifyService {
      * @return
      */
     @Override
-    public Mono<VerifyPair> generate(VerifyType type, String key, Integer length) {
+    public Mono<String> generate(VerifyType type, String key, Integer length) {
         return this.generate(type, key, length, null);
     }
 
     /**
-     * generate pair
+     * generate verify
      *
      * @param type
      * @param key
@@ -165,53 +163,53 @@ public class VerifyServiceImpl implements VerifyService {
      * @return
      */
     @Override
-    public Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire) {
+    public Mono<String> generate(VerifyType type, String key, Integer length, Duration expire) {
         LOGGER.info("Mono<VerifyPair> generate(VerifyType type, String key, Integer length,  Duration expire) , type = {}, key = {}, length = {}, expire = {}", type, key, length, expire);
 
         if (type != null) {
-            String k = KEY_WRAPPER.apply(type, isNotBlank(key) ? key : generateRandom(RANDOM_TYPE, KEY_LEN));
             String v = generateRandom(type.randomType, length != null && length >= MIN_LEN && length <= MAX_LEN ? length : VERIFY_LEN);
 
-            LOGGER.info("Mono<VerifyPair> generate(RandomType type, int length, Duration expire), k = {}, v = {}", k, v);
+            LOGGER.info("Mono<VerifyPair> generate(RandomType type, int length, Duration expire), key = {}, v = {}", key, v);
 
-            return blueValidator.setKeyValueWithExpire(k, v, expire != null ? expire : DEFAULT_DURATION)
-                    .flatMap(s -> just(new VerifyPair(k, v)));
+            return blueValidator.setKeyValueWithExpire(KEY_WRAPPER.apply(type, isNotBlank(key) ? key : generateRandom(RANDOM_TYPE, KEY_LEN)), v, expire != null ? expire : DEFAULT_DURATION)
+                    .flatMap(ignore -> just(v));
         }
 
         return error(() -> new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type can't be null"));
     }
 
     /**
-     * validate pair
+     * validate verify
      *
      * @param type
-     * @param verifyPair
+     * @param key
+     * @param verify
      * @return
      */
     @Override
-    public Mono<Boolean> validate(VerifyType type, VerifyPair verifyPair) {
-        return this.validate(type, verifyPair, null);
+    public Mono<Boolean> validate(VerifyType type, String key, String verify) {
+        return this.validate(type, key, verify, null);
     }
 
     /**
-     * validate pair
+     * validate verify
      *
      * @param type
-     * @param verifyPair
+     * @param key
+     * @param verify
      * @param repeatable
      * @return
      */
     @Override
-    public Mono<Boolean> validate(VerifyType type, VerifyPair verifyPair, Boolean repeatable) {
-        LOGGER.info("Mono<Boolean> validate(VerifyType type, VerifyPair verifyPair, Boolean repeatable), type = {}, verifyPair = {}, repeatable = {}",
-                type, verifyPair, repeatable);
+    public Mono<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable) {
+        LOGGER.info("Mono<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable), type = {}, key = {}, verify = {}, repeatable = {}",
+                type, key, verify, repeatable);
 
-        return type != null && verifyPair != null ?
+        return type != null && isNotBlank(key) && isNotBlank(verify) ?
                 VALIDATORS.get(repeatable != null ? repeatable : DEFAULT_REPEATABLE)
-                        .apply(type.identity + ofNullable(verifyPair.getKey()).orElseGet(() -> generateRandom(RANDOM_TYPE, VERIFY_LEN)),
-                                ofNullable(verifyPair.getVerify()).orElseGet(() -> generateRandom(RANDOM_TYPE, VERIFY_LEN)))
+                        .apply(KEY_WRAPPER.apply(type, key), verify)
                 :
-                just(false);
+                error(() -> new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type or verifyPair can't be null"));
     }
 
 }

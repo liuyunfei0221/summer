@@ -1,5 +1,6 @@
 package com.blue.verify.component.verify.impl;
 
+import com.blue.base.constant.verify.VerifyBusinessType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
@@ -17,6 +18,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.time.Duration;
+import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
@@ -38,7 +40,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/12/23
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
 public class MailVerifyHandler implements VerifyHandler {
 
     private static final Logger LOGGER = getLogger(MailVerifyHandler.class);
@@ -82,46 +84,52 @@ public class MailVerifyHandler implements VerifyHandler {
         this.SEND_INTERVAL_MILLIS = sendIntervalMillis;
     }
 
-    private static final UnaryOperator<String> KEY_WRAPPER = key -> {
+    private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
         if (key == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
 
         return MAIL_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
-    /**
-     * generate an image verify
-     *
-     * @param destination
-     * @param serverRequest
-     * @return
-     */
+    private static final BiFunction<VerifyBusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
+        if (type == null || key == null)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
+
+        return type.identity + key;
+    };
+
     @Override
-    public Mono<ServerResponse> handle(String destination, ServerRequest serverRequest) {
-        LOGGER.info("Mono<ServerResponse> handle(String destination, ServerRequest serverRequest), email = {}", destination);
+    public Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination) {
         //TODO verify destination/email
 
-        return blueLeakyBucketRateLimiter.isAllowed(KEY_WRAPPER.apply(destination), ALLOW, SEND_INTERVAL_MILLIS)
+        return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(destination), ALLOW, SEND_INTERVAL_MILLIS)
                 .flatMap(allowed ->
                         allowed ?
-                                verifyService.generate(MAIL, destination, VERIFY_LEN, DEFAULT_DURATION)
-                                        .flatMap(vp -> {
-                                            String key = vp.getKey();
-
-                                            return mailService.send(key, vp.getVerify())
-                                                    .flatMap(success -> success ?
-                                                            just(key)
-                                                            :
-                                                            error(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "send email verify failed")));
-                                        })
-                                        .flatMap(key ->
-                                                ok().contentType(APPLICATION_JSON)
-                                                        .header(VERIFY_KEY.name, key)
-                                                        .body(generate(OK.code, serverRequest)
-                                                                , BlueResponse.class)
-                                        )
+                                verifyService.generate(MAIL, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, destination), VERIFY_LEN, DEFAULT_DURATION)
+                                        .flatMap(verify ->
+                                                mailService.send(destination, verify)
+                                                        .flatMap(success -> success ?
+                                                                just(verify)
+                                                                :
+                                                                error(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "send email verify failed"))))
                                 :
                                 error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently")));
+    }
+
+    @Override
+    public Mono<ServerResponse> handle(VerifyBusinessType verifyBusinessType, String destination, ServerRequest serverRequest) {
+        return this.handle(verifyBusinessType, destination)
+                .flatMap(vp ->
+                        ok().contentType(APPLICATION_JSON)
+                                .header(VERIFY_KEY.name, destination)
+                                .body(generate(OK.code, serverRequest)
+                                        , BlueResponse.class)
+                );
+    }
+
+    @Override
+    public Mono<Boolean> validate(VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
+        return verifyService.validate(MAIL, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, key), verify, repeatable);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.blue.media.remote.consumer;
 
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.verify.api.inter.RpcVerifyService;
-import com.blue.verify.api.model.VerifyPair;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -47,7 +46,7 @@ public class RpcVerifyServiceConsumer {
      * @param expire
      * @return
      */
-    Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire) {
+    Mono<String> generate(VerifyType type, String key, Integer length, Duration expire) {
         LOGGER.info("Mono<VerifyPair> generate(VerifyType type, String key, Integer length, Duration expire), type = {}, key = {}, length = {}, expire ={}",
                 key, type, length, expire);
         return fromFuture(rpcVerifyService.generate(type, key, length, expire))
@@ -58,14 +57,15 @@ public class RpcVerifyServiceConsumer {
      * validate pair
      *
      * @param type
-     * @param verifyPair
+     * @param key
+     * @param verify
      * @param repeatable
      * @return
      */
-    Mono<Boolean> validate(VerifyType type, VerifyPair verifyPair, Boolean repeatable) {
-        LOGGER.info("Mono<Boolean> validate(VerifyType type,VerifyPair verifyPair, boolean repeatable), type = {} verifyPair = {}, repeatable = {}",
-                type, verifyPair, repeatable);
-        return fromFuture(rpcVerifyService.validate(type, verifyPair, repeatable)).publishOn(scheduler);
+    Mono<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable) {
+        LOGGER.info("Mono<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable), type = {}, key = {}, verify = {}, repeatable = {}",
+                type, key, verify, repeatable);
+        return fromFuture(rpcVerifyService.validate(type, key, verify, repeatable)).publishOn(scheduler);
     }
 
 }
