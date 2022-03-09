@@ -1,22 +1,21 @@
-package com.blue.marketing.component.event.impl;
+package com.blue.marketing.component.marketing.impl;
 
 import com.blue.base.constant.marketing.MarketingEventType;
 import com.blue.marketing.api.model.MarketingEvent;
-import com.blue.marketing.component.event.inter.EventHandler;
+import com.blue.marketing.component.marketing.inter.EventHandler;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.marketing.MarketingEventType.ACTIVITY_REWARD;
+import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
 import static reactor.util.Loggers.getLogger;
 
-
 /**
- * activity reward event handler impl
+ * sign in reward event handler impl
  *
  * @author DarkBlue
  */
-public class ActivityRewardEventHandler implements EventHandler {
+public class SignRewardHandler implements EventHandler {
 
-    private static final Logger LOGGER = getLogger(ActivityRewardEventHandler.class);
+    private static final Logger LOGGER = getLogger(SignRewardHandler.class);
 
     @Override
     public void handleEvent(MarketingEvent marketingEvent) {
@@ -26,7 +25,7 @@ public class ActivityRewardEventHandler implements EventHandler {
 
     @Override
     public MarketingEventType targetType() {
-        return ACTIVITY_REWARD;
+        return SIGN_IN_REWARD;
     }
 
 }

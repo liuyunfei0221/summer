@@ -19,6 +19,7 @@ import reactor.util.Logger;
 
 import java.util.function.Consumer;
 
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
@@ -65,18 +66,20 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
 
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
-        LOGGER.info("Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
+        LOGGER.info("EmailAndPwdLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
         if (loginParam == null)
             throw new BlueException(EMPTY_PARAM);
 
         String email = loginParam.getData(IDENTITY.key);
+        String access = loginParam.getData(ACCESS.key);
 
-        //TODO verify
+        if (isBlank(email) || isBlank(access))
+            throw new BlueException(INVALID_ACCT_OR_PWD);
 
         return credentialService.getCredentialByCredentialAndType(email, EMAIL_PWD.identity)
                 .flatMap(credentialOpt ->
                         just(credentialOpt
-                                .filter(c -> matchAccess(loginParam.getData(ACCESS.key), c.getAccess()))
+                                .filter(c -> matchAccess(access, c.getAccess()))
                                 .map(Credential::getMemberId)
                                 .orElseThrow(() -> new BlueException(INVALID_ACCT_OR_PWD)))
                 ).flatMap(memberService::selectMemberBasicInfoMonoById)

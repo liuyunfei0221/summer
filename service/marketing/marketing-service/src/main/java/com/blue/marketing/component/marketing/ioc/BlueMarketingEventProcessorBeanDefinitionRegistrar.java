@@ -1,7 +1,7 @@
-package com.blue.marketing.component.event.ioc;
+package com.blue.marketing.component.marketing.ioc;
 
 import com.blue.base.component.common.BlueBeanDefinitionScanner;
-import com.blue.marketing.component.event.inter.EventHandler;
+import com.blue.marketing.component.marketing.inter.EventHandler;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

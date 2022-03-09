@@ -1,6 +1,6 @@
 package com.blue.secure.router.api;
 
-import com.blue.secure.handler.api.SecureApiHandler;
+import com.blue.secure.handler.api.AuthApiHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -18,19 +18,19 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
  * @author DarkBlue
  */
 @Configuration
-public class SecureApiRoute {
+public class AuthApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> secureApiRouter(SecureApiHandler secureApiHandler) {
+    RouterFunction<ServerResponse> secureApiRouter(AuthApiHandler authApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-secure/auth");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/login", accept(APPLICATION_JSON), secureApiHandler::login)
-                .DELETE("/logout", secureApiHandler::logout)
-                .PUT("/updateSecret", accept(APPLICATION_JSON), secureApiHandler::updateSecret)
-                .GET("/authority", secureApiHandler::selectAuthority)
+                .POST("/login", accept(APPLICATION_JSON), authApiHandler::login)
+                .DELETE("/logout", authApiHandler::logout)
+                .PUT("/updateSecret", accept(APPLICATION_JSON), authApiHandler::updateSecret)
+                .GET("/authority", authApiHandler::selectAuthority)
                 .build();
 
         return nest(pathPredicate, routerFunction);

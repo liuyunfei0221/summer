@@ -1,6 +1,6 @@
 package com.blue.member.api.inter;
 
-import com.blue.member.api.model.MemberInfo;
+import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 
 /**
@@ -17,6 +17,6 @@ public interface RpcMemberRegistryService {
      * @param memberRegistryParam
      * @return
      */
-    MemberInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam);
+    MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam);
 
 }

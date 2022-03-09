@@ -42,7 +42,12 @@ public enum BlueHeader {
     /**
      * content
      */
-    CONTENT_DISPOSITION("Content-disposition");
+    CONTENT_DISPOSITION("Content-disposition"),
+
+    /**
+     * EXTRA
+     */
+    EXTRA("Extra");
 
     public final String name;
 

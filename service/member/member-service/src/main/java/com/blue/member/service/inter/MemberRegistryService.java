@@ -1,6 +1,6 @@
 package com.blue.member.service.inter;
 
-import com.blue.member.api.model.MemberInfo;
+import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 
 /**
@@ -17,7 +17,7 @@ public interface MemberRegistryService {
      * @param memberRegistryParam
      * @return
      */
-    MemberInfo registerMemberBasic(MemberRegistryParam memberRegistryParam);
+    MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam);
 
     /**
      * member register for auto registry or third party login
@@ -25,6 +25,6 @@ public interface MemberRegistryService {
      * @param memberRegistryParam
      * @return
      */
-    MemberInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam);
+    MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam);
 
 }

@@ -8,7 +8,6 @@ import reactor.core.publisher.Mono;
  * config role,resource,relation
  *
  * @author liuyunfei
- * @date 2021/11/1
  * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})

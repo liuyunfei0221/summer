@@ -15,6 +15,11 @@ public enum LoginType {
     SMS_VERIFY("SV", "CLI", "login with phone num and message verify"),
 
     /**
+     * login with phone num and message verify and auto register
+     */
+    SMS_VERIFY_AUTO_REGISTER("SV", "CLI", "login with phone num and message verify"),
+
+    /**
      * login with phone num and password
      */
     PHONE_PWD("PP", "CLI", "login with phone num and password"),

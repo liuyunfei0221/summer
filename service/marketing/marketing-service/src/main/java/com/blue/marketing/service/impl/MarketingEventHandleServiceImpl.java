@@ -2,7 +2,7 @@ package com.blue.marketing.service.impl;
 
 import com.blue.marketing.api.model.EventHandleResult;
 import com.blue.marketing.api.model.MarketingEvent;
-import com.blue.marketing.component.event.MarketingEventProcessor;
+import com.blue.marketing.component.marketing.MarketingEventProcessor;
 import com.blue.marketing.service.inter.MarketingEventHandleService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

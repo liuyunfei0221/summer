@@ -3,7 +3,6 @@ package com.blue.member.service.inter;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.member.api.model.MemberInfo;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;
 import reactor.core.publisher.Mono;
@@ -65,7 +64,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    Mono<MemberInfo> selectMemberInfoMonoByPrimaryKeyWithAssert(Long id);
+    Mono<MemberBasicInfo> selectMemberInfoMonoByPrimaryKeyWithAssert(Long id);
 
     /**
      * insert member
@@ -73,7 +72,7 @@ public interface MemberBasicService {
      * @param memberBasic
      * @return
      */
-    MemberInfo insertMemberBasic(MemberBasic memberBasic);
+    MemberBasicInfo insertMemberBasic(MemberBasic memberBasic);
 
     /**
      * select members by ids

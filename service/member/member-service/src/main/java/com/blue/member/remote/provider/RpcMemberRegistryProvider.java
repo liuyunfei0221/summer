@@ -1,7 +1,7 @@
 package com.blue.member.remote.provider;
 
 import com.blue.member.api.inter.RpcMemberRegistryService;
-import com.blue.member.api.model.MemberInfo;
+import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.service.inter.MemberRegistryService;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -36,7 +36,8 @@ public class RpcMemberRegistryProvider implements RpcMemberRegistryService {
      * @return
      */
     @Override
-    public MemberInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
+
+    public MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("MemberInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryParam = {},", memberRegistryParam);
         return memberRegistryService.autoRegisterMemberBasic(memberRegistryParam);
     }

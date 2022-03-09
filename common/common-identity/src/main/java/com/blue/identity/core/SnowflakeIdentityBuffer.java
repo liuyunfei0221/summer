@@ -131,7 +131,7 @@ public final class SnowflakeIdentityBuffer {
      */
     private void asyncPaddingWithThreshold(long head, long tail) {
         bufferPadExecutor.submit(() -> {
-            if (tail - head < paddingThreshold)
+            if ((int) (tail - head) < paddingThreshold)
                 put();
         });
     }

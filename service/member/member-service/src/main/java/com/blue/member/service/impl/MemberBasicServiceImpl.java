@@ -6,7 +6,6 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.member.api.model.MemberInfo;
 import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;
@@ -31,7 +30,6 @@ import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
-import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -183,7 +181,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<MemberInfo> selectMemberInfoMonoByPrimaryKeyWithAssert(Long id) {
+    public Mono<MemberBasicInfo> selectMemberInfoMonoByPrimaryKeyWithAssert(Long id) {
         LOGGER.info("Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         if (isValidIdentity(id))
             //noinspection DuplicatedCode
@@ -199,7 +197,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                         LOGGER.info("mb = {}", mb);
                         return just(mb);
                     }).flatMap(mb ->
-                            just(MEMBER_BASIC_2_MEMBER_INFO.apply(mb))
+                            just(MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(mb))
                     );
 
         throw new BlueException(INVALID_IDENTITY);
@@ -214,7 +212,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
-    public MemberInfo insertMemberBasic(MemberBasic memberBasic) {
+    public MemberBasicInfo insertMemberBasic(MemberBasic memberBasic) {
         LOGGER.info("void insert(MemberBasic memberBasic), memberBasic = {}", memberBasic);
         if (isNull(memberBasic))
             throw new BlueException(EMPTY_PARAM);
@@ -226,7 +224,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
         memberBasicMapper.insert(memberBasic);
 
-        return MEMBER_BASIC_2_MEMBER_INFO.apply(memberBasic);
+        return MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(memberBasic);
     }
 
     /**

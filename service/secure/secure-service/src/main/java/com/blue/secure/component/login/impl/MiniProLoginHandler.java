@@ -75,7 +75,7 @@ public class MiniProLoginHandler implements LoginHandler {
 
         String phone = "";
 
-        return credentialService.getCredentialByCredentialAndType(phone, PHONE_PWD.identity)
+        return credentialService.getCredentialByCredentialAndType(phone, MINI_PRO.identity)
                 .flatMap(credentialOpt ->
                         just(credentialOpt
                                 .map(Credential::getMemberId)

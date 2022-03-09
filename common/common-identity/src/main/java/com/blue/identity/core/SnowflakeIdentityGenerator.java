@@ -115,7 +115,7 @@ public final class SnowflakeIdentityGenerator {
             throw new IdentityException("bootSeconds cannot be greater than " + currentSecond + " or " + lastSeconds);
 
         long randomOffset = current().nextLong(RAN_ADVANCE_SEC_BOUND);
-        this.stepSeconds = lastSeconds - bootSeconds + randomOffset;
+        this.stepSeconds = lastSeconds - bootSeconds + 1L + randomOffset;
 
         if (stepSeconds > maxStepTimestamp)
             throw new IdentityException("stepSeconds cannot be greater than " + maxStepTimestamp);
@@ -188,7 +188,7 @@ public final class SnowflakeIdentityGenerator {
         boolean stepAdvanced = false;
         synchronized (this) {
             sequence = (sequence + 1) & maxSequence;
-            if (sequence == 0) {
+            if (sequence == 0L) {
                 ++stepSeconds;
                 stepAdvanced = true;
             }

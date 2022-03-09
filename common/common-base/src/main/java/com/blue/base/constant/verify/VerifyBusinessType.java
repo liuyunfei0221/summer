@@ -15,9 +15,14 @@ public enum VerifyBusinessType {
     REGISTER("REGISTER"),
 
     /**
-     * login
+     * sms login with auto register
      */
-    LOGIN("LOGIN"),
+    SMS_LOGIN("SMS_LOGIN_WITH_AUTO_REGISTER"),
+
+    /**
+     * sms login with auto register
+     */
+    SMS_LOGIN_WITH_AUTO_REGISTER("SMS_LOGIN_WITH_AUTO_REGISTER"),
 
     /**
      * reset password

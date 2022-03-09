@@ -45,10 +45,10 @@ public final class MemberRegistryApiHandler {
                 .flatMap(mrp ->
                         just(memberRegistryService.registerMemberBasic(mrp))
                 )
-                .flatMap(mi ->
+                .flatMap(mbi ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mi, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
     }
 
 

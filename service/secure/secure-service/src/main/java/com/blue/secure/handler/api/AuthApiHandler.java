@@ -23,13 +23,13 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
  */
 @SuppressWarnings("JavaDoc")
 @Component
-public final class SecureApiHandler {
+public final class AuthApiHandler {
 
     private final SecureService secureService;
 
     private final LoginService loginService;
 
-    public SecureApiHandler(SecureService secureService, LoginService loginService) {
+    public AuthApiHandler(SecureService secureService, LoginService loginService) {
         this.secureService = secureService;
         this.loginService = loginService;
     }

@@ -1,4 +1,4 @@
-package com.blue.marketing.component.event;
+package com.blue.marketing.component.marketing;
 
 import com.blue.base.constant.marketing.HandleStatus;
 import com.blue.base.constant.marketing.MarketingEventType;
@@ -6,7 +6,7 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.marketing.api.model.EventHandleResult;
 import com.blue.marketing.api.model.MarketingEvent;
-import com.blue.marketing.component.event.inter.EventHandler;
+import com.blue.marketing.component.marketing.inter.EventHandler;
 import com.blue.marketing.repository.entity.Event;
 import com.blue.marketing.repository.mapper.EventMapper;
 import org.springframework.context.ApplicationContext;

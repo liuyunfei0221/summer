@@ -22,8 +22,8 @@ import reactor.util.Logger;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
-import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.SECRET;
@@ -75,18 +75,20 @@ public class PhoneAndPwdLoginHandler implements LoginHandler {
 
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
-        LOGGER.info("Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
+        LOGGER.info("PhoneAndPwdLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
         if (loginParam == null)
             throw new BlueException(EMPTY_PARAM);
 
         String phone = loginParam.getData(IDENTITY.key);
+        String access = loginParam.getData(ACCESS.key);
 
-        //TODO verify
+        if (isBlank(phone) || isBlank(access))
+            throw new BlueException(INVALID_ACCT_OR_PWD);
 
         return credentialService.getCredentialByCredentialAndType(phone, PHONE_PWD.identity)
                 .flatMap(credentialOpt ->
                         just(credentialOpt
-                                .filter(c -> matchAccess(loginParam.getData(ACCESS.key), c.getAccess()))
+                                .filter(c -> matchAccess(access, c.getAccess()))
                                 .map(Credential::getMemberId)
                                 .orElseThrow(() -> new BlueException(INVALID_ACCT_OR_PWD)))
                 ).flatMap(memberService::selectMemberBasicInfoMonoById)

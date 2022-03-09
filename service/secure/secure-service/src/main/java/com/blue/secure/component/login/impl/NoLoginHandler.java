@@ -62,7 +62,7 @@ public class NoLoginHandler implements LoginHandler {
         String phone = loginParam.getData(IDENTITY.key);
         String access = loginParam.getData(ACCESS.key);
 
-        return credentialService.getCredentialByCredentialAndType(phone, PHONE_PWD.identity)
+        return credentialService.getCredentialByCredentialAndType(phone, NOT_LOGGED_IN.identity)
                 .flatMap(credentialOpt ->
                         just(credentialOpt
                                 .map(Credential::getMemberId)

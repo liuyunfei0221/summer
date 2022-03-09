@@ -3,7 +3,7 @@ package com.blue.member.service.impl;
 import com.blue.base.model.exps.BlueException;
 import com.blue.finance.api.model.MemberFinanceInfo;
 import com.blue.identity.common.BlueIdentityProcessor;
-import com.blue.member.api.model.MemberInfo;
+import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.component.credential.InitCredentialInfoProcessor;
 import com.blue.member.remote.consumer.RpcControlServiceConsumer;
@@ -66,7 +66,7 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
             rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
-    public MemberInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
+    public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("MemberInfo registerMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
@@ -83,12 +83,12 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
         rpcFinanceAccountServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));
 
         @SuppressWarnings("UnnecessaryLocalVariable")
-        MemberInfo memberInfo = memberBasicService.insertMemberBasic(memberBasic);
+        MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
 
 //        if (1 == 1)
 //            throw new BlueException(500, 500, "test rollback");
 
-        return memberInfo;
+        return memberBasicInfo;
     }
 
     /**
@@ -100,7 +100,7 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
-    public MemberInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
+    public MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("MemberInfo simpleRegisterMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
 
         if (isNull(memberRegistryParam))
@@ -115,12 +115,12 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
         rpcFinanceAccountServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));
 
         @SuppressWarnings("UnnecessaryLocalVariable")
-        MemberInfo memberInfo = memberBasicService.insertMemberBasic(memberBasic);
+        MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
 
 //        if (1 == 1)
 //            throw new BlueException(500, 500, "test rollback");
 
-        return memberInfo;
+        return memberBasicInfo;
     }
 
 }

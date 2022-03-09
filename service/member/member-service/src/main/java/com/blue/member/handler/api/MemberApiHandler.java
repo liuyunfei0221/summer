@@ -38,10 +38,10 @@ public final class MemberApiHandler {
         return getAccessReact(serverRequest)
                 .flatMap(ai ->
                         memberBasicService.selectMemberInfoMonoByPrimaryKeyWithAssert(ai.getId())
-                                .flatMap(mv ->
+                                .flatMap(mbi ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, mv, serverRequest), BlueResponse.class))
+                                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class))
                 );
     }
 
