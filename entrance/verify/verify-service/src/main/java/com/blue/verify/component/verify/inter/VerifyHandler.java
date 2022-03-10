@@ -1,6 +1,6 @@
 package com.blue.verify.component.verify.inter;
 
-import com.blue.base.constant.verify.VerifyBusinessType;
+import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -17,32 +17,32 @@ public interface VerifyHandler {
     /**
      * handle for api
      *
-     * @param verifyBusinessType
+     * @param businessType
      * @param destination
      * @return key
      */
-    Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination);
+    Mono<String> handle(BusinessType businessType, String destination);
 
     /**
      * handle for endpoint
      *
-     * @param verifyBusinessType
+     * @param businessType
      * @param destination
      * @param serverRequest
      * @return
      */
-    Mono<ServerResponse> handle(VerifyBusinessType verifyBusinessType, String destination, ServerRequest serverRequest);
+    Mono<ServerResponse> handle(BusinessType businessType, String destination, ServerRequest serverRequest);
 
     /**
      * validate verify
      *
-     * @param verifyBusinessType
+     * @param businessType
      * @param key
      * @param verify
      * @param repeatable
      * @return
      */
-    Mono<Boolean> validate(VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable);
+    Mono<Boolean> validate(BusinessType businessType, String key, String verify, Boolean repeatable);
 
     /**
      * target verify type to process

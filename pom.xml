@@ -52,6 +52,7 @@
         <caffeine.version>3.0.5</caffeine.version>
         <apache.poi.version>5.2.1</apache.poi.version>
         <pulsar.version>2.9.1</pulsar.version>
+        <affinity.version>3.21ea83</affinity.version>
         <slf4j.version>1.7.36</slf4j.version>
         <apollo.version>1.9.2</apollo.version>
         <kaptcha.version>2.3.2</kaptcha.version>

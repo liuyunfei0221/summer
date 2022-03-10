@@ -29,11 +29,10 @@ public final class InitCredentialInfoProcessor {
         String phone = memberBasic.getPhone();
         String email = memberBasic.getEmail();
 
-        credentials.add(new CredentialInfo(phone, SMS_VERIFY.identity, "", "from registry"));
         credentials.add(new CredentialInfo(phone, PHONE_PWD.identity, access, "from registry"));
         credentials.add(new CredentialInfo(email, EMAIL_PWD.identity, access, "from registry"));
-        credentials.add(new CredentialInfo(phone, WECHAT.identity, "", "from registry"));
-        credentials.add(new CredentialInfo(phone, MINI_PRO.identity, "", "from registry"));
+        credentials.add(new CredentialInfo(phone, WECHAT_AUTO_REGISTER.identity, "", "from registry"));
+        credentials.add(new CredentialInfo(phone, MINI_PRO_AUTO_REGISTER.identity, "", "from registry"));
 
         return credentials;
     }

@@ -3,6 +3,7 @@ package com.blue.redisson.api.generator;
 import com.blue.base.model.exps.BlueException;
 import com.blue.redisson.api.conf.RedissonConf;
 import com.blue.redisson.constant.ServerMode;
+import net.openhft.affinity.AffinityThreadFactory;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
@@ -21,6 +22,7 @@ import static com.blue.redisson.constant.ServerMode.CLUSTER;
 import static com.blue.redisson.constant.ServerMode.SINGLE;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.redisson.Redisson.create;
@@ -198,11 +200,8 @@ public final class BlueRedissonGenerator {
 
         CONF_PACKAGER.accept(redissonConf, config);
 
-        ThreadFactory threadFactory = r -> {
-            Thread thread = new Thread(r, THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN));
-            thread.setDaemon(true);
-            return thread;
-        };
+        ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE);
+
         BlockingQueue<Runnable> blockingQueue = new ArrayBlockingQueue<>(redissonConf.getExecutorBlockingQueueCapacity());
 
         ExecutorService executorService = new ThreadPoolExecutor(redissonConf.getExecutorCorePoolSize(),

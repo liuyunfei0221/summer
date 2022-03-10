@@ -9,12 +9,13 @@ import com.blue.member.repository.entity.*;
 import java.time.Instant;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.member.Gender.UNKNOWN;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * model converters in member project
@@ -29,20 +30,28 @@ public final class MemberModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         String phone = memberRegistryParam.getPhone();
-        if (isBlank(phone))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
-        if (phone.length() > BlueNumericalValue.PHONE_LEN_MAX.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too long");
-        if (phone.length() < BlueNumericalValue.PHONE_LEN_MIN.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too short");
+        if (isNotBlank(phone)) {
+            if (phone.length() > BlueNumericalValue.PHONE_LEN_MAX.value)
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too long");
+            if (phone.length() < BlueNumericalValue.PHONE_LEN_MIN.value)
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too short");
+        }
+
+        String email = memberRegistryParam.getEmail();
+        if (isNotBlank(email)) {
+            if (email.length() > BlueNumericalValue.EMAIL_LEN_MAX.value)
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too long");
+            if (email.length() < BlueNumericalValue.EMAIL_LEN_MIN.value)
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too short");
+        }
 
         String access = memberRegistryParam.getAccess();
-        if (isBlank(access))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
-        if (access.length() > BlueNumericalValue.ACS_LEN_MAX.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too long");
-        if (access.length() < BlueNumericalValue.ACS_LEN_MIN.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
+        if (isNotBlank(access)) {
+            if (access.length() > BlueNumericalValue.ACS_LEN_MAX.value)
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too long");
+            if (access.length() < BlueNumericalValue.ACS_LEN_MIN.value)
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
+        }
 
         String name = memberRegistryParam.getName();
         if (isBlank(name))
@@ -52,7 +61,7 @@ public final class MemberModelConverters {
 
         MemberBasic memberBasic = new MemberBasic();
         memberBasic.setPhone(phone);
-        memberBasic.setEmail(memberRegistryParam.getEmail());
+        memberBasic.setEmail(email);
         memberBasic.setName(name);
         memberBasic.setIcon(memberRegistryParam.getIcon());
         memberBasic.setGender(ofNullable(memberRegistryParam.getGender())

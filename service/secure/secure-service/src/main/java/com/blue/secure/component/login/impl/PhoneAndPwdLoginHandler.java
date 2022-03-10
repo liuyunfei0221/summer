@@ -11,23 +11,23 @@ import com.blue.secure.service.inter.CredentialService;
 import com.blue.secure.service.inter.MemberService;
 import com.blue.secure.service.inter.SecureService;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.function.BiPredicate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
-import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
+import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.base.BlueHeader.SECRET;
+import static com.blue.base.constant.base.BlueHeader.*;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.secure.ExtraKey.NEW_MEMBER;
 import static com.blue.base.constant.secure.LoginType.EMAIL_PWD;
 import static com.blue.base.constant.secure.LoginType.PHONE_PWD;
 import static com.blue.secure.common.AccessEncoder.matchAccess;
@@ -63,15 +63,15 @@ public class PhoneAndPwdLoginHandler implements LoginHandler {
         this.secureService = secureService;
     }
 
-    private static final PasswordEncoder ENCODER = new BCryptPasswordEncoder();
-
-    private static final BiPredicate<String, String> PWD_PRE = (access, originalAccess) ->
-            isNotBlank(access) && isNotBlank(originalAccess) && ENCODER.matches(access, originalAccess);
-
     private static final Consumer<MemberBasicInfo> MEMBER_STATUS_ASSERTER = memberBasicInfo -> {
         if (isInvalidStatus(memberBasicInfo.getStatus()))
             throw new BlueException(ACCOUNT_HAS_BEEN_FROZEN);
     };
+
+    private static final Map<String, Object> EXTRA_INFO = new HashMap<>(2);
+    static {
+        EXTRA_INFO.put(NEW_MEMBER.key, false);
+    }
 
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
@@ -96,12 +96,12 @@ public class PhoneAndPwdLoginHandler implements LoginHandler {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
                     return secureService.generateAuthMono(mbi.getId(), EMAIL_PWD.identity, loginParam.getDeviceType().intern());
                 })
-                .flatMap(ma ->
-                        ok().contentType(APPLICATION_JSON)
-                                .header(AUTHORIZATION.name, ma.getAuth())
-                                .header(SECRET.name, ma.getSecKey())
-                                .body(generate(OK.code, serverRequest)
-                                        , BlueResponse.class));
+                .flatMap(ma -> ok().contentType(APPLICATION_JSON)
+                        .header(AUTHORIZATION.name, ma.getAuth())
+                        .header(SECRET.name, ma.getSecKey())
+                        .header(EXTRA.name, GSON.toJson(EXTRA_INFO))
+                        .body(generate(OK.code, serverRequest)
+                                , BlueResponse.class));
     }
 
     @Override

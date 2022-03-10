@@ -172,7 +172,7 @@ public class CommonFunctions {
      * resource key generator
      */
     public static final BinaryOperator<String> RES_KEY_GENERATOR = (method, uri) ->
-            ((upperCase(method).intern() + PAR_CONCATENATION + REST_URI_PROCESSOR.apply(uri).intern()).intern()).intern();
+            ((upperCase(method).intern() + PAR_CONCATENATION + REST_URI_CONVERTER.apply(uri).intern()).intern()).intern();
 
     /**
      * header value getter

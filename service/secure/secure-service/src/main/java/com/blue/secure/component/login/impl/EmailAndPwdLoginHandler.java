@@ -17,14 +17,17 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
+import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.base.BlueHeader.SECRET;
+import static com.blue.base.constant.base.BlueHeader.*;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.secure.ExtraKey.NEW_MEMBER;
 import static com.blue.base.constant.secure.LoginType.EMAIL_PWD;
 import static com.blue.secure.common.AccessEncoder.matchAccess;
 import static com.blue.secure.constant.LoginAttribute.ACCESS;
@@ -64,6 +67,11 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
             throw new BlueException(ACCOUNT_HAS_BEEN_FROZEN);
     };
 
+    private static final Map<String, Object> EXTRA_INFO = new HashMap<>(2);
+    static {
+        EXTRA_INFO.put(NEW_MEMBER.key, false);
+    }
+
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
         LOGGER.info("EmailAndPwdLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
@@ -87,12 +95,12 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
                     return secureService.generateAuthMono(mbi.getId(), EMAIL_PWD.identity, loginParam.getDeviceType().intern());
                 })
-                .flatMap(ma ->
-                        ok().contentType(APPLICATION_JSON)
-                                .header(AUTHORIZATION.name, ma.getAuth())
-                                .header(SECRET.name, ma.getSecKey())
-                                .body(generate(OK.code, serverRequest)
-                                        , BlueResponse.class));
+                .flatMap(ma -> ok().contentType(APPLICATION_JSON)
+                        .header(AUTHORIZATION.name, ma.getAuth())
+                        .header(SECRET.name, ma.getSecKey())
+                        .header(EXTRA.name, GSON.toJson(EXTRA_INFO))
+                        .body(generate(OK.code, serverRequest)
+                                , BlueResponse.class));
     }
 
     @Override

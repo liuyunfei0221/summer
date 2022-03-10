@@ -41,6 +41,17 @@ public interface SecureService {
     Mono<MemberAuth> generateAuthMono(Long memberId, String loginType, String deviceType);
 
     /**
+     * generate member auth with auto register
+     *
+     * @param memberId
+     * @param roleId
+     * @param loginType
+     * @param deviceType
+     * @return
+     */
+    Mono<MemberAuth> generateAuthMono(Long memberId, Long roleId, String loginType, String deviceType);
+
+    /**
      * invalid auth by access
      *
      * @param access

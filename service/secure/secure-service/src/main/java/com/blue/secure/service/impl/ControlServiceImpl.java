@@ -74,7 +74,24 @@ public class ControlServiceImpl implements ControlService {
         this.executorService = executorService;
     }
 
-    private final Function<Long, MemberRoleRelation> MEMBER_ROLE_RELATION_GEN = memberId -> {
+    private final BiFunction<Long, Long, MemberRoleRelation> MEMBER_ROLE_RELATION_GEN = (memberId, roleId) -> {
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId))
+            throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
+
+        long epochSecond = TIME_STAMP_GETTER.get();
+
+        MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
+        memberRoleRelation.setMemberId(memberId);
+        memberRoleRelation.setRoleId(roleId);
+        memberRoleRelation.setCreateTime(epochSecond);
+        memberRoleRelation.setUpdateTime(epochSecond);
+        memberRoleRelation.setCreator(memberId);
+        memberRoleRelation.setUpdater(memberId);
+
+        return memberRoleRelation;
+    };
+
+    private final Function<Long, MemberRoleRelation> MEMBER_DEFAULT_ROLE_RELATION_GEN = memberId -> {
         if (isInvalidIdentity(memberId))
             throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
 
@@ -221,7 +238,31 @@ public class ControlServiceImpl implements ControlService {
         if (isInvalidIdentity(memberId) || isEmpty(credentials))
             throw new BlueException(INVALID_PARAM);
 
-        memberRoleRelationService.insertMemberRoleRelation(MEMBER_ROLE_RELATION_GEN.apply(memberId));
+        memberRoleRelationService.insertMemberRoleRelation(MEMBER_DEFAULT_ROLE_RELATION_GEN.apply(memberId));
+
+        credentialService.insertCredentials(credentials.stream()
+                .map(c -> CREDENTIAL_INFO_AND_MEMBER_ID_2_CREDENTIAL_CONVERTER.apply(c, memberId))
+                .collect(toList()));
+    }
+
+    /**
+     * init secure infos for a new member
+     *
+     * @param memberCredentialInfo
+     * @param roleId
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo, Long roleId) {
+        if (isNull(memberCredentialInfo) || isInvalidIdentity(roleId))
+            throw new BlueException(EMPTY_PARAM);
+
+        Long memberId = memberCredentialInfo.getMemberId();
+        List<CredentialInfo> credentials = memberCredentialInfo.getCredentials();
+        if (isInvalidIdentity(memberId) || isEmpty(credentials))
+            throw new BlueException(INVALID_PARAM);
+
+        memberRoleRelationService.insertMemberRoleRelation(MEMBER_ROLE_RELATION_GEN.apply(memberId, roleId));
 
         credentialService.insertCredentials(credentials.stream()
                 .map(c -> CREDENTIAL_INFO_AND_MEMBER_ID_2_CREDENTIAL_CONVERTER.apply(c, memberId))

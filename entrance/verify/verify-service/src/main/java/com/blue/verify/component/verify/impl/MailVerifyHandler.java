@@ -1,6 +1,6 @@
 package com.blue.verify.component.verify.impl;
 
-import com.blue.base.constant.verify.VerifyBusinessType;
+import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
@@ -91,7 +91,7 @@ public class MailVerifyHandler implements VerifyHandler {
         return MAIL_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
-    private static final BiFunction<VerifyBusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
+    private static final BiFunction<BusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
         if (type == null || key == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
 
@@ -99,13 +99,13 @@ public class MailVerifyHandler implements VerifyHandler {
     };
 
     @Override
-    public Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination) {
+    public Mono<String> handle(BusinessType businessType, String destination) {
         //TODO verify destination/email
 
         return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(destination), ALLOW, SEND_INTERVAL_MILLIS)
                 .flatMap(allowed ->
                         allowed ?
-                                verifyService.generate(MAIL, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, destination), VERIFY_LEN, DEFAULT_DURATION)
+                                verifyService.generate(MAIL, BUSINESS_KEY_WRAPPER.apply(businessType, destination), VERIFY_LEN, DEFAULT_DURATION)
                                         .flatMap(verify ->
                                                 mailService.send(destination, verify)
                                                         .flatMap(success -> success ?
@@ -117,8 +117,8 @@ public class MailVerifyHandler implements VerifyHandler {
     }
 
     @Override
-    public Mono<ServerResponse> handle(VerifyBusinessType verifyBusinessType, String destination, ServerRequest serverRequest) {
-        return this.handle(verifyBusinessType, destination)
+    public Mono<ServerResponse> handle(BusinessType businessType, String destination, ServerRequest serverRequest) {
+        return this.handle(businessType, destination)
                 .flatMap(vp ->
                         ok().contentType(APPLICATION_JSON)
                                 .header(VERIFY_KEY.name, destination)
@@ -128,8 +128,8 @@ public class MailVerifyHandler implements VerifyHandler {
     }
 
     @Override
-    public Mono<Boolean> validate(VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
-        return verifyService.validate(MAIL, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, key), verify, repeatable);
+    public Mono<Boolean> validate(BusinessType businessType, String key, String verify, Boolean repeatable) {
+        return verifyService.validate(MAIL, BUSINESS_KEY_WRAPPER.apply(businessType, key), verify, repeatable);
     }
 
     @Override

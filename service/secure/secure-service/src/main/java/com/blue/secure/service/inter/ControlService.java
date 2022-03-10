@@ -54,6 +54,14 @@ public interface ControlService {
     void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo);
 
     /**
+     * init secure infos for a new member
+     *
+     * @param memberCredentialInfo
+     * @param roleId
+     */
+    void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo, Long roleId);
+
+    /**
      * update default role by role id
      *
      * @param id

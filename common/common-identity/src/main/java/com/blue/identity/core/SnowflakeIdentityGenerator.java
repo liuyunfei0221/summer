@@ -60,7 +60,7 @@ public final class SnowflakeIdentityGenerator {
     /**
      * The offset and mask used to generate the ID
      */
-    private final int timestampShift;
+    private final int timeStampShift;
     private final long dataCenterWithWorkerBitsMask;
 
     /**
@@ -123,7 +123,7 @@ public final class SnowflakeIdentityGenerator {
         this.maxSequence = ~(-1L << sequenceBits);
         this.sequence = 0L;
 
-        this.timestampShift = dataCenterBits + workerBits + sequenceBits;
+        this.timeStampShift = dataCenterBits + workerBits + sequenceBits;
         int dataCenterShift = workerBits + sequenceBits;
         this.dataCenterWithWorkerBitsMask = (dataCenter << dataCenterShift) | (worker << sequenceBits);
 
@@ -140,7 +140,8 @@ public final class SnowflakeIdentityGenerator {
 
         ZoneId zoneId = ZoneId.of(TIME_ZONE);
         LOGGER.info(
-                "Initialized BlueIdentityBuffer successfully, snowIdGenParam = {}, dataCenter = {}, worker = {}, maxStepTimestamp = {}, maxSequence = {}, sequence = {}, stepSeconds = {}, bootTime = {}, lastTime = {}, stepTime = {}",
+                "Initialized BlueIdentityBuffer successfully, snowIdGenParam = {}, dataCenter = {}, worker = {}, " +
+                        "maxStepTimestamp = {}, maxSequence = {}, sequence = {}, stepSeconds = {}, bootTime = {}, lastTime = {}, stepTime = {}",
                 snowIdGenParam, dataCenter, worker, maxStepTimestamp, maxSequence, sequence, this.stepSeconds,
                 ofInstant(Instant.ofEpochSecond(bootSeconds), zoneId).format(DATE_TIME_FORMATTER),
                 ofInstant(Instant.ofEpochSecond(lastSeconds), zoneId).format(DATE_TIME_FORMATTER),
@@ -199,7 +200,7 @@ public final class SnowflakeIdentityGenerator {
         if (stepAdvanced)
             LAST_SECONDS_PROCESSOR.accept(timeStamp);
 
-        return (timeStamp << timestampShift) | dataCenterWithWorkerBitsMask | seq;
+        return (timeStamp << timeStampShift) | dataCenterWithWorkerBitsMask | seq;
     }
 
 }

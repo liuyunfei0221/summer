@@ -29,9 +29,9 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.*;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.secure.ExtraKey.NEW_MEMBER;
-import static com.blue.base.constant.secure.LoginType.PHONE_VERIFY_AUTO_REGISTER;
-import static com.blue.base.constant.verify.BusinessType.PHONE_VERIFY_LOGIN_WITH_AUTO_REGISTER;
-import static com.blue.base.constant.verify.VerifyType.SMS;
+import static com.blue.base.constant.secure.LoginType.EMAIL_VERIFY_AUTO_REGISTER;
+import static com.blue.base.constant.verify.BusinessType.EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER;
+import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static com.blue.secure.constant.LoginAttribute.ACCESS;
 import static com.blue.secure.constant.LoginAttribute.IDENTITY;
 import static java.util.Collections.singletonList;
@@ -43,16 +43,16 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * sms and verify with auto register handler
+ * email and verify with auto register handler
  *
  * @author DarkBlue
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Component
 @Order(LOWEST_PRECEDENCE - 1)
-public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
+public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
 
-    private static final Logger LOGGER = getLogger(SmsVerifyWithAutoRegisterLoginHandler.class);
+    private static final Logger LOGGER = getLogger(EmailVerifyWithAutoRegisterLoginHandler.class);
 
     private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
 
@@ -66,9 +66,9 @@ public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
 
     private final SecureService secureService;
 
-    public SmsVerifyWithAutoRegisterLoginHandler(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
-                                                 AutoRegisterService autoRegisterService, CredentialService credentialService,
-                                                 RoleService roleService, MemberService memberService, SecureService secureService) {
+    public EmailVerifyWithAutoRegisterLoginHandler(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
+                                                   AutoRegisterService autoRegisterService, CredentialService credentialService,
+                                                   RoleService roleService, MemberService memberService, SecureService secureService) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.autoRegisterService = autoRegisterService;
         this.credentialService = credentialService;
@@ -77,11 +77,11 @@ public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
         this.secureService = secureService;
     }
 
-    private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = phone -> {
+    private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = email -> {
         CredentialInfo credential = new CredentialInfo();
 
-        credential.setCredential(phone);
-        credential.setType(PHONE_VERIFY_AUTO_REGISTER.identity);
+        credential.setCredential(email);
+        credential.setType(EMAIL_VERIFY_AUTO_REGISTER.identity);
 
         return singletonList(credential);
     };
@@ -93,36 +93,36 @@ public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
 
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
-        LOGGER.info("SmsVerifyWithAutoRegisterLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
+        LOGGER.info("EmailVerifyWithAutoRegisterLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
         if (loginParam == null)
             throw new BlueException(EMPTY_PARAM);
 
-        String phone = loginParam.getData(IDENTITY.key);
+        String email = loginParam.getData(IDENTITY.key);
         String access = loginParam.getData(ACCESS.key);
 
-        if (isBlank(phone) || isBlank(access))
+        if (isBlank(email) || isBlank(access))
             throw new BlueException(INVALID_ACCT_OR_PWD);
 
         Map<String, Object> extra = new HashMap<>(2);
 
-        return rpcVerifyHandleServiceConsumer.validate(SMS, PHONE_VERIFY_LOGIN_WITH_AUTO_REGISTER, phone, access, true)
+        return rpcVerifyHandleServiceConsumer.validate(MAIL, EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER, email, access, true)
                 .flatMap(validate ->
                         validate ?
-                                credentialService.getCredentialByCredentialAndType(phone, PHONE_VERIFY_AUTO_REGISTER.identity)
+                                credentialService.getCredentialByCredentialAndType(email, EMAIL_VERIFY_AUTO_REGISTER.identity)
                                         .flatMap(credentialOpt ->
                                                 credentialOpt.map(credential -> {
                                                             extra.put(NEW_MEMBER.key, false);
                                                             return memberService.selectMemberBasicInfoMonoById(credential.getMemberId())
                                                                     .flatMap(mbi -> {
                                                                         MEMBER_STATUS_ASSERTER.accept(mbi);
-                                                                        return secureService.generateAuthMono(mbi.getId(), PHONE_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());
+                                                                        return secureService.generateAuthMono(mbi.getId(), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());
                                                                     });
                                                         })
                                                         .orElseGet(() -> {
                                                             extra.put(NEW_MEMBER.key, true);
                                                             return just(roleService.getDefaultRole().getId())
-                                                                    .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId))
-                                                                            .flatMap(mbi -> secureService.generateAuthMono(mbi.getId(), roleId, PHONE_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
+                                                                    .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(email), roleId))
+                                                                            .flatMap(mbi -> secureService.generateAuthMono(mbi.getId(), roleId, EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
                                                         })
                                         )
                                         .flatMap(ma ->
@@ -139,7 +139,7 @@ public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
 
     @Override
     public LoginType targetType() {
-        return PHONE_VERIFY_AUTO_REGISTER;
+        return EMAIL_VERIFY_AUTO_REGISTER;
     }
 
 }

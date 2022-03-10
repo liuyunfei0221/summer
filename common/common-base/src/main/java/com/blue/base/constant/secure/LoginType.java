@@ -10,19 +10,19 @@ package com.blue.base.constant.secure;
 public enum LoginType {
 
     /**
-     * login with phone num and message verify
+     * login with phone num and message verify with auto register
      */
-    SMS_VERIFY("SV", "CLI", "login with phone num and message verify"),
-
-    /**
-     * login with phone num and message verify and auto register
-     */
-    SMS_VERIFY_AUTO_REGISTER("SV", "CLI", "login with phone num and message verify"),
+    PHONE_VERIFY_AUTO_REGISTER("PVAR", "CLI", "login with phone num and message verify"),
 
     /**
      * login with phone num and password
      */
     PHONE_PWD("PP", "CLI", "login with phone num and password"),
+
+    /**
+     * login with email address and message verify with auto register
+     */
+    EMAIL_VERIFY_AUTO_REGISTER("EVAR", "CLI", "login with email address and message verify"),
 
     /**
      * login with email and password
@@ -32,12 +32,17 @@ public enum LoginType {
     /**
      * login by wechat
      */
-    WECHAT("WE", "CLI", "login by wechat"),
+    WECHAT_AUTO_REGISTER("WEAR", "CLI", "login by wechat"),
 
     /**
-     * login by wechar mini pro
+     * login by wechar mini pro with auto register
      */
-    MINI_PRO("MP", "MP", "login by wechar mini pro"),
+    MINI_PRO_AUTO_REGISTER("MPAR", "MPAR", "login by wechar mini pro"),
+
+    /**
+     * login by local phone num with auto register
+     */
+    LOCAL_PHONE_AUTO_REGISTER("LPAR", "CLI", ""),
 
     /**
      * not login

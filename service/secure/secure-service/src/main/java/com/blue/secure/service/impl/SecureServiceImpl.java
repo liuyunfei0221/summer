@@ -636,6 +636,7 @@ public class SecureServiceImpl implements SecureService {
      * @param deviceType
      * @return
      */
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public Mono<MemberAuth> generateAuthMono(Long memberId, String loginType, String deviceType) {
         LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, String loginType, String deviceType), memberId = {}, loginType = {}, deviceType", memberId, loginType, deviceType);
@@ -653,6 +654,45 @@ public class SecureServiceImpl implements SecureService {
                     MemberPayload memberPayload = tuple2.getT1();
                     Long roleId = tuple2.getT2();
 
+                    String jwt = jwtProcessor.create(memberPayload);
+                    KeyPair keyPair = initKeyPair();
+                    String authInfoJson = GSON.toJson(new AuthInfo(jwt, roleId, keyPair.getPubKey()));
+
+                    return authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson)
+                            .flatMap(b -> {
+                                LOGGER.info("authInfoJson = {}, keyPairDTO = {}", authInfoJson, keyPair);
+                                if (b)
+                                    return just(new MemberAuth(jwt, keyPair.getPriKey()));
+
+                                LOGGER.error("authInfoCache.setAuthInfo(mp.getKeyId(), authInfoJson), failed, memberPayload = {}, roleId = {}, keyPair = {}, authInfoJson = {}", memberPayload, roleId, keyPair, authInfoJson);
+                                return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
+                            });
+                })
+                :
+                error(() -> new BlueException(BAD_REQUEST));
+    }
+
+    /**
+     * generate member auth with auto register
+     *
+     * @param memberId
+     * @param roleId
+     * @param loginType
+     * @param deviceType
+     * @return
+     */
+    @SuppressWarnings("DuplicatedCode")
+    @Override
+    public Mono<MemberAuth> generateAuthMono(Long memberId, Long roleId, String loginType, String deviceType) {
+        LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, Long roleId, String loginType, String deviceType) , memberId = {}, roleId = {}, loginType = {}, deviceType", memberId, roleId, loginType, deviceType);
+        return isValidIdentity(memberId) && isValidIdentity(roleId) && isNotBlank(loginType) && isNotBlank(deviceType) ?
+                just(new MemberPayload(
+                        randomAlphanumeric(RANDOM_ID_LENGTH),
+                        genSessionKey(memberId, loginType, deviceType),
+                        valueOf(memberId),
+                        loginType, deviceType,
+                        valueOf(TIME_STAMP_GETTER.get()))
+                ).flatMap(memberPayload -> {
                     String jwt = jwtProcessor.create(memberPayload);
                     KeyPair keyPair = initKeyPair();
                     String authInfoJson = GSON.toJson(new AuthInfo(jwt, roleId, keyPair.getPubKey()));

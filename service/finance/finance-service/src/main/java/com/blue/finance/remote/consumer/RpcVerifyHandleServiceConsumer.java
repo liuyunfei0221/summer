@@ -1,6 +1,6 @@
 package com.blue.finance.remote.consumer;
 
-import com.blue.base.constant.verify.VerifyBusinessType;
+import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.verify.api.inter.RpcVerifyHandleService;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -40,32 +40,32 @@ public class RpcVerifyHandleServiceConsumer {
      * generate verify for api
      *
      * @param verifyType
-     * @param verifyBusinessType
+     * @param businessType
      * @param destination
      * @return
      */
-    public Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination) {
+    public Mono<String> generate(VerifyType verifyType, BusinessType businessType, String destination) {
         LOGGER.info("Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination), verifyType = {}, verifyBusinessType = {}, destination = {}",
-                verifyType, verifyBusinessType, destination);
+                verifyType, businessType, destination);
 
-        return fromFuture(rpcVerifyHandleService.generate(verifyType, verifyBusinessType, destination)).publishOn(scheduler);
+        return fromFuture(rpcVerifyHandleService.generate(verifyType, businessType, destination)).publishOn(scheduler);
     }
 
     /**
      * validate verify
      *
      * @param verifyType
-     * @param verifyBusinessType
+     * @param businessType
      * @param key
      * @param verify
      * @param repeatable
      * @return
      */
-    public Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
+    public Mono<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
         LOGGER.info("Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable), " +
-                "verifyType = {}, verifyBusinessType = {}, key = {}, verify = {}, repeatable = {}", verifyType, verifyBusinessType, key, verify, repeatable);
+                "verifyType = {}, verifyBusinessType = {}, key = {}, verify = {}, repeatable = {}", verifyType, businessType, key, verify, repeatable);
 
-        return fromFuture(rpcVerifyHandleService.validate(verifyType, verifyBusinessType, key, verify, repeatable)).publishOn(scheduler);
+        return fromFuture(rpcVerifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).publishOn(scheduler);
     }
 
 }

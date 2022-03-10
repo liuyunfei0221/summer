@@ -7,6 +7,7 @@ import com.blue.identity.core.SnowflakeIdentityParser;
 import com.blue.identity.core.exp.IdentityException;
 import com.blue.identity.core.param.IdGenParam;
 import com.blue.identity.model.IdentityElement;
+import net.openhft.affinity.AffinityThreadFactory;
 import reactor.util.Logger;
 
 import java.util.Map;
@@ -18,6 +19,7 @@ import static com.blue.identity.core.ConfAsserter.assertConf;
 import static java.time.Instant.now;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static reactor.util.Loggers.getLogger;
 
@@ -52,7 +54,7 @@ public final class BlueIdentityProcessor {
      */
     private final Map<String, BlueIdentityGenerator> GENERATORS = new ConcurrentHashMap<>();
 
-    private static final String THREAD_NAME_PRE = "IdentityProcessor-thread- ";
+    private static final String THREAD_NAME = "IdentityProcessor-thread";
     private static final int RANDOM_LEN = 4;
 
     /**
@@ -70,11 +72,7 @@ public final class BlueIdentityProcessor {
         String serviceName = identityConf.getServiceName() + PAR_CONCATENATION + identityConf.getDataCenter() + PAR_CONCATENATION + identityConf.getWorker();
         handlerKeyPre = (GEN_KEY_PRE + serviceName + PAR_CONCATENATION).intern();
 
-        ThreadFactory threadFactory = r -> {
-            Thread thread = new Thread(r, THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN));
-            thread.setDaemon(true);
-            return thread;
-        };
+        ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE);
 
         Boolean paddingScheduled = identityConf.getPaddingScheduled();
         idGenParam = new IdGenParam(identityConf.getDataCenter(), identityConf.getWorker(), ofNullable(identityConf.getLastSecondsGetter()).map(Supplier::get).filter(ls -> ls > 0)

@@ -114,7 +114,7 @@ CREATE TABLE `credential_0`
 (
     `id`          bigint      NOT NULL COMMENT 'id',
     `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32) NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `type`        varchar(32) NOT NULL COMMENT 'login type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
     `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
     `member_id`   bigint      NOT NULL COMMENT 'member id',
     `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
@@ -131,7 +131,7 @@ CREATE TABLE `credential_1`
 (
     `id`          bigint      NOT NULL COMMENT 'id',
     `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32) NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `type`        varchar(32) NOT NULL COMMENT 'login type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
     `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
     `member_id`   bigint      NOT NULL COMMENT 'member id',
     `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
@@ -222,7 +222,7 @@ CREATE TABLE `credential_0`
 (
     `id`          bigint      NOT NULL COMMENT 'id',
     `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32) NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `type`        varchar(32) NOT NULL COMMENT 'login type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
     `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
     `member_id`   bigint      NOT NULL COMMENT 'member id',
     `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
@@ -239,7 +239,7 @@ CREATE TABLE `credential_1`
 (
     `id`          bigint      NOT NULL COMMENT 'id',
     `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32) NOT NULL COMMENT 'login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN',
+    `type`        varchar(32) NOT NULL COMMENT 'login type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
     `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
     `member_id`   bigint      NOT NULL COMMENT 'member id',
     `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
@@ -2098,7 +2098,7 @@ CREATE TABLE `member_basic_0`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_phone`(`phone`) USING BTREE,
+    KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
@@ -2115,7 +2115,7 @@ CREATE TABLE `member_basic_1`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_phone`(`phone`) USING BTREE,
+    KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
@@ -2363,7 +2363,7 @@ CREATE TABLE `member_basic_0`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_phone`(`phone`) USING BTREE,
+    KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
@@ -2380,7 +2380,7 @@ CREATE TABLE `member_basic_1`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_phone`(`phone`) USING BTREE,
+    KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     UNIQUE KEY `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';

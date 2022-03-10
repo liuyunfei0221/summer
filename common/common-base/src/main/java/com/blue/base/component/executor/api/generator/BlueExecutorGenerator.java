@@ -2,17 +2,16 @@ package com.blue.base.component.executor.api.generator;
 
 import com.blue.base.component.executor.api.conf.ExecutorConf;
 import com.blue.base.model.exps.BlueException;
+import net.openhft.affinity.AffinityThreadFactory;
 import reactor.util.Logger;
 
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static reactor.util.Loggers.getLogger;
 
@@ -43,11 +42,8 @@ public final class BlueExecutorGenerator {
                 executorConf.getMaximumPoolSize(),
                 executorConf.getKeepAliveSeconds(), SECONDS,
                 new ArrayBlockingQueue<>(executorConf.getBlockingQueueCapacity()),
-                r -> {
-                    Thread thread = new Thread(r, threadNamePre + randomAlphabetic(RANDOM_LEN));
-                    thread.setDaemon(true);
-                    return thread;
-                }, executorConf.getRejectedExecutionHandler());
+                new AffinityThreadFactory(threadNamePre + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE),
+                executorConf.getRejectedExecutionHandler());
     }
 
     /**

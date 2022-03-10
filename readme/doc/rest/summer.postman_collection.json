@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "8aa85370-3d04-4fd1-8258-5b93e67e5ad0",
+		"_postman_id": "711cd0b5-65e6-402c-a745-34910fde47fd",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -18,17 +18,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"phone\":\"13131693996\",\r\n    \"email\":\"yunfei@outloot.com\",\r\n    \"password\":\"12345678\",\r\n    \"name\":\"云飞\",\r\n    \"gender\":1\r\n}"
+					"raw": "{\r\n    \"phone\":\"18633783158\",\r\n    \"email\":\"liuyunfei@outloot.com\",\r\n    \"access\":\"12345678\",\r\n    \"name\":\"刘云飞\",\r\n    \"gender\":1\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-member/member/registry",
+					"raw": "localhost:10000/blue-member/registry",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
 						"blue-member",
-						"member",
 						"registry"
 					]
 				}
@@ -48,7 +47,67 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"loginType\":\"EP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"yunfei@outloot.com\",\r\n        \"access\":\"12345678\"\r\n    }\r\n}"
+					"raw": "{\r\n    \"loginType\":\"EP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"liuyunfei@outloot.com\",\r\n        \"access\":\"12345678\"\r\n    }\r\n}"
+				},
+				"url": {
+					"raw": "localhost:10000/blue-secure/auth/login",
+					"host": [
+						"localhost"
+					],
+					"port": "10000",
+					"path": [
+						"blue-secure",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取短信自动登录验证码",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"PVL_WAR\",\r\n    \"destination\":\"18633783158\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:16000/blue-verify/verify/generate",
+					"host": [
+						"localhost"
+					],
+					"port": "16000",
+					"path": [
+						"blue-verify",
+						"verify",
+						"generate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "短信验证码登录并自动注册",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"loginType\":\"SVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"9449900\"\r\n    }\r\n}"
 				},
 				"url": {
 					"raw": "localhost:10000/blue-secure/auth/login",
@@ -108,7 +167,7 @@
 					},
 					{
 						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMzE3MmViNjUyOWYzZTc1Njk1NDQ0MGY5NmQxNTQ3OGQ0ZWM1ZjE5MjYyMzk3ZjA5YTA1YjYxMzQ1NzI2ZDBmZjU2ZjMzYzQxNTk3YmU3MWYxNmQxZDBlZGM0MjM5YmNiNmE3YmE4MWY5MDZjYjRhMDUyODAxN2Y4ZDA3ZGZjOWYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgzMTM4ODU3Nzc4NTQ0NjVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ4Mjg4MzE4OTY2LCJpIjoiMjgzMTM4ODU3Nzc4NTQ0NjUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ1NjA5OTE4IiwibmJmIjoxNjQ1NjA5OTE4LCJ0IjoidjhGUkpDbjdaNm8iLCJleHAiOjE2NDgyODgzMTgsImlhdCI6MTY0NTYwOTkxOCwianRpIjoiUzVDd21sR0RVQnlUbnFrYXhzV0NMR2dtNGpRU09mMmQifQ.cONa5Hnv8Oiic5_2xPw0wXs6GFaIwIV4EWcdcQtdKTdbJtAb20CXWmLM2-zd_mUbjZZNfCDx0kHxE037czNE1g",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMGQ3NTI2MjJjYTNhMmM1NjlmOGM1Y2Y4NGM3OGEyNTc0OTliMTNmYWNiODc2M2JhZTZmYzExMmIwZWUzZjgwZTNkMmEwZWU4NWJmYzczM2Y5OGI0YmQ5YWI1MTVhN2Q1MDEyOTk3NWVkOWUxZTk0NjVlZDAxODliYzFiOWY3Y2UiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MzAyMDE5MTkwNDE0Mzc2OThfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ5NTk2ODk0NjU0LCJpIjoiMzAyMDE5MTkwNDE0Mzc2OTgiLCJuIjoiUFZBUiIsImF1ZCI6ImNuIiwicyI6IjE2NDY5MTg0OTQiLCJuYmYiOjE2NDY5MTg0OTQsInQiOiJNMVlhUTNkT2NsZCIsImV4cCI6MTY0OTU5Njg5NCwiaWF0IjoxNjQ2OTE4NDk0LCJqdGkiOiJNRWRJYmhFbHhScG1WSVZtSURDVVp5ZU9Cb3AxMjFOeSJ9.IKtUC4R10piAyYY7KhFd1oJCwQj61anEUGtVWgHYGY6zRLT8klD4ms8IGE2D-dT7JArviILmVkVgelk1jZDnbQ",
 						"type": "text"
 					}
 				],
@@ -1175,7 +1234,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"verifyType\":\"IMAGE\",\r\n    \"destination\":\"13131693996\"\r\n}"
+					"raw": "{\r\n    \"verifyType\":\"IMAGE\",\r\n    \"businessType\":\"REGISTER\"\r\n}"
 				},
 				"url": {
 					"raw": "localhost:16000/blue-verify/verify/generate",
@@ -1318,7 +1377,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"statisticsTypes\":[\"MEMBER_ACTIVE\"],\r\n    \"statisticsRanges\":[\"DAY\"]\r\n}"
+					"raw": "{\r\n    \"statisticsTypes\":[\"MA\"],\r\n    \"statisticsRanges\":[\"D\"]\r\n}"
 				},
 				"url": {
 					"raw": "localhost:10000/blue-analyze/statistics/active/merge",
@@ -1368,7 +1427,7 @@
 			"response": []
 		},
 		{
-			"name": "查询国家列表",
+			"name": "查询全部国家列表",
 			"request": {
 				"method": "GET",
 				"header": [

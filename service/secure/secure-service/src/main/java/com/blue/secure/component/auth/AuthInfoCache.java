@@ -6,7 +6,7 @@ import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.secure.event.producer.AuthExpireProducer;
 import com.github.benmanes.caffeine.cache.Cache;
-import org.apache.commons.lang3.RandomStringUtils;
+import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
@@ -25,6 +25,8 @@ import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCach
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.springframework.util.StringUtils.hasText;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
@@ -82,11 +84,7 @@ public final class AuthInfoCache {
         this.authExpireProducer = authExpireProducer;
         this.scheduler = scheduler;
 
-        ThreadFactory threadFactory = r -> {
-            Thread thread = new Thread(r, THREAD_NAME_PRE + RandomStringUtils.randomAlphabetic(RANDOM_LEN));
-            thread.setDaemon(true);
-            return thread;
-        };
+        ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE);
 
         RejectedExecutionHandler rejectedExecutionHandler = (r, executor) -> {
             LOGGER.error("task has been reject: r = {}", r);

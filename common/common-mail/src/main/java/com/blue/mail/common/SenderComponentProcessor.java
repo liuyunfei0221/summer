@@ -8,6 +8,7 @@ import jakarta.mail.Authenticator;
 import jakarta.mail.Message;
 import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
+import net.openhft.affinity.AffinityThreadFactory;
 import reactor.util.Logger;
 
 import java.io.BufferedReader;
@@ -28,6 +29,7 @@ import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static jakarta.mail.Session.getInstance;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static reactor.util.Loggers.getLogger;
 
@@ -96,8 +98,7 @@ public final class SenderComponentProcessor {
         return new ThreadPoolExecutor(conf.getCorePoolSize(),
                 conf.getMaximumPoolSize(), conf.getKeepAliveSeconds(), SECONDS,
                 new ArrayBlockingQueue<>(conf.getBlockingQueueCapacity()),
-                r ->
-                        new Thread(r, threadNamePre + randomAlphabetic(RANDOM_LEN)),
+                new AffinityThreadFactory(threadNamePre + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE),
                 rejectedExecutionHandler);
     }
 

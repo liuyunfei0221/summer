@@ -1,6 +1,7 @@
 package com.blue.pulsar.common;
 
 import com.blue.pulsar.api.conf.ConsumerConf;
+import net.openhft.affinity.AffinityThreadFactory;
 import org.apache.pulsar.client.api.*;
 import org.slf4j.Logger;
 
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -19,6 +21,7 @@ import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateConsumer;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -38,6 +41,8 @@ public final class BluePulsarConsumer<T extends Serializable> {
     private final PulsarConsumerTask task;
 
     private final List<Thread> workingThreadHolder;
+
+    private static final String THREAD_NAME_PREFIX = "consumer working thread for topics ";
 
     /**
      * consumers holder
@@ -90,11 +95,11 @@ public final class BluePulsarConsumer<T extends Serializable> {
         int workingThreads = conf.getWorkingThreads();
         workingThreadHolder = new ArrayList<>(workingThreads);
 
+        ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME_PREFIX + conf.getTopics(), DIFFERENT_CORE);
+
         Thread thread;
         for (int i = 0; i < workingThreads; i++) {
-            //noinspection AlibabaAvoidManuallyCreateThread
-            thread = new Thread(this.task);
-            thread.setName("consumer working thread for topics " + conf.getTopics() + ", seq - " + i);
+            thread = threadFactory.newThread(this.task);
             thread.setDaemon(true);
             workingThreadHolder.add(thread);
         }
@@ -192,10 +197,11 @@ public final class BluePulsarConsumer<T extends Serializable> {
             Message<T> message = null;
             while (running)
                 try {
-                    message = pulsarConsumer.receive(POLL_DURATION_MILLS, POLL_DURATION_UNIT);
-                    EVENT_CONSUMER.accept(message);
-                } catch (Exception e) {
+                    if ((message = pulsarConsumer.receive(POLL_DURATION_MILLS, POLL_DURATION_UNIT)) != null)
+                        EVENT_CONSUMER.accept(message);
+                } catch (PulsarClientException e) {
                     LOGGER.error("handle() received failed, message = {}, e = {}", message, e);
+                    onSpinWait();
                 }
         }
 
@@ -203,12 +209,11 @@ public final class BluePulsarConsumer<T extends Serializable> {
             Messages<T> messages = null;
             while (running)
                 try {
-                    messages = pulsarConsumer.batchReceive();
-                    if (messages != null) {
+                    if ((messages = pulsarConsumer.batchReceive()) != null)
                         EVENTS_CONSUMER.accept(messages);
-                    }
-                } catch (Exception e) {
+                } catch (PulsarClientException e) {
                     LOGGER.error(" handleBatch() received failed, messages = {}, e = {}", messages, e);
+                    onSpinWait();
                 }
         }
 

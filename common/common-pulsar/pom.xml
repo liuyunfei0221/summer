@@ -29,6 +29,11 @@
             <artifactId>pulsar-client-original</artifactId>
             <version>${pulsar.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>affinity</artifactId>
+            <version>${affinity.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

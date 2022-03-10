@@ -2,12 +2,14 @@ package com.blue.base.component.scheduler.api.generator;
 
 import com.blue.base.component.scheduler.api.conf.SchedulerConf;
 import com.blue.base.model.exps.BlueException;
+import net.openhft.affinity.AffinityThreadFactory;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.util.Optional.ofNullable;
+import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static reactor.core.scheduler.Schedulers.newBoundedElastic;
 import static reactor.util.Loggers.getLogger;
@@ -37,11 +39,7 @@ public final class SchedulerGenerator {
                 .orElse(DEFAULT_THREAD_NAME_PRE);
 
         return newBoundedElastic(schedulerConf.getThreadCap(), schedulerConf.getQueuedTaskCap(),
-                r -> {
-                    Thread thread = new Thread(r, threadNamePre + randomAlphabetic(RANDOM_LEN));
-                    thread.setDaemon(true);
-                    return thread;
-                },
+                new AffinityThreadFactory(threadNamePre + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE),
                 schedulerConf.getTtlSeconds());
     }
 

@@ -249,7 +249,7 @@ public class TheRandom extends Random {
     }
 
     public double nextDouble(double bound) {
-        if (!(bound > 0.0))
+        if (bound <= 0.0)
             throw new IllegalArgumentException(BAD_BOUND);
         double result = (mix64(nextSeed()) >>> 11) * DOUBLE_UNIT * bound;
         return (result < bound) ? result :
@@ -257,7 +257,7 @@ public class TheRandom extends Random {
     }
 
     public double nextDouble(double origin, double bound) {
-        if (!(origin < bound))
+        if (origin >= bound)
             throw new IllegalArgumentException(BAD_RANGE);
         return internalNextDouble(origin, bound);
     }
@@ -413,7 +413,7 @@ public class TheRandom extends Random {
                         false);
     }
 
-    @SuppressWarnings("UnnecessaryLocalVariable")
+    @SuppressWarnings({"UnnecessaryLocalVariable", "SpellCheckingInspection"})
     private static final class RandomIntsSpliterator
             implements Spliterator.OfInt {
         long index;

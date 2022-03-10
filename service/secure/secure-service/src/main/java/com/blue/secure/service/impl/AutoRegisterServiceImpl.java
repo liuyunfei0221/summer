@@ -5,10 +5,11 @@ import com.blue.base.constant.secure.LoginType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.secure.api.model.CredentialInfo;
+import com.blue.secure.api.model.MemberCredentialInfo;
 import com.blue.secure.remote.consumer.RpcMemberRegistryServiceConsumer;
-import com.blue.secure.repository.entity.Credential;
 import com.blue.secure.service.inter.AutoRegisterService;
-import com.blue.secure.service.inter.CredentialService;
+import com.blue.secure.service.inter.ControlService;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -21,6 +22,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
+import static com.blue.base.constant.base.RandomType.ALPHANUMERIC;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.constant.secure.LoginType.*;
 import static java.util.Optional.ofNullable;
@@ -40,48 +43,62 @@ public class AutoRegisterServiceImpl implements AutoRegisterService {
 
     private final RpcMemberRegistryServiceConsumer rpcMemberRegistryServiceConsumer;
 
-    private final CredentialService credentialService;
+    private final ControlService controlService;
 
-    public AutoRegisterServiceImpl(RpcMemberRegistryServiceConsumer rpcMemberRegistryServiceConsumer, CredentialService credentialService) {
+    public AutoRegisterServiceImpl(RpcMemberRegistryServiceConsumer rpcMemberRegistryServiceConsumer, ControlService controlService) {
         this.rpcMemberRegistryServiceConsumer = rpcMemberRegistryServiceConsumer;
-        this.credentialService = credentialService;
+        this.controlService = controlService;
     }
 
-    private static final Map<String, BiConsumer<Credential, MemberRegistryParam>> REGISTRY_PARAM_PACKAGERS = new HashMap<>(LoginType.values().length);
+    private static final int RANDOM_NAME_LEN = 8;
+
+    private static final Map<String, BiConsumer<CredentialInfo, MemberRegistryParam>> REGISTRY_PARAM_PACKAGERS = new HashMap<>(LoginType.values().length);
 
     static {
-        REGISTRY_PARAM_PACKAGERS.put(SMS_VERIFY.identity, (credential, registryParam) ->
-                registryParam.setPhone(credential.getCredential()));
+        REGISTRY_PARAM_PACKAGERS.put(PHONE_VERIFY_AUTO_REGISTER.identity, (credentialInfo, registryParam) -> {
+            registryParam.setPhone(credentialInfo.getCredential());
+            registryParam.setName(generateRandom(ALPHANUMERIC, RANDOM_NAME_LEN));
+        });
 
-        REGISTRY_PARAM_PACKAGERS.put(SMS_VERIFY_AUTO_REGISTER.identity, (credential, registryParam) ->
-                registryParam.setPhone(credential.getCredential()));
+        REGISTRY_PARAM_PACKAGERS.put(PHONE_PWD.identity, (credentialInfo, registryParam) -> {
+            registryParam.setPhone(credentialInfo.getCredential());
+            registryParam.setName(generateRandom(ALPHANUMERIC, RANDOM_NAME_LEN));
+        });
 
-        REGISTRY_PARAM_PACKAGERS.put(PHONE_PWD.identity, (credential, registryParam) ->
-                registryParam.setPhone(credential.getCredential()));
+        REGISTRY_PARAM_PACKAGERS.put(EMAIL_VERIFY_AUTO_REGISTER.identity, (credentialInfo, registryParam) -> {
+            registryParam.setEmail(credentialInfo.getCredential());
+            registryParam.setName(generateRandom(ALPHANUMERIC, RANDOM_NAME_LEN));
+        });
 
-        REGISTRY_PARAM_PACKAGERS.put(EMAIL_PWD.identity, (credential, registryParam) ->
-                registryParam.setEmail(credential.getCredential()));
+        REGISTRY_PARAM_PACKAGERS.put(EMAIL_PWD.identity, (credentialInfo, registryParam) -> {
+            registryParam.setEmail(credentialInfo.getCredential());
+            registryParam.setName(generateRandom(ALPHANUMERIC, RANDOM_NAME_LEN));
+        });
 
-        REGISTRY_PARAM_PACKAGERS.put(WECHAT.identity, (credential, registryParam) ->
-                registryParam.setEmail(credential.getCredential()));
+        REGISTRY_PARAM_PACKAGERS.put(WECHAT_AUTO_REGISTER.identity, (credentialInfo, registryParam) -> {
+            registryParam.setEmail(credentialInfo.getCredential());
+            registryParam.setName(generateRandom(ALPHANUMERIC, RANDOM_NAME_LEN));
+        });
 
-        REGISTRY_PARAM_PACKAGERS.put(MINI_PRO.identity, (credential, registryParam) ->
-                registryParam.setEmail(credential.getCredential()));
+        REGISTRY_PARAM_PACKAGERS.put(MINI_PRO_AUTO_REGISTER.identity, (credentialInfo, registryParam) -> {
+            registryParam.setEmail(credentialInfo.getCredential());
+            registryParam.setName(generateRandom(ALPHANUMERIC, RANDOM_NAME_LEN));
+        });
 
         //TODO
         REGISTRY_PARAM_PACKAGERS.put(NOT_LOGGED_IN.identity, null);
     }
 
-    private static final BiConsumer<Credential, MemberRegistryParam> REGISTRY_PARAM_PACKAGER = (credential, registryParam) ->
-            ofNullable(credential)
-                    .map(Credential::getType)
+    private static final BiConsumer<CredentialInfo, MemberRegistryParam> REGISTRY_PARAM_PACKAGER = (credentialInfo, registryParam) ->
+            ofNullable(credentialInfo)
+                    .map(CredentialInfo::getType)
                     .filter(BlueChecker::isNotBlank)
                     .map(REGISTRY_PARAM_PACKAGERS::get)
                     .orElseThrow(() -> new BlueException(INVALID_IDENTITY))
-                    .accept(credential, registryParam);
+                    .accept(credentialInfo, registryParam);
 
 
-    private static final Function<List<Credential>, MemberRegistryParam> REGISTRY_PARAM_CONVERTER = credentials -> {
+    private static final Function<List<CredentialInfo>, MemberRegistryParam> REGISTRY_PARAM_CONVERTER = credentials -> {
         MemberRegistryParam memberRegistryParam = new MemberRegistryParam();
 
         credentials.forEach(credential -> REGISTRY_PARAM_PACKAGER.accept(credential, memberRegistryParam));
@@ -94,6 +111,7 @@ public class AutoRegisterServiceImpl implements AutoRegisterService {
      * auto register for a new member
      *
      * @param credentials
+     * @param roleId
      * @return
      */
     @Override
@@ -101,14 +119,12 @@ public class AutoRegisterServiceImpl implements AutoRegisterService {
             rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
-    public MemberBasicInfo autoRegisterMemberInfo(List<Credential> credentials) {
-        LOGGER.info("MemberBasicInfo autoRegisterMemberInfo(List<Credential> credentials), credentials = {}", credentials);
+    public MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials, Long roleId) {
+        LOGGER.info("MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials), credentials = {}", credentials);
 
         MemberBasicInfo memberBasicInfo = rpcMemberRegistryServiceConsumer.autoRegisterMemberBasic(REGISTRY_PARAM_CONVERTER.apply(credentials));
-        Long id = memberBasicInfo.getId();
 
-        credentials.forEach(credential -> credential.setMemberId(id));
-        credentialService.insertCredentials(credentials);
+        controlService.initMemberSecureInfo(new MemberCredentialInfo(memberBasicInfo.getId(), credentials), roleId);
 
         return memberBasicInfo;
     }

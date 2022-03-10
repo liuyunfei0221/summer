@@ -2,6 +2,7 @@ package com.blue.secure.component.auth;
 
 import com.blue.base.model.base.KeyExpireParam;
 import com.blue.base.model.exps.BlueException;
+import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -20,6 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.of;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static reactor.util.Loggers.getLogger;
@@ -87,22 +89,18 @@ public final class AuthBatchExpireProcessor {
             r.run();
         };
 
-        batchExpireSchedule = new ScheduledThreadPoolExecutor(batchExpireScheduledCorePoolSize, r -> {
-            Thread thread = new Thread(r, SCHEDULED_THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN));
-            thread.setDaemon(true);
-            return thread;
-        }, rejectedExecutionHandler);
+        batchExpireSchedule = new ScheduledThreadPoolExecutor(batchExpireScheduledCorePoolSize,
+                new AffinityThreadFactory(SCHEDULED_THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE),
+                rejectedExecutionHandler);
 
         BATCH_EXPIRE_MAX_PER_HANDLE = batchExpireMaxPerHandle;
 
         this.batchExpireSchedule.scheduleWithFixedDelay(this::handleExpire, batchExpireScheduledInitialDelayMillis, batchExpireScheduledDelayMillis, TIME_UNIT);
 
         this.executorService = new ThreadPoolExecutor(batchExpireScheduledCorePoolSize, batchExpireScheduledCorePoolSize,
-                THREAD_KEEP_ALIVE_SECONDS, SECONDS, new ArrayBlockingQueue<>(batchExpireQueueCapacity), r -> {
-            Thread thread = new Thread(r, HANDLE_THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN));
-            thread.setDaemon(true);
-            return thread;
-        }, rejectedExecutionHandler);
+                THREAD_KEEP_ALIVE_SECONDS, SECONDS, new ArrayBlockingQueue<>(batchExpireQueueCapacity),
+                new AffinityThreadFactory(HANDLE_THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE),
+                rejectedExecutionHandler);
     }
 
 

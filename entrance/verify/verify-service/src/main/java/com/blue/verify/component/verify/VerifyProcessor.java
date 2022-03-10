@@ -1,6 +1,6 @@
 package com.blue.verify.component.verify;
 
-import com.blue.base.constant.verify.VerifyBusinessType;
+import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.verify.api.model.VerifyParam;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
-import static com.blue.base.common.base.ConstantProcessor.getVerifyBusinessTypeByIdentity;
+import static com.blue.base.common.base.ConstantProcessor.getBusinessTypeByIdentity;
 import static com.blue.base.common.base.ConstantProcessor.getVerifyTypeByIdentity;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Optional.ofNullable;
@@ -53,14 +53,14 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
      * generate for api
      *
      * @param verifyType
-     * @param verifyBusinessType
+     * @param businessType
      * @param destination
      * @return
      */
-    public Mono<String> handle(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination) {
-        if (verifyType != null && verifyBusinessType != null)
+    public Mono<String> handle(VerifyType verifyType, BusinessType businessType, String destination) {
+        if (verifyType != null && businessType != null)
             return ofNullable(verifyHandlers.get(verifyType))
-                    .map(h -> h.handle(verifyBusinessType, destination))
+                    .map(h -> h.handle(businessType, destination))
                     .orElseThrow(() -> new BlueException(INVALID_PARAM));
 
         return error(() -> new BlueException(INVALID_PARAM));
@@ -79,7 +79,7 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
                 .flatMap(vp ->
                         ofNullable(vp.getVerifyType())
                                 .map(verifyType -> verifyHandlers.get(getVerifyTypeByIdentity(verifyType)))
-                                .map(h -> h.handle(getVerifyBusinessTypeByIdentity(vp.getBusinessType()), vp.getDestination(), serverRequest))
+                                .map(h -> h.handle(getBusinessTypeByIdentity(vp.getBusinessType()), vp.getDestination(), serverRequest))
                                 .orElseThrow(() -> new BlueException(INVALID_PARAM)));
     }
 
@@ -87,16 +87,16 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
      * validate verify
      *
      * @param verifyType
-     * @param verifyBusinessType
+     * @param businessType
      * @param key
      * @param verify
      * @param repeatable
      * @return
      */
-    public Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
-        if (verifyType != null && verifyBusinessType != null && isNotBlank(key) && isNotBlank(verify))
+    public Mono<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
+        if (verifyType != null && businessType != null && isNotBlank(key) && isNotBlank(verify))
             return ofNullable(verifyHandlers.get(verifyType))
-                    .map(h -> h.validate(verifyBusinessType, key, verify, repeatable))
+                    .map(h -> h.validate(businessType, key, verify, repeatable))
                     .orElseThrow(() -> new BlueException(INVALID_PARAM));
 
         return error(() -> new BlueException(INVALID_PARAM));

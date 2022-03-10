@@ -32,7 +32,7 @@ public class BlueMarketingEventProcessorBeanDefinitionRegistrar implements Impor
         this.resourceLoader = resourceLoader;
     }
 
-    private static final String[] SCAN_PACKAGES = new String[]{"com.blue.marketing.component.event.impl"};
+    private static final String[] SCAN_PACKAGES = new String[]{"com.blue.marketing.component.marketing.impl"};
     private static final boolean USE_DEFAULT_FILTERS = false;
 
     @Override

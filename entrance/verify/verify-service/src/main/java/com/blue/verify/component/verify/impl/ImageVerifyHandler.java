@@ -1,7 +1,7 @@
 package com.blue.verify.component.verify.impl;
 
 import com.blue.base.constant.base.RandomType;
-import com.blue.base.constant.verify.VerifyBusinessType;
+import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.redis.api.generator.BlueRateLimiterGenerator;
@@ -124,7 +124,7 @@ public class ImageVerifyHandler implements VerifyHandler {
         return IMAGE_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
-    private static final BiFunction<VerifyBusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
+    private static final BiFunction<BusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
         if (type == null || key == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
 
@@ -157,22 +157,22 @@ public class ImageVerifyHandler implements VerifyHandler {
     };
 
     @Override
-    public Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination) {
-        if (verifyBusinessType == null && isNotBlank(destination))
+    public Mono<String> handle(BusinessType businessType, String destination) {
+        if (businessType == null && isNotBlank(destination))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "verifyBusinessType can't be null");
 
-        return verifyService.generate(IMAGE, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, destination), VERIFY_LEN, DEFAULT_DURATION);
+        return verifyService.generate(IMAGE, BUSINESS_KEY_WRAPPER.apply(businessType, destination), VERIFY_LEN, DEFAULT_DURATION);
     }
 
     @Override
-    public Mono<ServerResponse> handle(VerifyBusinessType verifyBusinessType, String destination, ServerRequest serverRequest) {
+    public Mono<ServerResponse> handle(BusinessType businessType, String destination, ServerRequest serverRequest) {
         String key = isNotBlank(destination) ? destination : generateRandom(KEY_RANDOM_TYPE, KEY_LEN);
 
         return SERVER_REQUEST_IDENTITY_GETTER.apply(serverRequest)
                 .flatMap(identity -> blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(identity), ALLOW, SEND_INTERVAL_MILLIS))
                 .flatMap(allowed ->
                         allowed ?
-                                this.handle(verifyBusinessType, generateRandom(KEY_RANDOM_TYPE, KEY_LEN))
+                                this.handle(businessType, generateRandom(KEY_RANDOM_TYPE, KEY_LEN))
                                         .flatMap(verify -> {
 
                                             LOGGER.info("Mono<ServerResponse> handle(String destination), key = {}, verify = {}", key, verify);
@@ -193,8 +193,8 @@ public class ImageVerifyHandler implements VerifyHandler {
     }
 
     @Override
-    public Mono<Boolean> validate(VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
-        return verifyService.validate(IMAGE, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, key), verify, repeatable);
+    public Mono<Boolean> validate(BusinessType businessType, String key, String verify, Boolean repeatable) {
+        return verifyService.validate(IMAGE, BUSINESS_KEY_WRAPPER.apply(businessType, key), verify, repeatable);
     }
 
     @Override
