@@ -1,6 +1,5 @@
 package com.blue.finance.handler.dynamic;
 
-import com.blue.base.component.common.BlueBeanDefinitionScanner;
 import com.blue.base.constant.base.Symbol;
 import com.blue.base.model.exps.BlueException;
 import com.blue.finance.component.dynamic.inter.DynamicEndPointHandler;
@@ -10,14 +9,8 @@ import com.blue.finance.repository.entity.DynamicResource;
 import com.blue.finance.service.inter.DynamicHandlerService;
 import com.blue.finance.service.inter.DynamicResourceService;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ResourceLoaderAware;
-import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.type.AnnotationMetadata;
-import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -48,11 +41,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Component
-public final class BlueDynamicHandler implements ResourceLoaderAware, ApplicationContextAware, ImportBeanDefinitionRegistrar {
+public final class BlueDynamicHandler implements  ApplicationContextAware {
 
     private static final Logger LOGGER = getLogger(BlueDynamicHandler.class);
-
-    private ResourceLoader resourceLoader;
 
     private ApplicationContext applicationContext;
 
@@ -68,33 +59,13 @@ public final class BlueDynamicHandler implements ResourceLoaderAware, Applicatio
 
     private long maxWaitingForRefresh;
 
-    private static final String[] SCAN_PACKAGES = new String[]{"com.blue.finance.component.dynamic.impl"};
-
-    private static final boolean USE_DEFAULT_FILTERS = false;
-
     private static final String PATH_SEPARATOR = Symbol.PATH_SEPARATOR.identity;
 
     private static final String PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity;
 
     @Override
-    public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
-    }
-
-    @Override
     public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-    }
-
-    @Override
-    public void registerBeanDefinitions(@NonNull AnnotationMetadata importingClassMetadata, @NonNull BeanDefinitionRegistry registry) {
-        BlueBeanDefinitionScanner scanner = new BlueBeanDefinitionScanner(registry, USE_DEFAULT_FILTERS);
-
-        scanner.setResourceLoader(resourceLoader);
-        scanner.addIncludeFilter(new AssignableTypeFilter(DynamicEndPointHandler.class));
-        scanner.doScan(SCAN_PACKAGES);
-
-        ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);
     }
 
     private final Supplier<Boolean> DYNAMIC_INFO_REFRESH_BLOCKER = () -> {

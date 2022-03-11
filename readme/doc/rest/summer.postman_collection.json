@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "77ba8b1c-66f6-48e5-9c86-8e9c4d656b96",
+		"_postman_id": "bd40a7b0-580a-4b2b-ba7b-b5882dc51365",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -18,7 +18,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"phone\":\"18633783158\",\r\n    \"email\":\"liuyunfei@outloot.com\",\r\n    \"access\":\"12345678\",\r\n    \"name\":\"刘云飞\",\r\n    \"gender\":1\r\n}"
+					"raw": "{\r\n    \"phone\":\"13131693996\",\r\n    \"email\":\"liuyunfei0221@outloot.com\",\r\n    \"access\":\"12345678\",\r\n    \"name\":\"刘云飞\",\r\n    \"gender\":1\r\n}"
 				},
 				"url": {
 					"raw": "localhost:10000/blue-member/registry",
@@ -107,7 +107,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"loginType\":\"SVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"9449900\"\r\n    }\r\n}"
+					"raw": "{\r\n    \"loginType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"0705147\"\r\n    }\r\n}"
 				},
 				"url": {
 					"raw": "localhost:10000/blue-auth/auth/login",

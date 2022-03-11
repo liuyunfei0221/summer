@@ -1042,7 +1042,12 @@ VALUES (13739721721151489, 'blue_get dynamic endpoint handler', 'blue_get dynami
         1, 1),
        (13739721721151490, 'blue_post dynamic endpoint handler', 'blue_post dynamic endpoint handler',
         'com.blue.finance.component.dynamic.impl.BluePostDynamicEndPointHandlerImpl', UNIX_TIMESTAMP(),
-        UNIX_TIMESTAMP(), 1, 1),
+        UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `finance_1`.`dynamic_resource_1`(`id`, `organization_id`, `handler_id`, `request_method`, `uri_placeholder`,
+                                             `content_type`, `name`,
+                                             description, `create_time`, `update_time`, `creator`, `updater`)
+VALUES
        (13739721721151489, 13739721721151489, 13739721721151489, 'GET', 1, 'application/json',
         'blue_get dynamic resource',
         'blue_get dynamic resource',
