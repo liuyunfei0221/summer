@@ -1,8 +1,8 @@
 package com.blue.lake.remote.consumer;
 
 import com.blue.base.model.base.Access;
-import com.blue.secure.api.inter.RpcControlService;
-import com.blue.secure.api.model.AuthorityBaseOnRole;
+import com.blue.auth.api.inter.RpcControlService;
+import com.blue.auth.api.model.AuthorityBaseOnRole;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;

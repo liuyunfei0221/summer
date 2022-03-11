@@ -11,7 +11,7 @@ import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberBasicService;
 import com.blue.member.service.inter.MemberRegistryService;
-import com.blue.secure.api.model.MemberCredentialInfo;
+import com.blue.auth.api.model.MemberCredentialInfo;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -76,8 +76,8 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
         long id = blueIdentityProcessor.generate(MemberBasic.class);
         memberBasic.setId(id);
 
-        //init secure info
-        rpcControlServiceConsumer.initMemberSecureInfo(new MemberCredentialInfo(id, initCredentialInfoProcessor.generateCredentialInfos(memberBasic, memberRegistryParam.getAccess())));
+        //init auth info
+        rpcControlServiceConsumer.initMemberAuthInfo(new MemberCredentialInfo(id, initCredentialInfoProcessor.generateCredentialInfos(memberBasic, memberRegistryParam.getAccess())));
 
         //init finance account
         rpcFinanceAccountServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));

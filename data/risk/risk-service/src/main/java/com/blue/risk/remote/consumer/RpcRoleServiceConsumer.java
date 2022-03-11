@@ -1,7 +1,7 @@
 package com.blue.risk.remote.consumer;
 
-import com.blue.secure.api.inter.RpcRoleService;
-import com.blue.secure.api.model.RoleInfo;
+import com.blue.auth.api.inter.RpcRoleService;
+import com.blue.auth.api.model.RoleInfo;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -15,18 +15,18 @@ import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * rpc secure reference
+ * rpc auth reference
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "unused"})
 @Component
 public class RpcRoleServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcRoleServiceConsumer.class);
 
     @DubboReference(version = "1.0",
-            providedBy = {"summer-secure"},
+            providedBy = {"summer-auth"},
             methods = {
                     @Method(name = "selectRoleInfo", async = true, retries = 2)
             })

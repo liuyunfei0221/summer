@@ -2,14 +2,14 @@ package com.blue.member.component.credential;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.repository.entity.MemberBasic;
-import com.blue.secure.api.model.CredentialInfo;
+import com.blue.auth.api.model.CredentialInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.secure.LoginType.*;
+import static com.blue.base.constant.auth.LoginType.*;
 
 /**
  * expand login type

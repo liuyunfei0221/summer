@@ -55,7 +55,7 @@ public enum ResponseElement {
     //</editor-fold>
 
 
-    //<editor-fold desc="secure">
+    //<editor-fold desc="auth">
     INVALID_ACCT_OR_PWD(HttpStatus.BAD_REQUEST.value(), 400200001, "Invalid account or password"),
     NO_AUTH_REQUIRED_RESOURCE(HttpStatus.BAD_REQUEST.value(), 400200002, "Resources do not require authentication access"),
     ROLE_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400200003, "Role name already exists"),

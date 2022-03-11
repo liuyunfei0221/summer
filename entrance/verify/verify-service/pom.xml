@@ -55,7 +55,7 @@
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
-            <artifactId>secure-api</artifactId>
+            <artifactId>auth-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

@@ -103,7 +103,7 @@ public class BlueDynamicRoute {
     }
 
     @Bean
-    RouterFunction<ServerResponse> secureRouter(BlueDynamicHandler blueDynamicHandler, DynamicResourceService dynamicResourceService) {
+    RouterFunction<ServerResponse> dynamicRouter(BlueDynamicHandler blueDynamicHandler, DynamicResourceService dynamicResourceService) {
         List<DynamicResource> dynamicResources = dynamicResourceService.selectDynamicResource();
 
         RouterFunctions.Builder routeBuilder = route();

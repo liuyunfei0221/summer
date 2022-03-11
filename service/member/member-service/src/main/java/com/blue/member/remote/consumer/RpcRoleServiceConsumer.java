@@ -1,8 +1,8 @@
 package com.blue.member.remote.consumer;
 
-import com.blue.secure.api.inter.RpcRoleService;
-import com.blue.secure.api.model.MemberRoleRelationInfo;
-import com.blue.secure.api.model.RoleInfo;
+import com.blue.auth.api.inter.RpcRoleService;
+import com.blue.auth.api.model.MemberRoleRelationInfo;
+import com.blue.auth.api.model.RoleInfo;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;

@@ -29,9 +29,9 @@ public enum BlueFilterOrder {
     BLUE_REQUEST_ATTR(-1002),
 
     /**
-     * secure
+     * auth
      */
-    BLUE_SECURE(-1001),
+    BLUE_AUTH(-1001),
 
     /**
      * data report

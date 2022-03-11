@@ -1,9 +1,9 @@
 package com.blue.member.remote.consumer;
 
 import com.blue.base.model.base.Access;
-import com.blue.secure.api.inter.RpcControlService;
-import com.blue.secure.api.model.AuthorityBaseOnRole;
-import com.blue.secure.api.model.MemberCredentialInfo;
+import com.blue.auth.api.inter.RpcControlService;
+import com.blue.auth.api.model.AuthorityBaseOnRole;
+import com.blue.auth.api.model.MemberCredentialInfo;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -27,9 +27,9 @@ public class RpcControlServiceConsumer {
     private static final Logger LOGGER = getLogger(RpcControlServiceConsumer.class);
 
     @DubboReference(version = "1.0",
-            providedBy = {"summer-member"},
+            providedBy = {"summer-auth"},
             methods = {
-                    @Method(name = "initMemberSecureInfo", async = false, timeout = 60000, retries = 0),
+                    @Method(name = "initMemberAuthInfo", async = false, timeout = 60000, retries = 0),
                     @Method(name = "getAuthorityByAccess", async = true),
                     @Method(name = "getAuthorityByMemberId", async = true)
             })
@@ -42,13 +42,13 @@ public class RpcControlServiceConsumer {
     }
 
     /**
-     * init secure infos for a new member
+     * init auth infos for a new member
      *
      * @param memberCredentialInfo
      */
-    public void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo) {
-        LOGGER.info("void initMemberSecureInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
-        rpcControlService.initMemberSecureInfo(memberCredentialInfo);
+    public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo) {
+        LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
+        rpcControlService.initMemberAuthInfo(memberCredentialInfo);
     }
 
     /**

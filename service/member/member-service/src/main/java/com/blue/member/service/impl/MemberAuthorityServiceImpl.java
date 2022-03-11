@@ -1,16 +1,15 @@
 package com.blue.member.service.impl;
 
+import com.blue.auth.api.model.MemberRoleRelationInfo;
+import com.blue.auth.api.model.RoleInfo;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.member.model.MemberAuthorityInfo;
 import com.blue.member.model.MemberBasicCondition;
-import com.blue.member.remote.consumer.RpcControlServiceConsumer;
 import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberAuthorityService;
 import com.blue.member.service.inter.MemberBasicService;
-import com.blue.secure.api.model.MemberRoleRelationInfo;
-import com.blue.secure.api.model.RoleInfo;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -41,13 +40,10 @@ public class MemberAuthorityServiceImpl implements MemberAuthorityService {
 
     private final MemberBasicService memberBasicService;
 
-    private final RpcControlServiceConsumer rpcControlServiceConsumer;
-
     private final RpcRoleServiceConsumer rpcRoleServiceConsumer;
 
-    public MemberAuthorityServiceImpl(MemberBasicService memberBasicService, RpcControlServiceConsumer rpcControlServiceConsumer, RpcRoleServiceConsumer rpcRoleServiceConsumer) {
+    public MemberAuthorityServiceImpl(MemberBasicService memberBasicService, RpcRoleServiceConsumer rpcRoleServiceConsumer) {
         this.memberBasicService = memberBasicService;
-        this.rpcControlServiceConsumer = rpcControlServiceConsumer;
         this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
     }
 

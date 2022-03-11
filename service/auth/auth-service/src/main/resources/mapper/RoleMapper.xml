@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.auth.repository.mapper.RoleMapper">
+    <resultMap id="BaseResultMap" type="com.blue.auth.repository.entity.Role">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="level" jdbcType="INTEGER" property="level"/>
+        <result column="is_default" jdbcType="BIT" property="isDefault"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+        <result column="creator" jdbcType="BIGINT" property="creator"/>
+        <result column="updater" jdbcType="BIGINT" property="updater"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , name, description, level, is_default, create_time, update_time, creator, updater
+    </sql>
+
+    <insert id="insert" parameterType="com.blue.auth.repository.entity.Role">
+        insert into role (id, name, description,
+                          level, is_default, create_time,
+                          update_time, creator, updater)
+        values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+                #{level,jdbcType=INTEGER}, #{isDefault,jdbcType=BIT}, #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.auth.repository.entity.Role">
+        insert into role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="level != null">
+                level,
+            </if>
+            <if test="isDefault != null">
+                is_default,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                #{level,jdbcType=INTEGER},
+            </if>
+            <if test="isDefault != null">
+                #{isDefault,jdbcType=BIT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.auth.repository.entity.Role">
+        update role
+        set name        = #{name,jdbcType=VARCHAR},
+            description = #{description,jdbcType=VARCHAR},
+            level       = #{level,jdbcType=INTEGER},
+            is_default  = #{isDefault,jdbcType=BIT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT},
+            updater     = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.auth.repository.entity.Role">
+        update role
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="level != null">
+                level = #{level,jdbcType=INTEGER},
+            </if>
+            <if test="isDefault != null">
+                is_default = #{isDefault,jdbcType=BIT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from role
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM role
+        WHERE id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="select" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role
+    </select>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <sql id="Role_Conditions">
+        <if test="roleCondition != null">
+            <where>
+                <if test="roleCondition.id != null">
+                    AND
+                    id = #{roleCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="roleCondition.name != null and resourceCondition.sortAttribute != ''">
+                    AND
+                    name LIKE #{roleCondition.name,jdbcType=VARCHAR}
+                </if>
+                <if test="roleCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{roleCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="roleCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{roleCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="roleCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{roleCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="roleCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{roleCondition.updateTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
+            parameterType="com.blue.auth.model.RoleCondition">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role
+        <include refid="Role_Conditions"/>
+        <if test="roleCondition != null and roleCondition.sortAttribute != null and roleCondition.sortAttribute != '' and roleCondition.sortType != null and roleCondition.sortType != ''">
+            ORDER BY
+            ${roleCondition.sortAttribute,jdbcType=VARCHAR} ${roleCondition.sortType,jdbcType=VARCHAR}
+        </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long"
+            parameterType="com.blue.auth.model.RoleCondition">
+        SELECT COUNT(*)
+        FROM
+        role
+        <include refid="Role_Conditions"/>
+    </select>
+
+    <select id="selectDefault" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role
+        WHERE
+        is_default = 1
+    </select>
+
+    <select id="selectByName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role FORCE INDEX(idx_name)
+        WHERE
+        `name` = #{name,jdbcType=VARCHAR}
+        LIMIT 1;
+    </select>
+
+    <select id="selectByLevel" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        role FORCE INDEX(idx_level)
+        WHERE
+        `level` = #{level,jdbcType=INTEGER}
+        LIMIT 1;
+    </select>
+
+</mapper>

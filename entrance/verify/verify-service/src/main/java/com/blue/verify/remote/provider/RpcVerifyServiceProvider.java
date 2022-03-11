@@ -16,7 +16,7 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * rpc secure provider
+ * rpc verify provider
  *
  * @author DarkBlue
  */

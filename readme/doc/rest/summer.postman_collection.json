@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "711cd0b5-65e6-402c-a745-34910fde47fd",
+		"_postman_id": "77ba8b1c-66f6-48e5-9c86-8e9c4d656b96",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -50,13 +50,13 @@
 					"raw": "{\r\n    \"loginType\":\"EP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"liuyunfei@outloot.com\",\r\n        \"access\":\"12345678\"\r\n    }\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/auth/login",
+					"raw": "localhost:10000/blue-auth/auth/login",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"auth",
 						"login"
 					]
@@ -110,13 +110,13 @@
 					"raw": "{\r\n    \"loginType\":\"SVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"9449900\"\r\n    }\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/auth/login",
+					"raw": "localhost:10000/blue-auth/auth/login",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"auth",
 						"login"
 					]
@@ -141,13 +141,13 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:10000/blue-secure/auth/logout",
+					"raw": "localhost:10000/blue-auth/auth/logout",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"auth",
 						"logout"
 					]
@@ -577,13 +577,13 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:10000/blue-secure/auth/updateSecret",
+					"raw": "localhost:10000/blue-auth/auth/updateSecret",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"auth",
 						"updateSecret"
 					]
@@ -608,13 +608,13 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:10000/blue-secure/auth/authority",
+					"raw": "localhost:10000/blue-auth/auth/authority",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"auth",
 						"authority"
 					]
@@ -822,13 +822,13 @@
 					"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/resource/list",
+					"raw": "localhost:10000/blue-auth/manager/resource/list",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"resource",
 						"list"
@@ -858,13 +858,13 @@
 					"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/role/list",
+					"raw": "localhost:10000/blue-auth/manager/role/list",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"role",
 						"list"
@@ -894,13 +894,13 @@
 					"raw": "{\r\n    \"id\":9507591944175638\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/role/auth",
+					"raw": "localhost:10000/blue-auth/manager/role/auth",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"role",
 						"auth"
@@ -930,13 +930,13 @@
 					"raw": "{\r\n    \"id\":9506121983229956\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/resource/auth",
+					"raw": "localhost:10000/blue-auth/manager/resource/auth",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"resource",
 						"auth"
@@ -966,13 +966,13 @@
 					"raw": "{\r\n    \"name\":\"testaac\",\r\n    \"description\":\"test aaaaaaa\",\r\n    \"level\":10002\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/role",
+					"raw": "localhost:10000/blue-auth/manager/role",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"role"
 					]
@@ -1001,13 +1001,13 @@
 					"raw": "{\r\n    \"id\":25548860994617345,\r\n    \"name\":\"testabcD\",\r\n    \"description\":\"test abcdefg\",\r\n    \"level\":10002\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/role",
+					"raw": "localhost:10000/blue-auth/manager/role",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"role"
 					]
@@ -1032,13 +1032,13 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/role/25618703605301249",
+					"raw": "localhost:10000/blue-auth/manager/role/25618703605301249",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"role",
 						"25618703605301249"
@@ -1065,16 +1065,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue_secure\",\r\n    \"uri\":\"/test/test\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource\",\r\n    \"description\":\"a test resource\"\r\n}"
+					"raw": "{\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue_auth\",\r\n    \"uri\":\"/test/test\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource\",\r\n    \"description\":\"a test resource\"\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/resource",
+					"raw": "localhost:10000/blue-auth/manager/resource",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"resource"
 					]
@@ -1103,13 +1103,13 @@
 					"raw": "{\r\n    \"id\":25556541469884418,\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue-lake\",\r\n    \"uri\":\"/event/list\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource111\",\r\n    \"description\":\"a test resource\"\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/resource",
+					"raw": "localhost:10000/blue-auth/manager/resource",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"resource"
 					]
@@ -1134,13 +1134,13 @@
 					}
 				],
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/resource/25556541469884418",
+					"raw": "localhost:10000/blue-auth/manager/resource/25556541469884418",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"resource",
 						"25556541469884418"
@@ -1170,13 +1170,13 @@
 					"raw": "{\r\n    \"roleId\":9507591944175638,\r\n    \"resIds\":[9505726846205953,9505726846205965]\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/relation/role-res",
+					"raw": "localhost:10000/blue-auth/manager/relation/role-res",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"relation",
 						"role-res"
@@ -1206,13 +1206,13 @@
 					"raw": "{\r\n    \"memberId\":25548843814748161,\r\n    \"roleId\":9507591944175638\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-secure/manager/relation/mem-role",
+					"raw": "localhost:10000/blue-auth/manager/relation/mem-role",
 					"host": [
 						"localhost"
 					],
 					"port": "10000",
 					"path": [
-						"blue-secure",
+						"blue-auth",
 						"manager",
 						"relation",
 						"mem-role"

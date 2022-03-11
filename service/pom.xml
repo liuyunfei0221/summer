@@ -18,13 +18,13 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>auth</module>
         <module>base</module>
         <module>business</module>
         <module>finance</module>
         <module>marketing</module>
         <module>member</module>
         <module>portal</module>
-        <module>secure</module>
         <module>shine</module>
     </modules>
 

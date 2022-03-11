@@ -15,7 +15,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * secure api route
+ * state api route
  *
  * @author DarkBlue
  */

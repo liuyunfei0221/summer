@@ -31,9 +31,9 @@ public enum BlueFilterOrder {
     BLUE_REQUEST_ATTR(WRITE_RESPONSE_FILTER_ORDER - 3),
 
     /**
-     * secure
+     * auth
      */
-    BLUE_SECURE(WRITE_RESPONSE_FILTER_ORDER - 2),
+    BLUE_AUTH(WRITE_RESPONSE_FILTER_ORDER - 2),
 
     /**
      * data report

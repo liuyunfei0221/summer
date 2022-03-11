@@ -58,7 +58,7 @@ summer
 │       └── member                       // 成员服务
 │       └── portal                       // 门户服务
 │       └── risk                         // 风控服务
-│       └── secure                       // 安全服务
+│       └── auth                         // 安全服务
 │       └── shine                        // 公益服务
 ~~~
 
@@ -97,7 +97,7 @@ summer
 11. member: 成员服务。
 12. portal: 首页及门户服务。
 13. risk: 风控服务。
-14. secure: 用于身份认证，鉴权，功能权限管理的安全服务。
+14. auth: 用于身份认证，鉴权，功能权限管理的安全服务。
 15. shine: 公益服务。
 
 ## 有用的话，记得star
@@ -169,7 +169,7 @@ summer
 │       └── member                       // Member Service
 │       └── portal                       // Portal service
 │       └── risk                         // Risk Control Service
-│       └── secure                       // Security service
+│       └── auth                         // Security service
 │       └── shine                        // Public benefit service
 ~~~
 
@@ -208,7 +208,7 @@ summer
 11. member: Member services.
 12. portal: Home and portal services.
 13. risk: Risk control services.
-14. secure: Security services for identity authentication, authentication, and functional authority management.
+14. auth: Security services for identity authentication, authentication, and functional authority management.
 15. Public benefit service.
 
 ## If useful, click the star

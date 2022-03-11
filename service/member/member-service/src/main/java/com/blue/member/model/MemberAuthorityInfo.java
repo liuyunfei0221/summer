@@ -1,7 +1,7 @@
 package com.blue.member.model;
 
 import com.blue.member.api.model.MemberInfo;
-import com.blue.secure.api.model.RoleInfo;
+import com.blue.auth.api.model.RoleInfo;
 
 import java.io.Serializable;
 

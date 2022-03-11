@@ -178,10 +178,10 @@ spring:
           predicates:
             - Path=/blue-portal/**
 
-        - id: blue-secure
-          uri: lb://blue-secure
+        - id: blue-auth
+          uri: lb://blue-auth
           predicates:
-            - Path=/blue-secure/**
+            - Path=/blue-auth/**
 
         - id: blue-shine
           uri: lb://blue-shine
