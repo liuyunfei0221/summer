@@ -17,7 +17,7 @@ public enum StatisticsType {
     /**
      * identity
      */
-    public final String identity;
+        public final String identity;
 
     /**
      * disc
@@ -28,4 +28,5 @@ public enum StatisticsType {
         this.identity = identity;
         this.disc = disc;
     }
+
 }

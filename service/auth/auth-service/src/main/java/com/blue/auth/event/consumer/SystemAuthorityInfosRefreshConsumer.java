@@ -22,7 +22,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/10/14
  * @apiNote
  */
-public class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle {
+public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(SystemAuthorityInfosRefreshConsumer.class);
 

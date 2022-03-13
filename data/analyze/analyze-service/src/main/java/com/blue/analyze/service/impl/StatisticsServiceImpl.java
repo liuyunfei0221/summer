@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ConstantProcessor.getStatisticsRangeByIdentity;
@@ -29,6 +28,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -64,7 +64,6 @@ public class StatisticsServiceImpl implements StatisticsService {
         for (StatisticsType type : STATISTICS_TYPE_LIST)
             for (StatisticsRange range : STATISTICS_RANGE_LIST)
                 ELEMENTS.add(new SummaryElement(type, range, SUMMARY_KEY_GENERATOR.apply(type, range)));
-
     }
 
     private final Supplier<Mono<Map<String, Long>>> ACTIVE_SUMMARY_SUP = () ->
@@ -73,7 +72,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                                     .flatMap(count -> just(new Summary(ele.key, count)))
                     ).collectList()
                     .flatMap(sl -> just(sl.parallelStream()
-                            .collect(Collectors.toMap(s -> s.key, s -> s.count, (a, b) -> a))));
+                            .collect(toMap(s -> s.key, s -> s.count, (a, b) -> a))));
 
     /**
      * select active

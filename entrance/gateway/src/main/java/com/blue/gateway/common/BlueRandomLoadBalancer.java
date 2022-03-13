@@ -43,7 +43,6 @@ public final class BlueRandomLoadBalancer implements ReactorServiceInstanceLoadB
         return serviceInstanceResponse;
     };
 
-
     @Override
     public Mono<Response<ServiceInstance>> choose(Request request) {
         ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider.getIfAvailable(NoopServiceInstanceListSupplier::new);

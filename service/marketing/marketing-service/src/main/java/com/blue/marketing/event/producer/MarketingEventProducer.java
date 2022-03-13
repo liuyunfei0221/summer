@@ -24,7 +24,7 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @SuppressWarnings({"Duplicates", "JavaDoc"})
-public class MarketingEventProducer implements BlueLifecycle {
+public final class MarketingEventProducer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(MarketingEventProducer.class);
 
