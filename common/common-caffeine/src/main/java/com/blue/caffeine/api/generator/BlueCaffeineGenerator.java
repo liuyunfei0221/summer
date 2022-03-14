@@ -53,7 +53,7 @@ public final class BlueCaffeineGenerator {
     /**
      * cache size
      */
-    private static final int DEFAULT_CAPACITY = 2048;
+    private static final int DEFAULT_CAPACITY = 1 << 9;
     private static final int MAXIMUM_CAPACITY = 1 << 16;
 
     /**

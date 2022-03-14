@@ -16,6 +16,7 @@ import java.util.Set;
  * @date 2021/8/15
  * @apiNote
  */
+@SuppressWarnings("unused")
 public final class BlueBeanDefinitionScanner extends ClassPathBeanDefinitionScanner {
 
     public BlueBeanDefinitionScanner(BeanDefinitionRegistry registry) {

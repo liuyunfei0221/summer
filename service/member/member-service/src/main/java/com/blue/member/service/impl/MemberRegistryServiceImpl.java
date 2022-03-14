@@ -28,7 +28,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DefaultAnnotationParam"})
 @Service
 public class MemberRegistryServiceImpl implements MemberRegistryService {
 
@@ -63,9 +63,9 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
     @SuppressWarnings("CommentedOutCode")
     @Override
     @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
-            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
+            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 60000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 30)
+            rollbackFor = Exception.class, timeout = 60)
     public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("MemberInfo registerMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
         if (isNull(memberRegistryParam))
@@ -86,7 +86,7 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
 
 //        if (1 == 1)
-//            throw new BlueException(500, 500, "test rollback");
+//            throw new BlueException(666, 666, "test rollback");
 
         return memberBasicInfo;
     }
@@ -99,7 +99,7 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
      */
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 30)
+            rollbackFor = Exception.class, timeout = 60)
     public MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("MemberInfo simpleRegisterMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
 
@@ -118,7 +118,7 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
 
 //        if (1 == 1)
-//            throw new BlueException(500, 500, "test rollback");
+//            throw new BlueException(666, 666, "test rollback");
 
         return memberBasicInfo;
     }

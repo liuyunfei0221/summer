@@ -4,6 +4,7 @@ import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.login.inter.LoginHandler;
 import com.blue.auth.constant.LoginAttribute;
 import com.blue.auth.model.LoginParam;
+import com.blue.auth.remote.consumer.RpcMemberServiceConsumer;
 import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.auth.service.inter.*;
 import com.blue.base.constant.auth.LoginType;
@@ -55,24 +56,24 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
 
     private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
 
+    private final RpcMemberServiceConsumer rpcMemberServiceConsumer;
+
     private final AutoRegisterService autoRegisterService;
 
     private final CredentialService credentialService;
 
     private final RoleService roleService;
 
-    private final MemberService memberService;
-
     private final AuthService authService;
 
-    public EmailVerifyWithAutoRegisterLoginHandler(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
+    public EmailVerifyWithAutoRegisterLoginHandler(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberServiceConsumer rpcMemberServiceConsumer,
                                                    AutoRegisterService autoRegisterService, CredentialService credentialService,
-                                                   RoleService roleService, MemberService memberService, AuthService authService) {
+                                                   RoleService roleService, AuthService authService) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
+        this.rpcMemberServiceConsumer = rpcMemberServiceConsumer;
         this.autoRegisterService = autoRegisterService;
         this.credentialService = credentialService;
         this.roleService = roleService;
-        this.memberService = memberService;
         this.authService = authService;
     }
 
@@ -107,11 +108,11 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
         return rpcVerifyHandleServiceConsumer.validate(MAIL, EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER, email, access, true)
                 .flatMap(validate ->
                         validate ?
-                                credentialService.getCredentialByCredentialAndType(email, EMAIL_VERIFY_AUTO_REGISTER.identity)
+                                credentialService.getCredentialMonoByCredentialAndType(email, EMAIL_VERIFY_AUTO_REGISTER.identity)
                                         .flatMap(credentialOpt ->
                                                 credentialOpt.map(credential -> {
                                                             extra.put(NEW_MEMBER.key, false);
-                                                            return memberService.selectMemberBasicInfoMonoById(credential.getMemberId())
+                                                            return rpcMemberServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(credential.getMemberId())
                                                                     .flatMap(mbi -> {
                                                                         MEMBER_STATUS_ASSERTER.accept(mbi);
                                                                         return authService.generateAuthMono(mbi.getId(), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());

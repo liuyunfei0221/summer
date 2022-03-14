@@ -211,7 +211,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      */
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 30)
+            rollbackFor = Exception.class, timeout = 60)
     public MemberBasicInfo insertMemberBasic(MemberBasic memberBasic) {
         LOGGER.info("void insert(MemberBasic memberBasic), memberBasic = {}", memberBasic);
         if (isNull(memberBasic))

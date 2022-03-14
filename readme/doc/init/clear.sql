@@ -9,6 +9,7 @@ DROP DATABASE finance;
 DROP DATABASE finance_0;
 DROP DATABASE finance_1;
 
+DROP DATABASE marketing;
 DROP DATABASE marketing_0;
 DROP DATABASE marketing_1;
 

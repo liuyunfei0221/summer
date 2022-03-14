@@ -35,11 +35,6 @@ public final class LoginParam implements Serializable {
     private String deviceType;
 
     /**
-     * verify
-     */
-    private String verificationCode;
-
-    /**
      * diff params
      */
     private Map<String, String> account = new HashMap<>(ENTRIES_SIZE, LOAD_FACTOR);
@@ -47,14 +42,13 @@ public final class LoginParam implements Serializable {
     public LoginParam() {
     }
 
-    public LoginParam(String loginType, String deviceType, String verificationCode, Map<String, String> account) {
+    public LoginParam(String loginType, String deviceType, Map<String, String> account) {
         this.loginType = loginType;
         assertLoginType(loginType, false);
 
         this.deviceType = deviceType;
         assertDeviceType(deviceType, false);
 
-        this.verificationCode = verificationCode;
         this.account = account;
     }
 
@@ -74,14 +68,6 @@ public final class LoginParam implements Serializable {
     public void setDeviceType(String deviceType) {
         assertDeviceType(deviceType, false);
         this.deviceType = deviceType;
-    }
-
-    public String getVerificationCode() {
-        return verificationCode;
-    }
-
-    public void setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
     }
 
     public Map<String, String> getAccount() {
@@ -105,7 +91,6 @@ public final class LoginParam implements Serializable {
         return "LoginParam{" +
                 "loginType='" + loginType + '\'' +
                 ", deviceType='" + deviceType + '\'' +
-                ", verificationCode='" + verificationCode + '\'' +
                 ", account=" + account +
                 '}';
     }

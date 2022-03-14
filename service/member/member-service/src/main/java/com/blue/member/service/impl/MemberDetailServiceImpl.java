@@ -183,7 +183,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
      */
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 30)
+            rollbackFor = Exception.class, timeout = 60)
     public MemberDetailInfo insertMemberDetail(MemberDetail memberDetail) {
         LOGGER.info("MemberDetailInfo insertMemberDetail(MemberDetail memberDetail), memberDetail = {}", memberDetail);
         if (isNull(memberDetail))

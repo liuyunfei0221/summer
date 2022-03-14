@@ -181,7 +181,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
      */
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 30)
+            rollbackFor = Exception.class, timeout = 60)
     public MemberAddressInfo insertMemberAddress(MemberAddress memberAddress) {
         LOGGER.info("MemberAddressInfo insertMemberAddress(MemberAddress memberAddress), memberAddress = {}", memberAddress);
         if (isNull(memberAddress))

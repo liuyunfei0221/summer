@@ -1,6 +1,7 @@
 package com.blue.auth.service.inter;
 
 import com.blue.auth.repository.entity.Credential;
+import com.blue.base.constant.verify.VerifyType;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -22,7 +23,16 @@ public interface CredentialService {
      * @param type
      * @return
      */
-    Mono<Optional<Credential>> getCredentialByCredentialAndType(String credential, String type);
+    Optional<Credential> getCredentialByCredentialAndType(String credential, String type);
+
+    /**
+     * get mono by credential and type
+     *
+     * @param credential
+     * @param type
+     * @return
+     */
+    Mono<Optional<Credential>> getCredentialMonoByCredentialAndType(String credential, String type);
 
     /**
      * get by member id and type
@@ -32,6 +42,15 @@ public interface CredentialService {
      * @return
      */
     Optional<Credential> getCredentialByMemberIdAndType(Long memberId, String type);
+
+    /**
+     * get mono by member id and type
+     *
+     * @param memberId
+     * @param type
+     * @return
+     */
+    Mono<Optional<Credential>> getCredentialMonoByMemberIdAndType(Long memberId, String type);
 
     /**
      * insert credential batch
@@ -64,5 +83,15 @@ public interface CredentialService {
      * @return
      */
     void deleteCredentialById(Long id);
+
+    /**
+     * update access
+     *
+     * @param memberId
+     * @param verifyType
+     * @param access
+     * @return
+     */
+    Boolean updateAccess(Long memberId, VerifyType verifyType, String access);
 
 }

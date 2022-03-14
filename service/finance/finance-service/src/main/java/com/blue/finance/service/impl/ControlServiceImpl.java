@@ -46,7 +46,7 @@ public class ControlServiceImpl implements ControlService {
      * @param memberFinanceInfo
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 30)
+            rollbackFor = Exception.class, timeout = 60)
     @Override
     public void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo) {
         LOGGER.info("void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo), memberFinanceInfo = {}", memberFinanceInfo);
@@ -76,6 +76,9 @@ public class ControlServiceImpl implements ControlService {
         financeAccount.setUpdateTime(epochSecond);
 
         financeAccountService.insertFinanceAccount(financeAccount);
+
+//        if (1 == 1)
+//            throw new BlueException(666, 666, "test rollback");
     }
 
 }

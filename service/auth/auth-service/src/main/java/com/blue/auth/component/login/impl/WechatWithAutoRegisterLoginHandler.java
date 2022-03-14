@@ -1,6 +1,7 @@
 package com.blue.auth.component.login.impl;
 
 import com.blue.auth.component.login.inter.LoginHandler;
+import com.blue.auth.remote.consumer.RpcMemberServiceConsumer;
 import com.blue.auth.remote.consumer.RpcWechatServiceConsumer;
 import com.blue.auth.service.inter.*;
 import com.blue.base.constant.auth.LoginType;
@@ -50,23 +51,23 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
 
     private final RpcWechatServiceConsumer rpcWechatServiceConsumer;
 
+    private final RpcMemberServiceConsumer rpcMemberServiceConsumer;
+
     private final AutoRegisterService autoRegisterService;
 
     private final CredentialService credentialService;
 
     private final RoleService roleService;
 
-    private final MemberService memberService;
-
     private final AuthService authService;
 
-    public WechatWithAutoRegisterLoginHandler(RpcWechatServiceConsumer rpcWechatServiceConsumer, AutoRegisterService autoRegisterService,
-                                              CredentialService credentialService, RoleService roleService, MemberService memberService, AuthService authService) {
+    public WechatWithAutoRegisterLoginHandler(RpcWechatServiceConsumer rpcWechatServiceConsumer, RpcMemberServiceConsumer rpcMemberServiceConsumer, AutoRegisterService autoRegisterService,
+                                              CredentialService credentialService, RoleService roleService, AuthService authService) {
+        this.rpcMemberServiceConsumer = rpcMemberServiceConsumer;
         this.rpcWechatServiceConsumer = rpcWechatServiceConsumer;
         this.autoRegisterService = autoRegisterService;
         this.credentialService = credentialService;
         this.roleService = roleService;
-        this.memberService = memberService;
         this.authService = authService;
     }
 
@@ -98,11 +99,11 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
 
         //TODO
         // like Mono<String> phoneMono = rpcWechatServiceConsumer.getInfo(encryptedData, iv, jsCode);
-        return credentialService.getCredentialByCredentialAndType(phone, WECHAT_AUTO_REGISTER.identity)
+        return credentialService.getCredentialMonoByCredentialAndType(phone, WECHAT_AUTO_REGISTER.identity)
                 .flatMap(credentialOpt ->
                         credentialOpt.map(credential -> {
                                     extra.put(NEW_MEMBER.key, false);
-                                    return memberService.selectMemberBasicInfoMonoById(credential.getMemberId())
+                                    return rpcMemberServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(credential.getMemberId())
                                             .flatMap(mbi -> {
                                                 MEMBER_STATUS_ASSERTER.accept(mbi);
                                                 return authService.generateAuthMono(mbi.getId(), WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());

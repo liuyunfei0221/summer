@@ -444,7 +444,6 @@ VALUES (9507591944175638, 'normal', 'normal', 999999999, 1, UNIX_TIMESTAMP(), UN
 INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                        `updater`)
 VALUES (9507161365282820, 17558421159018501, 9505726846205953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
        (9507452349349900, 17558421159018501, 9506121983229953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507496381120540, 17558421159018501, 9506477400129537, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507591944175640, 17558421159018501, 9506557930799110, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -673,6 +672,18 @@ DATABASE finance CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 finance;
 
+CREATE TABLE `undo_log`
+(
+    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
+    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
+    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
+    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
+    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
+    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
+    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
+    PRIMARY KEY (`branch_id`),
+    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 -- finance0
 
@@ -1421,6 +1432,19 @@ CREATE
 DATABASE member CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 member;
+
+CREATE TABLE `undo_log`
+(
+    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
+    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
+    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
+    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
+    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
+    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
+    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
+    PRIMARY KEY (`branch_id`),
+    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 -- member0
 

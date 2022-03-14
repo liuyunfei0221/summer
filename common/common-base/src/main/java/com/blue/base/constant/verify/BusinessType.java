@@ -30,9 +30,14 @@ public enum BusinessType {
     EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER("EVL_WAR"),
 
     /**
-     * reset password
+     * update access/password
      */
-    RESET_PWD("RST_PWD");
+    UPDATE_ACCESS("UPD_ACC"),
+
+    /**
+     * reset access/password
+     */
+    RESET_ACCESS("RST_ACC");
 
     public final String identity;
 

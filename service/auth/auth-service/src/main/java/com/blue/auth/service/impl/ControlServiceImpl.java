@@ -4,14 +4,19 @@ import com.blue.auth.api.model.*;
 import com.blue.auth.common.AccessEncoder;
 import com.blue.auth.event.producer.SystemAuthorityInfosRefreshProducer;
 import com.blue.auth.model.*;
+import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.repository.entity.MemberRoleRelation;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.service.inter.*;
 import com.blue.base.common.base.BlueChecker;
+import com.blue.base.constant.verify.VerifyType;
+import com.blue.base.model.base.Access;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
@@ -24,9 +29,11 @@ import java.util.function.Function;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertLoginType;
+import static com.blue.base.common.base.ConstantProcessor.getVerifyTypeByIdentity;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
+import static com.blue.base.constant.verify.BusinessType.UPDATE_ACCESS;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
@@ -48,6 +55,10 @@ public class ControlServiceImpl implements ControlService {
 
     private static final Logger LOGGER = getLogger(ControlServiceImpl.class);
 
+    private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
+
+    private final LoginService loginService;
+
     private final AuthService authService;
 
     private final RoleService roleService;
@@ -63,8 +74,10 @@ public class ControlServiceImpl implements ControlService {
     private final ExecutorService executorService;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ControlServiceImpl(AuthService authService, RoleService roleService, CredentialService credentialService, RoleResRelationService roleResRelationService,
-                              MemberRoleRelationService memberRoleRelationService, SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService) {
+    public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, LoginService loginService, AuthService authService, RoleService roleService, CredentialService credentialService,
+                              RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService, SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService) {
+        this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
+        this.loginService = loginService;
         this.authService = authService;
         this.roleService = roleService;
         this.credentialService = credentialService;
@@ -159,6 +172,72 @@ public class ControlServiceImpl implements ControlService {
     }
 
     /**
+     * login
+     *
+     * @param serverRequest
+     * @return
+     */
+    @Override
+    public Mono<ServerResponse> login(ServerRequest serverRequest) {
+        return loginService.login(serverRequest);
+    }
+
+    /**
+     * logout
+     *
+     * @param serverRequest
+     * @return
+     */
+    @Override
+    public Mono<ServerResponse> logout(ServerRequest serverRequest) {
+        return loginService.logout(serverRequest);
+    }
+
+    /**
+     * invalid auth by access
+     *
+     * @param access
+     * @return
+     */
+    @Override
+    public Mono<Boolean> invalidAuthByAccess(Access access) {
+        return authService.invalidAuthByAccess(access);
+    }
+
+    /**
+     * invalid auth by jwt
+     *
+     * @param jwt
+     * @return
+     */
+    @Override
+    public Mono<Boolean> invalidAuthByJwt(String jwt) {
+        return authService.invalidAuthByJwt(jwt);
+    }
+
+    /**
+     * invalid auth by member id
+     *
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<Boolean> invalidAuthByMemberId(Long memberId) {
+        return authService.invalidAuthByMemberId(memberId);
+    }
+
+    /**
+     * invalid local auth by key id
+     *
+     * @param keyId
+     * @return
+     */
+    @Override
+    public Mono<Boolean> invalidLocalAuthByKeyId(String keyId) {
+        return authService.invalidLocalAuthByKeyId(keyId);
+    }
+
+    /**
      * get authority base on role by role id
      *
      * @param roleId
@@ -228,7 +307,7 @@ public class ControlServiceImpl implements ControlService {
      * @param memberCredentialInfo
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo) {
         if (isNull(memberCredentialInfo))
             throw new BlueException(EMPTY_PARAM);
@@ -252,7 +331,7 @@ public class ControlServiceImpl implements ControlService {
      * @param roleId
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo, Long roleId) {
         if (isNull(memberCredentialInfo) || isInvalidIdentity(roleId))
             throw new BlueException(EMPTY_PARAM);
@@ -270,6 +349,19 @@ public class ControlServiceImpl implements ControlService {
     }
 
     /**
+     * update member role info by member id
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
+        authService.refreshMemberRoleById(memberId, roleId, operatorId);
+    }
+
+    /**
      * update default role by role id
      *
      * @param id
@@ -282,6 +374,95 @@ public class ControlServiceImpl implements ControlService {
         assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return fromRunnable(() -> roleResRelationService.updateDefaultRole(id, operatorId)).then();
+    }
+
+
+    /**
+     * update member access/password by access
+     *
+     * @param accessUpdateParam
+     * @param access
+     * @return
+     */
+    @Override
+    public Mono<Boolean> updateAccessByAccess(AccessUpdateParam accessUpdateParam, Access access) {
+        LOGGER.info("Mono<Boolean> updateAccessByAccess(AccessUpdateParam accessUpdateParam, Access access), accessUpdateParam = {}, access = {}", accessUpdateParam, access);
+
+        long memberId = access.getId();
+        if (isInvalidIdentity(memberId))
+            return error(() -> new BlueException(UNAUTHORIZED));
+
+        if (accessUpdateParam == null)
+            return error(() -> new BlueException(EMPTY_PARAM));
+
+        VerifyType verifyType = getVerifyTypeByIdentity(accessUpdateParam.getVerifyType());
+        return credentialService.getCredentialMonoByMemberIdAndType(memberId, verifyType.identity)
+                .flatMap(credentialOpt ->
+                        just(credentialOpt.orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid verify type"))))
+                .flatMap(credential ->
+                        rpcVerifyHandleServiceConsumer.validate(verifyType, UPDATE_ACCESS, credential.getCredential(), accessUpdateParam.getVerificationCode(), true)
+                                .flatMap(validate ->
+                                        validate ?
+                                                just(credentialService.updateAccess(memberId, null, accessUpdateParam.getAccess()))
+                                                :
+                                                error(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verificationCode is invalid"))
+                                )
+                );
+    }
+
+    /**
+     * reset member access/password by access
+     *
+     * @param accessResetParam
+     * @return
+     */
+    @Override
+    public Mono<Boolean> resetAccessByAccess(AccessResetParam accessResetParam) {
+        LOGGER.info("Mono<Boolean> resetAccessByAccess(AccessResetParam accessResetParam), accessResetParam = {}", accessResetParam);
+
+        if (accessResetParam == null)
+            return error(() -> new BlueException(EMPTY_PARAM));
+
+        VerifyType verifyType = getVerifyTypeByIdentity(accessResetParam.getVerifyType());
+
+        Credential credential = credentialService.getCredentialByCredentialAndType(accessResetParam.getCredential(), verifyType.identity)
+                .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid verify type"));
+
+
+        return null;
+    }
+
+    /**
+     * update member sec key by access
+     *
+     * @param access
+     * @return
+     */
+    @Override
+    public Mono<String> updateSecKeyByAccess(Access access) {
+        return authService.updateSecKeyByAccess(access);
+    }
+
+    /**
+     * get member's authority by access
+     *
+     * @param access
+     * @return
+     */
+    @Override
+    public Mono<AuthorityBaseOnRole> getAuthorityMonoByAccess(Access access) {
+        return authService.getAuthorityMonoByAccess(access);
+    }
+
+    /**
+     * get member's authority by member id
+     *
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId) {
+        return authService.getAuthorityMonoByMemberId(memberId);
     }
 
     /**

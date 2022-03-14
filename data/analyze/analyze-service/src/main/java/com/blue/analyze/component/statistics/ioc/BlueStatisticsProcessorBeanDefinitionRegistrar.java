@@ -35,13 +35,14 @@ public class BlueStatisticsProcessorBeanDefinitionRegistrar implements ImportBea
 
     private static final String[] SCAN_PACKAGES = new String[]{"com.blue.analyze.component.statistics.impl"};
     private static final boolean USE_DEFAULT_FILTERS = false;
+    private static final Class<?> TARGET_TYPE = StatisticsCommand.class;
 
     @Override
     public void registerBeanDefinitions(@NonNull AnnotationMetadata importingClassMetadata, @NonNull BeanDefinitionRegistry registry) {
         BlueBeanDefinitionScanner scanner = new BlueBeanDefinitionScanner(registry, USE_DEFAULT_FILTERS);
 
         scanner.setResourceLoader(resourceLoader);
-        scanner.addIncludeFilter(new AssignableTypeFilter(StatisticsCommand.class));
+        scanner.addIncludeFilter(new AssignableTypeFilter(TARGET_TYPE));
         scanner.doScan(SCAN_PACKAGES);
 
         ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);

@@ -8,17 +8,15 @@ import com.blue.finance.repository.entity.DynamicHandler;
 import com.blue.finance.repository.entity.DynamicResource;
 import com.blue.finance.service.inter.DynamicHandlerService;
 import com.blue.finance.service.inter.DynamicResourceService;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.lang.NonNull;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +39,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Component
-public final class BlueDynamicHandler implements  ApplicationContextAware {
+public final class BlueDynamicHandler implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOGGER = getLogger(BlueDynamicHandler.class);
-
-    private ApplicationContext applicationContext;
 
     private DynamicHandlerService dynamicHandlerService;
 
@@ -64,8 +60,32 @@ public final class BlueDynamicHandler implements  ApplicationContextAware {
     private static final String PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity;
 
     @Override
-    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
+
+        Map<String, DynamicHandlerService> beansOfDynamicHandlerService = applicationContext.getBeansOfType(DynamicHandlerService.class);
+        if (beansOfDynamicHandlerService.values().size() != 1)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicHandlerService can't be empty or more than 1");
+
+        Map<String, DynamicResourceService> beansOfDynamicResourceService = applicationContext.getBeansOfType(DynamicResourceService.class);
+        if (beansOfDynamicResourceService.values().size() != 1)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicResourceService can't be empty or more than 1");
+
+        Map<String, DynamicApiDeploy> beansOfDynamicApiDeploy = applicationContext.getBeansOfType(DynamicApiDeploy.class);
+        if (beansOfDynamicApiDeploy.values().size() != 1)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicApiDeploy can't be empty or more than 1");
+
+        this.dynamicHandlerService = new ArrayList<>(beansOfDynamicHandlerService.values()).get(0);
+        this.dynamicResourceService = new ArrayList<>(beansOfDynamicResourceService.values()).get(0);
+        DynamicApiDeploy dynamicApiDeploy = new ArrayList<>(beansOfDynamicApiDeploy.values()).get(0);
+        maxWaitingForRefresh = dynamicApiDeploy.getBlockingMillis();
+
+        this.clzWithHandlerMapping = applicationContext.getBeansOfType(DynamicEndPointHandler.class)
+                .values().stream().collect(toMap(h -> h.getClass().getName(), h -> h, (a, b) -> a));
+
+        refreshHandlers();
+
+        LOGGER.info("onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) success");
     }
 
     private final Supplier<Boolean> DYNAMIC_INFO_REFRESH_BLOCKER = () -> {
@@ -106,7 +126,6 @@ public final class BlueDynamicHandler implements  ApplicationContextAware {
         throw new BlueException(INTERNAL_SERVER_ERROR);
     };
 
-
     public void refreshHandlers() {
         List<DynamicHandler> dynamicHandlers = dynamicHandlerService.selectDynamicHandler();
         List<DynamicResource> dynamicResources = dynamicResourceService.selectDynamicResource();
@@ -127,34 +146,6 @@ public final class BlueDynamicHandler implements  ApplicationContextAware {
 
         LOGGER.info("refreshHandlers(), placeHolderHandlerMapping = {}", placeHolderHandlerMapping);
     }
-
-    @PostConstruct
-    public void init() {
-        Map<String, DynamicHandlerService> beansOfDynamicHandlerService = applicationContext.getBeansOfType(DynamicHandlerService.class);
-        if (beansOfDynamicHandlerService.values().size() != 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicHandlerService can't be empty or more than 1");
-
-        Map<String, DynamicResourceService> beansOfDynamicResourceService = applicationContext.getBeansOfType(DynamicResourceService.class);
-        if (beansOfDynamicResourceService.values().size() != 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicResourceService can't be empty or more than 1");
-
-        Map<String, DynamicApiDeploy> beansOfDynamicApiDeploy = applicationContext.getBeansOfType(DynamicApiDeploy.class);
-        if (beansOfDynamicApiDeploy.values().size() != 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicApiDeploy can't be empty or more than 1");
-
-        this.dynamicHandlerService = new ArrayList<>(beansOfDynamicHandlerService.values()).get(0);
-        this.dynamicResourceService = new ArrayList<>(beansOfDynamicResourceService.values()).get(0);
-        DynamicApiDeploy dynamicApiDeploy = new ArrayList<>(beansOfDynamicApiDeploy.values()).get(0);
-        maxWaitingForRefresh = dynamicApiDeploy.getBlockingMillis();
-
-        this.clzWithHandlerMapping = applicationContext.getBeansOfType(DynamicEndPointHandler.class)
-                .values().stream().collect(toMap(h -> h.getClass().getName(), h -> h, (a, b) -> a));
-
-        refreshHandlers();
-
-        LOGGER.info("init() success");
-    }
-
 
     /**
      * handle request

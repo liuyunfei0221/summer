@@ -34,13 +34,14 @@ public class BlueMarketingEventProcessorBeanDefinitionRegistrar implements Impor
 
     private static final String[] SCAN_PACKAGES = new String[]{"com.blue.marketing.component.marketing.impl"};
     private static final boolean USE_DEFAULT_FILTERS = false;
+    private static final Class<?> TARGET_TYPE = EventHandler.class;
 
     @Override
     public void registerBeanDefinitions(@NonNull AnnotationMetadata importingClassMetadata, @NonNull BeanDefinitionRegistry registry) {
         BlueBeanDefinitionScanner scanner = new BlueBeanDefinitionScanner(registry, USE_DEFAULT_FILTERS);
 
         scanner.setResourceLoader(resourceLoader);
-        scanner.addIncludeFilter(new AssignableTypeFilter(EventHandler.class));
+        scanner.addIncludeFilter(new AssignableTypeFilter(TARGET_TYPE));
         scanner.doScan(SCAN_PACKAGES);
 
         ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);

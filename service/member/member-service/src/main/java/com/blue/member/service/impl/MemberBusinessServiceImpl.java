@@ -183,7 +183,7 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
      */
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 30)
+            rollbackFor = Exception.class, timeout = 60)
     public MemberBusinessInfo insertMemberBusiness(MemberBusiness memberBusiness) {
         LOGGER.info("MemberBusinessInfo insertMemberBusiness(MemberBusiness memberBusiness), memberBusiness = {}", memberBusiness);
         if (isNull(memberBusiness))

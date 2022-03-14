@@ -21,6 +21,8 @@ public final class Credential implements Serializable {
 
     /**
      * login type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN
+     *
+     * @see com.blue.base.constant.auth.LoginType
      */
     private String type;
 

@@ -1,15 +1,15 @@
 package com.blue.auth.component.login.impl;
 
+import com.blue.auth.component.login.inter.LoginHandler;
+import com.blue.auth.model.LoginParam;
+import com.blue.auth.remote.consumer.RpcMemberServiceConsumer;
 import com.blue.auth.repository.entity.Credential;
+import com.blue.auth.service.inter.AuthService;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.base.constant.auth.LoginType;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.auth.component.login.inter.LoginHandler;
-import com.blue.auth.model.LoginParam;
-import com.blue.auth.service.inter.MemberService;
-import com.blue.auth.service.inter.AuthService;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -21,17 +21,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static com.blue.auth.common.AccessEncoder.matchAccess;
+import static com.blue.auth.constant.LoginAttribute.ACCESS;
+import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.base.BlueHeader.*;
-import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.base.constant.auth.LoginType.EMAIL_PWD;
-import static com.blue.auth.common.AccessEncoder.matchAccess;
-import static com.blue.auth.constant.LoginAttribute.ACCESS;
-import static com.blue.auth.constant.LoginAttribute.IDENTITY;
+import static com.blue.base.constant.base.BlueHeader.*;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -50,15 +50,15 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
 
     private static final Logger LOGGER = getLogger(EmailAndPwdLoginHandler.class);
 
-    private final CredentialService credentialService;
+    private final RpcMemberServiceConsumer rpcMemberServiceConsumer;
 
-    private final MemberService memberService;
+    private final CredentialService credentialService;
 
     private final AuthService authService;
 
-    public EmailAndPwdLoginHandler(CredentialService credentialService, MemberService memberService, AuthService authService) {
+    public EmailAndPwdLoginHandler(RpcMemberServiceConsumer rpcMemberServiceConsumer, CredentialService credentialService, AuthService authService) {
+        this.rpcMemberServiceConsumer = rpcMemberServiceConsumer;
         this.credentialService = credentialService;
-        this.memberService = memberService;
         this.authService = authService;
     }
 
@@ -68,6 +68,7 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
     };
 
     private static final Map<String, Object> EXTRA_INFO = new HashMap<>(2);
+
     static {
         EXTRA_INFO.put(NEW_MEMBER.key, false);
     }
@@ -84,13 +85,13 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
         if (isBlank(email) || isBlank(access))
             throw new BlueException(INVALID_ACCT_OR_PWD);
 
-        return credentialService.getCredentialByCredentialAndType(email, EMAIL_PWD.identity)
+        return credentialService.getCredentialMonoByCredentialAndType(email, EMAIL_PWD.identity)
                 .flatMap(credentialOpt ->
                         just(credentialOpt
                                 .filter(c -> matchAccess(access, c.getAccess()))
                                 .map(Credential::getMemberId)
                                 .orElseThrow(() -> new BlueException(INVALID_ACCT_OR_PWD)))
-                ).flatMap(memberService::selectMemberBasicInfoMonoById)
+                ).flatMap(rpcMemberServiceConsumer::selectMemberBasicInfoMonoByPrimaryKey)
                 .flatMap(mbi -> {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
                     return authService.generateAuthMono(mbi.getId(), EMAIL_PWD.identity, loginParam.getDeviceType().intern());

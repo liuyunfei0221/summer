@@ -21,7 +21,6 @@ import static reactor.util.Loggers.getLogger;
  * prop processor
  *
  * @author liuyunfei
- * @date 2021/12/10
  * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused"})

@@ -30,8 +30,8 @@ public class BlueDynamicHandlerBeanDefinitionRegistrar implements ResourceLoader
     private ResourceLoader resourceLoader;
 
     private static final String[] SCAN_PACKAGES = new String[]{"com.blue.finance.component.dynamic.impl"};
-
     private static final boolean USE_DEFAULT_FILTERS = false;
+    private static final Class<?> TARGET_TYPE = DynamicEndPointHandler.class;
 
     @Override
     public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
@@ -43,7 +43,7 @@ public class BlueDynamicHandlerBeanDefinitionRegistrar implements ResourceLoader
         BlueBeanDefinitionScanner scanner = new BlueBeanDefinitionScanner(registry, USE_DEFAULT_FILTERS);
 
         scanner.setResourceLoader(resourceLoader);
-        scanner.addIncludeFilter(new AssignableTypeFilter(DynamicEndPointHandler.class));
+        scanner.addIncludeFilter(new AssignableTypeFilter(TARGET_TYPE));
         scanner.doScan(SCAN_PACKAGES);
 
         ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);

@@ -2,6 +2,9 @@ package com.blue.auth.service.inter;
 
 import com.blue.auth.api.model.*;
 import com.blue.auth.model.*;
+import com.blue.base.model.base.Access;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
@@ -12,6 +15,54 @@ import reactor.core.publisher.Mono;
  */
 @SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
 public interface ControlService {
+
+    /**
+     * login
+     *
+     * @param serverRequest
+     * @return
+     */
+    Mono<ServerResponse> login(ServerRequest serverRequest);
+
+    /**
+     * logout
+     *
+     * @param serverRequest
+     * @return
+     */
+    Mono<ServerResponse> logout(ServerRequest serverRequest);
+
+    /**
+     * invalid auth by access
+     *
+     * @param access
+     * @return
+     */
+    Mono<Boolean> invalidAuthByAccess(Access access);
+
+    /**
+     * invalid auth by jwt
+     *
+     * @param jwt
+     * @return
+     */
+    Mono<Boolean> invalidAuthByJwt(String jwt);
+
+    /**
+     * invalid auth by member id
+     *
+     * @param memberId
+     * @return
+     */
+    Mono<Boolean> invalidAuthByMemberId(Long memberId);
+
+    /**
+     * invalid local auth by key id
+     *
+     * @param keyId
+     * @return
+     */
+    Mono<Boolean> invalidLocalAuthByKeyId(String keyId);
 
     /**
      * get authority base on role by role id
@@ -62,6 +113,16 @@ public interface ControlService {
     void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo, Long roleId);
 
     /**
+     * update member role info by member id
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     * @return
+     */
+    void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId);
+
+    /**
      * update default role by role id
      *
      * @param id
@@ -69,6 +130,47 @@ public interface ControlService {
      * @return
      */
     Mono<Void> updateDefaultRole(Long id, Long operatorId);
+
+    /**
+     * update member access/password by access
+     *
+     * @param accessUpdateParam
+     * @param access
+     * @return
+     */
+    Mono<Boolean> updateAccessByAccess(AccessUpdateParam accessUpdateParam, Access access);
+
+    /**
+     * reset member access/password by access
+     *
+     * @param accessResetParam
+     * @return
+     */
+    Mono<Boolean> resetAccessByAccess(AccessResetParam accessResetParam);
+
+    /**
+     * update member sec key by access
+     *
+     * @param access
+     * @return
+     */
+    Mono<String> updateSecKeyByAccess(Access access);
+
+    /**
+     * get member's authority by access
+     *
+     * @param access
+     * @return
+     */
+    Mono<AuthorityBaseOnRole> getAuthorityMonoByAccess(Access access);
+
+    /**
+     * get member's authority by member id
+     *
+     * @param memberId
+     * @return
+     */
+    Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId);
 
     /**
      * insert a new role

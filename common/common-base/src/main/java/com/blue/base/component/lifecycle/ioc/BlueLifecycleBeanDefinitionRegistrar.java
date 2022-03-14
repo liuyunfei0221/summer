@@ -2,7 +2,6 @@ package com.blue.base.component.lifecycle.ioc;
 
 import com.blue.base.anno.EnableBlueLifecycle;
 import com.blue.base.component.common.BlueBeanDefinitionScanner;
-import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import org.apache.logging.log4j.core.config.Order;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;
@@ -55,7 +54,7 @@ public class BlueLifecycleBeanDefinitionRegistrar implements ResourceLoaderAware
         BlueBeanDefinitionScanner scanner = new BlueBeanDefinitionScanner(registry, BLUE_LIFECYCLE_SCAN_PACKAGE.useDefaultFilters);
 
         scanner.setResourceLoader(resourceLoader);
-        scanner.addIncludeFilter(new AssignableTypeFilter(BlueLifecycle.class));
+        scanner.addIncludeFilter(new AssignableTypeFilter(BLUE_LIFECYCLE_SCAN_PACKAGE.targetType));
         scanner.doScan(basePackages);
 
         ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry);

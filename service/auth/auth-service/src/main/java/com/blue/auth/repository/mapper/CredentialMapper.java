@@ -37,4 +37,6 @@ public interface CredentialMapper {
 
     int insertBatch(@Param("list") List<Credential> list);
 
+    int updateAccess(@Param("memberId") Long memberId, @Param("loginTypes") List<String> loginTypes, @Param("access") String access);
+
 }

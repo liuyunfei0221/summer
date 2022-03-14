@@ -183,7 +183,7 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
      */
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 30)
+            rollbackFor = Exception.class, timeout = 60)
     public MemberRealNameInfo insertMemberRealName(MemberRealName memberRealName) {
         LOGGER.info("MemberRealNameInfo insertMemberRealName(MemberRealName memberRealName), memberRealName = {}", memberRealName);
         if (isNull(memberRealName))

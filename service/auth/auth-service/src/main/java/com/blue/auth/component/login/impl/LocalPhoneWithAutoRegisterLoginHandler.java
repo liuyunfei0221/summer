@@ -1,6 +1,7 @@
 package com.blue.auth.component.login.impl;
 
 import com.blue.auth.component.login.inter.LoginHandler;
+import com.blue.auth.remote.consumer.RpcMemberServiceConsumer;
 import com.blue.auth.service.inter.*;
 import com.blue.base.constant.auth.LoginType;
 import com.blue.base.model.base.BlueResponse;
@@ -50,23 +51,23 @@ public class LocalPhoneWithAutoRegisterLoginHandler implements LoginHandler {
 
     private final RpcLocalPhoneServiceConsumer rpcLocalPhoneServiceConsumer;
 
+    private final RpcMemberServiceConsumer rpcMemberServiceConsumer;
+
     private final AutoRegisterService autoRegisterService;
 
     private final CredentialService credentialService;
 
     private final RoleService roleService;
 
-    private final MemberService memberService;
-
     private final AuthService authService;
 
-    public LocalPhoneWithAutoRegisterLoginHandler(RpcLocalPhoneServiceConsumer rpcLocalPhoneServiceConsumer, AutoRegisterService autoRegisterService,
-                                                  CredentialService credentialService, RoleService roleService, MemberService memberService, AuthService authService) {
+    public LocalPhoneWithAutoRegisterLoginHandler(RpcLocalPhoneServiceConsumer rpcLocalPhoneServiceConsumer, RpcMemberServiceConsumer rpcMemberServiceConsumer,
+                                                  AutoRegisterService autoRegisterService, CredentialService credentialService, RoleService roleService, AuthService authService) {
         this.rpcLocalPhoneServiceConsumer = rpcLocalPhoneServiceConsumer;
+        this.rpcMemberServiceConsumer = rpcMemberServiceConsumer;
         this.autoRegisterService = autoRegisterService;
         this.credentialService = credentialService;
         this.roleService = roleService;
-        this.memberService = memberService;
         this.authService = authService;
     }
 
@@ -98,11 +99,11 @@ public class LocalPhoneWithAutoRegisterLoginHandler implements LoginHandler {
 
         //TODO
         // like Mono<String> phoneMono = rpcLocalPhoneServiceConsumer.getInfo(encryptedData, iv, jsCode);
-        return credentialService.getCredentialByCredentialAndType(phone, LOCAL_PHONE_AUTO_REGISTER.identity)
+        return credentialService.getCredentialMonoByCredentialAndType(phone, LOCAL_PHONE_AUTO_REGISTER.identity)
                 .flatMap(credentialOpt ->
                         credentialOpt.map(credential -> {
                                     extra.put(NEW_MEMBER.key, false);
-                                    return memberService.selectMemberBasicInfoMonoById(credential.getMemberId())
+                                    return rpcMemberServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(credential.getMemberId())
                                             .flatMap(mbi -> {
                                                 MEMBER_STATUS_ASSERTER.accept(mbi);
                                                 return authService.generateAuthMono(mbi.getId(), LOCAL_PHONE_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());

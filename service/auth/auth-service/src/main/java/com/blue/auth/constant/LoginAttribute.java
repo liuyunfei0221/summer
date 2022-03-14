@@ -9,6 +9,12 @@ package com.blue.auth.constant;
  */
 public enum LoginAttribute {
 
+    //common
+    /**
+     * verify code if trigger risk control
+     */
+    VERIFICATION_CODE("verificationCode"),
+
     //for login by client
     /**
      * account/phone/email for login by client
@@ -37,7 +43,7 @@ public enum LoginAttribute {
     JS_CODE("jsCode");
 
     public final String key;
-    
+
     LoginAttribute(String key) {
         this.key = key;
     }

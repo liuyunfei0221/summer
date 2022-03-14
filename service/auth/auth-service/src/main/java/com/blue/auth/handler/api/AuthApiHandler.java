@@ -1,8 +1,9 @@
 package com.blue.auth.handler.api;
 
-import com.blue.auth.service.inter.LoginService;
-import com.blue.auth.service.inter.AuthService;
+import com.blue.auth.model.AccessUpdateParam;
+import com.blue.auth.service.inter.ControlService;
 import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.exps.BlueException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -12,9 +13,12 @@ import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessRea
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.SECRET;
+import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static reactor.core.publisher.Mono.error;
+import static reactor.core.publisher.Mono.zip;
 
 /**
  * auth api handler
@@ -25,13 +29,10 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 @Component
 public final class AuthApiHandler {
 
-    private final AuthService authService;
+    private final ControlService controlService;
 
-    private final LoginService loginService;
-
-    public AuthApiHandler(AuthService authService, LoginService loginService) {
-        this.authService = authService;
-        this.loginService = loginService;
+    public AuthApiHandler(ControlService controlService) {
+        this.controlService = controlService;
     }
 
     /**
@@ -41,7 +42,7 @@ public final class AuthApiHandler {
      * @return
      */
     public Mono<ServerResponse> login(ServerRequest serverRequest) {
-        return loginService.login(serverRequest);
+        return controlService.login(serverRequest);
     }
 
     /**
@@ -53,12 +54,11 @@ public final class AuthApiHandler {
     public Mono<ServerResponse> logout(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        authService.invalidAuthByAccess(acc)
+                        controlService.invalidAuthByAccess(acc)
                                 .flatMap(success ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(AUTHORIZATION.name, "")
-                                                .body(
-                                                        generate(OK.code, serverRequest)
+                                                .body(generate(OK.code, serverRequest)
                                                         , BlueResponse.class)));
     }
 
@@ -69,14 +69,14 @@ public final class AuthApiHandler {
      * @return
      */
     public Mono<ServerResponse> updateAccess(ServerRequest serverRequest) {
-        return getAccessReact(serverRequest)
-                .flatMap(acc ->
-                        authService.updateSecKeyByAccess(acc)
-                                .flatMap(secKey ->
-                                        ok().contentType(APPLICATION_JSON)
-                                                .header(SECRET.name, secKey)
-                                                .body(generate(OK.code, serverRequest)
-                                                        , BlueResponse.class)));
+        return zip(serverRequest.bodyToMono(AccessUpdateParam.class)
+                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 ->
+                        controlService.updateAccessByAccess(tuple2.getT1(), tuple2.getT2()))
+                .flatMap(ri ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -88,7 +88,7 @@ public final class AuthApiHandler {
     public Mono<ServerResponse> updateSecret(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        authService.updateSecKeyByAccess(acc)
+                        controlService.updateSecKeyByAccess(acc)
                                 .flatMap(secKey ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(SECRET.name, secKey)
@@ -105,7 +105,7 @@ public final class AuthApiHandler {
     public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        authService.getAuthorityMonoByAccess(acc)
+                        controlService.getAuthorityMonoByAccess(acc)
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(generate(OK.code, authority, serverRequest)
