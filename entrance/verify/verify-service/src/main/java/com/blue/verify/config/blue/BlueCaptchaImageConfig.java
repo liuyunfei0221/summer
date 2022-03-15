@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author liuyunfei
- * @date 2021/12/24
- * @apiNote
  */
 @Component
 @ConfigurationProperties(prefix = "image")

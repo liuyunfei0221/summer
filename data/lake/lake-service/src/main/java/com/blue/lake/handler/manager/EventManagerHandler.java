@@ -20,8 +20,6 @@ import static reactor.util.Loggers.getLogger;
 
 /**
  * @author liuyunfei
- * @date 2022/1/5
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc"})
 @Component

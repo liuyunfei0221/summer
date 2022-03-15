@@ -30,6 +30,7 @@ public class AuthApiRoute {
                 .POST("/login", accept(APPLICATION_JSON), authApiHandler::login)
                 .DELETE("/logout", authApiHandler::logout)
                 .PUT("/updateAccess", accept(APPLICATION_JSON), authApiHandler::updateAccess)
+                .PUT("/resetAccess", accept(APPLICATION_JSON), authApiHandler::resetAccess)
                 .PUT("/updateSecret", accept(APPLICATION_JSON), authApiHandler::updateSecret)
                 .GET("/authority", authApiHandler::selectAuthority)
                 .build();

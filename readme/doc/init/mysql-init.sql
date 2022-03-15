@@ -298,13 +298,13 @@ CREATE TABLE `undo_log`
 
 INSERT INTO `auth`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
                               response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                              `name`,
-                              `description`,
-                              `create_time`, `update_time`, `creator`, `updater`)
+                              `name`, `description`, `create_time`, `update_time`, `creator`, `updater`)
 VALUES (9505726846205953, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         'login', 'login', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9506121983229953, 'PUT', 'blue-auth', '/auth/updateAccess', b'1', b'1', b'1', b'0', b'1', 1,
         'update access', 'update access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (9506121983229971, 'PUT', 'blue-auth', '/auth/resetAccess', b'1', b'1', b'1', b'0', b'1', 1,
+        'reset access', 'reset access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9506121983229961, 'PUT', 'blue-auth', '/auth/updateSecret', b'1', b'1', b'1', b'0', b'1', 1,
         'refresh private key', 'refresh private key', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9506477400129537, 'GET', 'blue-auth', '/auth/authority', b'1', b'1', b'1', b'0', b'1', 1,
@@ -344,39 +344,41 @@ VALUES (9505726846205953, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', 
         'withdraw/test encrypt in media', 'withdraw/test encrypt in media', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9506557930799114, 'GET', 'blue-shine', '/shine', b'0', b'1', b'1', b'0', b'1', 1,
         'commonweal information', 'commonweal information', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
        (14978349487128577, 'GET', 'blue-base', '/dictType', b'0', b'1', b'1', b'0',
         b'1', 1, 'query dict types', 'query dict types', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (19029083459420161, 'GET', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'test get endpoint', 'test get endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (19028988970172419, 'POST', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'test post endpoint', 'test post endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (28786229101199361, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 1,
+        'countries', 'countries', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (28786229101199362, 'GET', 'blue-base', '/states/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
+        'states', 'states', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (28786229101199363, 'GET', 'blue-base', '/cities/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
+        'cities', 'cities', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (28786229101199364, 'GET', 'blue-base', '/areas/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
+        'areas', 'areas', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (28786229101199365, 'GET', 'blue-base', '/language', b'0', b'1', b'1', b'0', b'1', 1,
+        'language', 'language', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
 
 -- dynamic resources
 
        (13739721721151489, 'GET', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
         3, 'GET dynamic endpoint', 'GET dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
        (13739721721151490, 'HEAD', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
-        3,
-        'HEAD dynamic endpoint', 'HEAD dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
+        3, 'HEAD dynamic endpoint', 'HEAD dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (13739721721151491, 'POST', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
-        3,
-        'POST dynamic endpoint', 'POST dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
+        3, 'POST dynamic endpoint', 'POST dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (13739721721151492, 'PUT', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
-        3,
-        'PUT dynamic endpoint', 'PUT dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
+        3, 'PUT dynamic endpoint', 'PUT dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (13739721721151493, 'PATCH', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
-        3,
-        'PATCH dynamic endpoint', 'PATCH dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        3, 'PATCH dynamic endpoint', 'PATCH dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (13739721721151495, 'DELETE', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1',
-        b'1', 3,
-        'DELETE dynamic endpoint', 'DELETE dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        b'1', 3, 'DELETE dynamic endpoint', 'DELETE dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (13739721721151496, 'OPTIONS', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1',
-        b'1', 3,
-        'OPTIONS dynamic endpoint', 'OPTIONS dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        b'1', 3, 'OPTIONS dynamic endpoint', 'OPTIONS dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- manage resources
 
@@ -419,20 +421,11 @@ VALUES (9505726846205953, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', 
        (28251575466065922, 'POST', 'blue-analyze', '/statistics/active/merge', b'0', b'1', b'1', b'1', b'1', 2,
         'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (28251575466065923, 'POST', 'blue-analyze', '/statistics/active/summary', b'0', b'1', b'1', b'0', b'1', 2,
-        'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (28786229101199361, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 1,
-        'countries', 'countries', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (28786229101199362, 'GET', 'blue-base', '/states/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
-        'states', 'states', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (28786229101199363, 'GET', 'blue-base', '/cities/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
-        'cities', 'cities', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (28786229101199364, 'GET', 'blue-base', '/language', b'0', b'1', b'1', b'0', b'1', 1,
-        'language', 'language', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+        'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role
 
-INSERT INTO `auth`.`role`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,
-                          `creator`,
+INSERT INTO `auth`.`role`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`, `creator`,
                           `updater`)
 VALUES (9507591944175638, 'normal', 'normal', 999999999, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (17558421159018501, 'summer admin', 'summer admin', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
@@ -445,6 +438,8 @@ INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`,
                                        `updater`)
 VALUES (9507161365282820, 17558421159018501, 9505726846205953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507452349349900, 17558421159018501, 9506121983229953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (9507452349349931, 17558421159018501, 9506121983229971, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (9507452349349932, 17558421159018501, 9506121983229961, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507496381120540, 17558421159018501, 9506477400129537, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507591944175640, 17558421159018501, 9506557930799110, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507161365282821, 17558421159018501, 9505726846205957, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -485,6 +480,8 @@ VALUES (9507161365282820, 17558421159018501, 9505726846205953, UNIX_TIMESTAMP(),
 -- normal auth
 
        (9507161365282830, 9507591944175638, 9505726846205953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (9507161365282932, 9507591944175638, 9506121983229971, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (9507161365282933, 9507591944175638, 9506121983229961, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507452349349921, 9507591944175638, 9506121983229953, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507496381120551, 9507591944175638, 9506477400129537, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507591944175651, 9507591944175638, 9506557930799110, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -494,7 +491,6 @@ VALUES (9507161365282820, 17558421159018501, 9505726846205953, UNIX_TIMESTAMP(),
        (9507591944175652, 9507591944175638, 9506557930799111, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507161365282832, 9507591944175638, 9505726846205961, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507452349349923, 9507591944175638, 9506121983229955, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (9507452349349924, 9507591944175638, 9506121983229961, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507496381120553, 9507591944175638, 9506477400129539, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507591944175653, 9507591944175638, 9506557930799112, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (9507161365282833, 9507591944175638, 9505726846205965, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -1058,8 +1054,7 @@ VALUES (13739721721151489, 'blue_get dynamic endpoint handler', 'blue_get dynami
 INSERT INTO `finance_1`.`dynamic_resource_1`(`id`, `organization_id`, `handler_id`, `request_method`, `uri_placeholder`,
                                              `content_type`, `name`,
                                              description, `create_time`, `update_time`, `creator`, `updater`)
-VALUES
-       (13739721721151489, 13739721721151489, 13739721721151489, 'GET', 1, 'application/json',
+VALUES (13739721721151489, 13739721721151489, 13739721721151489, 'GET', 1, 'application/json',
         'blue_get dynamic resource',
         'blue_get dynamic resource',
         UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -2582,9 +2577,10 @@ CREATE TABLE `country`
     `create_time`      bigint       DEFAULT '1' COMMENT 'data create time',
     `update_time`      bigint       DEFAULT '1' COMMENT 'data update time',
     PRIMARY KEY (`id`),
+    KEY                `idx_country_code`(`country_code`) USING BTREE,
     KEY                `idx_phone_code`(`phone_code`) USING BTREE,
     KEY                `idx_status`(`status`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of country';
 
 CREATE TABLE `state`
 (
@@ -2598,9 +2594,8 @@ CREATE TABLE `state`
     `create_time`  bigint       DEFAULT '1' COMMENT 'data create time',
     `update_time`  bigint       DEFAULT '1' COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY            `idx_country_id`(`country_id`) USING BTREE,
-    KEY            `idx_status`(`status`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    KEY            `idx_country_status`(`country_id`,`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of state';
 
 CREATE TABLE `city`
 (
@@ -2614,11 +2609,27 @@ CREATE TABLE `city`
     `create_time`  bigint  DEFAULT '1' COMMENT 'data create time',
     `update_time`  bigint  DEFAULT '1' COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY            `idx_country_id`(`country_id`) USING BTREE,
-    KEY            `idx_state_id`(`state_id`) USING BTREE,
-    KEY            `idx_country_state`(`country_id`,`state_id`) USING BTREE,
-    KEY            `idx_status`(`status`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    KEY            `idx_country`(`country_id`) USING BTREE,
+    KEY            `idx_state_status`(`state_id`,`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of city';
+
+CREATE TABLE `area`
+(
+    `id`           bigint       NOT NULL COMMENT 'id',
+    `country_id`   bigint       NOT NULL COMMENT 'country id',
+    `state_id`     bigint       NOT NULL COMMENT 'state id',
+    `city_id`      bigint       NOT NULL COMMENT 'city id',
+    `name`         varchar(255) NOT NULL COMMENT 'name',
+    `country_code` char(16)     NOT NULL COMMENT 'country code',
+    `state_code`   char(16)     NOT NULL COMMENT 'state code',
+    `status`       tinyint DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`  bigint  DEFAULT '1' COMMENT 'data create time',
+    `update_time`  bigint  DEFAULT '1' COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    KEY            `idx_country`(`country_id`) USING BTREE,
+    KEY            `idx_state`(`state_id`) USING BTREE,
+    KEY            `idx_city_status`(`city_id`,`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of area';
 
 CREATE TABLE `dict_type`
 (

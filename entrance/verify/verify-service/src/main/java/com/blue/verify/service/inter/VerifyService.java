@@ -9,8 +9,6 @@ import java.time.Duration;
  * verify service
  *
  * @author liuyunfei
- * @date 2021/12/23
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface VerifyService {

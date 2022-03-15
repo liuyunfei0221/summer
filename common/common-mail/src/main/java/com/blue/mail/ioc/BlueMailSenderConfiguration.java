@@ -12,8 +12,6 @@ import static com.blue.mail.api.generator.BlueMailSenderGenerator.generateMailSe
  * captcha processor configuration
  *
  * @author liuyunfei
- * @date 2022/1/4
- * @apiNote
  */
 @ConditionalOnBean(value = {MailSenderConf.class})
 @Configuration

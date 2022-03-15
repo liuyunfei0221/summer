@@ -283,7 +283,8 @@ dubbo:
 area:
   countryMaximumSize: 1
   stateMaximumSize: 1024
-  cityMaximumSize: 65536
+  cityMaximumSize: 32768
+  areaMaximumSize: 65536
   expireSeconds: 259200
 
 dict:

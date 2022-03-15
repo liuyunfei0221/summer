@@ -2,8 +2,6 @@ package com.blue.verify.api.conf;
 
 /**
  * @author liuyunfei
- * @date 2021/12/22
- * @apiNote
  */
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface CaptchaConf {

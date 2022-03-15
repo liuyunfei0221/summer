@@ -1,12 +1,13 @@
-package com.blue.lake.router.manager;
+package com.blue.base.router.api;
 
-import com.blue.lake.handler.manager.EventManagerHandler;
+import com.blue.base.handler.api.AreaApiHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static com.blue.base.constant.base.PathVariable.PID;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
@@ -14,19 +15,21 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * @author liuyunfei
+ * area api route
+ *
+ * @author DarkBlue
  */
 @Configuration
-public class EventManagerRoute {
+public class AreaApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> eventRouter(EventManagerHandler eventManagerHandler) {
+    RouterFunction<ServerResponse> areaApiRouter(AreaApiHandler areaApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-lake/event");
+        RequestPredicate pathPredicate = path("/blue-base");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/list", accept(APPLICATION_JSON), eventManagerHandler::listEvent)
+                .GET("/areas/{" + PID.key + "}", accept(APPLICATION_JSON), areaApiHandler::selectByCityId)
                 .build();
 
         return nest(pathPredicate, routerFunction);

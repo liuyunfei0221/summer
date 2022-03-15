@@ -7,8 +7,6 @@ import com.blue.mail.common.MailReader;
  * mail sender generator
  *
  * @author liuyunfei
- * @date 2022/1/4
- * @apiNote
  */
 public final class BlueMailReaderGenerator {
 

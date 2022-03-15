@@ -40,6 +40,11 @@
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
+            <artifactId>common-mail</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.blue</groupId>
             <artifactId>common-pulsar</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
@@ -94,6 +99,21 @@
             <version>${mysql-connector-java.version}</version>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+            <version>${jakarta.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>${jakarta.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>
@@ -101,6 +121,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <proc>none</proc>
+                </configuration>
             </plugin>
         </plugins>
     </build>

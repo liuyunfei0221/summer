@@ -4,8 +4,6 @@ package com.blue.base.constant.verify;
  * verify business type
  *
  * @author liuyunfei
- * @date 2021/12/23
- * @apiNote
  */
 public enum BusinessType {
 

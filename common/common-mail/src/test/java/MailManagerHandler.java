@@ -30,8 +30,6 @@
 //
 ///**
 // * @author liuyunfei
-// * @date 2022/1/5
-// * @apiNote
 // */
 //@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection", "DuplicatedCode", "AliControlFlowStatementWithoutBraces"})
 //@Component

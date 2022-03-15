@@ -67,6 +67,16 @@ public final class BaseModelConverters {
     };
 
     /**
+     * area -> area info
+     */
+    public static final Function<Area, AreaInfo> AREA_2_AREA_INFO_CONVERTER = area -> {
+        if (area == null)
+            throw new BlueException(EMPTY_PARAM);
+
+        return new AreaInfo(area.getId(), area.getName());
+    };
+
+    /**
      * cities -> city infos
      */
     public static final Function<List<City>, List<CityInfo>> CITIES_2_CITY_INFOS_CONVERTER = cs ->
@@ -74,6 +84,13 @@ public final class BaseModelConverters {
                     .map(CITY_2_CITY_INFO_CONVERTER)
                     .collect(toList()) : emptyList();
 
+    /**
+     * areas -> area infos
+     */
+    public static final Function<List<Area>, List<AreaInfo>> AREAS_2_AREA_INFOS_CONVERTER = as ->
+            as != null && as.size() > 0 ? as.stream()
+                    .map(AREA_2_AREA_INFO_CONVERTER)
+                    .collect(toList()) : emptyList();
 
     /**
      * type -> type info

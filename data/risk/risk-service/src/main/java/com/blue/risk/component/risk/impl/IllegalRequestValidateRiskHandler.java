@@ -15,8 +15,6 @@ import static reactor.util.Loggers.getLogger;
 
 /**
  * @author liuyunfei
- * @date 2021/12/29
- * @apiNote
  */
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Component

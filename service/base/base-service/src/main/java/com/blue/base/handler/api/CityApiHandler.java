@@ -15,7 +15,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 /**
- * state api handler
+ * city api handler
  *
  * @author liuyunfei
  * @date 2021/8/31
@@ -32,7 +32,7 @@ public class CityApiHandler {
     }
 
     /**
-     * select cities
+     * select cities by state
      *
      * @param serverRequest
      * @return

@@ -46,6 +46,9 @@ public final class ConfAsserter {
     public static void assertConf(IdentityConf identityConf) {
         LOGGER.info("void assertConf(IdentityConf identityConf), identityConf = {}", identityConf);
 
+        if (identityConf == null)
+            throw new IdentityException("identityConf can't be null");
+
         int timestampBits = TIME_STAMP.len;
         int dataCenterBits = DATA_CENTER.len;
         int workerBits = WORKER.len;

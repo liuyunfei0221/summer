@@ -15,8 +15,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * @author liuyunfei
- * @date 2021/12/22
- * @apiNote
  */
 @SuppressWarnings({"SpellCheckingInspection", "AliControlFlowStatementWithoutBraces"})
 public final class CaptchaProcessor {

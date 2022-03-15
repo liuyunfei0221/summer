@@ -6,8 +6,6 @@ import com.blue.base.model.base.DataEvent;
  * risk handler interface
  *
  * @author liuyunfei
- * @date 2021/12/29
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 public interface RiskHandler {

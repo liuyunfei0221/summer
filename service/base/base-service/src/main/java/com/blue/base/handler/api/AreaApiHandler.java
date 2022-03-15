@@ -1,7 +1,7 @@
 package com.blue.base.handler.api;
 
 import com.blue.base.model.base.BlueResponse;
-import com.blue.base.service.inter.StateService;
+import com.blue.base.service.inter.AreaService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -15,7 +15,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 /**
- * state api handler
+ * area api handler
  *
  * @author liuyunfei
  * @date 2021/8/31
@@ -23,23 +23,23 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
  */
 @SuppressWarnings("JavaDoc")
 @Component
-public class StateApiHandler {
+public class AreaApiHandler {
 
-    private final StateService stateService;
+    private final AreaService areaService;
 
-    public StateApiHandler(StateService stateService) {
-        this.stateService = stateService;
+    public AreaApiHandler(AreaService areaService) {
+        this.areaService = areaService;
     }
 
     /**
-     * select states by country
+     * select areas by city
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> selectByCountryId(ServerRequest serverRequest) {
+    public Mono<ServerResponse> selectByCityId(ServerRequest serverRequest) {
         return getLongVariableReact(serverRequest, PID.key)
-                .flatMap(stateService::selectStateInfoByCountryId)
+                .flatMap(areaService::selectAreaInfoByCityId)
                 .flatMap(l ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, l, serverRequest), BlueResponse.class));

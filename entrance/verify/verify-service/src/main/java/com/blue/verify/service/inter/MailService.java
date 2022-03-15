@@ -6,8 +6,6 @@ import reactor.core.publisher.Mono;
  * mail service
  *
  * @author liuyunfei
- * @date 2021/12/23
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface MailService {

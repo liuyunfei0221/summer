@@ -1,5 +1,6 @@
 package com.blue.auth.handler.api;
 
+import com.blue.auth.model.AccessResetParam;
 import com.blue.auth.model.AccessUpdateParam;
 import com.blue.auth.service.inter.ControlService;
 import com.blue.base.model.base.BlueResponse;
@@ -74,9 +75,24 @@ public final class AuthApiHandler {
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         controlService.updateAccessByAccess(tuple2.getT1(), tuple2.getT2()))
-                .flatMap(ri ->
+                .flatMap(r ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, r, serverRequest), BlueResponse.class));
+    }
+
+    /**
+     * reset member's access/password
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> resetAccess(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(AccessResetParam.class)
+                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                .flatMap(controlService::resetAccessByAccess)
+                .flatMap(r ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, r, serverRequest), BlueResponse.class));
     }
 
     /**

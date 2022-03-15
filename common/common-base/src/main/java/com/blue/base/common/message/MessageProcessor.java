@@ -32,8 +32,6 @@ import static reactor.util.Loggers.getLogger;
  * i18n message processor
  *
  * @author liuyunfei
- * @date 2021/12/19
- * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 public final class MessageProcessor {

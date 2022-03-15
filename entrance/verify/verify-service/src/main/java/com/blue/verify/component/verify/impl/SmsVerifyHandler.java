@@ -37,8 +37,6 @@ import static reactor.util.Loggers.getLogger;
  * sms verify handler
  *
  * @author liuyunfei
- * @date 2021/12/23
- * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
 public class SmsVerifyHandler implements VerifyHandler {

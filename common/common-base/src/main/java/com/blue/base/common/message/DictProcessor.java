@@ -27,8 +27,6 @@ import static reactor.util.Loggers.getLogger;
  * i18n dict processor
  *
  * @author liuyunfei
- * @date 2021/12/19
- * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "unused"})
 public final class DictProcessor {

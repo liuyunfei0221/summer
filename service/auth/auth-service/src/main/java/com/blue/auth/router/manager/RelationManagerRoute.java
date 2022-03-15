@@ -17,8 +17,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
  * relation manager route
  *
  * @author liuyunfei
- * @date 2021/8/31
- * @apiNote
  */
 @SuppressWarnings("DuplicatedCode")
 @Configuration

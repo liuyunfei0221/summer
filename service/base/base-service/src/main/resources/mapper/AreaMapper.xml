@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
-<mapper namespace="com.blue.base.repository.mapper.StateMapper">
-    <resultMap id="BaseResultMap" type="com.blue.base.repository.entity.State">
+<mapper namespace="com.blue.base.repository.mapper.AreaMapper">
+    <resultMap id="BaseResultMap" type="com.blue.base.repository.entity.Area">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="country_id" jdbcType="BIGINT" property="countryId"/>
+        <result column="state_id" jdbcType="BIGINT" property="stateId"/>
+        <result column="city_id" jdbcType="BIGINT" property="cityId"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
-        <result column="fips_code" jdbcType="VARCHAR" property="fipsCode"/>
         <result column="country_code" jdbcType="CHAR" property="countryCode"/>
         <result column="state_code" jdbcType="CHAR" property="stateCode"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
@@ -16,20 +17,23 @@
 
     <sql id="Base_Column_List">
         id
-        , country_id, name, fips_code, country_code, state_code, status, create_time, update_time
+        , country_id, state_id, city_id, name, country_code, state_code, status, create_time,
+    update_time
     </sql>
 
-    <insert id="insert" parameterType="com.blue.base.repository.entity.State">
-        insert into state (id, country_id, name,
-                           fips_code, country_code, state_code,
-                           status, create_time, update_time)
-        values (#{id,jdbcType=BIGINT}, #{countryId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR},
-                #{fipsCode,jdbcType=VARCHAR}, #{countryCode,jdbcType=CHAR}, #{stateCode,jdbcType=CHAR},
-                #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
+    <insert id="insert" parameterType="com.blue.base.repository.entity.Area">
+        insert into area (id, country_id, state_id,
+                          city_id, name, country_code,
+                          state_code, status, create_time,
+                          update_time)
+        values (#{id,jdbcType=BIGINT}, #{countryId,jdbcType=BIGINT}, #{stateId,jdbcType=BIGINT},
+                #{cityId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{countryCode,jdbcType=CHAR},
+                #{stateCode,jdbcType=CHAR}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT})
     </insert>
 
-    <insert id="insertSelective" parameterType="com.blue.base.repository.entity.State">
-        insert into state
+    <insert id="insertSelective" parameterType="com.blue.base.repository.entity.Area">
+        insert into area
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -37,11 +41,14 @@
             <if test="countryId != null">
                 country_id,
             </if>
+            <if test="stateId != null">
+                state_id,
+            </if>
+            <if test="cityId != null">
+                city_id,
+            </if>
             <if test="name != null">
                 name,
-            </if>
-            <if test="fipsCode != null">
-                fips_code,
             </if>
             <if test="countryCode != null">
                 country_code,
@@ -66,11 +73,14 @@
             <if test="countryId != null">
                 #{countryId,jdbcType=BIGINT},
             </if>
+            <if test="stateId != null">
+                #{stateId,jdbcType=BIGINT},
+            </if>
+            <if test="cityId != null">
+                #{cityId,jdbcType=BIGINT},
+            </if>
             <if test="name != null">
                 #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="fipsCode != null">
-                #{fipsCode,jdbcType=VARCHAR},
             </if>
             <if test="countryCode != null">
                 #{countryCode,jdbcType=CHAR},
@@ -90,11 +100,12 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.State">
-        update state
+    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.Area">
+        update area
         set country_id   = #{countryId,jdbcType=BIGINT},
+            state_id     = #{stateId,jdbcType=BIGINT},
+            city_id      = #{cityId,jdbcType=BIGINT},
             name         = #{name,jdbcType=VARCHAR},
-            fips_code    = #{fipsCode,jdbcType=VARCHAR},
             country_code = #{countryCode,jdbcType=CHAR},
             state_code   = #{stateCode,jdbcType=CHAR},
             status       = #{status,jdbcType=TINYINT},
@@ -103,17 +114,20 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKeySelective" parameterType="com.blue.base.repository.entity.State">
-        update state
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.base.repository.entity.Area">
+        update area
         <set>
             <if test="countryId != null">
                 country_id = #{countryId,jdbcType=BIGINT},
             </if>
+            <if test="stateId != null">
+                state_id = #{stateId,jdbcType=BIGINT},
+            </if>
+            <if test="cityId != null">
+                city_id = #{cityId,jdbcType=BIGINT},
+            </if>
             <if test="name != null">
                 name = #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="fipsCode != null">
-                fips_code = #{fipsCode,jdbcType=VARCHAR},
             </if>
             <if test="countryCode != null">
                 country_code = #{countryCode,jdbcType=CHAR},
@@ -134,33 +148,51 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from area
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from state
+        from area
         where id = #{id,jdbcType=BIGINT}
     </select>
-
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from state
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
 
     <select id="select" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        state
+        area
     </select>
 
     <select id="selectByCountryId" parameterType="java.lang.Long" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        state FORCE INDEX(idx_country_status)
+        area FORCE INDEX(idx_country)
         WHERE
         country_id = #{countryId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByStateId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        area FORCE INDEX(idx_state)
+        WHERE
+        state_id = #{stateId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByCityId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        area FORCE INDEX(idx_city_status)
+        WHERE
+        city_id = #{cityId,jdbcType=BIGINT}
     </select>
 
 </mapper>

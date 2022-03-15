@@ -1,10 +1,7 @@
 package com.blue.mail.core;
 
 import com.blue.base.model.exps.BlueException;
-import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
-import jakarta.mail.Session;
-import jakarta.mail.Transport;
+import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import reactor.util.Logger;
@@ -70,6 +67,10 @@ final class Transporter {
         try {
             this.transport.sendMessage(message, message.getAllRecipients());
         } catch (MessagingException e) {
+            //TODO
+            if (e instanceof SendFailedException)
+                throw new RuntimeException(e);
+
             sendMsgWithReConnect(message);
         } catch (Exception e) {
             throw new RuntimeException(e);

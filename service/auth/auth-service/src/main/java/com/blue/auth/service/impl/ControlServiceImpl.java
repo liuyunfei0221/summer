@@ -33,6 +33,7 @@ import static com.blue.base.common.base.ConstantProcessor.getVerifyTypeByIdentit
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
+import static com.blue.base.constant.verify.BusinessType.RESET_ACCESS;
 import static com.blue.base.constant.verify.BusinessType.UPDATE_ACCESS;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -275,7 +276,6 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<Void> refreshSystemAuthorityInfos() {
         LOGGER.info("Mono<Void> refreshSystemAuthorityInfos()");
-        authService.refreshSystemAuthorityInfos();
 
         return fromRunnable(authService::refreshSystemAuthorityInfos).then();
     }
@@ -358,6 +358,8 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
+        LOGGER.info("void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
+
         authService.refreshMemberRoleById(memberId, roleId, operatorId);
     }
 
@@ -375,7 +377,6 @@ public class ControlServiceImpl implements ControlService {
 
         return fromRunnable(() -> roleResRelationService.updateDefaultRole(id, operatorId)).then();
     }
-
 
     /**
      * update member access/password by access
@@ -424,12 +425,18 @@ public class ControlServiceImpl implements ControlService {
             return error(() -> new BlueException(EMPTY_PARAM));
 
         VerifyType verifyType = getVerifyTypeByIdentity(accessResetParam.getVerifyType());
-
-        Credential credential = credentialService.getCredentialByCredentialAndType(accessResetParam.getCredential(), verifyType.identity)
-                .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid verify type"));
-
-
-        return null;
+        return credentialService.getCredentialMonoByCredentialAndType(accessResetParam.getCredential(), verifyType.identity)
+                .flatMap(credentialOpt ->
+                        just(credentialOpt.orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid verify type"))))
+                .flatMap(credential ->
+                        rpcVerifyHandleServiceConsumer.validate(verifyType, RESET_ACCESS, credential.getCredential(), accessResetParam.getVerificationCode(), true)
+                                .flatMap(validate ->
+                                        validate ?
+                                                just(credentialService.updateAccess(credential.getMemberId(), null, accessResetParam.getAccess()))
+                                                :
+                                                error(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verificationCode is invalid"))
+                                )
+                );
     }
 
     /**

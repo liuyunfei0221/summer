@@ -12,8 +12,6 @@ import static reactor.util.Loggers.getLogger;
  * sms service impl
  *
  * @author liuyunfei
- * @date 2021/12/23
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 @Service

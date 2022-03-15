@@ -9,8 +9,6 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
  * @author liuyunfei
- * @date 2021/11/19
- * @apiNote
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public final class TheRandomGenerator {

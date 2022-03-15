@@ -2,8 +2,6 @@ package com.blue.database.api.conf;
 
 /**
  * @author liuyunfei
- * @date 2021/11/26
- * @apiNote
  */
 public final class IdentityToShardingMappingAttr {
 

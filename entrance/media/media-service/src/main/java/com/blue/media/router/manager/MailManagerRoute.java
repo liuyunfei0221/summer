@@ -14,8 +14,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 
 /**
  * @author liuyunfei
- * @date 2022/1/5
- * @apiNote
  */
 @Configuration
 public class MailManagerRoute {

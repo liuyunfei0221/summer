@@ -23,8 +23,6 @@ import java.util.stream.StreamSupport;
  * safe random generator
  *
  * @author liuyunfei
- * @date 2021/11/19
- * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "StatementWithEmptyBody", "unused"})
 public class TheRandom extends Random {

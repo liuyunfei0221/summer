@@ -2,8 +2,6 @@ package com.blue.risk.component.risk;
 
 /**
  * @author liuyunfei
- * @date 2021/12/29
- * @apiNote
  */
 public enum HandlerPrecedence {
 

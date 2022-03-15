@@ -4,8 +4,6 @@ import static com.blue.base.common.base.TheRandomGenerator.generate;
 
 /**
  * @author liuyunfei
- * @date 2021/11/19
- * @apiNote
  */
 @SuppressWarnings({"unused"})
 public final class RandomTest {

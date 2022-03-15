@@ -15,8 +15,6 @@ import static reactor.util.Loggers.getLogger;
 
 /**
  * @author liuyunfei
- * @date 2021/12/23
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
 @Component

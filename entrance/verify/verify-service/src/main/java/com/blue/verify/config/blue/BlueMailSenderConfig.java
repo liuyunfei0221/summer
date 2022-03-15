@@ -1,4 +1,4 @@
-package com.blue.media.config.blue;
+package com.blue.verify.config.blue;
 
 import com.blue.mail.api.conf.MailSenderConfParams;
 import org.springframework.boot.context.properties.ConfigurationProperties;

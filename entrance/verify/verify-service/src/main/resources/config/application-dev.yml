@@ -430,4 +430,30 @@ image:
   imageHeight: 50
 
 
+sender:
+  smtpAttrs:
+    - user: yunfei0221@outlook.com
+      password: Fei19890116
+      props:
+        mail.smtp.auth: true
+        mail.smtp.host: smtp.office365.com
+        mail.smtp.port: 587
+        mail.smtp.ssl: true
+        mail.smtp.starttls.enable: true
+        mail.debug: false
+
+  corePoolSize: 2
+  maximumPoolSize: 8
+  keepAliveSeconds: 64
+  blockingQueueCapacity: 2048
+  threadNamePre: blue-mail-sender
+  bufferSize: 2
+  throwableForRetry: [ jakarta.mail.FolderClosedException ]
+  retryTimes: 1
+  withDKIM: false
+  domainKeyFile: classpath:dkim/selector1.pem
+  domain: outlook.com
+  selector: selector1
+
+
 debug: false

@@ -4,8 +4,6 @@ import java.util.List;
 
 /**
  * @author liuyunfei
- * @date 2022/1/4
- * @apiNote
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaLowerCamelCaseVariableNaming"})
 public interface MailSenderConf {

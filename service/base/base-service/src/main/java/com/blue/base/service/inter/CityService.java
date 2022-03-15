@@ -32,7 +32,7 @@ public interface CityService {
     List<City> selectCityByCountryId(Long countryId);
 
     /**
-     * select city by stateId id
+     * select city by state id
      *
      * @param stateId
      * @return

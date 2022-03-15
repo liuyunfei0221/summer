@@ -9,8 +9,6 @@ import static com.blue.base.constant.base.RandomType.NUMERIC;
  * verify type
  *
  * @author liuyunfei
- * @date 2021/12/23
- * @apiNote
  */
 public enum VerifyType {
 
@@ -27,7 +25,7 @@ public enum VerifyType {
     /**
      * mail verify
      */
-    MAIL("MAIL", ALPHANUMERIC);
+    MAIL("MAIL", NUMERIC);
 
     public final String identity;
 

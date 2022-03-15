@@ -8,8 +8,6 @@ import com.blue.verify.common.CaptchaProcessor;
  * captcha processor generator
  *
  * @author liuyunfei
- * @date 2021/12/22
- * @apiNote
  */
 @SuppressWarnings("unused")
 public final class BlueCaptchaGenerator {

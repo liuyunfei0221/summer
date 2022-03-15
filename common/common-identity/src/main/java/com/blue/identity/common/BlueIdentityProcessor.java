@@ -65,8 +65,6 @@ public final class BlueIdentityProcessor {
     public BlueIdentityProcessor(IdentityConf identityConf) {
         LOGGER.info("BlueIdentityProcessor(IdentityConf identityConf), identityConf = {}", identityConf);
 
-        if (identityConf == null)
-            throw new IdentityException("identityConf can't be null");
         assertConf(identityConf);
 
         String serviceName = identityConf.getServiceName() + PAR_CONCATENATION + identityConf.getDataCenter() + PAR_CONCATENATION + identityConf.getWorker();
@@ -76,15 +74,13 @@ public final class BlueIdentityProcessor {
 
         Boolean paddingScheduled = identityConf.getPaddingScheduled();
         idGenParam = new IdGenParam(identityConf.getDataCenter(), identityConf.getWorker(), ofNullable(identityConf.getLastSecondsGetter()).map(Supplier::get).filter(ls -> ls > 0)
-                .orElseGet(() -> now().getEpochSecond()),
-                identityConf.getBootSeconds(), identityConf.getMaximumTimeAlarm(), identityConf.getSecondsRecorder(), identityConf.getBufferPower(), identityConf.getPaddingFactor(),
-                new ThreadPoolExecutor(identityConf.getPaddingCorePoolSize(), identityConf.getPaddingMaximumPoolSize(),
-                        identityConf.getKeepAliveSeconds(), SECONDS, new ArrayBlockingQueue<>(identityConf.getPaddingBlockingQueueSize()),
-                        threadFactory, (r, executor) -> {
-                    LOGGER.error("Asynchronous padding thread rejected");
-                    r.run();
-                }),
-                paddingScheduled,
+                .orElseGet(() -> now().getEpochSecond()), identityConf.getBootSeconds(), identityConf.getMaximumTimeAlarm(), identityConf.getSecondsRecorder(), identityConf.getBufferPower(),
+                identityConf.getPaddingFactor(), new ThreadPoolExecutor(identityConf.getPaddingCorePoolSize(), identityConf.getPaddingMaximumPoolSize(),
+                identityConf.getKeepAliveSeconds(), SECONDS, new ArrayBlockingQueue<>(identityConf.getPaddingBlockingQueueSize()),
+                threadFactory, (r, executor) -> {
+            LOGGER.error("Asynchronous padding thread rejected");
+            r.run();
+        }), paddingScheduled,
                 ofNullable(paddingScheduled).orElse(false) ?
                         new ScheduledThreadPoolExecutor(identityConf.getPaddingScheduledCorePoolSize(), Thread::new, (r, executor) -> {
                             LOGGER.error("Timed padding thread rejected");

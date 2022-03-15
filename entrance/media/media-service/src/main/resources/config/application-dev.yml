@@ -252,7 +252,6 @@ sender:
         mail.smtp.starttls.enable: true
         mail.debug: false
 
-
   corePoolSize: 2
   maximumPoolSize: 8
   keepAliveSeconds: 64

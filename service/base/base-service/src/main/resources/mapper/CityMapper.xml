@@ -158,7 +158,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        city FORCE INDEX(idx_country_id)
+        city FORCE INDEX(idx_country)
         WHERE
         country_id = #{countryId,jdbcType=BIGINT}
     </select>
@@ -167,7 +167,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        city FORCE INDEX(idx_state_id)
+        city FORCE INDEX(idx_state_status)
         WHERE
         state_id = #{stateId,jdbcType=BIGINT}
     </select>
