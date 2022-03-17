@@ -9,7 +9,7 @@ public class LanguageTest {
     public static void main(String[] args) {
 
         System.err.println(MessageProcessor.listSupportLanguages());
-        System.err.println(MessageProcessor.resolveToMessage(429));
+        System.err.println(MessageProcessor.resolveToMessage(200));
         System.err.println(DictProcessor.resolveToValue(DictKey.EMAIL.key));
 
     }

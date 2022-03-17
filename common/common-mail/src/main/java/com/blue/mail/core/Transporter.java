@@ -60,24 +60,7 @@ final class Transporter {
         }
     };
 
-    private void sendMsg(Message message) {
-        while (!TRANSPORT_CONTROL.get())
-            onSpinWait();
-
-        try {
-            this.transport.sendMessage(message, message.getAllRecipients());
-        } catch (MessagingException e) {
-            //TODO
-            if (e instanceof SendFailedException)
-                throw new RuntimeException(e);
-
-            sendMsgWithReConnect(message);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void sendMsgWithReConnect(Message message) {
+    private void reConnect(){
         if (TRANSPORT_CONTROL.compareAndSet(true, false)) {
             try {
                 TRANSPORT_CONNECTOR.accept(this.session);
@@ -91,8 +74,24 @@ final class Transporter {
             while (!TRANSPORT_CONTROL.get())
                 onSpinWait();
         }
+    }
 
-        sendMsg(message);
+    private void sendMsg(Message message) {
+        while (!TRANSPORT_CONTROL.get())
+            onSpinWait();
+
+        try {
+            this.transport.sendMessage(message, message.getAllRecipients());
+        } catch (MessagingException e) {
+            reConnect();
+            try {
+                this.transport.sendMessage(message, message.getAllRecipients());
+            } catch (MessagingException ex) {
+                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "sendMsg(Message message), failed, e = " + e);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void init() {

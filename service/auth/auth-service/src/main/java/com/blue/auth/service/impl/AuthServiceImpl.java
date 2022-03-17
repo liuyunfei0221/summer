@@ -68,7 +68,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "ConstantConditions"})
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -162,15 +162,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * jwt parser
      */
-    private final Function<String, MemberPayload> JWT_PARSER = jwt -> {
-        MemberPayload memberPayload;
-        try {
-            memberPayload = jwtProcessor.parse(jwt);
-        } catch (Exception e) {
-            throw new BlueException(UNAUTHORIZED);
-        }
-        return memberPayload;
-    };
+    private final Function<String, MemberPayload> JWT_PARSER = jwtProcessor::parse;
 
     /**
      * authInfo parser

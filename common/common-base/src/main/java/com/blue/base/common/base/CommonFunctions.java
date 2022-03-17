@@ -91,7 +91,7 @@ public class CommonFunctions {
     /**
      * uri parser - for request
      */
-    public static final UnaryOperator<String> REST_URI_PROCESSOR = uri -> {
+    public static final UnaryOperator<String> REQUEST_REST_URI_PROCESSOR = uri -> {
         if (uri == null || "".equals(uri))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be null");
 
@@ -131,7 +131,7 @@ public class CommonFunctions {
     /**
      * uri parser - for init
      */
-    public static final UnaryOperator<String> REST_URI_CONVERTER = uri -> {
+    public static final UnaryOperator<String> INIT_REST_URI_PROCESSOR = uri -> {
         REST_URI_ASSERTER.accept(uri);
 
         int lastPartIdx = lastIndexOf(uri, PATH_SEPARATOR);
@@ -172,7 +172,7 @@ public class CommonFunctions {
      * resource key generator
      */
     public static final BinaryOperator<String> RES_KEY_GENERATOR = (method, uri) ->
-            ((upperCase(method).intern() + PAR_CONCATENATION + REST_URI_CONVERTER.apply(uri).intern()).intern()).intern();
+            ((upperCase(method).intern() + PAR_CONCATENATION + INIT_REST_URI_PROCESSOR.apply(uri).intern()).intern()).intern();
 
     /**
      * header value getter

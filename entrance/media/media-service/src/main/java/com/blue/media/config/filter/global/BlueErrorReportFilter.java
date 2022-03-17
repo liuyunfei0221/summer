@@ -118,7 +118,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
         attributes.put(CLIENT_IP.key, getIp(request));
         attributes.put(METHOD.key, method);
         attributes.put(REAL_URI.key, realUri);
-        attributes.put(URI.key, REST_URI_PROCESSOR.apply(realUri).intern());
+        attributes.put(URI.key, REQUEST_REST_URI_PROCESSOR.apply(realUri).intern());
 
         ofNullable(request.getHeaders().getFirst(BlueHeader.METADATA.name))
                 .ifPresent(metadata -> attributes.put(METADATA.key, metadata));
