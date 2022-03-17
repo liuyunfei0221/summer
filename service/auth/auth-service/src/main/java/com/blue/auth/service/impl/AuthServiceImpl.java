@@ -68,7 +68,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "ConstantConditions"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -158,11 +158,6 @@ public class AuthServiceImpl implements AuthService {
      * resource key -> resource
      */
     private volatile Map<String, Resource> keyAndResourceMapping = emptyMap();
-
-    /**
-     * jwt parser
-     */
-    private final Function<String, MemberPayload> JWT_PARSER = jwtProcessor::parse;
 
     /**
      * authInfo parser
@@ -618,7 +613,7 @@ public class AuthServiceImpl implements AuthService {
                         return NO_AUTH_REQUIRED_RES_GEN.apply(resource);
 
                     String jwt = aa.getAuthentication();
-                    MemberPayload memberPayload = JWT_PARSER.apply(jwt);
+                    MemberPayload memberPayload = jwtProcessor.parse(jwt);
 
                     return authInfoCache.getAuthInfo(memberPayload.getKeyId())
                             .flatMap(v -> {
@@ -718,7 +713,7 @@ public class AuthServiceImpl implements AuthService {
     public Mono<Boolean> invalidAuthByJwt(String jwt) {
         LOGGER.info("Mono<Boolean> invalidAuthByJwt(String jwt), jwt = {}", jwt);
         try {
-            return authInfoCache.invalidAuthInfo(JWT_PARSER.apply(jwt).getKeyId());
+            return authInfoCache.invalidAuthInfo(jwtProcessor.parse(jwt).getKeyId());
         } catch (Exception e) {
             LOGGER.error("Mono<Boolean> invalidAuthByJwt(String jwt) failed, jwt = {}, e = {}", jwt, e);
             return just(false);
