@@ -36,10 +36,7 @@ public class BlueMemberJwtConfiguration {
         BaseJwtConfParams<MemberPayload> baseJwtConfParams = new BaseJwtConfParams<>(memberJwtConf.getGlobalMaxExpireMillis(),
                 memberJwtConf.getGlobalMinExpireMillis(),
                 memberJwtConf.getSignKey(),
-                memberJwtConf.getGammaSecrets(),
-                memberJwtConf.getIssuer(),
-                memberJwtConf.getSubject(),
-                memberJwtConf.getAudience()) {
+                memberJwtConf.getGammaSecrets()) {
 
             @Override
             public Function<MemberPayload, Map<String, String>> getDataToClaimProcessor() {
@@ -59,6 +56,7 @@ public class BlueMemberJwtConfiguration {
             public Function<Map<String, String>, MemberPayload> getClaimToDataProcessor() {
                 return c -> new MemberPayload(c.get("t"), c.get("h"), c.get("i"), c.get("n"), c.get("g"), c.get("s"));
             }
+            
         };
 
         return generate(baseJwtConfParams);

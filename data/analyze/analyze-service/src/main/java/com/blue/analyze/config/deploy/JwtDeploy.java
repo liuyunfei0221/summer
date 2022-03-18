@@ -36,8 +36,6 @@ public class JwtDeploy {
 
     private String issuer;
 
-    private String subject;
-
     private String audience;
 
     public JwtDeploy() {
@@ -131,14 +129,6 @@ public class JwtDeploy {
         this.issuer = issuer;
     }
 
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
     public String getAudience() {
         return audience;
     }
@@ -161,7 +151,6 @@ public class JwtDeploy {
                 ", signKey='" + signKey + '\'' +
                 ", gammaSecrets=" + gammaSecrets +
                 ", issuer='" + issuer + '\'' +
-                ", subject='" + subject + '\'' +
                 ", audience='" + audience + '\'' +
                 '}';
     }

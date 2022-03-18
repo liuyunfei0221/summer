@@ -100,21 +100,6 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     private final Function<Map<String, String>, T> CLAIM_2_DATA_PROCESSOR;
 
     /**
-     * issuer
-     */
-    private final String ISSUER;
-
-    /**
-     * subject
-     */
-    private final String SUBJECT;
-
-    /**
-     * audience
-     */
-    private final String AUDIENCE;
-
-    /**
      * gamma secret keys
      */
     private String[] gammaSecretArr;
@@ -200,10 +185,6 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
 
         this.DATA_2_CLAIM_PROCESSOR = jwtConf.getDataToClaimProcessor();
         this.CLAIM_2_DATA_PROCESSOR = jwtConf.getClaimToDataProcessor();
-
-        this.ISSUER = jwtConf.getIssuer();
-        this.SUBJECT = jwtConf.getSubject();
-        this.AUDIENCE = jwtConf.getAudience();
     }
 
     /**
@@ -230,8 +211,6 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
 
             ofNullable(DATA_2_CLAIM_PROCESSOR.apply(t))
                     .ifPresent(cm -> cm.forEach(builder::withClaim));
-
-            builder.withIssuer(ISSUER).withSubject(SUBJECT).withAudience(AUDIENCE);
 
             Date date = DATE_GEN.apply(currentStamp);
             builder.withIssuedAt(date).withNotBefore(date).withExpiresAt(DATE_GEN.apply(expiresAtStamp));
@@ -317,9 +296,9 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
         int gammaSecretSize = gammaSecrets.size();
         if (gammaSecretSize < GAMMA_SECRETS_MIN_LEN || gammaSecretSize > GAMMA_SECRETS_MAX_LEN)
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's element size can't be less than " + GAMMA_SECRETS_MIN_LEN + " or greater than " + GAMMA_SECRETS_MAX_LEN);
-
         if (Integer.bitCount(gammaSecretSize) != 1)
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's size must be power of 2");
+
         gammaSecrets = gammaSecrets.stream()
                 .peek(gs -> {
                     if (isBlank(gs))
@@ -335,13 +314,6 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dataToClaimProcessor can't be null");
         if (conf.getClaimToDataProcessor() == null)
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "claimToDataProcessor can't be null");
-
-        if (isBlank(conf.getIssuer()))
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "issuer can't be blank");
-        if (isBlank(conf.getSubject()))
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "subject can't be blank");
-        if (isBlank(conf.getAudience()))
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "audience can't be blank");
     }
 
 }

@@ -46,8 +46,6 @@ public class AuthDeploy {
 
     private String issuer;
 
-    private String subject;
-
     private String audience;
 
     public AuthDeploy() {
@@ -181,14 +179,6 @@ public class AuthDeploy {
         this.issuer = issuer;
     }
 
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
     public String getAudience() {
         return audience;
     }
@@ -216,7 +206,6 @@ public class AuthDeploy {
                 ", signKey='" + signKey + '\'' +
                 ", gammaSecrets=" + gammaSecrets +
                 ", issuer='" + issuer + '\'' +
-                ", subject='" + subject + '\'' +
                 ", audience='" + audience + '\'' +
                 '}';
     }

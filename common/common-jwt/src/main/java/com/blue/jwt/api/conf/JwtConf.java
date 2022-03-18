@@ -26,10 +26,4 @@ public interface JwtConf<T> {
 
     Function<Map<String, String>, T> getClaimToDataProcessor();
 
-    String getIssuer();
-
-    String getSubject();
-
-    String getAudience();
-
 }

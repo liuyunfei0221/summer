@@ -22,7 +22,7 @@ import static com.blue.redisson.constant.ServerMode.CLUSTER;
 import static com.blue.redisson.constant.ServerMode.SINGLE;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
+import static net.openhft.affinity.AffinityStrategies.SAME_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.redisson.Redisson.create;
@@ -200,7 +200,7 @@ public final class BlueRedissonGenerator {
 
         CONF_PACKAGER.accept(redissonConf, config);
 
-        ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE);
+        ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), SAME_CORE);
 
         BlockingQueue<Runnable> blockingQueue = new ArrayBlockingQueue<>(redissonConf.getExecutorBlockingQueueCapacity());
 

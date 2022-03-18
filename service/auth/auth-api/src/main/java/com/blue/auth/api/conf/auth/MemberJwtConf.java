@@ -20,10 +20,4 @@ public interface MemberJwtConf {
 
     List<String> getGammaSecrets();
 
-    String getIssuer();
-
-    String getSubject();
-
-    String getAudience();
-
 }

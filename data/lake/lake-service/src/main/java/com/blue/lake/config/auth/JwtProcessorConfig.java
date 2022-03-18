@@ -29,7 +29,7 @@ public class JwtProcessorConfig {
     MemberJwtConf memberJwtConf() {
         LOGGER.info("jwtDeploy = {}", jwtDeploy);
         return new MemberJwtConfParams(jwtDeploy.getGlobalMaxExpireMillis(), jwtDeploy.getGlobalMinExpireMillis(),
-                jwtDeploy.getSignKey(), jwtDeploy.getGammaSecrets(), jwtDeploy.getIssuer(), jwtDeploy.getSubject(), jwtDeploy.getAudience());
+                jwtDeploy.getSignKey(), jwtDeploy.getGammaSecrets());
     }
 
 }

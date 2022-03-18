@@ -18,22 +18,12 @@ public final class MemberJwtConfParams implements MemberJwtConf {
 
     private List<String> gammaSecrets;
 
-    private String issuer;
-
-    private String subject;
-
-    private String audience;
-
     public MemberJwtConfParams(Long globalMaxExpireMillis, Long globalMinExpireMillis,
-                               String signKey, List<String> gammaSecrets,
-                               String issuer, String subject, String audience) {
+                               String signKey, List<String> gammaSecrets) {
         this.globalMaxExpireMillis = globalMaxExpireMillis;
         this.globalMinExpireMillis = globalMinExpireMillis;
         this.signKey = signKey;
         this.gammaSecrets = gammaSecrets;
-        this.issuer = issuer;
-        this.subject = subject;
-        this.audience = audience;
     }
 
     @Override
@@ -73,42 +63,12 @@ public final class MemberJwtConfParams implements MemberJwtConf {
     }
 
     @Override
-    public String getIssuer() {
-        return issuer;
-    }
-
-    public void setIssuer(String issuer) {
-        this.issuer = issuer;
-    }
-
-    @Override
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    @Override
-    public String getAudience() {
-        return audience;
-    }
-
-    public void setAudience(String audience) {
-        this.audience = audience;
-    }
-
-    @Override
     public String toString() {
         return "MemberJwtProcessorParam{" +
                 "globalMaxExpireMillis=" + globalMaxExpireMillis +
                 ", globalMinExpireMillis=" + globalMinExpireMillis +
                 ", signKey='" + signKey + '\'' +
                 ", gammaSecrets=" + gammaSecrets +
-                ", issuer='" + issuer + '\'' +
-                ", subject='" + subject + '\'' +
-                ", audience='" + audience + '\'' +
                 '}';
     }
 

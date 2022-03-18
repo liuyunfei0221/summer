@@ -19,7 +19,7 @@ import static com.blue.identity.core.ConfAsserter.assertConf;
 import static java.time.Instant.now;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
+import static net.openhft.affinity.AffinityStrategies.SAME_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static reactor.util.Loggers.getLogger;
 
@@ -70,7 +70,7 @@ public final class BlueIdentityProcessor {
         String serviceName = identityConf.getServiceName() + PAR_CONCATENATION + identityConf.getDataCenter() + PAR_CONCATENATION + identityConf.getWorker();
         handlerKeyPre = (GEN_KEY_PRE + serviceName + PAR_CONCATENATION).intern();
 
-        ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE);
+        ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME + randomAlphabetic(RANDOM_LEN), SAME_CORE);
 
         Boolean paddingScheduled = identityConf.getPaddingScheduled();
         idGenParam = new IdGenParam(identityConf.getDataCenter(), identityConf.getWorker(), ofNullable(identityConf.getLastSecondsGetter()).map(Supplier::get).filter(ls -> ls > 0)

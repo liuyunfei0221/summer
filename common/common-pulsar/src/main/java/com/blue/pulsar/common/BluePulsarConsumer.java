@@ -21,7 +21,7 @@ import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateConsumer;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
+import static net.openhft.affinity.AffinityStrategies.SAME_CORE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -95,7 +95,7 @@ public final class BluePulsarConsumer<T extends Serializable> {
         int workingThreads = conf.getWorkingThreads();
         workingThreadHolder = new ArrayList<>(workingThreads);
 
-        ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME_PREFIX + conf.getTopics(), DIFFERENT_CORE);
+        ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME_PREFIX + conf.getTopics(), SAME_CORE);
 
         Thread thread;
         for (int i = 0; i < workingThreads; i++) {

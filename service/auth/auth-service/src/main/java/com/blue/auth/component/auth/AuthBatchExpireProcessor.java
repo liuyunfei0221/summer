@@ -21,7 +21,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.of;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
+import static net.openhft.affinity.AffinityStrategies.SAME_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static reactor.util.Loggers.getLogger;
@@ -90,7 +90,7 @@ public final class AuthBatchExpireProcessor {
         };
 
         batchExpireSchedule = new ScheduledThreadPoolExecutor(batchExpireScheduledCorePoolSize,
-                new AffinityThreadFactory(SCHEDULED_THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE),
+                new AffinityThreadFactory(SCHEDULED_THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), SAME_CORE),
                 rejectedExecutionHandler);
 
         BATCH_EXPIRE_MAX_PER_HANDLE = batchExpireMaxPerHandle;
@@ -99,7 +99,7 @@ public final class AuthBatchExpireProcessor {
 
         this.executorService = new ThreadPoolExecutor(batchExpireScheduledCorePoolSize, batchExpireScheduledCorePoolSize,
                 THREAD_KEEP_ALIVE_SECONDS, SECONDS, new ArrayBlockingQueue<>(batchExpireQueueCapacity),
-                new AffinityThreadFactory(HANDLE_THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE),
+                new AffinityThreadFactory(HANDLE_THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), SAME_CORE),
                 rejectedExecutionHandler);
     }
 

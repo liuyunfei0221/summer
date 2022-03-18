@@ -39,7 +39,7 @@ public class AuthConfig {
     MemberJwtConf memberJwtConf() {
         LOGGER.info("memberJwtConf = {}", authDeploy);
         return new MemberJwtConfParams(authDeploy.getGlobalMaxExpireMillis(), authDeploy.getGlobalMinExpireMillis(),
-                authDeploy.getSignKey(), authDeploy.getGammaSecrets(), authDeploy.getIssuer(), authDeploy.getSubject(), authDeploy.getAudience());
+                authDeploy.getSignKey(), authDeploy.getGammaSecrets());
     }
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")

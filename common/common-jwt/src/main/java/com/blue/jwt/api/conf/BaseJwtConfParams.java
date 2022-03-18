@@ -20,22 +20,14 @@ public abstract class BaseJwtConfParams<T> implements JwtConf<T> {
     protected String signKey;
     protected List<String> gammaSecrets;
 
-    protected String issuer;
-    protected String subject;
-    protected String audience;
-
     public BaseJwtConfParams() {
     }
 
-    public BaseJwtConfParams(Long maxExpireMillis, Long minExpireMillis, String signKey, List<String> gammaSecrets,
-                             String issuer, String subject, String audience) {
+    public BaseJwtConfParams(Long maxExpireMillis, Long minExpireMillis, String signKey, List<String> gammaSecrets) {
         this.maxExpireMillis = maxExpireMillis;
         this.minExpireMillis = minExpireMillis;
         this.signKey = signKey;
         this.gammaSecrets = gammaSecrets;
-        this.issuer = issuer;
-        this.subject = subject;
-        this.audience = audience;
     }
 
     @Override
@@ -64,18 +56,4 @@ public abstract class BaseJwtConfParams<T> implements JwtConf<T> {
     @Override
     public abstract Function<Map<String, String>, T> getClaimToDataProcessor();
 
-    @Override
-    public String getIssuer() {
-        return issuer;
-    }
-
-    @Override
-    public String getSubject() {
-        return subject;
-    }
-
-    @Override
-    public String getAudience() {
-        return audience;
-    }
 }

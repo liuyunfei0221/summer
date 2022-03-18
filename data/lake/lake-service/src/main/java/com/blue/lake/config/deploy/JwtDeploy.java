@@ -34,12 +34,6 @@ public class JwtDeploy {
 
     private List<String> gammaSecrets;
 
-    private String issuer;
-
-    private String subject;
-
-    private String audience;
-
     public JwtDeploy() {
     }
 
@@ -123,30 +117,6 @@ public class JwtDeploy {
         this.gammaSecrets = gammaSecrets;
     }
 
-    public String getIssuer() {
-        return issuer;
-    }
-
-    public void setIssuer(String issuer) {
-        this.issuer = issuer;
-    }
-
-    public String getSubject() {
-        return subject;
-    }
-
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getAudience() {
-        return audience;
-    }
-
-    public void setAudience(String audience) {
-        this.audience = audience;
-    }
-
     @Override
     public String toString() {
         return "JwtDeploy{" +
@@ -160,9 +130,6 @@ public class JwtDeploy {
                 ", refresherBlockingQueueCapacity=" + refresherBlockingQueueCapacity +
                 ", signKey='" + signKey + '\'' +
                 ", gammaSecrets=" + gammaSecrets +
-                ", issuer='" + issuer + '\'' +
-                ", subject='" + subject + '\'' +
-                ", audience='" + audience + '\'' +
                 '}';
     }
 
