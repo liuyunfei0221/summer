@@ -8,7 +8,7 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaLowerCamelCaseVariableNaming", "AlibabaAbstractClassShouldStartWithAbstractNaming"})
 public abstract class MailSenderConfParams implements MailSenderConf {
 
-    protected List<SenderAttr> senderAttrs;
+    protected transient List<SenderAttr> senderAttrs;
 
     protected Integer corePoolSize;
 
@@ -28,11 +28,11 @@ public abstract class MailSenderConfParams implements MailSenderConf {
 
     protected Boolean withDKIM;
 
-    protected String domainKeyFile;
+    protected transient String domainKeyFile;
 
-    protected String domain;
+    protected transient String domain;
 
-    protected String selector;
+    protected transient String selector;
 
     public MailSenderConfParams() {
     }

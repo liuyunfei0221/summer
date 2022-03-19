@@ -13,11 +13,11 @@ public class MailReaderConfParams implements MailReaderConf {
 
     protected transient String password;
 
-    protected Map<String, String> props;
+    protected transient Map<String, String> props;
 
-    protected String folderName;
+    protected transient String folderName;
 
-    protected List<String> throwableForRetry;
+    protected transient List<String> throwableForRetry;
 
     protected Integer maxWaitingMillisForRefresh;
 

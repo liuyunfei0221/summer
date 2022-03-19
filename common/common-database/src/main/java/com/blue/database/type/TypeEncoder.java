@@ -13,18 +13,18 @@ import static com.blue.base.common.base.PropertiesProcessor.loadProp;
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 final class TypeEncoder {
 
-    private static final AesProcessor AES_PROCESSOR;
+    private static final transient AesProcessor AES_PROCESSOR;
 
     /**
      * data prop location
      */
-    private static final String
+    private static final transient String
             MESSAGES_URI = "classpath:config/data.properties";
 
     /**
      * salt key
      */
-    private static final String SALT_KEY = "salt";
+    private static final transient String SALT_KEY = "salt";
 
     static {
         List<File> files = getFiles(MESSAGES_URI, false);

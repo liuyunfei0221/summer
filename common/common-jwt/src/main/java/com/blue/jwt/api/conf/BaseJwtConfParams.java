@@ -14,11 +14,11 @@ import java.util.function.Function;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public abstract class BaseJwtConfParams<T> implements JwtConf<T> {
 
-    protected Long maxExpireMillis;
-    protected Long minExpireMillis;
+    protected transient Long maxExpireMillis;
+    protected transient Long minExpireMillis;
 
-    protected String signKey;
-    protected List<String> gammaSecrets;
+    protected transient String signKey;
+    protected transient List<String> gammaSecrets;
 
     public BaseJwtConfParams() {
     }

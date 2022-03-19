@@ -8,12 +8,12 @@ public final class IdentityToShardingMappingAttr {
     /**
      * data center/worker id
      */
-    private Integer id;
+    private transient Integer id;
 
     /**
      * database/table index
      */
-    private Integer index;
+    private transient Integer index;
 
     public IdentityToShardingMappingAttr() {
     }

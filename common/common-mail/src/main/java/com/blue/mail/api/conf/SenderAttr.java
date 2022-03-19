@@ -5,13 +5,14 @@ import java.util.Map;
 /**
  * @author DarkBlue
  */
+@SuppressWarnings("unused")
 public final class SenderAttr {
 
-    private String user;
+    private transient String user;
 
-    private String password;
+    private transient String password;
 
-    Map<String, String> props;
+    private transient Map<String, String> props;
 
     public SenderAttr() {
     }

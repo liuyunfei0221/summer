@@ -13,7 +13,7 @@ public final class SingleDatabaseWithTablesAttr extends ShardingDatabaseAttr {
     /**
      * tables not sharding
      */
-    private List<String> singleTables;
+    private transient List<String> singleTables;
 
     public SingleDatabaseWithTablesAttr() {
     }

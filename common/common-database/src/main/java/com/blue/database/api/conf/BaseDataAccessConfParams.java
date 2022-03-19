@@ -19,42 +19,42 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     /**
      * database shard
      */
-    protected List<ShardingDatabaseAttr> shardingDatabases;
+    protected transient List<ShardingDatabaseAttr> shardingDatabases;
 
     /**
      * tables to be sharding
      */
-    protected List<ShardingTableAttr> shardingTables;
+    protected transient List<ShardingTableAttr> shardingTables;
 
     /**
      * table sharding size per db
      */
-    protected Integer shardingTableSizePerDataBase;
+    protected transient Integer shardingTableSizePerDataBase;
 
     /**
      * data center id to db index mappings
      */
-    protected List<IdentityToShardingMappingAttr> dataCenterToDatabaseMappings;
+    protected transient List<IdentityToShardingMappingAttr> dataCenterToDatabaseMappings;
 
     /**
      * worker id to db index mappings
      */
-    protected List<IdentityToShardingMappingAttr> workerToTableMappings;
+    protected transient List<IdentityToShardingMappingAttr> workerToTableMappings;
 
     /**
      * force write tables
      */
-    protected List<ForceWriteTableAttr> forceWriteTables;
+    protected transient List<ForceWriteTableAttr> forceWriteTables;
 
     /**
      * broadcast tables, now supply for seata undolog
      */
-    protected List<String> broadcastTables;
+    protected transient List<String> broadcastTables;
 
     /**
      * db and tables for not sharding
      */
-    protected List<SingleDatabaseWithTablesAttr> singleDatabasesWithTables;
+    protected transient List<SingleDatabaseWithTablesAttr> singleDatabasesWithTables;
 
     /**
      * enable cache
@@ -104,12 +104,12 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     /**
      * mybatis mapper location
      */
-    protected String mapperLocation;
+    protected transient String mapperLocation;
 
     /**
      * additional attributes
      */
-    protected Map<String, String> props;
+    protected transient Map<String, String> props;
 
     /**
      * show sql log?

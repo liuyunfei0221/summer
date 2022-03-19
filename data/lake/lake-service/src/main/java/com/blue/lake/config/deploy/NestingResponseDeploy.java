@@ -14,9 +14,9 @@ import java.util.List;
 @ConfigurationProperties(prefix = "nesting")
 public class NestingResponseDeploy {
 
-    private List<String> uris;
+    private transient List<String> uris;
 
-    private String response;
+    private transient String response;
 
     public NestingResponseDeploy() {
     }

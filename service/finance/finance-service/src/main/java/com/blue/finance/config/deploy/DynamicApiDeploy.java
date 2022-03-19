@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "dynamicapi")
 public class DynamicApiDeploy {
 
-    private String path;
+    private transient String path;
 
-    private Long blockingMillis;
+    private transient Long blockingMillis;
 
     public DynamicApiDeploy() {
     }

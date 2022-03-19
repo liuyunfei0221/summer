@@ -16,11 +16,11 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public abstract class BaseEsConfParams implements EsConf {
 
-    List<EsNode> esNodes;
+    transient List<EsNode> esNodes;
 
-    List<DefaultHeader> defaultHeaders;
+    transient List<DefaultHeader> defaultHeaders;
 
-    String pathPrefix;
+    transient String pathPrefix;
 
     Boolean strictDeprecationMode;
 

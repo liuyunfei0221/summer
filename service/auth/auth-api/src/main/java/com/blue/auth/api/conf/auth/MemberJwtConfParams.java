@@ -10,13 +10,13 @@ import java.util.List;
 @SuppressWarnings("unused")
 public final class MemberJwtConfParams implements MemberJwtConf {
 
-    private Long globalMaxExpireMillis;
+    private transient Long globalMaxExpireMillis;
 
-    private Long globalMinExpireMillis;
+    private transient Long globalMinExpireMillis;
 
-    private String signKey;
+    private transient String signKey;
 
-    private List<String> gammaSecrets;
+    private transient List<String> gammaSecrets;
 
     public MemberJwtConfParams(Long globalMaxExpireMillis, Long globalMinExpireMillis,
                                String signKey, List<String> gammaSecrets) {

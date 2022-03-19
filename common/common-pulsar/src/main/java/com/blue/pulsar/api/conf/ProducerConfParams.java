@@ -12,21 +12,21 @@ import java.util.List;
 @SuppressWarnings({"unused", "DuplicatedCode"})
 public class ProducerConfParams implements ProducerConf {
 
-    protected List<String> services;
+    protected transient List<String> services;
 
     protected Boolean enableTls;
 
-    protected String tlsTrustCertsFilePath;
+    protected transient String tlsTrustCertsFilePath;
 
-    protected String tlsCertFilePath;
+    protected transient String tlsCertFilePath;
 
-    protected String tlsKeyFilePath;
+    protected transient String tlsKeyFilePath;
 
     protected Boolean tlsAllowInsecureConnection;
 
     protected Boolean tlsHostnameVerificationEnable;
 
-    protected String listenerName;
+    protected transient String listenerName;
 
     protected Integer operationTimeoutMillis;
 
@@ -60,19 +60,19 @@ public class ProducerConfParams implements ProducerConf {
 
     protected Boolean enableBusyWait;
 
-    protected String clockZoneId;
+    protected transient String clockZoneId;
 
     protected Boolean enableTransaction;
 
     protected Boolean enableProxy;
 
-    protected String proxyServiceUrl;
+    protected transient String proxyServiceUrl;
 
     protected ProxyProtocol proxyProtocol;
 
-    protected String topic;
+    protected transient String topic;
 
-    protected String producerName;
+    protected transient String producerName;
 
     protected ProducerAccessMode accessMode;
 
@@ -112,7 +112,7 @@ public class ProducerConfParams implements ProducerConf {
 
     protected Boolean enableEncrypt;
 
-    protected String encryptionKey;
+    protected transient String encryptionKey;
 
     protected ProducerCryptoFailureAction producerCryptoFailureAction;
 

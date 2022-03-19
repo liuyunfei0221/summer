@@ -44,13 +44,13 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     /**
      * header info
      */
-    private static final String HEADER_TYPE_NAME = "Type", HEADER_TYPE_VALUE = "Jwt";
-    private static final String HEADER_ALG_NAME = "alg", HEADER_ALG_VALUE = "HS512";
+    private static final transient String HEADER_TYPE_NAME = "Type", HEADER_TYPE_VALUE = "Jwt";
+    private static final transient String HEADER_ALG_NAME = "alg", HEADER_ALG_VALUE = "HS512";
 
     /**
      * header
      */
-    private static final Map<String, Object> JWT_HEADER = new HashMap<>(4, 1.0f);
+    private static final transient Map<String, Object> JWT_HEADER = new HashMap<>(4, 1.0f);
 
     static {
         JWT_HEADER.put(HEADER_TYPE_NAME, HEADER_TYPE_VALUE);
@@ -60,7 +60,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     /**
      * constants
      */
-    private static final int
+    private static final transient int
             RANDOM_JWT_ID_LEN = RANDOM_JWT_ID.len,
             SEC_KEY_STR_MIN_LEN = SEC_KEY_STR_MIN.len,
             SEC_KEY_STR_MAX_LEN = SEC_KEY_STR_MAX.len,
@@ -72,48 +72,48 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     /**
      * maximum expiration time/Maximum validity period for certification
      */
-    private final long MAX_EXPIRE_MILLIS;
+    private final transient long MAX_EXPIRE_MILLIS;
 
     /**
      * minimum expiration time/certification expiration time after the last operation
      */
-    private final long MIN_EXPIRE_MILLIS;
+    private final transient long MIN_EXPIRE_MILLIS;
 
     /**
      * encrypt algorithm
      */
-    private final Algorithm ALGORITHM;
+    private final transient Algorithm ALGORITHM;
 
     /**
      * verifier
      */
-    private final JWTVerifier VERIFIER;
+    private final transient JWTVerifier VERIFIER;
 
     /**
      * abstract function used to convert authentication information entity into payload
      */
-    private final Function<T, Map<String, String>> DATA_2_CLAIM_PROCESSOR;
+    private final transient Function<T, Map<String, String>> DATA_2_CLAIM_PROCESSOR;
 
     /**
      * abstract function used to convert payload into authentication information entity
      */
-    private final Function<Map<String, String>, T> CLAIM_2_DATA_PROCESSOR;
+    private final transient Function<Map<String, String>, T> CLAIM_2_DATA_PROCESSOR;
 
     /**
      * gamma secret keys
      */
-    private String[] gammaSecretArr;
+    private transient String[] gammaSecretArr;
 
     /**
      * gamma secret arr max index
      */
-    private int gammaSecretArrIndexMask;
+    private transient int gammaSecretArrIndexMask;
     //</editor-fold>
 
     /**
      * expire key
      */
-    private static final String EXPIRES_AT_STAMP_KEY = "blueExpiresAtStamp";
+    private static final transient String EXPIRES_AT_STAMP_KEY = "blueExpiresAtStamp";
 
     /**
      * date generator

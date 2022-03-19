@@ -10,27 +10,27 @@ public class ShardingDatabaseAttr {
     /**
      * db url, for example -> jdbc:mysql://localhost:3306/portal_0
      */
-    protected String url;
+    protected transient String url;
 
     /**
      * db conf, for example -> useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
      */
-    protected String dataBaseConf;
+    protected transient String dataBaseConf;
 
     /**
      * username
      */
-    protected String username;
+    protected transient String username;
 
     /**
      * password
      */
-    protected String password;
+    protected transient String password;
 
     /**
      * driver class name, for example -> com.mysql.cj.jdbc.Driver
      */
-    protected String driverClassName;
+    protected transient String driverClassName;
 
     /**
      * connection timeout

@@ -16,21 +16,21 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public abstract class BaseMongoConfParams implements MongoConf {
 
-    protected List<AddressAttr> addressAttrs;
+    protected transient List<AddressAttr> addressAttrs;
 
-    protected Boolean auth;
+    protected transient Boolean auth;
 
-    protected String userName;
+    protected transient String userName;
 
-    protected String password;
+    protected transient String password;
 
-    protected String database;
+    protected transient String database;
 
     protected Boolean retryReads;
 
     protected Boolean retryWrites;
 
-    protected String applicationName;
+    protected transient String applicationName;
 
     protected UuidRepresentation uuidRepresentation;
 

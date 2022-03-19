@@ -14,9 +14,9 @@ import java.util.List;
 @ConfigurationProperties(prefix = "auth")
 public class AuthDeploy {
 
-    private Long globalMaxExpireMillis;
+    private transient Long globalMaxExpireMillis;
 
-    private Long globalMinExpireMillis;
+    private transient Long globalMinExpireMillis;
 
     private Integer localCacheCapacity;
 
@@ -40,13 +40,9 @@ public class AuthDeploy {
 
     private Integer batchExpireQueueCapacity;
 
-    private String signKey;
+    private transient String signKey;
 
-    private List<String> gammaSecrets;
-
-    private String issuer;
-
-    private String audience;
+    private transient List<String> gammaSecrets;
 
     public AuthDeploy() {
     }
@@ -171,22 +167,6 @@ public class AuthDeploy {
         this.gammaSecrets = gammaSecrets;
     }
 
-    public String getIssuer() {
-        return issuer;
-    }
-
-    public void setIssuer(String issuer) {
-        this.issuer = issuer;
-    }
-
-    public String getAudience() {
-        return audience;
-    }
-
-    public void setAudience(String audience) {
-        this.audience = audience;
-    }
-
     @Override
     public String toString() {
         return "AuthDeploy{" +
@@ -205,8 +185,6 @@ public class AuthDeploy {
                 ", batchExpireQueueCapacity=" + batchExpireQueueCapacity +
                 ", signKey='" + signKey + '\'' +
                 ", gammaSecrets=" + gammaSecrets +
-                ", issuer='" + issuer + '\'' +
-                ", audience='" + audience + '\'' +
                 '}';
     }
 

@@ -19,15 +19,15 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
     protected ServerMode serverMode;
 
     //<editor-fold desc="cluster conf">
-    protected List<String> nodes;
+    protected transient List<String> nodes;
 
-    protected String password;
+    protected transient String password;
     //</editor-fold>
 
     //<editor-fold desc="standalone conf">
-    protected String host;
+    protected transient String host;
 
-    protected Integer port;
+    protected transient Integer port;
     //</editor-fold>
 
     protected Integer scanInterval;

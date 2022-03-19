@@ -10,11 +10,11 @@ package com.blue.curator.api.conf;
 @SuppressWarnings("unused")
 public class DistributedLockConfParams implements DistributedLockConf {
 
-    protected String connectString;
+    protected transient String connectString;
 
-    protected String authSchema;
+    protected transient String authSchema;
 
-    protected String auth;
+    protected transient String auth;
 
     protected Integer connectionTimeoutMs;
 
@@ -28,7 +28,7 @@ public class DistributedLockConfParams implements DistributedLockConf {
 
     protected Integer retryMaxRetries;
 
-    protected String namespace;
+    protected transient String namespace;
 
     protected Boolean canBeReadOnly;
 

@@ -12,12 +12,12 @@ public final class ForceWriteTableAttr extends ShardingTableAttr {
     /**
      * data center id
      */
-    private Integer dataCenter;
+    private transient Integer dataCenter;
 
     /**
      * worker id
      */
-    private Integer worker;
+    private transient Integer worker;
 
     public ForceWriteTableAttr() {
     }

@@ -10,9 +10,9 @@ package com.blue.es.api.conf;
 @SuppressWarnings("unused")
 public final class DefaultHeader {
 
-    private String name;
+    private transient String name;
 
-    private String value;
+    private transient String value;
 
     public DefaultHeader() {
     }

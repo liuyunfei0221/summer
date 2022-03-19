@@ -12,7 +12,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class MultiConsumerConfParams {
 
-    protected Map<String, ConsumerConfParams> configs;
+    protected transient Map<String, ConsumerConfParams> configs;
 
     public MultiConsumerConfParams() {
     }

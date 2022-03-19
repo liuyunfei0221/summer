@@ -10,9 +10,9 @@ package com.blue.mongo.api.conf;
 @SuppressWarnings("unused")
 public final class AddressAttr {
 
-    private String address;
+    private transient String address;
 
-    private Integer port;
+    private transient Integer port;
 
     public AddressAttr() {
     }

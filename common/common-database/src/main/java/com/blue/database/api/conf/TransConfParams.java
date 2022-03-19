@@ -19,11 +19,11 @@ public class TransConfParams implements TransConf {
 
     protected Propagation propagation;
 
-    protected List<String> methodPreWithTrans;
+    protected transient List<String> methodPreWithTrans;
 
     protected Integer transTimeout;
 
-    protected String pointCutExpression;
+    protected transient String pointCutExpression;
 
     public TransConfParams() {
     }

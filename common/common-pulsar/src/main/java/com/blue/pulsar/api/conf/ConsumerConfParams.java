@@ -13,9 +13,9 @@ import java.util.List;
 @SuppressWarnings({"unused", "DuplicatedCode"})
 public class ConsumerConfParams implements ConsumerConf {
 
-    protected List<String> services;
+    protected transient List<String> services;
 
-    protected String listenerName;
+    protected transient String listenerName;
 
     protected Integer operationTimeoutMillis;
 
@@ -29,11 +29,11 @@ public class ConsumerConfParams implements ConsumerConf {
 
     protected Boolean enableTls;
 
-    protected String tlsTrustCertsFilePath;
+    protected transient String tlsTrustCertsFilePath;
 
-    protected String tlsCertFilePath;
+    protected transient String tlsCertFilePath;
 
-    protected String tlsKeyFilePath;
+    protected transient String tlsKeyFilePath;
 
     protected Boolean tlsAllowInsecureConnection;
 
@@ -71,11 +71,11 @@ public class ConsumerConfParams implements ConsumerConf {
 
     protected Boolean enableTransaction;
 
-    protected List<String> topics;
+    protected transient List<String> topics;
 
-    protected String topicsPattern;
+    protected transient String topicsPattern;
 
-    protected String subscriptionName;
+    protected transient String subscriptionName;
 
     protected Long ackTimeoutMillis;
 
@@ -133,9 +133,9 @@ public class ConsumerConfParams implements ConsumerConf {
 
     protected Boolean enableDeadLetter;
 
-    protected String deadLetterTopic;
+    protected transient String deadLetterTopic;
 
-    protected String retryLetterTopic;
+    protected transient String retryLetterTopic;
 
     protected Integer maxRedeliverCount;
 

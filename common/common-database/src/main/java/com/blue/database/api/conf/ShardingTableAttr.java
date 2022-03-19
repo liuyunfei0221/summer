@@ -12,12 +12,12 @@ public class ShardingTableAttr {
     /**
      * table name
      */
-    protected String tableName;
+    protected transient String tableName;
 
     /**
      * column name for sharding
      */
-    protected String shardingColumn;
+    protected transient String shardingColumn;
 
     public ShardingTableAttr() {
     }

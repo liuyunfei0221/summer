@@ -14,17 +14,17 @@ import java.util.Set;
 @SuppressWarnings("unused")
 public final class EsNode {
 
-    private Server server;
+    private transient Server server;
 
-    private Set<Server> boundServers;
+    private transient Set<Server> boundServers;
 
-    private String name;
+    private transient String name;
 
-    private String version;
+    private transient String version;
 
-    private List<String> roles;
+    private transient List<String> roles;
 
-    private Map<String, List<String>> attributes;
+    private transient Map<String, List<String>> attributes;
 
     public EsNode() {
     }

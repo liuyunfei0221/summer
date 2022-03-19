@@ -12,11 +12,11 @@ import java.util.Objects;
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
 public final class Server {
 
-    private String host;
+    private transient String host;
 
-    private Integer port;
+    private transient Integer port;
 
-    private String schema;
+    private transient String schema;
 
     public Server() {
     }

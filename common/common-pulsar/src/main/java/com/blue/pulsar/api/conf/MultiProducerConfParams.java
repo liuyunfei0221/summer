@@ -12,7 +12,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class MultiProducerConfParams {
 
-    protected Map<String, ProducerConfParams> configs;
+    protected transient Map<String, ProducerConfParams> configs;
 
     public MultiProducerConfParams() {
     }

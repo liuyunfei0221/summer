@@ -14,9 +14,9 @@ import java.util.List;
 @ConfigurationProperties(prefix = "jwt")
 public class JwtDeploy {
 
-    private Long globalMaxExpireMillis;
+    private transient Long globalMaxExpireMillis;
 
-    private Long globalMinExpireMillis;
+    private transient Long globalMinExpireMillis;
 
     private Integer localCacheCapacity;
 
@@ -30,9 +30,9 @@ public class JwtDeploy {
 
     private Integer refresherBlockingQueueCapacity;
 
-    private String signKey;
+    private transient String signKey;
 
-    private List<String> gammaSecrets;
+    private transient List<String> gammaSecrets;
 
     public JwtDeploy() {
     }

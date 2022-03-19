@@ -14,9 +14,9 @@ import java.util.List;
 @ConfigurationProperties(prefix = "jwt")
 public class JwtDeploy {
 
-    private Long globalMaxExpireMillis;
+    private transient Long globalMaxExpireMillis;
 
-    private Long globalMinExpireMillis;
+    private transient Long globalMinExpireMillis;
 
     private Integer localCacheCapacity;
 
@@ -30,13 +30,9 @@ public class JwtDeploy {
 
     private Integer refresherBlockingQueueCapacity;
 
-    private String signKey;
+    private transient String signKey;
 
-    private List<String> gammaSecrets;
-
-    private String issuer;
-
-    private String audience;
+    private transient List<String> gammaSecrets;
 
     public JwtDeploy() {
     }
@@ -121,22 +117,6 @@ public class JwtDeploy {
         this.gammaSecrets = gammaSecrets;
     }
 
-    public String getIssuer() {
-        return issuer;
-    }
-
-    public void setIssuer(String issuer) {
-        this.issuer = issuer;
-    }
-
-    public String getAudience() {
-        return audience;
-    }
-
-    public void setAudience(String audience) {
-        this.audience = audience;
-    }
-
     @Override
     public String toString() {
         return "JwtDeploy{" +
@@ -150,8 +130,6 @@ public class JwtDeploy {
                 ", refresherBlockingQueueCapacity=" + refresherBlockingQueueCapacity +
                 ", signKey='" + signKey + '\'' +
                 ", gammaSecrets=" + gammaSecrets +
-                ", issuer='" + issuer + '\'' +
-                ", audience='" + audience + '\'' +
                 '}';
     }
 
