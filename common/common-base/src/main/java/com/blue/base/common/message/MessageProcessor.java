@@ -1,6 +1,7 @@
 package com.blue.base.common.message;
 
 import com.blue.base.common.base.BlueChecker;
+import com.blue.base.constant.base.DictKey;
 import com.blue.base.model.message.LanguageInfo;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -14,6 +15,7 @@ import java.util.function.*;
 
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.parseProp;
+import static com.blue.base.common.message.DictProcessor.resolveToValues;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
@@ -124,7 +126,10 @@ public final class MessageProcessor {
                     .map(messages -> messages.get(ofNullable(code).orElse(DEFAULT_CODE)))
                     .orElse(DEFAULT_MESSAGE).intern();
 
-    private static final Predicate<String[]> NON_REPLACEMENTS_PRE = replacements ->
+    private static final Predicate<DictKey[]> NON_KEY_REPLACEMENTS_PRE = replacements ->
+            replacements == null || replacements.length == 0;
+
+    private static final Predicate<String[]> NON_STR_REPLACEMENTS_PRE = replacements ->
             replacements == null || replacements.length == 0;
 
     private static final BiFunction<String, String[], String> FILLING_FUNC = (msg, replacements) -> {
@@ -184,9 +189,22 @@ public final class MessageProcessor {
      * @param replacements
      * @return
      */
+    public static String resolveToMessage(Integer code, List<String> languages, DictKey[] replacements) {
+        String msg = MESSAGE_GETTER.apply(code, languages).intern();
+        return NON_KEY_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, resolveToValues(replacements, languages));
+    }
+
+    /**
+     * get message by i18n
+     *
+     * @param code
+     * @param languages
+     * @param replacements
+     * @return
+     */
     public static String resolveToMessage(Integer code, List<String> languages, String[] replacements) {
         String msg = MESSAGE_GETTER.apply(code, languages).intern();
-        return NON_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, replacements);
+        return NON_STR_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, replacements);
     }
 
     /**
@@ -208,9 +226,22 @@ public final class MessageProcessor {
      * @param replacements
      * @return
      */
+    public static String resolveToMessage(Integer code, ServerRequest serverRequest, DictKey[] replacements) {
+        String msg = MESSAGE_GETTER.apply(code, getAcceptLanguages(serverRequest)).intern();
+        return NON_KEY_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, resolveToValues(replacements, serverRequest));
+    }
+
+    /**
+     * get message by i18n
+     *
+     * @param code
+     * @param serverRequest
+     * @param replacements
+     * @return
+     */
     public static String resolveToMessage(Integer code, ServerRequest serverRequest, String[] replacements) {
         String msg = MESSAGE_GETTER.apply(code, getAcceptLanguages(serverRequest)).intern();
-        return NON_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, replacements);
+        return NON_STR_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, replacements);
     }
 
 }

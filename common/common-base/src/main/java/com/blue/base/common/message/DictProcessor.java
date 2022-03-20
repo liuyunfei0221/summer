@@ -1,6 +1,7 @@
 package com.blue.base.common.message;
 
 import com.blue.base.common.base.PropertiesProcessor;
+import com.blue.base.constant.base.DictKey;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.util.Logger;
 
@@ -8,8 +9,10 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
@@ -70,14 +73,27 @@ public final class DictProcessor {
         return I_18_N.get(DEFAULT_LANGUAGE);
     };
 
+    private static final BiFunction<Map<String, String>, DictKey, String> VALUE_GETTER = (values, key) ->
+            ofNullable(values.get(ofNullable(key).map(k -> k.key).orElse(DEFAULT_KEY))).orElse(DEFAULT_VALUE).intern();
+
     /**
      * get dict value by i18n
      *
      * @param key
      * @return
      */
-    public static String resolveToValue(String key) {
+    public static String resolveToValue(DictKey key) {
         return resolveToValue(key, emptyList());
+    }
+
+    /**
+     * get dict values by i18n
+     *
+     * @param keys
+     * @return
+     */
+    public static String[] resolveToValues(DictKey[] keys) {
+        return resolveToValues(keys, emptyList());
     }
 
     /**
@@ -87,10 +103,31 @@ public final class DictProcessor {
      * @param languages
      * @return
      */
-    public static String resolveToValue(String key, List<String> languages) {
+    public static String resolveToValue(DictKey key, List<String> languages) {
         return ofNullable(DICT_GETTER.apply(languages))
-                .map(messages -> ofNullable(messages.get(ofNullable(key).orElse(DEFAULT_KEY))).orElse(DEFAULT_VALUE).intern())
+                .map(values -> VALUE_GETTER.apply(values, key))
                 .orElse(DEFAULT_VALUE).intern();
+    }
+
+    /**
+     * get dict values by i18n
+     *
+     * @param keys
+     * @param languages
+     * @return
+     */
+    public static String[] resolveToValues(DictKey[] keys, List<String> languages) {
+        return ofNullable(DICT_GETTER.apply(languages))
+                .map(values ->
+                        ofNullable(keys)
+                                .filter(ks -> ks.length > 0)
+                                .map(ks ->
+                                        Stream.of(ks)
+                                                .map(key -> VALUE_GETTER.apply(values, key))
+                                                .toArray(String[]::new)
+                                ).orElse(new String[]{DEFAULT_VALUE.intern()})
+                )
+                .orElse(new String[]{DEFAULT_VALUE.intern()});
     }
 
     /**
@@ -100,8 +137,19 @@ public final class DictProcessor {
      * @param serverRequest
      * @return
      */
-    public static String resolveToValue(String key, ServerRequest serverRequest) {
+    public static String resolveToValue(DictKey key, ServerRequest serverRequest) {
         return resolveToValue(key, getAcceptLanguages(serverRequest));
+    }
+
+    /**
+     * get dict values by i18n
+     *
+     * @param keys
+     * @param serverRequest
+     * @return
+     */
+    public static String[] resolveToValues(DictKey[] keys, ServerRequest serverRequest) {
+        return resolveToValues(keys, getAcceptLanguages(serverRequest));
     }
 
 }

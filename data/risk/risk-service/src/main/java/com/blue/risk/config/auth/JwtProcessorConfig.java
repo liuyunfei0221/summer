@@ -1,8 +1,8 @@
 package com.blue.risk.config.auth;
 
+import com.blue.auth.api.component.jwt.api.conf.MemberJwtConf;
+import com.blue.auth.api.component.jwt.api.conf.MemberJwtConfParams;
 import com.blue.risk.config.deploy.JwtDeploy;
-import com.blue.auth.api.conf.auth.MemberJwtConf;
-import com.blue.auth.api.conf.auth.MemberJwtConfParams;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.util.Logger;

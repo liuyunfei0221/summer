@@ -1,4 +1,4 @@
-package com.blue.auth.api.conf.auth;
+package com.blue.auth.api.component.jwt.api.conf;
 
 import java.util.List;
 

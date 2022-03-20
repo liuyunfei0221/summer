@@ -74,8 +74,8 @@ public enum ResponseElement {
     UNKNOWN_IP(HttpStatus.NOT_ACCEPTABLE.value(), 401900001, "Unknown ip"),
     ILLEGAL_REQUEST(HttpStatus.NOT_ACCEPTABLE.value(), 401900002, "Illegal request"),
     FILE_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 401900003, "File not exist"),
-    FILE_INVALID(HttpStatus.BAD_REQUEST.value(), 401900004, "File invalid, cause: %s"),
-    INVALID_EMAIL_ADDRESS(HttpStatus.BAD_REQUEST.value(), 401900005, "Cause: %s");
+    FILE_INVALID(HttpStatus.BAD_REQUEST.value(), 401900004, "Invalid file: %s"),
+    INVALID_EMAIL_ADDRESS(HttpStatus.BAD_REQUEST.value(), 401900005, "Invalid email address: %s");
     //</editor-fold>
 
     /**
