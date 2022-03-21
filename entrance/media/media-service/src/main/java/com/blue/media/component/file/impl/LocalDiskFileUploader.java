@@ -3,7 +3,6 @@ package com.blue.media.component.file.impl;
 import com.blue.base.common.base.Monitor;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.FileUploadResult;
-import com.blue.media.api.model.FileValidResult;
 import com.blue.media.component.file.inter.FileUploader;
 import com.blue.media.config.deploy.FileDeploy;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -14,24 +13,23 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.net.URI;
+import java.nio.channels.FileChannel;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
+import java.util.function.*;
 
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseElement.PAYLOAD_TOO_LARGE;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
 import static java.lang.System.currentTimeMillis;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static reactor.core.publisher.BufferOverflowStrategy.ERROR;
-import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.using;
 import static reactor.util.Loggers.getLogger;
 
 
@@ -40,7 +38,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "UnusedAssignment", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Component
 public final class LocalDiskFileUploader implements FileUploader {
 
@@ -50,8 +48,8 @@ public final class LocalDiskFileUploader implements FileUploader {
         validTypes = new HashSet<>(fileDeploy.getValidTypes());
         invalidPres = new HashSet<>(fileDeploy.getInvalidPres());
         nameLenThreshold = fileDeploy.getNameLenThreshold();
-        DESC_PATH = fileDeploy.getDescPath();
-        SINGLE_FILE_SIZE_THRESHOLD = fileDeploy.getSingleFileSizeThreshold();
+        descPath = fileDeploy.getDescPath();
+        singleFileSizeThreshold = fileDeploy.getSingleFileSizeThreshold();
     }
 
     private static final int RANDOM_FILE_NAME_POST_LEN = 8;
@@ -62,45 +60,45 @@ public final class LocalDiskFileUploader implements FileUploader {
 
     private Set<Character> invalidPres;
 
-    private final long SINGLE_FILE_SIZE_THRESHOLD;
+    private long singleFileSizeThreshold;
 
     private int nameLenThreshold;
 
-    private final String DESC_PATH;
+    private final String descPath;
 
     /**
      * assert media
      */
-    private final Function<Part, FileValidResult> PART_VALIDATOR = part -> {
+    private final Function<Part, String> PART_NAME_GETTER = part -> {
         if (part == null)
-            return new FileValidResult(false, "", "part can't be empty");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "part can't be empty");
 
         FilePart filePart = (FilePart) part;
         String fileName = filePart.filename();
         if ("".equals(fileName))
-            return new FileValidResult(false, fileName, "media name can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "media name can't be blank");
 
         int nameLength = fileName.length();
         if (nameLength > nameLenThreshold)
-            return new FileValidResult(false, fileName, "media (" + fileName + ") name length can't be greater than " + nameLenThreshold);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "media (" + fileName + ") name length can't be greater than " + nameLenThreshold);
 
         int index = lastIndexOf(fileName, SCHEME_SEPARATOR.identity);
         if (index == -1 || nameLength - 1 == index)
-            return new FileValidResult(false, fileName, "media (" + fileName + ") has a unknown type");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "media (" + fileName + ") has a unknown type");
 
         String postName = fileName.substring(index).toUpperCase();
         if (!validTypes.contains(postName))
-            return new FileValidResult(false, fileName, "media (" + fileName + ") type is invalid");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "media (" + fileName + ") type is invalid");
 
         String preName = fileName.substring(0, index);
         int preLength = preName.length();
         for (int i = 0; i < preLength; i++) {
             char c = preName.charAt(i);
             if (invalidPres.contains(c))
-                return new FileValidResult(false, fileName, "media (" + fileName + ") name's prefix contains invalid str (" + c + ")");
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "media (" + fileName + ") name's prefix contains invalid str (" + c + ")");
         }
 
-        return new FileValidResult(true, fileName, "access");
+        return fileName;
     };
 
     /**
@@ -114,6 +112,49 @@ public final class LocalDiskFileUploader implements FileUploader {
                 name.substring(index);
     };
 
+    private static final Function<String, FileChannel> WRITE_CHANNEL_GEN = descName -> {
+        try {
+            return FileChannel.open(Path.of(new URI(descName)), StandardOpenOption.WRITE);
+        } catch (Exception e) {
+            throw new BlueException(INTERNAL_SERVER_ERROR);
+        }
+    };
+
+    @SuppressWarnings("ConstantConditions")
+    private final Supplier<Monitor<Long>> MONITOR_SUP = () ->
+            new Monitor<>(0L, Long::sum, m -> m <= singleFileSizeThreshold);
+
+    private final BiFunction<Part, FileChannel, Mono<Long>> DATA_WRITER = (part, channel) -> {
+        FilePart filePart = (FilePart) part;
+        Flux<DataBuffer> dataBufferFlux = filePart.content();
+        Monitor<Long> monitor = MONITOR_SUP.get();
+
+        return dataBufferFlux
+                .onBackpressureBuffer(BACKPRESSURE_BUFFER_MAX_SIZE, ERROR)
+                .doOnNext(dataBuffer -> {
+                    if (monitor.operateWithAssert((long) dataBuffer.readableByteCount())) {
+                        try {
+                            channel.write(dataBuffer.asByteBuffer());
+                        } catch (Exception e) {
+                            LOGGER.error("upload failed, e -> " + e);
+                            throw new BlueException(INTERNAL_SERVER_ERROR);
+                        }
+                    } else {
+                        throw new BlueException(INTERNAL_SERVER_ERROR);
+                    }
+                }).collectList()
+                .flatMap(v ->
+                        just(monitor.getMonitored()));
+    };
+
+    private final Consumer<FileChannel> STREAM_CLOSER = stream -> {
+        try {
+            stream.close();
+        } catch (Exception e) {
+            LOGGER.error("FastByteArrayOutputStream close failed, e = {}", e);
+        }
+    };
+
     /**
      * upload media
      *
@@ -122,64 +163,16 @@ public final class LocalDiskFileUploader implements FileUploader {
      */
     @Override
     public Mono<FileUploadResult> upload(Part part) {
-        FileValidResult validResult = PART_VALIDATOR.apply(part);
-        if (!validResult.getValid())
-            return just(new FileUploadResult("", validResult.getName(), false, validResult.getMessage(), 0L));
+        String name = PART_NAME_GETTER.apply(part);
+        String descName = NAME_COMBINER.apply(descPath, name);
 
-        FilePart filePart = (FilePart) part;
-        String descName = NAME_COMBINER.apply(DESC_PATH, validResult.getName());
-        File desc = new File(descName);
-
-        @SuppressWarnings("ConstantConditions")
-        Monitor<Long> monitor = new Monitor<>(0L, Long::sum, m -> m <= SINGLE_FILE_SIZE_THRESHOLD);
-        Flux<DataBuffer> dataBufferFlux = filePart.content();
-
-        try {
-            FileOutputStream descOutputStream = new FileOutputStream(desc);
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(descOutputStream);
-
-            Runnable resourceCloser = () -> {
-                try {
-                    bufferedOutputStream.close();
-                    descOutputStream.close();
-                } catch (IOException e) {
-                    LOGGER.error("resources release failed, e = {}", e);
-                }
-            };
-
-            return dataBufferFlux
-                    .onErrorStop()
-                    .doOnComplete(resourceCloser)
-                    .doOnCancel(resourceCloser)
-                    .doOnError(throwable -> {
-                        LOGGER.error("upload failed, throwable -> " + throwable);
-                        resourceCloser.run();
-                    })
-                    .onBackpressureBuffer(BACKPRESSURE_BUFFER_MAX_SIZE, ERROR)
-                    .doOnNext(dataBuffer -> {
-                        byte[] array = dataBuffer.asByteBuffer().array();
-                        if (monitor.operateWithAssert((long) array.length)) {
-                            try {
-                                bufferedOutputStream.write(array);
-                            } catch (IOException e) {
-                                LOGGER.error("upload failed, e -> " + e);
-                                error(() -> new BlueException(INTERNAL_SERVER_ERROR));
-                            }
-                        } else {
-                            error(() -> new BlueException(PAYLOAD_TOO_LARGE));
-                        }
-                        array = null;
-                    }).collectList()
-                    .flatMap(v ->
-                            just(new FileUploadResult(descName, validResult.getName(), true, "upload success", monitor.getMonitored())));
-
-        } catch (BlueException e) {
-            LOGGER.error("upload failed, e -> " + e);
-            return just(new FileUploadResult(descName, validResult.getName(), false, e.getCause().getMessage(), monitor.getMonitored()));
-        } catch (Exception e) {
-            LOGGER.error("upload failed, e -> " + e);
-            return just(new FileUploadResult(descName, validResult.getName(), false, "upload failed", monitor.getMonitored()));
-        }
+        return using(() -> WRITE_CHANNEL_GEN.apply(descName),
+                ch -> DATA_WRITER.apply(part, ch),
+                STREAM_CLOSER,
+                true)
+                .flatMap(size ->
+                        just(new FileUploadResult(descName, name, true, "upload success", size))
+                );
     }
 
 }

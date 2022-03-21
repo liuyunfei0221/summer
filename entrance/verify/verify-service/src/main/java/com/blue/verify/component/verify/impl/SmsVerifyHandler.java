@@ -98,7 +98,6 @@ public class SmsVerifyHandler implements VerifyHandler {
 
     @Override
     public Mono<String> handle(BusinessType businessType, String destination) {
-
         //TODO verify destination/phone
 
         return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(destination), ALLOW, SEND_INTERVAL_MILLIS)

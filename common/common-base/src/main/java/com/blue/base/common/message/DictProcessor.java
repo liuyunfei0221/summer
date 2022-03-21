@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -47,26 +48,28 @@ public final class DictProcessor {
         return replace(name, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity);
     };
 
-    private static final Function<String, Map<String, Map<String, String>>> DICT_LOADER = uri -> {
+    private static volatile Map<String, Map<String, String>> I_18_N;
+
+    private static final Consumer<String> DICT_LOADER = uri -> {
         List<File> files = getFiles(uri, true).stream().filter(Objects::nonNull).collect(toList());
         Integer supportLanguageSize = ofNullable(MessageProcessor.listSupportLanguages()).map(List::size).orElse(0);
 
         if (files.size() != supportLanguageSize)
             LOGGER.warn("size of dict languages support and size of message languages support are different");
 
-        return files.stream()
+        //noinspection UnnecessaryLocalVariable
+        Map<String, Map<String, String>> i18n = files.stream()
                 .collect(toMap(f -> lowerCase(PRE_NAME_PARSER.apply(f.getName())),
-                        PropertiesProcessor::parseProp,
-                        (a, b) -> a));
-    };
+                        PropertiesProcessor::parseProp, (a, b) -> a));
 
-    private static final Map<String, Map<String, String>> I_18_N = DICT_LOADER.apply(DICT_URI);
+        I_18_N = i18n;
+    };
 
     private static final Function<List<String>, Map<String, String>> DICT_GETTER = languages -> {
         if (languages != null) {
             Map<String, String> dict;
             for (String language : languages)
-                if ((dict = I_18_N.get(language)) != null)
+                if ((dict = I_18_N.get(lowerCase(language))) != null)
                     return dict;
         }
 
@@ -75,6 +78,17 @@ public final class DictProcessor {
 
     private static final BiFunction<Map<String, String>, DictKey, String> VALUE_GETTER = (values, key) ->
             ofNullable(values.get(ofNullable(key).map(k -> k.key).orElse(DEFAULT_KEY))).orElse(DEFAULT_VALUE).intern();
+
+    static {
+        refresh();
+    }
+
+    /**
+     * refresh i18n messages
+     */
+    public static void refresh() {
+        DICT_LOADER.accept(DICT_URI);
+    }
 
     /**
      * get dict value by i18n

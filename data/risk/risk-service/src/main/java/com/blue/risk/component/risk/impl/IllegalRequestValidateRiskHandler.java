@@ -9,7 +9,7 @@ import reactor.util.Logger;
 
 import static com.blue.base.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.risk.component.risk.HandlerPrecedence.ILLEGAL_REQUEST_VALIDATE;
+import static com.blue.risk.component.risk.constant.HandlerPrecedence.ILLEGAL_REQUEST_VALIDATE;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 

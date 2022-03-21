@@ -114,7 +114,7 @@ public final class MessageProcessor {
         if (BlueChecker.isNotEmpty(languages)) {
             Map<Integer, String> message;
             for (String language : languages)
-                if ((message = I_18_N.get(language)) != null)
+                if ((message = I_18_N.get(lowerCase(language))) != null)
                     return message;
         }
 
@@ -168,6 +168,28 @@ public final class MessageProcessor {
      */
     public static String resolveToMessage(Integer code) {
         return MESSAGE_GETTER.apply(code, emptyList()).intern();
+    }
+
+    /**
+     * get message by default
+     *
+     * @param code
+     * @return
+     */
+    public static String resolveToMessage(Integer code, DictKey[] replacements) {
+        String msg = MESSAGE_GETTER.apply(code, emptyList()).intern();
+        return NON_KEY_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, resolveToValues(replacements));
+    }
+
+    /**
+     * get message by default
+     *
+     * @param code
+     * @return
+     */
+    public static String resolveToMessage(Integer code, String[] replacements) {
+        String msg = MESSAGE_GETTER.apply(code, emptyList()).intern();
+        return NON_STR_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, replacements);
     }
 
     /**

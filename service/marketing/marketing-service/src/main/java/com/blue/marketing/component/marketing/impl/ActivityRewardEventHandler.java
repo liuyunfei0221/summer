@@ -14,6 +14,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
+@SuppressWarnings("unused")
 public class ActivityRewardEventHandler implements EventHandler {
 
     private static final Logger LOGGER = getLogger(ActivityRewardEventHandler.class);

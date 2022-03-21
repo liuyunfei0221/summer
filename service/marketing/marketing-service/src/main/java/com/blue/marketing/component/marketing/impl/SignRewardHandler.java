@@ -13,6 +13,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
+@SuppressWarnings("unused")
 public class SignRewardHandler implements EventHandler {
 
     private static final Logger LOGGER = getLogger(SignRewardHandler.class);

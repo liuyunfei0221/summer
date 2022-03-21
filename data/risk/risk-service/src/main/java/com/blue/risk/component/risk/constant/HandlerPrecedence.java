@@ -1,4 +1,4 @@
-package com.blue.risk.component.risk;
+package com.blue.risk.component.risk.constant;
 
 /**
  * @author liuyunfei
