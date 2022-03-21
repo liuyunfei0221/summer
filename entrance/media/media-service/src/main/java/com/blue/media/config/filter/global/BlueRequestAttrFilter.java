@@ -45,7 +45,7 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
 
     private static Set<String> VALID_CONTENT_TYPES;
 
-    private static int MAX_URI_LENGTH, MAX_HEADER_COUNT, MAX_HEADER_LENGTH, MAX_CONTENT_LENGTH;
+    private static long MAX_URI_LENGTH, MAX_HEADER_COUNT, MAX_HEADER_LENGTH, MAX_CONTENT_LENGTH;
 
     private static final Function<ServerHttpRequest, Mono<Boolean>> URI_ASSERTER = request ->
             request.getURI().getRawPath().length() <= MAX_URI_LENGTH
@@ -89,7 +89,7 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
     };
 
     private static final Function<ServerHttpRequest, Mono<Boolean>> CONTENT_ASSERTER = request ->
-            ofNullable(request.getHeaders().getFirst(CONTENT_LENGTH)).map(Integer::valueOf).orElse(1) <= MAX_CONTENT_LENGTH
+            ofNullable(request.getHeaders().getFirst(CONTENT_LENGTH)).map(Long::valueOf).orElse(1L) <= MAX_CONTENT_LENGTH
                     ?
                     just(true)
                     :

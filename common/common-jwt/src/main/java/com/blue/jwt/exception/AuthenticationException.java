@@ -2,6 +2,8 @@ package com.blue.jwt.exception;
 
 import com.blue.jwt.constant.JwtResponseElement;
 
+import static com.blue.jwt.constant.JwtResponseElement.INTERNAL_SERVER_ERROR;
+
 /**
  * jwt exception
  *
@@ -26,6 +28,12 @@ public final class AuthenticationException extends RuntimeException {
      * message
      */
     private String message;
+
+    public AuthenticationException() {
+        this.status = INTERNAL_SERVER_ERROR.status;
+        this.code = INTERNAL_SERVER_ERROR.code;
+        this.message = INTERNAL_SERVER_ERROR.message;
+    }
 
     public AuthenticationException(JwtResponseElement jwtResponseElement) {
         this.status = jwtResponseElement.status;

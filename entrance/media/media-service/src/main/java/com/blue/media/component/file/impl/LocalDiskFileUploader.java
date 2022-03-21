@@ -13,10 +13,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.net.URI;
+import java.io.File;
 import java.nio.channels.FileChannel;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.*;
@@ -25,6 +23,8 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
 import static java.lang.System.currentTimeMillis;
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
+import static java.nio.file.StandardOpenOption.WRITE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static reactor.core.publisher.BufferOverflowStrategy.ERROR;
@@ -114,7 +114,7 @@ public final class LocalDiskFileUploader implements FileUploader {
 
     private static final Function<String, FileChannel> WRITE_CHANNEL_GEN = descName -> {
         try {
-            return FileChannel.open(Path.of(new URI(descName)), StandardOpenOption.WRITE);
+            return FileChannel.open(new File(descName).toPath(), CREATE_NEW, WRITE);
         } catch (Exception e) {
             throw new BlueException(INTERNAL_SERVER_ERROR);
         }

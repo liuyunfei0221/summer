@@ -200,7 +200,7 @@ request:
   maxUriLength: 256
   maxHeaderCount: 16
   maxHeaderLength: 2048
-  maxContentLength: 33554432
+  maxContentLength: 429496729000
   maxHeadersSize: 1048576
   maxInMemorySize: 8388608
   maxDiskUsagePerPart: 33554432
@@ -217,8 +217,8 @@ files:
   validTypes: [ .JPG,.JPEG,.PNG,.RMVB,.MKV,.MP4,.ZIP ]
   invalidPres: [ .,/,^ ]
   nameLenThreshold: 256
-  allFileSizeThreshold: 4294967296
-  singleFileSizeThreshold: 4294967296
+  allFileSizeThreshold: 4294967296000
+  singleFileSizeThreshold: 4294967296000
   currentSizeThreshold: 32
   descPath: E:\\tempFile\\disc
 

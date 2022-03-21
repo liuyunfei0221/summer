@@ -22,32 +22,32 @@ public class RequestAttributeDeploy {
     /**
      * max uri length
      */
-    private Integer maxUriLength;
+    private Long maxUriLength;
 
     /**
      * max header count
      */
-    private Integer maxHeaderCount;
+    private Long maxHeaderCount;
 
     /**
      * max header length
      */
-    private Integer maxHeaderLength;
+    private Long maxHeaderLength;
 
     /**
      * max content length
      */
-    private Integer maxContentLength;
+    private Long maxContentLength;
 
     /**
      * max headers size
      */
-    private Integer maxHeadersSize;
+    private Long maxHeadersSize;
 
     /**
      * max memory size
      */
-    private Integer maxInMemorySize;
+    private Long maxInMemorySize;
 
     /**
      * max disk usage per part
@@ -57,7 +57,7 @@ public class RequestAttributeDeploy {
     /**
      * max part count
      */
-    private Integer maxParts;
+    private Long maxParts;
 
     /**
      * logging details?
@@ -75,51 +75,51 @@ public class RequestAttributeDeploy {
         this.validContentTypes = validContentTypes;
     }
 
-    public Integer getMaxUriLength() {
+    public Long getMaxUriLength() {
         return maxUriLength;
     }
 
-    public void setMaxUriLength(Integer maxUriLength) {
+    public void setMaxUriLength(Long maxUriLength) {
         this.maxUriLength = maxUriLength;
     }
 
-    public Integer getMaxHeaderCount() {
+    public Long getMaxHeaderCount() {
         return maxHeaderCount;
     }
 
-    public void setMaxHeaderCount(Integer maxHeaderCount) {
+    public void setMaxHeaderCount(Long maxHeaderCount) {
         this.maxHeaderCount = maxHeaderCount;
     }
 
-    public Integer getMaxHeaderLength() {
+    public Long getMaxHeaderLength() {
         return maxHeaderLength;
     }
 
-    public void setMaxHeaderLength(Integer maxHeaderLength) {
+    public void setMaxHeaderLength(Long maxHeaderLength) {
         this.maxHeaderLength = maxHeaderLength;
     }
 
-    public Integer getMaxContentLength() {
+    public Long getMaxContentLength() {
         return maxContentLength;
     }
 
-    public void setMaxContentLength(Integer maxContentLength) {
+    public void setMaxContentLength(Long maxContentLength) {
         this.maxContentLength = maxContentLength;
     }
 
-    public Integer getMaxHeadersSize() {
+    public Long getMaxHeadersSize() {
         return maxHeadersSize;
     }
 
-    public void setMaxHeadersSize(Integer maxHeadersSize) {
+    public void setMaxHeadersSize(Long maxHeadersSize) {
         this.maxHeadersSize = maxHeadersSize;
     }
 
-    public Integer getMaxInMemorySize() {
+    public Long getMaxInMemorySize() {
         return maxInMemorySize;
     }
 
-    public void setMaxInMemorySize(Integer maxInMemorySize) {
+    public void setMaxInMemorySize(Long maxInMemorySize) {
         this.maxInMemorySize = maxInMemorySize;
     }
 
@@ -131,11 +131,11 @@ public class RequestAttributeDeploy {
         this.maxDiskUsagePerPart = maxDiskUsagePerPart;
     }
 
-    public Integer getMaxParts() {
+    public Long getMaxParts() {
         return maxParts;
     }
 
-    public void setMaxParts(Integer maxParts) {
+    public void setMaxParts(Long maxParts) {
         this.maxParts = maxParts;
     }
 

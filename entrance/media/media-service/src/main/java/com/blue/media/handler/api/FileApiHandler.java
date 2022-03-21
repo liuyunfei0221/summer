@@ -63,9 +63,7 @@ public final class FileApiHandler {
      * @return
      */
     public Mono<ServerResponse> upload(ServerRequest serverRequest) {
-
         assertContentLength(serverRequest);
-
         return zip(serverRequest.multipartData()
                         .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
                 getAccessReact(serverRequest))

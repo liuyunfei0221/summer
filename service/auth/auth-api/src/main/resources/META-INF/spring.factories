@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.blue.auth.api.ioc.BlueMemberJwtConfiguration
+com.blue.auth.api.component.jwt.ioc.BlueMemberJwtConfiguration

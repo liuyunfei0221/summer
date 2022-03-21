@@ -15,6 +15,7 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Optional.ofNullable;
 import static reactor.core.scheduler.Schedulers.single;
 
 
@@ -48,11 +49,14 @@ public class WebConfig implements WebFluxConfigurer {
         partReader.setHeadersCharset(UTF_8);
         partReader.setBlockingOperationScheduler(single());
 
-        partReader.setMaxHeadersSize(requestAttributeDeploy.getMaxHeadersSize());
-        partReader.setMaxInMemorySize(requestAttributeDeploy.getMaxInMemorySize());
-        partReader.setMaxDiskUsagePerPart(requestAttributeDeploy.getMaxDiskUsagePerPart());
-        partReader.setMaxParts(requestAttributeDeploy.getMaxParts());
-        partReader.setEnableLoggingRequestDetails(requestAttributeDeploy.getEnableLoggingRequestDetails());
+        ofNullable(requestAttributeDeploy.getMaxInMemorySize())
+                .map(Long::intValue).ifPresent(partReader::setMaxInMemorySize);
+        ofNullable(requestAttributeDeploy.getMaxDiskUsagePerPart())
+                .ifPresent(partReader::setMaxDiskUsagePerPart);
+        ofNullable(requestAttributeDeploy.getMaxParts())
+                .map(Long::intValue).ifPresent(partReader::setMaxParts);
+        ofNullable(requestAttributeDeploy.getEnableLoggingRequestDetails())
+                .ifPresent(partReader::setEnableLoggingRequestDetails);
 
         MultipartHttpMessageReader multipartReader = new MultipartHttpMessageReader(partReader);
         multipartReader.setEnableLoggingRequestDetails(requestAttributeDeploy.getEnableLoggingRequestDetails());
