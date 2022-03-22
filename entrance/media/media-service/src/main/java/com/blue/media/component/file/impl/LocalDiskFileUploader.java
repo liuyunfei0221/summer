@@ -112,7 +112,7 @@ public final class LocalDiskFileUploader implements FileUploader {
                 name.substring(index);
     };
 
-    private static final Function<String, FileChannel> WRITE_CHANNEL_GEN = descName -> {
+    private static final Function<String, FileChannel> CHANNEL_GEN = descName -> {
         try {
             return FileChannel.open(new File(descName).toPath(), CREATE_NEW, WRITE);
         } catch (Exception e) {
@@ -124,7 +124,7 @@ public final class LocalDiskFileUploader implements FileUploader {
     private final Supplier<Monitor<Long>> MONITOR_SUP = () ->
             new Monitor<>(0L, Long::sum, m -> m <= singleFileSizeThreshold);
 
-    private final BiFunction<Part, FileChannel, Mono<Long>> DATA_WRITER = (part, channel) -> {
+    private final BiFunction<Part, FileChannel, Mono<Long>> FILE_WRITER = (part, channel) -> {
         FilePart filePart = (FilePart) part;
         Flux<DataBuffer> dataBufferFlux = filePart.content();
         Monitor<Long> monitor = MONITOR_SUP.get();
@@ -147,11 +147,11 @@ public final class LocalDiskFileUploader implements FileUploader {
                         just(monitor.getMonitored()));
     };
 
-    private final Consumer<FileChannel> STREAM_CLOSER = stream -> {
+    private final Consumer<FileChannel> CHANNEL_CLOSER = channel -> {
         try {
-            stream.close();
+            channel.close();
         } catch (Exception e) {
-            LOGGER.error("FastByteArrayOutputStream close failed, e = {}", e);
+            LOGGER.error("FileChannel close failed, e = {}", e);
         }
     };
 
@@ -166,9 +166,9 @@ public final class LocalDiskFileUploader implements FileUploader {
         String name = PART_NAME_GETTER.apply(part);
         String descName = NAME_COMBINER.apply(descPath, name);
 
-        return using(() -> WRITE_CHANNEL_GEN.apply(descName),
-                ch -> DATA_WRITER.apply(part, ch),
-                STREAM_CLOSER,
+        return using(() -> CHANNEL_GEN.apply(descName),
+                ch -> FILE_WRITER.apply(part, ch),
+                CHANNEL_CLOSER,
                 true)
                 .flatMap(size ->
                         just(new FileUploadResult(descName, name, true, "upload success", size))

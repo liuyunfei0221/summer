@@ -6,23 +6,31 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.media.config.deploy.FileDeploy;
 import com.blue.media.service.inter.FileService;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.core.io.buffer.NettyDataBufferFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.net.URLEncoder;
+import java.nio.channels.FileChannel;
 
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static io.netty.buffer.ByteBufAllocator.DEFAULT;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
-import static org.springframework.web.reactive.function.BodyInserters.fromResource;
+import static org.springframework.http.MediaType.IMAGE_JPEG;
+import static org.springframework.web.reactive.function.BodyInserters.fromDataBuffers;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.zip;
@@ -75,6 +83,8 @@ public final class FileApiHandler {
                                 .body(generate(OK.code, rl, serverRequest), BlueResponse.class));
     }
 
+    public static final DataBufferFactory DATA_BUFFER_FACTORY = new NettyDataBufferFactory(DEFAULT);
+
     /**
      * download
      *
@@ -93,14 +103,29 @@ public final class FileApiHandler {
                                     if (link == null || "".equals(link))
                                         return error(() -> new BlueException(DATA_NOT_EXIST));
 
-                                    FileSystemResource resource = new FileSystemResource(new File(link));
-                                    if (!resource.exists())
-                                        return error(() -> new BlueException(DATA_NOT_EXIST));
+//                                    FileSystemResource resource = new FileSystemResource(new File(link));
+//                                    if (!resource.exists())
+//                                        return error(() -> new BlueException(DATA_NOT_EXIST));
 
-                                    return ok().contentType(APPLICATION_OCTET_STREAM)
+                                    Flux<DataBuffer> dataBufferFlux = null;
+
+                                    try {
+                                        FileChannel channel = FileChannel.open(new File(link).toPath(), READ);
+
+                                        dataBufferFlux = DataBufferUtils.readByteChannel(() -> channel, DATA_BUFFER_FACTORY, 8192);
+
+                                        //TODO content - type
+
+                                        FileSystemResource resource = new FileSystemResource(new File(link));
+
+                                    } catch (Exception e) {
+                                        return Mono.error(() -> new RuntimeException(""));
+                                    }
+
+                                    return ok().contentType(IMAGE_JPEG)
                                             .header(CONTENT_DISPOSITION.name,
                                                     "attachment; filename=" + URLEncoder.encode(attachment.getName(), UTF_8))
-                                            .body(fromResource(resource));
+                                            .body(fromDataBuffers(dataBufferFlux));
                                 }));
     }
 
