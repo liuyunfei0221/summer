@@ -42,6 +42,8 @@ public final class MediaCommonFunctions extends ReactiveCommonFunctions {
 
     public static final DataBufferFactory DATA_BUFFER_FACTORY = new NettyDataBufferFactory(DEFAULT);
 
+    public static final int BUFFER_SIZE = 8192;
+
     /**
      * buffer allocate size
      */
@@ -62,7 +64,7 @@ public final class MediaCommonFunctions extends ReactiveCommonFunctions {
                     LOGGER.error("throwable = {}", throwable);
                 }).subscribe();
 
-        LOGGER.info("throwable = {}", throwable);
+        LOGGER.error("throwable = {}", throwable);
         if (throwable instanceof BlueException)
             throw (BlueException) throwable;
 

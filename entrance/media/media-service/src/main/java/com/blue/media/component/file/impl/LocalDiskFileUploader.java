@@ -166,7 +166,8 @@ public final class LocalDiskFileUploader implements FileUploader {
         String name = PART_NAME_GETTER.apply(part);
         String descName = NAME_COMBINER.apply(descPath, name);
 
-        return using(() -> CHANNEL_GEN.apply(descName),
+        return using(
+                () -> CHANNEL_GEN.apply(descName),
                 ch -> FILE_WRITER.apply(part, ch),
                 CHANNEL_CLOSER,
                 true)

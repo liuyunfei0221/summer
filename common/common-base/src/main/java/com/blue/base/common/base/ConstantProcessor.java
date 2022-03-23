@@ -62,6 +62,12 @@ public final class ConstantProcessor {
             of(BlueMediaType.values()).collect(toMap(bmt -> bmt.identity.toLowerCase(), bmt -> bmt.mediaType));
 
     /**
+     * file type identity and media mapping
+     */
+    private static final Map<String, MediaType> FILE_MEDIA_TYPE_MAPPING =
+            of(BlueFileType.values()).collect(toMap(bft -> bft.identity.toLowerCase(), bft -> bft.mediaType));
+
+    /**
      * valid resource type identity and type mapping
      */
     private static final Map<Integer, ResourceType> RESOURCE_TYPE_MAPPING =
@@ -193,6 +199,20 @@ public final class ConstantProcessor {
             return;
 
         if (isBlank(identity) || !MEDIA_TYPE_MAPPING.containsKey(identity.toLowerCase()))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert file type
+     *
+     * @param identity
+     * @return
+     */
+    public static void assertFileType(String identity, boolean nullable) {
+        if (nullable && identity == null)
+            return;
+
+        if (isBlank(identity) || !FILE_MEDIA_TYPE_MAPPING.containsKey(identity.toLowerCase()))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -448,6 +468,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         MediaType mediaType = MEDIA_TYPE_MAPPING.get(identity.toLowerCase());
+        if (mediaType == null)
+            throw new BlueException(INVALID_IDENTITY);
+
+        return mediaType;
+    }
+
+    /**
+     * get media type by file suffix
+     *
+     * @param identity
+     * @return
+     */
+    public static MediaType getMediaTypeByFileIdentity(String identity) {
+        if (isBlank(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        MediaType mediaType = FILE_MEDIA_TYPE_MAPPING.get(identity.toLowerCase());
         if (mediaType == null)
             throw new BlueException(INVALID_IDENTITY);
 
