@@ -147,8 +147,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                             .filter(l -> !isEmpty(l))
                             .forEach(l ->
                                     attachmentService.insertBatch(
-                                            l
-                                                    .stream()
+                                            l.stream()
                                                     .filter(FileUploadResult::getSuccess)
                                                     .map(fur -> {
                                                         Attachment attachment = ATTACHMENT_CONVERTER.apply(fur, memberId);
