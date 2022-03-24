@@ -1,6 +1,6 @@
-package com.blue.media.common.request.part.common;
+package com.blue.media.common.part;
 
-import com.blue.media.common.request.part.inter.PartInfoHandler;
+import com.blue.media.common.part.inter.PartInfoHandler;
 import org.springframework.http.codec.multipart.Part;
 import reactor.util.Logger;
 
@@ -11,8 +11,8 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ClassGetter.getClassesByPackage;
-import static com.blue.media.common.request.part.common.FilePartElementKey.PART_CLASS;
-import static com.blue.media.common.request.part.common.FilePartElementKey.PART_NAME;
+import static com.blue.media.common.part.constant.FilePartElementKey.PART_CLASS;
+import static com.blue.media.common.part.constant.FilePartElementKey.PART_NAME;
 import static java.util.stream.Collectors.toMap;
 import static reactor.util.Loggers.getLogger;
 
@@ -29,7 +29,7 @@ public final class PartInfoProcessor {
     /**
      * implements package
      */
-    private static final String DIR_NAME = "com.blue.media.common.request.part.impl";
+    private static final String DIR_NAME = "com.blue.media.common.part.impl";
 
     private static final Map<String, PartInfoHandler> MAPPING = generatorMapping(DIR_NAME);
 
@@ -95,6 +95,5 @@ public final class PartInfoProcessor {
 
         return infos;
     }
-
 
 }

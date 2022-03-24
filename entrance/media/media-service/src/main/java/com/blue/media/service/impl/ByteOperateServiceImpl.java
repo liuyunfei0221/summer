@@ -7,15 +7,13 @@ import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.media.api.model.FileUploadResult;
-import com.blue.media.component.file.inter.FileUploader;
+import com.blue.media.component.file.ByteProcessor;
 import com.blue.media.config.deploy.FileDeploy;
 import com.blue.media.repository.entity.Attachment;
 import com.blue.media.repository.entity.DownloadHistory;
 import com.blue.media.service.inter.AttachmentService;
 import com.blue.media.service.inter.ByteOperateService;
 import com.blue.media.service.inter.DownloadHistoryService;
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
@@ -23,13 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.io.File;
 import java.net.URLEncoder;
-import java.nio.channels.FileChannel;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
@@ -46,10 +42,7 @@ import static com.blue.base.constant.base.BlueNumericalValue.DB_WRITE;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
-import static com.blue.media.common.MediaCommonFunctions.BUFFER_SIZE;
-import static com.blue.media.common.MediaCommonFunctions.DATA_BUFFER_FACTORY;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.nio.file.StandardOpenOption.READ;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
@@ -73,7 +66,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
 
     private static final Logger LOGGER = getLogger(ByteOperateServiceImpl.class);
 
-    private FileUploader localDiskFileUploader;
+    private ByteProcessor byteProcessor;
 
     private AttachmentService attachmentService;
 
@@ -81,9 +74,9 @@ public class ByteOperateServiceImpl implements ByteOperateService {
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
-    public ByteOperateServiceImpl(FileUploader localDiskFileUploader, AttachmentService attachmentService, DownloadHistoryService downloadHistoryService,
+    public ByteOperateServiceImpl(ByteProcessor byteProcessor, AttachmentService attachmentService, DownloadHistoryService downloadHistoryService,
                                   BlueIdentityProcessor blueIdentityProcessor, FileDeploy fileDeploy) {
-        this.localDiskFileUploader = localDiskFileUploader;
+        this.byteProcessor = byteProcessor;
         this.attachmentService = attachmentService;
         this.downloadHistoryService = downloadHistoryService;
         this.blueIdentityProcessor = blueIdentityProcessor;
@@ -102,8 +95,9 @@ public class ByteOperateServiceImpl implements ByteOperateService {
     private final BiFunction<FileUploadResult, Long, Attachment> ATTACHMENT_CONVERTER = (fur, memberId) -> {
         Attachment attachment = new Attachment();
 
-        String destination = fur.getDestination();
+        attachment.setId(blueIdentityProcessor.generate(Attachment.class));
 
+        String destination = fur.getDestination();
         attachment.setLink(destination);
         attachment.setName(fur.getResource());
         attachment.setFileType(substring(destination, lastIndexOf(destination, SCHEME_SEPARATOR.identity) + 1));
@@ -111,6 +105,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         attachment.setStatus(VALID.status);
         attachment.setCreateTime(Instant.now().getEpochSecond());
         attachment.setCreator(memberId);
+
         return attachment;
     };
 
@@ -124,8 +119,8 @@ public class ByteOperateServiceImpl implements ByteOperateService {
             throw new BlueException(PAYLOAD_TOO_LARGE);
     };
 
-    private final BiFunction<MultiValueMap<String, Part>, Long, Mono<List<FileUploadResult>>> ATTACHMENT_UPLOADER = (valueMap, memberId) -> {
-        LOGGER.info("ATTACHMENT_UPLOADER, valueMap = {}, memberId = {}", valueMap, memberId);
+    private final Function<MultiValueMap<String, Part>, Mono<List<FileUploadResult>>> ATTACHMENTS_UPLOADER = valueMap -> {
+        LOGGER.info("ATTACHMENT_UPLOADER, valueMap = {}", valueMap);
 
         List<Part> resources = valueMap.get(ATTR_NAME);
         if (isEmpty(resources))
@@ -139,25 +134,21 @@ public class ByteOperateServiceImpl implements ByteOperateService {
             throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return fromIterable(resources)
-                .flatMap(localDiskFileUploader::upload)
-                .collectList()
-                .flatMap(uploadedFiles -> {
-                    allotByMax(uploadedFiles, (int) DB_WRITE.value, false)
-                            .stream()
-                            .filter(l -> !isEmpty(l))
-                            .forEach(l ->
-                                    attachmentService.insertBatch(
-                                            l.stream()
-                                                    .filter(FileUploadResult::getSuccess)
-                                                    .map(fur -> {
-                                                        Attachment attachment = ATTACHMENT_CONVERTER.apply(fur, memberId);
-                                                        attachment.setId(blueIdentityProcessor.generate(Attachment.class));
-                                                        return attachment;
-                                                    }).collect(toList()))
-                            );
-                    LOGGER.info("uploadedFiles -> " + uploadedFiles);
-                    return just(uploadedFiles);
-                });
+                .flatMap(byteProcessor::write)
+                .collectList();
+    };
+
+    private final BiConsumer<List<FileUploadResult>, Long> ATTACHMENTS_RECORDER = (rls, memberId) -> {
+        LOGGER.info("ATTACHMENTS_RECORDER, rls = {}, memberId = {}", rls, memberId);
+
+        allotByMax(rls, (int) DB_WRITE.value, false)
+                .stream()
+                .filter(l -> !isEmpty(l))
+                .map(l -> l.stream()
+                        .filter(FileUploadResult::getSuccess)
+                        .map(fur -> ATTACHMENT_CONVERTER.apply(fur, memberId)
+                        ).collect(toList()))
+                .forEach(attachmentService::insertBatch);
     };
 
     public static final UnaryOperator<String> FILE_TYPE_GETTER = CommonFunctions.FILE_TYPE_GETTER;
@@ -171,15 +162,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         return mediaType != null ? mediaType : DEFAULT_MEDIA_TYPE;
     };
 
-    private final Function<String, Flux<DataBuffer>> DATA_BUFFERS_READER = pathname -> {
-        try {
-            return DataBufferUtils.readByteChannel(() -> FileChannel.open(new File(pathname).toPath(), READ), DATA_BUFFER_FACTORY, BUFFER_SIZE);
-        } catch (Exception e) {
-            throw new BlueException(INTERNAL_SERVER_ERROR);
-        }
-    };
-
-    private final BiConsumer<Long, Long> HISTORY_RECORDER = (attachmentId, memberId) -> {
+    private final BiConsumer<Long, Long> DOWNLOAD_RECORDER = (attachmentId, memberId) -> {
         DownloadHistory downloadHistory = new DownloadHistory();
         downloadHistory.setId(blueIdentityProcessor.generate(DownloadHistory.class));
         downloadHistory.setAttachmentId(attachmentId);
@@ -202,11 +185,14 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                         .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
-                        ATTACHMENT_UPLOADER.apply(tuple2.getT1(), tuple2.getT2().getId()))
-                .flatMap(rl ->
-                        ok()
-                                .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, rl, serverRequest), BlueResponse.class));
+                        zip(ATTACHMENTS_UPLOADER.apply(tuple2.getT1()), just(tuple2.getT2().getId())))
+                .flatMap(tuple2 -> {
+                    List<FileUploadResult> rl = tuple2.getT1();
+                    return ok()
+                            .contentType(APPLICATION_JSON)
+                            .body(generate(OK.code, rl, serverRequest), BlueResponse.class)
+                            .doOnSuccess(res -> ATTACHMENTS_RECORDER.accept(rl, tuple2.getT2()));
+                });
     }
 
     /**
@@ -225,16 +211,15 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                     return attachmentService.getAttachment(attachmentId)
                             .switchIfEmpty(error(() -> new BlueException(DATA_NOT_EXIST)))
                             .flatMap(attachment -> {
-                                        String link = attachment.getLink();
-                                        MediaType mediaType = MEDIA_GETTER.apply(FILE_TYPE_GETTER.apply(link));
+                                String link = attachment.getLink();
+                                MediaType mediaType = MEDIA_GETTER.apply(FILE_TYPE_GETTER.apply(link));
 
-                                        return ok().contentType(mediaType)
-                                                .header(CONTENT_DISPOSITION.name,
-                                                        "attachment; filename=" + URLEncoder.encode(attachment.getName(), UTF_8))
-                                                .body(fromDataBuffers(DATA_BUFFERS_READER.apply(link)))
-                                                .doOnSuccess(res -> HISTORY_RECORDER.accept(attachmentId, tuple2.getT2().getId()));
-                                    }
-                            );
+                                return ok().contentType(mediaType)
+                                        .header(CONTENT_DISPOSITION.name,
+                                                "attachment; filename=" + URLEncoder.encode(attachment.getName(), UTF_8))
+                                        .body(fromDataBuffers(byteProcessor.read(new File(link).toPath())))
+                                        .doOnSuccess(res -> DOWNLOAD_RECORDER.accept(attachmentId, tuple2.getT2().getId()));
+                            });
                 });
     }
 

@@ -213,6 +213,7 @@ error:
 
 
 files:
+  handlerType: ld
   attrName: attachments
   validTypes: [ .JPG,.JPEG,.PNG,.RMVB,.MKV,.MP4,.ZIP ]
   invalidPres: [ .,/,^ ]

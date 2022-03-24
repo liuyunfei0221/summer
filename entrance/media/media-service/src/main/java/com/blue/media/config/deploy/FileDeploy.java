@@ -14,6 +14,8 @@ import java.util.List;
 @ConfigurationProperties(prefix = "files")
 public class FileDeploy {
 
+    private String handlerType;
+
     private String attrName;
 
     private List<String> validTypes;
@@ -31,6 +33,14 @@ public class FileDeploy {
     private String descPath;
 
     public FileDeploy() {
+    }
+
+    public String getHandlerType() {
+        return handlerType;
+    }
+
+    public void setHandlerType(String handlerType) {
+        this.handlerType = handlerType;
     }
 
     public String getAttrName() {
@@ -100,7 +110,8 @@ public class FileDeploy {
     @Override
     public String toString() {
         return "FileDeploy{" +
-                "attrName='" + attrName + '\'' +
+                "handlerType='" + handlerType + '\'' +
+                ", attrName='" + attrName + '\'' +
                 ", validTypes=" + validTypes +
                 ", invalidPres=" + invalidPres +
                 ", nameLenThreshold=" + nameLenThreshold +
@@ -110,4 +121,5 @@ public class FileDeploy {
                 ", descPath='" + descPath + '\'' +
                 '}';
     }
+
 }

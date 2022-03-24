@@ -4,7 +4,6 @@ import com.blue.base.common.content.common.RequestBodyProcessor;
 import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.base.ExceptionResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.media.common.request.body.ReportWithRequestBodyProcessor;
 import com.blue.media.component.event.RequestEventReporter;
 import com.blue.media.config.deploy.EncryptDeploy;
 import org.reactivestreams.Publisher;
@@ -73,8 +72,8 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
         EXPIRED_SECONDS = encryptDeploy.getExpire();
 
-        ReportWithRequestBodyProcessor jsonRequestBodyProcessor = new JsonRequestBodyProcessor();
-        ReportWithRequestBodyProcessor multipartRequestBodyProcessor = new MultipartRequestBodyProcessor();
+        RequestBodyReporter jsonRequestBodyProcessor = new JsonRequestBodyReporter();
+        RequestBodyReporter multipartRequestBodyProcessor = new MultipartRequestBodyReporter();
 
         REQUEST_BODY_PROCESSOR_HOLDER.put(jsonRequestBodyProcessor.getContentType(), jsonRequestBodyProcessor);
         REQUEST_BODY_PROCESSOR_HOLDER.put(multipartRequestBodyProcessor.getContentType(), multipartRequestBodyProcessor);
@@ -174,15 +173,15 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
                 ).build());
     }
 
-    private final Map<String, ReportWithRequestBodyProcessor> REQUEST_BODY_PROCESSOR_HOLDER = new HashMap<>(4, 1.0f);
+    private final Map<String, RequestBodyReporter> REQUEST_BODY_PROCESSOR_HOLDER = new HashMap<>(4, 1.0f);
 
-    private final Function<HttpHeaders, ReportWithRequestBodyProcessor> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
-        ReportWithRequestBodyProcessor processor = REQUEST_BODY_PROCESSOR_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE));
+    private final Function<HttpHeaders, RequestBodyReporter> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
+        RequestBodyReporter reporter = REQUEST_BODY_PROCESSOR_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE));
 
-        if (processor == null)
+        if (reporter == null)
             throw new BlueException(UNSUPPORTED_MEDIA_TYPE);
 
-        return processor;
+        return reporter;
     };
 
     private Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
@@ -208,13 +207,63 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
     }
 
 
-    protected class JsonRequestBodyProcessor implements ReportWithRequestBodyProcessor {
 
+
+
+
+    /**
+     * reporter
+     */
+    @SuppressWarnings("JavaDoc")
+    protected interface RequestBodyReporter {
+
+        /**
+         * handle type
+         *
+         * @return
+         */
+        String getContentType();
+
+        /**
+         * handle
+         *
+         * @param request
+         * @param exchange
+         * @param chain
+         * @param requestEventReporter
+         * @param dataEvent
+         * @return
+         */
+        Mono<Void> processor(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, RequestEventReporter requestEventReporter, DataEvent dataEvent);
+
+    }
+
+    /**
+     * impl for json
+     */
+    @SuppressWarnings("JavaDoc")
+    protected class JsonRequestBodyReporter implements RequestBodyReporter {
+
+        /**
+         * handle type
+         *
+         * @return
+         */
         @Override
         public String getContentType() {
             return APPLICATION_JSON_VALUE;
         }
 
+        /**
+         * handle
+         *
+         * @param request
+         * @param exchange
+         * @param chain
+         * @param requestEventReporter
+         * @param dataEvent
+         * @return
+         */
         @Override
         public Mono<Void> processor(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
             return ServerRequest.create(exchange, httpMessageReaders)
@@ -240,12 +289,32 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         }
     }
 
-    protected class MultipartRequestBodyProcessor implements ReportWithRequestBodyProcessor {
+    /**
+     * impl for part
+     */
+    @SuppressWarnings("JavaDoc")
+    protected class MultipartRequestBodyReporter implements RequestBodyReporter {
+
+        /**
+         * handle type
+         *
+         * @return
+         */
         @Override
         public String getContentType() {
             return MULTIPART_FORM_DATA_VALUE;
         }
 
+        /**
+         * handle
+         *
+         * @param request
+         * @param exchange
+         * @param chain
+         * @param requestEventReporter
+         * @param dataEvent
+         * @return
+         */
         @Override
         public Mono<Void> processor(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
             ServerWebExchangeDecorator serverWebExchangeDecorator = new ServerWebExchangeDecorator(exchange) {

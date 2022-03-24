@@ -1,4 +1,4 @@
-package com.blue.media.common.request.part.common;
+package com.blue.media.common.part.constant;
 
 /**
  * media part element attr
@@ -30,9 +30,9 @@ public enum FilePartElementKey {
     FILE_NAME("fileName", "media name");
 
 
-    public String identity;
+    public final String identity;
 
-    public String disc;
+    public final String disc;
 
     FilePartElementKey(String identity, String disc) {
         this.identity = identity;

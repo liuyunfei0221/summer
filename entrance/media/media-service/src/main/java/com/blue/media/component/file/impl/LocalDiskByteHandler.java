@@ -1,20 +1,21 @@
 package com.blue.media.component.file.impl;
 
 import com.blue.base.common.base.Monitor;
+import com.blue.base.constant.media.ByteHandlerType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.FileUploadResult;
-import com.blue.media.component.file.inter.FileUploader;
+import com.blue.media.component.file.inter.ByteHandler;
 import com.blue.media.config.deploy.FileDeploy;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.io.File;
 import java.nio.channels.FileChannel;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.*;
@@ -22,11 +23,15 @@ import java.util.function.*;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
+import static com.blue.base.constant.media.ByteHandlerType.LOCAL_DISK;
+import static com.blue.media.common.MediaCommonFunctions.BUFFER_SIZE;
+import static com.blue.media.common.MediaCommonFunctions.DATA_BUFFER_FACTORY;
 import static java.lang.System.currentTimeMillis;
-import static java.nio.file.StandardOpenOption.CREATE_NEW;
-import static java.nio.file.StandardOpenOption.WRITE;
+import static java.nio.channels.FileChannel.open;
+import static java.nio.file.StandardOpenOption.*;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
+import static org.springframework.core.io.buffer.DataBufferUtils.readByteChannel;
 import static reactor.core.publisher.BufferOverflowStrategy.ERROR;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.using;
@@ -34,17 +39,16 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * uploader implements
+ * local disk byte operate processor
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
-@Component
-public final class LocalDiskFileUploader implements FileUploader {
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
+public final class LocalDiskByteHandler implements ByteHandler {
 
-    private static final Logger LOGGER = getLogger(LocalDiskFileUploader.class);
+    private static final Logger LOGGER = getLogger(LocalDiskByteHandler.class);
 
-    public LocalDiskFileUploader(FileDeploy fileDeploy) {
+    public LocalDiskByteHandler(FileDeploy fileDeploy) {
         validTypes = new HashSet<>(fileDeploy.getValidTypes());
         invalidPres = new HashSet<>(fileDeploy.getInvalidPres());
         nameLenThreshold = fileDeploy.getNameLenThreshold();
@@ -55,6 +59,8 @@ public final class LocalDiskFileUploader implements FileUploader {
     private static final int RANDOM_FILE_NAME_POST_LEN = 8;
 
     private static final int BACKPRESSURE_BUFFER_MAX_SIZE = 128;
+
+    private static final String SUCCESS_MSG = "upload success";
 
     private Set<String> validTypes;
 
@@ -114,7 +120,7 @@ public final class LocalDiskFileUploader implements FileUploader {
 
     private static final Function<String, FileChannel> CHANNEL_GEN = descName -> {
         try {
-            return FileChannel.open(new File(descName).toPath(), CREATE_NEW, WRITE);
+            return open(new File(descName).toPath(), CREATE_NEW, WRITE);
         } catch (Exception e) {
             throw new BlueException(INTERNAL_SERVER_ERROR);
         }
@@ -155,14 +161,22 @@ public final class LocalDiskFileUploader implements FileUploader {
         }
     };
 
+    private final Function<Path, Flux<DataBuffer>> DATA_BUFFERS_READER = path -> {
+        try {
+            return readByteChannel(() -> open(path, READ), DATA_BUFFER_FACTORY, BUFFER_SIZE);
+        } catch (Exception e) {
+            throw new BlueException(INTERNAL_SERVER_ERROR);
+        }
+    };
+
     /**
-     * upload media
+     * write for upload
      *
      * @param part
      * @return
      */
     @Override
-    public Mono<FileUploadResult> upload(Part part) {
+    public Mono<FileUploadResult> write(Part part) {
         String name = PART_NAME_GETTER.apply(part);
         String descName = NAME_COMBINER.apply(descPath, name);
 
@@ -172,8 +186,29 @@ public final class LocalDiskFileUploader implements FileUploader {
                 CHANNEL_CLOSER,
                 true)
                 .flatMap(size ->
-                        just(new FileUploadResult(descName, name, true, "upload success", size))
+                        just(new FileUploadResult(descName, name, true, SUCCESS_MSG, size))
                 );
+    }
+
+    /**
+     * read for download
+     *
+     * @param path
+     * @return
+     */
+    @Override
+    public Flux<DataBuffer> read(Path path) {
+        return DATA_BUFFERS_READER.apply(path);
+    }
+
+    /**
+     * byte handler type
+     *
+     * @return
+     */
+    @Override
+    public ByteHandlerType handlerType() {
+        return LOCAL_DISK;
     }
 
 }

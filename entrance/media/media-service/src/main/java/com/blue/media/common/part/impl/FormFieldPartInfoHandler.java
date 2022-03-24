@@ -1,6 +1,6 @@
-package com.blue.media.common.request.part.impl;
+package com.blue.media.common.part.impl;
 
-import com.blue.media.common.request.part.inter.PartInfoHandler;
+import com.blue.media.common.part.inter.PartInfoHandler;
 import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
 
@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static com.blue.media.common.request.part.common.FilePartElementKey.*;
+import static com.blue.media.common.part.constant.FilePartElementKey.*;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 
 /**
- * handle AbstractSynchronossPart
+ * handle AbstractSyncPart
  *
  * @author DarkBlue
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "SpellCheckingInspection"})
 public final class FormFieldPartInfoHandler implements PartInfoHandler {
 
     private static final List<String> HANDLE_CLASSES = Stream.of(

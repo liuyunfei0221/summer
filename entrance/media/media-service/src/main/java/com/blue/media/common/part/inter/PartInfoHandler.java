@@ -1,4 +1,4 @@
-package com.blue.media.common.request.part.inter;
+package com.blue.media.common.part.inter;
 
 import org.springframework.http.codec.multipart.Part;
 

@@ -2,7 +2,7 @@ package com.blue.media.common;
 
 import com.blue.base.common.reactive.ReactiveCommonFunctions;
 import com.blue.base.model.exps.BlueException;
-import com.blue.media.common.request.part.common.PartInfoProcessor;
+import com.blue.media.common.part.PartInfoProcessor;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.NettyDataBufferFactory;

@@ -4,7 +4,6 @@ import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.base.ExceptionResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.media.common.request.body.RequestBodyGetter;
 import com.blue.media.component.event.RequestEventReporter;
 import com.blue.media.config.deploy.ErrorReportDeploy;
 import org.springframework.core.Ordered;
@@ -63,11 +62,11 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
         this.requestEventReporter = requestEventReporter;
         withRequestBodyContentTypes = new HashSet<>(errorReportDeploy.getErrorReportWithRequestBodyContentTypes());
 
-        RequestBodyGetter jsonRequestBodyGetter = new JsonRequestBodyGetter();
-        RequestBodyGetter multipartRequestBodyGetter = new MultipartRequestBodyGetter();
+        RequestBodyReader jsonRequestBodyReader = new JsonRequestBodyReader();
+        RequestBodyReader multipartRequestBodyReader = new MultipartRequestBodyReader();
 
-        REQUEST_BODY_GETTER_HOLDER.put(jsonRequestBodyGetter.getContentType(), jsonRequestBodyGetter);
-        REQUEST_BODY_GETTER_HOLDER.put(multipartRequestBodyGetter.getContentType(), multipartRequestBodyGetter);
+        REQUEST_BODY_READER_HOLDER.put(jsonRequestBodyReader.getContentType(), jsonRequestBodyReader);
+        REQUEST_BODY_READER_HOLDER.put(multipartRequestBodyReader.getContentType(), multipartRequestBodyReader);
     }
 
     private static final String AUTHORIZATION = BlueHeader.AUTHORIZATION.name;
@@ -77,10 +76,10 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
     private static final Predicate<String> WITH_REQUEST_BODY_PRE = contentType ->
             withRequestBodyContentTypes.contains(contentType);
 
-    private final Map<String, RequestBodyGetter> REQUEST_BODY_GETTER_HOLDER = new HashMap<>(4, 1.0f);
+    private final Map<String, RequestBodyReader> REQUEST_BODY_READER_HOLDER = new HashMap<>(4, 1.0f);
 
-    private final Function<HttpHeaders, RequestBodyGetter> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
-        RequestBodyGetter processor = REQUEST_BODY_GETTER_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, HttpHeaders.CONTENT_TYPE));
+    private final Function<HttpHeaders, RequestBodyReader> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
+        RequestBodyReader processor = REQUEST_BODY_READER_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, HttpHeaders.CONTENT_TYPE));
 
         if (processor == null)
             throw new BlueException(UNSUPPORTED_MEDIA_TYPE);
@@ -167,28 +166,83 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
     }
 
 
-    protected class JsonRequestBodyGetter implements RequestBodyGetter {
+    /**
+     * request body reader
+     *
+     * @author DarkBlue
+     */
+    @SuppressWarnings("JavaDoc")
+    protected interface RequestBodyReader {
+
+        /**
+         * handle type
+         *
+         * @return
+         */
+        String getContentType();
+
+        /**
+         * handle
+         *
+         * @param exchange
+         * @return
+         */
+        Mono<String> processor(ServerWebExchange exchange);
+
+    }
+
+    /**
+     * impl for json
+     */
+    @SuppressWarnings("JavaDoc")
+    protected class JsonRequestBodyReader implements RequestBodyReader {
+
+        /**
+         * handle type
+         *
+         * @return
+         */
         @Override
         public String getContentType() {
             return APPLICATION_JSON_VALUE;
         }
 
+        /**
+         * handle
+         *
+         * @param exchange
+         * @return
+         */
         @Override
         public Mono<String> processor(ServerWebExchange exchange) {
             return ServerRequest.create(exchange, httpMessageReaders)
                     .bodyToMono(String.class)
-                    .switchIfEmpty(
-                            just(""));
+                    .switchIfEmpty(just(""));
         }
-
     }
 
-    protected static class MultipartRequestBodyGetter implements RequestBodyGetter {
+    /**
+     * impl for part
+     */
+    @SuppressWarnings("JavaDoc")
+    protected static class MultipartRequestBodyReader implements RequestBodyReader {
+
+        /**
+         * handle type
+         *
+         * @return
+         */
         @Override
         public String getContentType() {
             return MULTIPART_FORM_DATA_VALUE;
         }
 
+        /**
+         * handle
+         *
+         * @param exchange
+         * @return
+         */
         @Override
         public Mono<String> processor(ServerWebExchange exchange) {
             return extractValuesToBind(exchange)
