@@ -9,6 +9,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -16,7 +17,7 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * rpc role provider
+ * rpc state provider
  *
  * @author DarkBlue
  */
@@ -116,8 +117,8 @@ public class RpcStateServiceProvider implements RpcStateService {
      * @return
      */
     @Override
-    public List<StateInfo> selectStateInfoByIds(List<Long> ids) {
-        LOGGER.info("List<StateInfo> selectStateInfoByIds(List<Long> ids), ids = {}", ids);
+    public Map<Long, StateInfo> selectStateInfoByIds(List<Long> ids) {
+        LOGGER.info("Map<Long, StateInfo> selectStateInfoByIds(List<Long> ids), ids = {}", ids);
         return stateService.selectStateInfoByIds(ids);
     }
 
@@ -128,8 +129,8 @@ public class RpcStateServiceProvider implements RpcStateService {
      * @return
      */
     @Override
-    public CompletableFuture<List<StateInfo>> selectStateInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("CompletableFuture<List<StateInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
+    public CompletableFuture<Map<Long,StateInfo>> selectStateInfoMonoByIds(List<Long> ids) {
+        LOGGER.info("CompletableFuture<Map<Long,StateInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
                 .publishOn(scheduler)
                 .flatMap(stateService::selectStateInfoMonoByIds)

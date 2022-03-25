@@ -13,23 +13,27 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.time.Duration;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
-import static com.blue.base.common.base.BlueChecker.isValidIdentity;
+import static com.blue.base.common.base.BlueChecker.isValidIdentities;
+import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.base.ResponseElement.DATA_NOT_EXIST;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.converter.BaseModelConverters.AREAS_2_AREA_INFOS_CONVERTER;
+import static com.blue.base.converter.BaseModelConverters.AREA_2_AREA_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static reactor.core.publisher.Mono.*;
+import static java.util.stream.Collectors.toMap;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -43,70 +47,71 @@ public class AreaServiceImpl implements AreaService {
 
     private static final Logger LOGGER = getLogger(CityServiceImpl.class);
 
-    private final AreaMapper areaMapper;
+    private AreaMapper areaMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public AreaServiceImpl(ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, AreaMapper areaMapper) {
         this.areaMapper = areaMapper;
 
-        CITY_ID_AREA_CACHE = generateCache(new CaffeineConfParams(
+        CITY_ID_AREAS_CACHE = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getAreaMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                AFTER_ACCESS, executorService));
+
+        ID_AREA_CACHE = generateCache(new CaffeineConfParams(
+                areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 
-    private static Cache<Long, List<AreaInfo>> CITY_ID_AREA_CACHE;
+    private static Cache<Long, List<AreaInfo>> CITY_ID_AREAS_CACHE;
 
-    private final Function<Long, List<AreaInfo>> DB_AREA_GETTER = cid -> {
-        List<Area> areas = this.selectAreaByCityId(cid);
+    private static Cache<Long, AreaInfo> ID_AREA_CACHE;
 
-        LOGGER.info("DB_AREA_GETTER, cid = {}, areas = {}", cid, areas);
+
+    private final Function<Long, List<AreaInfo>> DB_AREAS_GETTER = cid -> {
+        LOGGER.info("Function<Long, List<AreaInfo>> DB_AREAS_GETTER, cid = {}", cid);
         return AREAS_2_AREA_INFOS_CONVERTER.apply(
-                areas.stream().sorted(Comparator.comparing(Area::getName)).collect(toList()));
+                this.selectAreaByCityId(cid).stream().sorted(Comparator.comparing(Area::getName)).collect(toList()));
+    };
+
+    private final Function<Long, AreaInfo> DB_AREA_GETTER = id -> {
+        LOGGER.info("Function<Long, AreaInfo> DB_AREA_GETTER, id = {}", id);
+        return this.getAreaById(id).map(AREA_2_AREA_INFO_CONVERTER).orElse(null);
+    };
+
+    private final Function<Long, AreaInfo> DB_AREA_GETTER_WITH_ASSERT = id -> {
+        LOGGER.info("Function<Long, AreaInfo> DB_AREA_GETTER_WITH_ASSERT, id = {}", id);
+        return this.getAreaById(id).map(AREA_2_AREA_INFO_CONVERTER)
+                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+    };
+
+    private final Function<List<Long>, Map<Long, AreaInfo>> CACHE_AREAS_BY_IDS_GETTER = ids -> {
+        LOGGER.info("Function<List<Long>, Map<Long, AreaInfo>> CACHE_AREAS_BY_IDS_GETTER, ids = {}", ids);
+
+        return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(l ->
+                        ID_AREA_CACHE.getAll(l, is -> areaMapper.selectByIds(l)
+                                        .parallelStream()
+                                        .map(AREA_2_AREA_INFO_CONVERTER)
+                                        .collect(toMap(AreaInfo::getId, ci -> ci, (a, b) -> a)))
+                                .entrySet()
+                )
+                .flatMap(Collection::stream)
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a))
+                :
+                emptyMap();
     };
 
     /**
-     * get city by state id
+     * get area by id
      *
      * @param id
      * @return
      */
     @Override
     public Optional<Area> getAreaById(Long id) {
-        LOGGER.info("Optional<Area> getAreaById(Long id), id = {}", id);
+        LOGGER.info("Optional<City> getCityById(Long id), id = {}", id);
 
         return ofNullable(areaMapper.selectByPrimaryKey(id));
-    }
-
-    /**
-     * select area by country id
-     *
-     * @param countryId
-     * @return
-     */
-    @Override
-    public List<Area> selectAreaByCountryId(Long countryId) {
-        LOGGER.info("List<Area> selectAreaByCountryId(Long countryId), countryId = {}", countryId);
-
-        if (isInvalidIdentity(countryId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return areaMapper.selectByCountryId(countryId);
-    }
-
-    /**
-     * select area by state id
-     *
-     * @param stateId
-     * @return
-     */
-    @Override
-    public List<Area> selectAreaByStateId(Long stateId) {
-        LOGGER.info("List<Area> selectAreaByStateId(Long stateId), stateId = {}", stateId);
-
-        if (isInvalidIdentity(stateId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return areaMapper.selectByStateId(stateId);
     }
 
     /**
@@ -117,41 +122,111 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public List<Area> selectAreaByCityId(Long cityId) {
-        LOGGER.info("List<Area> selectAreaByCityId(Long cityId), cityId = {}", cityId);
+        LOGGER.info("List<City> selectCityByStateId(Long stateId), cityId = {}", cityId);
 
         if (isInvalidIdentity(cityId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return areaMapper.selectByCityId(cityId);
+        return areaMapper.selectByCountryId(cityId);
     }
 
     /**
-     * select all areas
+     * select area by ids
      *
+     * @param ids
      * @return
      */
     @Override
-    public List<Area> selectArea() {
-        LOGGER.info("List<Area> selectArea()");
+    public List<Area> selectAreaByIds(List<Long> ids) {
+        LOGGER.info("List<City> selectCityByIds(List<Long> ids), ids = {}", ids);
 
-        return areaMapper.select();
+        return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(areaMapper::selectByIds)
+                .flatMap(List::stream)
+                .collect(toList())
+                :
+                emptyList();
     }
 
     /**
-     * select areas by city id
+     * get area info opt by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Optional<AreaInfo> getAreaInfoOptById(Long id) {
+        return ofNullable(ID_AREA_CACHE.get(id, DB_AREA_GETTER));
+    }
+
+    /**
+     * get area info by id with assert
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public AreaInfo getAreaInfoById(Long id) {
+        return ID_AREA_CACHE.get(id, DB_AREA_GETTER_WITH_ASSERT);
+    }
+
+    /**
+     * get area info mono by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Mono<AreaInfo> getAreaInfoMonoById(Long id) {
+        return just(ID_AREA_CACHE.get(id, DB_AREA_GETTER_WITH_ASSERT));
+    }
+
+    /**
+     * select area infos by city id
      *
      * @param cityId
      * @return
      */
     @Override
-    public Mono<List<AreaInfo>> selectAreaInfoByCityId(Long cityId) {
-        LOGGER.info("Mono<List<AreaInfo>> selectAreaInfoByCityId(Long cityId), cityId = {}", cityId);
+    public List<AreaInfo> selectAreaInfoByCityId(Long cityId) {
+        return CITY_ID_AREAS_CACHE.get(cityId, DB_AREAS_GETTER);
+    }
 
-        return isValidIdentity(cityId)
-                ?
-                justOrEmpty(CITY_ID_AREA_CACHE.get(cityId, DB_AREA_GETTER)).switchIfEmpty(just(emptyList()))
-                :
-                error(() -> new BlueException(INVALID_IDENTITY));
+    /**
+     * select area infos mono by city id
+     *
+     * @param cityId
+     * @return
+     */
+    @Override
+    public Mono<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId) {
+        return just(CITY_ID_AREAS_CACHE.get(cityId, DB_AREAS_GETTER)).switchIfEmpty(just(emptyList()));
+    }
+
+    /**
+     * select area infos by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids) {
+        LOGGER.info("Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids), ids = {}", ids);
+
+        return CACHE_AREAS_BY_IDS_GETTER.apply(ids);
+    }
+
+    /**
+     * select area infos mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids) {
+        LOGGER.info("Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids)), ids = {}", ids);
+
+        return just(CACHE_AREAS_BY_IDS_GETTER.apply(ids));
     }
 
     /**
@@ -163,7 +238,8 @@ public class AreaServiceImpl implements AreaService {
     public void invalidAreaInfosCache() {
         LOGGER.info("void invalidAreaInfosCache()");
 
-        CITY_ID_AREA_CACHE.invalidateAll();
+        CITY_ID_AREAS_CACHE.invalidateAll();
+        ID_AREA_CACHE.invalidateAll();
     }
 
 }

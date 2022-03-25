@@ -9,6 +9,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -114,7 +115,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
      * @return
      */
     @Override
-    public List<CountryInfo> selectCountryInfoByIds(List<Long> ids) {
+    public Map<Long, CountryInfo> selectCountryInfoByIds(List<Long> ids) {
         LOGGER.info("List<CountryInfo> selectCountryInfoByIds(List<Long> ids), ids = {}", ids);
         return countryService.selectCountryInfoByIds(ids);
     }
@@ -126,7 +127,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
      * @return
      */
     @Override
-    public CompletableFuture<List<CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids) {
+    public CompletableFuture<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids) {
         LOGGER.info("CompletableFuture<List<CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
                 .publishOn(scheduler)

@@ -5,6 +5,7 @@ import com.blue.base.repository.entity.Country;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -81,7 +82,7 @@ public interface CountryService {
      * @param ids
      * @return
      */
-    List<CountryInfo> selectCountryInfoByIds(List<Long> ids);
+    Map<Long,CountryInfo> selectCountryInfoByIds(List<Long> ids);
 
     /**
      * select country infos mono by ids
@@ -89,7 +90,7 @@ public interface CountryService {
      * @param ids
      * @return
      */
-    Mono<List<CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids);
+    Mono<Map<Long,CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids);
 
     /**
      * invalid country infos

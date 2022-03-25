@@ -10,6 +10,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static reactor.core.publisher.Mono.fromFuture;
@@ -95,7 +96,7 @@ public class RpcCountryServiceConsumer {
      * @param ids
      * @return
      */
-    List<CountryInfo> selectCountryInfoByIds(List<Long> ids) {
+    Map<Long, CountryInfo> selectCountryInfoByIds(List<Long> ids) {
         return rpcCountryService.selectCountryInfoByIds(ids);
     }
 
@@ -105,7 +106,7 @@ public class RpcCountryServiceConsumer {
      * @param ids
      * @return
      */
-    Mono<List<CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids) {
+    Mono<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids) {
         return fromFuture(rpcCountryService.selectCountryInfoMonoByIds(ids)).publishOn(scheduler);
     }
 

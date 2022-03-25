@@ -1,44 +1,19 @@
-package com.blue.base.service.inter;
+package com.blue.base.api.inter;
 
 import com.blue.base.api.model.AreaInfo;
-import com.blue.base.repository.entity.Area;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * area service
+ * rpc area interface
  *
  * @author DarkBlue
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public interface AreaService {
-
-    /**
-     * get area by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<Area> getAreaById(Long id);
-
-    /**
-     * select area by city id
-     *
-     * @param cityId
-     * @return
-     */
-    List<Area> selectAreaByCityId(Long cityId);
-
-    /**
-     * select area by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<Area> selectAreaByIds(List<Long> ids);
+public interface RpcAreaService {
 
     /**
      * get area info opt by id
@@ -62,7 +37,7 @@ public interface AreaService {
      * @param id
      * @return
      */
-    Mono<AreaInfo> getAreaInfoMonoById(Long id);
+    CompletableFuture<AreaInfo> getAreaInfoMonoById(Long id);
 
     /**
      * select area infos by city id
@@ -78,7 +53,7 @@ public interface AreaService {
      * @param cityId
      * @return
      */
-    Mono<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId);
+    CompletableFuture<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId);
 
     /**
      * select area infos by ids
@@ -94,13 +69,6 @@ public interface AreaService {
      * @param ids
      * @return
      */
-    Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids);
-
-    /**
-     * invalid area infos
-     *
-     * @return
-     */
-    void invalidAreaInfosCache();
+    CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids);
 
 }

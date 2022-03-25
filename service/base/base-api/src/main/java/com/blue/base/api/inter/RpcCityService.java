@@ -1,47 +1,22 @@
-package com.blue.base.service.inter;
+package com.blue.base.api.inter;
 
 import com.blue.base.api.model.CityInfo;
-import com.blue.base.repository.entity.City;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * city service
+ * rpc city interface
  *
  * @author DarkBlue
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public interface CityService {
+public interface RpcCityService {
 
     /**
-     * get city by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<City> getCityById(Long id);
-
-    /**
-     * select cities by state id
-     *
-     * @param stateId
-     * @return
-     */
-    List<City> selectCityByStateId(Long stateId);
-
-    /**
-     * select cities by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<City> selectCityByIds(List<Long> ids);
-
-    /**
-     * get city info opt by id
+     * get city info by id
      *
      * @param id
      * @return
@@ -62,7 +37,7 @@ public interface CityService {
      * @param id
      * @return
      */
-    Mono<CityInfo> getCityInfoMonoById(Long id);
+    CompletableFuture<CityInfo> getCityInfoMonoById(Long id);
 
     /**
      * select city infos by state id
@@ -78,7 +53,7 @@ public interface CityService {
      * @param stateId
      * @return
      */
-    Mono<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId);
+    CompletableFuture<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId);
 
     /**
      * select city infos by ids
@@ -94,13 +69,6 @@ public interface CityService {
      * @param ids
      * @return
      */
-    Mono<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids);
-
-    /**
-     * invalid city infos
-     *
-     * @return
-     */
-    void invalidCityInfosCache();
+    CompletableFuture<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids);
 
 }

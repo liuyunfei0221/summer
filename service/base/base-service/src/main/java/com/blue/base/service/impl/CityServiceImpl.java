@@ -13,25 +13,27 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.common.base.BlueChecker.isValidIdentities;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.DATA_NOT_EXIST;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.converter.BaseModelConverters.CITIES_2_CITY_INFOS_CONVERTER;
 import static com.blue.base.converter.BaseModelConverters.CITY_2_CITY_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -52,6 +54,10 @@ public class CityServiceImpl implements CityService {
         this.cityMapper = cityMapper;
 
         STATE_ID_CITIES_CACHE = generateCache(new CaffeineConfParams(
+                areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                AFTER_ACCESS, executorService));
+
+        ID_CITY_CACHE = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
@@ -78,7 +84,7 @@ public class CityServiceImpl implements CityService {
                 .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     };
 
-    private final Function<List<Long>, List<CityInfo>> CACHE_CITIES_BY_IDS_GETTER = ids -> {
+    private final Function<List<Long>, Map<Long, CityInfo>> CACHE_CITIES_BY_IDS_GETTER = ids -> {
         LOGGER.info("Function<List<Long>, List<CityInfo>> CACHE_CITIES_BY_IDS_GETTER, ids = {}", ids);
 
         return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
@@ -87,23 +93,25 @@ public class CityServiceImpl implements CityService {
                                         .parallelStream()
                                         .map(CITY_2_CITY_INFO_CONVERTER)
                                         .collect(toMap(CityInfo::getId, ci -> ci, (a, b) -> a)))
-                                .values()
+                                .entrySet()
                 )
                 .flatMap(Collection::stream)
-                .collect(toList())
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a))
                 :
-                emptyList();
+                emptyMap();
     };
 
     /**
-     * get city by state id
+     * get city by id
      *
      * @param id
      * @return
      */
     @Override
     public Optional<City> getCityById(Long id) {
-        return Optional.empty();
+        LOGGER.info("Optional<City> getCityById(Long id), id = {}", id);
+
+        return ofNullable(cityMapper.selectByPrimaryKey(id));
     }
 
     /**
@@ -114,7 +122,12 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public List<City> selectCityByStateId(Long stateId) {
-        return null;
+        LOGGER.info("List<City> selectCityByStateId(Long stateId), stateId = {}", stateId);
+
+        if (isInvalidIdentity(stateId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return cityMapper.selectByCountryId(stateId);
     }
 
     /**
@@ -125,29 +138,36 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public List<City> selectCityByIds(List<Long> ids) {
-        return null;
+        LOGGER.info("List<City> selectCityByIds(List<Long> ids), ids = {}", ids);
+
+        return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(cityMapper::selectByIds)
+                .flatMap(List::stream)
+                .collect(toList())
+                :
+                emptyList();
     }
 
     /**
-     * get city info opt by country id
+     * get city info opt by id
      *
      * @param id
      * @return
      */
     @Override
     public Optional<CityInfo> getCityInfoOptById(Long id) {
-        return Optional.empty();
+        return ofNullable(ID_CITY_CACHE.get(id, DB_CITY_GETTER));
     }
 
     /**
-     * get city info by country id with assert
+     * get city info by id with assert
      *
      * @param id
      * @return
      */
     @Override
     public CityInfo getCityInfoById(Long id) {
-        return null;
+        return ID_CITY_CACHE.get(id, DB_CITY_GETTER_WITH_ASSERT);
     }
 
     /**
@@ -158,51 +178,55 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<CityInfo> getCityInfoMonoById(Long id) {
-        return null;
+        return just(ID_CITY_CACHE.get(id, DB_CITY_GETTER_WITH_ASSERT));
     }
 
     /**
-     * select states mono by state id
+     * select city infos by state id
      *
      * @param stateId
      * @return
      */
     @Override
     public List<CityInfo> selectCityInfoByStateId(Long stateId) {
-        return null;
+        return STATE_ID_CITIES_CACHE.get(stateId, DB_CITIES_GETTER);
     }
 
     /**
-     * select cities by state id
+     * select city infos mono by state id
      *
      * @param stateId
      * @return
      */
     @Override
     public Mono<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId) {
-        return null;
+        return just(STATE_ID_CITIES_CACHE.get(stateId, DB_CITIES_GETTER)).switchIfEmpty(just(emptyList()));
     }
 
     /**
-     * select state infos by ids
+     * select city infos by ids
      *
      * @param ids
      * @return
      */
     @Override
-    public List<CityInfo> selectCityInfoByIds(List<Long> ids) {
-        return null;
+    public Map<Long, CityInfo> selectCityInfoByIds(List<Long> ids) {
+        LOGGER.info("Map<Long, CityInfo> selectStateInfoByIds(List<Long> ids), ids = {}", ids);
+
+        return CACHE_CITIES_BY_IDS_GETTER.apply(ids);
     }
 
     /**
-     * select state infos mono by ids
+     * select city infos mono by ids
      *
      * @param ids
      * @return
      */
     @Override
-    public Mono<List<CityInfo>> selectCityInfoMonoByIds(List<Long> ids) {
-        return null;
+    public Mono<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids) {
+        LOGGER.info("Mono<Map<Long, CityInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
+
+        return just(CACHE_CITIES_BY_IDS_GETTER.apply(ids));
     }
 
     /**
@@ -212,7 +236,10 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public void invalidCityInfosCache() {
+        LOGGER.info("void invalidStateInfosCache()");
 
+        STATE_ID_CITIES_CACHE.invalidateAll();
+        ID_CITY_CACHE.invalidateAll();
     }
 
 }

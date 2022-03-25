@@ -5,6 +5,7 @@ import com.blue.base.repository.entity.State;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -85,7 +86,7 @@ public interface StateService {
      * @param ids
      * @return
      */
-    List<StateInfo> selectStateInfoByIds(List<Long> ids);
+    Map<Long, StateInfo> selectStateInfoByIds(List<Long> ids);
 
     /**
      * select state infos mono by ids
@@ -93,7 +94,7 @@ public interface StateService {
      * @param ids
      * @return
      */
-    Mono<List<StateInfo>> selectStateInfoMonoByIds(List<Long> ids);
+    Mono<Map<Long,StateInfo>> selectStateInfoMonoByIds(List<Long> ids);
 
     /**
      * invalid state infos

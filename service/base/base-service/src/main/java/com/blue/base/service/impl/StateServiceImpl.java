@@ -13,15 +13,13 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.common.base.BlueChecker.isValidIdentities;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.DATA_NOT_EXIST;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
@@ -31,10 +29,11 @@ import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCach
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static reactor.core.publisher.Mono.*;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -85,8 +84,8 @@ public class StateServiceImpl implements StateService {
                 .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     };
 
-    private final Function<List<Long>, List<StateInfo>> CACHE_STATES_BY_IDS_GETTER = ids -> {
-        LOGGER.info("Function<List<Long>, List<StateInfo>> CACHE_STATES_BY_IDS_GETTER, ids = {}", ids);
+    private final Function<List<Long>, Map<Long, StateInfo>> CACHE_STATES_BY_IDS_GETTER = ids -> {
+        LOGGER.info("Function<List<Long>, Map<Long, StateInfo>> CACHE_STATES_BY_IDS_GETTER, ids = {}", ids);
 
         return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
@@ -94,12 +93,12 @@ public class StateServiceImpl implements StateService {
                                         .parallelStream()
                                         .map(STATE_2_STATE_INFO_CONVERTER)
                                         .collect(toMap(StateInfo::getId, ci -> ci, (a, b) -> a)))
-                                .values()
+                                .entrySet()
                 )
                 .flatMap(Collection::stream)
-                .collect(toList())
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a))
                 :
-                emptyList();
+                emptyMap();
     };
 
     /**
@@ -210,8 +209,8 @@ public class StateServiceImpl implements StateService {
      * @return
      */
     @Override
-    public List<StateInfo> selectStateInfoByIds(List<Long> ids) {
-        LOGGER.info("List<StateInfo> selectStateInfoByIds(List<Long> ids), ids = {}", ids);
+    public Map<Long, StateInfo> selectStateInfoByIds(List<Long> ids) {
+        LOGGER.info("Map<Long,StateInfo> selectStateInfoByIds(List<Long> ids), ids = {}", ids);
 
         return CACHE_STATES_BY_IDS_GETTER.apply(ids);
     }
@@ -223,8 +222,8 @@ public class StateServiceImpl implements StateService {
      * @return
      */
     @Override
-    public Mono<List<StateInfo>> selectStateInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<StateInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
+    public Mono<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids) {
+        LOGGER.info("Mono<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
 
         return just(CACHE_STATES_BY_IDS_GETTER.apply(ids));
     }
@@ -239,6 +238,7 @@ public class StateServiceImpl implements StateService {
         LOGGER.info("void invalidStateInfosCache()");
 
         COUNTRY_ID_STATES_CACHE.invalidateAll();
+        ID_STATE_CACHE.invalidateAll();
     }
 
 }

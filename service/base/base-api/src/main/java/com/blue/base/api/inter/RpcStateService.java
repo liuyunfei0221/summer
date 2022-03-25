@@ -3,6 +3,7 @@ package com.blue.base.api.inter;
 import com.blue.base.api.model.StateInfo;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -60,7 +61,7 @@ public interface RpcStateService {
      * @param ids
      * @return
      */
-    List<StateInfo> selectStateInfoByIds(List<Long> ids);
+    Map<Long, StateInfo> selectStateInfoByIds(List<Long> ids);
 
     /**
      * select state infos mono by ids
@@ -68,6 +69,6 @@ public interface RpcStateService {
      * @param ids
      * @return
      */
-    CompletableFuture<List<StateInfo>> selectStateInfoMonoByIds(List<Long> ids);
+    CompletableFuture<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids);
 
 }
