@@ -16,7 +16,7 @@ public final class PageModelResponse<T extends Serializable> implements Serializ
     /**
      * data element list
      */
-    private List<T> list;
+    private List<T> data;
 
     /**
      * total count
@@ -26,17 +26,17 @@ public final class PageModelResponse<T extends Serializable> implements Serializ
     public PageModelResponse() {
     }
 
-    public PageModelResponse(List<T> list, Long count) {
-        this.list = list;
+    public PageModelResponse(List<T> data, Long count) {
+        this.data = data;
         this.count = count;
     }
 
-    public List<T> getList() {
-        return list;
+    public List<T> getData() {
+        return data;
     }
 
-    public void setList(List<T> list) {
-        this.list = list;
+    public void setData(List<T> data) {
+        this.data = data;
     }
 
     public Long getCount() {
@@ -50,7 +50,7 @@ public final class PageModelResponse<T extends Serializable> implements Serializ
     @Override
     public String toString() {
         return "PageModelVO{" +
-                "list=" + list +
+                "data=" + data +
                 ", count=" + count +
                 '}';
     }

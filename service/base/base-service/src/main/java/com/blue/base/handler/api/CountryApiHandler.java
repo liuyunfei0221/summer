@@ -36,7 +36,7 @@ public class CountryApiHandler {
      * @return
      */
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
-        return countryService.selectCountryInfo()
+        return countryService.selectCountryInfoMono()
                 .flatMap(l ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, l, serverRequest), BlueResponse.class));

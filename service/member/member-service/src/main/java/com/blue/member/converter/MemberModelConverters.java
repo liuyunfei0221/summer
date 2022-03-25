@@ -98,7 +98,8 @@ public final class MemberModelConverters {
         if (memberAddress != null)
             return new MemberAddressInfo(memberAddress.getId(), memberAddress.getMemberId(), memberAddress.getMemberName(), memberAddress.getGender(),
                     memberAddress.getPhone(), memberAddress.getEmail(), memberAddress.getCountryId(), memberAddress.getCountry(), memberAddress.getStateId(),
-                    memberAddress.getState(), memberAddress.getCityId(), memberAddress.getCity(), memberAddress.getAddress(), memberAddress.getExtra());
+                    memberAddress.getState(), memberAddress.getCityId(), memberAddress.getCity(), memberAddress.getAreaId(), memberAddress.getArea(),
+                    memberAddress.getAddress(), memberAddress.getReference(), memberAddress.getExtra());
 
         throw new BlueException(EMPTY_PARAM);
     };

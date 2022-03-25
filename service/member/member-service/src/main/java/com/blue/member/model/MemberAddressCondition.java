@@ -43,7 +43,7 @@ public final class MemberAddressCondition extends BaseCondition implements Seria
 
     private String address;
 
-    private String extra;
+    private String reference;
 
     /**
      * @see com.blue.base.constant.base.Status
@@ -67,7 +67,7 @@ public final class MemberAddressCondition extends BaseCondition implements Seria
     }
 
     public MemberAddressCondition(Long id, Long memberId, String memberName, Integer gender, String phone, String email, Long countryId,
-                                  Long stateId, Long cityId, String address, String extra, Integer status, Long createTimeBegin,
+                                  Long stateId, Long cityId, String address, String reference, Integer status, Long createTimeBegin,
                                   Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
@@ -80,7 +80,7 @@ public final class MemberAddressCondition extends BaseCondition implements Seria
         this.stateId = stateId;
         this.cityId = cityId;
         this.address = address;
-        this.extra = extra;
+        this.reference = reference;
         this.status = status;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
@@ -168,12 +168,12 @@ public final class MemberAddressCondition extends BaseCondition implements Seria
         this.address = address;
     }
 
-    public String getExtra() {
-        return extra;
+    public String getReference() {
+        return reference;
     }
 
-    public void setExtra(String extra) {
-        this.extra = extra;
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public Integer getStatus() {
@@ -245,7 +245,7 @@ public final class MemberAddressCondition extends BaseCondition implements Seria
                 ", stateId=" + stateId +
                 ", cityId=" + cityId +
                 ", address='" + address + '\'' +
-                ", extra='" + extra + '\'' +
+                ", reference='" + reference + '\'' +
                 ", status=" + status +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +

@@ -103,9 +103,9 @@ public final class RoleManagerHandler {
         return serverRequest.bodyToMono(PageModelRequest.class)
                 .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
                 .flatMap(roleService::selectRoleInfoPageMonoByPageAndCondition)
-                .flatMap(vo ->
+                .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, vo, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));
     }
 
     /**

@@ -1,41 +1,18 @@
-package com.blue.base.service.inter;
+package com.blue.base.api.inter;
 
 import com.blue.base.api.model.CountryInfo;
-import com.blue.base.repository.entity.Country;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
- * country service
+ * rpc country interface
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
-public interface CountryService {
-
-    /**
-     * get country by country id
-     *
-     * @param id
-     * @return
-     */
-    Optional<Country> getCountryById(Long id);
-
-    /**
-     * select all countries
-     *
-     * @return
-     */
-    List<Country> selectCountry();
-
-    /**
-     * select countries by ids
-     *
-     * @return
-     */
-    List<Country> selectCountryByIds(List<Long> ids);
+@SuppressWarnings({"JavaDoc", "unused"})
+public interface RpcCountryService {
 
     /**
      * get country info by country id
@@ -59,7 +36,7 @@ public interface CountryService {
      * @param id
      * @return
      */
-    Mono<CountryInfo> getCountryInfoMonoById(Long id);
+    CompletableFuture<CountryInfo> getCountryInfoMonoById(Long id);
 
     /**
      * select all countries
@@ -73,7 +50,7 @@ public interface CountryService {
      *
      * @return
      */
-    Mono<List<CountryInfo>> selectCountryInfoMono();
+    CompletableFuture<List<CountryInfo>> selectCountryInfoMono();
 
     /**
      * select country infos by ids
@@ -89,13 +66,6 @@ public interface CountryService {
      * @param ids
      * @return
      */
-    Mono<List<CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids);
-
-    /**
-     * invalid country infos
-     *
-     * @return
-     */
-    void invalidCountryInfosCache();
+    CompletableFuture<List<CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids);
 
 }

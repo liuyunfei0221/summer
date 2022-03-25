@@ -64,10 +64,10 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Override
     public int insertBatch(List<Attachment> attachments) {
         LOGGER.info("insertBatch(List<Attachment> attachments), attachments = {}", attachments);
-       return ofNullable(attachments)
+        return ofNullable(attachments)
                 .filter(as -> as.size() > 0)
-               .map(attachmentMapper::insertBatch)
-               .orElse(0);
+                .map(attachmentMapper::insertBatch)
+                .orElse(0);
     }
 
     /**
@@ -111,7 +111,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                 .flatMap(count -> {
                     PageModelResponse<AttachmentInfo> pageModelResponse = new PageModelResponse<>();
                     pageModelResponse.setCount(count);
-                    pageModelResponse.setList(count > 0L ?
+                    pageModelResponse.setData(count > 0L ?
                             ofNullable(attachmentMapper.selectByLimitAndMemberId(memberId, pageModelRequest.getLimit(), pageModelRequest.getRows()))
                                     .orElseGet(Collections::emptyList).stream().map(a ->
                                             new AttachmentInfo(a.getId(), a.getName(), a.getSize(), a.getCreateTime(), "")

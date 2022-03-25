@@ -39,7 +39,13 @@ public final class MemberAddress implements Serializable {
 
     private String city;
 
+    private Long areaId;
+
+    private String area;
+
     private String address;
+
+    private String reference;
 
     private String extra;
 
@@ -70,7 +76,7 @@ public final class MemberAddress implements Serializable {
     }
 
     public void setMemberName(String memberName) {
-        this.memberName = memberName == null ? null : memberName.trim();
+        this.memberName = memberName;
     }
 
     public Integer getGender() {
@@ -86,7 +92,7 @@ public final class MemberAddress implements Serializable {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+        this.phone = phone;
     }
 
     public String getEmail() {
@@ -94,7 +100,7 @@ public final class MemberAddress implements Serializable {
     }
 
     public void setEmail(String email) {
-        this.email = email == null ? null : email.trim();
+        this.email = email;
     }
 
     public Long getCountryId() {
@@ -110,7 +116,7 @@ public final class MemberAddress implements Serializable {
     }
 
     public void setCountry(String country) {
-        this.country = country == null ? null : country.trim();
+        this.country = country;
     }
 
     public Long getStateId() {
@@ -126,7 +132,7 @@ public final class MemberAddress implements Serializable {
     }
 
     public void setState(String state) {
-        this.state = state == null ? null : state.trim();
+        this.state = state;
     }
 
     public Long getCityId() {
@@ -142,7 +148,23 @@ public final class MemberAddress implements Serializable {
     }
 
     public void setCity(String city) {
-        this.city = city == null ? null : city.trim();
+        this.city = city;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 
     public String getAddress() {
@@ -150,7 +172,15 @@ public final class MemberAddress implements Serializable {
     }
 
     public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
+        this.address = address;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public String getExtra() {
@@ -158,7 +188,7 @@ public final class MemberAddress implements Serializable {
     }
 
     public void setExtra(String extra) {
-        this.extra = extra == null ? null : extra.trim();
+        this.extra = extra;
     }
 
     public Integer getStatus() {
@@ -200,7 +230,10 @@ public final class MemberAddress implements Serializable {
                 ", state='" + state + '\'' +
                 ", cityId=" + cityId +
                 ", city='" + city + '\'' +
+                ", areaId=" + areaId +
+                ", area='" + area + '\'' +
                 ", address='" + address + '\'' +
+                ", reference='" + reference + '\'' +
                 ", extra='" + extra + '\'' +
                 ", status=" + status +
                 ", createTime=" + createTime +

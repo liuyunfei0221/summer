@@ -1,6 +1,7 @@
 package com.blue.base.repository.mapper;
 
 import com.blue.base.repository.entity.Area;
+import com.blue.base.repository.entity.City;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -33,4 +34,5 @@ public interface AreaMapper {
 
     List<Area> selectByCityId(@Param("cityId") Long cityId);
 
+    List<City> selectByIds(@Param("ids") List<Long> ids);
 }

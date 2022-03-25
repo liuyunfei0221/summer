@@ -42,15 +42,22 @@ public final class MemberAddressInfo implements Serializable {
 
     private String city;
 
+    private Long areaId;
+
+    private String area;
+
     private String address;
+
+    private String reference;
 
     private String extra;
 
     public MemberAddressInfo() {
     }
 
-    public MemberAddressInfo(Long id, Long memberId, String memberName, Integer gender, String phone, String email, Long countryId,
-                             String country, Long stateId, String state, Long cityId, String city, String address, String extra) {
+    public MemberAddressInfo(Long id, Long memberId, String memberName, Integer gender, String phone, String email,
+                             Long countryId, String country, Long stateId, String state, Long cityId, String city, Long areaId, String area,
+                             String address, String reference, String extra) {
         this.id = id;
         this.memberId = memberId;
         this.memberName = memberName;
@@ -63,7 +70,10 @@ public final class MemberAddressInfo implements Serializable {
         this.state = state;
         this.cityId = cityId;
         this.city = city;
+        this.areaId = areaId;
+        this.area = area;
         this.address = address;
+        this.reference = reference;
         this.extra = extra;
     }
 
@@ -163,12 +173,36 @@ public final class MemberAddressInfo implements Serializable {
         this.city = city;
     }
 
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
     public String getAddress() {
         return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public String getExtra() {
@@ -194,7 +228,10 @@ public final class MemberAddressInfo implements Serializable {
                 ", state='" + state + '\'' +
                 ", cityId=" + cityId +
                 ", city='" + city + '\'' +
+                ", areaId=" + areaId +
+                ", area='" + area + '\'' +
                 ", address='" + address + '\'' +
+                ", reference='" + reference + '\'' +
                 ", extra='" + extra + '\'' +
                 '}';
     }

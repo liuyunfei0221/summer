@@ -39,7 +39,7 @@ public class CityApiHandler {
      */
     public Mono<ServerResponse> selectByStateId(ServerRequest serverRequest) {
         return getLongVariableReact(serverRequest, PID.key)
-                .flatMap(cityService::selectCityInfoByStateId)
+                .flatMap(cityService::selectCityInfoMonoByStateId)
                 .flatMap(l ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, l, serverRequest), BlueResponse.class));

@@ -32,19 +32,68 @@ public interface StateService {
     List<State> selectStateByCountryId(Long countryId);
 
     /**
-     * select all states
+     * select states by ids
      *
+     * @param ids
      * @return
      */
-    List<State> selectState();
+    List<State> selectStateByIds(List<Long> ids);
 
     /**
-     * select states by country id
+     * get state opt info by country id
+     *
+     * @param id
+     * @return
+     */
+    Optional<StateInfo> getStateInfoOptById(Long id);
+
+    /**
+     * get state info by id with assert
+     *
+     * @param id
+     * @return
+     */
+    StateInfo getStateInfoById(Long id);
+
+    /**
+     * get state info mono by id
+     *
+     * @param id
+     * @return
+     */
+    Mono<StateInfo> getStateInfoMonoById(Long id);
+
+    /**
+     * select states mono by country id
      *
      * @param countryId
      * @return
      */
-    Mono<List<StateInfo>> selectStateInfoByCountryId(Long countryId);
+    List<StateInfo> selectStateInfoByCountryId(Long countryId);
+
+    /**
+     * select states mono by country id
+     *
+     * @param countryId
+     * @return
+     */
+    Mono<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId);
+
+    /**
+     * select state infos by ids
+     *
+     * @param ids
+     * @return
+     */
+    List<StateInfo> selectStateInfoByIds(List<Long> ids);
+
+    /**
+     * select state infos mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    Mono<List<StateInfo>> selectStateInfoMonoByIds(List<Long> ids);
 
     /**
      * invalid state infos

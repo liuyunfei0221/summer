@@ -29,4 +29,6 @@ public interface StateMapper {
 
     List<State> selectByCountryId(@Param("countryId") Long countryId);
 
+    List<State> selectByIds(@Param("ids") List<Long> ids);
+
 }

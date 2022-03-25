@@ -5,6 +5,7 @@ import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.exps.BlueException;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -164,7 +165,7 @@ public final class BlueChecker {
      *
      * @param identities
      */
-    public static boolean isInvalidIdentities(List<Long> identities) {
+    public static boolean isInvalidIdentities(Collection<Long> identities) {
         return identities == null || identities.size() <= 0 || identities.parallelStream().anyMatch(BlueChecker::isInvalidIdentity);
     }
 
@@ -173,7 +174,7 @@ public final class BlueChecker {
      *
      * @param identities
      */
-    public static boolean isValidIdentities(List<Long> identities) {
+    public static boolean isValidIdentities(Collection<Long> identities) {
         return identities != null && identities.size() > 0 && identities.parallelStream().anyMatch(BlueChecker::isValidIdentity);
     }
 

@@ -6,8 +6,10 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberAddressInfo;
+import com.blue.member.config.deploy.AddressDeploy;
 import com.blue.member.constant.MemberAddressSortAttribute;
 import com.blue.member.model.MemberAddressCondition;
+import com.blue.member.remote.consumer.RpcCountryServiceConsumer;
 import com.blue.member.repository.entity.MemberAddress;
 import com.blue.member.repository.mapper.MemberAddressMapper;
 import com.blue.member.service.inter.MemberAddressService;
@@ -52,20 +54,25 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
+    private final RpcCountryServiceConsumer rpcCountryServiceConsumer;
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public MemberAddressServiceImpl(MemberAddressMapper memberAddressMapper, BlueIdentityProcessor blueIdentityProcessor) {
+    public MemberAddressServiceImpl(MemberAddressMapper memberAddressMapper, BlueIdentityProcessor blueIdentityProcessor,
+                                    RpcCountryServiceConsumer rpcCountryServiceConsumer, AddressDeploy addressDeploy) {
         this.memberAddressMapper = memberAddressMapper;
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.rpcCountryServiceConsumer = rpcCountryServiceConsumer;
+
+        maxAddress = addressDeploy.getMax();
     }
+
+    private long maxAddress;
 
     /**
      * is a number's address too many?
      */
     private final Consumer<MemberAddress> ADDRESS_TOO_MANY_VALIDATOR = md -> {
-        Long count = memberAddressMapper.countByMemberId(md.getMemberId());
-
-        //TODO
-        if (count > 10L)
+        if (memberAddressMapper.countByMemberId(md.getMemberId()) > maxAddress)
             throw new BlueException(DATA_ALREADY_EXIST);
     };
 

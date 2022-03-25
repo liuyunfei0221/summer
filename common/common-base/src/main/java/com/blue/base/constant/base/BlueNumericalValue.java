@@ -38,6 +38,11 @@ public enum BlueNumericalValue {
     MAX_WAIT_MILLIS_FOR_REDISSON_SYNC(1000L),
 
     /**
+     * max queries from req
+     */
+    MAX_SELECT(1000L),
+
+    /**
      * max queries from database per request
      */
     DB_SELECT(100L),

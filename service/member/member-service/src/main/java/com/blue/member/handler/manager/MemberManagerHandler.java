@@ -44,9 +44,9 @@ public class MemberManagerHandler {
                 .switchIfEmpty(
                         error(() -> new BlueException(EMPTY_PARAM)))
                 .flatMap(memberBasicService::selectMemberBasicInfoPageMonoByPageAndCondition)
-                .flatMap(vo ->
+                .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, vo, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));
     }
 
 

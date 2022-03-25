@@ -104,9 +104,9 @@ public final class ResourceManagerHandler {
         return serverRequest.bodyToMono(PageModelRequest.class)
                 .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
                 .flatMap(resourceService::selectResourceInfoPageMonoByPageAndCondition)
-                .flatMap(vo ->
+                .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, vo, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));
     }
 
     /**

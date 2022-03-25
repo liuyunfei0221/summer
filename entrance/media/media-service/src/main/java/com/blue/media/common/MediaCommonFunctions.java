@@ -102,6 +102,7 @@ public final class MediaCommonFunctions extends ReactiveCommonFunctions {
 
                                                             limit += rows;
                                                         }
+
                                                         //noinspection UnusedAssignment
                                                         bytes = null;
                                                         fluxSink.complete();

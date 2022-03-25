@@ -2,7 +2,9 @@ package com.blue.media.handler.api;
 
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.base.PageModelRequest;
+import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
+import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.api.model.WithdrawInfo;
 import com.blue.media.service.inter.AttachmentService;
 import org.springframework.stereotype.Component;
@@ -16,8 +18,7 @@ import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * attachment api handler
@@ -46,10 +47,11 @@ public final class AttachmentApiHandler {
                         .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
-                        attachmentService.selectAttachmentByPageAndMemberId(tuple2.getT1(), tuple2.getT2().getId()))
-                .flatMap(vo ->
+                        (Mono<PageModelResponse<AttachmentInfo>>) attachmentService.selectAttachmentByPageAndMemberId(tuple2.getT1(), tuple2.getT2().getId())
+                )
+                .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, vo, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));
     }
 
 
@@ -68,7 +70,7 @@ public final class AttachmentApiHandler {
                     System.err.println();
                     System.err.println(tuple2.getT1());
 
-                    return Mono.just("OK");
+                    return just("OK");
                 }).flatMap(
                         rs ->
                                 ok().contentType(APPLICATION_JSON)

@@ -24,15 +24,7 @@ public interface CityService {
     Optional<City> getCityById(Long id);
 
     /**
-     * select city by country id
-     *
-     * @param countryId
-     * @return
-     */
-    List<City> selectCityByCountryId(Long countryId);
-
-    /**
-     * select city by state id
+     * select cities by state id
      *
      * @param stateId
      * @return
@@ -40,11 +32,44 @@ public interface CityService {
     List<City> selectCityByStateId(Long stateId);
 
     /**
-     * select all city
+     * select cities by ids
      *
+     * @param ids
      * @return
      */
-    List<City> selectCity();
+    List<City> selectCityByIds(List<Long> ids);
+
+    /**
+     * get city info opt by country id
+     *
+     * @param id
+     * @return
+     */
+    Optional<CityInfo> getCityInfoOptById(Long id);
+
+    /**
+     * get city info by country id with assert
+     *
+     * @param id
+     * @return
+     */
+    CityInfo getCityInfoById(Long id);
+
+    /**
+     * get city info mono by id
+     *
+     * @param id
+     * @return
+     */
+    Mono<CityInfo> getCityInfoMonoById(Long id);
+
+    /**
+     * select states mono by state id
+     *
+     * @param stateId
+     * @return
+     */
+    List<CityInfo> selectCityInfoByStateId(Long stateId);
 
     /**
      * select cities by state id
@@ -52,7 +77,23 @@ public interface CityService {
      * @param stateId
      * @return
      */
-    Mono<List<CityInfo>> selectCityInfoByStateId(Long stateId);
+    Mono<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId);
+
+    /**
+     * select state infos by ids
+     *
+     * @param ids
+     * @return
+     */
+    List<CityInfo> selectCityInfoByIds(List<Long> ids);
+
+    /**
+     * select state infos mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    Mono<List<CityInfo>> selectCityInfoMonoByIds(List<Long> ids);
 
     /**
      * invalid city infos

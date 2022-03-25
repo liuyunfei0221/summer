@@ -30,4 +30,6 @@ public interface CityMapper {
     List<City> selectByCountryId(@Param("countryId") Long countryId);
 
     List<City> selectByStateId(@Param("stateId") Long stateId);
+
+    List<City> selectByIds(@Param("ids") List<Long> ids);
 }

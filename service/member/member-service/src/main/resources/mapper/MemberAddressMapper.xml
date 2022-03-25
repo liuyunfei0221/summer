@@ -19,8 +19,11 @@
         <result column="state" jdbcType="VARCHAR" property="state"/>
         <result column="city_id" jdbcType="BIGINT" property="cityId"/>
         <result column="city" jdbcType="VARCHAR" property="city"/>
+        <result column="area_id" jdbcType="BIGINT" property="countryId"/>
+        <result column="area" jdbcType="VARCHAR" property="country"/>
         <result column="address" jdbcType="VARCHAR" property="address"
                 typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+        <result column="reference" jdbcType="VARCHAR" property="reference"/>
         <result column="extra" jdbcType="VARCHAR" property="extra"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
@@ -29,16 +32,15 @@
 
     <sql id="Base_Column_List">
         id
-        , member_id, member_name, gender, phone, email, country_id, country, state_id,
-    state, city_id, city, address, extra, status, create_time, update_time
+        , member_id, member_name, gender, phone, email, country_id, country, state_id, state, city_id, city, area_id, area, address,reference, extra, status, create_time, update_time
     </sql>
 
     <insert id="insert" parameterType="com.blue.member.repository.entity.MemberAddress">
         insert into member_address (id, member_id, member_name,
                                     gender, phone, email,
                                     country_id, country, state_id,
-                                    state, city_id, city,
-                                    address, extra, status,
+                                    state, city_id, city, area_id, area,
+                                    address, reference, extra, status,
                                     create_time, update_time)
         values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
                 #{memberName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
@@ -47,9 +49,11 @@
                 #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
                 #{countryId,jdbcType=BIGINT}, #{country,jdbcType=VARCHAR}, #{stateId,jdbcType=BIGINT},
                 #{state,jdbcType=VARCHAR}, #{cityId,jdbcType=BIGINT}, #{city,jdbcType=VARCHAR},
+                #{areaId,jdbcType=BIGINT}, #{area,jdbcType=VARCHAR},
                 #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-                #{extra,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
-                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
+                #{reference,jdbcType=VARCHAR},
+                #{extra,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertSelective" parameterType="com.blue.member.repository.entity.MemberAddress">
@@ -91,8 +95,17 @@
             <if test="city != null">
                 city,
             </if>
+            <if test="areaId != null">
+                area_id,
+            </if>
+            <if test="area != null">
+                area,
+            </if>
             <if test="address != null">
                 address,
+            </if>
+            <if test="reference != null">
+                reference,
             </if>
             <if test="extra != null">
                 extra,
@@ -144,8 +157,17 @@
             <if test="city != null">
                 #{city,jdbcType=VARCHAR},
             </if>
+            <if test="areaId != null">
+                #{areaId,jdbcType=BIGINT},
+            </if>
+            <if test="area != null">
+                #{area,jdbcType=VARCHAR},
+            </if>
             <if test="address != null">
                 #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            </if>
+            <if test="reference != null">
+                #{reference,jdbcType=VARCHAR},
             </if>
             <if test="extra != null">
                 #{extra,jdbcType=VARCHAR},
@@ -175,7 +197,10 @@
             state       = #{state,jdbcType=VARCHAR},
             city_id     = #{cityId,jdbcType=BIGINT},
             city        = #{city,jdbcType=VARCHAR},
+            area_id     = #{cityId,jdbcType=BIGINT},
+            area        = #{city,jdbcType=VARCHAR},
             address     = #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            reference   = #{reference,jdbcType=VARCHAR},
             extra       = #{extra,jdbcType=VARCHAR},
             status      = #{status,jdbcType=TINYINT},
             create_time = #{createTime,jdbcType=BIGINT},
@@ -220,9 +245,18 @@
             <if test="city != null">
                 city = #{city,jdbcType=VARCHAR},
             </if>
+            <if test="areaId != null">
+                area_id = #{areaId,jdbcType=BIGINT},
+            </if>
+            <if test="city != null">
+                area = #{area,jdbcType=VARCHAR},
+            </if>
             <if test="address != null">
                 address =
                 #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            </if>
+            <if test="reference != null">
+                reference = #{reference,jdbcType=VARCHAR},
             </if>
             <if test="extra != null">
                 extra = #{extra,jdbcType=VARCHAR},
@@ -330,10 +364,10 @@
                     address =
                     #{memberAddressCondition.address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
                 </if>
-                <if test="memberAddressCondition.extra != null">
+                <if test="memberAddressCondition.reference != null">
                     AND
-                    extra =
-                    #{memberAddressCondition.extra,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
+                    reference =
+                    #{memberAddressCondition.reference,jdbcType=VARCHAR}
                 </if>
                 <if test="memberAddressCondition.status != null">
                     AND

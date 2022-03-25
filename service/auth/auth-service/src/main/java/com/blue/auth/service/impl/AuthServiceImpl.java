@@ -109,13 +109,13 @@ public class AuthServiceImpl implements AuthService {
         this.executorService = executorService;
         this.redissonClient = redissonClient;
 
-        MAX_WAITING_MILLIS_FOR_REFRESH = blockingDeploy.getBlockingMillis();
         RANDOM_ID_LENGTH = sessionKeyDeploy.getRanLen();
+        maxWaitingMillisForRefresh = blockingDeploy.getBlockingMillis();
     }
 
-    private static int RANDOM_ID_LENGTH;
+    private final int RANDOM_ID_LENGTH;
 
-    private static long MAX_WAITING_MILLIS_FOR_REFRESH;
+    private long maxWaitingMillisForRefresh;
 
     public static final String
             SESSION_KEY_PRE = BlueCacheKey.SESSION_KEY_PRE.key,
@@ -179,7 +179,7 @@ public class AuthServiceImpl implements AuthService {
         if (authorityInfosRefreshing) {
             long start = currentTimeMillis();
             while (authorityInfosRefreshing) {
-                if (currentTimeMillis() - start > MAX_WAITING_MILLIS_FOR_REFRESH)
+                if (currentTimeMillis() - start > maxWaitingMillisForRefresh)
                     throw new BlueException(INTERNAL_SERVER_ERROR);
                 onSpinWait();
             }
@@ -194,7 +194,7 @@ public class AuthServiceImpl implements AuthService {
         if (authorityInfosRefreshing) {
             long start = currentTimeMillis();
             while (authorityInfosRefreshing) {
-                if (currentTimeMillis() - start > MAX_WAITING_MILLIS_FOR_REFRESH)
+                if (currentTimeMillis() - start > maxWaitingMillisForRefresh)
                     throw new BlueException(INTERNAL_SERVER_ERROR);
                 onSpinWait();
             }
