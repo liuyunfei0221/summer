@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 public interface RpcStateService {
 
     /**
-     * get state info by country id
+     * get state info by id
      *
      * @param id
      * @return
@@ -24,7 +24,7 @@ public interface RpcStateService {
     Optional<StateInfo> getStateInfoOptById(Long id);
 
     /**
-     * get state info by country id with assert
+     * get state info by id with assert
      *
      * @param id
      * @return
@@ -32,7 +32,7 @@ public interface RpcStateService {
     StateInfo getStateInfoById(Long id);
 
     /**
-     * get state info mono by country id
+     * get state info mono by id
      *
      * @param id
      * @return

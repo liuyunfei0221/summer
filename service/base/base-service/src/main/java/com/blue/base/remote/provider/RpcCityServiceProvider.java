@@ -118,7 +118,7 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public Map<Long, CityInfo> selectCityInfoByIds(List<Long> ids) {
-        LOGGER.info("List<StateInfo> selectStateInfoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("Map<Long, CityInfo> selectStateInfoByIds(List<Long> ids), ids = {}", ids);
         return cityService.selectCityInfoByIds(ids);
     }
 
@@ -130,7 +130,7 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CompletableFuture<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("CompletableFuture<List<StateInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("CompletableFuture<Map<Long, CityInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
                 .publishOn(scheduler)
                 .flatMap(cityService::selectCityInfoMonoByIds)

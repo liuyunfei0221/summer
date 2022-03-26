@@ -18,11 +18,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.BlueChecker.isValidIdentities;
-import static com.blue.base.common.base.BlueChecker.isValidIdentity;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.ResponseElement.DATA_NOT_EXIST;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.converter.BaseModelConverters.COUNTRIES_2_COUNTRY_INFOS_CONVERTER;
 import static com.blue.base.converter.BaseModelConverters.COUNTRY_2_COUNTRY_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
@@ -91,7 +90,13 @@ public class CountryServiceImpl implements CountryService {
     private final Function<List<Long>, Map<Long, CountryInfo>> CACHE_COUNTRIES_BY_IDS_GETTER = ids -> {
         LOGGER.info("Function<List<Long>, List<CountryInfo>> COUNTRIES_BY_IDS_GETTER_WITH_CACHE, ids = {}", ids);
 
-        return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
+        if (isInvalidIdentities(ids))
+            return emptyMap();
+
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(INVALID_PARAM);
+
+        return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
                         ID_COUNTRY_CACHE.getAll(l, is -> countryMapper.selectByIds(l)
                                         .parallelStream()
@@ -100,9 +105,7 @@ public class CountryServiceImpl implements CountryService {
                                 .entrySet()
                 )
                 .flatMap(Collection::stream)
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a))
-                :
-                emptyMap();
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
     };
 
     /**
@@ -142,12 +145,16 @@ public class CountryServiceImpl implements CountryService {
     public List<Country> selectCountryByIds(List<Long> ids) {
         LOGGER.info("List<Country> selectCountryByIds(List<Long> ids), ids = {}", ids);
 
-        return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
+        if (isInvalidIdentities(ids))
+            return emptyList();
+
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(INVALID_PARAM);
+
+        return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(countryMapper::selectByIds)
                 .flatMap(List::stream)
-                .collect(toList())
-                :
-                emptyList();
+                .collect(toList());
     }
 
     /**

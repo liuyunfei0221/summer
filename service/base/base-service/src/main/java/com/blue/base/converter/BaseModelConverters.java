@@ -44,7 +44,7 @@ public final class BaseModelConverters {
         if (state == null)
             throw new BlueException(EMPTY_PARAM);
 
-        return new StateInfo(state.getId(), state.getName(), state.getStateCode());
+        return new StateInfo(state.getId(), state.getCountryId(), state.getName(), state.getFipsCode(), state.getCountryCode(), state.getStateCode());
     };
 
     /**
@@ -55,7 +55,6 @@ public final class BaseModelConverters {
                     .map(STATE_2_STATE_INFO_CONVERTER)
                     .collect(toList()) : emptyList();
 
-
     /**
      * city -> city info
      */
@@ -63,7 +62,7 @@ public final class BaseModelConverters {
         if (city == null)
             throw new BlueException(EMPTY_PARAM);
 
-        return new CityInfo(city.getId(), city.getName());
+        return new CityInfo(city.getId(), city.getCountryId(), city.getStateId(), city.getName());
     };
 
     /**
@@ -73,7 +72,7 @@ public final class BaseModelConverters {
         if (area == null)
             throw new BlueException(EMPTY_PARAM);
 
-        return new AreaInfo(area.getId(), area.getName());
+        return new AreaInfo(area.getId(), area.getCountryId(), area.getStateId(), area.getCityId(), area.getName());
     };
 
     /**

@@ -17,22 +17,24 @@ import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.util.Loggers.getLogger;
 
 /**
+ * rpc country consumer
+ *
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam"})
 @Component
 public class RpcCountryServiceConsumer {
 
-    private static final Logger LOGGER = getLogger(RpcVerifyServiceConsumer.class);
+    private static final Logger LOGGER = getLogger(RpcCountryServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-verify"}, methods = {
+    @DubboReference(version = "1.0", providedBy = {"summer-base"}, methods = {
             @Method(name = "getCountryInfoOptById", async = false),
             @Method(name = "getCountryInfoById", async = false),
             @Method(name = "getCountryInfoMonoById", async = true),
             @Method(name = "selectCountryInfo", async = false),
             @Method(name = "selectCountryInfoMono", async = true),
             @Method(name = "selectCountryInfoByIds", async = false),
-            @Method(name = "validate", async = true)
+            @Method(name = "selectCountryInfoMonoByIds", async = true)
     })
     private RpcCountryService rpcCountryService;
 

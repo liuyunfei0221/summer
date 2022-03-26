@@ -116,7 +116,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
      */
     @Override
     public Map<Long, CountryInfo> selectCountryInfoByIds(List<Long> ids) {
-        LOGGER.info("List<CountryInfo> selectCountryInfoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("Map<Long, CountryInfo> selectCountryInfoByIds(List<Long> ids), ids = {}", ids);
         return countryService.selectCountryInfoByIds(ids);
     }
 
@@ -128,7 +128,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
      */
     @Override
     public CompletableFuture<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("CompletableFuture<List<CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("CompletableFuture<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
                 .publishOn(scheduler)
                 .flatMap(countryService::selectCountryInfoMonoByIds)
