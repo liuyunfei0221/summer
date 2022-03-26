@@ -1,11 +1,14 @@
 package com.blue.base.service.impl;
 
-import com.blue.base.api.model.AreaInfo;
+import com.blue.base.api.model.*;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Area;
 import com.blue.base.repository.mapper.AreaMapper;
 import com.blue.base.service.inter.AreaService;
+import com.blue.base.service.inter.CityService;
+import com.blue.base.service.inter.CountryService;
+import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.stereotype.Service;
@@ -32,7 +35,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -46,25 +49,40 @@ public class AreaServiceImpl implements AreaService {
 
     private static final Logger LOGGER = getLogger(CityServiceImpl.class);
 
+    private CityService cityService;
+
+    private StateService stateService;
+
+    private CountryService countryService;
+
     private AreaMapper areaMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public AreaServiceImpl(ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, AreaMapper areaMapper) {
+    public AreaServiceImpl(CityService cityService, StateService stateService, CountryService countryService,
+                           ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, AreaMapper areaMapper) {
+        this.cityService = cityService;
+        this.stateService = stateService;
+        this.countryService = countryService;
         this.areaMapper = areaMapper;
 
-        CITY_ID_AREAS_CACHE = generateCache(new CaffeineConfParams(
+        cityIdAreasCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getAreaMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
-        ID_AREA_CACHE = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+        idAreaCache = generateCache(new CaffeineConfParams(
+                areaCaffeineDeploy.getAreaMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                AFTER_ACCESS, executorService));
+
+        idRegionCache = generateCache(new CaffeineConfParams(
+                areaCaffeineDeploy.getAreaMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 
-    private static Cache<Long, List<AreaInfo>> CITY_ID_AREAS_CACHE;
+    private final Cache<Long, List<AreaInfo>> cityIdAreasCache;
 
-    private static Cache<Long, AreaInfo> ID_AREA_CACHE;
+    private Cache<Long, AreaInfo> idAreaCache;
 
+    private Cache<Long, AreaRegion> idRegionCache;
 
     private final Function<Long, List<AreaInfo>> DB_AREAS_GETTER = cid -> {
         LOGGER.info("Function<Long, List<AreaInfo>> DB_AREAS_GETTER, cid = {}", cid);
@@ -94,11 +112,72 @@ public class AreaServiceImpl implements AreaService {
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
-                        ID_AREA_CACHE.getAll(l, is -> areaMapper.selectByIds(l)
+                        idAreaCache.getAll(l, is -> areaMapper.selectByIds(l)
                                         .parallelStream()
                                         .map(AREA_2_AREA_INFO_CONVERTER)
                                         .collect(toMap(AreaInfo::getId, ci -> ci, (a, b) -> a)))
                                 .entrySet()
+                )
+                .flatMap(Collection::stream)
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
+    };
+
+    private final Function<Long, AreaRegion> AREA_REGION_GETTER = id -> {
+        if (isValidIdentity(id)) {
+            return idRegionCache.get(id, i ->
+                    just(idAreaCache.get(i, DB_AREA_GETTER_WITH_ASSERT))
+                            .flatMap(areaInfo ->
+                                    zip(
+                                            countryService.getCountryInfoMonoById(areaInfo.getCountryId()),
+                                            stateService.getStateInfoMonoById(areaInfo.getStateId()),
+                                            cityService.getCityInfoMonoById(areaInfo.getCityId())
+                                    ).flatMap(tuple3 ->
+                                            just(new AreaRegion(id, tuple3.getT1(), tuple3.getT2(), tuple3.getT3(), areaInfo))))
+                            .toFuture().join()
+            );
+        }
+
+        throw new BlueException(INVALID_IDENTITY);
+    };
+
+    private final Function<List<Long>, Map<Long, AreaRegion>> AREA_REGIONS_GETTER = ids -> {
+        LOGGER.info("Function<List<Long>, Map<Long, AreaRegion>> AREA_REGIONS_GETTER, ids = {}", ids);
+
+        if (isInvalidIdentities(ids))
+            return emptyMap();
+
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(INVALID_PARAM);
+
+        return allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(l ->
+                        idRegionCache.getAll(l, is -> {
+                            Collection<AreaInfo> areaInfos = CACHE_AREAS_BY_IDS_GETTER.apply(ids).values();
+                            int size = areaInfos.size();
+                            List<Long> countryIds = new ArrayList<>(size);
+                            List<Long> stateIds = new ArrayList<>(size);
+                            List<Long> cityIds = new ArrayList<>(size);
+
+                            for (AreaInfo ai : areaInfos) {
+                                countryIds.add(ai.getCountryId());
+                                stateIds.add(ai.getStateId());
+                                cityIds.add(ai.getCityId());
+                            }
+
+                            return zip(
+                                    cityService.selectCityInfoMonoByIds(cityIds),
+                                    stateService.selectStateInfoMonoByIds(stateIds),
+                                    countryService.selectCountryInfoMonoByIds(countryIds)
+                            ).flatMap(tuple3 -> {
+                                Map<Long, CityInfo> cityInfoMap = tuple3.getT1();
+                                Map<Long, StateInfo> stateInfoMap = tuple3.getT2();
+                                Map<Long, CountryInfo> countryInfoMap = tuple3.getT3();
+
+                                return just(areaInfos.parallelStream().map(ai -> new AreaRegion(ai.getId(), countryInfoMap.get(ai.getCountryId()),
+                                                stateInfoMap.get(ai.getStateId()), cityInfoMap.get(ai.getCityId()), ai))
+                                        .collect(toMap(AreaRegion::getAreaId, ar -> ar, (a, b) -> a)));
+                            }).toFuture().join();
+                        }).entrySet()
                 )
                 .flatMap(Collection::stream)
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
@@ -163,7 +242,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Optional<AreaInfo> getAreaInfoOptById(Long id) {
-        return ofNullable(ID_AREA_CACHE.get(id, DB_AREA_GETTER));
+        return ofNullable(idAreaCache.get(id, DB_AREA_GETTER));
     }
 
     /**
@@ -174,7 +253,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public AreaInfo getAreaInfoById(Long id) {
-        return ID_AREA_CACHE.get(id, DB_AREA_GETTER_WITH_ASSERT);
+        return idAreaCache.get(id, DB_AREA_GETTER_WITH_ASSERT);
     }
 
     /**
@@ -185,7 +264,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<AreaInfo> getAreaInfoMonoById(Long id) {
-        return just(ID_AREA_CACHE.get(id, DB_AREA_GETTER_WITH_ASSERT));
+        return just(idAreaCache.get(id, DB_AREA_GETTER_WITH_ASSERT));
     }
 
     /**
@@ -196,7 +275,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public List<AreaInfo> selectAreaInfoByCityId(Long cityId) {
-        return CITY_ID_AREAS_CACHE.get(cityId, DB_AREAS_GETTER);
+        return cityIdAreasCache.get(cityId, DB_AREAS_GETTER);
     }
 
     /**
@@ -207,7 +286,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId) {
-        return just(CITY_ID_AREAS_CACHE.get(cityId, DB_AREAS_GETTER)).switchIfEmpty(just(emptyList()));
+        return just(cityIdAreasCache.get(cityId, DB_AREAS_GETTER)).switchIfEmpty(just(emptyList()));
     }
 
     /**
@@ -233,8 +312,51 @@ public class AreaServiceImpl implements AreaService {
     public Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids)), ids = {}", ids);
 
-
         return just(CACHE_AREAS_BY_IDS_GETTER.apply(ids));
+    }
+
+    /**
+     * get region by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public AreaRegion getAreaRegionById(Long id) {
+        return idRegionCache.get(id, AREA_REGION_GETTER);
+    }
+
+    /**
+     * get region mono by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Mono<AreaRegion> getAreaRegionMonoById(Long id) {
+        return just(idRegionCache.get(id, AREA_REGION_GETTER));
+    }
+
+    /**
+     * get regions by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Map<Long, AreaRegion> selectAreaRegionByIds(List<Long> ids) {
+        return AREA_REGIONS_GETTER.apply(ids);
+    }
+
+    /**
+     * get regions mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Mono<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids) {
+        return just(AREA_REGIONS_GETTER.apply(ids));
     }
 
     /**
@@ -246,8 +368,9 @@ public class AreaServiceImpl implements AreaService {
     public void invalidAreaInfosCache() {
         LOGGER.info("void invalidAreaInfosCache()");
 
-        CITY_ID_AREAS_CACHE.invalidateAll();
-        ID_AREA_CACHE.invalidateAll();
+        cityIdAreasCache.invalidateAll();
+        idAreaCache.invalidateAll();
+        idRegionCache.invalidateAll();
     }
 
 }

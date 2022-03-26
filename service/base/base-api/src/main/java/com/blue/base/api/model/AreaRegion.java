@@ -12,6 +12,8 @@ public final class AreaRegion implements Serializable {
 
     private static final long serialVersionUID = -1143294403062049860L;
 
+    private Long areaId;
+
     private CountryInfo country;
 
     private StateInfo state;
@@ -23,11 +25,20 @@ public final class AreaRegion implements Serializable {
     public AreaRegion() {
     }
 
-    public AreaRegion(CountryInfo country, StateInfo state, CityInfo city, AreaInfo area) {
+    public AreaRegion(Long areaId, CountryInfo country, StateInfo state, CityInfo city, AreaInfo area) {
+        this.areaId = areaId;
         this.country = country;
         this.state = state;
         this.city = city;
         this.area = area;
+    }
+
+    public Long getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
     }
 
     public CountryInfo getCountry() {
@@ -65,7 +76,8 @@ public final class AreaRegion implements Serializable {
     @Override
     public String toString() {
         return "AreaRegion{" +
-                "country=" + country +
+                "areaId=" + areaId +
+                ", country=" + country +
                 ", state=" + state +
                 ", city=" + city +
                 ", area=" + area +

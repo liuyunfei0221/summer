@@ -12,6 +12,8 @@ public final class StateRegion implements Serializable {
 
     private static final long serialVersionUID = 8341453968629415940L;
 
+    private Long stateId;
+
     private CountryInfo country;
 
     private StateInfo state;
@@ -19,9 +21,18 @@ public final class StateRegion implements Serializable {
     public StateRegion() {
     }
 
-    public StateRegion(CountryInfo country, StateInfo state) {
+    public StateRegion(Long stateId, CountryInfo country, StateInfo state) {
+        this.stateId = stateId;
         this.country = country;
         this.state = state;
+    }
+
+    public Long getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(Long stateId) {
+        this.stateId = stateId;
     }
 
     public CountryInfo getCountry() {
@@ -42,8 +53,9 @@ public final class StateRegion implements Serializable {
 
     @Override
     public String toString() {
-        return "AreaRegion{" +
-                "country=" + country +
+        return "StateRegion{" +
+                "stateId=" + stateId +
+                ", country=" + country +
                 ", state=" + state +
                 '}';
     }
