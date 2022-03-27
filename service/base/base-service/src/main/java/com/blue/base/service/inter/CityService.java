@@ -1,6 +1,7 @@
 package com.blue.base.service.inter;
 
 import com.blue.base.api.model.CityInfo;
+import com.blue.base.api.model.CityRegion;
 import com.blue.base.repository.entity.City;
 import reactor.core.publisher.Mono;
 
@@ -95,6 +96,38 @@ public interface CityService {
      * @return
      */
     Mono<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids);
+
+    /**
+     * get city region by id
+     *
+     * @param id
+     * @return
+     */
+    CityRegion getCityRegionById(Long id);
+
+    /**
+     * get city region mono by id
+     *
+     * @param id
+     * @return
+     */
+    Mono<CityRegion> getCityRegionMonoById(Long id);
+
+    /**
+     * get city regions by id
+     *
+     * @param ids
+     * @return
+     */
+    Map<Long, CityRegion> selectCityRegionByIds(List<Long> ids);
+
+    /**
+     * get city regions mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    Mono<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids);
 
     /**
      * invalid city infos

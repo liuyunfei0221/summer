@@ -1,11 +1,13 @@
 package com.blue.base.service.impl;
 
-import com.blue.base.api.model.CityInfo;
+import com.blue.base.api.model.*;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.City;
 import com.blue.base.repository.mapper.CityMapper;
 import com.blue.base.service.inter.CityService;
+import com.blue.base.service.inter.CountryService;
+import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -46,24 +49,34 @@ public class CityServiceImpl implements CityService {
 
     private static final Logger LOGGER = getLogger(CityServiceImpl.class);
 
+    private StateService stateService;
+
+    private CountryService countryService;
+
     private CityMapper cityMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public CityServiceImpl(ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, CityMapper cityMapper) {
+    public CityServiceImpl(StateService stateService, CountryService countryService, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, CityMapper cityMapper) {
         this.cityMapper = cityMapper;
 
-        STATE_ID_CITIES_CACHE = generateCache(new CaffeineConfParams(
+        stateIdCitiesCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
-        ID_CITY_CACHE = generateCache(new CaffeineConfParams(
+        idCityCache = generateCache(new CaffeineConfParams(
+                areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                AFTER_ACCESS, executorService));
+
+        idRegionCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 
-    private static Cache<Long, List<CityInfo>> STATE_ID_CITIES_CACHE;
+    private static Cache<Long, List<CityInfo>> stateIdCitiesCache;
 
-    private static Cache<Long, CityInfo> ID_CITY_CACHE;
+    private static Cache<Long, CityInfo> idCityCache;
+
+    private Cache<Long, CityRegion> idRegionCache;
 
 
     private final Function<Long, List<CityInfo>> DB_CITIES_GETTER = sid -> {
@@ -94,11 +107,67 @@ public class CityServiceImpl implements CityService {
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
-                        ID_CITY_CACHE.getAll(l, is -> cityMapper.selectByIds(l)
+                        idCityCache.getAll(l, is -> cityMapper.selectByIds(l)
                                         .parallelStream()
                                         .map(CITY_2_CITY_INFO_CONVERTER)
                                         .collect(toMap(CityInfo::getId, ci -> ci, (a, b) -> a)))
                                 .entrySet()
+                )
+                .flatMap(Collection::stream)
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
+    };
+
+    private final Function<Long, CityRegion> CITY_REGION_GETTER = id -> {
+        if (isValidIdentity(id)) {
+            return idRegionCache.get(id, i ->
+                    just(idCityCache.get(i, DB_CITY_GETTER_WITH_ASSERT))
+                            .flatMap(cityInfo ->
+                                    zip(
+                                            countryService.getCountryInfoMonoById(cityInfo.getCountryId()),
+                                            stateService.getStateInfoMonoById(cityInfo.getStateId())
+                                    ).flatMap(tuple2 ->
+                                            just(new CityRegion(id, tuple2.getT1(), tuple2.getT2(), cityInfo))))
+                            .toFuture().join()
+            );
+        }
+
+        throw new BlueException(INVALID_IDENTITY);
+    };
+
+    private final Function<List<Long>, Map<Long, CityRegion>> CITY_REGIONS_GETTER = ids -> {
+        LOGGER.info("Function<List<Long>, Map<Long, AreaRegion>> AREA_REGIONS_GETTER, ids = {}", ids);
+
+        if (isInvalidIdentities(ids))
+            return emptyMap();
+
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(INVALID_PARAM);
+
+        return allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(l ->
+                        idRegionCache.getAll(l, is -> {
+                            Collection<CityInfo> cityInfos = CACHE_CITIES_BY_IDS_GETTER.apply(ids).values();
+                            int size = cityInfos.size();
+                            List<Long> countryIds = new ArrayList<>(size);
+                            List<Long> stateIds = new ArrayList<>(size);
+
+                            for (CityInfo ci : cityInfos) {
+                                countryIds.add(ci.getCountryId());
+                                stateIds.add(ci.getStateId());
+                            }
+
+                            return zip(
+                                    stateService.selectStateInfoMonoByIds(stateIds),
+                                    countryService.selectCountryInfoMonoByIds(countryIds)
+                            ).flatMap(tuple2 -> {
+                                Map<Long, StateInfo> stateInfoMap = tuple2.getT1();
+                                Map<Long, CountryInfo> countryInfoMap = tuple2.getT2();
+
+                                return just(cityInfos.parallelStream().map(ai -> new CityRegion(ai.getId(), countryInfoMap.get(ai.getCountryId()),
+                                                stateInfoMap.get(ai.getStateId()), ai))
+                                        .collect(toMap(CityRegion::getCityId, ar -> ar, (a, b) -> a)));
+                            }).toFuture().join();
+                        }).entrySet()
                 )
                 .flatMap(Collection::stream)
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
@@ -163,7 +232,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Optional<CityInfo> getCityInfoOptById(Long id) {
-        return ofNullable(ID_CITY_CACHE.get(id, DB_CITY_GETTER));
+        return ofNullable(idCityCache.get(id, DB_CITY_GETTER));
     }
 
     /**
@@ -174,7 +243,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public CityInfo getCityInfoById(Long id) {
-        return ID_CITY_CACHE.get(id, DB_CITY_GETTER_WITH_ASSERT);
+        return idCityCache.get(id, DB_CITY_GETTER_WITH_ASSERT);
     }
 
     /**
@@ -185,7 +254,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<CityInfo> getCityInfoMonoById(Long id) {
-        return just(ID_CITY_CACHE.get(id, DB_CITY_GETTER_WITH_ASSERT));
+        return just(idCityCache.get(id, DB_CITY_GETTER_WITH_ASSERT));
     }
 
     /**
@@ -196,7 +265,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public List<CityInfo> selectCityInfoByStateId(Long stateId) {
-        return STATE_ID_CITIES_CACHE.get(stateId, DB_CITIES_GETTER);
+        return stateIdCitiesCache.get(stateId, DB_CITIES_GETTER);
     }
 
     /**
@@ -207,7 +276,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId) {
-        return just(STATE_ID_CITIES_CACHE.get(stateId, DB_CITIES_GETTER)).switchIfEmpty(just(emptyList()));
+        return just(stateIdCitiesCache.get(stateId, DB_CITIES_GETTER)).switchIfEmpty(just(emptyList()));
     }
 
     /**
@@ -237,6 +306,50 @@ public class CityServiceImpl implements CityService {
     }
 
     /**
+     * get region by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public CityRegion getCityRegionById(Long id) {
+        return idRegionCache.get(id, CITY_REGION_GETTER);
+    }
+
+    /**
+     * get region mono by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Mono<CityRegion> getCityRegionMonoById(Long id) {
+        return just(idRegionCache.get(id, CITY_REGION_GETTER));
+    }
+
+    /**
+     * get regions by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Map<Long, CityRegion> selectCityRegionByIds(List<Long> ids) {
+        return CITY_REGIONS_GETTER.apply(ids);
+    }
+
+    /**
+     * get regions mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Mono<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids) {
+        return just(CITY_REGIONS_GETTER.apply(ids));
+    }
+
+    /**
      * invalid city infos
      *
      * @return
@@ -245,8 +358,8 @@ public class CityServiceImpl implements CityService {
     public void invalidCityInfosCache() {
         LOGGER.info("void invalidStateInfosCache()");
 
-        STATE_ID_CITIES_CACHE.invalidateAll();
-        ID_CITY_CACHE.invalidateAll();
+        stateIdCitiesCache.invalidateAll();
+        idCityCache.invalidateAll();
     }
 
 }
