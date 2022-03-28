@@ -57,6 +57,8 @@ public class CityServiceImpl implements CityService {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public CityServiceImpl(StateService stateService, CountryService countryService, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, CityMapper cityMapper) {
+        this.stateService = stateService;
+        this.countryService = countryService;
         this.cityMapper = cityMapper;
 
         stateIdCitiesCache = generateCache(new CaffeineConfParams(
@@ -72,9 +74,9 @@ public class CityServiceImpl implements CityService {
                 AFTER_ACCESS, executorService));
     }
 
-    private static Cache<Long, List<CityInfo>> stateIdCitiesCache;
+    private final Cache<Long, List<CityInfo>> stateIdCitiesCache;
 
-    private static Cache<Long, CityInfo> idCityCache;
+    private Cache<Long, CityInfo> idCityCache;
 
     private Cache<Long, CityRegion> idRegionCache;
 
@@ -97,7 +99,7 @@ public class CityServiceImpl implements CityService {
     };
 
     private final Function<List<Long>, Map<Long, CityInfo>> CACHE_CITIES_BY_IDS_GETTER = ids -> {
-        LOGGER.info("Function<List<Long>, List<CityInfo>> CACHE_CITIES_BY_IDS_GETTER, ids = {}", ids);
+        LOGGER.info("Function<List<Long>, Map<Long, CityInfo>> CACHE_CITIES_BY_IDS_GETTER, ids = {}", ids);
 
         if (isInvalidIdentities(ids))
             return emptyMap();
@@ -135,7 +137,7 @@ public class CityServiceImpl implements CityService {
     };
 
     private final Function<List<Long>, Map<Long, CityRegion>> CITY_REGIONS_GETTER = ids -> {
-        LOGGER.info("Function<List<Long>, Map<Long, AreaRegion>> AREA_REGIONS_GETTER, ids = {}", ids);
+        LOGGER.info("Function<List<Long>, Map<Long, CityRegion>> CITY_REGIONS_GETTER, ids = {}", ids);
 
         if (isInvalidIdentities(ids))
             return emptyMap();
@@ -159,14 +161,11 @@ public class CityServiceImpl implements CityService {
                             return zip(
                                     stateService.selectStateInfoMonoByIds(stateIds),
                                     countryService.selectCountryInfoMonoByIds(countryIds)
-                            ).flatMap(tuple2 -> {
-                                Map<Long, StateInfo> stateInfoMap = tuple2.getT1();
-                                Map<Long, CountryInfo> countryInfoMap = tuple2.getT2();
-
-                                return just(cityInfos.parallelStream().map(ai -> new CityRegion(ai.getId(), countryInfoMap.get(ai.getCountryId()),
-                                                stateInfoMap.get(ai.getStateId()), ai))
-                                        .collect(toMap(CityRegion::getCityId, ar -> ar, (a, b) -> a)));
-                            }).toFuture().join();
+                            ).flatMap(tuple2 ->
+                                    just(cityInfos.parallelStream().map(ai -> new CityRegion(ai.getId(), tuple2.getT2().get(ai.getCountryId()),
+                                                    tuple2.getT1().get(ai.getStateId()), ai))
+                                            .collect(toMap(CityRegion::getCityId, ar -> ar, (a, b) -> a)))
+                            ).toFuture().join();
                         }).entrySet()
                 )
                 .flatMap(Collection::stream)
@@ -360,6 +359,7 @@ public class CityServiceImpl implements CityService {
 
         stateIdCitiesCache.invalidateAll();
         idCityCache.invalidateAll();
+        idRegionCache.invalidateAll();
     }
 
 }

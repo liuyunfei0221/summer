@@ -52,20 +52,20 @@ public class CountryServiceImpl implements CountryService {
     public CountryServiceImpl(ExecutorService executorService, CountryMapper countryMapper, AreaCaffeineDeploy areaCaffeineDeploy) {
         this.countryMapper = countryMapper;
 
-        ALL_COUNTRIES_CACHE = generateCache(new CaffeineConfParams(
+        allCountriesCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCountryMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
-        ID_COUNTRY_CACHE = generateCache(new CaffeineConfParams(
+        idCountryCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCountryMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 
     private static final Long ALL_COUNTRIES_CACHE_ID = 0L;
 
-    private static Cache<Long, List<CountryInfo>> ALL_COUNTRIES_CACHE;
+    private final Cache<Long, List<CountryInfo>> allCountriesCache;
 
-    private static Cache<Long, CountryInfo> ID_COUNTRY_CACHE;
+    private Cache<Long, CountryInfo> idCountryCache;
 
 
     private final Function<Long, List<CountryInfo>> DB_COUNTRIES_GETTER = ignore -> {
@@ -98,7 +98,7 @@ public class CountryServiceImpl implements CountryService {
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
-                        ID_COUNTRY_CACHE.getAll(l, is -> countryMapper.selectByIds(l)
+                        idCountryCache.getAll(l, is -> countryMapper.selectByIds(l)
                                         .parallelStream()
                                         .map(COUNTRY_2_COUNTRY_INFO_CONVERTER)
                                         .collect(toMap(CountryInfo::getId, ci -> ci, (a, b) -> a)))
@@ -165,7 +165,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Optional<CountryInfo> getCountryInfoOptById(Long id) {
-        return ofNullable(ID_COUNTRY_CACHE.get(id, DB_COUNTRY_GETTER));
+        return ofNullable(idCountryCache.get(id, DB_COUNTRY_GETTER));
     }
 
     /**
@@ -176,7 +176,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public CountryInfo getCountryInfoById(Long id) {
-        return ID_COUNTRY_CACHE.get(id, DB_COUNTRY_GETTER_WITH_ASSERT);
+        return idCountryCache.get(id, DB_COUNTRY_GETTER_WITH_ASSERT);
     }
 
     /**
@@ -187,7 +187,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<CountryInfo> getCountryInfoMonoById(Long id) {
-        return just(ID_COUNTRY_CACHE.get(id, DB_COUNTRY_GETTER_WITH_ASSERT));
+        return just(idCountryCache.get(id, DB_COUNTRY_GETTER_WITH_ASSERT));
     }
 
     /**
@@ -197,7 +197,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public List<CountryInfo> selectCountryInfo() {
-        return ALL_COUNTRIES_CACHE.get(ALL_COUNTRIES_CACHE_ID, DB_COUNTRIES_GETTER);
+        return allCountriesCache.get(ALL_COUNTRIES_CACHE_ID, DB_COUNTRIES_GETTER);
     }
 
     /**
@@ -207,7 +207,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<List<CountryInfo>> selectCountryInfoMono() {
-        return just(ALL_COUNTRIES_CACHE.get(ALL_COUNTRIES_CACHE_ID, DB_COUNTRIES_GETTER)).switchIfEmpty(just(emptyList()));
+        return just(allCountriesCache.get(ALL_COUNTRIES_CACHE_ID, DB_COUNTRIES_GETTER)).switchIfEmpty(just(emptyList()));
     }
 
     /**
@@ -243,8 +243,8 @@ public class CountryServiceImpl implements CountryService {
     public void invalidCountryInfosCache() {
         LOGGER.info("void invalidCountryInfosCache()");
 
-        ALL_COUNTRIES_CACHE.invalidateAll();
-        ID_COUNTRY_CACHE.invalidateAll();
+        allCountriesCache.invalidateAll();
+        idCountryCache.invalidateAll();
     }
 
 }

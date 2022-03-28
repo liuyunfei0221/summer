@@ -42,4 +42,5 @@ public class RpcFinanceAccountServiceConsumer {
         LOGGER.info("void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo), memberFinanceInfo = {}", memberFinanceInfo);
         rpcFinanceAccountService.initMemberFinanceInfo(memberFinanceInfo);
     }
+
 }

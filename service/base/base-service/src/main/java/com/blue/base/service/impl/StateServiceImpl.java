@@ -1,10 +1,12 @@
 package com.blue.base.service.impl;
 
 import com.blue.base.api.model.StateInfo;
+import com.blue.base.api.model.StateRegion;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.State;
 import com.blue.base.repository.mapper.StateMapper;
+import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -46,24 +48,33 @@ public class StateServiceImpl implements StateService {
 
     private static final Logger LOGGER = getLogger(StateServiceImpl.class);
 
+    private CountryService countryService;
+
     private StateMapper stateMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public StateServiceImpl(ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, StateMapper stateMapper) {
+    public StateServiceImpl(CountryService countryService, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, StateMapper stateMapper) {
+        this.countryService = countryService;
         this.stateMapper = stateMapper;
 
-        COUNTRY_ID_STATES_CACHE = generateCache(new CaffeineConfParams(
+        countryIdStatesCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
-        ID_STATE_CACHE = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getCountryMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+        idStateCache = generateCache(new CaffeineConfParams(
+                areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                AFTER_ACCESS, executorService));
+
+        idRegionCache = generateCache(new CaffeineConfParams(
+                areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 
-    private static Cache<Long, List<StateInfo>> COUNTRY_ID_STATES_CACHE;
+    private final Cache<Long, List<StateInfo>> countryIdStatesCache;
 
-    private static Cache<Long, StateInfo> ID_STATE_CACHE;
+    private Cache<Long, StateInfo> idStateCache;
+
+    private Cache<Long, StateRegion> idRegionCache;
 
 
     private final Function<Long, List<StateInfo>> DB_STATES_GETTER = cid -> {
@@ -94,11 +105,58 @@ public class StateServiceImpl implements StateService {
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
-                        ID_STATE_CACHE.getAll(l, is -> stateMapper.selectByIds(l)
+                        idStateCache.getAll(l, is -> stateMapper.selectByIds(l)
                                         .parallelStream()
                                         .map(STATE_2_STATE_INFO_CONVERTER)
                                         .collect(toMap(StateInfo::getId, ci -> ci, (a, b) -> a)))
                                 .entrySet()
+                )
+                .flatMap(Collection::stream)
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
+    };
+
+    private final Function<Long, StateRegion> STATE_REGION_GETTER = id -> {
+        if (isValidIdentity(id)) {
+            return idRegionCache.get(id, i ->
+                    just(idStateCache.get(i, DB_STATE_GETTER_WITH_ASSERT))
+                            .flatMap(stateInfo ->
+                                    countryService.getCountryInfoMonoById(stateInfo.getCountryId())
+                                            .flatMap(countryInfo -> just(new StateRegion(id, countryInfo, stateInfo)))
+                            )
+                            .toFuture().join()
+            );
+        }
+
+        throw new BlueException(INVALID_IDENTITY);
+    };
+
+    private final Function<List<Long>, Map<Long, StateRegion>> STATE_REGIONS_GETTER = ids -> {
+        LOGGER.info("Function<List<Long>, Map<Long, StateRegion>> STATE_REGIONS_GETTER, ids = {}", ids);
+
+        if (isInvalidIdentities(ids))
+            return emptyMap();
+
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(INVALID_PARAM);
+
+        return allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(l ->
+                        idRegionCache.getAll(l, is -> {
+                            Collection<StateInfo> stateInfos = CACHE_STATES_BY_IDS_GETTER.apply(ids).values();
+                            int size = stateInfos.size();
+                            List<Long> countryIds = new ArrayList<>(size);
+
+                            for (StateInfo si : stateInfos) {
+                                countryIds.add(si.getCountryId());
+                            }
+
+                            return
+                                    countryService.selectCountryInfoMonoByIds(countryIds)
+                                            .flatMap(countryInfos ->
+                                                    just(stateInfos.parallelStream().map(si -> new StateRegion(si.getId(), countryInfos.get(si.getCountryId()), si))
+                                                            .collect(toMap(StateRegion::getStateId, ar -> ar, (a, b) -> a)))
+                                            ).toFuture().join();
+                        }).entrySet()
                 )
                 .flatMap(Collection::stream)
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
@@ -164,7 +222,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Optional<StateInfo> getStateInfoOptById(Long id) {
-        return ofNullable(ID_STATE_CACHE.get(id, DB_STATE_GETTER));
+        return ofNullable(idStateCache.get(id, DB_STATE_GETTER));
     }
 
     /**
@@ -175,7 +233,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public StateInfo getStateInfoById(Long id) {
-        return ID_STATE_CACHE.get(id, DB_STATE_GETTER_WITH_ASSERT);
+        return idStateCache.get(id, DB_STATE_GETTER_WITH_ASSERT);
     }
 
     /**
@@ -186,7 +244,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<StateInfo> getStateInfoMonoById(Long id) {
-        return just(ID_STATE_CACHE.get(id, DB_STATE_GETTER_WITH_ASSERT));
+        return just(idStateCache.get(id, DB_STATE_GETTER_WITH_ASSERT));
     }
 
     /**
@@ -197,7 +255,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public List<StateInfo> selectStateInfoByCountryId(Long countryId) {
-        return COUNTRY_ID_STATES_CACHE.get(countryId, DB_STATES_GETTER);
+        return countryIdStatesCache.get(countryId, DB_STATES_GETTER);
     }
 
     /**
@@ -208,7 +266,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId) {
-        return just(COUNTRY_ID_STATES_CACHE.get(countryId, DB_STATES_GETTER)).switchIfEmpty(just(emptyList()));
+        return just(countryIdStatesCache.get(countryId, DB_STATES_GETTER)).switchIfEmpty(just(emptyList()));
     }
 
     /**
@@ -238,6 +296,50 @@ public class StateServiceImpl implements StateService {
     }
 
     /**
+     * get state region by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public StateRegion getStateRegionById(Long id) {
+        return idRegionCache.get(id, STATE_REGION_GETTER);
+    }
+
+    /**
+     * get state region mono by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Mono<StateRegion> getStateRegionMonoById(Long id) {
+        return just(idRegionCache.get(id, STATE_REGION_GETTER));
+    }
+
+    /**
+     * select state regions by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Map<Long, StateRegion> selectStateRegionByIds(List<Long> ids) {
+        return STATE_REGIONS_GETTER.apply(ids);
+    }
+
+    /**
+     * select state regions mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Mono<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids) {
+        return just(STATE_REGIONS_GETTER.apply(ids));
+    }
+
+    /**
      * invalid state infos
      *
      * @return
@@ -246,8 +348,9 @@ public class StateServiceImpl implements StateService {
     public void invalidStateInfosCache() {
         LOGGER.info("void invalidStateInfosCache()");
 
-        COUNTRY_ID_STATES_CACHE.invalidateAll();
-        ID_STATE_CACHE.invalidateAll();
+        countryIdStatesCache.invalidateAll();
+        idStateCache.invalidateAll();
+        idRegionCache.invalidateAll();
     }
 
 }

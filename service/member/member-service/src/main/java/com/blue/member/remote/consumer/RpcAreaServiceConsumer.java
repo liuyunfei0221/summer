@@ -2,6 +2,7 @@ package com.blue.member.remote.consumer;
 
 import com.blue.base.api.inter.RpcAreaService;
 import com.blue.base.api.model.AreaInfo;
+import com.blue.base.api.model.AreaRegion;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,11 @@ public class RpcAreaServiceConsumer {
             @Method(name = "selectAreaInfoByCityId", async = false),
             @Method(name = "selectAreaInfoMonoByCityId", async = true),
             @Method(name = "selectAreaInfoByIds", async = false),
-            @Method(name = "selectAreaInfoMonoByIds", async = true)
+            @Method(name = "selectAreaInfoMonoByIds", async = true),
+            @Method(name = "getAreaRegionById", async = true),
+            @Method(name = "getAreaRegionMonoById", async = true),
+            @Method(name = "selectAreaRegionByIds", async = true),
+            @Method(name = "selectAreaRegionMonoByIds", async = true)
     })
     private RpcAreaService rpcAreaService;
 
@@ -50,7 +55,7 @@ public class RpcAreaServiceConsumer {
      * @param id
      * @return
      */
-    Optional<AreaInfo> getAreaInfoOptById(Long id) {
+    public Optional<AreaInfo> getAreaInfoOptById(Long id) {
         return rpcAreaService.getAreaInfoOptById(id);
     }
 
@@ -60,7 +65,7 @@ public class RpcAreaServiceConsumer {
      * @param id
      * @return
      */
-    AreaInfo getAreaInfoById(Long id) {
+    public AreaInfo getAreaInfoById(Long id) {
         return rpcAreaService.getAreaInfoById(id);
     }
 
@@ -70,7 +75,7 @@ public class RpcAreaServiceConsumer {
      * @param id
      * @return
      */
-    Mono<AreaInfo> getAreaInfoMonoById(Long id) {
+    public Mono<AreaInfo> getAreaInfoMonoById(Long id) {
         return fromFuture(rpcAreaService.getAreaInfoMonoById(id)).publishOn(scheduler);
     }
 
@@ -80,7 +85,7 @@ public class RpcAreaServiceConsumer {
      * @param cityId
      * @return
      */
-    List<AreaInfo> selectAreaInfoByCityId(Long cityId) {
+    public List<AreaInfo> selectAreaInfoByCityId(Long cityId) {
         return rpcAreaService.selectAreaInfoByCityId(cityId);
     }
 
@@ -90,7 +95,7 @@ public class RpcAreaServiceConsumer {
      * @param cityId
      * @return
      */
-    Mono<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId) {
+    public Mono<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId) {
         return fromFuture(rpcAreaService.selectAreaInfoMonoByCityId(cityId)).publishOn(scheduler);
     }
 
@@ -100,7 +105,7 @@ public class RpcAreaServiceConsumer {
      * @param ids
      * @return
      */
-    Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids) {
+    public Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids) {
         return rpcAreaService.selectAreaInfoByIds(ids);
     }
 
@@ -110,8 +115,48 @@ public class RpcAreaServiceConsumer {
      * @param ids
      * @return
      */
-    Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids) {
+    public Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids) {
         return fromFuture(rpcAreaService.selectAreaInfoMonoByIds(ids)).publishOn(scheduler);
+    }
+
+    /**
+     * get region by id
+     *
+     * @param id
+     * @return
+     */
+    public AreaRegion getAreaRegionById(Long id) {
+        return rpcAreaService.getAreaRegionById(id);
+    }
+
+    /**
+     * get region mono by id
+     *
+     * @param id
+     * @return
+     */
+    public Mono<AreaRegion> getAreaRegionMonoById(Long id) {
+        return fromFuture(rpcAreaService.getAreaRegionMonoById(id)).publishOn(scheduler);
+    }
+
+    /**
+     * get regions by ids
+     *
+     * @param ids
+     * @return
+     */
+    public Map<Long, AreaRegion> selectAreaRegionByIds(List<Long> ids) {
+        return rpcAreaService.selectAreaRegionByIds(ids);
+    }
+
+    /**
+     * get regions mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    public Mono<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids) {
+        return fromFuture(rpcAreaService.selectAreaRegionMonoByIds(ids)).publishOn(scheduler);
     }
 
 }

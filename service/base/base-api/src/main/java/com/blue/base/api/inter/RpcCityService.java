@@ -1,6 +1,7 @@
 package com.blue.base.api.inter;
 
 import com.blue.base.api.model.CityInfo;
+import com.blue.base.api.model.CityRegion;
 
 import java.util.List;
 import java.util.Map;
@@ -70,5 +71,37 @@ public interface RpcCityService {
      * @return
      */
     CompletableFuture<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids);
+
+    /**
+     * get city region by id
+     *
+     * @param id
+     * @return
+     */
+    CityRegion getCityRegionById(Long id);
+
+    /**
+     * get city region mono by id
+     *
+     * @param id
+     * @return
+     */
+    CompletableFuture<CityRegion> getCityRegionMonoById(Long id);
+
+    /**
+     * get city regions by id
+     *
+     * @param ids
+     * @return
+     */
+    Map<Long, CityRegion> selectCityRegionByIds(List<Long> ids);
+
+    /**
+     * get city regions mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    CompletableFuture<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids);
 
 }

@@ -9,7 +9,7 @@ import com.blue.member.api.model.MemberAddressInfo;
 import com.blue.member.config.deploy.AddressDeploy;
 import com.blue.member.constant.MemberAddressSortAttribute;
 import com.blue.member.model.MemberAddressCondition;
-import com.blue.member.remote.consumer.RpcCountryServiceConsumer;
+import com.blue.member.remote.consumer.RpcAreaServiceConsumer;
 import com.blue.member.repository.entity.MemberAddress;
 import com.blue.member.repository.mapper.MemberAddressMapper;
 import com.blue.member.service.inter.MemberAddressService;
@@ -50,18 +50,18 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
     private static final Logger LOGGER = getLogger(MemberAddressServiceImpl.class);
 
-    private MemberAddressMapper memberAddressMapper;
-
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private final RpcCountryServiceConsumer rpcCountryServiceConsumer;
+    private final RpcAreaServiceConsumer rpcAreaServiceConsumer;
+
+    private MemberAddressMapper memberAddressMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public MemberAddressServiceImpl(MemberAddressMapper memberAddressMapper, BlueIdentityProcessor blueIdentityProcessor,
-                                    RpcCountryServiceConsumer rpcCountryServiceConsumer, AddressDeploy addressDeploy) {
-        this.memberAddressMapper = memberAddressMapper;
+    public MemberAddressServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RpcAreaServiceConsumer rpcAreaServiceConsumer,
+                                    MemberAddressMapper memberAddressMapper, AddressDeploy addressDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.rpcCountryServiceConsumer = rpcCountryServiceConsumer;
+        this.rpcAreaServiceConsumer = rpcAreaServiceConsumer;
+        this.memberAddressMapper = memberAddressMapper;
 
         maxAddress = addressDeploy.getMax();
     }

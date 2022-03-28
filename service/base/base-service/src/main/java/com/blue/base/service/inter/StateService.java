@@ -1,6 +1,7 @@
 package com.blue.base.service.inter;
 
 import com.blue.base.api.model.StateInfo;
+import com.blue.base.api.model.StateRegion;
 import com.blue.base.repository.entity.State;
 import reactor.core.publisher.Mono;
 
@@ -94,7 +95,39 @@ public interface StateService {
      * @param ids
      * @return
      */
-    Mono<Map<Long,StateInfo>> selectStateInfoMonoByIds(List<Long> ids);
+    Mono<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids);
+
+    /**
+     * get state region by id
+     *
+     * @param id
+     * @return
+     */
+    StateRegion getStateRegionById(Long id);
+
+    /**
+     * get state region mono by id
+     *
+     * @param id
+     * @return
+     */
+    Mono<StateRegion> getStateRegionMonoById(Long id);
+
+    /**
+     * select state regions by ids
+     *
+     * @param ids
+     * @return
+     */
+    Map<Long, StateRegion> selectStateRegionByIds(List<Long> ids);
+
+    /**
+     * select state regions mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    Mono<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids);
 
     /**
      * invalid state infos

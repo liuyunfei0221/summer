@@ -38,10 +38,11 @@ public enum ResponseElement {
     DECRYPTION_FAILED(HttpStatus.BAD_REQUEST.value(), 400000010, "Encryption/decryption or signature/verification failed"),
     INVALID_REQUEST_METHOD(HttpStatus.BAD_REQUEST.value(), 400000011, "Invalid request method"),
     INVALID_IDENTITY(HttpStatus.BAD_REQUEST.value(), 400000012, "Invalid or empty identity"),
-    DATA_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400000013, "Data not exist"),
-    DATA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400000014, "Data already exist"),
-    DATA_HAS_NOT_CHANGED(HttpStatus.BAD_REQUEST.value(), 400000015, "Data has not changed"),
-    VERIFY_IS_INVALID(HttpStatus.BAD_REQUEST.value(), 400000016, "Verify is invalid"),
+    INVALID_DATA_STATUS(HttpStatus.BAD_REQUEST.value(), 400000013, "Invalid data"),
+    DATA_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400000014, "Data not exist"),
+    DATA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400000015, "Data already exist"),
+    DATA_HAS_NOT_CHANGED(HttpStatus.BAD_REQUEST.value(), 400000016, "Data has not changed"),
+    VERIFY_IS_INVALID(HttpStatus.BAD_REQUEST.value(), 400000017, "Verify is invalid"),
     //</editor-fold>
 
 

@@ -84,6 +84,7 @@ public class AreaServiceImpl implements AreaService {
 
     private Cache<Long, AreaRegion> idRegionCache;
 
+
     private final Function<Long, List<AreaInfo>> DB_AREAS_GETTER = cid -> {
         LOGGER.info("Function<Long, List<AreaInfo>> DB_AREAS_GETTER, cid = {}", cid);
         return AREAS_2_AREA_INFOS_CONVERTER.apply(
@@ -168,15 +169,11 @@ public class AreaServiceImpl implements AreaService {
                                     cityService.selectCityInfoMonoByIds(cityIds),
                                     stateService.selectStateInfoMonoByIds(stateIds),
                                     countryService.selectCountryInfoMonoByIds(countryIds)
-                            ).flatMap(tuple3 -> {
-                                Map<Long, CityInfo> cityInfoMap = tuple3.getT1();
-                                Map<Long, StateInfo> stateInfoMap = tuple3.getT2();
-                                Map<Long, CountryInfo> countryInfoMap = tuple3.getT3();
-
-                                return just(areaInfos.parallelStream().map(ai -> new AreaRegion(ai.getId(), countryInfoMap.get(ai.getCountryId()),
-                                                stateInfoMap.get(ai.getStateId()), cityInfoMap.get(ai.getCityId()), ai))
-                                        .collect(toMap(AreaRegion::getAreaId, ar -> ar, (a, b) -> a)));
-                            }).toFuture().join();
+                            ).flatMap(tuple3 ->
+                                    just(areaInfos.parallelStream().map(ai -> new AreaRegion(ai.getId(), tuple3.getT3().get(ai.getCountryId()),
+                                                    tuple3.getT2().get(ai.getStateId()), tuple3.getT1().get(ai.getCityId()), ai))
+                                            .collect(toMap(AreaRegion::getAreaId, ar -> ar, (a, b) -> a)))
+                            ).toFuture().join();
                         }).entrySet()
                 )
                 .flatMap(Collection::stream)

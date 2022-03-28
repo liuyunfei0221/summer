@@ -2,6 +2,7 @@ package com.blue.base.remote.provider;
 
 import com.blue.base.api.inter.RpcCityService;
 import com.blue.base.api.model.CityInfo;
+import com.blue.base.api.model.CityRegion;
 import com.blue.base.service.inter.CityService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
@@ -29,7 +30,11 @@ import static reactor.util.Loggers.getLogger;
         @Method(name = "selectCityInfoByCountryId", async = false),
         @Method(name = "selectCityInfoMonoByCountryId", async = true),
         @Method(name = "selectCityInfoByIds", async = false),
-        @Method(name = "selectCityInfoMonoByIds", async = true)
+        @Method(name = "selectCityInfoMonoByIds", async = true),
+        @Method(name = "getCityRegionById", async = false),
+        @Method(name = "getCityRegionMonoById", async = true),
+        @Method(name = "selectCityRegionByIds", async = false),
+        @Method(name = "selectCityRegionMonoByIds", async = true)
 })
 public class RpcCityServiceProvider implements RpcCityService {
 
@@ -134,6 +139,60 @@ public class RpcCityServiceProvider implements RpcCityService {
         return just(ids)
                 .publishOn(scheduler)
                 .flatMap(cityService::selectCityInfoMonoByIds)
+                .toFuture();
+    }
+
+    /**
+     * get city region by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public CityRegion getCityRegionById(Long id) {
+        LOGGER.info("CityRegion getCityRegionById(Long id), id = {}", id);
+        return cityService.getCityRegionById(id);
+    }
+
+    /**
+     * get city region mono by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public CompletableFuture<CityRegion> getCityRegionMonoById(Long id) {
+        LOGGER.info("CompletableFuture<CityRegion> getCityRegionMonoById(Long id), id = {}", id);
+        return just(id)
+                .publishOn(scheduler)
+                .flatMap(cityService::getCityRegionMonoById)
+                .toFuture();
+    }
+
+    /**
+     * get city regions by id
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Map<Long, CityRegion> selectCityRegionByIds(List<Long> ids) {
+        LOGGER.info("Map<Long, CityRegion> selectCityRegionByIds(List<Long> ids), ids = {}", ids);
+        return cityService.selectCityRegionByIds(ids);
+    }
+
+    /**
+     * get city regions mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public CompletableFuture<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids) {
+        LOGGER.info("CompletableFuture<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids), ids = {}", ids);
+        return just(ids)
+                .publishOn(scheduler)
+                .flatMap(cityService::selectCityRegionMonoByIds)
                 .toFuture();
     }
 

@@ -1,6 +1,7 @@
 package com.blue.base.api.inter;
 
 import com.blue.base.api.model.AreaInfo;
+import com.blue.base.api.model.AreaRegion;
 
 import java.util.List;
 import java.util.Map;
@@ -70,5 +71,37 @@ public interface RpcAreaService {
      * @return
      */
     CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids);
+
+    /**
+     * get region by id
+     *
+     * @param id
+     * @return
+     */
+    AreaRegion getAreaRegionById(Long id);
+
+    /**
+     * get region mono by id
+     *
+     * @param id
+     * @return
+     */
+    CompletableFuture<AreaRegion> getAreaRegionMonoById(Long id);
+
+    /**
+     * get regions by ids
+     *
+     * @param ids
+     * @return
+     */
+    Map<Long, AreaRegion> selectAreaRegionByIds(List<Long> ids);
+
+    /**
+     * get regions mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids);
 
 }

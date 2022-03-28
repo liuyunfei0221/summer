@@ -2,6 +2,7 @@ package com.blue.member.remote.consumer;
 
 import com.blue.base.api.inter.RpcStateService;
 import com.blue.base.api.model.StateInfo;
+import com.blue.base.api.model.StateRegion;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,11 @@ public class RpcStateServiceConsumer {
             @Method(name = "selectStateInfoByCountryId", async = false),
             @Method(name = "selectStateInfoMonoByCountryId", async = true),
             @Method(name = "selectStateInfoByIds", async = false),
-            @Method(name = "selectStateInfoMonoByIds", async = true)
+            @Method(name = "selectStateInfoMonoByIds", async = true),
+            @Method(name = "getStateRegionById", async = true),
+            @Method(name = "getStateRegionMonoById", async = true),
+            @Method(name = "selectStateRegionByIds", async = true),
+            @Method(name = "selectStateRegionMonoByIds", async = true)
     })
     private RpcStateService rpcStateService;
 
@@ -50,7 +55,7 @@ public class RpcStateServiceConsumer {
      * @param id
      * @return
      */
-    Optional<StateInfo> getStateInfoOptById(Long id) {
+    public Optional<StateInfo> getStateInfoOptById(Long id) {
         return rpcStateService.getStateInfoOptById(id);
     }
 
@@ -60,7 +65,7 @@ public class RpcStateServiceConsumer {
      * @param id
      * @return
      */
-    StateInfo getStateInfoById(Long id) {
+    public StateInfo getStateInfoById(Long id) {
         return rpcStateService.getStateInfoById(id);
     }
 
@@ -70,7 +75,7 @@ public class RpcStateServiceConsumer {
      * @param id
      * @return
      */
-    Mono<StateInfo> getStateInfoMonoById(Long id) {
+    public Mono<StateInfo> getStateInfoMonoById(Long id) {
         return fromFuture(rpcStateService.getStateInfoMonoById(id)).publishOn(scheduler);
     }
 
@@ -80,7 +85,7 @@ public class RpcStateServiceConsumer {
      * @param countryId
      * @return
      */
-    List<StateInfo> selectStateInfoByCountryId(Long countryId) {
+    public List<StateInfo> selectStateInfoByCountryId(Long countryId) {
         return rpcStateService.selectStateInfoByCountryId(countryId);
     }
 
@@ -90,7 +95,7 @@ public class RpcStateServiceConsumer {
      * @param countryId
      * @return
      */
-    Mono<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId) {
+    public Mono<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId) {
         return fromFuture(rpcStateService.selectStateInfoMonoByCountryId(countryId)).publishOn(scheduler);
     }
 
@@ -100,7 +105,7 @@ public class RpcStateServiceConsumer {
      * @param ids
      * @return
      */
-    Map<Long, StateInfo> selectStateInfoByIds(List<Long> ids) {
+    public Map<Long, StateInfo> selectStateInfoByIds(List<Long> ids) {
         return rpcStateService.selectStateInfoByIds(ids);
     }
 
@@ -110,8 +115,48 @@ public class RpcStateServiceConsumer {
      * @param ids
      * @return
      */
-    Mono<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids) {
+    public Mono<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids) {
         return fromFuture(rpcStateService.selectStateInfoMonoByIds(ids)).publishOn(scheduler);
+    }
+
+    /**
+     * get state region by id
+     *
+     * @param id
+     * @return
+     */
+    public StateRegion getStateRegionById(Long id) {
+        return rpcStateService.getStateRegionById(id);
+    }
+
+    /**
+     * get state region mono by id
+     *
+     * @param id
+     * @return
+     */
+    public Mono<StateRegion> getStateRegionMonoById(Long id) {
+        return fromFuture(rpcStateService.getStateRegionMonoById(id)).publishOn(scheduler);
+    }
+
+    /**
+     * select state regions by ids
+     *
+     * @param ids
+     * @return
+     */
+    public Map<Long, StateRegion> selectStateRegionByIds(List<Long> ids) {
+        return rpcStateService.selectStateRegionByIds(ids);
+    }
+
+    /**
+     * select state regions mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    public Mono<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids) {
+        return fromFuture(rpcStateService.selectStateRegionMonoByIds(ids)).publishOn(scheduler);
     }
 
 }

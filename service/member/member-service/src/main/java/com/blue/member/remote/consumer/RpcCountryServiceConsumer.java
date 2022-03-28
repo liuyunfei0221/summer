@@ -50,7 +50,7 @@ public class RpcCountryServiceConsumer {
      * @param id
      * @return
      */
-    Optional<CountryInfo> getCountryInfoOptById(Long id) {
+    public Optional<CountryInfo> getCountryInfoOptById(Long id) {
         return rpcCountryService.getCountryInfoOptById(id);
     }
 
@@ -60,7 +60,7 @@ public class RpcCountryServiceConsumer {
      * @param id
      * @return
      */
-    CountryInfo getCountryInfoById(Long id) {
+    public CountryInfo getCountryInfoById(Long id) {
         return rpcCountryService.getCountryInfoById(id);
     }
 
@@ -70,7 +70,7 @@ public class RpcCountryServiceConsumer {
      * @param id
      * @return
      */
-    Mono<CountryInfo> getCountryInfoMonoById(Long id) {
+    public Mono<CountryInfo> getCountryInfoMonoById(Long id) {
         return fromFuture(rpcCountryService.getCountryInfoMonoById(id)).publishOn(scheduler);
     }
 
@@ -79,7 +79,7 @@ public class RpcCountryServiceConsumer {
      *
      * @return
      */
-    List<CountryInfo> selectCountryInfo() {
+    public List<CountryInfo> selectCountryInfo() {
         return rpcCountryService.selectCountryInfo();
     }
 
@@ -88,7 +88,7 @@ public class RpcCountryServiceConsumer {
      *
      * @return
      */
-    Mono<List<CountryInfo>> selectCountryInfoMono() {
+    public Mono<List<CountryInfo>> selectCountryInfoMono() {
         return fromFuture(rpcCountryService.selectCountryInfoMono()).publishOn(scheduler);
     }
 
@@ -98,7 +98,7 @@ public class RpcCountryServiceConsumer {
      * @param ids
      * @return
      */
-    Map<Long, CountryInfo> selectCountryInfoByIds(List<Long> ids) {
+    public Map<Long, CountryInfo> selectCountryInfoByIds(List<Long> ids) {
         return rpcCountryService.selectCountryInfoByIds(ids);
     }
 
@@ -108,7 +108,7 @@ public class RpcCountryServiceConsumer {
      * @param ids
      * @return
      */
-    Mono<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids) {
+    public Mono<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids) {
         return fromFuture(rpcCountryService.selectCountryInfoMonoByIds(ids)).publishOn(scheduler);
     }
 

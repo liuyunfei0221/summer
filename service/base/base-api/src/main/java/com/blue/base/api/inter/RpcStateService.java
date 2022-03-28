@@ -1,6 +1,7 @@
 package com.blue.base.api.inter;
 
 import com.blue.base.api.model.StateInfo;
+import com.blue.base.api.model.StateRegion;
 
 import java.util.List;
 import java.util.Map;
@@ -70,5 +71,37 @@ public interface RpcStateService {
      * @return
      */
     CompletableFuture<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids);
+
+    /**
+     * get state region by id
+     *
+     * @param id
+     * @return
+     */
+    StateRegion getStateRegionById(Long id);
+
+    /**
+     * get state region mono by id
+     *
+     * @param id
+     * @return
+     */
+    CompletableFuture<StateRegion> getStateRegionMonoById(Long id);
+
+    /**
+     * select state regions by ids
+     *
+     * @param ids
+     * @return
+     */
+    Map<Long, StateRegion> selectStateRegionByIds(List<Long> ids);
+
+    /**
+     * select state regions mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    CompletableFuture<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids);
 
 }
