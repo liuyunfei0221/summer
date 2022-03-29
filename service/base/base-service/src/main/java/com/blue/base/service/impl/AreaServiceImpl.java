@@ -1,6 +1,7 @@
 package com.blue.base.service.impl;
 
-import com.blue.base.api.model.*;
+import com.blue.base.api.model.AreaInfo;
+import com.blue.base.api.model.AreaRegion;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Area;
@@ -35,7 +36,8 @@ import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static reactor.core.publisher.Mono.*;
+import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -56,6 +58,8 @@ public class AreaServiceImpl implements AreaService {
     private CountryService countryService;
 
     private AreaMapper areaMapper;
+
+//    private AreaRepository areaRepository;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public AreaServiceImpl(CityService cityService, StateService stateService, CountryService countryService,

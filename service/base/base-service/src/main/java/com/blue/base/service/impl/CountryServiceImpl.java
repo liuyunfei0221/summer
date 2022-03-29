@@ -5,6 +5,7 @@ import com.blue.base.config.deploy.AreaCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Country;
 import com.blue.base.repository.mapper.CountryMapper;
+import com.blue.base.repository.template.CountryRepository;
 import com.blue.base.service.inter.CountryService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -18,7 +19,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentities;
+import static com.blue.base.common.base.BlueChecker.isValidIdentity;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -47,6 +49,8 @@ public class CountryServiceImpl implements CountryService {
     private static final Logger LOGGER = getLogger(CountryServiceImpl.class);
 
     private CountryMapper countryMapper;
+
+    private CountryRepository countryRepository;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public CountryServiceImpl(ExecutorService executorService, CountryMapper countryMapper, AreaCaffeineDeploy areaCaffeineDeploy) {

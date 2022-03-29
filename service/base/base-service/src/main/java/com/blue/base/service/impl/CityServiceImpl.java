@@ -1,6 +1,7 @@
 package com.blue.base.service.impl;
 
-import com.blue.base.api.model.*;
+import com.blue.base.api.model.CityInfo;
+import com.blue.base.api.model.CityRegion;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.City;
@@ -54,6 +55,8 @@ public class CityServiceImpl implements CityService {
     private CountryService countryService;
 
     private CityMapper cityMapper;
+
+//    private CityRepository cityRepository;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public CityServiceImpl(StateService stateService, CountryService countryService, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, CityMapper cityMapper) {

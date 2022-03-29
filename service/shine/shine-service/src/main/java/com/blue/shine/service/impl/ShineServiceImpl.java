@@ -23,7 +23,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc"})
 @Service
 public class ShineServiceImpl implements ShineService {
 
