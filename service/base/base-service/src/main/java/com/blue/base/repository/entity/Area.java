@@ -1,5 +1,7 @@
 package com.blue.base.repository.entity;
 
+import org.springframework.data.annotation.Id;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,7 @@ public class Area implements Serializable {
 
     private static final long serialVersionUID = 6551123882986364356L;
 
+    @Id
     private Long id;
 
     private Long countryId;
@@ -26,7 +29,7 @@ public class Area implements Serializable {
 
     private String stateCode;
 
-    private Byte status;
+    private Integer status;
 
     private Long createTime;
 
@@ -88,11 +91,11 @@ public class Area implements Serializable {
         this.stateCode = stateCode == null ? null : stateCode.trim();
     }
 
-    public Byte getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

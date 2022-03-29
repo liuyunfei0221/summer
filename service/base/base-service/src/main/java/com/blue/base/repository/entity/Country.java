@@ -1,5 +1,7 @@
 package com.blue.base.repository.entity;
 
+import org.springframework.data.annotation.Id;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,7 @@ public final class Country implements Serializable {
 
     private static final long serialVersionUID = 8387327953062438082L;
 
+    @Id
     private Long id;
 
     private String name;
