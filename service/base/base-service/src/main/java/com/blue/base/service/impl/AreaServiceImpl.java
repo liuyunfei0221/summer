@@ -5,13 +5,15 @@ import com.blue.base.api.model.AreaRegion;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Area;
-import com.blue.base.repository.mapper.AreaMapper;
+import com.blue.base.repository.template.AreaRepository;
 import com.blue.base.service.inter.AreaService;
 import com.blue.base.service.inter.CityService;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.Cache;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -26,8 +28,7 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.converter.BaseModelConverters.AREAS_2_AREA_INFOS_CONVERTER;
-import static com.blue.base.converter.BaseModelConverters.AREA_2_AREA_INFO_CONVERTER;
+import static com.blue.base.converter.BaseModelConverters.*;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -57,17 +58,14 @@ public class AreaServiceImpl implements AreaService {
 
     private CountryService countryService;
 
-    private AreaMapper areaMapper;
+    private AreaRepository areaRepository;
 
-//    private AreaRepository areaRepository;
-
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public AreaServiceImpl(CityService cityService, StateService stateService, CountryService countryService,
-                           ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, AreaMapper areaMapper) {
+                           ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, AreaRepository areaRepository) {
         this.cityService = cityService;
         this.stateService = stateService;
         this.countryService = countryService;
-        this.areaMapper = areaMapper;
+        this.areaRepository = areaRepository;
 
         cityIdAreasCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getAreaMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
@@ -91,8 +89,8 @@ public class AreaServiceImpl implements AreaService {
 
     private final Function<Long, List<AreaInfo>> DB_AREAS_GETTER = cid -> {
         LOGGER.info("Function<Long, List<AreaInfo>> DB_AREAS_GETTER, cid = {}", cid);
-        return AREAS_2_AREA_INFOS_CONVERTER.apply(
-                this.selectAreaByCityId(cid).stream().sorted(Comparator.comparing(Area::getName)).collect(toList()));
+
+        return AREAS_2_AREA_INFOS_CONVERTER.apply(this.selectAreaByCityId(cid));
     };
 
     private final Function<Long, AreaInfo> DB_AREA_GETTER = id -> {
@@ -117,9 +115,10 @@ public class AreaServiceImpl implements AreaService {
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
-                        idAreaCache.getAll(l, is -> areaMapper.selectByIds(l)
+                        idAreaCache.getAll(l, is -> areaRepository.findAllById(l)
+                                        .flatMap(a -> just(AREA_2_AREA_INFO_CONVERTER.apply(a)))
+                                        .collectList().toFuture().join()
                                         .parallelStream()
-                                        .map(AREA_2_AREA_INFO_CONVERTER)
                                         .collect(toMap(AreaInfo::getId, ci -> ci, (a, b) -> a)))
                                 .entrySet()
                 )
@@ -194,7 +193,7 @@ public class AreaServiceImpl implements AreaService {
     public Optional<Area> getAreaById(Long id) {
         LOGGER.info("Optional<City> getCityById(Long id), id = {}", id);
 
-        return ofNullable(areaMapper.selectByPrimaryKey(id));
+        return ofNullable(areaRepository.findById(id).toFuture().join());
     }
 
     /**
@@ -210,7 +209,11 @@ public class AreaServiceImpl implements AreaService {
         if (isInvalidIdentity(cityId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return areaMapper.selectByCountryId(cityId);
+        Area area = new Area();
+        area.setCityId(cityId);
+
+        return areaRepository.findAll(Example.of(area), Sort.by("name"))
+                .collectList().toFuture().join();
     }
 
     /**
@@ -223,14 +226,13 @@ public class AreaServiceImpl implements AreaService {
     public List<Area> selectAreaByIds(List<Long> ids) {
         LOGGER.info("List<Area> selectAreaByIds(List<Long> ids), ids = {}", ids);
 
-        if (isInvalidIdentities(ids))
-            return emptyList();
-
-        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+        if (isInvalidIdentities(ids) || ids.size() > (int) MAX_SERVICE_SELECT.value)
             throw new BlueException(INVALID_PARAM);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(areaMapper::selectByIds)
+                .stream()
+                .map(l -> areaRepository.findAllById(l)
+                        .collectList().toFuture().join())
                 .flatMap(List::stream)
                 .collect(toList());
     }

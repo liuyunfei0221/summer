@@ -66,6 +66,14 @@ public final class BaseModelConverters {
     };
 
     /**
+     * cities -> city infos
+     */
+    public static final Function<List<City>, List<CityInfo>> CITIES_2_CITY_INFOS_CONVERTER = cs ->
+            cs != null && cs.size() > 0 ? cs.stream()
+                    .map(CITY_2_CITY_INFO_CONVERTER)
+                    .collect(toList()) : emptyList();
+
+    /**
      * area -> area info
      */
     public static final Function<Area, AreaInfo> AREA_2_AREA_INFO_CONVERTER = area -> {
@@ -74,14 +82,6 @@ public final class BaseModelConverters {
 
         return new AreaInfo(area.getId(), area.getCountryId(), area.getStateId(), area.getCityId(), area.getName());
     };
-
-    /**
-     * cities -> city infos
-     */
-    public static final Function<List<City>, List<CityInfo>> CITIES_2_CITY_INFOS_CONVERTER = cs ->
-            cs != null && cs.size() > 0 ? cs.stream()
-                    .map(CITY_2_CITY_INFO_CONVERTER)
-                    .collect(toList()) : emptyList();
 
     /**
      * areas -> area infos

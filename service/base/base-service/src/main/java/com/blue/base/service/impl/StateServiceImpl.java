@@ -1,15 +1,18 @@
 package com.blue.base.service.impl;
 
+import com.blue.base.api.model.CountryInfo;
 import com.blue.base.api.model.StateInfo;
 import com.blue.base.api.model.StateRegion;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.State;
-import com.blue.base.repository.mapper.StateMapper;
+import com.blue.base.repository.template.StateRepository;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.Cache;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -50,14 +53,11 @@ public class StateServiceImpl implements StateService {
 
     private CountryService countryService;
 
-    private StateMapper stateMapper;
+    private StateRepository stateRepository;
 
-//    private StateRepository stateRepository;
-
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public StateServiceImpl(CountryService countryService, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, StateMapper stateMapper) {
+    public StateServiceImpl(CountryService countryService, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, StateRepository stateRepository) {
         this.countryService = countryService;
-        this.stateMapper = stateMapper;
+        this.stateRepository = stateRepository;
 
         countryIdStatesCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
@@ -107,9 +107,10 @@ public class StateServiceImpl implements StateService {
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
-                        idStateCache.getAll(l, is -> stateMapper.selectByIds(l)
+                        idStateCache.getAll(l, is -> stateRepository.findAllById(l)
+                                        .flatMap(s -> just(STATE_2_STATE_INFO_CONVERTER.apply(s)))
+                                        .collectList().toFuture().join()
                                         .parallelStream()
-                                        .map(STATE_2_STATE_INFO_CONVERTER)
                                         .collect(toMap(StateInfo::getId, ci -> ci, (a, b) -> a)))
                                 .entrySet()
                 )
@@ -117,16 +118,19 @@ public class StateServiceImpl implements StateService {
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
     };
 
+
+    private final Function<Long, StateRegion> STATE_REGION_FINDER = id -> {
+        StateInfo stateInfo = idStateCache.get(id, DB_STATE_GETTER_WITH_ASSERT);
+        CountryInfo countryInfo = countryService.getCountryInfoById(stateInfo.getCountryId());
+        StateRegion stateRegion = new StateRegion(id, countryInfo, stateInfo);
+        return stateRegion;
+    };
+
+
     private final Function<Long, StateRegion> STATE_REGION_GETTER = id -> {
+
         if (isValidIdentity(id)) {
-            return idRegionCache.get(id, i ->
-                    just(idStateCache.get(i, DB_STATE_GETTER_WITH_ASSERT))
-                            .flatMap(stateInfo ->
-                                    countryService.getCountryInfoMonoById(stateInfo.getCountryId())
-                                            .flatMap(countryInfo -> just(new StateRegion(id, countryInfo, stateInfo)))
-                            )
-                            .toFuture().join()
-            );
+            return idRegionCache.get(id, STATE_REGION_FINDER);
         }
 
         throw new BlueException(INVALID_IDENTITY);
@@ -174,7 +178,7 @@ public class StateServiceImpl implements StateService {
     public Optional<State> getStateById(Long id) {
         LOGGER.info("Optional<State> getStateById(Long id), id = {}", id);
 
-        return ofNullable(stateMapper.selectByPrimaryKey(id));
+        return ofNullable(stateRepository.findById(id).toFuture().join());
     }
 
     /**
@@ -190,7 +194,11 @@ public class StateServiceImpl implements StateService {
         if (isInvalidIdentity(countryId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return stateMapper.selectByCountryId(countryId);
+        State state = new State();
+        state.setCountryId(countryId);
+
+        return stateRepository.findAll(Example.of(state), Sort.by("name"))
+                .collectList().toFuture().join();
     }
 
     /**
@@ -202,18 +210,15 @@ public class StateServiceImpl implements StateService {
     public List<State> selectStateByIds(List<Long> ids) {
         LOGGER.info("List<State> selectStateByIds(List<Long> ids), ids = {}", ids);
 
-        if (isInvalidIdentities(ids))
-            return emptyList();
-
-        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+        if (isInvalidIdentities(ids) || ids.size() > (int) MAX_SERVICE_SELECT.value)
             throw new BlueException(INVALID_PARAM);
 
-        return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(stateMapper::selectByIds)
+        return allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream()
+                .map(l -> stateRepository.findAllById(l)
+                        .collectList().toFuture().join())
                 .flatMap(List::stream)
-                .collect(toList())
-                :
-                emptyList();
+                .collect(toList());
     }
 
     /**

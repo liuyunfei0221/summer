@@ -7,11 +7,13 @@ import com.blue.base.config.deploy.DictCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Dict;
 import com.blue.base.repository.entity.DictType;
-import com.blue.base.repository.mapper.DictMapper;
-import com.blue.base.repository.mapper.DictTypeMapper;
+import com.blue.base.repository.template.DictRepository;
+import com.blue.base.repository.template.DictTypeRepository;
 import com.blue.base.service.inter.DictService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.Cache;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -49,14 +51,13 @@ public class DictServiceImpl implements DictService {
 
     private static final Logger LOGGER = getLogger(DictServiceImpl.class);
 
-    private final DictTypeMapper dictTypeMapper;
+    private final DictTypeRepository dictTypeRepository;
 
-    private final DictMapper dictMapper;
+    private final DictRepository dictRepository;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public DictServiceImpl(ExecutorService executorService, DictCaffeineDeploy dictCaffeineDeploy, DictTypeMapper dictTypeMapper, DictMapper dictMapper) {
-        this.dictTypeMapper = dictTypeMapper;
-        this.dictMapper = dictMapper;
+    public DictServiceImpl(ExecutorService executorService, DictCaffeineDeploy dictCaffeineDeploy, DictTypeRepository dictTypeRepository, DictRepository dictRepository) {
+        this.dictTypeRepository = dictTypeRepository;
+        this.dictRepository = dictRepository;
 
         ALL_TYPES_CACHE = generateCache(new CaffeineConfParams(
                 dictCaffeineDeploy.getDictTypeMaximumSize(), Duration.of(dictCaffeineDeploy.getExpireSeconds(), SECONDS),
@@ -96,7 +97,7 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public List<DictType> selectDictType() {
-        return dictTypeMapper.select();
+        return dictTypeRepository.findAll(Sort.by("name")).collectList().toFuture().join();
     }
 
     /**
@@ -106,7 +107,7 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public List<Dict> selectDict() {
-        return dictMapper.select();
+        return dictRepository.findAll(Sort.by("name")).collectList().toFuture().join();
     }
 
     /**
@@ -119,11 +120,20 @@ public class DictServiceImpl implements DictService {
     public List<Dict> selectDictByTypeCode(String code) {
         LOGGER.info("Mono<List<Dict>> selectDictByTypeCode(String code), code = {}", code);
 
+
         return ofNullable(code)
                 .filter(BlueChecker::isNotBlank)
-                .map(dictTypeMapper::getByCode)
+                .map(c -> {
+                    DictType dictType = new DictType();
+                    dictType.setCode(c);
+                    return dictTypeRepository.findOne(Example.of(dictType)).toFuture().join();
+                })
                 .map(DictType::getId)
-                .map(dictMapper::selectByDictTypeId)
+                .map(tid -> {
+                    Dict dict = new Dict();
+                    dict.setDictTypeId(tid);
+                    return dictRepository.findAll(Example.of(dict), Sort.by("name")).collectList().toFuture().join();
+                })
                 .orElseThrow(() -> new BlueException(BAD_REQUEST));
     }
 
@@ -176,6 +186,7 @@ public class DictServiceImpl implements DictService {
     public void invalidDictInfosCache() {
         LOGGER.info("void invalidDictInfosCache()");
 
+        ALL_TYPES_CACHE.invalidateAll();
         TYPE_CODE_DICT_CACHE.invalidateAll();
     }
 

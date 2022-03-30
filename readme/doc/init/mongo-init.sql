@@ -27,4 +27,11 @@ db.createCollection("analyze");
 
 
 
+db.createCollection("analyze");
+
+
+
+
+
+
 

@@ -147,10 +147,10 @@ mongo:
   auth: false
   userName:
   password:
-  database: shine
+  database: base
   retryReads: true
   retryWrites: false
-  applicationName: blue-shine
+  applicationName: blue-base
   uuidRepresentation: JAVA_LEGACY
   socketConnectTimeoutMillis: 5000
   socketReadTimeoutMillis: 5000
@@ -315,7 +315,7 @@ area:
   stateMaximumSize: 1024
   cityMaximumSize: 32768
   areaMaximumSize: 65536
-  expireSeconds: 259200
+  expireSeconds: 30
 
 dict:
   dictTypeMaximumSize: 1

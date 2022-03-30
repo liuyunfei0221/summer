@@ -5,12 +5,14 @@ import com.blue.base.api.model.CityRegion;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.City;
-import com.blue.base.repository.mapper.CityMapper;
+import com.blue.base.repository.template.CityRepository;
 import com.blue.base.service.inter.CityService;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.Cache;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -54,15 +56,12 @@ public class CityServiceImpl implements CityService {
 
     private CountryService countryService;
 
-    private CityMapper cityMapper;
+    private CityRepository cityRepository;
 
-//    private CityRepository cityRepository;
-
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public CityServiceImpl(StateService stateService, CountryService countryService, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, CityMapper cityMapper) {
+    public CityServiceImpl(StateService stateService, CountryService countryService, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, CityRepository cityRepository) {
         this.stateService = stateService;
         this.countryService = countryService;
-        this.cityMapper = cityMapper;
+        this.cityRepository = cityRepository;
 
         stateIdCitiesCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
@@ -112,9 +111,10 @@ public class CityServiceImpl implements CityService {
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
-                        idCityCache.getAll(l, is -> cityMapper.selectByIds(l)
+                        idCityCache.getAll(l, is -> cityRepository.findAllById(l)
+                                        .flatMap(c -> just(CITY_2_CITY_INFO_CONVERTER.apply(c)))
+                                        .collectList().toFuture().join()
                                         .parallelStream()
-                                        .map(CITY_2_CITY_INFO_CONVERTER)
                                         .collect(toMap(CityInfo::getId, ci -> ci, (a, b) -> a)))
                                 .entrySet()
                 )
@@ -185,7 +185,7 @@ public class CityServiceImpl implements CityService {
     public Optional<City> getCityById(Long id) {
         LOGGER.info("Optional<City> getCityById(Long id), id = {}", id);
 
-        return ofNullable(cityMapper.selectByPrimaryKey(id));
+        return ofNullable(cityRepository.findById(id).toFuture().join());
     }
 
     /**
@@ -201,7 +201,11 @@ public class CityServiceImpl implements CityService {
         if (isInvalidIdentity(stateId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return cityMapper.selectByCountryId(stateId);
+        City city = new City();
+        city.setStateId(stateId);
+
+        return cityRepository.findAll(Example.of(city), Sort.by("name"))
+                .collectList().toFuture().join();
     }
 
     /**
@@ -214,14 +218,13 @@ public class CityServiceImpl implements CityService {
     public List<City> selectCityByIds(List<Long> ids) {
         LOGGER.info("List<City> selectCityByIds(List<Long> ids), ids = {}", ids);
 
-        if (isInvalidIdentities(ids))
-            return emptyList();
-
-        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+        if (isInvalidIdentities(ids) || ids.size() > (int) MAX_SERVICE_SELECT.value)
             throw new BlueException(INVALID_PARAM);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(cityMapper::selectByIds)
+                .stream()
+                .map(l -> cityRepository.findAllById(l)
+                        .collectList().toFuture().join())
                 .flatMap(List::stream)
                 .collect(toList());
     }

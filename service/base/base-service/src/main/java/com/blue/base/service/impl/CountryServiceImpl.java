@@ -4,11 +4,11 @@ import com.blue.base.api.model.CountryInfo;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Country;
-import com.blue.base.repository.mapper.CountryMapper;
 import com.blue.base.repository.template.CountryRepository;
 import com.blue.base.service.inter.CountryService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.Cache;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -20,10 +20,10 @@ import java.util.function.Function;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentities;
-import static com.blue.base.common.base.BlueChecker.isValidIdentity;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.DATA_NOT_EXIST;
+import static com.blue.base.constant.base.ResponseElement.INVALID_PARAM;
 import static com.blue.base.converter.BaseModelConverters.COUNTRIES_2_COUNTRY_INFOS_CONVERTER;
 import static com.blue.base.converter.BaseModelConverters.COUNTRY_2_COUNTRY_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
@@ -48,13 +48,10 @@ public class CountryServiceImpl implements CountryService {
 
     private static final Logger LOGGER = getLogger(CountryServiceImpl.class);
 
-    private CountryMapper countryMapper;
-
     private CountryRepository countryRepository;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public CountryServiceImpl(ExecutorService executorService, CountryMapper countryMapper, AreaCaffeineDeploy areaCaffeineDeploy) {
-        this.countryMapper = countryMapper;
+    public CountryServiceImpl(ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, CountryRepository countryRepository) {
+        this.countryRepository = countryRepository;
 
         allCountriesCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCountryMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
@@ -102,9 +99,10 @@ public class CountryServiceImpl implements CountryService {
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
-                        idCountryCache.getAll(l, is -> countryMapper.selectByIds(l)
+                        idCountryCache.getAll(l, is -> countryRepository.findAllById(l)
+                                        .flatMap(c -> just(COUNTRY_2_COUNTRY_INFO_CONVERTER.apply(c)))
+                                        .collectList().toFuture().join()
                                         .parallelStream()
-                                        .map(COUNTRY_2_COUNTRY_INFO_CONVERTER)
                                         .collect(toMap(CountryInfo::getId, ci -> ci, (a, b) -> a)))
                                 .entrySet()
                 )
@@ -122,10 +120,7 @@ public class CountryServiceImpl implements CountryService {
     public Optional<Country> getCountryById(Long id) {
         LOGGER.info("Optional<Country> getCountryById(Long id), id = {}", id);
 
-        if (isValidIdentity(id))
-            return ofNullable(countryMapper.selectByPrimaryKey(id));
-
-        throw new BlueException(INVALID_IDENTITY);
+        return ofNullable(countryRepository.findById(id).toFuture().join());
     }
 
     /**
@@ -137,7 +132,8 @@ public class CountryServiceImpl implements CountryService {
     public List<Country> selectCountry() {
         LOGGER.info("List<Country> selectCountry()");
 
-        return countryMapper.select();
+        return countryRepository.findAll(Sort.by("name"))
+                .collectList().toFuture().join();
     }
 
     /**
@@ -149,14 +145,13 @@ public class CountryServiceImpl implements CountryService {
     public List<Country> selectCountryByIds(List<Long> ids) {
         LOGGER.info("List<Country> selectCountryByIds(List<Long> ids), ids = {}", ids);
 
-        if (isInvalidIdentities(ids))
-            return emptyList();
-
-        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+        if (isInvalidIdentities(ids) || ids.size() > (int) MAX_SERVICE_SELECT.value)
             throw new BlueException(INVALID_PARAM);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(countryMapper::selectByIds)
+                .stream()
+                .map(l -> countryRepository.findAllById(l)
+                        .collectList().toFuture().join())
                 .flatMap(List::stream)
                 .collect(toList());
     }
