@@ -19,9 +19,11 @@ public final class IdGenParam {
 
     private final long bootSeconds;
 
-    private final Consumer<Long> maximumTimeAlarm;
-
     private final Consumer<Long> secondsRecorder;
+
+    private final Long recordInterval;
+
+    private final Consumer<Long> maximumTimeAlarm;
 
     private final Integer bufferPower;
 
@@ -37,16 +39,17 @@ public final class IdGenParam {
 
     private final Long paddingScheduledDelayMillis;
 
-    public IdGenParam(int dataCenter, int worker, long lastSeconds, long bootSeconds, Consumer<Long> maximumTimeAlarm,
-                      Consumer<Long> secondsRecorder, Integer bufferPower, Integer paddingFactor, ExecutorService executorService,
-                      Boolean paddingScheduled, ScheduledExecutorService scheduledExecutorService, Long paddingScheduledInitialDelayMillis,
-                      Long paddingScheduledDelayMillis) {
+    public IdGenParam(int dataCenter, int worker, long lastSeconds, long bootSeconds, Consumer<Long> secondsRecorder,
+                      Long recordInterval, Consumer<Long> maximumTimeAlarm, Integer bufferPower, Integer paddingFactor,
+                      ExecutorService executorService, Boolean paddingScheduled, ScheduledExecutorService scheduledExecutorService,
+                      Long paddingScheduledInitialDelayMillis, Long paddingScheduledDelayMillis) {
         this.dataCenter = dataCenter;
         this.worker = worker;
         this.lastSeconds = lastSeconds;
         this.bootSeconds = bootSeconds;
-        this.maximumTimeAlarm = maximumTimeAlarm;
         this.secondsRecorder = secondsRecorder;
+        this.recordInterval = recordInterval;
+        this.maximumTimeAlarm = maximumTimeAlarm;
         this.bufferPower = bufferPower;
         this.paddingFactor = paddingFactor;
         this.executorService = executorService;
@@ -64,7 +67,7 @@ public final class IdGenParam {
         return worker;
     }
 
-    public Long getLastSeconds() {
+    public long getLastSeconds() {
         return lastSeconds;
     }
 
@@ -72,12 +75,16 @@ public final class IdGenParam {
         return bootSeconds;
     }
 
-    public Consumer<Long> getMaximumTimeAlarm() {
-        return maximumTimeAlarm;
-    }
-
     public Consumer<Long> getSecondsRecorder() {
         return secondsRecorder;
+    }
+
+    public Long getRecordInterval() {
+        return recordInterval;
+    }
+
+    public Consumer<Long> getMaximumTimeAlarm() {
+        return maximumTimeAlarm;
     }
 
     public Integer getBufferPower() {
@@ -115,8 +122,9 @@ public final class IdGenParam {
                 ", worker=" + worker +
                 ", lastSeconds=" + lastSeconds +
                 ", bootSeconds=" + bootSeconds +
-                ", maximumTimeAlarm=" + maximumTimeAlarm +
                 ", secondsRecorder=" + secondsRecorder +
+                ", recordInterval=" + recordInterval +
+                ", maximumTimeAlarm=" + maximumTimeAlarm +
                 ", bufferPower=" + bufferPower +
                 ", paddingFactor=" + paddingFactor +
                 ", executorService=" + executorService +

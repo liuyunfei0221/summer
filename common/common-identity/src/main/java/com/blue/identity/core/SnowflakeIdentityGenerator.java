@@ -64,11 +64,6 @@ public final class SnowflakeIdentityGenerator {
     private final long dataCenterWithWorkerBitsMask;
 
     /**
-     * maximum time alarm
-     */
-    private Consumer<Long> maximumTimeAlarm;
-
-    /**
      * need to record last seconds?
      */
     private boolean notRecord;
@@ -77,6 +72,21 @@ public final class SnowflakeIdentityGenerator {
      * last seconds recorder
      */
     private Consumer<Long> secondsRecorder;
+
+    /**
+     * last record seconds
+     */
+    private long lastRecordSeconds;
+
+    /**
+     * seconds record interval
+     */
+    private long recordInterval;
+
+    /**
+     * maximum time alarm
+     */
+    private Consumer<Long> maximumTimeAlarm;
 
     private ExecutorService executorService;
 
@@ -116,6 +126,7 @@ public final class SnowflakeIdentityGenerator {
 
         long randomOffset = current().nextLong(RAN_ADVANCE_SEC_BOUND);
         this.stepSeconds = lastSeconds - bootSeconds + 1L + randomOffset;
+        this.lastRecordSeconds = stepSeconds;
 
         if (stepSeconds > maxStepTimestamp)
             throw new IdentityException("stepSeconds cannot be greater than " + maxStepTimestamp);
@@ -131,12 +142,14 @@ public final class SnowflakeIdentityGenerator {
         if (this.executorService == null)
             throw new IdentityException("executorService can't be null");
 
+        this.secondsRecorder = snowIdGenParam.getSecondsRecorder();
+        this.notRecord = this.secondsRecorder == null;
+        Long recordInterval = snowIdGenParam.getRecordInterval();
+        this.recordInterval = recordInterval != null && recordInterval >= 0L ? recordInterval : 0L;
+
         this.maximumTimeAlarm = snowIdGenParam.getMaximumTimeAlarm();
         if (maximumTimeAlarm == null)
             throw new IdentityException("maximumTimeAlarm can't be null");
-
-        this.secondsRecorder = snowIdGenParam.getSecondsRecorder();
-        this.notRecord = this.secondsRecorder == null;
 
         ZoneId zoneId = ZoneId.of(TIME_ZONE);
         LOGGER.info(
@@ -163,10 +176,18 @@ public final class SnowflakeIdentityGenerator {
     /**
      * record last seconds
      */
+    @SuppressWarnings("DoubleCheckedLocking")
     private final Consumer<Long> STEP_SECONDS_RECORDER = stepSeconds -> {
         if (notRecord)
             return;
-        secondsRecorder.accept(stepSeconds + bootSeconds);
+
+        if (stepSeconds - lastRecordSeconds > recordInterval)
+            synchronized (this) {
+                if (stepSeconds - lastRecordSeconds > recordInterval) {
+                    lastRecordSeconds = stepSeconds;
+                    secondsRecorder.accept(stepSeconds + bootSeconds);
+                }
+            }
     };
 
     /**

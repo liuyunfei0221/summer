@@ -46,7 +46,7 @@ public final class BlueIdentityGenerator {
         ExecutorService executorService = idGenParam.getExecutorService();
 
         this.snowflakeIdentityGenerator = new SnowflakeIdentityGenerator(new SnowIdGenParam(idGenParam.getDataCenter(), idGenParam.getWorker(), idGenParam.getLastSeconds(),
-                idGenParam.getBootSeconds(), idGenParam.getMaximumTimeAlarm(), idGenParam.getSecondsRecorder(), executorService));
+                idGenParam.getBootSeconds(), idGenParam.getSecondsRecorder(), idGenParam.getRecordInterval(), idGenParam.getMaximumTimeAlarm(), executorService));
 
         int bufferSize = ((int) ~(-1L << sequenceBits) + 1) <<
                 ofNullable(idGenParam.getBufferPower()).filter(p -> p >= MIN_POWER.threshold && p <= MAX_POWER.threshold).orElse(DEFAULT_POWER.threshold);

@@ -55,6 +55,13 @@ public interface IdentityConf {
     Consumer<Long> getSecondsRecorder();
 
     /**
+     * time stamp record interval
+     *
+     * @return
+     */
+    Long getRecordInterval();
+
+    /**
      * alarm for timestamp reach max
      *
      * @return

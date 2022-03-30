@@ -18,19 +18,24 @@ public final class SnowIdGenParam {
 
     private final Long bootSeconds;
 
-    private final Consumer<Long> maximumTimeAlarm;
-
     private final Consumer<Long> secondsRecorder;
+
+    private final Long recordInterval;
+
+    private final Consumer<Long> maximumTimeAlarm;
 
     private final ExecutorService executorService;
 
-    public SnowIdGenParam(int dataCenter, int worker, Long lastSeconds, Long bootSeconds, Consumer<Long> maximumTimeAlarm, Consumer<Long> secondsRecorder, ExecutorService executorService) {
+    public SnowIdGenParam(int dataCenter, int worker, Long lastSeconds, Long bootSeconds,
+                          Consumer<Long> secondsRecorder, Long recordInterval, Consumer<Long> maximumTimeAlarm,
+                          ExecutorService executorService) {
         this.dataCenter = dataCenter;
         this.worker = worker;
         this.lastSeconds = lastSeconds;
         this.bootSeconds = bootSeconds;
-        this.maximumTimeAlarm = maximumTimeAlarm;
         this.secondsRecorder = secondsRecorder;
+        this.recordInterval = recordInterval;
+        this.maximumTimeAlarm = maximumTimeAlarm;
         this.executorService = executorService;
     }
 
@@ -50,12 +55,16 @@ public final class SnowIdGenParam {
         return bootSeconds;
     }
 
-    public Consumer<Long> getMaximumTimeAlarm() {
-        return maximumTimeAlarm;
-    }
-
     public Consumer<Long> getSecondsRecorder() {
         return secondsRecorder;
+    }
+
+    public Long getRecordInterval() {
+        return recordInterval;
+    }
+
+    public Consumer<Long> getMaximumTimeAlarm() {
+        return maximumTimeAlarm;
     }
 
     public ExecutorService getExecutorService() {
@@ -69,8 +78,9 @@ public final class SnowIdGenParam {
                 ", worker=" + worker +
                 ", lastSeconds=" + lastSeconds +
                 ", bootSeconds=" + bootSeconds +
-                ", maximumTimeAlarm=" + maximumTimeAlarm +
                 ", secondsRecorder=" + secondsRecorder +
+                ", recordInterval=" + recordInterval +
+                ", maximumTimeAlarm=" + maximumTimeAlarm +
                 ", executorService=" + executorService +
                 '}';
     }

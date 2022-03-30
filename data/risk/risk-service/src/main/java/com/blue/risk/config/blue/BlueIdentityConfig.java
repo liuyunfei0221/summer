@@ -29,6 +29,11 @@ public class BlueIdentityConfig extends BaseIdentityConfParams {
     }
 
     @Override
+    public Long getRecordInterval() {
+        return null;
+    }
+
+    @Override
     public Consumer<Long> getSecondsRecorder() {
         return null;
     }

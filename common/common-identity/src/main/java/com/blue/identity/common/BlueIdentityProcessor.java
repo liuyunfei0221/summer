@@ -74,7 +74,7 @@ public final class BlueIdentityProcessor {
 
         Boolean paddingScheduled = identityConf.getPaddingScheduled();
         idGenParam = new IdGenParam(identityConf.getDataCenter(), identityConf.getWorker(), ofNullable(identityConf.getLastSecondsGetter()).map(Supplier::get).filter(ls -> ls > 0)
-                .orElseGet(() -> now().getEpochSecond()), identityConf.getBootSeconds(), identityConf.getMaximumTimeAlarm(), identityConf.getSecondsRecorder(), identityConf.getBufferPower(),
+                .orElseGet(() -> now().getEpochSecond()), identityConf.getBootSeconds(), identityConf.getSecondsRecorder(), identityConf.getRecordInterval(), identityConf.getMaximumTimeAlarm(), identityConf.getBufferPower(),
                 identityConf.getPaddingFactor(), new ThreadPoolExecutor(identityConf.getPaddingCorePoolSize(), identityConf.getPaddingMaximumPoolSize(),
                 identityConf.getKeepAliveSeconds(), SECONDS, new ArrayBlockingQueue<>(identityConf.getPaddingBlockingQueueSize()),
                 threadFactory, (r, executor) -> {
