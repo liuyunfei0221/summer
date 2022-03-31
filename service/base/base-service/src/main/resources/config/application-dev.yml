@@ -43,7 +43,7 @@ eureka:
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://172.16.201.160:3306/portal_0
+    - url: jdbc:mysql://172.16.201.160:3306/base_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -57,7 +57,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://172.16.201.160:3306/portal_1
+    - url: jdbc:mysql://172.16.201.160:3306/base_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -316,6 +316,7 @@ area:
   cityMaximumSize: 32768
   areaMaximumSize: 65536
   expireSeconds: 30
+
 
 dict:
   dictTypeMaximumSize: 1
