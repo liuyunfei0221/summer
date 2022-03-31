@@ -15,7 +15,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.*;
@@ -39,7 +38,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * city service impl
@@ -49,8 +47,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class CityServiceImpl implements CityService {
-
-    private static final Logger LOGGER = getLogger(CityServiceImpl.class);
 
     private StateService stateService;
 
@@ -76,33 +72,34 @@ public class CityServiceImpl implements CityService {
                 AFTER_ACCESS, executorService));
     }
 
-    private final Cache<Long, List<CityInfo>> stateIdCitiesCache;
-
     private Cache<Long, CityInfo> idCityCache;
+
+    private Cache<Long, List<CityInfo>> stateIdCitiesCache;
 
     private Cache<Long, CityRegion> idRegionCache;
 
+    private final Function<Long, CityInfo> DB_CITY_GETTER = id ->
+            this.getCityById(id).map(CITY_2_CITY_INFO_CONVERTER).orElse(null);
 
-    private final Function<Long, List<CityInfo>> DB_CITIES_GETTER = sid -> {
-        LOGGER.info("DB_CITIES_GETTER, sid = {}", sid);
-        return CITIES_2_CITY_INFOS_CONVERTER.apply(
-                this.selectCityByStateId(sid).stream().sorted(Comparator.comparing(City::getName)).collect(toList()));
-    };
 
-    private final Function<Long, CityInfo> DB_CITY_GETTER = id -> {
-        LOGGER.info("Function<Long, CityInfo> DB_CITY_GETTER, id = {}", id);
-        return this.getCityById(id).map(CITY_2_CITY_INFO_CONVERTER).orElse(null);
-    };
+    private final Function<Long, CityInfo> DB_CITY_GETTER_WITH_ASSERT = id ->
+            this.getCityById(id).map(CITY_2_CITY_INFO_CONVERTER)
+                    .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
-    private final Function<Long, CityInfo> DB_CITY_GETTER_WITH_ASSERT = id -> {
-        LOGGER.info("Function<Long, CityInfo> DB_CITY_GETTER_WITH_ASSERT, id = {}", id);
-        return this.getCityById(id).map(CITY_2_CITY_INFO_CONVERTER)
-                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
-    };
+    private final Function<Long, List<CityInfo>> DB_CITIES_BY_STATE_ID_GETTER = sid ->
+            CITIES_2_CITY_INFOS_CONVERTER.apply(
+                    this.selectCityByStateId(sid).stream().sorted(Comparator.comparing(City::getName)).collect(toList()));
+
+    private final Function<Long, Optional<CityInfo>> CITY_OPT_BY_ID_GETTER = id ->
+            ofNullable(idCityCache.get(id, DB_CITY_GETTER));
+
+    private final Function<Long, CityInfo> CITY_BY_ID_WITH_ASSERT_GETTER = id ->
+            idCityCache.get(id, DB_CITY_GETTER_WITH_ASSERT);
+
+    private final Function<Long, List<CityInfo>> CITIES_BY_STATE_ID_GETTER = sid ->
+            stateIdCitiesCache.get(sid, DB_CITIES_BY_STATE_ID_GETTER);
 
     private final Function<List<Long>, Map<Long, CityInfo>> CACHE_CITIES_BY_IDS_GETTER = ids -> {
-        LOGGER.info("Function<List<Long>, Map<Long, CityInfo>> CACHE_CITIES_BY_IDS_GETTER, ids = {}", ids);
-
         if (isInvalidIdentities(ids))
             return emptyMap();
 
@@ -140,8 +137,6 @@ public class CityServiceImpl implements CityService {
     };
 
     private final Function<List<Long>, Map<Long, CityRegion>> CITY_REGIONS_GETTER = ids -> {
-        LOGGER.info("Function<List<Long>, Map<Long, CityRegion>> CITY_REGIONS_GETTER, ids = {}", ids);
-
         if (isInvalidIdentities(ids))
             return emptyMap();
 
@@ -183,8 +178,6 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Optional<City> getCityById(Long id) {
-        LOGGER.info("Optional<City> getCityById(Long id), id = {}", id);
-
         return ofNullable(cityRepository.findById(id).toFuture().join());
     }
 
@@ -196,8 +189,6 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public List<City> selectCityByStateId(Long stateId) {
-        LOGGER.info("List<City> selectCityByStateId(Long stateId), stateId = {}", stateId);
-
         if (isInvalidIdentity(stateId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -216,8 +207,6 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public List<City> selectCityByIds(List<Long> ids) {
-        LOGGER.info("List<City> selectCityByIds(List<Long> ids), ids = {}", ids);
-
         if (isInvalidIdentities(ids) || ids.size() > (int) MAX_SERVICE_SELECT.value)
             throw new BlueException(INVALID_PARAM);
 
@@ -237,7 +226,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Optional<CityInfo> getCityInfoOptById(Long id) {
-        return ofNullable(idCityCache.get(id, DB_CITY_GETTER));
+        return CITY_OPT_BY_ID_GETTER.apply(id);
     }
 
     /**
@@ -248,7 +237,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public CityInfo getCityInfoById(Long id) {
-        return idCityCache.get(id, DB_CITY_GETTER_WITH_ASSERT);
+        return CITY_BY_ID_WITH_ASSERT_GETTER.apply(id);
     }
 
     /**
@@ -259,7 +248,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<CityInfo> getCityInfoMonoById(Long id) {
-        return just(idCityCache.get(id, DB_CITY_GETTER_WITH_ASSERT));
+        return just(CITY_BY_ID_WITH_ASSERT_GETTER.apply(id));
     }
 
     /**
@@ -270,7 +259,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public List<CityInfo> selectCityInfoByStateId(Long stateId) {
-        return stateIdCitiesCache.get(stateId, DB_CITIES_GETTER);
+        return CITIES_BY_STATE_ID_GETTER.apply(stateId);
     }
 
     /**
@@ -281,7 +270,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId) {
-        return just(stateIdCitiesCache.get(stateId, DB_CITIES_GETTER)).switchIfEmpty(just(emptyList()));
+        return just(CITIES_BY_STATE_ID_GETTER.apply(stateId)).switchIfEmpty(just(emptyList()));
     }
 
     /**
@@ -292,8 +281,6 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Map<Long, CityInfo> selectCityInfoByIds(List<Long> ids) {
-        LOGGER.info("Map<Long, CityInfo> selectStateInfoByIds(List<Long> ids), ids = {}", ids);
-
         return CACHE_CITIES_BY_IDS_GETTER.apply(ids);
     }
 
@@ -305,8 +292,6 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<Map<Long, CityInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
-
         return just(CACHE_CITIES_BY_IDS_GETTER.apply(ids));
     }
 
@@ -318,7 +303,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public CityRegion getCityRegionById(Long id) {
-        return idRegionCache.get(id, CITY_REGION_GETTER);
+        return CITY_REGION_GETTER.apply(id);
     }
 
     /**
@@ -329,7 +314,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<CityRegion> getCityRegionMonoById(Long id) {
-        return just(idRegionCache.get(id, CITY_REGION_GETTER));
+        return just(CITY_REGION_GETTER.apply(id));
     }
 
     /**
@@ -361,8 +346,6 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public void invalidCityInfosCache() {
-        LOGGER.info("void invalidStateInfosCache()");
-
         stateIdCitiesCache.invalidateAll();
         idCityCache.invalidateAll();
         idRegionCache.invalidateAll();

@@ -16,7 +16,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.*;
@@ -28,7 +27,8 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.converter.BaseModelConverters.*;
+import static com.blue.base.converter.BaseModelConverters.AREAS_2_AREA_INFOS_CONVERTER;
+import static com.blue.base.converter.BaseModelConverters.AREA_2_AREA_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -39,7 +39,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * area service impl
@@ -49,8 +48,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class AreaServiceImpl implements AreaService {
-
-    private static final Logger LOGGER = getLogger(CityServiceImpl.class);
 
     private CityService cityService;
 
@@ -80,33 +77,32 @@ public class AreaServiceImpl implements AreaService {
                 AFTER_ACCESS, executorService));
     }
 
-    private final Cache<Long, List<AreaInfo>> cityIdAreasCache;
-
     private Cache<Long, AreaInfo> idAreaCache;
+
+    private Cache<Long, List<AreaInfo>> cityIdAreasCache;
 
     private Cache<Long, AreaRegion> idRegionCache;
 
+    private final Function<Long, AreaInfo> DB_AREA_GETTER = id ->
+            this.getAreaById(id).map(AREA_2_AREA_INFO_CONVERTER).orElse(null);
 
-    private final Function<Long, List<AreaInfo>> DB_AREAS_GETTER = cid -> {
-        LOGGER.info("Function<Long, List<AreaInfo>> DB_AREAS_GETTER, cid = {}", cid);
+    private final Function<Long, AreaInfo> DB_AREA_GETTER_WITH_ASSERT = id ->
+            this.getAreaById(id).map(AREA_2_AREA_INFO_CONVERTER)
+                    .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
-        return AREAS_2_AREA_INFOS_CONVERTER.apply(this.selectAreaByCityId(cid));
-    };
+    private final Function<Long, List<AreaInfo>> DB_AREAS_BY_CITY_ID_GETTER = cid ->
+            AREAS_2_AREA_INFOS_CONVERTER.apply(this.selectAreaByCityId(cid));
 
-    private final Function<Long, AreaInfo> DB_AREA_GETTER = id -> {
-        LOGGER.info("Function<Long, AreaInfo> DB_AREA_GETTER, id = {}", id);
-        return this.getAreaById(id).map(AREA_2_AREA_INFO_CONVERTER).orElse(null);
-    };
+    private final Function<Long, Optional<AreaInfo>> AREA_OPT_BY_ID_GETTER = id ->
+            ofNullable(idAreaCache.get(id, DB_AREA_GETTER));
 
-    private final Function<Long, AreaInfo> DB_AREA_GETTER_WITH_ASSERT = id -> {
-        LOGGER.info("Function<Long, AreaInfo> DB_AREA_GETTER_WITH_ASSERT, id = {}", id);
-        return this.getAreaById(id).map(AREA_2_AREA_INFO_CONVERTER)
-                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
-    };
+    private final Function<Long, AreaInfo> AREA_BY_ID_WITH_ASSERT_GETTER = id ->
+            idAreaCache.get(id, DB_AREA_GETTER_WITH_ASSERT);
+
+    private final Function<Long, List<AreaInfo>> AREAS_BY_CITY_ID_GETTER = cid ->
+            cityIdAreasCache.get(cid, DB_AREAS_BY_CITY_ID_GETTER);
 
     private final Function<List<Long>, Map<Long, AreaInfo>> CACHE_AREAS_BY_IDS_GETTER = ids -> {
-        LOGGER.info("Function<List<Long>, Map<Long, AreaInfo>> CACHE_AREAS_BY_IDS_GETTER, ids = {}", ids);
-
         if (isInvalidIdentities(ids))
             return emptyMap();
 
@@ -145,8 +141,6 @@ public class AreaServiceImpl implements AreaService {
     };
 
     private final Function<List<Long>, Map<Long, AreaRegion>> AREA_REGIONS_GETTER = ids -> {
-        LOGGER.info("Function<List<Long>, Map<Long, AreaRegion>> AREA_REGIONS_GETTER, ids = {}", ids);
-
         if (isInvalidIdentities(ids))
             return emptyMap();
 
@@ -191,8 +185,6 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Optional<Area> getAreaById(Long id) {
-        LOGGER.info("Optional<City> getCityById(Long id), id = {}", id);
-
         return ofNullable(areaRepository.findById(id).toFuture().join());
     }
 
@@ -204,8 +196,6 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public List<Area> selectAreaByCityId(Long cityId) {
-        LOGGER.info("List<City> selectCityByStateId(Long stateId), cityId = {}", cityId);
-
         if (isInvalidIdentity(cityId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -224,8 +214,6 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public List<Area> selectAreaByIds(List<Long> ids) {
-        LOGGER.info("List<Area> selectAreaByIds(List<Long> ids), ids = {}", ids);
-
         if (isInvalidIdentities(ids) || ids.size() > (int) MAX_SERVICE_SELECT.value)
             throw new BlueException(INVALID_PARAM);
 
@@ -245,7 +233,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Optional<AreaInfo> getAreaInfoOptById(Long id) {
-        return ofNullable(idAreaCache.get(id, DB_AREA_GETTER));
+        return AREA_OPT_BY_ID_GETTER.apply(id);
     }
 
     /**
@@ -256,7 +244,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public AreaInfo getAreaInfoById(Long id) {
-        return idAreaCache.get(id, DB_AREA_GETTER_WITH_ASSERT);
+        return AREA_BY_ID_WITH_ASSERT_GETTER.apply(id);
     }
 
     /**
@@ -267,7 +255,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<AreaInfo> getAreaInfoMonoById(Long id) {
-        return just(idAreaCache.get(id, DB_AREA_GETTER_WITH_ASSERT));
+        return just(AREA_BY_ID_WITH_ASSERT_GETTER.apply(id));
     }
 
     /**
@@ -278,7 +266,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public List<AreaInfo> selectAreaInfoByCityId(Long cityId) {
-        return cityIdAreasCache.get(cityId, DB_AREAS_GETTER);
+        return AREAS_BY_CITY_ID_GETTER.apply(cityId);
     }
 
     /**
@@ -289,7 +277,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId) {
-        return just(cityIdAreasCache.get(cityId, DB_AREAS_GETTER)).switchIfEmpty(just(emptyList()));
+        return just(AREAS_BY_CITY_ID_GETTER.apply(cityId)).switchIfEmpty(just(emptyList()));
     }
 
     /**
@@ -300,8 +288,6 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids) {
-        LOGGER.info("Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids), ids = {}", ids);
-
         return CACHE_AREAS_BY_IDS_GETTER.apply(ids);
     }
 
@@ -313,8 +299,6 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids)), ids = {}", ids);
-
         return just(CACHE_AREAS_BY_IDS_GETTER.apply(ids));
     }
 
@@ -326,7 +310,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public AreaRegion getAreaRegionById(Long id) {
-        return idRegionCache.get(id, AREA_REGION_GETTER);
+        return AREA_REGION_GETTER.apply(id);
     }
 
     /**
@@ -337,7 +321,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<AreaRegion> getAreaRegionMonoById(Long id) {
-        return just(idRegionCache.get(id, AREA_REGION_GETTER));
+        return just(AREA_REGION_GETTER.apply(id));
     }
 
     /**
@@ -369,8 +353,6 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public void invalidAreaInfosCache() {
-        LOGGER.info("void invalidAreaInfosCache()");
-
         cityIdAreasCache.invalidateAll();
         idAreaCache.invalidateAll();
         idRegionCache.invalidateAll();

@@ -1,6 +1,5 @@
 package com.blue.base.service.impl;
 
-import com.blue.base.api.model.CountryInfo;
 import com.blue.base.api.model.StateInfo;
 import com.blue.base.api.model.StateRegion;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.*;
@@ -38,7 +36,6 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * state service impl
@@ -48,8 +45,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class StateServiceImpl implements StateService {
-
-    private static final Logger LOGGER = getLogger(StateServiceImpl.class);
 
     private CountryService countryService;
 
@@ -72,33 +67,33 @@ public class StateServiceImpl implements StateService {
                 AFTER_ACCESS, executorService));
     }
 
-    private final Cache<Long, List<StateInfo>> countryIdStatesCache;
-
     private Cache<Long, StateInfo> idStateCache;
+
+    private Cache<Long, List<StateInfo>> countryIdStatesCache;
 
     private Cache<Long, StateRegion> idRegionCache;
 
+    private final Function<Long, StateInfo> DB_STATE_GETTER = id ->
+            this.getStateById(id).map(STATE_2_STATE_INFO_CONVERTER).orElse(null);
 
-    private final Function<Long, List<StateInfo>> DB_STATES_GETTER = cid -> {
-        LOGGER.info("Function<Long, List<StateInfo>> DB_STATES_GETTER, cid = {}", cid);
-        return STATES_2_STATE_INFOS_CONVERTER.apply(
-                this.selectStateByCountryId(cid).stream().sorted(Comparator.comparing(State::getStateCode)).collect(toList()));
-    };
+    private final Function<Long, StateInfo> DB_STATE_GETTER_WITH_ASSERT = id ->
+            this.getStateById(id).map(STATE_2_STATE_INFO_CONVERTER)
+                    .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
-    private final Function<Long, StateInfo> DB_STATE_GETTER = id -> {
-        LOGGER.info("Function<Long, StateInfo> DB_STATE_GETTER, id = {}", id);
-        return this.getStateById(id).map(STATE_2_STATE_INFO_CONVERTER).orElse(null);
-    };
+    private final Function<Long, List<StateInfo>> DB_STATES_BY_COUNTRY_ID_GETTER = cid ->
+            STATES_2_STATE_INFOS_CONVERTER.apply(
+                    this.selectStateByCountryId(cid).stream().sorted(Comparator.comparing(State::getStateCode)).collect(toList()));
 
-    private final Function<Long, StateInfo> DB_STATE_GETTER_WITH_ASSERT = id -> {
-        LOGGER.info("Function<Long, StateInfo> DB_STATE_GETTER_WITH_ASSERT, id = {}", id);
-        return this.getStateById(id).map(STATE_2_STATE_INFO_CONVERTER)
-                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
-    };
+    private final Function<Long, Optional<StateInfo>> STATE_OPT_BY_ID_GETTER = id ->
+            ofNullable(idStateCache.get(id, DB_STATE_GETTER));
+
+    private final Function<Long, StateInfo> STATE_BY_ID_WITH_ASSERT_GETTER = id ->
+            idStateCache.get(id, DB_STATE_GETTER_WITH_ASSERT);
+
+    private final Function<Long, List<StateInfo>> STATES_BY_COUNTRY_ID_GETTER = cid ->
+            countryIdStatesCache.get(cid, DB_STATES_BY_COUNTRY_ID_GETTER);
 
     private final Function<List<Long>, Map<Long, StateInfo>> CACHE_STATES_BY_IDS_GETTER = ids -> {
-        LOGGER.info("Function<List<Long>, Map<Long, StateInfo>> CACHE_STATES_BY_IDS_GETTER, ids = {}", ids);
-
         if (isInvalidIdentities(ids))
             return emptyMap();
 
@@ -118,27 +113,22 @@ public class StateServiceImpl implements StateService {
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
     };
 
-
-    private final Function<Long, StateRegion> STATE_REGION_FINDER = id -> {
-        StateInfo stateInfo = idStateCache.get(id, DB_STATE_GETTER_WITH_ASSERT);
-        CountryInfo countryInfo = countryService.getCountryInfoById(stateInfo.getCountryId());
-        StateRegion stateRegion = new StateRegion(id, countryInfo, stateInfo);
-        return stateRegion;
-    };
-
-
     private final Function<Long, StateRegion> STATE_REGION_GETTER = id -> {
-
         if (isValidIdentity(id)) {
-            return idRegionCache.get(id, STATE_REGION_FINDER);
+            return idRegionCache.get(id, i ->
+                    just(idStateCache.get(i, DB_STATE_GETTER_WITH_ASSERT))
+                            .flatMap(stateInfo ->
+                                    countryService.getCountryInfoMonoById(stateInfo.getCountryId())
+                                            .flatMap(countryInfo -> just(new StateRegion(id, countryInfo, stateInfo)))
+                            )
+                            .toFuture().join()
+            );
         }
 
         throw new BlueException(INVALID_IDENTITY);
     };
 
     private final Function<List<Long>, Map<Long, StateRegion>> STATE_REGIONS_GETTER = ids -> {
-        LOGGER.info("Function<List<Long>, Map<Long, StateRegion>> STATE_REGIONS_GETTER, ids = {}", ids);
-
         if (isInvalidIdentities(ids))
             return emptyMap();
 
@@ -176,8 +166,6 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Optional<State> getStateById(Long id) {
-        LOGGER.info("Optional<State> getStateById(Long id), id = {}", id);
-
         return ofNullable(stateRepository.findById(id).toFuture().join());
     }
 
@@ -189,8 +177,6 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public List<State> selectStateByCountryId(Long countryId) {
-        LOGGER.info("List<State> selectStateByCountryId(Long countryId), countryId = {}", countryId);
-
         if (isInvalidIdentity(countryId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -208,8 +194,6 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public List<State> selectStateByIds(List<Long> ids) {
-        LOGGER.info("List<State> selectStateByIds(List<Long> ids), ids = {}", ids);
-
         if (isInvalidIdentities(ids) || ids.size() > (int) MAX_SERVICE_SELECT.value)
             throw new BlueException(INVALID_PARAM);
 
@@ -229,7 +213,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Optional<StateInfo> getStateInfoOptById(Long id) {
-        return ofNullable(idStateCache.get(id, DB_STATE_GETTER));
+        return STATE_OPT_BY_ID_GETTER.apply(id);
     }
 
     /**
@@ -240,7 +224,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public StateInfo getStateInfoById(Long id) {
-        return idStateCache.get(id, DB_STATE_GETTER_WITH_ASSERT);
+        return STATE_BY_ID_WITH_ASSERT_GETTER.apply(id);
     }
 
     /**
@@ -251,7 +235,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<StateInfo> getStateInfoMonoById(Long id) {
-        return just(idStateCache.get(id, DB_STATE_GETTER_WITH_ASSERT));
+        return just(STATE_BY_ID_WITH_ASSERT_GETTER.apply(id));
     }
 
     /**
@@ -262,7 +246,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public List<StateInfo> selectStateInfoByCountryId(Long countryId) {
-        return countryIdStatesCache.get(countryId, DB_STATES_GETTER);
+        return STATES_BY_COUNTRY_ID_GETTER.apply(countryId);
     }
 
     /**
@@ -273,7 +257,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId) {
-        return just(countryIdStatesCache.get(countryId, DB_STATES_GETTER)).switchIfEmpty(just(emptyList()));
+        return just(STATES_BY_COUNTRY_ID_GETTER.apply(countryId)).switchIfEmpty(just(emptyList()));
     }
 
     /**
@@ -284,8 +268,6 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Map<Long, StateInfo> selectStateInfoByIds(List<Long> ids) {
-        LOGGER.info("Map<Long,StateInfo> selectStateInfoByIds(List<Long> ids), ids = {}", ids);
-
         return CACHE_STATES_BY_IDS_GETTER.apply(ids);
     }
 
@@ -297,8 +279,6 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
-
         return just(CACHE_STATES_BY_IDS_GETTER.apply(ids));
     }
 
@@ -310,7 +290,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public StateRegion getStateRegionById(Long id) {
-        return idRegionCache.get(id, STATE_REGION_GETTER);
+        return STATE_REGION_GETTER.apply(id);
     }
 
     /**
@@ -321,7 +301,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<StateRegion> getStateRegionMonoById(Long id) {
-        return just(idRegionCache.get(id, STATE_REGION_GETTER));
+        return just(STATE_REGION_GETTER.apply(id));
     }
 
     /**
@@ -353,8 +333,6 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public void invalidStateInfosCache() {
-        LOGGER.info("void invalidStateInfosCache()");
-
         countryIdStatesCache.invalidateAll();
         idStateCache.invalidateAll();
         idRegionCache.invalidateAll();

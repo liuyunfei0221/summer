@@ -1,6 +1,6 @@
 package com.blue.base.router.manager;
 
-import com.blue.base.handler.manager.DataMoveHandler;
+import com.blue.base.handler.manager.RegionTestHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -14,20 +14,22 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
+ * for region test and data move
+ *
  * @author DarkBlue
  */
 @Configuration
-public class DataMoveRoute {
+public class RegionTestRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> dataMoveRouter(DataMoveHandler dataMoveHandler) {
+    RouterFunction<ServerResponse> dataMoveRouter(RegionTestHandler regionTestHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-base");
+        RequestPredicate pathPredicate = path("/blue-base/test");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("/move", accept(APPLICATION_JSON), dataMoveHandler::move)
-                .GET("/region", accept(APPLICATION_JSON), dataMoveHandler::region)
+                .GET("/move", accept(APPLICATION_JSON), regionTestHandler::move)
+                .GET("/region", accept(APPLICATION_JSON), regionTestHandler::region)
                 .build();
 
         return nest(pathPredicate, routerFunction);
