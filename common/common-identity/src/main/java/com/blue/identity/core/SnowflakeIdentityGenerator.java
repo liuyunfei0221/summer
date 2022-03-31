@@ -9,15 +9,12 @@ import java.time.ZoneId;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.base.SummerAttr.DATE_TIME_FORMATTER;
-import static com.blue.base.constant.base.SummerAttr.TIME_ZONE;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.base.constant.base.SummerAttr.*;
 import static com.blue.identity.constant.SnowflakeBits.*;
-import static java.lang.System.currentTimeMillis;
-import static java.time.Instant.now;
 import static java.time.LocalDateTime.ofInstant;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static reactor.util.Loggers.getLogger;
 
 
@@ -84,6 +81,11 @@ public final class SnowflakeIdentityGenerator {
     private long recordInterval;
 
     /**
+     * need to alarm?
+     */
+    private boolean notAlarm;
+
+    /**
      * maximum time alarm
      */
     private Consumer<Long> maximumTimeAlarm;
@@ -105,8 +107,8 @@ public final class SnowflakeIdentityGenerator {
 
         long maxDataCenter = ~(-1L << dataCenterBits);
         long maxWorker = ~(-1L << workerBits);
-        long dataCenter = snowIdGenParam.getDataCenter();
-        long worker = snowIdGenParam.getWorker();
+        long dataCenter = ofNullable(snowIdGenParam.getDataCenter()).filter(dc -> dc >= 0L).orElseThrow(() -> new IdentityException("dataCenter cannot be null or less than 0L"));
+        long worker = ofNullable(snowIdGenParam.getWorker()).filter(w -> w >= 0L).orElseThrow(() -> new IdentityException("worker cannot be null or less than 0L"));
 
         if (dataCenter > maxDataCenter)
             throw new IdentityException("dataCenter cannot be greater than " + maxDataCenter);
@@ -115,17 +117,14 @@ public final class SnowflakeIdentityGenerator {
 
         this.maxStepTimestamp = ~(-1L << timestampBits);
 
-        long currentSecond = MILLISECONDS.toSeconds(currentTimeMillis());
-        this.bootSeconds = snowIdGenParam.getBootSeconds();
-        long lastSeconds = ofNullable(snowIdGenParam.getLastSeconds())
-                .filter(ls -> ls > 0)
-                .orElseGet(() -> now().getEpochSecond());
+        long currentSecond = TIME_STAMP_GETTER.get();
+        this.bootSeconds = ofNullable(snowIdGenParam.getBootSeconds()).filter(bs -> bs > 0L).orElse(ONLINE_TIME);
+        long lastSeconds = ofNullable(snowIdGenParam.getLastSeconds()).filter(ls -> ls > 0).orElseGet(TIME_STAMP_GETTER);
 
         if (bootSeconds >= currentSecond || bootSeconds >= lastSeconds)
             throw new IdentityException("bootSeconds cannot be greater than " + currentSecond + " or " + lastSeconds);
 
-        long randomOffset = current().nextLong(RAN_ADVANCE_SEC_BOUND);
-        this.stepSeconds = lastSeconds - bootSeconds + 1L + randomOffset;
+        this.stepSeconds = lastSeconds - bootSeconds + 1L + current().nextLong(RAN_ADVANCE_SEC_BOUND);
         this.lastRecordSeconds = stepSeconds;
 
         if (stepSeconds > maxStepTimestamp)
@@ -135,8 +134,7 @@ public final class SnowflakeIdentityGenerator {
         this.sequence = 0L;
 
         this.timeStampShift = dataCenterBits + workerBits + sequenceBits;
-        int dataCenterShift = workerBits + sequenceBits;
-        this.dataCenterWithWorkerBitsMask = (dataCenter << dataCenterShift) | (worker << sequenceBits);
+        this.dataCenterWithWorkerBitsMask = (dataCenter << (workerBits + sequenceBits)) | (worker << sequenceBits);
 
         this.executorService = snowIdGenParam.getExecutorService();
         if (this.executorService == null)
@@ -144,12 +142,10 @@ public final class SnowflakeIdentityGenerator {
 
         this.secondsRecorder = snowIdGenParam.getSecondsRecorder();
         this.notRecord = this.secondsRecorder == null;
-        Long recordInterval = snowIdGenParam.getRecordInterval();
-        this.recordInterval = recordInterval != null && recordInterval >= 0L ? recordInterval : 0L;
+        this.recordInterval = ofNullable(snowIdGenParam.getRecordInterval()).filter(ri -> ri >= 1L).orElse(1L);
 
         this.maximumTimeAlarm = snowIdGenParam.getMaximumTimeAlarm();
-        if (maximumTimeAlarm == null)
-            throw new IdentityException("maximumTimeAlarm can't be null");
+        this.notAlarm = this.maximumTimeAlarm == null;
 
         ZoneId zoneId = ZoneId.of(TIME_ZONE);
         LOGGER.info(
@@ -166,10 +162,15 @@ public final class SnowflakeIdentityGenerator {
      * alarm for Maximum time to reach
      */
     private final Consumer<Long> MAXIMUM_TIME_ALARM = stepSeconds -> {
-        if (stepSeconds > maxStepTimestamp) {
+        if (notAlarm)
+            return;
+
+        if (stepSeconds + bootSeconds > maxStepTimestamp) {
             long maxTimeStamp = maxStepTimestamp + bootSeconds;
-            LOGGER.error("Maximum time to reach {}", maxTimeStamp);
-            maximumTimeAlarm.accept(maxTimeStamp);
+            LOGGER.error("Maximum time to reach {} , !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", maxTimeStamp);
+            synchronized (this) {
+                maximumTimeAlarm.accept(maxTimeStamp);
+            }
         }
     };
 
@@ -184,8 +185,8 @@ public final class SnowflakeIdentityGenerator {
         if (stepSeconds - lastRecordSeconds > recordInterval)
             synchronized (this) {
                 if (stepSeconds - lastRecordSeconds > recordInterval) {
-                    lastRecordSeconds = stepSeconds;
                     secondsRecorder.accept(stepSeconds + bootSeconds);
+                    lastRecordSeconds = stepSeconds;
                 }
             }
     };

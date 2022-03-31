@@ -11,6 +11,7 @@ import java.util.Properties;
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.loadProp;
+import static com.blue.base.common.base.TimeUnity.convertStrToEpochSecond;
 import static java.time.Clock.system;
 import static java.time.ZoneId.of;
 import static java.time.format.DateTimeFormatter.ofPattern;
@@ -54,6 +55,11 @@ public final class SummerAttr {
     public static final DateTimeFormatter DATE_TIME_FORMATTER;
 
     /**
+     * online time, stamp of seconds
+     */
+    public static final long ONLINE_TIME;
+
+    /**
      * non value param
      */
     public static final NonValueParam NON_VALUE_PARAM = new NonValueParam();
@@ -71,7 +77,8 @@ public final class SummerAttr {
             IDENTITY_ATTR_KEY = "identity",
             LANGUAGE_ATTR_KEY = "language",
             TIME_ZONE_ATTR_KEY = "timeZone",
-            DATE_TIME_FORMAT_KEY = "dateTimeFormat";
+            DATE_TIME_FORMAT_KEY = "dateTimeFormat",
+            ONLINE_TIME_STR_KEY = "onlineTime";
 
     static {
         List<File> files = getFiles(MESSAGES_URI, false);
@@ -96,12 +103,17 @@ public final class SummerAttr {
         if (isBlank(dateTimeFormat))
             throw new RuntimeException("dateTimeFormat can't be null");
 
+        String onlineTimeStr = properties.getProperty(ONLINE_TIME_STR_KEY);
+        if (isBlank(dateTimeFormat))
+            throw new RuntimeException("onlineTimeStr can't be null");
+
         IDENTITY = identity;
         LANGUAGE = language;
         TIME_ZONE = timeZone;
         CLOCK = system(of(TIME_ZONE));
         DATE_TIME_FORMAT = dateTimeFormat;
         DATE_TIME_FORMATTER = ofPattern(DATE_TIME_FORMAT);
+        ONLINE_TIME = convertStrToEpochSecond(onlineTimeStr);
     }
 
 }

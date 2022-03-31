@@ -43,6 +43,7 @@ public enum ResponseElement {
     DATA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400000015, "Data already exist"),
     DATA_HAS_NOT_CHANGED(HttpStatus.BAD_REQUEST.value(), 400000016, "Data has not changed"),
     VERIFY_IS_INVALID(HttpStatus.BAD_REQUEST.value(), 400000017, "Verify is invalid"),
+    TIME_FORMAT_IS_INVALID(HttpStatus.BAD_REQUEST.value(), 400000018, "Time format is invalid"),
     //</editor-fold>
 
 

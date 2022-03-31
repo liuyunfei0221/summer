@@ -1,5 +1,6 @@
 package com.blue.base.common.base;
 
+import com.blue.base.model.exps.BlueException;
 import org.springframework.util.Assert;
 
 import java.time.Instant;
@@ -8,6 +9,8 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.constant.base.ResponseElement.TIME_FORMAT_IS_INVALID;
 import static com.blue.base.constant.base.SummerAttr.DATE_TIME_FORMATTER;
 import static com.blue.base.constant.base.SummerAttr.TIME_ZONE;
 import static java.time.Instant.now;
@@ -67,7 +70,7 @@ public final class TimeUnity {
      *
      * @return
      */
-    public static long convertDateToStamp(Date date) {
+    public static long convertDateToEpochSecond(Date date) {
         Assert.isTrue(date != null, "date can't be null");
         return date.toInstant().getEpochSecond();
     }
@@ -77,7 +80,17 @@ public final class TimeUnity {
      *
      * @return
      */
-    public static long convertLocalDateTimeToStamp(LocalDateTime localDateTime) {
+    public static long convertLocalDateTimeToMilli(LocalDateTime localDateTime) {
+        Assert.isTrue(localDateTime != null, "localDateTime can't be null");
+        return localDateTime.atZone(ZONE_ID).toInstant().toEpochMilli();
+    }
+
+    /**
+     * LocalDateTime -> second stamp
+     *
+     * @return
+     */
+    public static long convertLocalDateTimeToEpochSecond(LocalDateTime localDateTime) {
         Assert.isTrue(localDateTime != null, "localDateTime can't be null");
         return localDateTime.atZone(ZONE_ID).toInstant().getEpochSecond();
     }
@@ -142,6 +155,33 @@ public final class TimeUnity {
         return LocalDateTime.ofInstant(date.toInstant(), ZONE_ID);
     }
 
+    public static LocalDateTime convertStrToLocalDateTime(String dateTime) {
+        Assert.isTrue(isNotBlank(dateTime), "dateTime can't be blank");
+        try {
+            return LocalDateTime.parse(dateTime, FORMATTER);
+        } catch (Exception e) {
+            throw new BlueException(TIME_FORMAT_IS_INVALID);
+        }
+    }
+
+    /**
+     * str -> second stamp
+     *
+     * @return
+     */
+    public static long convertStrToEpochSecond(String dateTime) {
+        return convertLocalDateTimeToEpochSecond(convertStrToLocalDateTime(dateTime));
+    }
+
+    /**
+     * str -> millis stamp
+     *
+     * @return
+     */
+    public static long convertStrToMilli(String dateTime) {
+        return convertLocalDateTimeToMilli(convertStrToLocalDateTime(dateTime));
+    }
+
     /**
      * second stamp -> str
      *
@@ -178,5 +218,6 @@ public final class TimeUnity {
         Assert.isTrue(localDateTime != null, "localDateTime can't be null");
         return localDateTime.format(FORMATTER);
     }
+
 
 }

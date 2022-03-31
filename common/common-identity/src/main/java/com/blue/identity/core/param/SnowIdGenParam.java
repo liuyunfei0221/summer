@@ -10,9 +10,9 @@ import java.util.function.Consumer;
  */
 public final class SnowIdGenParam {
 
-    private final int dataCenter;
+    private final Integer dataCenter;
 
-    private final int worker;
+    private final Integer worker;
 
     private final Long lastSeconds;
 
@@ -26,7 +26,7 @@ public final class SnowIdGenParam {
 
     private final ExecutorService executorService;
 
-    public SnowIdGenParam(int dataCenter, int worker, Long lastSeconds, Long bootSeconds,
+    public SnowIdGenParam(Integer dataCenter, Integer worker, Long lastSeconds, Long bootSeconds,
                           Consumer<Long> secondsRecorder, Long recordInterval, Consumer<Long> maximumTimeAlarm,
                           ExecutorService executorService) {
         this.dataCenter = dataCenter;
@@ -39,11 +39,11 @@ public final class SnowIdGenParam {
         this.executorService = executorService;
     }
 
-    public int getDataCenter() {
+    public Integer getDataCenter() {
         return dataCenter;
     }
 
-    public int getWorker() {
+    public Integer getWorker() {
         return worker;
     }
 

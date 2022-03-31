@@ -4,11 +4,13 @@ import com.blue.identity.core.param.IdGenParam;
 import java.time.Instant;
 import java.util.concurrent.*;
 
+import static com.blue.base.constant.base.SummerAttr.ONLINE_TIME;
 import static com.blue.identity.constant.SnowflakeBits.*;
 
 /**
  * @author liuyunfei
  */
+@SuppressWarnings("UnnecessaryLocalVariable")
 public class GenTestIdTest {
 
     public static void main(String[] args) {
@@ -26,8 +28,14 @@ public class GenTestIdTest {
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor =
                 new ScheduledThreadPoolExecutor(1, Thread::new, (r, executor) -> System.err.println("scheduled padding thread rejected"));
 
-        IdGenParam idGenParam = new IdGenParam(0, 0,
-                Instant.now().getEpochSecond(), 1618790400L, System.err::println, null, null, 3, 50,
+        //yyyy-MM-dd HH:mm:ss
+
+        int dataCenterNo = 63;
+        int workerNo = 511;
+        long bootSeconds = ONLINE_TIME;
+
+        IdGenParam idGenParam = new IdGenParam(dataCenterNo, workerNo,
+                Instant.now().getEpochSecond(), bootSeconds, null, null, System.err::println, 3, 50,
                 executorService, false, scheduledThreadPoolExecutor, 3L, 3L);
 
         BlueIdentityGenerator blueIdentityGenerator = new BlueIdentityGenerator(idGenParam);
