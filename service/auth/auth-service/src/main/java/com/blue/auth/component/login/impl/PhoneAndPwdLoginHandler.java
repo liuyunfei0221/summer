@@ -10,8 +10,6 @@ import com.blue.base.constant.auth.LoginType;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -33,7 +31,6 @@ import static com.blue.base.constant.auth.LoginType.EMAIL_PWD;
 import static com.blue.base.constant.auth.LoginType.PHONE_PWD;
 import static com.blue.base.constant.base.BlueHeader.*;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -44,9 +41,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces"})
-@Component
-@Order(LOWEST_PRECEDENCE - 1)
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
 public class PhoneAndPwdLoginHandler implements LoginHandler {
 
     private static final Logger LOGGER = getLogger(PhoneAndPwdLoginHandler.class);

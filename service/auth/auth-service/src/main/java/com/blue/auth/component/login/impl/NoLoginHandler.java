@@ -1,19 +1,16 @@
 package com.blue.auth.component.login.impl;
 
 import com.blue.auth.component.login.inter.LoginHandler;
+import com.blue.auth.model.LoginParam;
 import com.blue.base.constant.auth.LoginType;
 import com.blue.base.model.exps.BlueException;
-import com.blue.auth.model.LoginParam;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.base.ResponseElement.FORBIDDEN;
 import static com.blue.base.constant.auth.LoginType.NOT_LOGGED_IN;
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
+import static com.blue.base.constant.base.ResponseElement.FORBIDDEN;
 import static reactor.core.publisher.Mono.error;
 import static reactor.util.Loggers.getLogger;
 
@@ -22,9 +19,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"DuplicatedCode", "JavaDoc"})
-@Component
-@Order(LOWEST_PRECEDENCE - 1)
+@SuppressWarnings({"DuplicatedCode", "JavaDoc", "unused"})
 public class NoLoginHandler implements LoginHandler {
 
     private static final Logger LOGGER = getLogger(NoLoginHandler.class);

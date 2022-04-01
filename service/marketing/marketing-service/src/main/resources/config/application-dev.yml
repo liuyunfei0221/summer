@@ -74,11 +74,6 @@ data:
     - tableName: event
       shardingColumn: id
 
-    - tableName: reward
-      shardingColumn: id
-
-    - tableName: sign_reward_today_relation
-      shardingColumn: id
   shardingTableSizePerDataBase: 2
   dataCenterToDatabaseMappings:
     - id: 0
@@ -94,6 +89,20 @@ data:
       index: 1
   broadcastTables: [ ]
   singleDatabasesWithTables:
+    - url: jdbc:mysql://172.16.201.160:3306/marketing
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+      singleTables: [ reward,sign_reward_today_relation,undo_log ]
   cacheEnabled: false
   lazyLoadingEnabled: false
   aggressiveLazyLoading: false

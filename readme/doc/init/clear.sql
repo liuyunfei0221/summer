@@ -17,6 +17,7 @@ DROP DATABASE member;
 DROP DATABASE member_0;
 DROP DATABASE member_1;
 
+DROP DATABASE portal;
 DROP DATABASE portal_0;
 DROP DATABASE portal_1;
 

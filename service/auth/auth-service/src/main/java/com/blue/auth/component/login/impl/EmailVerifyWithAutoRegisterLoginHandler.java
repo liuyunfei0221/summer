@@ -6,13 +6,14 @@ import com.blue.auth.constant.LoginAttribute;
 import com.blue.auth.model.LoginParam;
 import com.blue.auth.remote.consumer.RpcMemberServiceConsumer;
 import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
-import com.blue.auth.service.inter.*;
+import com.blue.auth.service.inter.AuthService;
+import com.blue.auth.service.inter.AutoRegisterService;
+import com.blue.auth.service.inter.CredentialService;
+import com.blue.auth.service.inter.RoleService;
 import com.blue.base.constant.auth.LoginType;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -35,7 +36,6 @@ import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.verify.BusinessType.EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER;
 import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static java.util.Collections.singletonList;
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
@@ -47,9 +47,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
-@Component
-@Order(LOWEST_PRECEDENCE - 1)
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "unused"})
 public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
 
     private static final Logger LOGGER = getLogger(EmailVerifyWithAutoRegisterLoginHandler.class);

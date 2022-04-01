@@ -1,17 +1,18 @@
 package com.blue.auth.component.login.impl;
 
+import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.login.inter.LoginHandler;
+import com.blue.auth.model.LoginParam;
+import com.blue.auth.remote.consumer.RpcLocalPhoneServiceConsumer;
 import com.blue.auth.remote.consumer.RpcMemberServiceConsumer;
-import com.blue.auth.service.inter.*;
+import com.blue.auth.service.inter.AuthService;
+import com.blue.auth.service.inter.AutoRegisterService;
+import com.blue.auth.service.inter.CredentialService;
+import com.blue.auth.service.inter.RoleService;
 import com.blue.base.constant.auth.LoginType;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.auth.api.model.CredentialInfo;
-import com.blue.auth.model.LoginParam;
-import com.blue.auth.remote.consumer.RpcLocalPhoneServiceConsumer;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -26,12 +27,11 @@ import java.util.function.Function;
 import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.base.BlueHeader.*;
-import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.base.constant.auth.LoginType.LOCAL_PHONE_AUTO_REGISTER;
+import static com.blue.base.constant.base.BlueHeader.*;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Collections.singletonList;
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -42,9 +42,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "AlibabaRemoveCommentedCode", "FieldCanBeLocal"})
-@Component
-@Order(LOWEST_PRECEDENCE - 1)
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "AlibabaRemoveCommentedCode", "FieldCanBeLocal", "unused"})
 public class LocalPhoneWithAutoRegisterLoginHandler implements LoginHandler {
 
     private static final Logger LOGGER = getLogger(LocalPhoneWithAutoRegisterLoginHandler.class);

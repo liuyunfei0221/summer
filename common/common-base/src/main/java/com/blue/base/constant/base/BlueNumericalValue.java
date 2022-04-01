@@ -148,6 +148,11 @@ public enum BlueNumericalValue {
     QR_CODE_LOGO_ROUND_ARCH(20L),
 
     /**
+     * random name length
+     */
+    RANDOM_NAME_LEN(8L),
+
+    /**
      * system default id
      */
     BLUE_ID(1L);
