@@ -258,14 +258,16 @@ public class SignInServiceImpl implements SignInService {
                                         error(() -> new BlueException(REPEAT_SIGN_IN))
                                 )
                                 .flatMap(signInReward -> {
+                                    MarketingEvent marketingEvent = new MarketingEvent(SIGN_IN_REWARD, memberId,
+                                            GSON.toJson(new SignRewardEvent(memberId, year, month, dayOfMonth, signInReward)), TIME_STAMP_GETTER.get());
                                     try {
-                                        LOGGER.info("sign in success, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}",
-                                                memberId, year, month, dayOfMonth, signInReward);
-                                        marketingEventProducer.send(new MarketingEvent(SIGN_IN_REWARD, memberId,
-                                                GSON.toJson(new SignRewardEvent(memberId, year, month, dayOfMonth, signInReward)), TIME_STAMP_GETTER.get()));
+                                        LOGGER.info("sign in success, marketingEvent = {}", marketingEvent);
+                                        marketingEventProducer.send(marketingEvent);
                                     } catch (Exception e) {
-                                        LOGGER.error("marketingEventProducer send sign event failed, memberId = {}, year = {}, month = {}, day of month = {}, reward = {}, e = {}",
-                                                memberId, year, month, dayOfMonth, signInReward, e);
+                                        LOGGER.error("marketingEventProducer send sign event failed, marketingEvent = {}, e = {}", marketingEvent, e);
+                                    } finally {
+                                        //noinspection UnusedAssignment
+                                        marketingEvent = null;
                                     }
                                     return just(signInReward);
                                 })
