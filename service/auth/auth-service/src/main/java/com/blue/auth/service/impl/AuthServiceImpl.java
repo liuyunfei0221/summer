@@ -16,6 +16,7 @@ import com.blue.auth.repository.entity.Role;
 import com.blue.auth.repository.entity.RoleResRelation;
 import com.blue.auth.repository.template.RefreshInfoRepository;
 import com.blue.auth.service.inter.*;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.auth.AuthInfoRefreshElementType;
 import com.blue.base.constant.auth.DeviceType;
 import com.blue.base.constant.auth.LoginType;
@@ -28,6 +29,7 @@ import com.blue.jwt.common.JwtProcessor;
 import com.google.gson.JsonSyntaxException;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.domain.Example;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -115,11 +117,11 @@ public class AuthServiceImpl implements AuthService {
         this.executorService = executorService;
         this.redissonClient = redissonClient;
 
-        RANDOM_ID_LENGTH = sessionKeyDeploy.getRanLen();
+        randomIdLen = sessionKeyDeploy.getRanLen();
         maxWaitingMillisForRefresh = blockingDeploy.getBlockingMillis();
     }
 
-    private int RANDOM_ID_LENGTH;
+    private int randomIdLen;
 
     private long maxWaitingMillisForRefresh;
 
@@ -348,6 +350,29 @@ public class AuthServiceImpl implements AuthService {
         throw new BlueException(BAD_REQUEST);
     }
 
+    private void deleteExistRefreshTokenByAuthInfo(String memberId, String loginType, String deviceType) {
+        if (isBlank(memberId))
+            return;
+
+        RefreshInfo condition = new RefreshInfo();
+        condition.setMemberId(memberId);
+        condition.setLoginType(loginType);
+        condition.setDeviceType(deviceType);
+
+        refreshInfoRepository.findAll(Example.of(condition))
+                .collectList().subscribe(refreshInfoRepository::deleteAll);
+    }
+
+    private final Consumer<Long> REFRESH_INFOS_DELETER = memberId ->
+            ofNullable(memberId).filter(BlueChecker::isValidIdentity)
+                    .map(String::valueOf)
+                    .ifPresent(mid -> {
+                        RefreshInfo condition = new RefreshInfo();
+                        condition.setMemberId(mid);
+                        refreshInfoRepository.findAll(Example.of(condition))
+                                .collectList().subscribe(refreshInfoRepository::deleteAll);
+                    });
+
     private final BiFunction<MemberPayload, Long, Mono<MemberAccess>> ACCESS_GENERATOR = (memberPayload, roleId) -> {
         LOGGER.info("BiFunction<MemberPayload, Long, Mono<MemberAuth>> ACCESS_GENERATOR, memberPayload = {}, roleId = {}", memberPayload, roleId);
 
@@ -375,19 +400,19 @@ public class AuthServiceImpl implements AuthService {
 
         return ACCESS_GENERATOR.apply(memberPayload, roleId)
                 .flatMap(access -> {
-                    String gamma = randomAlphanumeric(RANDOM_ID_LENGTH);
-                    String keyId = randomAlphanumeric(RANDOM_ID_LENGTH);
+                    String gamma = randomAlphanumeric(randomIdLen);
+                    String keyId = randomAlphanumeric(randomIdLen);
                     String id = memberPayload.getId();
                     String loginType = memberPayload.getLoginType();
                     String deviceType = memberPayload.getDeviceType();
                     String loginTime = memberPayload.getLoginTime();
 
+                    deleteExistRefreshTokenByAuthInfo(id, loginType, deviceType);
                     return refreshInfoRepository.save(new RefreshInfo(keyId, gamma, id, loginType, deviceType, loginTime))
                             .flatMap(v -> just(jwtProcessor.create(new MemberPayload(gamma, keyId, id, loginType, deviceType, loginTime))))
                             .flatMap(jwt -> just(new MemberAuth(access.getAuth(), access.getSecKey(), jwt)));
                 });
     };
-
 
     private static final BiConsumer<MemberPayload, RefreshInfo> AUTH_ASSERTER = (memberPayload, refreshInfo) -> {
         if (memberPayload == null || refreshInfo == null)
@@ -536,6 +561,7 @@ public class AuthServiceImpl implements AuthService {
     private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_TASK = memberId -> {
         String keyId;
         try {
+            REFRESH_INFOS_DELETER.accept(memberId);
             for (LoginType loginType : VALID_LOGIN_TYPES)
                 for (DeviceType deviceType : VALID_DEVICE_TYPES) {
                     keyId = genSessionKey(memberId, loginType.identity, deviceType.identity);
@@ -688,7 +714,7 @@ public class AuthServiceImpl implements AuthService {
         LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, String loginType, String deviceType), memberId = {}, loginType = {}, deviceType", memberId, loginType, deviceType);
         return isValidIdentity(memberId) && isNotBlank(loginType) && isNotBlank(deviceType) ?
                 zip(just(new MemberPayload(
-                                randomAlphanumeric(RANDOM_ID_LENGTH),
+                                randomAlphanumeric(randomIdLen),
                                 genSessionKey(memberId, loginType, deviceType),
                                 valueOf(memberId),
                                 loginType, deviceType,
@@ -716,7 +742,7 @@ public class AuthServiceImpl implements AuthService {
         LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, Long roleId, String loginType, String deviceType) , memberId = {}, roleId = {}, loginType = {}, deviceType", memberId, roleId, loginType, deviceType);
         return isValidIdentity(memberId) && isValidIdentity(roleId) && isNotBlank(loginType) && isNotBlank(deviceType) ?
                 just(new MemberPayload(
-                        randomAlphanumeric(RANDOM_ID_LENGTH),
+                        randomAlphanumeric(randomIdLen),
                         genSessionKey(memberId, loginType, deviceType),
                         valueOf(memberId),
                         loginType, deviceType,
@@ -740,7 +766,7 @@ public class AuthServiceImpl implements AuthService {
         LOGGER.info("Mono<MemberAccess> generateAccessMono(Long memberId, String loginType, String deviceType), memberId = {}, loginType = {}, deviceType", memberId, loginType, deviceType);
         return isValidIdentity(memberId) && isNotBlank(loginType) && isNotBlank(deviceType) ?
                 zip(just(new MemberPayload(
-                                randomAlphanumeric(RANDOM_ID_LENGTH),
+                                randomAlphanumeric(randomIdLen),
                                 genSessionKey(memberId, loginType, deviceType),
                                 valueOf(memberId),
                                 loginType, deviceType,
@@ -767,7 +793,7 @@ public class AuthServiceImpl implements AuthService {
         LOGGER.info("Mono<MemberAccess> generateAccessMono(Long memberId, Long roleId, String loginType, String deviceType) , memberId = {}, roleId = {}, loginType = {}, deviceType", memberId, roleId, loginType, deviceType);
         return isValidIdentity(memberId) && isValidIdentity(roleId) && isNotBlank(loginType) && isNotBlank(deviceType) ?
                 just(new MemberPayload(
-                        randomAlphanumeric(RANDOM_ID_LENGTH),
+                        randomAlphanumeric(randomIdLen),
                         genSessionKey(memberId, loginType, deviceType),
                         valueOf(memberId),
                         loginType, deviceType,
@@ -805,10 +831,15 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<Boolean> invalidAuthByAccess(Access access) {
         LOGGER.info("Mono<Boolean> invalidAuthByAccess(Access access), access = {}", access);
-        return access != null ?
-                authInfoCache.invalidAuthInfo(genSessionKey(access.getId(), access.getLoginType().intern(), access.getDeviceType().intern()))
-                :
-                error(() -> new BlueException(UNAUTHORIZED));
+        if (access != null) {
+            long memberId = access.getId();
+            String loginType = access.getLoginType().intern();
+            String deviceType = access.getDeviceType().intern();
+            deleteExistRefreshTokenByAuthInfo(String.valueOf(memberId), loginType, deviceType);
+            return authInfoCache.invalidAuthInfo(genSessionKey(memberId, loginType, deviceType));
+        }
+
+        return error(() -> new BlueException(UNAUTHORIZED));
     }
 
     /**

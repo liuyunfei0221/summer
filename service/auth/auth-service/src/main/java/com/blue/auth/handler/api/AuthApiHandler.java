@@ -82,6 +82,23 @@ public final class AuthApiHandler {
     }
 
     /**
+     * logout everywhere
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> logoutEveryWhere(ServerRequest serverRequest) {
+        return getAccessReact(serverRequest)
+                .flatMap(acc ->
+                        controlService.invalidAuthByMemberId(acc.getId())
+                                .flatMap(success ->
+                                        ok().contentType(APPLICATION_JSON)
+                                                .header(AUTHORIZATION.name, "")
+                                                .body(generate(OK.code, serverRequest)
+                                                        , BlueResponse.class)));
+    }
+
+    /**
      * update member's access/password
      *
      * @param serverRequest
