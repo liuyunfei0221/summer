@@ -374,7 +374,8 @@ public class AuthServiceImpl implements AuthService {
                     });
 
     private final BiFunction<MemberPayload, Long, Mono<MemberAccess>> ACCESS_GENERATOR = (memberPayload, roleId) -> {
-        LOGGER.info("BiFunction<MemberPayload, Long, Mono<MemberAuth>> ACCESS_GENERATOR, memberPayload = {}, roleId = {}", memberPayload, roleId);
+        LOGGER.info("BiFunction<MemberPayload, Long, Mono<MemberAccess>> ACCESS_GENERATOR, memberPayload = {}, roleId = {}",
+                memberPayload, roleId);
 
         if (memberPayload != null && isValidIdentity(roleId)) {
             String jwt = jwtProcessor.create(memberPayload);
@@ -415,10 +416,8 @@ public class AuthServiceImpl implements AuthService {
     };
 
     private static final BiConsumer<MemberPayload, RefreshInfo> AUTH_ASSERTER = (memberPayload, refreshInfo) -> {
-        if (memberPayload == null || refreshInfo == null)
-            throw new BlueException(UNAUTHORIZED);
-
-        if (memberPayload.getGamma().equals(refreshInfo.getGamma())
+        if (memberPayload != null && refreshInfo != null
+                && memberPayload.getGamma().equals(refreshInfo.getGamma())
                 && memberPayload.getKeyId().equals(refreshInfo.getId())
                 && memberPayload.getId().equals(refreshInfo.getMemberId())
                 && memberPayload.getLoginType().equals(refreshInfo.getLoginType())
@@ -541,23 +540,6 @@ public class AuthServiceImpl implements AuthService {
                         genSessionKey(memberId, loginType.intern(), deviceType.intern()), elementType, elementValue);
     }
 
-    /**
-     * get authority by role id
-     *
-     * @param roleId
-     * @return
-     */
-    private Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByRoleOpt(Long roleId), roleId = {}", roleId);
-        return just(ROLE_INFO_BY_ID_GETTER.apply(roleId)
-                .map(role ->
-                        new AuthorityBaseOnRole(role, RESOURCE_INFOS_BY_ROLE_ID_GETTER.apply(roleId)))
-                .orElseThrow(() -> {
-                    LOGGER.error("role info doesn't exist, roleId = {}", roleId);
-                    return new BlueException(BAD_REQUEST);
-                }));
-    }
-
     private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_TASK = memberId -> {
         String keyId;
         try {
@@ -574,6 +556,23 @@ public class AuthServiceImpl implements AuthService {
 
         return true;
     };
+
+    /**
+     * get authority by role id
+     *
+     * @param roleId
+     * @return
+     */
+    private Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId) {
+        LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByRoleOpt(Long roleId), roleId = {}", roleId);
+        return just(ROLE_INFO_BY_ID_GETTER.apply(roleId)
+                .map(role ->
+                        new AuthorityBaseOnRole(role, RESOURCE_INFOS_BY_ROLE_ID_GETTER.apply(roleId)))
+                .orElseThrow(() -> {
+                    LOGGER.error("role info doesn't exist, roleId = {}", roleId);
+                    return new BlueException(BAD_REQUEST);
+                }));
+    }
 
     /**
      * init
@@ -811,7 +810,7 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<MemberAccess> refreshAccessMono(String refresh) {
+    public Mono<MemberAccess> refreshAccess(String refresh) {
         return just(jwtProcessor.parse(refresh))
                 .flatMap(memberPayload ->
                         refreshInfoRepository.findById(memberPayload.getKeyId())

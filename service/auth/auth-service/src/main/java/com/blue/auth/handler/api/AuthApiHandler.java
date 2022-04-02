@@ -55,7 +55,7 @@ public final class AuthApiHandler {
      */
     public Mono<ServerResponse> refreshAccess(ServerRequest serverRequest) {
         return getRefreshReact(serverRequest)
-                .flatMap(controlService::refreshAccessMono)
+                .flatMap(controlService::refreshAccess)
                 .flatMap(ma ->
                         ok().contentType(APPLICATION_JSON)
                                 .header(AUTHORIZATION.name, ma.getAuth())
@@ -87,7 +87,7 @@ public final class AuthApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> logoutEveryWhere(ServerRequest serverRequest) {
+    public Mono<ServerResponse> logoutEverywhere(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
                         controlService.invalidAuthByMemberId(acc.getId())

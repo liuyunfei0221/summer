@@ -190,8 +190,8 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public Mono<MemberAccess> refreshAccessMono(String refresh) {
-        return authService.refreshAccessMono(refresh);
+    public Mono<MemberAccess> refreshAccess(String refresh) {
+        return authService.refreshAccess(refresh);
     }
 
     /**

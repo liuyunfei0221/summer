@@ -18,7 +18,6 @@ import static reactor.core.publisher.Mono.just;
 @SuppressWarnings({"JavaDoc", "unused"})
 public final class AccessGetterForReactive {
 
-
     /**
      * get access from request
      *

@@ -79,7 +79,7 @@ public interface AuthService {
      * @param refresh
      * @return
      */
-    Mono<MemberAccess> refreshAccessMono(String refresh);
+    Mono<MemberAccess> refreshAccess(String refresh);
 
     /**
      * invalid auth by access

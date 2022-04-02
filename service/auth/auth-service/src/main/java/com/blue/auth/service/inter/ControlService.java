@@ -30,7 +30,7 @@ public interface ControlService {
      * @param refresh
      * @return
      */
-    Mono<MemberAccess> refreshAccessMono(String refresh);
+    Mono<MemberAccess> refreshAccess(String refresh);
 
     /**
      * logout
