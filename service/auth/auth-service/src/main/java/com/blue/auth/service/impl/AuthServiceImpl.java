@@ -8,10 +8,13 @@ import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.event.producer.InvalidLocalAuthProducer;
 import com.blue.auth.model.AuthInfo;
 import com.blue.auth.model.AuthInfoRefreshElement;
+import com.blue.auth.model.MemberAccess;
 import com.blue.auth.model.MemberAuth;
+import com.blue.auth.repository.entity.RefreshInfo;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.repository.entity.RoleResRelation;
+import com.blue.auth.repository.template.RefreshInfoRepository;
 import com.blue.auth.service.inter.*;
 import com.blue.base.constant.auth.AuthInfoRefreshElementType;
 import com.blue.base.constant.auth.DeviceType;
@@ -74,6 +77,8 @@ public class AuthServiceImpl implements AuthService {
 
     private static final Logger LOGGER = getLogger(AuthServiceImpl.class);
 
+    private RefreshInfoRepository refreshInfoRepository;
+
     private JwtProcessor<MemberPayload> jwtProcessor;
 
     private AuthInfoCache authInfoCache;
@@ -95,9 +100,10 @@ public class AuthServiceImpl implements AuthService {
     private final RedissonClient redissonClient;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public AuthServiceImpl(JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCache authInfoCache, StringRedisTemplate stringRedisTemplate, RoleService roleService, ResourceService resourceService,
-                           RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService, InvalidLocalAuthProducer invalidLocalAuthProducer,
-                           ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
+    public AuthServiceImpl(RefreshInfoRepository refreshInfoRepository, JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCache authInfoCache, StringRedisTemplate stringRedisTemplate,
+                           RoleService roleService, ResourceService resourceService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
+                           InvalidLocalAuthProducer invalidLocalAuthProducer, ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
+        this.refreshInfoRepository = refreshInfoRepository;
         this.jwtProcessor = jwtProcessor;
         this.authInfoCache = authInfoCache;
         this.stringRedisTemplate = stringRedisTemplate;
@@ -113,7 +119,7 @@ public class AuthServiceImpl implements AuthService {
         maxWaitingMillisForRefresh = blockingDeploy.getBlockingMillis();
     }
 
-    private final int RANDOM_ID_LENGTH;
+    private int RANDOM_ID_LENGTH;
 
     private long maxWaitingMillisForRefresh;
 
@@ -342,8 +348,8 @@ public class AuthServiceImpl implements AuthService {
         throw new BlueException(BAD_REQUEST);
     }
 
-    private final BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR = (memberPayload, roleId) -> {
-        LOGGER.info("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, memberPayload = {}, roleId = {}", memberPayload, roleId);
+    private final BiFunction<MemberPayload, Long, Mono<MemberAccess>> ACCESS_GENERATOR = (memberPayload, roleId) -> {
+        LOGGER.info("BiFunction<MemberPayload, Long, Mono<MemberAuth>> ACCESS_GENERATOR, memberPayload = {}, roleId = {}", memberPayload, roleId);
 
         if (memberPayload != null && isValidIdentity(roleId)) {
             String jwt = jwtProcessor.create(memberPayload);
@@ -354,15 +360,47 @@ public class AuthServiceImpl implements AuthService {
                     .flatMap(b -> {
                         LOGGER.info("authInfoJson = {}, keyPair = {}", authInfoJson, keyPair);
                         if (b)
-                            return just(new MemberAuth(jwt, keyPair.getPriKey()));
+                            return just(new MemberAccess(jwt, keyPair.getPriKey()));
 
                         LOGGER.error("authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson), failed, memberPayload = {}, roleId = {}, keyPair = {}, authInfoJson = {}", memberPayload, roleId, keyPair, authInfoJson);
                         return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
                     });
-
         }
 
         return error(() -> new BlueException(BAD_REQUEST));
+    };
+
+    private final BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR = (memberPayload, roleId) -> {
+        LOGGER.info("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, memberPayload = {}, roleId = {}", memberPayload, roleId);
+
+        return ACCESS_GENERATOR.apply(memberPayload, roleId)
+                .flatMap(access -> {
+                    String gamma = randomAlphanumeric(RANDOM_ID_LENGTH);
+                    String keyId = randomAlphanumeric(RANDOM_ID_LENGTH);
+                    String id = memberPayload.getId();
+                    String loginType = memberPayload.getLoginType();
+                    String deviceType = memberPayload.getDeviceType();
+                    String loginTime = memberPayload.getLoginTime();
+
+                    return refreshInfoRepository.save(new RefreshInfo(keyId, gamma, id, loginType, deviceType, loginTime))
+                            .flatMap(v -> just(jwtProcessor.create(new MemberPayload(gamma, keyId, id, loginType, deviceType, loginTime))))
+                            .flatMap(jwt -> just(new MemberAuth(access.getAuth(), access.getSecKey(), jwt)));
+                });
+    };
+
+
+    private static final BiConsumer<MemberPayload, RefreshInfo> AUTH_ASSERTER = (memberPayload, refreshInfo) -> {
+        if (memberPayload == null || refreshInfo == null)
+            throw new BlueException(UNAUTHORIZED);
+
+        if (memberPayload.getGamma().equals(refreshInfo.getGamma())
+                && memberPayload.getKeyId().equals(refreshInfo.getId())
+                && memberPayload.getId().equals(refreshInfo.getMemberId())
+                && memberPayload.getLoginType().equals(refreshInfo.getLoginType())
+                && memberPayload.getLoginTime().equals(refreshInfo.getLoginTime()))
+            return;
+
+        throw new BlueException(UNAUTHORIZED);
     };
 
     /**
@@ -631,7 +669,7 @@ public class AuthServiceImpl implements AuthService {
 
                                 return just(new AuthAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                                         reqUnDecryption && resUnEncryption ? "" : authInfo.getPubKey(),
-                                        new Access(parseLong(memberPayload.getId()), authInfo.getRoleId(), memberPayload.getLoginType().intern(),
+                                        new com.blue.base.model.base.Access(parseLong(memberPayload.getId()), authInfo.getRoleId(), memberPayload.getLoginType().intern(),
                                                 memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), OK.message));
                             });
                 });
@@ -663,6 +701,7 @@ public class AuthServiceImpl implements AuthService {
                 error(() -> new BlueException(BAD_REQUEST));
     }
 
+
     /**
      * generate member auth with auto register
      *
@@ -686,6 +725,75 @@ public class AuthServiceImpl implements AuthService {
                         AUTH_GENERATOR.apply(memberPayload, roleId))
                 :
                 error(() -> new BlueException(BAD_REQUEST));
+    }
+
+    /**
+     * generate member access
+     *
+     * @param memberId
+     * @param loginType
+     * @param deviceType
+     * @return
+     */
+    @Override
+    public Mono<MemberAccess> generateMemberAccessMono(Long memberId, String loginType, String deviceType) {
+        LOGGER.info("Mono<MemberAccess> generateAccessMono(Long memberId, String loginType, String deviceType), memberId = {}, loginType = {}, deviceType", memberId, loginType, deviceType);
+        return isValidIdentity(memberId) && isNotBlank(loginType) && isNotBlank(deviceType) ?
+                zip(just(new MemberPayload(
+                                randomAlphanumeric(RANDOM_ID_LENGTH),
+                                genSessionKey(memberId, loginType, deviceType),
+                                valueOf(memberId),
+                                loginType, deviceType,
+                                valueOf(TIME_STAMP_GETTER.get()))),
+                        memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
+                                .map(ridOpt -> ridOpt.orElseThrow(() -> new BlueException(MEMBER_NOT_HAS_A_ROLE)))
+                ).flatMap(tuple2 ->
+                        ACCESS_GENERATOR.apply(tuple2.getT1(), tuple2.getT2()))
+                :
+                error(() -> new BlueException(BAD_REQUEST));
+    }
+
+    /**
+     * generate member access
+     *
+     * @param memberId
+     * @param roleId
+     * @param loginType
+     * @param deviceType
+     * @return
+     */
+    @Override
+    public Mono<MemberAccess> generateMemberAccessMono(Long memberId, Long roleId, String loginType, String deviceType) {
+        LOGGER.info("Mono<MemberAccess> generateAccessMono(Long memberId, Long roleId, String loginType, String deviceType) , memberId = {}, roleId = {}, loginType = {}, deviceType", memberId, roleId, loginType, deviceType);
+        return isValidIdentity(memberId) && isValidIdentity(roleId) && isNotBlank(loginType) && isNotBlank(deviceType) ?
+                just(new MemberPayload(
+                        randomAlphanumeric(RANDOM_ID_LENGTH),
+                        genSessionKey(memberId, loginType, deviceType),
+                        valueOf(memberId),
+                        loginType, deviceType,
+                        valueOf(TIME_STAMP_GETTER.get()))
+                ).flatMap(memberPayload ->
+                        ACCESS_GENERATOR.apply(memberPayload, roleId))
+                :
+                error(() -> new BlueException(BAD_REQUEST));
+    }
+
+    /**
+     * refresh jwt by refresh token
+     *
+     * @param refresh
+     * @return
+     */
+    @Override
+    public Mono<MemberAccess> refreshAccessMono(String refresh) {
+        return just(jwtProcessor.parse(refresh))
+                .flatMap(memberPayload ->
+                        refreshInfoRepository.findById(memberPayload.getKeyId())
+                                .switchIfEmpty(error(() -> new BlueException(UNAUTHORIZED)))
+                                .flatMap(refreshInfo -> {
+                                    AUTH_ASSERTER.accept(memberPayload, refreshInfo);
+                                    return this.generateMemberAccessMono(parseLong(refreshInfo.getMemberId()), refreshInfo.getLoginType(), refreshInfo.getDeviceType());
+                                }));
     }
 
     /**

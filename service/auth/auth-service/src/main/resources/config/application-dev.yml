@@ -143,6 +143,36 @@ identity:
   paddingScheduledDelayMillis: 15000
 
 
+mongo:
+  addressAttrs:
+    - address: 172.16.201.160
+      port: 27017
+  auth: false
+  userName:
+  password:
+  database: auth
+  retryReads: true
+  retryWrites: false
+  applicationName: blue-auth
+  uuidRepresentation: JAVA_LEGACY
+  socketConnectTimeoutMillis: 5000
+  socketReadTimeoutMillis: 5000
+  socketReceiveBufferSize: 1000000
+  socketSendBufferSize: 1024
+  clusterConnectionMode: MULTIPLE
+  clusterType: STANDALONE
+  clusterLocalThresholdMillis: 5000
+  serverSelectionTimeoutMillis: 5000
+  poolMaxSize: 12
+  poolMinSize: 4
+  poolMaxWaitTimeMillis: 3000
+  poolMaxConnectionLifeTimeMillis: 60000
+  poolMaxConnectionIdleTimeMillis: 60000
+  poolMaintenanceInitialDelayMillis: 3000
+  poolMaintenanceFrequencyMillis: 60000
+  sslEnabled: false
+
+
 seata:
   enabled: true
   application-id: auth_trans

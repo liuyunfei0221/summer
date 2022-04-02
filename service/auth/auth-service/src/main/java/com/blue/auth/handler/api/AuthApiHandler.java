@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
+import static com.blue.base.common.reactive.AccessGetterForReactive.getRefreshReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.SECRET;
@@ -44,6 +45,23 @@ public final class AuthApiHandler {
      */
     public Mono<ServerResponse> login(ServerRequest serverRequest) {
         return controlService.login(serverRequest);
+    }
+
+    /**
+     * refresh jwt by refresh token
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> refreshAccess(ServerRequest serverRequest) {
+        return getRefreshReact(serverRequest)
+                .flatMap(controlService::refreshAccessMono)
+                .flatMap(ma ->
+                        ok().contentType(APPLICATION_JSON)
+                                .header(AUTHORIZATION.name, ma.getAuth())
+                                .header(SECRET.name, ma.getSecKey())
+                                .body(generate(OK.code, serverRequest)
+                                        , BlueResponse.class));
     }
 
     /**

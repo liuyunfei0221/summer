@@ -7,14 +7,14 @@ import java.io.Serializable;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
- * member auth with sec key and refresh token used for login
+ * member auth with sec key used for access
  *
  * @author DarkBlue
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public final class MemberAuth implements Serializable {
+public final class MemberAccess implements Serializable {
 
-    private static final long serialVersionUID = -1624371887303174789L;
+    private static final long serialVersionUID = -1930250799048962030L;
 
     /**
      * jwtAuth
@@ -26,22 +26,14 @@ public final class MemberAuth implements Serializable {
      */
     private final String secKey;
 
-    /**
-     * refresh token
-     */
-    private final String refresh;
-
-    public MemberAuth(String auth, String secKey, String refresh) {
+    public MemberAccess(String auth, String secKey) {
         if (auth == null || "".equals(auth))
             throw new BlueException(BAD_REQUEST);
         if (secKey == null || "".equals(secKey))
             throw new BlueException(BAD_REQUEST);
-        if (refresh == null || "".equals(refresh))
-            throw new BlueException(BAD_REQUEST);
 
         this.auth = auth;
         this.secKey = secKey;
-        this.refresh = refresh;
     }
 
     public String getAuth() {
@@ -52,16 +44,11 @@ public final class MemberAuth implements Serializable {
         return secKey;
     }
 
-    public String getRefresh() {
-        return refresh;
-    }
-
     @Override
     public String toString() {
-        return "MemberAuth{" +
+        return "MemberAccess{" +
                 "auth='" + auth + '\'' +
                 ", secKey='" + secKey + '\'' +
-                ", refresh='" + refresh + '\'' +
                 '}';
     }
 

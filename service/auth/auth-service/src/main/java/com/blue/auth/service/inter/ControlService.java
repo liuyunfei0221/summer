@@ -25,6 +25,14 @@ public interface ControlService {
     Mono<ServerResponse> login(ServerRequest serverRequest);
 
     /**
+     * refresh jwt by refresh token
+     *
+     * @param refresh
+     * @return
+     */
+    Mono<MemberAccess> refreshAccessMono(String refresh);
+
+    /**
      * logout
      *
      * @param serverRequest

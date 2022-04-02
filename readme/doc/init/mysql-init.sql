@@ -370,14 +370,16 @@ VALUES (1, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
        (55, 'POST', 'blue-analyze', '/statistics/active/merge', b'0', b'1', b'1', b'1', b'1', 2,
         'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (56, 'POST', 'blue-analyze', '/statistics/active/summary', b'0', b'1', b'1', b'0', b'1', 2,
-        'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+        'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (57, 'POST', 'blue-auth', '/auth/refreshAccess', b'0', b'1', b'1', b'1', b'1', 1,
+        'refresh access', 'refresh access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- role
 
 INSERT INTO `auth`.`role`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`, `creator`,
                           `updater`)
 VALUES (1, 'normal', 'normal', 999999999, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (2, 'summer admin', 'summer admin', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+    (2, 'summer admin', 'summer admin', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role resource relations
 
@@ -956,8 +958,6 @@ VALUES (1, 30, 1, 'GET', 1, 'application/json',
         UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 
-
-
 -- marketing
 
 CREATE
@@ -1099,7 +1099,7 @@ CREATE TABLE `undo_log`
 -- init
 
 INSERT INTO `marketing`.`reward`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
-                                     `update_time`, `creator`, `updater`)
+                                 `update_time`, `creator`, `updater`)
 VALUES (1, '1th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
         1, 1),
        (2, '2th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
@@ -1165,7 +1165,7 @@ VALUES (1, '1th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIM
 
 
 INSERT INTO `marketing`.`sign_reward_today_relation`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
-                                                         `update_time`, `creator`, `updater`)
+                                                     `update_time`, `creator`, `updater`)
 VALUES (1, 1, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 1,
         UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (2, 2, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 2,
@@ -1745,7 +1745,6 @@ CREATE TABLE `undo_log`
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 
-
 -- portal
 
 CREATE
@@ -1821,7 +1820,7 @@ CREATE TABLE `undo_log`
 
 
 INSERT INTO `portal`.`bulletin`(`id`, `title`, `content`, `link`, `type`, `status`, `priority`, `create_time`,
-                                    `update_time`, `creator`, `updater`)
+                                `update_time`, `creator`, `updater`)
 VALUES (1, 'popular bulletin 2', 'test data', 'www.baidu.com', 1, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
         1, 1),
        (2, 'popular bulletin 1', 'test data', 'cn.bing.com', 1, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,

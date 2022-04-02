@@ -184,6 +184,17 @@ public class ControlServiceImpl implements ControlService {
     }
 
     /**
+     * refresh jwt by refresh token
+     *
+     * @param refresh
+     * @return
+     */
+    @Override
+    public Mono<MemberAccess> refreshAccessMono(String refresh) {
+        return authService.refreshAccessMono(refresh);
+    }
+
+    /**
      * logout
      *
      * @param serverRequest

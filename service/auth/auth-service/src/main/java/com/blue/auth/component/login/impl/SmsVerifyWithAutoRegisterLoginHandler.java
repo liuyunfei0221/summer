@@ -127,6 +127,7 @@ public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
                                                 ok().contentType(APPLICATION_JSON)
                                                         .header(AUTHORIZATION.name, ma.getAuth())
                                                         .header(SECRET.name, ma.getSecKey())
+                                                        .header(REFRESH.name, ma.getRefresh())
                                                         .header(EXTRA.name, GSON.toJson(extra))
                                                         .body(generate(OK.code, serverRequest)
                                                                 , BlueResponse.class))

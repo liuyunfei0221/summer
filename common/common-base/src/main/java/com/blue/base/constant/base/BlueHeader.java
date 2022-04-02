@@ -15,6 +15,16 @@ public enum BlueHeader {
     AUTHORIZATION(HttpHeaders.AUTHORIZATION),
 
     /**
+     * private key for client
+     */
+    SECRET("Secret"),
+
+    /**
+     * refresh token
+     */
+    REFRESH("Refresh"),
+
+    /**
      * USER_AGENT
      */
     USER_AGENT(HttpHeaders.USER_AGENT),
@@ -23,11 +33,6 @@ public enum BlueHeader {
      * metadata
      */
     METADATA("Metadata"),
-
-    /**
-     * private key for client
-     */
-    SECRET("Secret"),
 
     /**
      * verify key

@@ -94,6 +94,7 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
                 .flatMap(ma -> ok().contentType(APPLICATION_JSON)
                         .header(AUTHORIZATION.name, ma.getAuth())
                         .header(SECRET.name, ma.getSecKey())
+                        .header(REFRESH.name, ma.getRefresh())
                         .header(EXTRA.name, GSON.toJson(EXTRA_INFO))
                         .body(generate(OK.code, serverRequest)
                                 , BlueResponse.class));

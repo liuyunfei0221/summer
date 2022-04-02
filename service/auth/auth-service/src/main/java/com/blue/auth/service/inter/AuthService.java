@@ -3,6 +3,7 @@ package com.blue.auth.service.inter;
 import com.blue.auth.api.model.AssertAuth;
 import com.blue.auth.api.model.AuthAsserted;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
+import com.blue.auth.model.MemberAccess;
 import com.blue.auth.model.MemberAuth;
 import com.blue.base.model.base.Access;
 import reactor.core.publisher.Mono;
@@ -50,6 +51,35 @@ public interface AuthService {
      * @return
      */
     Mono<MemberAuth> generateAuthMono(Long memberId, Long roleId, String loginType, String deviceType);
+
+    /**
+     * generate member access
+     *
+     * @param memberId
+     * @param loginType
+     * @param deviceType
+     * @return
+     */
+    Mono<MemberAccess> generateMemberAccessMono(Long memberId, String loginType, String deviceType);
+
+    /**
+     * generate member access
+     *
+     * @param memberId
+     * @param roleId
+     * @param loginType
+     * @param deviceType
+     * @return
+     */
+    Mono<MemberAccess> generateMemberAccessMono(Long memberId, Long roleId, String loginType, String deviceType);
+
+    /**
+     * refresh jwt by refresh token
+     *
+     * @param refresh
+     * @return
+     */
+    Mono<MemberAccess> refreshAccessMono(String refresh);
 
     /**
      * invalid auth by access
