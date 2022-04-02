@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.base.common.reactive.AccessGetterForReactive.getRefreshReact;
+import static com.blue.base.common.reactive.AccessGetterForReactive.getAuthorizationReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.SECRET;
@@ -54,7 +54,7 @@ public final class AuthApiHandler {
      * @return
      */
     public Mono<ServerResponse> refreshAccess(ServerRequest serverRequest) {
-        return getRefreshReact(serverRequest)
+        return getAuthorizationReact(serverRequest)
                 .flatMap(controlService::refreshAccess)
                 .flatMap(ma ->
                         ok().contentType(APPLICATION_JSON)

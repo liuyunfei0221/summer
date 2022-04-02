@@ -6,7 +6,6 @@ import reactor.core.publisher.Mono;
 
 import static com.blue.base.common.auth.AuthProcessor.jsonToAccess;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.base.BlueHeader.REFRESH;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
 
@@ -44,8 +43,8 @@ public final class AccessGetterForReactive {
      * @param serverRequest
      * @return
      */
-    public static String getRefresh(ServerRequest serverRequest) {
-        return ofNullable(serverRequest.headers().firstHeader(REFRESH.name)).orElse("");
+    public static String getAuthorization(ServerRequest serverRequest) {
+        return ofNullable(serverRequest.headers().firstHeader(AUTHORIZATION.name)).orElse("");
     }
 
     /**
@@ -54,8 +53,8 @@ public final class AccessGetterForReactive {
      * @param serverRequest
      * @return
      */
-    public static Mono<String> getRefreshReact(ServerRequest serverRequest) {
-        return just(ofNullable(serverRequest.headers().firstHeader(REFRESH.name)).orElse(""));
+    public static Mono<String> getAuthorizationReact(ServerRequest serverRequest) {
+        return just(ofNullable(serverRequest.headers().firstHeader(AUTHORIZATION.name)).orElse(""));
     }
 
 }
