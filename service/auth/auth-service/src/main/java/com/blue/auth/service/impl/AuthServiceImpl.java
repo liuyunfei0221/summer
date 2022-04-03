@@ -5,7 +5,7 @@ import com.blue.auth.component.auth.AuthInfoCache;
 import com.blue.auth.config.deploy.BlockingDeploy;
 import com.blue.auth.config.deploy.SessionKeyDeploy;
 import com.blue.auth.converter.AuthModelConverters;
-import com.blue.auth.event.producer.InvalidLocalAuthProducer;
+import com.blue.auth.event.producer.InvalidLocalAccessProducer;
 import com.blue.auth.model.AuthInfo;
 import com.blue.auth.model.AuthInfoRefreshElement;
 import com.blue.auth.model.MemberAccess;
@@ -95,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final MemberRoleRelationService memberRoleRelationService;
 
-    private final InvalidLocalAuthProducer invalidLocalAuthProducer;
+    private InvalidLocalAccessProducer invalidLocalAccessProducer;
 
     private final ExecutorService executorService;
 
@@ -104,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public AuthServiceImpl(RefreshInfoRepository refreshInfoRepository, JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCache authInfoCache, StringRedisTemplate stringRedisTemplate,
                            RoleService roleService, ResourceService resourceService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
-                           InvalidLocalAuthProducer invalidLocalAuthProducer, ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
+                           InvalidLocalAccessProducer invalidLocalAccessProducer, ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
         this.refreshInfoRepository = refreshInfoRepository;
         this.jwtProcessor = jwtProcessor;
         this.authInfoCache = authInfoCache;
@@ -113,7 +113,7 @@ public class AuthServiceImpl implements AuthService {
         this.resourceService = resourceService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
-        this.invalidLocalAuthProducer = invalidLocalAuthProducer;
+        this.invalidLocalAccessProducer = invalidLocalAccessProducer;
         this.executorService = executorService;
         this.redissonClient = redissonClient;
 
@@ -350,17 +350,17 @@ public class AuthServiceImpl implements AuthService {
         throw new BlueException(BAD_REQUEST);
     }
 
-    private void deleteExistRefreshTokenByAuthInfo(String memberId, String loginType, String deviceType) {
+    private Mono<Boolean> deleteExistRefreshTokenByAuthInfo(String memberId, String loginType, String deviceType) {
         if (isBlank(memberId))
-            return;
+            return error(() -> new BlueException(BAD_REQUEST));
 
         RefreshInfo condition = new RefreshInfo();
         condition.setMemberId(memberId);
         condition.setLoginType(loginType);
         condition.setDeviceType(deviceType);
 
-        refreshInfoRepository.findAll(Example.of(condition))
-                .collectList().subscribe(refreshInfoRepository::deleteAll);
+        return refreshInfoRepository.findAll(Example.of(condition))
+                .collectList().flatMap(refreshInfoRepository::deleteAll).then(just(true));
     }
 
     private final Consumer<Long> REFRESH_INFOS_DELETER = memberId ->
@@ -408,8 +408,8 @@ public class AuthServiceImpl implements AuthService {
                     String deviceType = memberPayload.getDeviceType();
                     String loginTime = memberPayload.getLoginTime();
 
-                    deleteExistRefreshTokenByAuthInfo(id, loginType, deviceType);
-                    return refreshInfoRepository.save(new RefreshInfo(keyId, gamma, id, loginType, deviceType, loginTime))
+                    return deleteExistRefreshTokenByAuthInfo(id, loginType, deviceType)
+                            .flatMap(t -> refreshInfoRepository.save(new RefreshInfo(keyId, gamma, id, loginType, deviceType, loginTime)))
                             .flatMap(v -> just(jwtProcessor.create(new MemberPayload(gamma, keyId, id, loginType, deviceType, loginTime))))
                             .flatMap(jwt -> just(new MemberAuth(access.getAuth(), access.getSecKey(), jwt)));
                 });
@@ -483,7 +483,7 @@ public class AuthServiceImpl implements AuthService {
                     LOGGER.error("authRefreshLock unlock failed, e = {}", e);
                 }
                 try {
-                    invalidLocalAuthProducer.send(new InvalidLocalAuthParam(keyId));
+                    invalidLocalAccessProducer.send(new InvalidLocalAuthParam(keyId));
                 } catch (Exception e) {
                     LOGGER.error("invalidLocalAuthProducer send failed, keyId = {}, e = {}", keyId, e);
                 }
@@ -549,6 +549,7 @@ public class AuthServiceImpl implements AuthService {
                     keyId = genSessionKey(memberId, loginType.identity, deviceType.identity);
                     authInfoCache.invalidAuthInfo(keyId).subscribe();
                     authInfoCache.invalidLocalAuthInfo(keyId).subscribe();
+                    invalidLocalAccessProducer.send(new InvalidLocalAuthParam(keyId));
                 }
         } catch (Exception e) {
             return false;
@@ -779,31 +780,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * generate member access
-     *
-     * @param memberId
-     * @param roleId
-     * @param loginType
-     * @param deviceType
-     * @return
-     */
-    @Override
-    public Mono<MemberAccess> generateMemberAccessMono(Long memberId, Long roleId, String loginType, String deviceType) {
-        LOGGER.info("Mono<MemberAccess> generateAccessMono(Long memberId, Long roleId, String loginType, String deviceType) , memberId = {}, roleId = {}, loginType = {}, deviceType", memberId, roleId, loginType, deviceType);
-        return isValidIdentity(memberId) && isValidIdentity(roleId) && isNotBlank(loginType) && isNotBlank(deviceType) ?
-                just(new MemberPayload(
-                        randomAlphanumeric(randomIdLen),
-                        genSessionKey(memberId, loginType, deviceType),
-                        valueOf(memberId),
-                        loginType, deviceType,
-                        valueOf(TIME_STAMP_GETTER.get()))
-                ).flatMap(memberPayload ->
-                        ACCESS_GENERATOR.apply(memberPayload, roleId))
-                :
-                error(() -> new BlueException(BAD_REQUEST));
-    }
-
-    /**
      * refresh jwt by refresh token
      *
      * @param refresh
@@ -834,8 +810,15 @@ public class AuthServiceImpl implements AuthService {
             long memberId = access.getId();
             String loginType = access.getLoginType().intern();
             String deviceType = access.getDeviceType().intern();
-            deleteExistRefreshTokenByAuthInfo(String.valueOf(memberId), loginType, deviceType);
-            return authInfoCache.invalidAuthInfo(genSessionKey(memberId, loginType, deviceType));
+            String keyId = genSessionKey(memberId, loginType, deviceType);
+            return zip(
+                    deleteExistRefreshTokenByAuthInfo(String.valueOf(memberId), loginType, deviceType),
+                    authInfoCache.invalidAuthInfo(keyId)
+                            .flatMap(b -> {
+                                invalidLocalAccessProducer.send(new InvalidLocalAuthParam(keyId));
+                                return just(b);
+                            })
+            ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
         }
 
         return error(() -> new BlueException(UNAUTHORIZED));
@@ -851,7 +834,16 @@ public class AuthServiceImpl implements AuthService {
     public Mono<Boolean> invalidAuthByJwt(String jwt) {
         LOGGER.info("Mono<Boolean> invalidAuthByJwt(String jwt), jwt = {}", jwt);
         try {
-            return authInfoCache.invalidAuthInfo(jwtProcessor.parse(jwt).getKeyId());
+            MemberPayload memberPayload = jwtProcessor.parse(jwt);
+            String keyId = memberPayload.getKeyId();
+            return zip(
+                    deleteExistRefreshTokenByAuthInfo(memberPayload.getId(), memberPayload.getLoginType(), memberPayload.getDeviceType()),
+                    authInfoCache.invalidAuthInfo(keyId)
+                            .flatMap(b -> {
+                                invalidLocalAccessProducer.send(new InvalidLocalAuthParam(keyId));
+                                return just(b);
+                            })
+            ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
         } catch (Exception e) {
             LOGGER.error("Mono<Boolean> invalidAuthByJwt(String jwt) failed, jwt = {}, e = {}", jwt, e);
             return just(false);
@@ -881,6 +873,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<Boolean> invalidLocalAuthByKeyId(String keyId) {
         LOGGER.info("Mono<Boolean> invalidLocalAuthByKeyId(String keyId), keyId = {}", keyId);
+        invalidLocalAccessProducer.send(new InvalidLocalAuthParam(keyId));
         return authInfoCache.invalidLocalAuthInfo(keyId);
     }
 

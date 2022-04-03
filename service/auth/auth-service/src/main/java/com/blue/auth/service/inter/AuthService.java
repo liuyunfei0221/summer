@@ -63,17 +63,6 @@ public interface AuthService {
     Mono<MemberAccess> generateMemberAccessMono(Long memberId, String loginType, String deviceType);
 
     /**
-     * generate member access
-     *
-     * @param memberId
-     * @param roleId
-     * @param loginType
-     * @param deviceType
-     * @return
-     */
-    Mono<MemberAccess> generateMemberAccessMono(Long memberId, Long roleId, String loginType, String deviceType);
-
-    /**
      * refresh jwt by refresh token
      *
      * @param refresh

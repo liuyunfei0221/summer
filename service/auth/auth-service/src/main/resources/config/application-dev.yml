@@ -390,7 +390,7 @@ producers:
       enableEncrypt: false
       encryptionKey:
       producerCryptoFailureAction: FAIL
-    invalidLocalAuth:
+    invalidLocalAccess:
       services: [ 172.16.201.160:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
@@ -420,8 +420,8 @@ producers:
       enableProxy: false
       proxyServiceUrl:
       proxyProtocol: SNI
-      topic: invalidLocalAuth
-      producerName: invalidLocalAuthProducer000
+      topic: invalidLocalAccess
+      producerName: invalidLocalAccessProducer000
       accessMode: Shared
       sendTimeoutMillis: 30000
       maxPendingMessages: 1000
@@ -576,7 +576,7 @@ consumers:
       pollDurationMills: 1000
       workingThreads: 2
       enableNegativeAcknowledge: true
-    invalidLocalAuth:
+    invalidLocalAccess:
       services: [ 172.16.201.160:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
@@ -606,9 +606,9 @@ consumers:
       enableProxy: false
       proxyServiceUrl:
       proxyProtocol: SNI
-      topics: [ invalidLocalAuth ]
+      topics: [ invalidLocalAccess ]
       topicsPattern:
-      subscriptionName: invalidLocalAuthSubscription
+      subscriptionName: invalidLocalAccessSubscription
       ackTimeoutMillis: 2000
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000
@@ -619,7 +619,7 @@ consumers:
       acknowledgementsGroupTimeMillis: 100
       replicateSubscriptionState: false
       maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: invalidLocalAuthConsumer000
+      consumerName: invalidLocalAccessConsumer000
       readCompacted: false
       patternAutoDiscoveryPeriodMillis: 1
       priorityLevel: 0
@@ -642,8 +642,8 @@ consumers:
       encryptionKey:
       consumerCryptoFailureAction: FAIL
       enableDeadLetter: true
-      deadLetterTopic: invalidLocalAuth
-      retryLetterTopic: invalidLocalAuth
+      deadLetterTopic: invalidLocalAccess
+      retryLetterTopic: invalidLocalAccess
       maxRedeliverCount: 1000
       startMessageIdInclusive: false
       enableBatchReceive: false

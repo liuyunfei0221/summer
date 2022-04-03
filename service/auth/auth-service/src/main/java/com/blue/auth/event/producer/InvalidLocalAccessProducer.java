@@ -23,15 +23,15 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @SuppressWarnings("JavaDoc")
-public final class InvalidLocalAuthProducer implements BlueLifecycle {
+public final class InvalidLocalAccessProducer implements BlueLifecycle {
 
-    private static final Logger LOGGER = getLogger(InvalidLocalAuthProducer.class);
+    private static final Logger LOGGER = getLogger(InvalidLocalAccessProducer.class);
 
     private final ExecutorService executorService;
 
     private final BluePulsarProducer<InvalidLocalAuthParam> invalidLocalAuthProducer;
 
-    public InvalidLocalAuthProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public InvalidLocalAccessProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
         this.invalidLocalAuthProducer = generateProducer(blueProducerConfig.getByKey(INVALID_LOCAL_AUTH.name), InvalidLocalAuthParam.class);
     }

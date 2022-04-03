@@ -24,9 +24,9 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
-public final class InvalidLocalAuthConsumer implements BlueLifecycle {
+public final class InvalidLocalAccessConsumer implements BlueLifecycle {
 
-    private static final Logger LOGGER = getLogger(InvalidLocalAuthConsumer.class);
+    private static final Logger LOGGER = getLogger(InvalidLocalAccessConsumer.class);
 
     private final AuthService authService;
 
@@ -34,7 +34,7 @@ public final class InvalidLocalAuthConsumer implements BlueLifecycle {
 
     private BluePulsarConsumer<InvalidLocalAuthParam> invalidClusterLocalAuthConsumer;
 
-    public InvalidLocalAuthConsumer(AuthService authService, BlueConsumerConfig blueConsumerConfig) {
+    public InvalidLocalAccessConsumer(AuthService authService, BlueConsumerConfig blueConsumerConfig) {
         this.authService = authService;
         this.blueConsumerConfig = blueConsumerConfig;
     }
