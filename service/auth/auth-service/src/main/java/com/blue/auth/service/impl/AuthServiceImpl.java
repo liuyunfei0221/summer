@@ -254,8 +254,8 @@ public class AuthServiceImpl implements AuthService {
     /**
      * Resources do not require authentication access
      */
-    private final Function<Resource, Mono<AuthAsserted>> NO_AUTH_REQUIRED_RES_GEN = resource ->
-            just(new AuthAsserted(
+    private final Function<Resource, Mono<AccessAsserted>> NO_AUTH_REQUIRED_RES_GEN = resource ->
+            just(new AccessAsserted(
                     false, true, true,
                     resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                     NOT_LOGGED_IN_SEC_KEY.value, NO_AUTH_ACCESS, NO_AUTH_REQUIRED_RESOURCE.message));
@@ -342,7 +342,7 @@ public class AuthServiceImpl implements AuthService {
      * @param elementValue
      * @return
      */
-    private String genAuthRefreshLockKey(String snKey, AuthInfoRefreshElementType elementType, String elementValue) {
+    private String genAccessInfoRefreshLockKey(String snKey, AuthInfoRefreshElementType elementType, String elementValue) {
         LOGGER.info("String genAuthRefreshLockKey(String snKey, AuthInfoRefreshElementType elementType, String elementValue), snKey = {}, elementType = {}, elementValue = {}", snKey, elementType, elementValue);
         if (isNotBlank(snKey) && elementType != null && isNotBlank(elementValue))
             return AUTH_REFRESH_KEY_GENS.get(elementType).apply(snKey, elementValue);
@@ -428,13 +428,13 @@ public class AuthServiceImpl implements AuthService {
     };
 
     /**
-     * refresh auth info (role id/sec key) by key id
+     * refresh access info (role id/sec key) by key id
      *
      * @param keyId
      * @param elementType
      * @param elementValue
      */
-    private void refreshAuthInfoElementByKeyId(String keyId, AuthInfoRefreshElementType elementType, String elementValue) {
+    private void refreshAccessInfoElementByKeyId(String keyId, AuthInfoRefreshElementType elementType, String elementValue) {
         LOGGER.info("void refreshAuthInfoElementByKeyId(String keyId, AuthInfoRefreshElementType elementType, String elementValue), keyId = {}, elementType = {}, elementValue = {}", keyId, elementType, elementValue);
         String originalAuthInfoJson = ofNullable(stringRedisTemplate.opsForValue().get(keyId))
                 .orElse("");
@@ -452,7 +452,7 @@ public class AuthServiceImpl implements AuthService {
             return;
         }
 
-        RLock authRefreshLock = redissonClient.getLock(genAuthRefreshLockKey(keyId, elementType, elementValue));
+        RLock authRefreshLock = redissonClient.getLock(genAccessInfoRefreshLockKey(keyId, elementType, elementValue));
         boolean tryBusinessLock = false;
         try {
             if (!(tryBusinessLock = authRefreshLock.tryLock()))
@@ -536,7 +536,7 @@ public class AuthServiceImpl implements AuthService {
 
         for (String loginType : loginTypes)
             for (String deviceType : deviceTypes)
-                refreshAuthInfoElementByKeyId(
+                refreshAccessInfoElementByKeyId(
                         genSessionKey(memberId, loginType.intern(), deviceType.intern()), elementType, elementValue);
     }
 
@@ -657,13 +657,13 @@ public class AuthServiceImpl implements AuthService {
     /**
      * assert auth
      *
-     * @param assertAuth
+     * @param accessAssert
      * @return
      */
     @Override
-    public Mono<AuthAsserted> assertAuthMono(AssertAuth assertAuth) {
-        LOGGER.info("Mono<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", assertAuth);
-        return just(assertAuth)
+    public Mono<AccessAsserted> assertAccessMono(AccessAssert accessAssert) {
+        LOGGER.info("Mono<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", accessAssert);
+        return just(accessAssert)
                 .switchIfEmpty(error(() -> new BlueException(UNAUTHORIZED)))
                 .flatMap(aa -> {
                     String resourceKey = REQ_RES_KEY_GENERATOR.apply(
@@ -693,7 +693,7 @@ public class AuthServiceImpl implements AuthService {
                                 boolean reqUnDecryption = resource.getRequestUnDecryption();
                                 boolean resUnEncryption = resource.getResponseUnEncryption();
 
-                                return just(new AuthAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
+                                return just(new AccessAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                                         reqUnDecryption && resUnEncryption ? "" : authInfo.getPubKey(),
                                         new com.blue.base.model.base.Access(parseLong(memberPayload.getId()), authInfo.getRoleId(), memberPayload.getLoginType().intern(),
                                                 memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), OK.message));
@@ -815,7 +815,8 @@ public class AuthServiceImpl implements AuthService {
                     deleteExistRefreshTokenByAuthInfo(String.valueOf(memberId), loginType, deviceType),
                     authInfoCache.invalidAuthInfo(keyId)
                             .flatMap(b -> {
-                                invalidLocalAccessProducer.send(new InvalidLocalAuthParam(keyId));
+                                if (b)
+                                    invalidLocalAccessProducer.send(new InvalidLocalAuthParam(keyId));
                                 return just(b);
                             })
             ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
@@ -871,7 +872,7 @@ public class AuthServiceImpl implements AuthService {
      * @param keyId
      */
     @Override
-    public Mono<Boolean> invalidLocalAuthByKeyId(String keyId) {
+    public Mono<Boolean> invalidLocalAccessByKeyId(String keyId) {
         LOGGER.info("Mono<Boolean> invalidLocalAuthByKeyId(String keyId), keyId = {}", keyId);
         invalidLocalAccessProducer.send(new InvalidLocalAuthParam(keyId));
         return authInfoCache.invalidLocalAuthInfo(keyId);
@@ -906,7 +907,7 @@ public class AuthServiceImpl implements AuthService {
         return access != null ?
                 just(initKeyPair())
                         .flatMap(keyPair -> {
-                            refreshAuthInfoElementByKeyId(
+                            refreshAccessInfoElementByKeyId(
                                     genSessionKey(access.getId(), access.getLoginType().intern(), access.getDeviceType().intern()),
                                     PUB_KEY, keyPair.getPubKey());
                             return just(keyPair.getPriKey());

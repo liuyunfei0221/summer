@@ -1,7 +1,7 @@
 package com.blue.auth.api.inter;
 
-import com.blue.auth.api.model.AssertAuth;
-import com.blue.auth.api.model.AuthAsserted;
+import com.blue.auth.api.model.AccessAssert;
+import com.blue.auth.api.model.AccessAsserted;
 import com.blue.base.model.base.Access;
 
 import java.util.concurrent.CompletableFuture;
@@ -17,10 +17,10 @@ public interface RpcAuthService {
     /**
      * authentication and authorization
      *
-     * @param assertAuth
+     * @param accessAssert
      * @return
      */
-    CompletableFuture<AuthAsserted> assertAuth(AssertAuth assertAuth);
+    CompletableFuture<AccessAsserted> assertAccess(AccessAssert accessAssert);
 
     /**
      * invalid auth by access

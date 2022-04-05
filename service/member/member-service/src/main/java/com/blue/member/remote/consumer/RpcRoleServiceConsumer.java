@@ -30,7 +30,7 @@ public class RpcRoleServiceConsumer {
     private static final Logger LOGGER = getLogger(RpcRoleServiceConsumer.class);
 
     @DubboReference(version = "1.0",
-            providedBy = {"summer-member"},
+            providedBy = {"summer-auth"},
             methods = {
                     @Method(name = "selectRoleInfoByMemberId", async = true),
                     @Method(name = "selectRoleInfoByMemberIds", async = true)

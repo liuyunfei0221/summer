@@ -2,8 +2,8 @@ package com.blue.lake.remote.consumer;
 
 import com.blue.base.model.base.Access;
 import com.blue.auth.api.inter.RpcAuthService;
-import com.blue.auth.api.model.AssertAuth;
-import com.blue.auth.api.model.AuthAsserted;
+import com.blue.auth.api.model.AccessAssert;
+import com.blue.auth.api.model.AccessAsserted;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ public class RpcAuthServiceConsumer {
     private static final Logger LOGGER = getLogger(RpcAuthServiceConsumer.class);
 
     @DubboReference(version = "1.0", providedBy = {"summer-auth"}, methods = {
-            @Method(name = "assertAuth", async = true),
+            @Method(name = "assertAccess", async = true),
             @Method(name = "invalidAuthByAccess", async = true),
             @Method(name = "invalidAuthByJwt", async = true),
             @Method(name = "invalidAuthByMemberId", async = true)
@@ -35,12 +35,12 @@ public class RpcAuthServiceConsumer {
     /**
      * authentication and authorization
      *
-     * @param assertAuth
+     * @param accessAssert
      * @return
      */
-    public Mono<AuthAsserted> assertAuth(AssertAuth assertAuth) {
-        LOGGER.info("Mono<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", assertAuth);
-        return fromFuture(rpcAuthService.assertAuth(assertAuth));
+    public Mono<AccessAsserted> assertAccess(AccessAssert accessAssert) {
+        LOGGER.info("Mono<AuthAsserted> assertAccess(AssertAuth assertAuth), assertAuth = {}", accessAssert);
+        return fromFuture(rpcAuthService.assertAccess(accessAssert));
     }
 
     /**

@@ -10,7 +10,7 @@ import reactor.util.Logger;
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.base.BlueTopic.AUTH_EXPIRE;
+import static com.blue.base.constant.base.BlueTopic.ACCESS_EXPIRE;
 import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
@@ -18,14 +18,14 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * auth expire consumer
+ * access expire consumer
  *
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class AuthExpireConsumer implements BlueLifecycle {
+public final class AccessExpireConsumer implements BlueLifecycle {
 
-    private static final Logger LOGGER = getLogger(AuthExpireConsumer.class);
+    private static final Logger LOGGER = getLogger(AccessExpireConsumer.class);
 
     private final BlueConsumerConfig blueConsumerConfig;
 
@@ -33,7 +33,7 @@ public final class AuthExpireConsumer implements BlueLifecycle {
 
     private BluePulsarConsumer<KeyExpireParam> authExpireConsumer;
 
-    public AuthExpireConsumer(BlueConsumerConfig blueConsumerConfig, AuthBatchExpireProcessor authBatchExpireProcessor) {
+    public AccessExpireConsumer(BlueConsumerConfig blueConsumerConfig, AuthBatchExpireProcessor authBatchExpireProcessor) {
         this.blueConsumerConfig = blueConsumerConfig;
         this.authBatchExpireProcessor = authBatchExpireProcessor;
     }
@@ -47,7 +47,7 @@ public final class AuthExpireConsumer implements BlueLifecycle {
                             authBatchExpireProcessor.expireKey(kep);
                         });
 
-        this.authExpireConsumer = generateConsumer(blueConsumerConfig.getByKey(AUTH_EXPIRE.name), authExpireDataConsumer);
+        this.authExpireConsumer = generateConsumer(blueConsumerConfig.getByKey(ACCESS_EXPIRE.name), authExpireDataConsumer);
     }
 
     @Override

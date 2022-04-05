@@ -1,9 +1,9 @@
 package com.blue.auth.event.producer;
 
+import com.blue.auth.api.model.InvalidLocalAuthParam;
 import com.blue.auth.config.blue.BlueProducerConfig;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.pulsar.common.BluePulsarProducer;
-import com.blue.auth.api.model.InvalidLocalAuthParam;
 import org.apache.pulsar.client.api.MessageId;
 import reactor.util.Logger;
 
@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.base.BlueTopic.INVALID_LOCAL_AUTH;
+import static com.blue.base.constant.base.BlueTopic.INVALID_LOCAL_ACCESS;
 import static com.blue.pulsar.api.generator.BluePulsarProducerGenerator.generateProducer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
@@ -33,7 +33,7 @@ public final class InvalidLocalAccessProducer implements BlueLifecycle {
 
     public InvalidLocalAccessProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.invalidLocalAuthProducer = generateProducer(blueProducerConfig.getByKey(INVALID_LOCAL_AUTH.name), InvalidLocalAuthParam.class);
+        this.invalidLocalAuthProducer = generateProducer(blueProducerConfig.getByKey(INVALID_LOCAL_ACCESS.name), InvalidLocalAuthParam.class);
     }
 
     @Override

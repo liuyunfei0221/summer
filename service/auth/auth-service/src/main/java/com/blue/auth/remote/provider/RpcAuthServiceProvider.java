@@ -3,8 +3,8 @@ package com.blue.auth.remote.provider;
 import com.blue.auth.service.inter.AuthService;
 import com.blue.base.model.base.Access;
 import com.blue.auth.api.inter.RpcAuthService;
-import com.blue.auth.api.model.AssertAuth;
-import com.blue.auth.api.model.AuthAsserted;
+import com.blue.auth.api.model.AccessAssert;
+import com.blue.auth.api.model.AccessAsserted;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
@@ -23,7 +23,7 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @DubboService(interfaceClass = RpcAuthService.class, version = "1.0", methods = {
-        @Method(name = "assertAuth", async = true),
+        @Method(name = "assertAccess", async = true),
         @Method(name = "invalidAuthByAccess", async = true),
         @Method(name = "invalidAuthByJwt", async = true),
         @Method(name = "invalidAuthByMemberId", async = true)
@@ -44,13 +44,13 @@ public class RpcAuthServiceProvider implements RpcAuthService {
     /**
      * authentication and authorization
      *
-     * @param assertAuth
+     * @param accessAssert
      * @return
      */
     @Override
-    public CompletableFuture<AuthAsserted> assertAuth(AssertAuth assertAuth) {
-        LOGGER.info("CompletableFuture<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", assertAuth);
-        return just(assertAuth).publishOn(scheduler).flatMap(authService::assertAuthMono).toFuture();
+    public CompletableFuture<AccessAsserted> assertAccess(AccessAssert accessAssert) {
+        LOGGER.info("CompletableFuture<AuthAsserted> assertAccess(AssertAuth assertAuth), assertAuth = {}", accessAssert);
+        return just(accessAssert).publishOn(scheduler).flatMap(authService::assertAccessMono).toFuture();
     }
 
     /**

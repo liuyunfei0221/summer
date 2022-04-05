@@ -1,7 +1,7 @@
 package com.blue.auth.service.inter;
 
-import com.blue.auth.api.model.AssertAuth;
-import com.blue.auth.api.model.AuthAsserted;
+import com.blue.auth.api.model.AccessAssert;
+import com.blue.auth.api.model.AccessAsserted;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.model.MemberAccess;
 import com.blue.auth.model.MemberAuth;
@@ -24,12 +24,12 @@ public interface AuthService {
     void refreshSystemAuthorityInfos();
 
     /**
-     * assert auth
+     * assert access
      *
-     * @param assertAuth
+     * @param accessAssert
      * @return
      */
-    Mono<AuthAsserted> assertAuthMono(AssertAuth assertAuth);
+    Mono<AccessAsserted> assertAccessMono(AccessAssert accessAssert);
 
     /**
      * generate member auth
@@ -95,12 +95,12 @@ public interface AuthService {
     Mono<Boolean> invalidAuthByMemberId(Long memberId);
 
     /**
-     * invalid local auth by key id
+     * invalid local access by key id
      *
      * @param keyId
      * @return
      */
-    Mono<Boolean> invalidLocalAuthByKeyId(String keyId);
+    Mono<Boolean> invalidLocalAccessByKeyId(String keyId);
 
     /**
      * update member role info by member id

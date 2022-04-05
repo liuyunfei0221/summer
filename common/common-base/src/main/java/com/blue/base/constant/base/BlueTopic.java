@@ -20,12 +20,12 @@ public enum BlueTopic {
     /**
      * Refresh the certification expiration time
      */
-    AUTH_EXPIRE("authExpire"),
+    ACCESS_EXPIRE("accessExpire"),
 
     /**
-     * Local auth certification expired
+     * Local access certification expired
      */
-    INVALID_LOCAL_AUTH("invalidLocalAuth"),
+    INVALID_LOCAL_ACCESS("invalidLocalAccess"),
 
     /**
      * System authority Infos Refresh

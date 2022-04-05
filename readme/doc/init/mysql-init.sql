@@ -373,7 +373,7 @@ VALUES (1, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (57, 'POST', 'blue-auth', '/auth/refreshAccess', b'0', b'1', b'1', b'1', b'1', 1,
         'refresh access', 'refresh access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (7, 'DELETE', 'blue-auth', '/auth/logoutEverywhere', b'1', b'1', b'1', b'0', b'1', 1,
+       (58, 'DELETE', 'blue-auth', '/auth/logoutEverywhere', b'1', b'1', b'1', b'0', b'1', 1,
         'logout everywhere', 'logout everywhere', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 -- role
 

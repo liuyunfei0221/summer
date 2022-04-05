@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author DarkBlue
  */
 @SuppressWarnings("unused")
-public final class AssertAuth implements Serializable {
+public final class AccessAssert implements Serializable {
 
     private static final long serialVersionUID = -7162502253332663234L;
 
@@ -32,10 +32,10 @@ public final class AssertAuth implements Serializable {
      * The correctness of parameters cannot be guaranteed based on setter
      */
     @Deprecated
-    public AssertAuth() {
+    public AccessAssert() {
     }
 
-    public AssertAuth(String authentication, String method, String uri) {
+    public AccessAssert(String authentication, String method, String uri) {
         this.authentication = authentication;
         this.method = method;
         this.uri = uri;

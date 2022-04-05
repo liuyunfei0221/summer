@@ -245,8 +245,8 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public Mono<Boolean> invalidLocalAuthByKeyId(String keyId) {
-        return authService.invalidLocalAuthByKeyId(keyId);
+    public Mono<Boolean> invalidLocalAccessByKeyId(String keyId) {
+        return authService.invalidLocalAccessByKeyId(keyId);
     }
 
     /**

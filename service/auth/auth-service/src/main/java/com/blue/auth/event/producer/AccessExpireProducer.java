@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.base.BlueTopic.AUTH_EXPIRE;
+import static com.blue.base.constant.base.BlueTopic.ACCESS_EXPIRE;
 import static com.blue.pulsar.api.generator.BluePulsarProducerGenerator.generateProducer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
@@ -19,22 +19,22 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * auth expire producer
+ * access expire producer
  *
  * @author DarkBlue
  */
 @SuppressWarnings({"Duplicates", "JavaDoc"})
-public final class AuthExpireProducer implements BlueLifecycle {
+public final class AccessExpireProducer implements BlueLifecycle {
 
-    private static final Logger LOGGER = getLogger(AuthExpireProducer.class);
+    private static final Logger LOGGER = getLogger(AccessExpireProducer.class);
 
     private final ExecutorService executorService;
 
     private final BluePulsarProducer<KeyExpireParam> authExpireProducer;
 
-    public AuthExpireProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public AccessExpireProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.authExpireProducer = generateProducer(blueProducerConfig.getByKey(AUTH_EXPIRE.name), KeyExpireParam.class);
+        this.authExpireProducer = generateProducer(blueProducerConfig.getByKey(ACCESS_EXPIRE.name), KeyExpireParam.class);
     }
 
     @Override

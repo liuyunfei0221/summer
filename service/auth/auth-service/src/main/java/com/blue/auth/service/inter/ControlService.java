@@ -70,7 +70,7 @@ public interface ControlService {
      * @param keyId
      * @return
      */
-    Mono<Boolean> invalidLocalAuthByKeyId(String keyId);
+    Mono<Boolean> invalidLocalAccessByKeyId(String keyId);
 
     /**
      * get authority base on role by role id

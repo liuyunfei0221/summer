@@ -43,7 +43,7 @@ eureka:
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://172.16.201.160:3306/auth_0
+    - url: jdbc:mysql://192.168.0.128:3306/auth_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -57,7 +57,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://172.16.201.160:3306/auth_1
+    - url: jdbc:mysql://192.168.0.128:3306/auth_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -91,7 +91,7 @@ data:
   forceWriteTables:
   broadcastTables: [ ]
   singleDatabasesWithTables:
-    - url: jdbc:mysql://172.16.201.160:3306/auth
+    - url: jdbc:mysql://192.168.0.128:3306/auth
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -145,7 +145,7 @@ identity:
 
 mongo:
   addressAttrs:
-    - address: 172.16.201.160
+    - address: 192.168.0.128
       port: 27017
   auth: false
   userName:
@@ -212,7 +212,7 @@ seata:
     vgroup-mapping:
       summer_group: default
     grouplist:
-      default: 172.16.201.160:8091
+      default: 192.168.0.128:8091
     enable-degrade: false
     disable-global-transaction: false
   transport:
@@ -237,7 +237,7 @@ seata:
   config:
     type: zk
     zk:
-      server-addr: 172.16.201.160:2181
+      server-addr: 192.168.0.128:2181
       session-timeout: 60000
       connect-timeout: 60000
       username: ""
@@ -249,7 +249,7 @@ seata:
     type: zk
     zk:
       cluster: default
-      server-addr: 172.16.201.160:2181
+      server-addr: 192.168.0.128:2181
       session-timeout: 60000
       connect-timeout: 60000
       username: ""
@@ -265,7 +265,7 @@ cache:
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
   maxRedirects: 4
-  host: 172.16.201.160
+  host: 192.168.0.128
   port: 6379
   minIdle: 4
   maxIdle: 64
@@ -337,8 +337,8 @@ blocking:
 
 producers:
   configs:
-    authExpire:
-      services: [ 172.16.201.160:6650 ]
+    accessExpire:
+      services: [ 192.168.0.128:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -367,8 +367,8 @@ producers:
       enableProxy: false
       proxyServiceUrl:
       proxyProtocol: SNI
-      topic: authExpire
-      producerName: authExpireProducer000
+      topic: accessExpire
+      producerName: accessExpireProducer000
       accessMode: Shared
       sendTimeoutMillis: 30000
       maxPendingMessages: 1000
@@ -391,7 +391,7 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     invalidLocalAccess:
-      services: [ 172.16.201.160:6650 ]
+      services: [ 192.168.0.128:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -444,7 +444,7 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     systemAuthorityInfosRefresh:
-      services: [ 172.16.201.160:6650 ]
+      services: [ 192.168.0.128:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -499,8 +499,8 @@ producers:
 
 consumers:
   configs:
-    authExpire:
-      services: [ 172.16.201.160:6650 ]
+    accessExpire:
+      services: [ 192.168.0.128:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -529,9 +529,9 @@ consumers:
       enableProxy: false
       proxyServiceUrl:
       proxyProtocol: SNI
-      topics: [ authExpire ]
+      topics: [ accessExpire ]
       topicsPattern:
-      subscriptionName: authExpireSubscription
+      subscriptionName: accessExpireSubscription
       ackTimeoutMillis: 2000
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000
@@ -542,7 +542,7 @@ consumers:
       acknowledgementsGroupTimeMillis: 100
       replicateSubscriptionState: false
       maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: authExpireConsumer000
+      consumerName: accessExpireConsumer000
       readCompacted: false
       patternAutoDiscoveryPeriodMillis: 1
       priorityLevel: 0
@@ -565,8 +565,8 @@ consumers:
       encryptionKey:
       consumerCryptoFailureAction: FAIL
       enableDeadLetter: true
-      deadLetterTopic: authExpire
-      retryLetterTopic: authExpire
+      deadLetterTopic: accessExpire
+      retryLetterTopic: accessExpire
       maxRedeliverCount: 1000
       startMessageIdInclusive: false
       enableBatchReceive: false
@@ -577,7 +577,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     invalidLocalAccess:
-      services: [ 172.16.201.160:6650 ]
+      services: [ 192.168.0.128:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -654,7 +654,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     systemAuthorityInfosRefresh:
-      services: [ 172.16.201.160:6650 ]
+      services: [ 192.168.0.128:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -751,7 +751,7 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://172.16.201.160:2181
+    address: zookeeper://192.168.0.128:2181
     file: D:/locallogs/dubbo/auth/registry.properties
     check: false
     timeout: 60000
@@ -782,7 +782,7 @@ redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
-  host: 172.16.201.160
+  host: 192.168.0.128
   port: 6379
   scanInterval: 8000
   checkSlotsCoverage: false

@@ -1,6 +1,6 @@
 package com.blue.auth.component.auth;
 
-import com.blue.auth.event.producer.AuthExpireProducer;
+import com.blue.auth.event.producer.AccessExpireProducer;
 import com.blue.base.model.base.KeyExpireParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
@@ -43,7 +43,7 @@ public final class AuthInfoCache {
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    private AuthExpireProducer authExpireProducer;
+    private AccessExpireProducer accessExpireProducer;
 
     private Scheduler scheduler;
 
@@ -72,16 +72,16 @@ public final class AuthInfoCache {
     private static final String THREAD_NAME_PRE = "JwtCache-thread- ";
     private static final int RANDOM_LEN = 4;
 
-    public AuthInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer,
+    public AuthInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer,
                          Scheduler scheduler, Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
                          Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
 
-        assertConf(reactiveStringRedisTemplate, authExpireProducer,
+        assertConf(reactiveStringRedisTemplate, accessExpireProducer,
                 refresherCorePoolSize, refresherMaximumPoolSize, refresherKeepAliveSeconds,
                 refresherBlockingQueueCapacity, globalExpireMillis, localExpireMillis, capacity);
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
-        this.authExpireProducer = authExpireProducer;
+        this.accessExpireProducer = accessExpireProducer;
         this.scheduler = scheduler;
 
         ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), SAME_CORE);
@@ -110,7 +110,7 @@ public final class AuthInfoCache {
         try {
             this.executorService.execute(() -> {
                 if (hasText(keyId) && hasText(authInfo)) {
-                    authExpireProducer.send(new KeyExpireParam(keyId, globalExpireMillis, UNIT));
+                    accessExpireProducer.send(new KeyExpireParam(keyId, globalExpireMillis, UNIT));
                     LOGGER.warn("REDIS_AUTH_REFRESHER -> SUCCESS, keyId = {}", keyId);
                 } else {
                     LOGGER.error("keyId or authInfo is empty, keyId = {}, authInfo = {}", keyId, authInfo);
@@ -199,13 +199,13 @@ public final class AuthInfoCache {
     /**
      * assert conf
      */
-    private static void assertConf(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer,
+    private static void assertConf(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer,
                                    Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
                                    Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
         if (reactiveStringRedisTemplate == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveStringRedisTemplate can't be null");
 
-        if (authExpireProducer == null)
+        if (accessExpireProducer == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "authExpireProducer can't be null");
 
         if (refresherCorePoolSize == null || refresherCorePoolSize < 1)

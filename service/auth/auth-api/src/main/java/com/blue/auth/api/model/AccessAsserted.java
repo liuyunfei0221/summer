@@ -13,7 +13,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
  * @author DarkBlue
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public final class AuthAsserted implements Serializable {
+public final class AccessAsserted implements Serializable {
 
     private static final long serialVersionUID = -3287463425057208346L;
 
@@ -62,10 +62,10 @@ public final class AuthAsserted implements Serializable {
      * The correctness of parameters cannot be guaranteed based on setter
      */
     @Deprecated
-    public AuthAsserted() {
+    public AccessAsserted() {
     }
 
-    public AuthAsserted(boolean certificate, boolean requestUnDecryption, boolean responseUnEncryption, boolean existenceRequestBody, boolean existenceResponseBody, String secKey, Access access, String message) {
+    public AccessAsserted(boolean certificate, boolean requestUnDecryption, boolean responseUnEncryption, boolean existenceRequestBody, boolean existenceResponseBody, String secKey, Access access, String message) {
         if (secKey == null || access == null)
             throw new BlueException(BAD_REQUEST);
 

@@ -1,7 +1,7 @@
 package com.blue.media.config.filter.global;
 
-import com.blue.auth.api.model.AssertAuth;
-import com.blue.auth.api.model.AuthAsserted;
+import com.blue.auth.api.model.AccessAssert;
+import com.blue.auth.api.model.AccessAsserted;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.remote.consumer.RpcAuthServiceConsumer;
 import org.springframework.core.Ordered;
@@ -42,20 +42,20 @@ public final class BlueAuthFilter implements WebFilter, Ordered {
     private static final BiConsumer<ServerHttpRequest, String> AUTHENTICATION_REPACKAGER =
             (request, accessInfo) -> request.mutate().headers(hs -> hs.set(AUTHORIZATION.name, accessInfo));
 
-    private static void authProcess(AuthAsserted authAsserted, ServerHttpRequest request, Map<String, Object> attributes) {
-        if (authAsserted == null || attributes == null)
+    private static void authProcess(AccessAsserted accessAsserted, ServerHttpRequest request, Map<String, Object> attributes) {
+        if (accessAsserted == null || attributes == null)
             throw new BlueException(UNAUTHORIZED);
 
-        String accStr = accessToJson(ofNullable(authAsserted.getAccessInfo()).orElse(VISITOR.access));
-        if (authAsserted.getCertificate())
+        String accStr = accessToJson(ofNullable(accessAsserted.getAccessInfo()).orElse(VISITOR.access));
+        if (accessAsserted.getCertificate())
             AUTHENTICATION_REPACKAGER.accept(request, accStr);
 
         attributes.put(ACCESS.key, accStr);
-        attributes.put(SEC_KEY.key, authAsserted.getSecKey());
-        attributes.put(REQUEST_UN_DECRYPTION.key, authAsserted.getRequestUnDecryption());
-        attributes.put(RESPONSE_UN_ENCRYPTION.key, authAsserted.getResponseUnEncryption());
-        attributes.put(EXISTENCE_REQUEST_BODY.key, authAsserted.getExistenceRequestBody());
-        attributes.put(EXISTENCE_RESPONSE_BODY.key, authAsserted.getExistenceResponseBody());
+        attributes.put(SEC_KEY.key, accessAsserted.getSecKey());
+        attributes.put(REQUEST_UN_DECRYPTION.key, accessAsserted.getRequestUnDecryption());
+        attributes.put(RESPONSE_UN_ENCRYPTION.key, accessAsserted.getResponseUnEncryption());
+        attributes.put(EXISTENCE_REQUEST_BODY.key, accessAsserted.getExistenceRequestBody());
+        attributes.put(EXISTENCE_RESPONSE_BODY.key, accessAsserted.getExistenceResponseBody());
     }
 
     @SuppressWarnings("NullableProblems")
@@ -64,8 +64,8 @@ public final class BlueAuthFilter implements WebFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         Map<String, Object> attributes = exchange.getAttributes();
 
-        return rpcAuthServiceConsumer.assertAuth(
-                        new AssertAuth(HEADER_VALUE_GETTER.apply(request.getHeaders(), AUTHORIZATION.name),
+        return rpcAuthServiceConsumer.assertAccess(
+                        new AccessAssert(HEADER_VALUE_GETTER.apply(request.getHeaders(), AUTHORIZATION.name),
                                 ofNullable(attributes.get(METHOD.key)).map(String::valueOf).orElse(""),
                                 ofNullable(attributes.get(URI.key)).map(String::valueOf).orElse("")))
                 .flatMap(authAsserted -> {

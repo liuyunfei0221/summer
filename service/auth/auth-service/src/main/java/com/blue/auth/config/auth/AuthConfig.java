@@ -5,7 +5,7 @@ import com.blue.auth.api.component.jwt.api.conf.MemberJwtConfParams;
 import com.blue.auth.component.auth.AuthBatchExpireProcessor;
 import com.blue.auth.component.auth.AuthInfoCache;
 import com.blue.auth.config.deploy.AuthDeploy;
-import com.blue.auth.event.producer.AuthExpireProducer;
+import com.blue.auth.event.producer.AccessExpireProducer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
@@ -44,9 +44,9 @@ public class AuthConfig {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Bean
-    AuthInfoCache authInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AuthExpireProducer authExpireProducer) {
+    AuthInfoCache authInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer) {
         LOGGER.info("jwtDeploy = {}", authDeploy);
-        return new AuthInfoCache(reactiveStringRedisTemplate, authExpireProducer, scheduler, authDeploy.getRefresherCorePoolSize(),
+        return new AuthInfoCache(reactiveStringRedisTemplate, accessExpireProducer, scheduler, authDeploy.getRefresherCorePoolSize(),
                 authDeploy.getRefresherMaximumPoolSize(), authDeploy.getRefresherKeepAliveSeconds(), authDeploy.getRefresherBlockingQueueCapacity(),
                 authDeploy.getGlobalMinExpireMillis(), authDeploy.getLocalExpireMillis(), authDeploy.getLocalCacheCapacity());
     }

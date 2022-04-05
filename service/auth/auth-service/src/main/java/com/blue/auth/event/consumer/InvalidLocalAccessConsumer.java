@@ -1,16 +1,16 @@
 package com.blue.auth.event.consumer;
 
+import com.blue.auth.api.model.InvalidLocalAuthParam;
 import com.blue.auth.config.blue.BlueConsumerConfig;
 import com.blue.auth.service.inter.AuthService;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.pulsar.common.BluePulsarConsumer;
-import com.blue.auth.api.model.InvalidLocalAuthParam;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.base.BlueTopic.INVALID_LOCAL_AUTH;
+import static com.blue.base.constant.base.BlueTopic.INVALID_LOCAL_ACCESS;
 import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
@@ -46,14 +46,14 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
                         .ifPresent(ilap -> {
                             LOGGER.info("invalidClusterLocalAuthDataConsumer received, ilap = {}", ilap);
                             ofNullable(ilap.getKeyId())
-                                    .ifPresent(keyId -> authService.invalidLocalAuthByKeyId(keyId)
+                                    .ifPresent(keyId -> authService.invalidLocalAccessByKeyId(keyId)
                                             .subscribe(b ->
                                                     LOGGER.info("authService.invalidLocalAuthByKeyId(keyId), b = {}, ilap = {}", b, ilap)
                                             )
                                     );
                         });
 
-        this.invalidClusterLocalAuthConsumer = generateConsumer(blueConsumerConfig.getByKey(INVALID_LOCAL_AUTH.name), invalidClusterLocalAuthDataConsumer);
+        this.invalidClusterLocalAuthConsumer = generateConsumer(blueConsumerConfig.getByKey(INVALID_LOCAL_ACCESS.name), invalidClusterLocalAuthDataConsumer);
     }
 
     @Override
