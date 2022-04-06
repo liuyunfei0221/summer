@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "016816bd-6fb5-4941-8731-66cb1c32b771",
+		"_postman_id": "03962158-cb6d-4f1e-9424-e7d7834e5e3c",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -107,10 +107,72 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"loginType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"0705147\"\r\n    }\r\n}"
+					"raw": "{\r\n    \"loginType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"2212874\"\r\n    }\r\n}"
 				},
 				"url": {
-					"raw": "localhost:10000/blue-auth/auth/login",
+					"raw": "localhost:10001/blue-auth/auth/login",
+					"host": [
+						"localhost"
+					],
+					"port": "10001",
+					"path": [
+						"blue-auth",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "使用refresh token刷新access token",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYmM2ZjM5MjQ2Y2E1NDdhYTcxYWQ2NTVhNjVlMWU4Nzk5MmMyYzFmNjA5OTNiY2Q3OWU5YmZiNzNhMDVlODdmYTIzODBjMjJlOWNhMzZhMjg2ZWNkMWRjMGUxNGM4NjBiMmM0ZmMyZGUwYjZhMmNhYTdmMjJhZjcyMjc2M2NiY2IiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTI1MTgzMSIsIm5iZiI6MTY0OTI1MTgzMSwidCI6Im1kU0pwN1Vqd2lBIiwiZyI6Ik0iLCJoIjoiVnZ0aHB1bElmb1EiLCJibHVlRXhwaXJlc0F0U3RhbXAiOjE2NTE5MzAyMzEyOTcsImkiOiIzMjcwNjgyMDIwNDEzNDQwMiIsImV4cCI6MTY1MTkzMDIzMSwiaWF0IjoxNjQ5MjUxODMxLCJqdGkiOiJMNUFoREk1YnVEUU5wanpORU1icUVyQXZ5ckxYMHFneCIsIm4iOiJQVkFSIn0.-0g6jHQitWY-vsX5bh_o2_Tq8SpswXgAhEbMxnzWbK9ljdj2QIAMcurDjESahPcNgLixpdb26lmzG18OGMP3Og",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:10001/blue-auth/auth/refreshAccess",
+					"host": [
+						"localhost"
+					],
+					"port": "10001",
+					"path": [
+						"blue-auth",
+						"auth",
+						"refreshAccess"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "刷新密钥",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:10000/blue-auth/auth/updateSecret",
 					"host": [
 						"localhost"
 					],
@@ -118,7 +180,7 @@
 					"path": [
 						"blue-auth",
 						"auth",
-						"login"
+						"updateSecret"
 					]
 				}
 			},
@@ -150,6 +212,37 @@
 						"blue-auth",
 						"auth",
 						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "注销全部登录端点",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYmVlMzE4MjFiMTM3YTExYzJlZDM2ZmRjYjcxMTQwZDBmNDRkOGNkMWE4YTVkMGMyZDVmNTdmMzMyZTI1Y2RkMmQxZjc3YzMxYWUyOGEwZWU0ODAyM2ZjYzZjNTI2ZGNkNDRkYmMxODliMGNkNDNhZjIwZjA5NmRkZjk3N2UyNWYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTI1MTk0NiIsIm5iZiI6MTY0OTI1MTk0NiwidCI6IlNjbVplTTJ5aFI2IiwiZyI6Ik0iLCJoIjoiQl9TTjozMjcwNjgyMDIwNDEzNDQwMl9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MTkzMDM0Njk4MCwiaSI6IjMyNzA2ODIwMjA0MTM0NDAyIiwiZXhwIjoxNjUxOTMwMzQ2LCJpYXQiOjE2NDkyNTE5NDYsImp0aSI6InZyS2g5VVpXczZjMTV2NzhHTVEzSGtwRUxFbGl1WncwIiwibiI6IlBWQVIifQ.zeuIHM9fjPh4X9SN_c7BDipeeRAlsnVzS8-M1750aqhHA9o16lMMdhcDzSnxNwvPwBl7f6Je8c-dWKu1R5T4sg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:10001/blue-auth/auth/logoutEverywhere",
+					"host": [
+						"localhost"
+					],
+					"port": "10001",
+					"path": [
+						"blue-auth",
+						"auth",
+						"logoutEverywhere"
 					]
 				}
 			},
@@ -544,37 +637,6 @@
 						"blue-portal",
 						"formatter",
 						"index.html"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "刷新密钥",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-auth/auth/updateSecret",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"auth",
-						"updateSecret"
 					]
 				}
 			},

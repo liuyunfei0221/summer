@@ -371,7 +371,7 @@ VALUES (1, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (56, 'POST', 'blue-analyze', '/statistics/active/summary', b'0', b'1', b'1', b'0', b'1', 2,
         'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (57, 'POST', 'blue-auth', '/auth/refreshAccess', b'0', b'1', b'1', b'1', b'1', 1,
+       (57, 'PUT', 'blue-auth', '/auth/refreshAccess', b'0', b'1', b'1', b'1', b'1', 1,
         'refresh access', 'refresh access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (58, 'DELETE', 'blue-auth', '/auth/logoutEverywhere', b'1', b'1', b'1', b'0', b'1', 1,
         'logout everywhere', 'logout everywhere', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);

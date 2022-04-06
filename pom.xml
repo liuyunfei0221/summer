@@ -35,7 +35,7 @@
         <clickhouse-java.version>0.3.2</clickhouse-java.version>
         <hikari-cp.version>5.0.1</hikari-cp.version>
         <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
-        <spring-dubbo.version>3.0.7</spring-dubbo.version>
+        <spring-dubbo.version>3.0.5</spring-dubbo.version>
         <zkclient.version>0.11</zkclient.version>
         <seata-spring.version>1.4.2</seata-spring.version>
         <spring-mybatis.version>2.2.2</spring-mybatis.version>

@@ -117,13 +117,16 @@ public class AuthServiceImpl implements AuthService {
         this.executorService = executorService;
         this.redissonClient = redissonClient;
 
-        randomIdLen = sessionKeyDeploy.getRanLen();
-        maxWaitingMillisForRefresh = blockingDeploy.getBlockingMillis();
+        this.randomIdLen = sessionKeyDeploy.getRanLen();
+        this.maxWaitingMillisForRefresh = blockingDeploy.getBlockingMillis();
+        this.maxExpireMillis = jwtProcessor.getMaxExpireMillis();
     }
 
     private int randomIdLen;
 
     private long maxWaitingMillisForRefresh;
+
+    private long maxExpireMillis;
 
     public static final String
             SESSION_KEY_PRE = BlueCacheKey.SESSION_KEY_PRE.key,
@@ -415,14 +418,19 @@ public class AuthServiceImpl implements AuthService {
                 });
     };
 
-    private static final BiConsumer<MemberPayload, RefreshInfo> AUTH_ASSERTER = (memberPayload, refreshInfo) -> {
-        if (memberPayload != null && refreshInfo != null
-                && memberPayload.getGamma().equals(refreshInfo.getGamma())
-                && memberPayload.getKeyId().equals(refreshInfo.getId())
-                && memberPayload.getId().equals(refreshInfo.getMemberId())
-                && memberPayload.getLoginType().equals(refreshInfo.getLoginType())
-                && memberPayload.getLoginTime().equals(refreshInfo.getLoginTime()))
-            return;
+    private final BiConsumer<MemberPayload, RefreshInfo> AUTH_ASSERTER = (memberPayload, refreshInfo) -> {
+        try {
+            if (memberPayload != null && refreshInfo != null
+                    && memberPayload.getGamma().equals(refreshInfo.getGamma())
+                    && memberPayload.getKeyId().equals(refreshInfo.getId())
+                    && memberPayload.getId().equals(refreshInfo.getMemberId())
+                    && memberPayload.getLoginType().equals(refreshInfo.getLoginType())
+                    && memberPayload.getLoginTime().equals(refreshInfo.getLoginTime())
+                    && (parseLong(refreshInfo.getLoginTime()) + maxExpireMillis) >= TIME_STAMP_GETTER.get())
+                return;
+        } catch (Exception e) {
+            throw new BlueException(UNAUTHORIZED);
+        }
 
         throw new BlueException(UNAUTHORIZED);
     };
@@ -874,7 +882,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<Boolean> invalidLocalAccessByKeyId(String keyId) {
         LOGGER.info("Mono<Boolean> invalidLocalAuthByKeyId(String keyId), keyId = {}", keyId);
-        invalidLocalAccessProducer.send(new InvalidLocalAuthParam(keyId));
         return authInfoCache.invalidLocalAuthInfo(keyId);
     }
 

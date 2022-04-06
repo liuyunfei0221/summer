@@ -22,12 +22,14 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
-@DubboService(interfaceClass = RpcAuthService.class, version = "1.0", methods = {
-        @Method(name = "assertAccess", async = true),
-        @Method(name = "invalidAuthByAccess", async = true),
-        @Method(name = "invalidAuthByJwt", async = true),
-        @Method(name = "invalidAuthByMemberId", async = true)
-})
+@DubboService(interfaceClass = RpcAuthService.class,
+        version = "1.0",
+        methods = {
+                @Method(name = "assertAccess", async = true),
+                @Method(name = "invalidAuthByAccess", async = true),
+                @Method(name = "invalidAuthByJwt", async = true),
+                @Method(name = "invalidAuthByMemberId", async = true)
+        })
 public class RpcAuthServiceProvider implements RpcAuthService {
 
     private static final Logger LOGGER = getLogger(RpcAuthServiceProvider.class);
