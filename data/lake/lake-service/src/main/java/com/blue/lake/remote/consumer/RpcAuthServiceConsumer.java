@@ -26,9 +26,9 @@ public class RpcAuthServiceConsumer {
 
     @DubboReference(version = "1.0", providedBy = {"summer-auth"}, methods = {
             @Method(name = "assertAccess", async = true),
-            @Method(name = "invalidAuthByAccess", async = true),
-            @Method(name = "invalidAuthByJwt", async = true),
-            @Method(name = "invalidAuthByMemberId", async = true)
+            @Method(name = "invalidateAuthByAccess", async = true),
+            @Method(name = "invalidateAuthByJwt", async = true),
+            @Method(name = "invalidateAuthByMemberId", async = true)
     })
     private RpcAuthService rpcAuthService;
 
@@ -49,9 +49,9 @@ public class RpcAuthServiceConsumer {
      * @param access
      * @return
      */
-    public Mono<Boolean> invalidAuthByAccess(Access access) {
-        LOGGER.info("Mono<Boolean> invalidAuthByAccess(Access access), access = {}", access);
-        return fromFuture(rpcAuthService.invalidAuthByAccess(access));
+    public Mono<Boolean> invalidateAuthByAccess(Access access) {
+        LOGGER.info("Mono<Boolean> invalidateAuthByAccess(Access access), access = {}", access);
+        return fromFuture(rpcAuthService.invalidateAuthByAccess(access));
     }
 
     /**
@@ -60,9 +60,9 @@ public class RpcAuthServiceConsumer {
      * @param jwt
      * @return
      */
-    public Mono<Boolean> invalidAuthByJwt(String jwt) {
-        LOGGER.info("Mono<Boolean> invalidAuthByJwt(String jwt), jwt = {}", jwt);
-        return fromFuture(rpcAuthService.invalidAuthByJwt(jwt));
+    public Mono<Boolean> invalidateAuthByJwt(String jwt) {
+        LOGGER.info("Mono<Boolean> invalidateAuthByJwt(String jwt), jwt = {}", jwt);
+        return fromFuture(rpcAuthService.invalidateAuthByJwt(jwt));
     }
 
     /**
@@ -71,9 +71,9 @@ public class RpcAuthServiceConsumer {
      * @param memberId
      * @return
      */
-    public Mono<Boolean> invalidAuthByMemberId(Long memberId) {
-        LOGGER.info("Mono<Boolean> invalidAuthByMemberId(Long memberId), memberId = {}", memberId);
-        return fromFuture(rpcAuthService.invalidAuthByMemberId(memberId));
+    public Mono<Boolean> invalidateAuthByMemberId(Long memberId) {
+        LOGGER.info("Mono<Boolean> invalidateAuthByMemberId(Long memberId), memberId = {}", memberId);
+        return fromFuture(rpcAuthService.invalidateAuthByMemberId(memberId));
     }
 
 }

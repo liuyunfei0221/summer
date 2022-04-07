@@ -293,7 +293,6 @@ VALUES (1, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         'withdraw/test encrypt in media', 'withdraw/test encrypt in media', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (21, 'GET', 'blue-shine', '/shine', b'0', b'1', b'1', b'0', b'1', 1,
         'commonweal information', 'commonweal information', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
        (22, 'GET', 'blue-base', '/dictType', b'0', b'1', b'1', b'0',
         b'1', 1, 'query dict types', 'query dict types', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (23, 'GET', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
@@ -310,10 +309,6 @@ VALUES (1, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         'areas', 'areas', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (29, 'GET', 'blue-base', '/language', b'0', b'1', b'1', b'0', b'1', 1,
         'language', 'language', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
-
--- dynamic resources
-
        (30, 'GET', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
         3, 'GET dynamic endpoint', 'GET dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (31, 'HEAD', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
@@ -328,9 +323,6 @@ VALUES (1, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         b'1', 3, 'DELETE dynamic endpoint', 'DELETE dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (36, 'OPTIONS', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1',
         b'1', 3, 'OPTIONS dynamic endpoint', 'OPTIONS dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
--- manage resources
-
        (37, 'POST', 'blue-auth', '/manager/resource/list', b'1', b'1', b'1', b'1', b'1', 2,
         'resource list', 'resource list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (38, 'POST', 'blue-auth', '/manager/role/list', b'1', b'1', b'1', b'1', b'1', 2,
@@ -374,7 +366,11 @@ VALUES (1, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
        (57, 'PUT', 'blue-auth', '/auth/refreshAccess', b'0', b'1', b'1', b'1', b'1', 1,
         'refresh access', 'refresh access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (58, 'DELETE', 'blue-auth', '/auth/logoutEverywhere', b'1', b'1', b'1', b'0', b'1', 1,
-        'logout everywhere', 'logout everywhere', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+        'logout everywhere', 'logout everywhere', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (59, 'POST', 'blue-auth', '/blue-auth/manager/auth', b'1', b'1', b'1', b'0', b'1', 2,
+        'invalidate member auth', 'invalidate member auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+
 -- role
 
 INSERT INTO `auth`.`role`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`, `creator`,
@@ -423,6 +419,7 @@ VALUES (1, 2, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (33, 2, 48, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (34, 2, 49, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (35, 2, 50, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (56, 2, 59, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- normal auth
 

@@ -26,9 +26,9 @@ import static reactor.util.Loggers.getLogger;
         version = "1.0",
         methods = {
                 @Method(name = "assertAccess", async = true),
-                @Method(name = "invalidAuthByAccess", async = true),
-                @Method(name = "invalidAuthByJwt", async = true),
-                @Method(name = "invalidAuthByMemberId", async = true)
+                @Method(name = "invalidateAuthByAccess", async = true),
+                @Method(name = "invalidateAuthByJwt", async = true),
+                @Method(name = "invalidateAuthByMemberId", async = true)
         })
 public class RpcAuthServiceProvider implements RpcAuthService {
 
@@ -62,9 +62,9 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      * @return
      */
     @Override
-    public CompletableFuture<Boolean> invalidAuthByAccess(Access access) {
-        LOGGER.info("CompletableFuture<Boolean> invalidAuthByAccess(Access access), access = {}", access);
-        return just(access).publishOn(scheduler).flatMap(authService::invalidAuthByAccess).toFuture();
+    public CompletableFuture<Boolean> invalidateAuthByAccess(Access access) {
+        LOGGER.info("CompletableFuture<Boolean> invalidateAuthByAccess(Access access), access = {}", access);
+        return just(access).publishOn(scheduler).flatMap(authService::invalidateAuthByAccess).toFuture();
     }
 
     /**
@@ -74,9 +74,9 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      * @return
      */
     @Override
-    public CompletableFuture<Boolean> invalidAuthByJwt(String jwt) {
-        LOGGER.info("CompletableFuture<Boolean> invalidAuthByJwt(String jwt), jwt = {}", jwt);
-        return just(jwt).publishOn(scheduler).flatMap(authService::invalidAuthByJwt).toFuture();
+    public CompletableFuture<Boolean> invalidateAuthByJwt(String jwt) {
+        LOGGER.info("CompletableFuture<Boolean> invalidateAuthByJwt(String jwt), jwt = {}", jwt);
+        return just(jwt).publishOn(scheduler).flatMap(authService::invalidateAuthByJwt).toFuture();
     }
 
     /**
@@ -86,9 +86,9 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      * @return
      */
     @Override
-    public CompletableFuture<Boolean> invalidAuthByMemberId(Long memberId) {
-        LOGGER.info("CompletableFuture<Boolean> invalidAuthByMemberId(Long memberId), memberId = {}", memberId);
-        return just(memberId).flatMap(authService::invalidAuthByMemberId).toFuture();
+    public CompletableFuture<Boolean> invalidateAuthByMemberId(Long memberId) {
+        LOGGER.info("CompletableFuture<Boolean> invalidateAuthByMemberId(Long memberId), memberId = {}", memberId);
+        return just(memberId).flatMap(authService::invalidateAuthByMemberId).toFuture();
     }
 
 }

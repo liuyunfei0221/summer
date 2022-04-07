@@ -1,8 +1,8 @@
 package com.blue.auth.event.consumer;
 
 import com.blue.auth.api.model.InvalidLocalAuthParam;
+import com.blue.auth.component.auth.AuthInfoCache;
 import com.blue.auth.config.blue.BlueConsumerConfig;
-import com.blue.auth.service.inter.AuthService;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import reactor.util.Logger;
@@ -28,14 +28,14 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(InvalidLocalAccessConsumer.class);
 
-    private final AuthService authService;
+    private final AuthInfoCache authInfoCache;
 
     private final BlueConsumerConfig blueConsumerConfig;
 
     private BluePulsarConsumer<InvalidLocalAuthParam> invalidClusterLocalAuthConsumer;
 
-    public InvalidLocalAccessConsumer(AuthService authService, BlueConsumerConfig blueConsumerConfig) {
-        this.authService = authService;
+    public InvalidLocalAccessConsumer(AuthInfoCache authInfoCache, BlueConsumerConfig blueConsumerConfig) {
+        this.authInfoCache = authInfoCache;
         this.blueConsumerConfig = blueConsumerConfig;
     }
 
@@ -46,7 +46,7 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
                         .ifPresent(ilap -> {
                             LOGGER.info("invalidClusterLocalAuthDataConsumer received, ilap = {}", ilap);
                             ofNullable(ilap.getKeyId())
-                                    .ifPresent(keyId -> authService.invalidLocalAccessByKeyId(keyId)
+                                    .ifPresent(keyId -> authInfoCache.invalidLocalAccessInfo(keyId)
                                             .subscribe(b ->
                                                     LOGGER.info("authService.invalidLocalAuthByKeyId(keyId), b = {}, ilap = {}", b, ilap)
                                             )

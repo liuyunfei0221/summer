@@ -1,7 +1,12 @@
 package com.blue.auth.service.impl;
 
+import com.blue.auth.api.model.RoleInfo;
+import com.blue.auth.config.deploy.BlockingDeploy;
 import com.blue.auth.constant.RoleSortAttribute;
 import com.blue.auth.converter.AuthModelConverters;
+import com.blue.auth.model.RoleCondition;
+import com.blue.auth.model.RoleInsertParam;
+import com.blue.auth.model.RoleUpdateParam;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.repository.mapper.RoleMapper;
 import com.blue.auth.service.inter.RoleService;
@@ -10,11 +15,6 @@ import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
-import com.blue.auth.api.model.RoleInfo;
-import com.blue.auth.config.deploy.BlockingDeploy;
-import com.blue.auth.model.RoleCondition;
-import com.blue.auth.model.RoleInsertParam;
-import com.blue.auth.model.RoleUpdateParam;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -49,7 +49,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static java.util.stream.Stream.of;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.just;
@@ -61,7 +60,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "CatchMayIgnoreException"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -161,6 +160,7 @@ public class RoleServiceImpl implements RoleService {
                             try {
                                 lock.unlock();
                             } catch (Exception e) {
+                                LOGGER.warn("getDefaultRoleFromCache, lock.unlock() failed, e = {}", e);
                             }
                     }
                 });

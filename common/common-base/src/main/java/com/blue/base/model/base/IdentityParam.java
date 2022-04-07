@@ -45,8 +45,9 @@ public final class IdentityParam implements Serializable {
 
     @Override
     public String toString() {
-        return "IdentityDTO{" +
+        return "IdentityParam{" +
                 "id=" + id +
                 '}';
     }
+
 }

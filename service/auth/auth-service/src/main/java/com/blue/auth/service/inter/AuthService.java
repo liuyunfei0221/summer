@@ -60,7 +60,7 @@ public interface AuthService {
      * @param deviceType
      * @return
      */
-    Mono<MemberAccess> generateMemberAccessMono(Long memberId, String loginType, String deviceType);
+    Mono<MemberAccess> generateAccessMono(Long memberId, String loginType, String deviceType);
 
     /**
      * refresh jwt by refresh token
@@ -76,7 +76,7 @@ public interface AuthService {
      * @param access
      * @return
      */
-    Mono<Boolean> invalidAuthByAccess(Access access);
+    Mono<Boolean> invalidateAuthByAccess(Access access);
 
     /**
      * invalid auth by jwt
@@ -84,7 +84,7 @@ public interface AuthService {
      * @param jwt
      * @return
      */
-    Mono<Boolean> invalidAuthByJwt(String jwt);
+    Mono<Boolean> invalidateAuthByJwt(String jwt);
 
     /**
      * invalid auth by member id
@@ -92,7 +92,7 @@ public interface AuthService {
      * @param memberId
      * @return
      */
-    Mono<Boolean> invalidAuthByMemberId(Long memberId);
+    Mono<Boolean> invalidateAuthByMemberId(Long memberId);
 
     /**
      * invalid local access by key id
@@ -100,7 +100,7 @@ public interface AuthService {
      * @param keyId
      * @return
      */
-    Mono<Boolean> invalidLocalAccessByKeyId(String keyId);
+    Mono<Boolean> invalidateLocalAccessByKeyId(String keyId);
 
     /**
      * update member role info by member id

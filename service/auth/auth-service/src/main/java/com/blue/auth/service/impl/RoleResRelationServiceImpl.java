@@ -533,7 +533,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
             try {
                 lock.unlock();
             } catch (Exception e) {
-                LOGGER.error("lock.unlock() failed, e = {}", e);
+                LOGGER.warn("insertResource, lock.unlock() failed, e = {}", e);
             }
         }
     }

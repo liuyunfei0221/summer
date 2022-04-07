@@ -28,7 +28,7 @@ public interface RpcAuthService {
      * @param access
      * @return
      */
-    CompletableFuture<Boolean> invalidAuthByAccess(Access access);
+    CompletableFuture<Boolean> invalidateAuthByAccess(Access access);
 
     /**
      * invalid auth by jwt
@@ -36,7 +36,7 @@ public interface RpcAuthService {
      * @param jwt
      * @return
      */
-    CompletableFuture<Boolean> invalidAuthByJwt(String jwt);
+    CompletableFuture<Boolean> invalidateAuthByJwt(String jwt);
 
     /**
      * invalid auth by member id
@@ -44,6 +44,6 @@ public interface RpcAuthService {
      * @param memberId
      * @return
      */
-    CompletableFuture<Boolean> invalidAuthByMemberId(Long memberId);
+    CompletableFuture<Boolean> invalidateAuthByMemberId(Long memberId);
 
 }

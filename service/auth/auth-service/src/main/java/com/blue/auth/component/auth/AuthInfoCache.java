@@ -171,13 +171,18 @@ public final class AuthInfoCache {
      *
      * @param keyId
      */
-    public Mono<Boolean> invalidAuthInfo(String keyId) {
+    public Mono<Boolean> invalidAccessInfo(String keyId) {
         LOGGER.info("invalidAuthInfo(), keyId = {}", keyId);
-        return reactiveStringRedisTemplate.delete(keyId)
-                .flatMap(l -> {
-                    CACHE.invalidate(keyId);
-                    return just(l > 0L);
-                }).publishOn(scheduler);
+        return
+                isNotBlank(keyId)
+                        ?
+                        reactiveStringRedisTemplate.delete(keyId)
+                                .flatMap(l -> {
+                                    CACHE.invalidate(keyId);
+                                    return just(l > 0L);
+                                }).publishOn(scheduler)
+                        :
+                        just(false).publishOn(scheduler);
     }
 
     /**
@@ -185,7 +190,7 @@ public final class AuthInfoCache {
      *
      * @param keyId
      */
-    public Mono<Boolean> invalidLocalAuthInfo(String keyId) {
+    public Mono<Boolean> invalidLocalAccessInfo(String keyId) {
         LOGGER.info("invalidLocalAuthInfo(), keyId = {}", keyId);
         try {
             if (isNotBlank(keyId))

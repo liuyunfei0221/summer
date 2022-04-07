@@ -12,6 +12,7 @@ import com.blue.auth.service.inter.*;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.base.Access;
+import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -212,8 +213,8 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public Mono<Boolean> invalidAuthByAccess(Access access) {
-        return authService.invalidAuthByAccess(access);
+    public Mono<Boolean> invalidateAuthByAccess(Access access) {
+        return authService.invalidateAuthByAccess(access);
     }
 
     /**
@@ -223,8 +224,8 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public Mono<Boolean> invalidAuthByJwt(String jwt) {
-        return authService.invalidAuthByJwt(jwt);
+    public Mono<Boolean> invalidateAuthByJwt(String jwt) {
+        return authService.invalidateAuthByJwt(jwt);
     }
 
     /**
@@ -234,8 +235,8 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public Mono<Boolean> invalidAuthByMemberId(Long memberId) {
-        return authService.invalidAuthByMemberId(memberId);
+    public Mono<Boolean> invalidateAuthByMemberId(Long memberId) {
+        return authService.invalidateAuthByMemberId(memberId);
     }
 
     /**
@@ -245,8 +246,8 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public Mono<Boolean> invalidLocalAccessByKeyId(String keyId) {
-        return authService.invalidLocalAccessByKeyId(keyId);
+    public Mono<Boolean> invalidateLocalAccessByKeyId(String keyId) {
+        return authService.invalidateLocalAccessByKeyId(keyId);
     }
 
     /**
@@ -661,6 +662,27 @@ public class ControlServiceImpl implements ControlService {
                         authService.refreshMemberRoleById(memberId, roleId, operatorId);
                 })
                 .flatMap(i -> this.selectAuthorityMonoByRoleId(roleId));
+    }
+
+    /**
+     * invalid member auth by member id
+     *
+     * @param identityParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public Mono<Boolean> invalidateAuthByMember(IdentityParam identityParam, Long operatorId) {
+        LOGGER.info("Mono<Boolean> invalidateAuthByMembers(IdentitiesParam identitiesParam, Long operatorId), identityParam = {}, operatorId = {}", identityParam, operatorId);
+        if (identityParam == null)
+            throw new BlueException(EMPTY_PARAM);
+
+        Long memberId = identityParam.getId();
+
+        Integer operatorRoleLevel = getRoleByMemberId(operatorId).getLevel();
+        assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), operatorRoleLevel);
+
+        return authService.invalidateAuthByMemberId(memberId);
     }
 
 }

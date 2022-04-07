@@ -168,7 +168,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
             try {
                 lock.unlock();
             } catch (Exception e) {
-                LOGGER.error("lock.unlock() fail, e = {0}", e);
+                LOGGER.error("insertMemberRoleRelation, lock.unlock() failed, e = {}", e);
             }
         }
     }
@@ -218,7 +218,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
             try {
                 lock.unlock();
             } catch (Exception e) {
-                LOGGER.error("lock.unlock() fail, e = {0}", e);
+                LOGGER.warn("lock.unlock() fail, e = {0}", e);
             }
         }
     }

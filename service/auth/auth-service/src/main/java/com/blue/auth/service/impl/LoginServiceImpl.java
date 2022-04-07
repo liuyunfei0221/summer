@@ -55,7 +55,7 @@ public class LoginServiceImpl implements LoginService {
     public Mono<ServerResponse> logout(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        authService.invalidAuthByAccess(acc)
+                        authService.invalidateAuthByAccess(acc)
                                 .flatMap(success ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(AUTHORIZATION.name, "")

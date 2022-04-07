@@ -14,11 +14,10 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * relation manager route
+ * relation manager router
  *
- * @author liuyunfei
+ * @author DarkBlue
  */
-@SuppressWarnings("DuplicatedCode")
 @Configuration
 public class RelationManagerRoute {
 

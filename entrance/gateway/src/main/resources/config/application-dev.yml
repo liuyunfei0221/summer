@@ -1,6 +1,6 @@
 server:
   #  address: 172.30.128.25
-  port: 10001
+  port: 10000
   netty:
     connection-timeout: 6s
     h2c-max-content-length: 512B

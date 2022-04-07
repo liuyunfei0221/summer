@@ -19,6 +19,11 @@ public enum SyncKeyPrefix {
     MEMBER_ROLE_REL_UPDATE_PRE("MEMBER_ROLE_REL_UPDATING_PRE:"),
 
     /**
+     * invalid member auth key pre
+     */
+    AUTH_INVALID_BY_MEMBER_ID_PRE("AUTH_INVALID_BY_MEMBER_ID_PRE:"),
+
+    /**
      * IMAGE_VERIFY_RATE_LIMIT_KEY_PRE
      */
     IMAGE_VERIFY_RATE_LIMIT_KEY_PRE("image_v_"),

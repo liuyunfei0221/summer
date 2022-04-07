@@ -1,7 +1,6 @@
 package com.blue.portal.service.impl;
 
 import com.blue.base.common.base.ConstantProcessor;
-import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.constant.portal.BulletinType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
@@ -32,6 +31,7 @@ import java.util.function.Function;
 
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.constant.base.BlueCacheKey.PORTALS_PRE;
+import static com.blue.base.constant.base.BlueNumericalValue.MAX_WAIT_MILLIS_FOR_REDISSON_SYNC;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.SyncKeyPrefix.PORTALS_REFRESH_PRE;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
@@ -53,7 +53,7 @@ import static reactor.core.publisher.Mono.justOrEmpty;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "CatchMayIgnoreException"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class PortalServiceImpl implements PortalService {
 
@@ -85,28 +85,13 @@ public class PortalServiceImpl implements PortalService {
                 .forEach(LOCAL_CACHE_PORTAL_FUNC::apply);
     }
 
-    private static final long MAX_WAIT_MILLIS_FOR_REDISSON_SYNC = BlueNumericalValue.MAX_WAIT_MILLIS_FOR_REDISSON_SYNC.value;
-
     private static Cache<BulletinType, List<BulletinInfo>> LOCAL_CACHE;
 
     private static final Function<Integer, BulletinType> TYPE_CONVERTER = ConstantProcessor::getBulletinTypeByIdentity;
 
     private static final Function<BulletinType, String> BULLETIN_CACHE_KEY_GENERATOR = type -> PORTALS_PRE.key + type.identity;
 
-    /**
-     * refresh bulletin infos
-     *
-     * @return
-     */
-    @Override
-    public void invalidBulletinInfosCache() {
-        of(BulletinType.values())
-                .forEach(type -> {
-                    stringRedisTemplate.delete(BULLETIN_CACHE_KEY_GENERATOR.apply(type));
-                    LOCAL_CACHE.invalidate(type);
-                });
-    }
-
+    private static final Function<BulletinType, String> PORTAL_LOAD_SYNC_KEY_GEN = type -> PORTALS_REFRESH_PRE.prefix + type.identity;
 
     /**
      * list bulletin infos from db
@@ -149,7 +134,7 @@ public class PortalServiceImpl implements PortalService {
             ofNullable(REDIS_PORTAL_GETTER.apply(type))
                     .filter(bvs -> bvs.size() > 0)
                     .orElseGet(() -> {
-                        RLock lock = redissonClient.getLock(PORTALS_REFRESH_PRE.prefix + type.identity);
+                        RLock lock = redissonClient.getLock(PORTAL_LOAD_SYNC_KEY_GEN.apply(type));
                         boolean tryLock = true;
                         try {
                             tryLock = lock.tryLock();
@@ -160,7 +145,7 @@ public class PortalServiceImpl implements PortalService {
                             }
 
                             long start = currentTimeMillis();
-                            while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= MAX_WAIT_MILLIS_FOR_REDISSON_SYNC)
+                            while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= MAX_WAIT_MILLIS_FOR_REDISSON_SYNC.value)
                                 onSpinWait();
 
                             return tryLock ? REDIS_PORTAL_GETTER.apply(type) : emptyList();
@@ -171,6 +156,7 @@ public class PortalServiceImpl implements PortalService {
                                 try {
                                     lock.unlock();
                                 } catch (Exception e) {
+                                    LOGGER.warn("REDIS_PORTAL_GETTER_WITH_CACHE, lock.unlock() failed, e = {}", e);
                                 }
                         }
                     });
@@ -186,6 +172,19 @@ public class PortalServiceImpl implements PortalService {
         return justOrEmpty(LOCAL_CACHE.get(type, REDIS_PORTAL_GETTER_WITH_CACHE)).switchIfEmpty(just(emptyList()));
     };
 
+    /**
+     * refresh bulletin infos
+     *
+     * @return
+     */
+    @Override
+    public void invalidBulletinInfosCache() {
+        of(BulletinType.values())
+                .forEach(type -> {
+                    stringRedisTemplate.delete(BULLETIN_CACHE_KEY_GENERATOR.apply(type));
+                    LOCAL_CACHE.invalidate(type);
+                });
+    }
 
     /**
      * list bulletin infos

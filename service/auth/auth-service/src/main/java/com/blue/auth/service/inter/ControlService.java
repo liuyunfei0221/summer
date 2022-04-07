@@ -3,6 +3,7 @@ package com.blue.auth.service.inter;
 import com.blue.auth.api.model.*;
 import com.blue.auth.model.*;
 import com.blue.base.model.base.Access;
+import com.blue.base.model.base.IdentityParam;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -46,7 +47,7 @@ public interface ControlService {
      * @param access
      * @return
      */
-    Mono<Boolean> invalidAuthByAccess(Access access);
+    Mono<Boolean> invalidateAuthByAccess(Access access);
 
     /**
      * invalid auth by jwt
@@ -54,7 +55,7 @@ public interface ControlService {
      * @param jwt
      * @return
      */
-    Mono<Boolean> invalidAuthByJwt(String jwt);
+    Mono<Boolean> invalidateAuthByJwt(String jwt);
 
     /**
      * invalid auth by member id
@@ -62,7 +63,7 @@ public interface ControlService {
      * @param memberId
      * @return
      */
-    Mono<Boolean> invalidAuthByMemberId(Long memberId);
+    Mono<Boolean> invalidateAuthByMemberId(Long memberId);
 
     /**
      * invalid local auth by key id
@@ -70,7 +71,7 @@ public interface ControlService {
      * @param keyId
      * @return
      */
-    Mono<Boolean> invalidLocalAccessByKeyId(String keyId);
+    Mono<Boolean> invalidateLocalAccessByKeyId(String keyId);
 
     /**
      * get authority base on role by role id
@@ -251,5 +252,14 @@ public interface ControlService {
      * @return
      */
     Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId);
+
+    /**
+     * invalid member auth by member id
+     *
+     * @param identityParam
+     * @param operatorId
+     * @return
+     */
+    Mono<Boolean> invalidateAuthByMember(IdentityParam identityParam, Long operatorId);
 
 }
