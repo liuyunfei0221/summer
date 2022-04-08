@@ -1,6 +1,6 @@
 package com.blue.auth.model;
 
-import com.blue.base.constant.auth.AuthInfoRefreshElementType;
+import com.blue.base.constant.auth.AccessInfoRefreshElementType;
 import com.blue.base.constant.auth.DeviceType;
 import com.blue.base.constant.auth.LoginType;
 
@@ -20,13 +20,13 @@ public final class AuthInfoRefreshElement implements Serializable {
     private Long memberId;
     private List<LoginType> loginTypes;
     private List<DeviceType> deviceTypes;
-    private AuthInfoRefreshElementType elementType;
+    private AccessInfoRefreshElementType elementType;
     private String elementValue;
 
     public AuthInfoRefreshElement() {
     }
 
-    public AuthInfoRefreshElement(Long memberId, List<LoginType> loginTypes, List<DeviceType> deviceTypes, AuthInfoRefreshElementType elementType, String elementValue) {
+    public AuthInfoRefreshElement(Long memberId, List<LoginType> loginTypes, List<DeviceType> deviceTypes, AccessInfoRefreshElementType elementType, String elementValue) {
         this.memberId = memberId;
         this.loginTypes = loginTypes;
         this.deviceTypes = deviceTypes;
@@ -58,11 +58,11 @@ public final class AuthInfoRefreshElement implements Serializable {
         this.deviceTypes = deviceTypes;
     }
 
-    public AuthInfoRefreshElementType getElementType() {
+    public AccessInfoRefreshElementType getElementType() {
         return elementType;
     }
 
-    public void setElementType(AuthInfoRefreshElementType elementType) {
+    public void setElementType(AccessInfoRefreshElementType elementType) {
         this.elementType = elementType;
     }
 

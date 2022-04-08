@@ -25,9 +25,9 @@ public enum BlueCacheKey {
     SESSION_KEY_PRE("B_SN:"),
 
     /**
-     * auth refresh key prefix
+     * access refresh key prefix
      */
-    AUTH_REFRESH_KEY_PRE("AUTH_REF:"),
+    ACCESS_REFRESH_KEY_PRE("AUTH_REF:"),
 
     /**
      * verify key prefix

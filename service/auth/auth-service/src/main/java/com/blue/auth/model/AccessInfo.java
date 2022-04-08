@@ -7,12 +7,12 @@ import java.io.Serializable;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
- * member auth info/json str in redis cache
+ * member access info/json str in redis cache
  *
  * @author DarkBlue
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public final class AuthInfo implements Serializable {
+public final class AccessInfo implements Serializable {
 
     private static final long serialVersionUID = -4570565004686061550L;
 
@@ -31,10 +31,10 @@ public final class AuthInfo implements Serializable {
      */
     private String pubKey;
 
-    public AuthInfo() {
+    public AccessInfo() {
     }
 
-    public AuthInfo(String jwt, Long roleId, String pubKey) {
+    public AccessInfo(String jwt, Long roleId, String pubKey) {
         if (jwt == null || "".equals(jwt))
             throw new BlueException(BAD_REQUEST);
         if (roleId == null || roleId < 1L)
@@ -82,7 +82,7 @@ public final class AuthInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "AuthInfo{" +
+        return "AccessInfo{" +
                 "jwt='" + jwt + '\'' +
                 ", roleId=" + roleId +
                 ", pubKey='" + pubKey + '\'' +

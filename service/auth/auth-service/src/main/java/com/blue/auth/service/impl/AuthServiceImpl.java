@@ -6,7 +6,7 @@ import com.blue.auth.config.deploy.BlockingDeploy;
 import com.blue.auth.config.deploy.SessionKeyDeploy;
 import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.event.producer.InvalidLocalAccessProducer;
-import com.blue.auth.model.AuthInfo;
+import com.blue.auth.model.AccessInfo;
 import com.blue.auth.model.AuthInfoRefreshElement;
 import com.blue.auth.model.MemberAccess;
 import com.blue.auth.model.MemberAuth;
@@ -17,7 +17,7 @@ import com.blue.auth.repository.entity.RoleResRelation;
 import com.blue.auth.repository.template.RefreshInfoRepository;
 import com.blue.auth.service.inter.*;
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.constant.auth.AuthInfoRefreshElementType;
+import com.blue.base.constant.auth.AccessInfoRefreshElementType;
 import com.blue.base.constant.auth.DeviceType;
 import com.blue.base.constant.auth.LoginType;
 import com.blue.base.constant.base.BlueCacheKey;
@@ -47,8 +47,8 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.common.base.RsaProcessor.initKeyPair;
-import static com.blue.base.constant.auth.AuthInfoRefreshElementType.PUB_KEY;
-import static com.blue.base.constant.auth.AuthInfoRefreshElementType.ROLE;
+import static com.blue.base.constant.auth.AccessInfoRefreshElementType.PUB_KEY;
+import static com.blue.base.constant.auth.AccessInfoRefreshElementType.ROLE;
 import static com.blue.base.constant.auth.DeviceType.UNKNOWN;
 import static com.blue.base.constant.auth.LoginType.NOT_LOGGED_IN;
 import static com.blue.base.constant.base.BlueNumericalValue.*;
@@ -122,7 +122,7 @@ public class AuthServiceImpl implements AuthService {
 
         this.randomIdLen = sessionKeyDeploy.getRanLen();
         this.maxWaitingMillisForRefresh = blockingDeploy.getBlockingMillis();
-        this.maxExpireMillis = jwtProcessor.getMaxExpireMillis();
+        this.maxExpireMillis = this.jwtProcessor.getMaxExpireMillis();
     }
 
     private int randomIdLen;
@@ -133,7 +133,7 @@ public class AuthServiceImpl implements AuthService {
 
     public static final String
             SESSION_KEY_PRE = BlueCacheKey.SESSION_KEY_PRE.key,
-            AUTH_REFRESH_KEY_PRE = BlueCacheKey.AUTH_REFRESH_KEY_PRE.key,
+            ACCESS_REFRESH_KEY_PRE = BlueCacheKey.ACCESS_REFRESH_KEY_PRE.key,
             PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity,
             PATH_SEPARATOR = Symbol.PATH_SEPARATOR.identity;
 
@@ -151,6 +151,9 @@ public class AuthServiceImpl implements AuthService {
     private static final Function<Resource, String> REAL_URI_GETTER = resource ->
             PATH_SEPARATOR + resource.getModule().intern() + resource.getUri().intern();
 
+    /**
+     * auth infos refreshing mark
+     */
     private volatile boolean authorityInfosRefreshing = true;
 
     /**
@@ -174,11 +177,11 @@ public class AuthServiceImpl implements AuthService {
     private volatile Map<String, Resource> keyAndResourceMapping = emptyMap();
 
     /**
-     * authInfo parser
+     * accessInfo parser
      */
-    private final Function<String, AuthInfo> AUTH_INFO_PARSER = authInfoStr -> {
+    private final Function<String, AccessInfo> ACCESS_INFO_PARSER = authInfoStr -> {
         try {
-            return GSON.fromJson(authInfoStr, AuthInfo.class);
+            return GSON.fromJson(authInfoStr, AccessInfo.class);
         } catch (JsonSyntaxException e) {
             throw new BlueException(UNAUTHORIZED);
         }
@@ -187,7 +190,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * blocker when resource or relation refreshing
      */
-    private final Supplier<Boolean> RESOURCE_OR_REL_REFRESHING_BLOCKER = () -> {
+    private final Supplier<Boolean> RES_OR_REL_REFRESHING_BLOCKER = () -> {
         if (authorityInfosRefreshing) {
             long start = currentTimeMillis();
             while (authorityInfosRefreshing) {
@@ -218,7 +221,7 @@ public class AuthServiceImpl implements AuthService {
      * get resource by resKey
      */
     private final Function<String, Resource> RESOURCE_GETTER = resourceKey -> {
-        RESOURCE_OR_REL_REFRESHING_BLOCKER.get();
+        RES_OR_REL_REFRESHING_BLOCKER.get();
         return keyAndResourceMapping.get(resourceKey);
     };
 
@@ -226,7 +229,7 @@ public class AuthServiceImpl implements AuthService {
      * authorization checker
      */
     private final BiFunction<Long, String, Boolean> AUTHORIZATION_RES_CHECKER = (roleId, resourceKey) -> {
-        RESOURCE_OR_REL_REFRESHING_BLOCKER.get();
+        RES_OR_REL_REFRESHING_BLOCKER.get();
         return ofNullable(roleAndResourcesKeyMapping.get(roleId)).map(set -> set.contains(resourceKey)).orElse(false);
     };
 
@@ -254,12 +257,12 @@ public class AuthServiceImpl implements AuthService {
     /**
      * refresh element type -> authInfo packagers
      */
-    private static final Map<AuthInfoRefreshElementType, BiConsumer<AuthInfo, String>> RE_PACKAGERS = new HashMap<>(4, 1.0f);
+    private static final Map<AccessInfoRefreshElementType, BiConsumer<AccessInfo, String>> RE_PACKAGERS = new HashMap<>(4, 1.0f);
 
     /**
-     * generate auth refresh sync key
+     * generate access refresh sync key
      */
-    private static final Map<AuthInfoRefreshElementType, BinaryOperator<String>> AUTH_REFRESH_KEY_GENS = new HashMap<>(4, 1.0f);
+    private static final Map<AccessInfoRefreshElementType, BinaryOperator<String>> ACCESS_REFRESH_KEY_GENS = new HashMap<>(4, 1.0f);
 
     static {
         RE_PACKAGERS.put(ROLE, (ai, ele) -> {
@@ -280,12 +283,12 @@ public class AuthServiceImpl implements AuthService {
             ai.setPubKey(ele);
         });
 
-        AUTH_REFRESH_KEY_GENS.put(ROLE, (snKey, eleValue) ->
-                AUTH_REFRESH_KEY_PRE + snKey + PAR_CONCATENATION + ROLE.name() + PAR_CONCATENATION + eleValue);
-        AUTH_REFRESH_KEY_GENS.put(PUB_KEY, (snKey, eleValue) ->
-                AUTH_REFRESH_KEY_PRE + snKey + PAR_CONCATENATION + PUB_KEY.name() + PAR_CONCATENATION + eleValue.hashCode());
+        ACCESS_REFRESH_KEY_GENS.put(ROLE, (snKey, eleValue) ->
+                ACCESS_REFRESH_KEY_PRE + snKey + PAR_CONCATENATION + ROLE.name() + PAR_CONCATENATION + eleValue);
+        ACCESS_REFRESH_KEY_GENS.put(PUB_KEY, (snKey, eleValue) ->
+                ACCESS_REFRESH_KEY_PRE + snKey + PAR_CONCATENATION + PUB_KEY.name() + PAR_CONCATENATION + eleValue.hashCode());
 
-        LOGGER.info("static codes, RE_PACKAGERS = {}, AUTH_REFRESH_KEY_GENS = {}", RE_PACKAGERS, AUTH_REFRESH_KEY_GENS);
+        LOGGER.info("static codes, RE_PACKAGERS = {}, ACCESS_REFRESH_KEY_GENS = {}", RE_PACKAGERS, ACCESS_REFRESH_KEY_GENS);
     }
 
     /**
@@ -300,7 +303,7 @@ public class AuthServiceImpl implements AuthService {
      * get resource info list by role id
      */
     private final Function<Long, List<ResourceInfo>> RESOURCE_INFOS_BY_ROLE_ID_GETTER = roleId -> {
-        RESOURCE_OR_REL_REFRESHING_BLOCKER.get();
+        RES_OR_REL_REFRESHING_BLOCKER.get();
         return roleAndResourceInfosMapping.get(roleId);
     };
 
@@ -333,23 +336,26 @@ public class AuthServiceImpl implements AuthService {
      * @param elementValue
      * @return
      */
-    private static String genAccessInfoRefreshLockKey(String snKey, AuthInfoRefreshElementType elementType, String elementValue) {
+    private static String genAccessInfoRefreshLockKey(String snKey, AccessInfoRefreshElementType elementType, String elementValue) {
         LOGGER.info("String genAccessInfoRefreshLockKey(String snKey, AuthInfoRefreshElementType elementType, String elementValue), snKey = {}, elementType = {}, elementValue = {}", snKey, elementType, elementValue);
         if (isNotBlank(snKey) && elementType != null && isNotBlank(elementValue))
-            return AUTH_REFRESH_KEY_GENS.get(elementType).apply(snKey, elementValue);
+            return ACCESS_REFRESH_KEY_GENS.get(elementType).apply(snKey, elementValue);
 
         throw new BlueException(BAD_REQUEST);
     }
 
     /**
-     * delete exist refresh token in mongo by auth infos
+     * delete exist refresh token in mongo by auth elements
      *
      * @param memberId
      * @param loginType
      * @param deviceType
      * @return
      */
-    private Mono<Boolean> deleteExistRefreshTokenByAuthInfo(String memberId, String loginType, String deviceType) {
+    private Mono<Boolean> deleteExistRefreshTokenByAuthElements(String memberId, String loginType, String deviceType) {
+        LOGGER.info("Mono<Boolean> deleteExistRefreshTokenByAuthElements(String memberId, String loginType, String deviceType), memberId = {}, loginType = {}, deviceType = {}",
+                memberId, loginType, deviceType);
+
         if (isBlank(memberId) || !isDigits(memberId))
             return error(() -> new BlueException(BAD_REQUEST));
 
@@ -362,7 +368,7 @@ public class AuthServiceImpl implements AuthService {
             return refreshInfoRepository.findAll(Example.of(condition))
                     .collectList().flatMap(refreshInfoRepository::deleteAll).then(just(true));
         } catch (Exception e) {
-            LOGGER.warn("Mono<Boolean> deleteExistRefreshTokenByAuthInfo(String memberId, String loginType, String deviceType), failed, e = {}", e);
+            LOGGER.warn("Mono<Boolean> deleteExistRefreshTokenByAuthElements(String memberId, String loginType, String deviceType), failed, e = {}", e);
             return just(false);
         }
     }
@@ -417,7 +423,7 @@ public class AuthServiceImpl implements AuthService {
         if (memberPayload != null && isValidIdentity(roleId)) {
             String jwt = jwtProcessor.create(memberPayload);
             KeyPair keyPair = initKeyPair();
-            String authInfoJson = GSON.toJson(new AuthInfo(jwt, roleId, keyPair.getPubKey()));
+            String authInfoJson = GSON.toJson(new AccessInfo(jwt, roleId, keyPair.getPubKey()));
 
             return authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson)
                     .flatMap(b -> {
@@ -448,7 +454,7 @@ public class AuthServiceImpl implements AuthService {
                     String deviceType = memberPayload.getDeviceType();
                     String loginTime = memberPayload.getLoginTime();
 
-                    return deleteExistRefreshTokenByAuthInfo(id, loginType, deviceType)
+                    return deleteExistRefreshTokenByAuthElements(id, loginType, deviceType)
                             .flatMap(ig -> {
                                 RefreshInfo refreshInfo = new RefreshInfo(keyId, gamma, id, loginType, deviceType, loginTime);
                                 try {
@@ -490,7 +496,7 @@ public class AuthServiceImpl implements AuthService {
      * @param elementType
      * @param elementValue
      */
-    private void refreshAccessInfoElementByKeyId(String keyId, AuthInfoRefreshElementType elementType, String elementValue) {
+    private void refreshAccessInfoElementByKeyId(String keyId, AccessInfoRefreshElementType elementType, String elementValue) {
         LOGGER.info("void refreshAccessInfoElementByKeyId(String keyId, AuthInfoRefreshElementType elementType, String elementValue), keyId = {}, elementType = {}, elementValue = {}", keyId, elementType, elementValue);
         String originalAuthInfoJson = ofNullable(stringRedisTemplate.opsForValue().get(keyId))
                 .orElse("");
@@ -500,9 +506,9 @@ public class AuthServiceImpl implements AuthService {
             return;
         }
 
-        AuthInfo authInfo;
+        AccessInfo accessInfo;
         try {
-            authInfo = GSON.fromJson(originalAuthInfoJson, AuthInfo.class);
+            accessInfo = GSON.fromJson(originalAuthInfoJson, AccessInfo.class);
         } catch (JsonSyntaxException e) {
             LOGGER.info("member's authInfo is invalid, can't refresh");
             return;
@@ -517,9 +523,9 @@ public class AuthServiceImpl implements AuthService {
             RLock globalLock = redissonClient.getLock(GLOBAL_LOCK_KEY_GEN.apply(keyId));
             try {
                 globalLock.lock();
-                RE_PACKAGERS.get(elementType).accept(authInfo, elementValue);
+                RE_PACKAGERS.get(elementType).accept(accessInfo, elementValue);
                 stringRedisTemplate.opsForValue()
-                        .set(keyId, GSON.toJson(authInfo), Duration.of(ofNullable(stringRedisTemplate.getExpire(keyId, SECONDS)).orElse(0L), ChronoUnit.SECONDS));
+                        .set(keyId, GSON.toJson(accessInfo), Duration.of(ofNullable(stringRedisTemplate.getExpire(keyId, SECONDS)).orElse(0L), ChronoUnit.SECONDS));
             } catch (Exception exception) {
                 LOGGER.error("lock on global failed, e = {}", exception);
             } finally {
@@ -558,7 +564,7 @@ public class AuthServiceImpl implements AuthService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
 
-        AuthInfoRefreshElementType elementType = authInfoRefreshElement.getElementType();
+        AccessInfoRefreshElementType elementType = authInfoRefreshElement.getElementType();
         if (elementType == null)
             throw new BlueException(BAD_REQUEST);
 
@@ -773,18 +779,18 @@ public class AuthServiceImpl implements AuthService {
                                 if (v == null || "".equals(v))
                                     return error(() -> new BlueException(UNAUTHORIZED));
 
-                                AuthInfo authInfo = AUTH_INFO_PARSER.apply(v);
-                                if (!jwt.equals(authInfo.getJwt()))
+                                AccessInfo accessInfo = ACCESS_INFO_PARSER.apply(v);
+                                if (!jwt.equals(accessInfo.getJwt()))
                                     return error(() -> new BlueException(UNAUTHORIZED));
-                                if (!AUTHORIZATION_RES_CHECKER.apply(authInfo.getRoleId(), resourceKey))
+                                if (!AUTHORIZATION_RES_CHECKER.apply(accessInfo.getRoleId(), resourceKey))
                                     return error(() -> new BlueException(FORBIDDEN.status, FORBIDDEN.code, FORBIDDEN.message));
 
                                 boolean reqUnDecryption = resource.getRequestUnDecryption();
                                 boolean resUnEncryption = resource.getResponseUnEncryption();
 
                                 return just(new AccessAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
-                                        reqUnDecryption && resUnEncryption ? "" : authInfo.getPubKey(),
-                                        new com.blue.base.model.base.Access(parseLong(memberPayload.getId()), authInfo.getRoleId(), memberPayload.getLoginType().intern(),
+                                        reqUnDecryption && resUnEncryption ? "" : accessInfo.getPubKey(),
+                                        new com.blue.base.model.base.Access(parseLong(memberPayload.getId()), accessInfo.getRoleId(), memberPayload.getLoginType().intern(),
                                                 memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), OK.message));
                             });
                 });
@@ -890,9 +896,8 @@ public class AuthServiceImpl implements AuthService {
             String deviceType = access.getDeviceType().intern();
             String keyId = genSessionKey(memberId, loginType, deviceType);
             return zip(
-                    deleteExistRefreshTokenByAuthInfo(String.valueOf(memberId), loginType, deviceType),
-                    authInfoCache.invalidAccessInfo(keyId)
-                            .flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
+                    deleteExistRefreshTokenByAuthElements(String.valueOf(memberId), loginType, deviceType),
+                    authInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
             ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
         }
 
@@ -912,9 +917,8 @@ public class AuthServiceImpl implements AuthService {
             MemberPayload memberPayload = jwtProcessor.parse(jwt);
             String keyId = memberPayload.getKeyId();
             return zip(
-                    deleteExistRefreshTokenByAuthInfo(memberPayload.getId(), memberPayload.getLoginType(), memberPayload.getDeviceType()),
-                    authInfoCache.invalidAccessInfo(keyId)
-                            .flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
+                    deleteExistRefreshTokenByAuthElements(memberPayload.getId(), memberPayload.getLoginType(), memberPayload.getDeviceType()),
+                    authInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
             ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
         } catch (Exception e) {
             LOGGER.error("Mono<Boolean> invalidAuthByJwt(String jwt) failed, jwt = {}, e = {}", jwt, e);

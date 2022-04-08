@@ -5,7 +5,7 @@ package com.blue.base.constant.auth;
  *
  * @author DarkBlue
  */
-public enum AuthInfoRefreshElementType {
+public enum AccessInfoRefreshElementType {
 
     /**
      * role info
