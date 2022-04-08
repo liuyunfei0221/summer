@@ -31,7 +31,7 @@ public final class PhoneProcessor {
         int len = phone.length();
 
         if (len > MIN_LEN)
-            return substring(phone, MIN_LEN - len - 1);
+            return substring(phone, len - MIN_LEN);
 
         return phone;
     }

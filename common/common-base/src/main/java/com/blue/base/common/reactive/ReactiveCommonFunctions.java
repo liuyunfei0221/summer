@@ -2,6 +2,7 @@ package com.blue.base.common.reactive;
 
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.exps.BlueException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -16,6 +17,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.blue.base.common.message.MessageProcessor.resolveToMessage;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.Symbol.LIST_ELEMENT_SEPARATOR;
 import static java.lang.Double.compare;
 import static java.util.Optional.ofNullable;
@@ -45,7 +47,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
     /**
      * request identity getter func
      */
-    public static final Function<ServerHttpRequest, Mono<String>> SERVER_HTTP_REQUEST_IDENTITY_GETTER = request ->
+    public static final Function<ServerHttpRequest, Mono<String>> SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER = request ->
             just(RATE_LIMIT_KEY_PRE + ofNullable(request)
                     .map(ServerHttpRequest::getHeaders)
                     .map(h -> h.getFirst(AUTHORIZATION))
@@ -55,7 +57,10 @@ public class ReactiveCommonFunctions extends CommonFunctions {
                     .orElseGet(() ->
                             getIp(request)).hashCode());
 
-    public static final Function<ServerRequest, Mono<String>> SERVER_REQUEST_IDENTITY_GETTER = request ->
+    /**
+     * request identity getter func
+     */
+    public static final Function<ServerRequest, Mono<String>> SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER = request ->
             just(RATE_LIMIT_KEY_PRE + ofNullable(request)
                     .map(ServerRequest::headers)
                     .map(h -> h.firstHeader(AUTHORIZATION))
@@ -64,6 +69,22 @@ public class ReactiveCommonFunctions extends CommonFunctions {
                     .map(String::valueOf)
                     .orElseGet(() ->
                             getIp(request)).hashCode());
+
+    /**
+     * request ip getter func
+     */
+    public static final Function<ServerHttpRequest, Mono<String>> SERVER_HTTP_REQUEST_IP_SYNC_KEY_GETTER = request ->
+            just(RATE_LIMIT_KEY_PRE + ofNullable(request)
+                    .map(req -> just(getIp(req)))
+                    .orElseThrow(() -> new BlueException(BAD_REQUEST)));
+
+    /**
+     * request ip getter func
+     */
+    public static final Function<ServerRequest, Mono<String>> SERVER_REQUEST_IP_SYNC_KEY_GETTER = request ->
+            just(RATE_LIMIT_KEY_PRE + ofNullable(request)
+                    .map(req -> just(getIp(req)))
+                    .orElseThrow(() -> new BlueException(BAD_REQUEST)));
 
 
     private static final int MAX_LANGUAGE_COUNT = 32;

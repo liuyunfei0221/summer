@@ -12,7 +12,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_HTTP_REQUEST_IDENTITY_GETTER;
+import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER;
 import static com.blue.base.constant.base.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_RATE_LIMIT;
 import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateTokenBucketRateLimiter;
@@ -34,7 +34,7 @@ public final class BlueRateLimitFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return SERVER_HTTP_REQUEST_IDENTITY_GETTER.apply(exchange.getRequest())
+        return SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER.apply(exchange.getRequest())
                 .flatMap(blueTokenBucketRateLimiter::isAllowed)
                 .flatMap(a ->
                         a ? chain.filter(exchange) : error(() -> new BlueException(TOO_MANY_REQUESTS))

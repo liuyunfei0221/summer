@@ -30,7 +30,7 @@ import java.util.function.UnaryOperator;
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IDENTITY_GETTER;
+import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER;
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseElement.TOO_MANY_REQUESTS;
@@ -166,7 +166,7 @@ public class ImageVerifyHandler implements VerifyHandler {
     public Mono<ServerResponse> handle(BusinessType businessType, String destination, ServerRequest serverRequest) {
         String key = isNotBlank(destination) ? destination : generateRandom(KEY_RANDOM_TYPE, KEY_LEN);
 
-        return SERVER_REQUEST_IDENTITY_GETTER.apply(serverRequest)
+        return SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER.apply(serverRequest)
                 .flatMap(identity -> blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(identity), ALLOW, SEND_INTERVAL_MILLIS))
                 .flatMap(allowed ->
                         allowed ?

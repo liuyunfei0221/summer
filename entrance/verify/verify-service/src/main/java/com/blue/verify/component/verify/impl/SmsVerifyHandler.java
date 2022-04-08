@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IP_SYNC_KEY_GETTER;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -38,7 +39,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused", "DuplicatedCode"})
 public class SmsVerifyHandler implements VerifyHandler {
 
     private static final Logger LOGGER = getLogger(SmsVerifyHandler.class);
@@ -116,13 +117,19 @@ public class SmsVerifyHandler implements VerifyHandler {
 
     @Override
     public Mono<ServerResponse> handle(BusinessType businessType, String destination, ServerRequest serverRequest) {
-        return this.handle(businessType, destination)
-                .flatMap(vp ->
-                        ok().contentType(APPLICATION_JSON)
-                                .header(VERIFY_KEY.name, destination)
-                                .body(generate(OK.code, serverRequest)
-                                        , BlueResponse.class)
-                );
+        return SERVER_REQUEST_IP_SYNC_KEY_GETTER.apply(serverRequest)
+                .flatMap(syncIp -> blueLeakyBucketRateLimiter.isAllowed(syncIp, ALLOW, SEND_INTERVAL_MILLIS))
+                .flatMap(allowed ->
+                        allowed ?
+                                this.handle(businessType, destination)
+                                        .flatMap(vp ->
+                                                ok().contentType(APPLICATION_JSON)
+                                                        .header(VERIFY_KEY.name, destination)
+                                                        .body(generate(OK.code, serverRequest)
+                                                                , BlueResponse.class)
+                                        )
+                                :
+                                error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently")));
     }
 
     @Override

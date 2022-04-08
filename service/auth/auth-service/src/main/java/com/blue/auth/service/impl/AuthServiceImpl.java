@@ -450,8 +450,8 @@ public class AuthServiceImpl implements AuthService {
                     String gamma = randomAlphanumeric(randomIdLen);
                     String keyId = randomAlphanumeric(randomIdLen);
                     String id = memberPayload.getId();
-                    String loginType = memberPayload.getLoginType();
-                    String deviceType = memberPayload.getDeviceType();
+                    String loginType = memberPayload.getLoginType().intern();
+                    String deviceType = memberPayload.getDeviceType().intern();
                     String loginTime = memberPayload.getLoginTime();
 
                     return deleteExistRefreshTokenByAuthElements(id, loginType, deviceType)
