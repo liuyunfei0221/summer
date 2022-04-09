@@ -1,17 +1,16 @@
 package com.blue.member.service.impl;
 
+import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.base.model.exps.BlueException;
 import com.blue.finance.api.model.MemberFinanceInfo;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
-import com.blue.member.component.credential.InitCredentialInfoProcessor;
 import com.blue.member.remote.consumer.RpcControlServiceConsumer;
 import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberBasicService;
 import com.blue.member.service.inter.MemberRegistryService;
-import com.blue.auth.api.model.MemberCredentialInfo;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -20,6 +19,7 @@ import reactor.util.Logger;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.member.component.credential.CredentialCollectProcessor.collect;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static reactor.util.Loggers.getLogger;
 
@@ -38,18 +38,14 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private final InitCredentialInfoProcessor initCredentialInfoProcessor;
-
     private final RpcControlServiceConsumer rpcControlServiceConsumer;
 
     private final RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer;
 
     public MemberRegistryServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor,
-                                     InitCredentialInfoProcessor initCredentialInfoProcessor, RpcControlServiceConsumer rpcControlServiceConsumer,
-                                     RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer) {
+                                     RpcControlServiceConsumer rpcControlServiceConsumer, RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer) {
         this.memberBasicService = memberBasicService;
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.initCredentialInfoProcessor = initCredentialInfoProcessor;
         this.rpcControlServiceConsumer = rpcControlServiceConsumer;
         this.rpcFinanceAccountServiceConsumer = rpcFinanceAccountServiceConsumer;
     }
@@ -77,7 +73,7 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
         memberBasic.setId(id);
 
         //init auth info
-        rpcControlServiceConsumer.initMemberAuthInfo(new MemberCredentialInfo(id, initCredentialInfoProcessor.generateCredentialInfos(memberBasic, memberRegistryParam.getAccess())));
+        rpcControlServiceConsumer.initMemberAuthInfo(new MemberCredentialInfo(id, collect(memberBasic, memberRegistryParam.getAccess())));
 
         //init finance account
         rpcFinanceAccountServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));

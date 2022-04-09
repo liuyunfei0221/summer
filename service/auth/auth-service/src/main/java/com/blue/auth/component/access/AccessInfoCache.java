@@ -1,4 +1,4 @@
-package com.blue.auth.component.auth;
+package com.blue.auth.component.access;
 
 import com.blue.auth.event.producer.AccessExpireProducer;
 import com.blue.base.model.base.KeyExpireParam;
@@ -37,9 +37,9 @@ import static reactor.util.Loggers.getLogger;
  * @author DarkBlue
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
-public final class AuthInfoCache {
+public final class AccessInfoCache {
 
-    private static final Logger LOGGER = getLogger(AuthInfoCache.class);
+    private static final Logger LOGGER = getLogger(AccessInfoCache.class);
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
@@ -69,12 +69,12 @@ public final class AuthInfoCache {
      */
     private final Cache<String, String> CACHE;
 
-    private static final String THREAD_NAME_PRE = "JwtCache-thread- ";
+    private static final String THREAD_NAME_PRE = "AccessInfoCache-thread- ";
     private static final int RANDOM_LEN = 4;
 
-    public AuthInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer,
-                         Scheduler scheduler, Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
-                         Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
+    public AccessInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer,
+                           Scheduler scheduler, Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
+                           Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
 
         assertConf(reactiveStringRedisTemplate, accessExpireProducer,
                 refresherCorePoolSize, refresherMaximumPoolSize, refresherKeepAliveSeconds,
@@ -104,64 +104,64 @@ public final class AuthInfoCache {
     }
 
     /**
-     * redis authInfo refresher
+     * redis accessInfo refresher
      */
-    private final BiConsumer<String, String> REDIS_AUTH_REFRESHER = (keyId, authInfo) -> {
+    private final BiConsumer<String, String> REDIS_ACCESS_REFRESHER = (keyId, accessInfo) -> {
         try {
             this.executorService.execute(() -> {
-                if (hasText(keyId) && hasText(authInfo)) {
+                if (hasText(keyId) && hasText(accessInfo)) {
                     accessExpireProducer.send(new KeyExpireParam(keyId, globalExpireMillis, UNIT));
-                    LOGGER.warn("REDIS_AUTH_REFRESHER -> SUCCESS, keyId = {}", keyId);
+                    LOGGER.warn("REDIS_ACCESS_REFRESHER -> SUCCESS, keyId = {}", keyId);
                 } else {
-                    LOGGER.error("keyId or authInfo is empty, keyId = {}, authInfo = {}", keyId, authInfo);
+                    LOGGER.error("keyId or accessInfo is empty, keyId = {}, accessInfo = {}", keyId, accessInfo);
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("REDIS_AUTH_REFRESHER error, e = {}", e);
+            LOGGER.error("REDIS_ACCESS_REFRESHER error, e = {}", e);
         }
     };
 
     /**
-     * redis authInfo getter
+     * redis accessInfo getter
      */
-    private final Function<String, Mono<String>> REDIS_AUTH_GETTER = keyId -> {
-        LOGGER.warn("REDIS_AUTH_GETTER, get authInfo from redis, keyId = {}", keyId);
+    private final Function<String, Mono<String>> REDIS_ACCESS_GETTER = keyId -> {
+        LOGGER.warn("REDIS_ACCESS_GETTER, get accessInfo from redis, keyId = {}", keyId);
 
         return reactiveStringRedisTemplate.opsForValue().get(keyId)
                 .switchIfEmpty(just(""))
-                .flatMap(authInfo -> {
-                    if (!"".equals(authInfo))
-                        REDIS_AUTH_REFRESHER.accept(keyId, authInfo);
-                    return just(authInfo);
+                .flatMap(accessInfo -> {
+                    if (!"".equals(accessInfo))
+                        REDIS_ACCESS_REFRESHER.accept(keyId, accessInfo);
+                    return just(accessInfo);
                 }).publishOn(scheduler);
     };
 
     /**
-     * get authInfo value by keyId
+     * get accessInfo value by keyId
      *
      * @param keyId
      * @return
      */
-    public Mono<String> getAuthInfo(String keyId) {
+    public Mono<String> getAccessInfo(String keyId) {
         return isNotBlank(keyId) ?
-                justOrEmpty(CACHE.getIfPresent(keyId)).switchIfEmpty(REDIS_AUTH_GETTER.apply(keyId)).publishOn(scheduler)
+                justOrEmpty(CACHE.getIfPresent(keyId)).switchIfEmpty(REDIS_ACCESS_GETTER.apply(keyId)).publishOn(scheduler)
                 :
                 error(() -> new BlueException(UNAUTHORIZED));
     }
 
     /**
-     * cache authInfo
+     * cache accessInfo
      *
      * @param keyId
-     * @param authInfo
+     * @param accessInfo
      */
-    public Mono<Boolean> setAuthInfo(String keyId, String authInfo) {
-        LOGGER.info("setAuthInfo(), keyId = {},authInfo = {}", keyId, authInfo);
+    public Mono<Boolean> setAccessInfo(String keyId, String accessInfo) {
+        LOGGER.info("setAccessInfo(), keyId = {},accessInfo = {}", keyId, accessInfo);
         return reactiveStringRedisTemplate.opsForValue()
-                .set(keyId, authInfo, globalExpireDuration)
+                .set(keyId, accessInfo, globalExpireDuration)
                 .publishOn(scheduler)
                 .onErrorResume(throwable -> {
-                    LOGGER.error("setAuthInfo(String keyId, String authInfo) failed, throwable = {}", throwable);
+                    LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
                     return just(false);
                 });
     }

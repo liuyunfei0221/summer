@@ -1,4 +1,4 @@
-package com.blue.auth.component.auth;
+package com.blue.auth.component.access;
 
 import com.blue.base.model.base.KeyExpireParam;
 import com.blue.base.model.exps.BlueException;
@@ -34,9 +34,9 @@ import static reactor.util.Loggers.getLogger;
  * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "AlibabaAvoidManuallyCreateThread", "AliControlFlowStatementWithoutBraces"})
-public final class AuthBatchExpireProcessor {
+public final class AccessBatchExpireProcessor {
 
-    private static final Logger LOGGER = getLogger(AuthBatchExpireProcessor.class);
+    private static final Logger LOGGER = getLogger(AccessBatchExpireProcessor.class);
 
     private static final long THREAD_KEEP_ALIVE_SECONDS = 64L;
 
@@ -53,14 +53,14 @@ public final class AuthBatchExpireProcessor {
     private final int BATCH_EXPIRE_MAX_PER_HANDLE;
 
     private static final TimeUnit TIME_UNIT = MILLISECONDS;
-    private static final String SCHEDULED_THREAD_NAME_PRE = "AuthBatchExpireProcessor-scheduled-thread- ";
-    private static final String HANDLE_THREAD_NAME_PRE = "AuthBatchExpireProcessor-handle-thread- ";
+    private static final String SCHEDULED_THREAD_NAME_PRE = "AccessBatchExpireProcessor-scheduled-thread- ";
+    private static final String HANDLE_THREAD_NAME_PRE = "AccessBatchExpireProcessor-handle-thread- ";
     private static final int RANDOM_LEN = 4;
 
-    public AuthBatchExpireProcessor(StringRedisTemplate stringRedisTemplate,
-                                    Integer batchExpireMaxPerHandle, Integer batchExpireScheduledCorePoolSize,
-                                    Long batchExpireScheduledInitialDelayMillis,
-                                    Long batchExpireScheduledDelayMillis, Integer batchExpireQueueCapacity) {
+    public AccessBatchExpireProcessor(StringRedisTemplate stringRedisTemplate,
+                                      Integer batchExpireMaxPerHandle, Integer batchExpireScheduledCorePoolSize,
+                                      Long batchExpireScheduledInitialDelayMillis,
+                                      Long batchExpireScheduledDelayMillis, Integer batchExpireQueueCapacity) {
 
         if (stringRedisTemplate == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stringRedisTemplate can't be null");

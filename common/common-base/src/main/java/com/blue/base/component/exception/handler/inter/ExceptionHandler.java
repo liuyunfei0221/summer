@@ -7,7 +7,7 @@ import com.blue.base.component.exception.handler.model.ExceptionInfo;
  *
  * @author DarkBlue
  */
-@SuppressWarnings({"unused", "JavaDoc", "UnnecessaryInterfaceModifier"})
+@SuppressWarnings({"unused", "JavaDoc"})
 public interface ExceptionHandler {
 
     /**
@@ -15,7 +15,7 @@ public interface ExceptionHandler {
      *
      * @return
      */
-    public String exceptionName();
+    String exceptionName();
 
     /**
      * handle exp
@@ -23,6 +23,6 @@ public interface ExceptionHandler {
      * @param throwable
      * @return
      */
-    public ExceptionInfo handle(Throwable throwable);
+    ExceptionInfo handle(Throwable throwable);
 
 }

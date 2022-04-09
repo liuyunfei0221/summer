@@ -1,4 +1,4 @@
-package com.blue.base.component.exception.common;
+package com.blue.base.component.exception.handler;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionInfo;

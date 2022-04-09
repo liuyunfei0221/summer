@@ -1,7 +1,7 @@
 package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.*;
-import com.blue.auth.component.auth.AuthInfoCache;
+import com.blue.auth.component.access.AccessInfoCache;
 import com.blue.auth.config.deploy.BlockingDeploy;
 import com.blue.auth.config.deploy.SessionKeyDeploy;
 import com.blue.auth.converter.AuthModelConverters;
@@ -86,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
 
     private JwtProcessor<MemberPayload> jwtProcessor;
 
-    private AuthInfoCache authInfoCache;
+    private AccessInfoCache accessInfoCache;
 
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -105,12 +105,12 @@ public class AuthServiceImpl implements AuthService {
     private RedissonClient redissonClient;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public AuthServiceImpl(RefreshInfoRepository refreshInfoRepository, JwtProcessor<MemberPayload> jwtProcessor, AuthInfoCache authInfoCache, StringRedisTemplate stringRedisTemplate,
+    public AuthServiceImpl(RefreshInfoRepository refreshInfoRepository, JwtProcessor<MemberPayload> jwtProcessor, AccessInfoCache accessInfoCache, StringRedisTemplate stringRedisTemplate,
                            RoleService roleService, ResourceService resourceService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
                            InvalidLocalAccessProducer invalidLocalAccessProducer, ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
         this.refreshInfoRepository = refreshInfoRepository;
         this.jwtProcessor = jwtProcessor;
-        this.authInfoCache = authInfoCache;
+        this.accessInfoCache = accessInfoCache;
         this.stringRedisTemplate = stringRedisTemplate;
         this.roleService = roleService;
         this.resourceService = resourceService;
@@ -425,7 +425,7 @@ public class AuthServiceImpl implements AuthService {
             KeyPair keyPair = initKeyPair();
             String authInfoJson = GSON.toJson(new AccessInfo(jwt, roleId, keyPair.getPubKey()));
 
-            return authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson)
+            return accessInfoCache.setAccessInfo(memberPayload.getKeyId(), authInfoJson)
                     .flatMap(b -> {
                         LOGGER.info("authInfoJson = {}, keyPair = {}", authInfoJson, keyPair);
                         if (b)
@@ -617,7 +617,7 @@ public class AuthServiceImpl implements AuthService {
             for (LoginType loginType : VALID_LOGIN_TYPES)
                 for (DeviceType deviceType : VALID_DEVICE_TYPES) {
                     keyId = genSessionKey(memberId, loginType.identity, deviceType.identity);
-                    authInfoCache.invalidAccessInfo(keyId).subscribe();
+                    accessInfoCache.invalidAccessInfo(keyId).subscribe();
                     this.invalidateLocalAccessByKeyId(keyId).subscribe();
                 }
         } catch (Exception e) {
@@ -774,7 +774,7 @@ public class AuthServiceImpl implements AuthService {
                     String jwt = aa.getAuthentication();
                     MemberPayload memberPayload = jwtProcessor.parse(jwt);
 
-                    return authInfoCache.getAuthInfo(memberPayload.getKeyId())
+                    return accessInfoCache.getAccessInfo(memberPayload.getKeyId())
                             .flatMap(v -> {
                                 if (v == null || "".equals(v))
                                     return error(() -> new BlueException(UNAUTHORIZED));
@@ -897,7 +897,7 @@ public class AuthServiceImpl implements AuthService {
             String keyId = genSessionKey(memberId, loginType, deviceType);
             return zip(
                     deleteExistRefreshTokenByAuthElements(String.valueOf(memberId), loginType, deviceType),
-                    authInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
+                    accessInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
             ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
         }
 
@@ -918,7 +918,7 @@ public class AuthServiceImpl implements AuthService {
             String keyId = memberPayload.getKeyId();
             return zip(
                     deleteExistRefreshTokenByAuthElements(memberPayload.getId(), memberPayload.getLoginType(), memberPayload.getDeviceType()),
-                    authInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
+                    accessInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
             ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
         } catch (Exception e) {
             LOGGER.error("Mono<Boolean> invalidAuthByJwt(String jwt) failed, jwt = {}, e = {}", jwt, e);

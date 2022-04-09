@@ -15,7 +15,7 @@ public final class MemberBasic implements Serializable {
     private Long id;
 
     /**
-     * phone format: 86-13131693996
+     * phone format: 8613131693996
      */
     private String phone;
 

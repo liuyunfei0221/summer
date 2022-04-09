@@ -2,8 +2,8 @@ package com.blue.auth.config.auth;
 
 import com.blue.auth.api.component.jwt.api.conf.MemberJwtConf;
 import com.blue.auth.api.component.jwt.api.conf.MemberJwtConfParams;
-import com.blue.auth.component.auth.AuthBatchExpireProcessor;
-import com.blue.auth.component.auth.AuthInfoCache;
+import com.blue.auth.component.access.AccessBatchExpireProcessor;
+import com.blue.auth.component.access.AccessInfoCache;
 import com.blue.auth.config.deploy.AuthDeploy;
 import com.blue.auth.event.producer.AccessExpireProducer;
 import org.springframework.context.annotation.Bean;
@@ -44,17 +44,17 @@ public class AuthConfig {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Bean
-    AuthInfoCache authInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer) {
+    AccessInfoCache authInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer) {
         LOGGER.info("jwtDeploy = {}", authDeploy);
-        return new AuthInfoCache(reactiveStringRedisTemplate, accessExpireProducer, scheduler, authDeploy.getRefresherCorePoolSize(),
+        return new AccessInfoCache(reactiveStringRedisTemplate, accessExpireProducer, scheduler, authDeploy.getRefresherCorePoolSize(),
                 authDeploy.getRefresherMaximumPoolSize(), authDeploy.getRefresherKeepAliveSeconds(), authDeploy.getRefresherBlockingQueueCapacity(),
                 authDeploy.getGlobalMinExpireMillis(), authDeploy.getLocalExpireMillis(), authDeploy.getLocalCacheCapacity());
     }
 
     @Bean
-    AuthBatchExpireProcessor authBatchExpireProcessor(StringRedisTemplate stringRedisTemplate) {
+    AccessBatchExpireProcessor authBatchExpireProcessor(StringRedisTemplate stringRedisTemplate) {
         LOGGER.info("jwtDeploy = {}", authDeploy);
-        return new AuthBatchExpireProcessor(stringRedisTemplate,
+        return new AccessBatchExpireProcessor(stringRedisTemplate,
                 authDeploy.getBatchExpireMaxPerHandle(),
                 authDeploy.getBatchExpireScheduledCorePoolSize(), authDeploy.getBatchExpireScheduledInitialDelayMillis(),
                 authDeploy.getBatchExpireScheduledDelayMillis(), authDeploy.getBatchExpireQueueCapacity());

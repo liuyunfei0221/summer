@@ -1,6 +1,6 @@
 package com.blue.auth.event.consumer;
 
-import com.blue.auth.component.auth.AuthBatchExpireProcessor;
+import com.blue.auth.component.access.AccessBatchExpireProcessor;
 import com.blue.auth.config.blue.BlueConsumerConfig;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.model.base.KeyExpireParam;
@@ -29,13 +29,13 @@ public final class AccessExpireConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final AuthBatchExpireProcessor authBatchExpireProcessor;
+    private final AccessBatchExpireProcessor accessBatchExpireProcessor;
 
     private BluePulsarConsumer<KeyExpireParam> authExpireConsumer;
 
-    public AccessExpireConsumer(BlueConsumerConfig blueConsumerConfig, AuthBatchExpireProcessor authBatchExpireProcessor) {
+    public AccessExpireConsumer(BlueConsumerConfig blueConsumerConfig, AccessBatchExpireProcessor accessBatchExpireProcessor) {
         this.blueConsumerConfig = blueConsumerConfig;
-        this.authBatchExpireProcessor = authBatchExpireProcessor;
+        this.accessBatchExpireProcessor = accessBatchExpireProcessor;
     }
 
     @PostConstruct
@@ -44,7 +44,7 @@ public final class AccessExpireConsumer implements BlueLifecycle {
                 ofNullable(keyExpireParam)
                         .ifPresent(kep -> {
                             LOGGER.info("authExpireDataConsumer received, kep = {}", kep);
-                            authBatchExpireProcessor.expireKey(kep);
+                            accessBatchExpireProcessor.expireKey(kep);
                         });
 
         this.authExpireConsumer = generateConsumer(blueConsumerConfig.getByKey(ACCESS_EXPIRE.name), authExpireDataConsumer);
