@@ -75,13 +75,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                     if (isNotNull(memberBasicMapper.selectByEmail(email)))
                         throw new BlueException(EMAIL_ALREADY_EXIST);
                 });
-
-        ofNullable(mb.getName())
-                .filter(BlueChecker::isNotBlank)
-                .ifPresent(name -> {
-                    if (isNotNull(memberBasicMapper.selectByName(name)))
-                        throw new BlueException(NAME_ALREADY_EXIST);
-                });
     };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())

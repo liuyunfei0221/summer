@@ -82,7 +82,7 @@ public class StateServiceImpl implements StateService {
 
     private final Function<Long, List<StateInfo>> DB_STATES_BY_COUNTRY_ID_GETTER = cid ->
             STATES_2_STATE_INFOS_CONVERTER.apply(
-                    this.selectStateByCountryId(cid).stream().sorted(Comparator.comparing(State::getStateCode)).collect(toList()));
+                    this.selectStateByCountryId(cid).stream().sorted(Comparator.comparing(State::getName)).collect(toList()));
 
     private final Function<Long, Optional<StateInfo>> STATE_OPT_BY_ID_GETTER = id ->
             ofNullable(idStateCache.get(id, DB_STATE_GETTER));

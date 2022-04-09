@@ -74,7 +74,7 @@ public class CountryServiceImpl implements CountryService {
 
     private final Function<Long, List<CountryInfo>> DB_COUNTRIES_GETTER = ignore ->
             COUNTRIES_2_COUNTRY_INFOS_CONVERTER.apply(
-                    this.selectCountry().stream().sorted(Comparator.comparing(Country::getCountryCode)).collect(toList()));
+                    this.selectCountry().stream().sorted(Comparator.comparing(Country::getName)).collect(toList()));
 
     private final Function<Long, Optional<CountryInfo>> COUNTRY_OPT_BY_ID_GETTER = id ->
             ofNullable(idCountryCache.get(id, DB_COUNTRY_GETTER));

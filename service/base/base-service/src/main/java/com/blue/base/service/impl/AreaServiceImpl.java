@@ -91,7 +91,8 @@ public class AreaServiceImpl implements AreaService {
                     .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
     private final Function<Long, List<AreaInfo>> DB_AREAS_BY_CITY_ID_GETTER = cid ->
-            AREAS_2_AREA_INFOS_CONVERTER.apply(this.selectAreaByCityId(cid));
+            AREAS_2_AREA_INFOS_CONVERTER.apply(
+                    this.selectAreaByCityId(cid).stream().sorted(Comparator.comparing(Area::getName)).collect(toList()));
 
     private final Function<Long, Optional<AreaInfo>> AREA_OPT_BY_ID_GETTER = id ->
             ofNullable(idAreaCache.get(id, DB_AREA_GETTER));

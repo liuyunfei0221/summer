@@ -376,7 +376,7 @@ VALUES (1, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
 INSERT INTO `auth`.`role`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`, `creator`,
                           `updater`)
 VALUES (1, 'normal', 'normal', 999999999, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-    (2, 'summer admin', 'summer admin', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+       (2, 'summer admin', 'summer admin', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- role resource relations
 
@@ -1268,7 +1268,7 @@ CREATE TABLE `member_basic_0`
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
 
 CREATE TABLE `member_basic_1`
@@ -1285,7 +1285,7 @@ CREATE TABLE `member_basic_1`
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
 CREATE TABLE `member_real_name_0`
@@ -1513,7 +1513,7 @@ CREATE TABLE `member_basic_0`
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
 
 CREATE TABLE `member_basic_1`
@@ -1530,7 +1530,7 @@ CREATE TABLE `member_basic_1`
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
 CREATE TABLE `member_real_name_0`

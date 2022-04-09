@@ -1,6 +1,6 @@
 package com.blue.base.common.base;
 
-import com.blue.base.component.exception.common.ExceptionProcessor;
+import com.blue.base.component.exception.handler.ExceptionProcessor;
 import com.blue.base.constant.base.*;
 import com.blue.base.model.base.*;
 import com.blue.base.model.exps.BlueException;
