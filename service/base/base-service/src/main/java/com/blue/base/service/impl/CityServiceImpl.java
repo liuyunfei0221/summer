@@ -81,7 +81,6 @@ public class CityServiceImpl implements CityService {
     private final Function<Long, CityInfo> DB_CITY_GETTER = id ->
             this.getCityById(id).map(CITY_2_CITY_INFO_CONVERTER).orElse(null);
 
-
     private final Function<Long, CityInfo> DB_CITY_GETTER_WITH_ASSERT = id ->
             this.getCityById(id).map(CITY_2_CITY_INFO_CONVERTER)
                     .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
