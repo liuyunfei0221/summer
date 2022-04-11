@@ -2,7 +2,6 @@ package com.blue.auth.component.login.impl;
 
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.login.inter.LoginHandler;
-import com.blue.auth.constant.LoginAttribute;
 import com.blue.auth.model.LoginParam;
 import com.blue.auth.remote.consumer.RpcMemberServiceConsumer;
 import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
@@ -25,6 +24,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.blue.auth.constant.LoginAttribute.ACCESS;
+import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.base.common.base.CommonFunctions.GSON;
@@ -89,8 +90,8 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
         if (loginParam == null)
             throw new BlueException(EMPTY_PARAM);
 
-        String email = loginParam.getData(LoginAttribute.IDENTITY.key);
-        String access = loginParam.getData(LoginAttribute.ACCESS.key);
+        String email = loginParam.getData(IDENTITY.key);
+        String access = loginParam.getData(ACCESS.key);
 
         if (isBlank(email) || isBlank(access))
             throw new BlueException(INVALID_ACCT_OR_PWD);

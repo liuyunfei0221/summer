@@ -18,7 +18,7 @@
         <result column="jwt" jdbcType="VARCHAR" property="jwt"/>
         <result column="member_id" jdbcType="BIGINT" property="memberId"/>
         <result column="role_id" jdbcType="BIGINT" property="roleId"/>
-        <result column="login_type" jdbcType="VARCHAR" property="credentialType"/>
+        <result column="credential_type" jdbcType="VARCHAR" property="credentialType"/>
         <result column="device_type" jdbcType="VARCHAR" property="deviceType"/>
         <result column="login_time" jdbcType="BIGINT" property="loginTime"/>
         <result column="client_ip" jdbcType="VARCHAR" property="clientIp"/>
@@ -33,7 +33,7 @@
     <sql id="Base_Column_List">
         id
         , data_event_type, stamp, create_date, method, uri, real_uri, request_body, response_status,response_body,request_id, metadata, jwt,
-        member_id, role_id, login_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body
+        member_id, role_id, credential_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -53,7 +53,7 @@
         insert into opt_event (id, data_event_type, stamp, create_date,
                                method, uri, real_uri, request_body, response_status,
                                response_body, request_id, metadata, jwt, member_id,
-                               role_id, login_type, device_type, login_time, client_ip,
+                               role_id, credential_type, device_type, login_time, client_ip,
                                user_agent, sec_key, request_un_decryption,
                                response_un_encryption, existence_request_body,
                                existence_response_body)
@@ -77,7 +77,7 @@
             INSERT INTO opt_event (id, data_event_type, stamp, create_date,
             method, uri, real_uri, request_body, response_status,
             response_body, request_id, metadata, jwt, member_id,
-            role_id, login_type, device_type, login_time, client_ip,
+            role_id, credential_type, device_type, login_time, client_ip,
             user_agent, sec_key, request_un_decryption,
             response_un_encryption, existence_request_body,
             existence_response_body)
@@ -149,7 +149,7 @@
                 role_id,
             </if>
             <if test="credentialType != null">
-                login_type,
+                credential_type,
             </if>
             <if test="deviceType != null">
                 device_type,
@@ -184,7 +184,7 @@
                 #{id,jdbcType=BIGINT},
             </if>
             <if test="dataEventType != null">
-                #{dataEventType,jdbcType=VARCHAR},
+                #{data_event_type,jdbcType=VARCHAR},
             </if>
             <if test="stamp != null">
                 #{stamp,jdbcType=BIGINT},
@@ -199,19 +199,19 @@
                 #{uri,jdbcType=VARCHAR},
             </if>
             <if test="realUri != null">
-                #{realUri,jdbcType=VARCHAR},
+                #{real_uri,jdbcType=VARCHAR},
             </if>
             <if test="requestBody != null">
-                #{requestBody,jdbcType=VARCHAR},
+                #{request_body,jdbcType=VARCHAR},
             </if>
             <if test="responseStatus != null">
-                #{responseStatus,jdbcType=INTEGER},
+                #{response_status,jdbcType=INTEGER},
             </if>
             <if test="responseBody != null">
-                #{responseBody,jdbcType=VARCHAR},
+                #{response_body,jdbcType=VARCHAR},
             </if>
             <if test="requestId != null">
-                #{requestId,jdbcType=VARCHAR},
+                #{request_id,jdbcType=VARCHAR},
             </if>
             <if test="metadata != null">
                 #{metadata,jdbcType=VARCHAR},
@@ -226,7 +226,7 @@
                 #{role_id,jdbcType=BIGINT},
             </if>
             <if test="credentialType != null">
-                #{login_type,jdbcType=VARCHAR},
+                #{credential_type,jdbcType=VARCHAR},
             </if>
             <if test="deviceType != null">
                 #{device_type,jdbcType=VARCHAR},
@@ -235,25 +235,25 @@
                 #{login_time,jdbcType=BIGINT},
             </if>
             <if test="clientIp != null">
-                #{clientIp,jdbcType=VARCHAR},
+                #{client_ip,jdbcType=VARCHAR},
             </if>
             <if test="userAgent != null">
-                #{userAgent,jdbcType=VARCHAR},
+                #{user_agent,jdbcType=VARCHAR},
             </if>
             <if test="secKey != null">
-                #{secKey,jdbcType=VARCHAR},
+                #{sec_key,jdbcType=VARCHAR},
             </if>
             <if test="requestUnDecryption != null">
-                #{requestUnDecryption,jdbcType=INTEGER},
+                #{request_un_decryption,jdbcType=INTEGER},
             </if>
             <if test="responseUnEncryption != null">
-                #{responseUnEncryption,jdbcType=INTEGER},
+                #{response_un_encryption,jdbcType=INTEGER},
             </if>
             <if test="existenceRequestBody != null">
-                #{existenceRequestBody,jdbcType=INTEGER},
+                #{existence_request_body,jdbcType=INTEGER},
             </if>
             <if test="existenceResponseBody != null">
-                #{existenceResponseBody,jdbcType=INTEGER},
+                #{existence_response_body,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -304,7 +304,7 @@
                 role_id = #{roleId,jdbcType=BIGINT},
             </if>
             <if test="credentialType != null">
-                login_type = #{credentialType,jdbcType=VARCHAR},
+                credential_type = #{credentialType,jdbcType=VARCHAR},
             </if>
             <if test="deviceType != null">
                 device_type = #{deviceType,jdbcType=VARCHAR},
@@ -353,7 +353,7 @@
         jwt = #{jwt,jdbcType=VARCHAR},
         member_id = #{memberId,jdbcType=BIGINT},
         role_id = #{roleId,jdbcType=BIGINT},
-        login_type = #{credentialType,jdbcType=VARCHAR},
+        credential_type = #{credentialType,jdbcType=VARCHAR},
         device_type = #{deviceType,jdbcType=VARCHAR},
         login_time = #{loginTime,jdbcType=BIGINT},
         client_ip = #{clientIp,jdbcType=VARCHAR},

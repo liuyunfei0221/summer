@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
@@ -85,7 +86,7 @@ public class LocalPhoneWithAutoRegisterLoginHandler implements LoginHandler {
 
         //TODO verify param
 
-        String phone = "";
+        String phone = loginParam.getData(IDENTITY.key);
 
         Map<String, Object> extra = new HashMap<>(2);
 
