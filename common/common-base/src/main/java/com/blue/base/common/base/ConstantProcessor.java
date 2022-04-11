@@ -8,7 +8,7 @@ import com.blue.base.constant.business.SubjectType;
 import com.blue.base.constant.member.Gender;
 import com.blue.base.constant.portal.BulletinType;
 import com.blue.base.constant.auth.DeviceType;
-import com.blue.base.constant.auth.LoginType;
+import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.auth.ResourceType;
 import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
@@ -74,10 +74,10 @@ public final class ConstantProcessor {
             of(ResourceType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
 
     /**
-     * valid login type identity and type mapping
+     * valid credential type identity and type mapping
      */
-    private static final Map<String, LoginType> LOGIN_TYPE_MAPPING =
-            of(LoginType.values()).collect(toMap(e -> e.identity.toUpperCase(), e -> e, (a, b) -> a));
+    private static final Map<String, CredentialType> CREDENTIAL_TYPE_MAPPING =
+            of(CredentialType.values()).collect(toMap(e -> e.identity.toUpperCase(), e -> e, (a, b) -> a));
 
     /**
      * valid device type identity and type mapping
@@ -217,15 +217,15 @@ public final class ConstantProcessor {
     }
 
     /**
-     * assert login type
+     * assert credential type
      *
      * @param identity
      */
-    public static void assertLoginType(String identity, boolean nullable) {
+    public static void assertCredentialType(String identity, boolean nullable) {
         if (nullable && identity == null)
             return;
 
-        if (isBlank(identity) || !LOGIN_TYPE_MAPPING.containsKey(identity.toUpperCase()))
+        if (isBlank(identity) || !CREDENTIAL_TYPE_MAPPING.containsKey(identity.toUpperCase()))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -492,20 +492,20 @@ public final class ConstantProcessor {
     }
 
     /**
-     * get login type by identity
+     * get credential type by identity
      *
      * @param identity
      * @return
      */
-    public static LoginType getLoginTypeByIdentity(String identity) {
+    public static CredentialType getCredentialTypeByIdentity(String identity) {
         if (isBlank(identity))
             throw new BlueException(INVALID_IDENTITY);
 
-        LoginType loginType = LOGIN_TYPE_MAPPING.get(identity.toUpperCase());
-        if (loginType == null)
+        CredentialType credentialType = CREDENTIAL_TYPE_MAPPING.get(identity.toUpperCase());
+        if (credentialType == null)
             throw new BlueException(INVALID_IDENTITY);
 
-        return loginType;
+        return credentialType;
     }
 
     /**

@@ -2,12 +2,12 @@ package com.blue.auth.component.auto.impl;
 
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.auto.inter.MemberParamByAutoLoginPackager;
-import com.blue.base.constant.auth.LoginType;
+import com.blue.base.constant.auth.CredentialType;
 import com.blue.member.api.model.MemberRegistryParam;
 
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.EmailProcessor.parsePrefix;
-import static com.blue.base.constant.auth.LoginType.EMAIL_VERIFY_AUTO_REGISTER;
+import static com.blue.base.constant.auth.CredentialType.EMAIL_VERIFY_AUTO_REGISTER;
 
 /**
  * packager for login by email and verify
@@ -33,12 +33,12 @@ public class EmailVerifyMemberParamPackager implements MemberParamByAutoLoginPac
     }
 
     /**
-     * target login type to package param
+     * target credential type to package param
      *
      * @return
      */
     @Override
-    public LoginType targetType() {
+    public CredentialType targetType() {
         return EMAIL_VERIFY_AUTO_REGISTER;
     }
 

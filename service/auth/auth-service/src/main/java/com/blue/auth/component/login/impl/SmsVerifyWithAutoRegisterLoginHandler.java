@@ -9,7 +9,7 @@ import com.blue.auth.service.inter.AuthService;
 import com.blue.auth.service.inter.AutoRegisterService;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.auth.service.inter.RoleService;
-import com.blue.base.constant.auth.LoginType;
+import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
@@ -31,7 +31,7 @@ import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
-import static com.blue.base.constant.auth.LoginType.PHONE_VERIFY_AUTO_REGISTER;
+import static com.blue.base.constant.auth.CredentialType.PHONE_VERIFY_AUTO_REGISTER;
 import static com.blue.base.constant.base.BlueHeader.*;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.verify.BusinessType.PHONE_VERIFY_LOGIN_WITH_AUTO_REGISTER;
@@ -75,14 +75,8 @@ public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
         this.authService = authService;
     }
 
-    private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = phone -> {
-        CredentialInfo credential = new CredentialInfo();
-
-        credential.setCredential(phone);
-        credential.setType(PHONE_VERIFY_AUTO_REGISTER.identity);
-
-        return singletonList(credential);
-    };
+    private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = phone ->
+            singletonList(new CredentialInfo(phone, PHONE_VERIFY_AUTO_REGISTER.identity, "", "from auto registry"));
 
     private static final Consumer<MemberBasicInfo> MEMBER_STATUS_ASSERTER = memberBasicInfo -> {
         if (isInvalidStatus(memberBasicInfo.getStatus()))
@@ -137,7 +131,7 @@ public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
     }
 
     @Override
-    public LoginType targetType() {
+    public CredentialType targetType() {
         return PHONE_VERIFY_AUTO_REGISTER;
     }
 

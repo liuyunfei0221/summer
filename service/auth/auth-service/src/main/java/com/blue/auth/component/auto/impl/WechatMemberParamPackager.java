@@ -2,12 +2,12 @@ package com.blue.auth.component.auto.impl;
 
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.auto.inter.MemberParamByAutoLoginPackager;
-import com.blue.base.constant.auth.LoginType;
+import com.blue.base.constant.auth.CredentialType;
 import com.blue.member.api.model.MemberRegistryParam;
 
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.PhoneProcessor.parseLast4no;
-import static com.blue.base.constant.auth.LoginType.WECHAT_AUTO_REGISTER;
+import static com.blue.base.constant.auth.CredentialType.WECHAT_AUTO_REGISTER;
 
 /**
  * packager for login by WeChat
@@ -33,12 +33,12 @@ public class WechatMemberParamPackager implements MemberParamByAutoLoginPackager
     }
 
     /**
-     * target login type to package param
+     * target credential type to package param
      *
      * @return
      */
     @Override
-    public LoginType targetType() {
+    public CredentialType targetType() {
         return WECHAT_AUTO_REGISTER;
     }
 

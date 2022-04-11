@@ -35,32 +35,32 @@ public interface AuthService {
      * generate member auth
      *
      * @param memberId
-     * @param loginType
+     * @param credentialType
      * @param deviceType
      * @return
      */
-    Mono<MemberAuth> generateAuthMono(Long memberId, String loginType, String deviceType);
+    Mono<MemberAuth> generateAuthMono(Long memberId, String credentialType, String deviceType);
 
     /**
      * generate member auth with auto register
      *
      * @param memberId
      * @param roleId
-     * @param loginType
+     * @param credentialType
      * @param deviceType
      * @return
      */
-    Mono<MemberAuth> generateAuthMono(Long memberId, Long roleId, String loginType, String deviceType);
+    Mono<MemberAuth> generateAuthMono(Long memberId, Long roleId, String credentialType, String deviceType);
 
     /**
      * generate member access
      *
      * @param memberId
-     * @param loginType
+     * @param credentialType
      * @param deviceType
      * @return
      */
-    Mono<MemberAccess> generateAccessMono(Long memberId, String loginType, String deviceType);
+    Mono<MemberAccess> generateAccessMono(Long memberId, String credentialType, String deviceType);
 
     /**
      * refresh jwt by refresh token

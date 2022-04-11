@@ -23,9 +23,9 @@ public final class Access implements Serializable {
     private long roleId;
 
     /**
-     * login type
+     * credential type
      */
-    private String loginType;
+    private String credentialType;
 
     /**
      * device type
@@ -44,10 +44,10 @@ public final class Access implements Serializable {
     public Access() {
     }
 
-    public Access(long id, long roleId, String loginType, String deviceType, long loginTime) {
+    public Access(long id, long roleId, String credentialType, String deviceType, long loginTime) {
         this.id = id;
         this.roleId = roleId;
-        this.loginType = loginType;
+        this.credentialType = credentialType;
         this.deviceType = deviceType;
         this.loginTime = loginTime;
     }
@@ -68,12 +68,12 @@ public final class Access implements Serializable {
         this.roleId = roleId;
     }
 
-    public String getLoginType() {
-        return loginType;
+    public String getcredentialType() {
+        return credentialType;
     }
 
-    public void setLoginType(String loginType) {
-        this.loginType = loginType;
+    public void setcredentialType(String credentialType) {
+        this.credentialType = credentialType;
     }
 
     public String getDeviceType() {
@@ -97,7 +97,7 @@ public final class Access implements Serializable {
         return "Access{" +
                 "id=" + id +
                 ", roleId=" + roleId +
-                ", loginType='" + loginType + '\'' +
+                ", credentialType='" + credentialType + '\'' +
                 ", deviceType='" + deviceType + '\'' +
                 ", loginTime='" + loginTime + '\'' +
                 '}';

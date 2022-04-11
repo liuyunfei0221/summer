@@ -1,8 +1,8 @@
 package com.blue.auth.model;
 
 import com.blue.base.constant.auth.AccessInfoRefreshElementType;
+import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.auth.DeviceType;
-import com.blue.base.constant.auth.LoginType;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,7 +18,7 @@ public final class AuthInfoRefreshElement implements Serializable {
     private static final long serialVersionUID = -8842596381325841676L;
 
     private Long memberId;
-    private List<LoginType> loginTypes;
+    private List<CredentialType> credentialTypes;
     private List<DeviceType> deviceTypes;
     private AccessInfoRefreshElementType elementType;
     private String elementValue;
@@ -26,9 +26,9 @@ public final class AuthInfoRefreshElement implements Serializable {
     public AuthInfoRefreshElement() {
     }
 
-    public AuthInfoRefreshElement(Long memberId, List<LoginType> loginTypes, List<DeviceType> deviceTypes, AccessInfoRefreshElementType elementType, String elementValue) {
+    public AuthInfoRefreshElement(Long memberId, List<CredentialType> credentialTypes, List<DeviceType> deviceTypes, AccessInfoRefreshElementType elementType, String elementValue) {
         this.memberId = memberId;
-        this.loginTypes = loginTypes;
+        this.credentialTypes = credentialTypes;
         this.deviceTypes = deviceTypes;
         this.elementType = elementType;
         this.elementValue = elementValue;
@@ -42,12 +42,12 @@ public final class AuthInfoRefreshElement implements Serializable {
         this.memberId = memberId;
     }
 
-    public List<LoginType> getLoginTypes() {
-        return loginTypes;
+    public List<CredentialType> getcredentialTypes() {
+        return credentialTypes;
     }
 
-    public void setLoginTypes(List<LoginType> loginTypes) {
-        this.loginTypes = loginTypes;
+    public void setcredentialTypes(List<CredentialType> credentialTypes) {
+        this.credentialTypes = credentialTypes;
     }
 
     public List<DeviceType> getDeviceTypes() {
@@ -78,7 +78,7 @@ public final class AuthInfoRefreshElement implements Serializable {
     public String toString() {
         return "AuthInfoRefreshParam{" +
                 "memberId=" + memberId +
-                ", loginTypes=" + loginTypes +
+                ", credentialTypes=" + credentialTypes +
                 ", deviceTypes=" + deviceTypes +
                 ", elementType=" + elementType +
                 ", elementValue='" + elementValue + '\'' +

@@ -30,7 +30,7 @@ import static reactor.core.publisher.Mono.error;
 public class LoginProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
     /**
-     * login type -> login handler
+     * credential type -> login handler
      */
     private Map<String, LoginHandler> loginHandlers;
 
@@ -49,7 +49,7 @@ public class LoginProcessor implements ApplicationListener<ContextRefreshedEvent
             serverRequest.bodyToMono(LoginParam.class)
                     .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
                     .flatMap(lp ->
-                            ofNullable(lp.getLoginType())
+                            ofNullable(lp.getCredentialType())
                                     .map(loginHandlers::get)
                                     .map(h -> h.login(lp, serverRequest))
                                     .orElseThrow(() -> new BlueException(INVALID_PARAM)));

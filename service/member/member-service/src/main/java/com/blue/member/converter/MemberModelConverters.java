@@ -62,6 +62,7 @@ public final class MemberModelConverters {
         MemberBasic memberBasic = new MemberBasic();
         memberBasic.setPhone(phone);
         memberBasic.setEmail(email);
+
         memberBasic.setName(name);
         memberBasic.setIcon(memberRegistryParam.getIcon());
         memberBasic.setGender(ofNullable(memberRegistryParam.getGender())

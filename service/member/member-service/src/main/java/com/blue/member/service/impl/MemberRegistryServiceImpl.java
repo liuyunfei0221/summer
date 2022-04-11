@@ -8,6 +8,7 @@ import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.remote.consumer.RpcControlServiceConsumer;
 import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
+import com.blue.member.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberBasicService;
 import com.blue.member.service.inter.MemberRegistryService;
@@ -19,6 +20,10 @@ import reactor.util.Logger;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.VERIFY_IS_INVALID;
+import static com.blue.base.constant.verify.BusinessType.REGISTER;
+import static com.blue.base.constant.verify.VerifyType.MAIL;
+import static com.blue.base.constant.verify.VerifyType.SMS;
 import static com.blue.member.component.credential.CredentialCollectProcessor.collect;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static reactor.util.Loggers.getLogger;
@@ -38,14 +43,17 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
+    private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
+
     private final RpcControlServiceConsumer rpcControlServiceConsumer;
 
     private final RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer;
 
-    public MemberRegistryServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor,
+    public MemberRegistryServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
                                      RpcControlServiceConsumer rpcControlServiceConsumer, RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer) {
         this.memberBasicService = memberBasicService;
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcControlServiceConsumer = rpcControlServiceConsumer;
         this.rpcFinanceAccountServiceConsumer = rpcFinanceAccountServiceConsumer;
     }
@@ -66,6 +74,13 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
         LOGGER.info("MemberInfo registerMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
+
+        if (!rpcVerifyHandleServiceConsumer.validate(SMS, REGISTER, memberRegistryParam.getPhone(), memberRegistryParam.getPhoneVerify(), true)
+                .toFuture().join())
+            throw new BlueException(VERIFY_IS_INVALID);
+        if (!rpcVerifyHandleServiceConsumer.validate(MAIL, REGISTER, memberRegistryParam.getEmail(), memberRegistryParam.getEmailVerify(), true)
+                .toFuture().join())
+            throw new BlueException(VERIFY_IS_INVALID);
 
         MemberBasic memberBasic = MEMBER_REGISTRY_INFO_2_MEMBER_BASIC.apply(memberRegistryParam);
 

@@ -1,11 +1,13 @@
 package com.blue.auth.model;
 
+import com.blue.base.constant.auth.CredentialType;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.blue.base.common.base.ConstantProcessor.assertDeviceType;
-import static com.blue.base.common.base.ConstantProcessor.assertLoginType;
+import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 
 /**
  * login infos
@@ -21,11 +23,11 @@ public final class LoginParam implements Serializable {
     private static final float LOAD_FACTOR = 1.0f;
 
     /**
-     * login type
+     * credential type
      *
-     * @see com.blue.base.constant.auth.LoginType
+     * @see CredentialType
      */
-    private String loginType;
+    private String credentialType;
 
     /**
      * device type
@@ -42,9 +44,9 @@ public final class LoginParam implements Serializable {
     public LoginParam() {
     }
 
-    public LoginParam(String loginType, String deviceType, Map<String, String> account) {
-        this.loginType = loginType;
-        assertLoginType(loginType, false);
+    public LoginParam(String credentialType, String deviceType, Map<String, String> account) {
+        this.credentialType = credentialType;
+        assertCredentialType(credentialType, false);
 
         this.deviceType = deviceType;
         assertDeviceType(deviceType, false);
@@ -52,13 +54,13 @@ public final class LoginParam implements Serializable {
         this.account = account;
     }
 
-    public String getLoginType() {
-        return loginType;
+    public String getCredentialType() {
+        return credentialType;
     }
 
-    public void setLoginType(String loginType) {
-        assertLoginType(loginType, false);
-        this.loginType = loginType;
+    public void setCredentialType(String credentialType) {
+        assertCredentialType(credentialType, false);
+        this.credentialType = credentialType;
     }
 
     public String getDeviceType() {
@@ -89,7 +91,7 @@ public final class LoginParam implements Serializable {
     @Override
     public String toString() {
         return "LoginParam{" +
-                "loginType='" + loginType + '\'' +
+                "credentialType='" + credentialType + '\'' +
                 ", deviceType='" + deviceType + '\'' +
                 ", account=" + account +
                 '}';

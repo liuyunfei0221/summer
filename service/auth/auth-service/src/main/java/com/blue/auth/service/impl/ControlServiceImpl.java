@@ -2,6 +2,7 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.*;
 import com.blue.auth.common.AccessEncoder;
+import com.blue.auth.constant.VerifyTypeAndCredentialTypesMapping;
 import com.blue.auth.event.producer.SystemAuthorityInfosRefreshProducer;
 import com.blue.auth.model.*;
 import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
@@ -10,6 +11,7 @@ import com.blue.auth.repository.entity.MemberRoleRelation;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.service.inter.*;
 import com.blue.base.common.base.BlueChecker;
+import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.base.Access;
 import com.blue.base.model.base.IdentityParam;
@@ -22,14 +24,16 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.common.base.ConstantProcessor.assertLoginType;
+import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.base.common.base.ConstantProcessor.getVerifyTypeByIdentity;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
@@ -39,6 +43,7 @@ import static com.blue.base.constant.verify.BusinessType.UPDATE_ACCESS;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.*;
@@ -135,7 +140,7 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(EMPTY_PARAM);
 
         String type = credentialInfo.getType();
-        assertLoginType(type, false);
+        assertCredentialType(type, false);
 
         Credential credential = new Credential();
 
@@ -172,6 +177,23 @@ public class ControlServiceImpl implements ControlService {
         if (tarLevel <= operatorLevel)
             throw new BlueException(FORBIDDEN);
     }
+
+    private static final Map<VerifyType, List<String>> VT_WITH_LTS_MAPPING = Stream.of(VerifyTypeAndCredentialTypesMapping.values())
+            .collect(toMap(e -> e.verifyType, e -> e.credentialTypes.stream().map(lt -> lt.identity).collect(toList()), (a, b) -> a));
+
+    private static final Function<VerifyType, List<String>> LTS_BY_VT_GETTER = verifyType -> {
+        if (verifyType == null)
+            throw new BlueException(BAD_REQUEST);
+
+        List<String> credentialTypes = VT_WITH_LTS_MAPPING.get(verifyType);
+        if (isEmpty(credentialTypes))
+            throw new BlueException(BAD_REQUEST);
+
+        return credentialTypes;
+    };
+
+    private static final List<String> ALLOW_ACCESS_LTS = Stream.of(CredentialType.values())
+            .filter(lt -> lt.allowAccess).map(lt -> lt.identity).collect(toList());
 
     /**
      * login
@@ -409,16 +431,16 @@ public class ControlServiceImpl implements ControlService {
             return error(() -> new BlueException(EMPTY_PARAM));
 
         VerifyType verifyType = getVerifyTypeByIdentity(accessUpdateParam.getVerifyType());
-        return credentialService.getCredentialMonoByMemberIdAndType(memberId, verifyType.identity)
-                .flatMap(credentialOpt ->
-                        just(credentialOpt.orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid verify type"))))
+        return credentialService.selectCredentialMonoByMemberIdAndTypes(memberId, LTS_BY_VT_GETTER.apply(verifyType))
+                .flatMap(credentials ->
+                        just(credentials.stream().findAny().orElseThrow(() -> new BlueException(BAD_REQUEST))))
                 .flatMap(credential ->
                         rpcVerifyHandleServiceConsumer.validate(verifyType, UPDATE_ACCESS, credential.getCredential(), accessUpdateParam.getVerificationCode(), true)
                                 .flatMap(validate ->
                                         validate ?
-                                                just(credentialService.updateAccess(memberId, null, accessUpdateParam.getAccess()))
+                                                just(credentialService.updateAccess(memberId, ALLOW_ACCESS_LTS, accessUpdateParam.getAccess()))
                                                 :
-                                                error(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verificationCode is invalid"))
+                                                error(() -> new BlueException(BAD_REQUEST))
                                 )
                 );
     }
@@ -437,14 +459,14 @@ public class ControlServiceImpl implements ControlService {
             return error(() -> new BlueException(EMPTY_PARAM));
 
         VerifyType verifyType = getVerifyTypeByIdentity(accessResetParam.getVerifyType());
-        return credentialService.getCredentialMonoByCredentialAndType(accessResetParam.getCredential(), verifyType.identity)
-                .flatMap(credentialOpt ->
-                        just(credentialOpt.orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid verify type"))))
+        return credentialService.selectCredentialMonoByCredentialAndTypes(accessResetParam.getCredential(), LTS_BY_VT_GETTER.apply(verifyType))
+                .flatMap(credentials ->
+                        just(credentials.stream().findAny().orElseThrow(() -> new BlueException(BAD_REQUEST))))
                 .flatMap(credential ->
                         rpcVerifyHandleServiceConsumer.validate(verifyType, RESET_ACCESS, credential.getCredential(), accessResetParam.getVerificationCode(), true)
                                 .flatMap(validate ->
                                         validate ?
-                                                just(credentialService.updateAccess(credential.getMemberId(), null, accessResetParam.getAccess()))
+                                                just(credentialService.updateAccess(credential.getMemberId(), ALLOW_ACCESS_LTS, accessResetParam.getAccess()))
                                                 :
                                                 error(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verificationCode is invalid"))
                                 )

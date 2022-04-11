@@ -42,7 +42,7 @@ public class OptEvent implements Serializable {
 
     private Long roleId;
 
-    private String loginType;
+    private String credentialType;
 
     private String deviceType;
 
@@ -182,12 +182,12 @@ public class OptEvent implements Serializable {
         this.roleId = roleId;
     }
 
-    public String getLoginType() {
-        return loginType;
+    public String getcredentialType() {
+        return credentialType;
     }
 
-    public void setLoginType(String loginType) {
-        this.loginType = loginType;
+    public void setcredentialType(String credentialType) {
+        this.credentialType = credentialType;
     }
 
     public String getDeviceType() {
@@ -280,7 +280,7 @@ public class OptEvent implements Serializable {
                 ", jwt='" + jwt + '\'' +
                 ", memberId=" + memberId +
                 ", roleId=" + roleId +
-                ", loginType='" + loginType + '\'' +
+                ", credentialType='" + credentialType + '\'' +
                 ", deviceType='" + deviceType + '\'' +
                 ", loginTime=" + loginTime +
                 ", clientIp='" + clientIp + '\'' +

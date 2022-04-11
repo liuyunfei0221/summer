@@ -18,7 +18,7 @@
         <result column="jwt" jdbcType="VARCHAR" property="jwt"/>
         <result column="member_id" jdbcType="BIGINT" property="memberId"/>
         <result column="role_id" jdbcType="BIGINT" property="roleId"/>
-        <result column="login_type" jdbcType="VARCHAR" property="loginType"/>
+        <result column="login_type" jdbcType="VARCHAR" property="credentialType"/>
         <result column="device_type" jdbcType="VARCHAR" property="deviceType"/>
         <result column="login_time" jdbcType="BIGINT" property="loginTime"/>
         <result column="client_ip" jdbcType="VARCHAR" property="clientIp"/>
@@ -64,7 +64,7 @@
                 #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR},
                 #{metadata,jdbcType=VARCHAR},
                 #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT},
-                #{loginType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
+                #{credentialType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
                 #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
                 #{secKey,jdbcType=VARCHAR},
                 #{requestUnDecryption,jdbcType=INTEGER}, #{responseUnEncryption,jdbcType=INTEGER},
@@ -90,7 +90,7 @@
                 #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR},
                 #{metadata,jdbcType=VARCHAR},
                 #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT},
-                #{loginType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
+                #{credentialType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
                 #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
                 #{secKey,jdbcType=VARCHAR},
                 #{requestUnDecryption,jdbcType=INTEGER}, #{responseUnEncryption,jdbcType=INTEGER},
@@ -148,7 +148,7 @@
             <if test="roleId != null">
                 role_id,
             </if>
-            <if test="loginType != null">
+            <if test="credentialType != null">
                 login_type,
             </if>
             <if test="deviceType != null">
@@ -225,7 +225,7 @@
             <if test="roleId != null">
                 #{role_id,jdbcType=BIGINT},
             </if>
-            <if test="loginType != null">
+            <if test="credentialType != null">
                 #{login_type,jdbcType=VARCHAR},
             </if>
             <if test="deviceType != null">
@@ -303,8 +303,8 @@
             <if test="roleId != null">
                 role_id = #{roleId,jdbcType=BIGINT},
             </if>
-            <if test="loginType != null">
-                login_type = #{loginType,jdbcType=VARCHAR},
+            <if test="credentialType != null">
+                login_type = #{credentialType,jdbcType=VARCHAR},
             </if>
             <if test="deviceType != null">
                 device_type = #{deviceType,jdbcType=VARCHAR},
@@ -353,7 +353,7 @@
         jwt = #{jwt,jdbcType=VARCHAR},
         member_id = #{memberId,jdbcType=BIGINT},
         role_id = #{roleId,jdbcType=BIGINT},
-        login_type = #{loginType,jdbcType=VARCHAR},
+        login_type = #{credentialType,jdbcType=VARCHAR},
         device_type = #{deviceType,jdbcType=VARCHAR},
         login_time = #{loginTime,jdbcType=BIGINT},
         client_ip = #{clientIp,jdbcType=VARCHAR},

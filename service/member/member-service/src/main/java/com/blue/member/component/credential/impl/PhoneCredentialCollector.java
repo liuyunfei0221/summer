@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.constant.auth.LoginType.*;
+import static com.blue.base.constant.auth.CredentialType.*;
 
 /**
  * generate credential by phone

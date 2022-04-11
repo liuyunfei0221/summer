@@ -6,7 +6,7 @@ import com.blue.auth.remote.consumer.RpcMemberServiceConsumer;
 import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.service.inter.AuthService;
 import com.blue.auth.service.inter.CredentialService;
-import com.blue.base.constant.auth.LoginType;
+import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
@@ -27,8 +27,8 @@ import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
-import static com.blue.base.constant.auth.LoginType.EMAIL_PWD;
-import static com.blue.base.constant.auth.LoginType.PHONE_PWD;
+import static com.blue.base.constant.auth.CredentialType.EMAIL_PWD;
+import static com.blue.base.constant.auth.CredentialType.PHONE_PWD;
 import static com.blue.base.constant.base.BlueHeader.*;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -102,7 +102,7 @@ public class PhoneAndPwdLoginHandler implements LoginHandler {
     }
 
     @Override
-    public LoginType targetType() {
+    public CredentialType targetType() {
         return PHONE_PWD;
     }
 

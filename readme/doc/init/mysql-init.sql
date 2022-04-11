@@ -114,7 +114,7 @@ CREATE TABLE `credential_0`
 (
     `id`          bigint      NOT NULL COMMENT 'id',
     `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32) NOT NULL COMMENT 'login type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
+    `type`        varchar(32) NOT NULL COMMENT 'credential type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
     `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
     `member_id`   bigint      NOT NULL COMMENT 'member id',
     `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
@@ -131,7 +131,7 @@ CREATE TABLE `credential_1`
 (
     `id`          bigint      NOT NULL COMMENT 'id',
     `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32) NOT NULL COMMENT 'login type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
+    `type`        varchar(32) NOT NULL COMMENT 'credential type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
     `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
     `member_id`   bigint      NOT NULL COMMENT 'member id',
     `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
@@ -198,7 +198,7 @@ CREATE TABLE `credential_0`
 (
     `id`          bigint      NOT NULL COMMENT 'id',
     `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32) NOT NULL COMMENT 'login type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
+    `type`        varchar(32) NOT NULL COMMENT 'credential type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
     `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
     `member_id`   bigint      NOT NULL COMMENT 'member id',
     `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
@@ -215,7 +215,7 @@ CREATE TABLE `credential_1`
 (
     `id`          bigint      NOT NULL COMMENT 'id',
     `credential`  varchar(128) DEFAULT '' COMMENT 'credential',
-    `type`        varchar(32) NOT NULL COMMENT 'login type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
+    `type`        varchar(32) NOT NULL COMMENT 'credential type: PVAR-PHONE_VERIFY_AUTO_REGISTER, PP-PHONE_PWD, EVAR-EMAIL_VERIFY_AUTO_REGISTER, EP-EMAIL_PWD, WEAR-WECHAT_AUTO_REGISTER, MPAR-MINI_PRO_AUTO_REGISTER, LPAR-LOCAL_PHONE_AUTO_REGISTER, NLI-NOT_LOGGED_IN',
     `access`      varchar(255) DEFAULT '' COMMENT 'encrypted password(str)/infos(json)',
     `member_id`   bigint      NOT NULL COMMENT 'member id',
     `extra`       varchar(255) DEFAULT '' COMMENT 'extra infos',
@@ -1257,8 +1257,9 @@ member_0;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
@@ -1274,8 +1275,9 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
@@ -1502,8 +1504,9 @@ member_1;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
@@ -1519,8 +1522,9 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 86-13131693996',
+    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
+    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',

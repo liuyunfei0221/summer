@@ -23,9 +23,9 @@ public final class AuthGenElement {
     private final Long roleId;
 
     /**
-     * login type
+     * credential type
      */
-    private final String loginType;
+    private final String credentialType;
 
     /**
      * device type
@@ -33,19 +33,19 @@ public final class AuthGenElement {
     private final String deviceType;
 
 
-    public AuthGenElement(Long memberId, Long roleId, String loginType, String deviceType) {
+    public AuthGenElement(Long memberId, Long roleId, String credentialType, String deviceType) {
         if (memberId == null || memberId < 0L)
             throw new BlueException(BAD_REQUEST);
         if (roleId == null || roleId < 1L)
             throw new BlueException(BAD_REQUEST);
-        if (loginType == null || "".equals(loginType))
+        if (credentialType == null || "".equals(credentialType))
             throw new BlueException(BAD_REQUEST);
         if (deviceType == null || "".equals(deviceType))
             throw new BlueException(BAD_REQUEST);
 
         this.memberId = memberId;
         this.roleId = roleId;
-        this.loginType = loginType;
+        this.credentialType = credentialType;
         this.deviceType = deviceType;
     }
 
@@ -57,8 +57,8 @@ public final class AuthGenElement {
         return roleId;
     }
 
-    public String getLoginType() {
-        return loginType;
+    public String getcredentialType() {
+        return credentialType;
     }
 
     public String getDeviceType() {
@@ -70,7 +70,7 @@ public final class AuthGenElement {
         return "AuthGenParam{" +
                 "memberId=" + memberId +
                 ", roleId=" + roleId +
-                ", loginType='" + loginType + '\'' +
+                ", credentialType='" + credentialType + '\'' +
                 ", deviceType='" + deviceType + '\'' +
                 '}';
     }

@@ -32,9 +32,9 @@ public final class MemberPayload implements Serializable {
     private final String id;
 
     /**
-     * login type
+     * credential type
      */
-    private final String loginType;
+    private final String credentialType;
 
     /**
      * device type
@@ -46,14 +46,14 @@ public final class MemberPayload implements Serializable {
      */
     private final String loginTime;
 
-    public MemberPayload(String gamma, String keyId, String id, String loginType, String deviceType, String loginTime) {
+    public MemberPayload(String gamma, String keyId, String id, String credentialType, String deviceType, String loginTime) {
         if (gamma == null || "".equals(gamma))
             throw new BlueException(BAD_REQUEST);
         if (keyId == null || "".equals(keyId))
             throw new BlueException(BAD_REQUEST);
         if (id == null || "".equals(id))
             throw new BlueException(BAD_REQUEST);
-        if (loginType == null || "".equals(loginType))
+        if (credentialType == null || "".equals(credentialType))
             throw new BlueException(BAD_REQUEST);
         if (deviceType == null || "".equals(deviceType))
             throw new BlueException(BAD_REQUEST);
@@ -63,7 +63,7 @@ public final class MemberPayload implements Serializable {
         this.gamma = gamma;
         this.keyId = keyId;
         this.id = id;
-        this.loginType = loginType;
+        this.credentialType = credentialType;
         this.deviceType = deviceType;
         this.loginTime = loginTime;
     }
@@ -80,8 +80,8 @@ public final class MemberPayload implements Serializable {
         return id;
     }
 
-    public String getLoginType() {
-        return loginType;
+    public String getCredentialType() {
+        return credentialType;
     }
 
     public String getDeviceType() {
@@ -98,7 +98,7 @@ public final class MemberPayload implements Serializable {
                 "gamma='" + gamma + '\'' +
                 ", keyId='" + keyId + '\'' +
                 ", id='" + id + '\'' +
-                ", loginType='" + loginType + '\'' +
+                ", credentialType='" + credentialType + '\'' +
                 ", deviceType='" + deviceType + '\'' +
                 ", loginTime='" + loginTime + '\'' +
                 '}';

@@ -1,6 +1,6 @@
 package com.blue.auth.component.login.inter;
 
-import com.blue.base.constant.auth.LoginType;
+import com.blue.base.constant.auth.CredentialType;
 import com.blue.auth.model.LoginParam;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -24,10 +24,10 @@ public interface LoginHandler {
     Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest);
 
     /**
-     * target login type to process
+     * target credential type to process
      *
      * @return
      */
-    LoginType targetType();
+    CredentialType targetType();
 
 }

@@ -47,7 +47,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"loginType\":\"EP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"liuyunfei@outloot.com\",\r\n        \"access\":\"12345678\"\r\n    }\r\n}"
+					"raw": "{\r\n    \"credentialType\":\"EP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"liuyunfei@outloot.com\",\r\n        \"access\":\"12345678\"\r\n    }\r\n}"
 				},
 				"url": {
 					"raw": "localhost:10000/blue-auth/auth/login",
@@ -107,7 +107,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"loginType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"3309814\"\r\n    }\r\n}"
+					"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"3309814\"\r\n    }\r\n}"
 				},
 				"url": {
 					"raw": "localhost:10000/blue-auth/auth/login",

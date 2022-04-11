@@ -27,7 +27,11 @@ public interface CredentialMapper {
 
     Credential getByCredentialAndType(@Param("credential") String credential, @Param("type") String type);
 
+    List<Credential> selectByCredentialAndTypes(@Param("credential") String credential, @Param("types") List<String> types);
+
     Credential getByMemberIdAndType(@Param("memberId") Long memberId, @Param("type") String type);
+
+    List<Credential> selectByMemberIdAndTypes(@Param("memberId") Long memberId, @Param("types") List<String> types);
 
     List<Credential> selectByMemberId(@Param("memberId") Long memberId);
 
@@ -37,6 +41,6 @@ public interface CredentialMapper {
 
     int insertBatch(@Param("list") List<Credential> list);
 
-    int updateAccess(@Param("memberId") Long memberId, @Param("loginTypes") List<String> loginTypes, @Param("access") String access);
+    int updateAccess(@Param("memberId") Long memberId, @Param("credentialTypes") List<String> credentialTypes, @Param("access") String access);
 
 }

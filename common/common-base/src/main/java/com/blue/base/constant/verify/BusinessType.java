@@ -13,6 +13,11 @@ public enum BusinessType {
     REGISTER("REG"),
 
     /**
+     * setting up credential
+     */
+    CREDENTIAL_SETTING_UP("CSU"),
+
+    /**
      * sms verify login with auto register
      */
     PHONE_VERIFY_LOGIN("PVL"),

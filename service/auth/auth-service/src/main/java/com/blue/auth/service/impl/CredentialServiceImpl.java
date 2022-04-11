@@ -4,7 +4,6 @@ import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.repository.mapper.CredentialMapper;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.base.constant.base.BlueNumericalValue;
-import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import org.springframework.stereotype.Service;
@@ -14,17 +13,12 @@ import reactor.util.Logger;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static com.blue.auth.common.AccessEncoder.encryptAccess;
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.ConstantProcessor.assertLoginType;
-import static com.blue.base.constant.auth.LoginType.EMAIL_PWD;
-import static com.blue.base.constant.auth.LoginType.PHONE_PWD;
+import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.verify.VerifyType.MAIL;
-import static com.blue.base.constant.verify.VerifyType.SMS;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.*;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -79,83 +73,118 @@ public class CredentialServiceImpl implements CredentialService {
         }
     };
 
-
-    private static final Map<VerifyType, List<String>> V_TYPE_AND_L_TYPE_ACCESS_MAPPING = new HashMap<>(VerifyType.values().length);
-
-    static {
-        V_TYPE_AND_L_TYPE_ACCESS_MAPPING.put(SMS, Stream.of(PHONE_PWD.identity, EMAIL_PWD.identity).collect(toList()));
-        V_TYPE_AND_L_TYPE_ACCESS_MAPPING.put(MAIL, Stream.of(PHONE_PWD.identity, EMAIL_PWD.identity).collect(toList()));
-    }
-
-    private static final Function<VerifyType, List<String>> LOGIN_TYPES_GETTER = verifyType -> {
-        if (verifyType == null)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verifyType can't be null");
-
-        List<String> loginTypes = V_TYPE_AND_L_TYPE_ACCESS_MAPPING.get(verifyType);
-        if (isEmpty(loginTypes))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verifyType unsupported");
-
-        return loginTypes;
-    };
-
     /**
      * get by credential and type
      *
      * @param credential
-     * @param type
+     * @param credentialType
      * @return
      */
     @Override
-    public Optional<Credential> getCredentialByCredentialAndType(String credential, String type) {
-        LOGGER.info("Mono<Optional<Credential>> getCredentialByCredentialAndType(String credential, String type), credential = {}, type = {}", credential, type);
+    public Optional<Credential> getCredentialByCredentialAndType(String credential, String credentialType) {
+        LOGGER.info("Mono<Optional<Credential>> getCredentialByCredentialAndType(String credential, String credentialType), credential = {}, credentialType = {}", credential, credentialType);
         if (isBlank(credential))
             throw new BlueException(EMPTY_PARAM);
 
-        assertLoginType(type, false);
+        assertCredentialType(credentialType, false);
 
-        return ofNullable(credentialMapper.getByCredentialAndType(credential, type));
+        return ofNullable(credentialMapper.getByCredentialAndType(credential, credentialType));
     }
 
     /**
      * get mono by credential and type
      *
      * @param credential
-     * @param type
+     * @param credentialType
      * @return
      */
     @Override
-    public Mono<Optional<Credential>> getCredentialMonoByCredentialAndType(String credential, String type) {
-        return just(getCredentialByCredentialAndType(credential, type));
+    public Mono<Optional<Credential>> getCredentialMonoByCredentialAndType(String credential, String credentialType) {
+        return just(getCredentialByCredentialAndType(credential, credentialType));
+    }
+
+    /**
+     * select by credential and types
+     *
+     * @param credential
+     * @param credentialTypes
+     * @return
+     */
+    @Override
+    public List<Credential> selectCredentialByCredentialAndTypes(String credential, List<String> credentialTypes) {
+        return isNotBlank(credential) && isNotEmpty(credentialTypes) ?
+                credentialMapper.selectByCredentialAndTypes(credential, credentialTypes)
+                :
+                emptyList();
+    }
+
+    /**
+     * select by credential and types
+     *
+     * @param credential
+     * @param credentialTypes
+     * @return
+     */
+    @Override
+    public Mono<List<Credential>> selectCredentialMonoByCredentialAndTypes(String credential, List<String> credentialTypes) {
+        return just(this.selectCredentialByCredentialAndTypes(credential, credentialTypes));
     }
 
     /**
      * get by member id and type
      *
      * @param memberId
-     * @param type
+     * @param credentialType
      * @return
      */
     @Override
-    public Optional<Credential> getCredentialByMemberIdAndType(Long memberId, String type) {
-        LOGGER.info("Optional<Credential> getCredentialByMemberIdAndType(Long memberId, String type), memberId = {}, type = {}", memberId, type);
+    public Optional<Credential> getCredentialByMemberIdAndType(Long memberId, String credentialType) {
+        LOGGER.info("Optional<Credential> getCredentialByMemberIdAndType(Long memberId, String credentialType), memberId = {}, credentialType = {}", memberId, credentialType);
         if (isInvalidIdentity(memberId))
             throw new BlueException(EMPTY_PARAM);
 
-        assertLoginType(type, false);
+        assertCredentialType(credentialType, false);
 
-        return ofNullable(credentialMapper.getByMemberIdAndType(memberId, type));
+        return ofNullable(credentialMapper.getByMemberIdAndType(memberId, credentialType));
     }
 
     /**
      * get mono by member id and type
      *
      * @param memberId
-     * @param type
+     * @param credentialType
      * @return
      */
     @Override
-    public Mono<Optional<Credential>> getCredentialMonoByMemberIdAndType(Long memberId, String type) {
-        return just(getCredentialByMemberIdAndType(memberId, type));
+    public Mono<Optional<Credential>> getCredentialMonoByMemberIdAndType(Long memberId, String credentialType) {
+        return just(getCredentialByMemberIdAndType(memberId, credentialType));
+    }
+
+    /**
+     * select by member id and types
+     *
+     * @param memberId
+     * @param credentialTypes
+     * @return
+     */
+    @Override
+    public List<Credential> selectCredentialByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
+        return isValidIdentity(memberId) && isNotEmpty(credentialTypes) ?
+                credentialMapper.selectByMemberIdAndTypes(memberId, credentialTypes)
+                :
+                emptyList();
+    }
+
+    /**
+     * select mono by member id and types
+     *
+     * @param memberId
+     * @param credentialTypes
+     * @return
+     */
+    @Override
+    public Mono<List<Credential>> selectCredentialMonoByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
+        return just(this.selectCredentialByMemberIdAndTypes(memberId, credentialTypes));
     }
 
     /**
@@ -195,7 +224,7 @@ public class CredentialServiceImpl implements CredentialService {
             throw new BlueException(EMPTY_PARAM);
 
         String type = credential.getType();
-        assertLoginType(type, false);
+        assertCredentialType(type, false);
 
         Optional<Credential> existOptional = this.getCredentialByMemberIdAndType(memberId, type);
         if (existOptional.isPresent())
@@ -243,14 +272,14 @@ public class CredentialServiceImpl implements CredentialService {
      * update access
      *
      * @param memberId
-     * @param verifyType
+     * @param credentialTypes
      * @param access
      * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
-    public Boolean updateAccess(Long memberId, VerifyType verifyType, String access) {
-        LOGGER.info("Boolean updateAccess(Long memberId, VerifyType verifyType, String access), memberId = {}, verifyType = {}, access = {}", memberId, verifyType, ":)");
+    public Boolean updateAccess(Long memberId, List<String> credentialTypes, String access) {
+        LOGGER.info("Boolean updateAccess(Long memberId, VerifyType verifyType, String access), memberId = {}, credentialTypes = {}, access = {}", memberId, credentialTypes, ":)");
 
         if (isBlank(access))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
@@ -258,10 +287,11 @@ public class CredentialServiceImpl implements CredentialService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too long");
         if (access.length() < BlueNumericalValue.ACS_LEN_MIN.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
+        if (isEmpty(credentialTypes))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "credentialTypes is empty");
 
-        List<String> loginTypes = LOGIN_TYPES_GETTER.apply(verifyType);
+        int updates = credentialMapper.updateAccess(memberId, credentialTypes, encryptAccess(access));
 
-        int updates = credentialMapper.updateAccess(memberId, loginTypes, encryptAccess(access));
         LOGGER.info("updates = {}", updates);
 
         return true;

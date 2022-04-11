@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.constant.auth.LoginType.EMAIL_PWD;
+import static com.blue.base.constant.auth.CredentialType.EMAIL_PWD;
 
 /**
  * generate credential by phone

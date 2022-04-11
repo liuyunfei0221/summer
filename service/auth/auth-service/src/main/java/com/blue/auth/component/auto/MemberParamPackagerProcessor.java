@@ -33,7 +33,7 @@ public class MemberParamPackagerProcessor implements ApplicationListener<Context
     private static final Logger LOGGER = getLogger(MemberParamPackagerProcessor.class);
 
     /**
-     * login type -> login handler
+     * credential type -> login handler
      */
     private Map<String, MemberParamByAutoLoginPackager> packagers;
 

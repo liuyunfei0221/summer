@@ -1,7 +1,6 @@
 package com.blue.auth.service.inter;
 
 import com.blue.auth.repository.entity.Credential;
-import com.blue.base.constant.verify.VerifyType;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -20,37 +19,73 @@ public interface CredentialService {
      * get by credential and type
      *
      * @param credential
-     * @param type
+     * @param credentialType
      * @return
      */
-    Optional<Credential> getCredentialByCredentialAndType(String credential, String type);
+    Optional<Credential> getCredentialByCredentialAndType(String credential, String credentialType);
 
     /**
      * get mono by credential and type
      *
      * @param credential
-     * @param type
+     * @param credentialType
      * @return
      */
-    Mono<Optional<Credential>> getCredentialMonoByCredentialAndType(String credential, String type);
+    Mono<Optional<Credential>> getCredentialMonoByCredentialAndType(String credential, String credentialType);
+
+    /**
+     * select by credential and types
+     *
+     * @param credential
+     * @param credentialTypes
+     * @return
+     */
+    List<Credential> selectCredentialByCredentialAndTypes(String credential, List<String> credentialTypes);
+
+    /**
+     * select mono by credential and types
+     *
+     * @param credential
+     * @param credentialTypes
+     * @return
+     */
+    Mono<List<Credential>> selectCredentialMonoByCredentialAndTypes(String credential, List<String> credentialTypes);
 
     /**
      * get by member id and type
      *
      * @param memberId
-     * @param type
+     * @param credentialType
      * @return
      */
-    Optional<Credential> getCredentialByMemberIdAndType(Long memberId, String type);
+    Optional<Credential> getCredentialByMemberIdAndType(Long memberId, String credentialType);
 
     /**
      * get mono by member id and type
      *
      * @param memberId
-     * @param type
+     * @param credentialType
      * @return
      */
-    Mono<Optional<Credential>> getCredentialMonoByMemberIdAndType(Long memberId, String type);
+    Mono<Optional<Credential>> getCredentialMonoByMemberIdAndType(Long memberId, String credentialType);
+
+    /**
+     * select by member id and types
+     *
+     * @param memberId
+     * @param credentialTypes
+     * @return
+     */
+    List<Credential> selectCredentialByMemberIdAndTypes(Long memberId, List<String> credentialTypes);
+
+    /**
+     * select mono by member id and types
+     *
+     * @param memberId
+     * @param credentialTypes
+     * @return
+     */
+    Mono<List<Credential>> selectCredentialMonoByMemberIdAndTypes(Long memberId, List<String> credentialTypes);
 
     /**
      * insert credential batch
@@ -88,10 +123,10 @@ public interface CredentialService {
      * update access
      *
      * @param memberId
-     * @param verifyType
+     * @param credentialTypes
      * @param access
      * @return
      */
-    Boolean updateAccess(Long memberId, VerifyType verifyType, String access);
+    Boolean updateAccess(Long memberId, List<String> credentialTypes, String access);
 
 }

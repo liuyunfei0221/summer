@@ -21,7 +21,7 @@ public final class PayloadConverters {
         claims.put("t", p.getGamma());
         claims.put("h", p.getKeyId());
         claims.put("i", p.getId());
-        claims.put("n", p.getLoginType());
+        claims.put("n", p.getCredentialType());
         claims.put("g", p.getDeviceType());
         claims.put("s", p.getLoginTime());
 

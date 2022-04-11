@@ -34,9 +34,9 @@ public class RefreshInfo implements Serializable {
     private String memberId;
 
     /**
-     * login type
+     * credential type
      */
-    private String loginType;
+    private String credentialType;
 
     /**
      * device type
@@ -51,14 +51,14 @@ public class RefreshInfo implements Serializable {
     public RefreshInfo() {
     }
 
-    public RefreshInfo(String id, String gamma, String memberId, String loginType, String deviceType, String loginTime) {
+    public RefreshInfo(String id, String gamma, String memberId, String credentialType, String deviceType, String loginTime) {
         if (id == null || "".equals(id))
             throw new BlueException(BAD_REQUEST);
         if (gamma == null || "".equals(gamma))
             throw new BlueException(BAD_REQUEST);
         if (memberId == null || "".equals(memberId))
             throw new BlueException(BAD_REQUEST);
-        if (loginType == null || "".equals(loginType))
+        if (credentialType == null || "".equals(credentialType))
             throw new BlueException(BAD_REQUEST);
         if (deviceType == null || "".equals(deviceType))
             throw new BlueException(BAD_REQUEST);
@@ -68,7 +68,7 @@ public class RefreshInfo implements Serializable {
         this.id = id;
         this.gamma = gamma;
         this.memberId = memberId;
-        this.loginType = loginType;
+        this.credentialType = credentialType;
         this.deviceType = deviceType;
         this.loginTime = loginTime;
     }
@@ -97,12 +97,12 @@ public class RefreshInfo implements Serializable {
         this.memberId = memberId;
     }
 
-    public String getLoginType() {
-        return loginType;
+    public String getcredentialType() {
+        return credentialType;
     }
 
-    public void setLoginType(String loginType) {
-        this.loginType = loginType;
+    public void setcredentialType(String credentialType) {
+        this.credentialType = credentialType;
     }
 
     public String getDeviceType() {
@@ -127,7 +127,7 @@ public class RefreshInfo implements Serializable {
                 "id='" + id + '\'' +
                 ", gamma='" + gamma + '\'' +
                 ", memberId='" + memberId + '\'' +
-                ", loginType='" + loginType + '\'' +
+                ", credentialType='" + credentialType + '\'' +
                 ", deviceType='" + deviceType + '\'' +
                 ", loginTime='" + loginTime + '\'' +
                 '}';

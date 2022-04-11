@@ -10,7 +10,7 @@ import com.blue.auth.service.inter.AuthService;
 import com.blue.auth.service.inter.AutoRegisterService;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.auth.service.inter.RoleService;
-import com.blue.base.constant.auth.LoginType;
+import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
@@ -29,8 +29,8 @@ import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.base.constant.auth.CredentialType.EMAIL_VERIFY_AUTO_REGISTER;
 import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
-import static com.blue.base.constant.auth.LoginType.EMAIL_VERIFY_AUTO_REGISTER;
 import static com.blue.base.constant.base.BlueHeader.*;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.verify.BusinessType.EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER;
@@ -75,14 +75,8 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
         this.authService = authService;
     }
 
-    private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = email -> {
-        CredentialInfo credential = new CredentialInfo();
-
-        credential.setCredential(email);
-        credential.setType(EMAIL_VERIFY_AUTO_REGISTER.identity);
-
-        return singletonList(credential);
-    };
+    private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = email ->
+            singletonList(new CredentialInfo(email, EMAIL_VERIFY_AUTO_REGISTER.identity, "", "from auto registry"));
 
     private static final Consumer<MemberBasicInfo> MEMBER_STATUS_ASSERTER = memberBasicInfo -> {
         if (isInvalidStatus(memberBasicInfo.getStatus()))
@@ -137,7 +131,7 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
     }
 
     @Override
-    public LoginType targetType() {
+    public CredentialType targetType() {
         return EMAIL_VERIFY_AUTO_REGISTER;
     }
 

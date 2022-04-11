@@ -73,9 +73,9 @@ public enum BlueDataAttrKey {
     ROLE_ID("roleId"),
 
     /**
-     * login type in access(loginType)
+     * credential type in access(credentialType)
      */
-    LOGIN_TYPE("loginType"),
+    LOGIN_TYPE("credentialType"),
 
     /**
      * device type in access(deviceType)

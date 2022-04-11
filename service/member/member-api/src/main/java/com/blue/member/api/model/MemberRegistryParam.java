@@ -14,7 +14,11 @@ public final class MemberRegistryParam implements Serializable {
 
     private String phone;
 
+    private String phoneVerify;
+
     private String email;
+
+    private String emailVerify;
 
     private String access;
 
@@ -38,12 +42,28 @@ public final class MemberRegistryParam implements Serializable {
         this.phone = phone;
     }
 
+    public String getPhoneVerify() {
+        return phoneVerify;
+    }
+
+    public void setPhoneVerify(String phoneVerify) {
+        this.phoneVerify = phoneVerify;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getEmailVerify() {
+        return emailVerify;
+    }
+
+    public void setEmailVerify(String emailVerify) {
+        this.emailVerify = emailVerify;
     }
 
     public String getAccess() {
@@ -82,8 +102,10 @@ public final class MemberRegistryParam implements Serializable {
     public String toString() {
         return "MemberRegistryParam{" +
                 "phone='" + phone + '\'' +
+                ", phoneVerify='" + phoneVerify + '\'' +
                 ", email='" + email + '\'' +
-                ", access='" + ":)" + '\'' +
+                ", emailVerify='" + emailVerify + '\'' +
+                ", access='" + access + '\'' +
                 ", name='" + name + '\'' +
                 ", icon='" + icon + '\'' +
                 ", gender=" + gender +
