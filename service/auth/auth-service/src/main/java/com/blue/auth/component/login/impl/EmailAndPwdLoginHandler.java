@@ -22,14 +22,14 @@ import java.util.function.Consumer;
 import static com.blue.auth.common.AccessEncoder.matchAccess;
 import static com.blue.auth.constant.LoginAttribute.ACCESS;
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.base.constant.auth.CredentialType.EMAIL_PWD;
+import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.base.constant.base.BlueHeader.*;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.Status.VALID;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -83,6 +83,8 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
         return credentialService.getCredentialMonoByCredentialAndType(email, EMAIL_PWD.identity)
                 .flatMap(credentialOpt ->
                         just(credentialOpt
+                                .filter(c -> VALID.status == c.getStatus())
+                                .filter(c -> isNotBlank(c.getAccess()))
                                 .filter(c -> matchAccess(access, c.getAccess()))
                                 .map(Credential::getMemberId)
                                 .orElseThrow(() -> new BlueException(INVALID_ACCT_OR_PWD)))

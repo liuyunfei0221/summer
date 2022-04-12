@@ -18,15 +18,21 @@ public final class CredentialInfo implements Serializable {
 
     private String access;
 
+    /**
+     * data status: 1-valid 0-invalid
+     */
+    private Integer status;
+
     private String extra;
 
     public CredentialInfo() {
     }
 
-    public CredentialInfo(String credential, String type, String access, String extra) {
+    public CredentialInfo(String credential, String type, String access, Integer status, String extra) {
         this.credential = credential;
         this.type = type;
         this.access = access;
+        this.status = status;
         this.extra = extra;
     }
 
@@ -54,6 +60,14 @@ public final class CredentialInfo implements Serializable {
         this.access = access;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public String getExtra() {
         return extra;
     }
@@ -68,6 +82,7 @@ public final class CredentialInfo implements Serializable {
                 "credential='" + credential + '\'' +
                 ", type='" + type + '\'' +
                 ", access='" + ":)" + '\'' +
+                ", status='" + status + '\'' +
                 ", extra='" + extra + '\'' +
                 '}';
     }

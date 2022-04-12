@@ -9,6 +9,7 @@ import java.util.List;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.constant.auth.CredentialType.*;
+import static com.blue.base.constant.base.Status.VALID;
 
 /**
  * generate credential by phone
@@ -32,11 +33,11 @@ public final class PhoneCredentialCollector implements CredentialCollector {
         if (isBlank(phone) || isBlank(access))
             return;
 
-        credentials.add(new CredentialInfo(phone, PHONE_VERIFY_AUTO_REGISTER.identity, "", "from registry"));
-        credentials.add(new CredentialInfo(phone, PHONE_PWD.identity, access, "from registry"));
-        credentials.add(new CredentialInfo(phone, LOCAL_PHONE_AUTO_REGISTER.identity, "", "from registry"));
-        credentials.add(new CredentialInfo(phone, WECHAT_AUTO_REGISTER.identity, "", "from registry"));
-        credentials.add(new CredentialInfo(phone, MINI_PRO_AUTO_REGISTER.identity, "", "from registry"));
+        credentials.add(new CredentialInfo(phone, PHONE_VERIFY_AUTO_REGISTER.identity, "", VALID.status, "from registry"));
+        credentials.add(new CredentialInfo(phone, PHONE_PWD.identity, access, VALID.status, "from registry"));
+        credentials.add(new CredentialInfo(phone, LOCAL_PHONE_AUTO_REGISTER.identity, "", VALID.status, "from registry"));
+        credentials.add(new CredentialInfo(phone, WECHAT_AUTO_REGISTER.identity, "", VALID.status, "from registry"));
+        credentials.add(new CredentialInfo(phone, MINI_PRO_AUTO_REGISTER.identity, "", VALID.status, "from registry"));
     }
 
 }

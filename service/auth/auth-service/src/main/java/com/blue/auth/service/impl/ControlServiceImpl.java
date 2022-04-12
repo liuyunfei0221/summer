@@ -26,9 +26,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -205,6 +203,8 @@ public class ControlServiceImpl implements ControlService {
     private static final List<String> ALLOW_ACCESS_LTS = Stream.of(CredentialType.values())
             .filter(lt -> lt.allowAccess).map(lt -> lt.identity).collect(toList());
 
+    private static final Set<String> ALLOW_ACCESS_LT_SET = new HashSet<>(ALLOW_ACCESS_LTS);
+
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
         if (isBlank(key))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be blank");
@@ -214,6 +214,16 @@ public class ControlServiceImpl implements ControlService {
 
     private final int ALLOW = 1;
     private final long SEND_INTERVAL_MILLIS = 10;
+
+    private void packageExistAccess(List<Credential> credentials, Long memberId) {
+        credentialService.selectCredentialByMemberIdAndTypes(memberId, ALLOW_ACCESS_LTS).stream().findAny()
+                .ifPresent(ac ->
+                        credentials.stream().filter(c -> ALLOW_ACCESS_LT_SET.contains(c.getType()))
+                                .forEach(c -> {
+                                    c.setAccess(ac.getAccess());
+                                    c.setStatus(VALID.status);
+                                }));
+    }
 
     /**
      * login
@@ -367,15 +377,19 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(EMPTY_PARAM);
 
         Long memberId = memberCredentialInfo.getMemberId();
-        List<CredentialInfo> credentials = memberCredentialInfo.getCredentials();
-        if (isInvalidIdentity(memberId) || isEmpty(credentials))
+        List<CredentialInfo> credentialInfos = memberCredentialInfo.getCredentials();
+        if (isInvalidIdentity(memberId) || isEmpty(credentialInfos))
             throw new BlueException(INVALID_PARAM);
 
         memberRoleRelationService.insertMemberRoleRelation(MEMBER_DEFAULT_ROLE_RELATION_GEN.apply(memberId));
 
-        credentialService.insertCredentials(credentials.stream()
+        List<Credential> credentials = credentialInfos.stream()
                 .map(c -> CREDENTIAL_INFO_AND_MEMBER_ID_2_CREDENTIAL_CONVERTER.apply(c, memberId))
-                .collect(toList()));
+                .collect(toList());
+
+        packageExistAccess(credentials, memberId);
+
+        credentialService.insertCredentials(credentials);
     }
 
     /**
@@ -391,15 +405,19 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(EMPTY_PARAM);
 
         Long memberId = memberCredentialInfo.getMemberId();
-        List<CredentialInfo> credentials = memberCredentialInfo.getCredentials();
-        if (isInvalidIdentity(memberId) || isEmpty(credentials))
+        List<CredentialInfo> credentialInfos = memberCredentialInfo.getCredentials();
+        if (isInvalidIdentity(memberId) || isEmpty(credentialInfos))
             throw new BlueException(INVALID_PARAM);
 
         memberRoleRelationService.insertMemberRoleRelation(MEMBER_ROLE_RELATION_GEN.apply(memberId, roleId));
 
-        credentialService.insertCredentials(credentials.stream()
+        List<Credential> credentials = credentialInfos.stream()
                 .map(c -> CREDENTIAL_INFO_AND_MEMBER_ID_2_CREDENTIAL_CONVERTER.apply(c, memberId))
-                .collect(toList()));
+                .collect(toList());
+
+        packageExistAccess(credentials, memberId);
+
+        credentialService.insertCredentials(credentials);
     }
 
     /**
