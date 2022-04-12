@@ -106,8 +106,7 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
                 .onErrorResume(throwable ->
                         ServerRequest.create(exchange, httpMessageReaders)
                                 .bodyToMono(String.class)
-                                .switchIfEmpty(
-                                        just(""))
+                                .switchIfEmpty(just(""))
                                 .flatMap(requestBody -> {
                                     DataEvent dataEvent = new DataEvent();
 

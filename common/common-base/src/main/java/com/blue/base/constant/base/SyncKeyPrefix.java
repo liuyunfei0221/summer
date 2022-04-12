@@ -36,7 +36,12 @@ public enum SyncKeyPrefix {
     /**
      * MAIL_VERIFY_RATE_LIMIT_KEY_PRE
      */
-    MAIL_VERIFY_RATE_LIMIT_KEY_PRE("mail_v_");
+    MAIL_VERIFY_RATE_LIMIT_KEY_PRE("mail_v_"),
+
+    /**
+     * ACCESS_UPDATE_RATE_LIMIT_KEY_PRE
+     */
+    ACCESS_UPDATE_RATE_LIMIT_KEY_PRE("acc_up_v_");
 
     public final String prefix;
 

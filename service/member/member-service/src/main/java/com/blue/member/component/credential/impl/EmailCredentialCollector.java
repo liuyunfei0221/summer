@@ -9,6 +9,7 @@ import java.util.List;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.constant.auth.CredentialType.EMAIL_PWD;
+import static com.blue.base.constant.auth.CredentialType.EMAIL_VERIFY_AUTO_REGISTER;
 
 /**
  * generate credential by phone
@@ -32,6 +33,7 @@ public final class EmailCredentialCollector implements CredentialCollector {
         if (isBlank(email) || isBlank(access))
             return;
 
+        credentials.add(new CredentialInfo(email, EMAIL_VERIFY_AUTO_REGISTER.identity, "", "from registry"));
         credentials.add(new CredentialInfo(email, EMAIL_PWD.identity, access, "from registry"));
     }
 

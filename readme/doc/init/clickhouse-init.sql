@@ -36,12 +36,6 @@ CREATE
 DATABASE ldap_risk_1 ENGINE = Ordinary;
 
 
-
-
-
-
-
-
 -- analyze
 
 CREATE

@@ -30,11 +30,11 @@ public class CredentialSettingUpParam {
         this.verificationCode = verificationCode;
     }
 
-    public String getcredentialType() {
+    public String getCredentialType() {
         return credentialType;
     }
 
-    public void setcredentialType(String credentialType) {
+    public void setCredentialType(String credentialType) {
         this.credentialType = credentialType;
     }
 

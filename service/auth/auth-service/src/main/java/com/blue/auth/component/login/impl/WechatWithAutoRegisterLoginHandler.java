@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +28,10 @@ import java.util.function.Function;
 import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.auth.CredentialType.WECHAT_AUTO_REGISTER;
+import static com.blue.base.constant.auth.CredentialType.*;
 import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.base.constant.base.BlueHeader.*;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static java.util.Collections.singletonList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -69,8 +69,16 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
         this.authService = authService;
     }
 
-    private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = phone ->
-            singletonList(new CredentialInfo(phone, WECHAT_AUTO_REGISTER.identity, "", "from auto registry"));
+    private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = phone -> {
+        List<CredentialInfo> credentials = new ArrayList<>(4);
+
+        credentials.add(new CredentialInfo(phone, PHONE_VERIFY_AUTO_REGISTER.identity, "", "from auto registry"));
+        credentials.add(new CredentialInfo(phone, LOCAL_PHONE_AUTO_REGISTER.identity, "", "from auto registry"));
+        credentials.add(new CredentialInfo(phone, WECHAT_AUTO_REGISTER.identity, "", "from auto registry"));
+        credentials.add(new CredentialInfo(phone, MINI_PRO_AUTO_REGISTER.identity, "", "from auto registry"));
+
+        return credentials;
+    };
 
     private static final Consumer<MemberBasicInfo> MEMBER_STATUS_ASSERTER = memberBasicInfo -> {
         if (isInvalidStatus(memberBasicInfo.getStatus()))

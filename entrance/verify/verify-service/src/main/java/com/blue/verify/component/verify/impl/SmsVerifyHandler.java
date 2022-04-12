@@ -4,7 +4,6 @@ import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.redis.api.generator.BlueRateLimiterGenerator;
 import com.blue.redis.common.BlueLeakyBucketRateLimiter;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import com.blue.verify.config.deploy.SmsVerifyDeploy;
@@ -26,7 +25,8 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.SyncKeyPrefix.SMS_VERIFY_RATE_LIMIT_KEY_PRE;
-import static com.blue.base.constant.verify.VerifyType.*;
+import static com.blue.base.constant.verify.VerifyType.SMS;
+import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateLeakyBucketRateLimiter;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -59,7 +59,7 @@ public class SmsVerifyHandler implements VerifyHandler {
                             Scheduler scheduler, SmsVerifyDeploy smsVerifyDeploy) {
         this.smsService = smsService;
         this.verifyService = verifyService;
-        this.blueLeakyBucketRateLimiter = BlueRateLimiterGenerator.generateLeakyBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
+        this.blueLeakyBucketRateLimiter = generateLeakyBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
 
         Integer verifyLength = smsVerifyDeploy.getVerifyLength();
         if (verifyLength == null || verifyLength < 1)
@@ -85,7 +85,7 @@ public class SmsVerifyHandler implements VerifyHandler {
 
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
         if (key == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
 
         return SMS_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };

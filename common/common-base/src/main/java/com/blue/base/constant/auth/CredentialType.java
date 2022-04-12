@@ -20,6 +20,11 @@ public enum CredentialType {
     PHONE_PWD("PP", "CLI", true, "login with phone num and password"),
 
     /**
+     * login by local phone num with auto register
+     */
+    LOCAL_PHONE_AUTO_REGISTER("LPAR", "CLI", false, ""),
+
+    /**
      * login with email address and message verify with auto register
      */
     EMAIL_VERIFY_AUTO_REGISTER("EVAR", "CLI", false, "login with email address and message verify"),
@@ -38,11 +43,6 @@ public enum CredentialType {
      * login by wechar mini pro with auto register
      */
     MINI_PRO_AUTO_REGISTER("MPAR", "MPAR", false, "login by wechar mini pro"),
-
-    /**
-     * login by local phone num with auto register
-     */
-    LOCAL_PHONE_AUTO_REGISTER("LPAR", "CLI", false, ""),
 
     /**
      * not login

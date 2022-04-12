@@ -75,7 +75,7 @@ public enum BlueDataAttrKey {
     /**
      * credential type in access(credentialType)
      */
-    LOGIN_TYPE("credentialType"),
+    CREDENTIAL_TYPE("credentialType"),
 
     /**
      * device type in access(deviceType)

@@ -1,6 +1,5 @@
-package com.blue.auth.constant;
+package com.blue.base.constant.auth;
 
-import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.verify.VerifyType;
 
 import java.util.Set;

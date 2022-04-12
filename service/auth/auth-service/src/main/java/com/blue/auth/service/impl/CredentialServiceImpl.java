@@ -254,7 +254,7 @@ public class CredentialServiceImpl implements CredentialService {
     }
 
     /**
-     * delete role
+     * delete credential
      *
      * @param id
      * @return
@@ -290,7 +290,7 @@ public class CredentialServiceImpl implements CredentialService {
         if (isEmpty(credentialTypes))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "credentialTypes is empty");
 
-        int updates = credentialMapper.updateAccess(memberId, credentialTypes, encryptAccess(access));
+        int updates = credentialMapper.updateAccessByMemberAndTypes(memberId, credentialTypes, encryptAccess(access));
 
         LOGGER.info("updates = {}", updates);
 

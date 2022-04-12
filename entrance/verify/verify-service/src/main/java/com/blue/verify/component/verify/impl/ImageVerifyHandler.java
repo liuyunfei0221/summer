@@ -117,7 +117,7 @@ public class ImageVerifyHandler implements VerifyHandler {
 
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
         if (key == null)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
 
         return IMAGE_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };

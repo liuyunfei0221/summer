@@ -137,7 +137,7 @@ public class AuthServiceImpl implements AuthService {
             PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity,
             PATH_SEPARATOR = Symbol.PATH_SEPARATOR.identity;
 
-    private static final List<CredentialType> VALID_LOGIN_TYPES = of(CredentialType.values())
+    private static final List<CredentialType> VALID_CREDENTIAL_TYPES = of(CredentialType.values())
             .filter(lt -> !lt.identity.intern().equals(NOT_LOGGED_IN.identity))
             .collect(toList());
 
@@ -236,7 +236,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * credential type identity -> credential type nature
      */
-    private static final UnaryOperator<String> LOGIN_TYPE_2_NATURE_CONVERTER = identity ->
+    private static final UnaryOperator<String> CREDENTIAL_TYPE_2_NATURE_CONVERTER = identity ->
             getCredentialTypeByIdentity(identity).nature.intern();
 
     /**
@@ -318,7 +318,7 @@ public class AuthServiceImpl implements AuthService {
     private static String genSessionKey(Long id, String credentialTypeIdentity, String deviceTypeIdentity) {
         LOGGER.info("String genSessionKey(Long id, String credentialTypeIdentity, String deviceTypeIdentity), id = {}, credentialTypeIdentity = {}, deviceTypeIdentity = {}", id, credentialTypeIdentity, deviceTypeIdentity);
         if (id != null && id >= 0L && deviceTypeIdentity != null && !"".equals(deviceTypeIdentity))
-            return SESSION_KEY_PRE + id + PAR_CONCATENATION + LOGIN_TYPE_2_NATURE_CONVERTER.apply(credentialTypeIdentity).intern() + PAR_CONCATENATION + deviceTypeIdentity;
+            return SESSION_KEY_PRE + id + PAR_CONCATENATION + CREDENTIAL_TYPE_2_NATURE_CONVERTER.apply(credentialTypeIdentity).intern() + PAR_CONCATENATION + deviceTypeIdentity;
 
         throw new BlueException(BAD_REQUEST);
     }
@@ -614,7 +614,7 @@ public class AuthServiceImpl implements AuthService {
         String keyId;
         try {
             REFRESH_INFOS_DELETER.accept(memberId);
-            for (CredentialType credentialType : VALID_LOGIN_TYPES)
+            for (CredentialType credentialType : VALID_CREDENTIAL_TYPES)
                 for (DeviceType deviceType : VALID_DEVICE_TYPES) {
                     keyId = genSessionKey(memberId, credentialType.identity, deviceType.identity);
                     accessInfoCache.invalidAccessInfo(keyId).subscribe();
@@ -965,7 +965,7 @@ public class AuthServiceImpl implements AuthService {
     public void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
         AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId,
-                VALID_LOGIN_TYPES, VALID_DEVICE_TYPES, ROLE, valueOf(roleId).intern());
+                VALID_CREDENTIAL_TYPES, VALID_DEVICE_TYPES, ROLE, valueOf(roleId).intern());
         executorService.execute(() ->
                 refreshAuthElementByMultiTypes(authInfoRefreshElement));
     }
