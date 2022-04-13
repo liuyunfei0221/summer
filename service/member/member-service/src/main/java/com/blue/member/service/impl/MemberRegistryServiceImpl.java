@@ -14,7 +14,6 @@ import com.blue.member.service.inter.MemberBasicService;
 import com.blue.member.service.inter.MemberRegistryService;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
@@ -26,6 +25,7 @@ import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static com.blue.base.constant.verify.VerifyType.SMS;
 import static com.blue.member.component.credential.CredentialCollectProcessor.collect;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -68,7 +68,7 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
     @Override
     @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
             rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 60000)
-    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 60)
     public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("MemberInfo registerMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
@@ -109,7 +109,7 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
      * @return
      */
     @Override
-    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 60)
     public MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("MemberInfo simpleRegisterMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);

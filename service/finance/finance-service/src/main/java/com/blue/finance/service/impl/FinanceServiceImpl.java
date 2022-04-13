@@ -43,14 +43,14 @@ public class FinanceServiceImpl implements FinanceService {
      */
     @Override
     public Mono<FinanceInfo> getBalanceByMemberId(Long memberId) {
-        LOGGER.info("getBalanceByMemberId(Long memberId), memberId = {}", memberId);
+        LOGGER.info("Mono<FinanceInfo> getBalanceByMemberId(Long memberId), memberId = {}", memberId);
 
         if (isValidIdentity(memberId))
             return just(memberId)
                     .flatMap(mi -> {
                         Optional<FinanceAccount> faOpt = financeAccountService.getFinanceAccountByMemberId(mi);
                         if (faOpt.isEmpty()) {
-                            LOGGER.error("A member did not allocate funds account, please repair data, memberId = {}", memberId);
+                            LOGGER.error("A member did not allocate finance account, please repair data, memberId = {}", memberId);
                             return error(() -> new BlueException(DATA_NOT_EXIST));
                         }
 

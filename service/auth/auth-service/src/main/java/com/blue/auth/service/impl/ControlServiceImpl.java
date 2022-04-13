@@ -11,7 +11,7 @@ import com.blue.auth.repository.entity.Role;
 import com.blue.auth.service.inter.*;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.auth.CredentialType;
-import com.blue.base.constant.auth.VerifyTypeAndCredentialTypesMapping;
+import com.blue.base.constant.auth.VerifyTypeAndCredentialTypesRelation;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.base.Access;
 import com.blue.base.model.base.IdentityParam;
@@ -38,6 +38,7 @@ import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.base.common.base.ConstantProcessor.getVerifyTypeByIdentity;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.Status.INVALID;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
 import static com.blue.base.constant.base.SyncKeyPrefix.ACCESS_UPDATE_RATE_LIMIT_KEY_PRE;
@@ -186,14 +187,14 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(FORBIDDEN);
     }
 
-    private static final Map<VerifyType, List<String>> VT_WITH_LTS_MAPPING = Stream.of(VerifyTypeAndCredentialTypesMapping.values())
+    private static final Map<VerifyType, List<String>> VT_WITH_LTS_REL = Stream.of(VerifyTypeAndCredentialTypesRelation.values())
             .collect(toMap(e -> e.verifyType, e -> e.credentialTypes.stream().map(lt -> lt.identity).collect(toList()), (a, b) -> a));
 
     private static final Function<VerifyType, List<String>> LTS_BY_VT_GETTER = verifyType -> {
         if (verifyType == null)
             throw new BlueException(BAD_REQUEST);
 
-        List<String> credentialTypes = VT_WITH_LTS_MAPPING.get(verifyType);
+        List<String> credentialTypes = VT_WITH_LTS_REL.get(verifyType);
         if (isEmpty(credentialTypes))
             throw new BlueException(BAD_REQUEST);
 
@@ -373,6 +374,7 @@ public class ControlServiceImpl implements ControlService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo) {
+        LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
         if (isNull(memberCredentialInfo))
             throw new BlueException(EMPTY_PARAM);
 
@@ -401,6 +403,7 @@ public class ControlServiceImpl implements ControlService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo, Long roleId) {
+        LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo, Long roleId), memberCredentialInfo = {}, roleId = {}", memberCredentialInfo, roleId);
         if (isNull(memberCredentialInfo) || isInvalidIdentity(roleId))
             throw new BlueException(EMPTY_PARAM);
 
@@ -418,6 +421,63 @@ public class ControlServiceImpl implements ControlService {
         packageExistAccess(credentials, memberId);
 
         credentialService.insertCredentials(credentials);
+    }
+
+    /**
+     * add new credential base on verify type for a member
+     *
+     * @param memberId
+     * @param verifyType
+     * @param credential
+     */
+    @Override
+    public Mono<Boolean> insertBaseCredential(Long memberId, VerifyType verifyType, String credential) {
+        LOGGER.info("void insertBaseCredential(Long memberId, VerifyType verifyType, String credential), memberId = {}, verifyType = {}, credential = {}",
+                memberId, verifyType, credential);
+
+        if (isInvalidIdentity(memberId) || verifyType == null || isBlank(credential))
+            throw new BlueException(INVALID_PARAM);
+
+//        private String credential;
+//        private String type;
+//        private String access;
+//        private Long memberId;
+//        private String extra;
+//        private Integer status;
+//        private Long createTime;
+//        private Long updateTime;
+
+        return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(memberId)), ALLOW, SEND_INTERVAL_MILLIS)
+                .flatMap(allowed -> {
+                    if (allowed) {
+                        List<String> types = LTS_BY_VT_GETTER.apply(verifyType);
+                        List<Credential> sameTypeCredentials = credentialService.selectCredentialByMemberIdAndTypes(memberId, types);
+                        if (isNotEmpty(sameTypeCredentials))
+                            return error(() -> new BlueException(DATA_ALREADY_EXIST));
+
+                        Long stamp = TIME_STAMP_GETTER.get();
+                        List<Credential> credentials = types.stream()
+                                .map(type -> {
+                                    Credential cre = new Credential();
+
+                                    cre.setCredential(credential);
+                                    cre.setType(type);
+                                    cre.setAccess("");
+                                    cre.setMemberId(memberId);
+                                    cre.setExtra("from add credential");
+                                    cre.setStatus(ALLOW_ACCESS_LT_SET.contains(type) ? INVALID.status : VALID.status);
+                                    cre.setCreateTime(stamp);
+                                    cre.setUpdateTime(stamp);
+
+                                    return cre;
+                                }).collect(toList());
+
+                        credentialService.insertCredentials(credentials);
+
+                        return just(true);
+                    }
+                    return error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently"));
+                });
     }
 
     /**
@@ -443,11 +503,11 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public Mono<Void> updateDefaultRole(Long id, Long operatorId) {
+    public Mono<Boolean> updateDefaultRole(Long id, Long operatorId) {
         LOGGER.info("void updateDefaultRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
         assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
-        return fromRunnable(() -> roleResRelationService.updateDefaultRole(id, operatorId)).then();
+        return fromRunnable(() -> roleResRelationService.updateDefaultRole(id, operatorId)).then(just(true));
     }
 
     /**

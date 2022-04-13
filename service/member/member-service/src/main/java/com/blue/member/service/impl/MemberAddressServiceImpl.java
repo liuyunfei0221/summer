@@ -14,7 +14,6 @@ import com.blue.member.repository.entity.MemberAddress;
 import com.blue.member.repository.mapper.MemberAddressMapper;
 import com.blue.member.service.inter.MemberAddressService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -36,6 +35,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -187,8 +187,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
      * @return
      */
     @Override
-    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 60)
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public MemberAddressInfo insertMemberAddress(MemberAddress memberAddress) {
         LOGGER.info("MemberAddressInfo insertMemberAddress(MemberAddress memberAddress), memberAddress = {}", memberAddress);
         if (isNull(memberAddress))

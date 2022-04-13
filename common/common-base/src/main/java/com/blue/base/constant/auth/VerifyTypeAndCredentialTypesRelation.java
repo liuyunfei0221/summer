@@ -9,11 +9,11 @@ import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static com.blue.base.constant.verify.VerifyType.SMS;
 
 /**
- * verify type with credential types mappings
+ * verify type with credential types relation
  *
  * @author DarkBlue
  */
-public enum VerifyTypeAndCredentialTypesMapping {
+public enum VerifyTypeAndCredentialTypesRelation {
 
     /**
      * sms with credential types
@@ -29,7 +29,7 @@ public enum VerifyTypeAndCredentialTypesMapping {
 
     public final Set<CredentialType> credentialTypes;
 
-    VerifyTypeAndCredentialTypesMapping(VerifyType verifyType, Set<CredentialType> credentialTypes) {
+    VerifyTypeAndCredentialTypesRelation(VerifyType verifyType, Set<CredentialType> credentialTypes) {
         this.verifyType = verifyType;
         this.credentialTypes = credentialTypes;
     }

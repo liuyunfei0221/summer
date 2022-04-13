@@ -8,16 +8,17 @@ import com.blue.finance.service.inter.ControlService;
 import com.blue.finance.service.inter.FinanceAccountService;
 import com.blue.identity.common.BlueIdentityProcessor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
 import java.time.Instant;
+import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -33,33 +34,16 @@ public class ControlServiceImpl implements ControlService {
 
     private final FinanceAccountService financeAccountService;
 
-    private final BlueIdentityProcessor blueIdentityProcessor;
+    private BlueIdentityProcessor blueIdentityProcessor;
 
     public ControlServiceImpl(FinanceAccountService financeAccountService, BlueIdentityProcessor blueIdentityProcessor) {
         this.financeAccountService = financeAccountService;
         this.blueIdentityProcessor = blueIdentityProcessor;
     }
 
-    /**
-     * init finance infos for a new member
-     *
-     * @param memberFinanceInfo
-     */
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 60)
-    @Override
-    public void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo) {
-        LOGGER.info("void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo), memberFinanceInfo = {}", memberFinanceInfo);
-
-        if (memberFinanceInfo == null)
-            throw new BlueException(EMPTY_PARAM);
-
-        Long memberId = memberFinanceInfo.getMemberId();
-
+    private final Function<Long, FinanceAccount> INIT_FINANCE_ACCT_GEN = memberId -> {
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
-
-        long epochSecond = Instant.now().getEpochSecond();
 
         FinanceAccount financeAccount = new FinanceAccount();
 
@@ -72,13 +56,28 @@ public class ControlServiceImpl implements ControlService {
         financeAccount.setIncome(0L);
         financeAccount.setOutlay(0L);
         financeAccount.setStatus(Status.VALID.status);
+
+        long epochSecond = Instant.now().getEpochSecond();
         financeAccount.setCreateTime(epochSecond);
         financeAccount.setUpdateTime(epochSecond);
 
-        financeAccountService.insertFinanceAccount(financeAccount);
+        return financeAccount;
+    };
 
-//        if (1 == 1)
-//            throw new BlueException(666, 666, "test rollback");
+    /**
+     * init finance infos for a new member
+     *
+     * @param memberFinanceInfo
+     */
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    @Override
+    public void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo) {
+        LOGGER.info("void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo), memberFinanceInfo = {}", memberFinanceInfo);
+
+        if (memberFinanceInfo == null)
+            throw new BlueException(EMPTY_PARAM);
+
+        financeAccountService.insertFinanceAccount(INIT_FINANCE_ACCT_GEN.apply(memberFinanceInfo.getMemberId()));
     }
 
 }

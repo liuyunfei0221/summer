@@ -12,8 +12,6 @@ import com.blue.business.repository.entity.Link;
 import com.blue.business.service.inter.*;
 import com.blue.identity.common.BlueIdentityProcessor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
@@ -23,13 +21,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.DATA_NOT_EXIST;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.business.SubjectType.ARTICLE;
 import static com.blue.business.converter.BusinessModelConverters.ARTICLE_INSERT_PARAM_2_ARTICLE;
 import static com.blue.business.converter.BusinessModelConverters.LINK_INSERT_PARAM_2_LINK;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 
@@ -118,8 +119,7 @@ public class BusinessServiceImpl implements BusinessService {
      * @param memberId
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public void insertArticle(ArticleInsertParam articleInsertParam, Long memberId) {
         Article article = ARTICLE_INSERT_PARAM_2_ARTICLE.apply(articleInsertParam);
 

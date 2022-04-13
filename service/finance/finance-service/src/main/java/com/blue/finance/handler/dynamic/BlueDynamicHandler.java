@@ -85,7 +85,7 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
 
         refreshHandlers();
 
-        LOGGER.info("onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) success");
+        LOGGER.info("void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) success");
     }
 
     private final Supplier<Boolean> DYNAMIC_INFO_REFRESH_BLOCKER = () -> {
@@ -144,7 +144,7 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
         placeHolderHandlerMapping = tempPlaceHolderHandlerMapping;
         dynamicInfoRefreshing = false;
 
-        LOGGER.info("refreshHandlers(), placeHolderHandlerMapping = {}", placeHolderHandlerMapping);
+        LOGGER.info("void refreshHandlers(), placeHolderHandlerMapping = {}", placeHolderHandlerMapping);
     }
 
     /**

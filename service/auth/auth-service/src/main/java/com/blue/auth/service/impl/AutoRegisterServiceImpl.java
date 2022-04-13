@@ -10,13 +10,13 @@ import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
 import java.util.List;
 import java.util.function.Function;
 
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -61,7 +61,7 @@ public class AutoRegisterServiceImpl implements AutoRegisterService {
     @Override
     @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
             rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
-    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 60)
     public MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials, Long roleId) {
         LOGGER.info("MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials), credentials = {}", credentials);

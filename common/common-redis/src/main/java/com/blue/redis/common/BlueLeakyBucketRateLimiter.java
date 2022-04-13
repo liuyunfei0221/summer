@@ -65,6 +65,8 @@ public final class BlueLeakyBucketRateLimiter {
      * key allowed?
      *
      * @param limitKey
+     * @param allow
+     * @param expireMillis
      * @return
      */
     public Mono<Boolean> isAllowed(String limitKey, Integer allow, Long expireMillis) {
@@ -73,6 +75,18 @@ public final class BlueLeakyBucketRateLimiter {
                 .onErrorResume(FALL_BACKER)
                 .elementAt(0)
                 .publishOn(scheduler);
+    }
+
+    /**
+     * key allowed?
+     *
+     * @param limitKey
+     * @param allow
+     * @param expireMillis
+     * @return
+     */
+    public Boolean isAllowedBySync(String limitKey, Integer allow, Long expireMillis) {
+        return isAllowed(limitKey, allow, expireMillis).toFuture().join();
     }
 
     /**

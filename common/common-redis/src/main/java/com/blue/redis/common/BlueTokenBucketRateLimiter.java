@@ -79,6 +79,16 @@ public final class BlueTokenBucketRateLimiter {
     }
 
     /**
+     * key allowed?
+     *
+     * @param limitKey
+     * @return
+     */
+    public Boolean isAllowedBySync(String limitKey) {
+        return ALLOWED_GETTER.apply(limitKey).toFuture().join();
+    }
+
+    /**
      * assert params
      *
      * @param reactiveStringRedisTemplate

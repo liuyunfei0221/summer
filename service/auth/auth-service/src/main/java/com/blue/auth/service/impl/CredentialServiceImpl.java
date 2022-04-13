@@ -18,6 +18,7 @@ import static com.blue.auth.common.AccessEncoder.encryptAccess;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.*;
@@ -290,7 +291,7 @@ public class CredentialServiceImpl implements CredentialService {
         if (isEmpty(credentialTypes))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "credentialTypes is empty");
 
-        int updates = credentialMapper.updateAccessByMemberAndTypes(memberId, credentialTypes, encryptAccess(access));
+        int updates = credentialMapper.updateAccessByMemberAndTypes(memberId, credentialTypes, encryptAccess(access), VALID.status);
 
         LOGGER.info("updates = {}", updates);
 

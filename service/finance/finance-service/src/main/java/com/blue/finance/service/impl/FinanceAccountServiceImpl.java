@@ -5,8 +5,6 @@ import com.blue.finance.repository.entity.FinanceAccount;
 import com.blue.finance.repository.mapper.FinanceAccountMapper;
 import com.blue.finance.service.inter.FinanceAccountService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
@@ -15,6 +13,8 @@ import java.util.Optional;
 import static com.blue.base.common.base.BlueChecker.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -40,22 +40,11 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
      *
      * @param financeAccount
      */
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     @Override
     public int insertFinanceAccount(FinanceAccount financeAccount) {
-        LOGGER.info("insertFinanceAccount(FinanceAccount financeAccount), financeAccount = {}", financeAccount);
+        LOGGER.info("int insertFinanceAccount(FinanceAccount financeAccount), financeAccount = {}", financeAccount);
         return financeAccountMapper.insert(financeAccount);
-
-        //test business exp
-        //if (1 == 1) {
-        //    throw new BlueException(500, 999, "test rollback");
-        //}
-
-        //test runtime exp
-        //if (1 == 1) {
-        //    throw new RuntimeException("test rollback");
-        //}
     }
 
     /**
@@ -66,7 +55,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
      */
     @Override
     public Optional<FinanceAccount> getFinanceAccountByMemberId(Long memberId) {
-        LOGGER.info("getFinanceAccountByMemberId(Long memberId), memberId = {}", memberId);
+        LOGGER.info("Optional<FinanceAccount> getFinanceAccountByMemberId(Long memberId), memberId = {}", memberId);
 
         if (isValidIdentity(memberId))
             return ofNullable(financeAccountMapper.getByMemberId(memberId));

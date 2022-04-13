@@ -2,6 +2,7 @@ package com.blue.auth.service.inter;
 
 import com.blue.auth.api.model.*;
 import com.blue.auth.model.*;
+import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.base.Access;
 import com.blue.base.model.base.IdentityParam;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -122,6 +123,15 @@ public interface ControlService {
     void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo, Long roleId);
 
     /**
+     * add new credential base on verify type for a member
+     *
+     * @param memberId
+     * @param verifyType
+     * @param credential
+     */
+    Mono<Boolean> insertBaseCredential(Long memberId, VerifyType verifyType, String credential);
+
+    /**
      * update member role info by member id
      *
      * @param memberId
@@ -138,7 +148,7 @@ public interface ControlService {
      * @param operatorId
      * @return
      */
-    Mono<Void> updateDefaultRole(Long id, Long operatorId);
+    Mono<Boolean> updateDefaultRole(Long id, Long operatorId);
 
     /**
      * update member access/password by access

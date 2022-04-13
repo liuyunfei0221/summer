@@ -8,7 +8,6 @@ import com.blue.member.repository.entity.MemberDetail;
 import com.blue.member.repository.mapper.MemberDetailMapper;
 import com.blue.member.service.inter.MemberDetailService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -25,6 +24,7 @@ import static com.blue.member.converter.MemberModelConverters.MEMBER_DETAIL_2_ME
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
@@ -182,8 +182,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
      * @return
      */
     @Override
-    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 60)
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public MemberDetailInfo insertMemberDetail(MemberDetail memberDetail) {
         LOGGER.info("MemberDetailInfo insertMemberDetail(MemberDetail memberDetail), memberDetail = {}", memberDetail);
         if (isNull(memberDetail))
