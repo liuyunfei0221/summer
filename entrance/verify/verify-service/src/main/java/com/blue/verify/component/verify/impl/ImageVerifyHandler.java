@@ -34,6 +34,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUE
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseElement.TOO_MANY_REQUESTS;
+import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static com.blue.base.constant.base.SyncKeyPrefix.IMAGE_VERIFY_RATE_LIMIT_KEY_PRE;
 import static com.blue.base.constant.verify.VerifyType.IMAGE;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -126,7 +127,7 @@ public class ImageVerifyHandler implements VerifyHandler {
         if (type == null || key == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
 
-        return type.identity + key;
+        return type.identity + PAR_CONCATENATION.identity + key;
     };
 
     private static final String CACHE_CONTROL_VALUE = "no-store, no-cache, must-revalidate, must-revalidate";

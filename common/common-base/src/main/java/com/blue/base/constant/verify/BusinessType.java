@@ -13,16 +13,6 @@ public enum BusinessType {
     REGISTER("REG"),
 
     /**
-     * setting up credential
-     */
-    CREDENTIAL_SETTING_UP("CSU"),
-
-    /**
-     * sms verify login with auto register
-     */
-    PHONE_VERIFY_LOGIN("PVL"),
-
-    /**
      * sms verify login with auto register
      */
     PHONE_VERIFY_LOGIN_WITH_AUTO_REGISTER("PVL_WAR"),
@@ -31,6 +21,11 @@ public enum BusinessType {
      * email verify login with auto register
      */
     EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER("EVL_WAR"),
+
+    /**
+     * setting up credential
+     */
+    CREDENTIAL_SETTING_UP("CSU"),
 
     /**
      * update access/password

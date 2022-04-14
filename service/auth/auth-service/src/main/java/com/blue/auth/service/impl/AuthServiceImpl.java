@@ -790,7 +790,7 @@ public class AuthServiceImpl implements AuthService {
 
                                 return just(new AccessAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                                         reqUnDecryption && resUnEncryption ? "" : accessInfo.getPubKey(),
-                                        new com.blue.base.model.base.Access(parseLong(memberPayload.getId()), accessInfo.getRoleId(), memberPayload.getCredentialType().intern(),
+                                        new Access(parseLong(memberPayload.getId()), accessInfo.getRoleId(), memberPayload.getCredentialType().intern(),
                                                 memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), OK.message));
                             });
                 });

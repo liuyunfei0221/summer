@@ -44,7 +44,6 @@ import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
 import static com.blue.base.constant.base.SyncKeyPrefix.ACCESS_UPDATE_RATE_LIMIT_KEY_PRE;
 import static com.blue.base.constant.verify.BusinessType.*;
-import static com.blue.base.constant.verify.VerifyType.SMS;
 import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateLeakyBucketRateLimiter;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -455,8 +454,7 @@ public class ControlServiceImpl implements ControlService {
 
         String credential = credentialSettingUpParam.getCredential();
         long memberId = access.getId();
-
-        return rpcVerifyHandleServiceConsumer.validate(SMS, CREDENTIAL_SETTING_UP, credential, credentialSettingUpParam.getVerificationCode(), true)
+        return rpcVerifyHandleServiceConsumer.validate(getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()), CREDENTIAL_SETTING_UP, credential, credentialSettingUpParam.getVerificationCode(), true)
                 .flatMap(validate -> {
                     if (validate) {
                         List<String> types = LTS_BY_VT_GETTER.apply(ConstantProcessor.getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()));

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bbfef19b-b7d6-4afb-abb9-56e3206db1e4",
+		"_postman_id": "3ca01777-1a4e-4949-9c5b-9c23bd73fefd",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -232,7 +232,67 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"PVL_WAR\",\r\n    \"destination\":\"18633783158\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"PVL_WAR\",\r\n    \"destination\":\"13131693996\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:16000/blue-verify/verify/generate",
+							"host": [
+								"localhost"
+							],
+							"port": "16000",
+							"path": [
+								"blue-verify",
+								"verify",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取添加邮箱验证码",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"businessType\":\"CSU\",\r\n    \"destination\":\"yunfei0221@outloot.com\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:16000/blue-verify/verify/generate",
+							"host": [
+								"localhost"
+							],
+							"port": "16000",
+							"path": [
+								"blue-verify",
+								"verify",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取邮箱登陆验证码",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"businessType\":\"EVL_WAR\",\r\n    \"destination\":\"yunfei@outloot.com\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:16000/blue-verify/verify/generate",
@@ -327,7 +387,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"loginType\":\"EP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"liuyunfei@outloot.com\",\r\n        \"access\":\"12345678\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"EVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"yunfei@outloot.com\",\r\n        \"access\":\"8200971\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:10000/blue-auth/auth/login",
@@ -357,7 +417,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"4582655\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"0820964\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:10000/blue-auth/auth/login",
@@ -449,13 +509,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDAwY2EwODFjMmJhMzE2NzUzZmE3ZTRkYWJmNmYyZDVjM2ExODYyMDYyMGJkOWVjYjk1YWE1NGZkMjJjNmJmMzY4NGQzYWEzMDM3NzljYTczNzZmYzU0ZTgyMDE3ODc5NTlmNWY4YTYwYjQ2M2IwNWM0MGNhZGY0YzNhMGZlMzQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTk2MTA0NyIsIm5iZiI6MTY0OTk2MTA0NywidCI6Im9vR3h2T2l3RlA1IiwiZyI6Ik0iLCJoIjoiQl9TTjozMzQ2NTQwODA2NTM3MjE2NF9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjYzOTQ0NzMzMiwiaSI6IjMzNDY1NDA4MDY1MzcyMTY0IiwiZXhwIjoxNjUyNjM5NDQ3LCJpYXQiOjE2NDk5NjEwNDcsImp0aSI6IjN1aHhMa21QUndVVVh0NVE0WUVWTXA1emM0eTB5NVhSIiwibiI6IlBWQVIifQ.FUTNfVYUXF2Og1U1iAjs93y0lBqfRX7kTp9zyJWUavyXPWkk9eSe2-ZWovpNQ70Dtt8BitCfhiaOLB3shnjzSQ",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"credential\":\"liuyunfei0221@outloot.com\",\r\n    \"verificationCode\":\"123456\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"credential\":\"yunfei0221@outloot.com\",\r\n    \"verificationCode\":\"3726094\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:10000/blue-auth/auth/credential",
@@ -1134,7 +1194,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYmU5MGQzY2I5NTRkMjc3YjgzMWE4NjNmYmUzZDExYWVkZWI2N2JkYjg5YTk1YTNmZjMxNzVmYTNkOGJiZWI0ZWY5MzUwMDAzZjFkNWZiMTc1ZmU2ZmJlYTljYjYwNDI5MjlhMzU5OGIxMjBhYWY3ZTMyYTFiNWIyZDI0YjU0NjUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTY4MDA3MSIsIm5iZiI6MTY0OTY4MDA3MSwidCI6Im1XeWVUQUI5UW1UIiwiZyI6Ik0iLCJoIjoiQl9TTjozMzE2NzAzMzQ2NjA5MzU2OV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjM1ODQ3MTA2MSwiaSI6IjMzMTY3MDMzNDY2MDkzNTY5IiwiZXhwIjoxNjUyMzU4NDcxLCJpYXQiOjE2NDk2ODAwNzEsImp0aSI6IkpobUV4SnNCR204QVY0R2JsZ2pkQlZCRXJQNGFrdDNlIiwibiI6IlBWQVIifQ.rz69Bet-s0PhAINC3O22vx2swuv-bHUss_p-hbEyhEE4nxe009dLiEgfEV12n3vwnOLqcSkZ_z8h2mCwIs_8aw",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDAwY2EwODFjMmJhMzE2NzUzZmE3ZTRkYWJmNmYyZDVjM2ExODYyMDYyMGJkOWVjYjk1YWE1NGZkMjJjNmJmMzY4NGQzYWEzMDM3NzljYTczNzZmYzU0ZTgyMDE3ODc5NTlmNWY4YTYwYjQ2M2IwNWM0MGNhZGY0YzNhMGZlMzQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTk2MTA0NyIsIm5iZiI6MTY0OTk2MTA0NywidCI6Im9vR3h2T2l3RlA1IiwiZyI6Ik0iLCJoIjoiQl9TTjozMzQ2NTQwODA2NTM3MjE2NF9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjYzOTQ0NzMzMiwiaSI6IjMzNDY1NDA4MDY1MzcyMTY0IiwiZXhwIjoxNjUyNjM5NDQ3LCJpYXQiOjE2NDk5NjEwNDcsImp0aSI6IjN1aHhMa21QUndVVVh0NVE0WUVWTXA1emM0eTB5NVhSIiwibiI6IlBWQVIifQ.FUTNfVYUXF2Og1U1iAjs93y0lBqfRX7kTp9zyJWUavyXPWkk9eSe2-ZWovpNQ70Dtt8BitCfhiaOLB3shnjzSQ",
 								"type": "text"
 							}
 						],

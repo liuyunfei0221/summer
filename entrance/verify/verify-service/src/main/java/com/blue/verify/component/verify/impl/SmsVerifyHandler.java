@@ -24,6 +24,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUE
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static com.blue.base.constant.base.SyncKeyPrefix.SMS_VERIFY_RATE_LIMIT_KEY_PRE;
 import static com.blue.base.constant.verify.VerifyType.SMS;
 import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateLeakyBucketRateLimiter;
@@ -94,7 +95,7 @@ public class SmsVerifyHandler implements VerifyHandler {
         if (type == null || key == null)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
 
-        return type.identity + key;
+        return type.identity + PAR_CONCATENATION.identity + key;
     };
 
     @Override
