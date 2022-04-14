@@ -227,6 +227,25 @@ public class ControlServiceImpl implements ControlService {
                                 }));
     }
 
+    private List<Credential> generateCredentialsByElements(List<String> types, String credential, Long memberId) {
+        Long stamp = TIME_STAMP_GETTER.get();
+        return types.stream()
+                .map(type -> {
+                    Credential cre = new Credential();
+
+                    cre.setCredential(credential);
+                    cre.setType(type);
+                    cre.setAccess("");
+                    cre.setMemberId(memberId);
+                    cre.setExtra("from add credential");
+                    cre.setStatus(ALLOW_ACCESS_LT_SET.contains(type) ? INVALID.status : VALID.status);
+                    cre.setCreateTime(stamp);
+                    cre.setUpdateTime(stamp);
+
+                    return cre;
+                }).collect(toList());
+    }
+
     /**
      * login
      *
@@ -422,25 +441,6 @@ public class ControlServiceImpl implements ControlService {
         packageExistAccess(credentials, memberId);
 
         credentialService.insertCredentials(credentials);
-    }
-
-    private List<Credential> generateCredentialsByElements(List<String> types, String credential, Long memberId) {
-        Long stamp = TIME_STAMP_GETTER.get();
-        return types.stream()
-                .map(type -> {
-                    Credential cre = new Credential();
-
-                    cre.setCredential(credential);
-                    cre.setType(type);
-                    cre.setAccess("");
-                    cre.setMemberId(memberId);
-                    cre.setExtra("from add credential");
-                    cre.setStatus(ALLOW_ACCESS_LT_SET.contains(type) ? INVALID.status : VALID.status);
-                    cre.setCreateTime(stamp);
-                    cre.setUpdateTime(stamp);
-
-                    return cre;
-                }).collect(toList());
     }
 
     /**
