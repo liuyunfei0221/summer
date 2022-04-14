@@ -125,7 +125,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
             throw new BlueException(INTERNAL_SERVER_ERROR);
         }
     };
-    
+
     private final Supplier<Monitor<Long>> MONITOR_SUP = () ->
             new Monitor<>(0L, Long::sum, m -> m <= singleFileSizeThreshold);
 
