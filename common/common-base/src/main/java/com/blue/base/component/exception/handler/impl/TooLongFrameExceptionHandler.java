@@ -10,7 +10,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * frame exp handler for netty
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused"})
 public final class TooLongFrameExceptionHandler implements ExceptionHandler {

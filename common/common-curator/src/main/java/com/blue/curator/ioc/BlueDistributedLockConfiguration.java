@@ -12,7 +12,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * zk lock configuration
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaRemoveCommentedCode", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @ConditionalOnBean(value = {DistributedLockConf.class})

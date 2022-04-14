@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * article entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class Article implements Serializable {

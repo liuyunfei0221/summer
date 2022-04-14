@@ -21,7 +21,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 /**
  * loadbalancer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces"})
 public final class BlueRandomLoadBalancer implements ReactorServiceInstanceLoadBalancer {

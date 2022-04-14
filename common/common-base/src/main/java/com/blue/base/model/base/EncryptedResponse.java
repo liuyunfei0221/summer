@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * encrypted response data
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class EncryptedResponse implements Serializable {

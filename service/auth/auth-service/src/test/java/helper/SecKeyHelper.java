@@ -10,7 +10,7 @@ import static com.blue.jwt.constant.JwtConfSchema.*;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 
 /**
- * @author DarkBlue
+ * @author liuyunfei
  * @date 2021/8/13
  * @apiNote
  */

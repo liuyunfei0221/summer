@@ -22,7 +22,7 @@ import static reactor.core.scheduler.Schedulers.boundedElastic;
 /**
  * token bucket rate limiter
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class BlueTokenBucketRateLimiter {

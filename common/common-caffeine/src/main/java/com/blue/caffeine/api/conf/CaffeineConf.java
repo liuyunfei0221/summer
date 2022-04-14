@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * caffeine conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface CaffeineConf {

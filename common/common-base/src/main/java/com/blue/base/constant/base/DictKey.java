@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 /**
  * dict key
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum DictKey {
 

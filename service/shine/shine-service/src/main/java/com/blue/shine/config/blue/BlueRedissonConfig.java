@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * redisson config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "redisson")

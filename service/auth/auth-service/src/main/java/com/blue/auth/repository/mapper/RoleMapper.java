@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * role mapper
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface RoleMapper {

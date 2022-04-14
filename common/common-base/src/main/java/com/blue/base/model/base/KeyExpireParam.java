@@ -12,7 +12,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 /**
  * redis key expire info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
 public final class KeyExpireParam implements Serializable {

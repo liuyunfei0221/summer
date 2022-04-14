@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * language info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public final class LanguageInfo implements Serializable {

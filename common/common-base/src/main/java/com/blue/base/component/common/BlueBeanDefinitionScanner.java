@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * Scanner for customized configuration
  *
- * @author DarkBlue
+ * @author liuyunfei
  * @date 2021/8/15
  * @apiNote
  */

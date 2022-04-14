@@ -7,7 +7,7 @@ import com.blue.member.api.model.MemberRegistryParam;
 /**
  * member register param by auto login packager interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface MemberParamByAutoLoginPackager {

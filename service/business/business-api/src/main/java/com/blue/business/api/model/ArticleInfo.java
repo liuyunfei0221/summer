@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * article info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class ArticleInfo implements Serializable {

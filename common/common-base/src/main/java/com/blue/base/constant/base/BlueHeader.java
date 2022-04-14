@@ -5,7 +5,7 @@ import org.springframework.http.HttpHeaders;
 /**
  * HTTP headers
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum BlueHeader {
 

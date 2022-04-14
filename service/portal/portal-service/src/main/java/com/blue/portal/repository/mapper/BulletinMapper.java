@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * bulletin dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface BulletinMapper {

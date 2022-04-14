@@ -13,7 +13,7 @@ import static org.apache.dubbo.rpc.RpcContext.getServiceContext;
 /**
  * dubbo exception filter
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaClassNamingShouldBeCamel", "unused", "AlibabaUndefineMagicConstant", "AliControlFlowStatementWithoutBraces"})
 @Activate(group = {Constants.PROVIDER_PROTOCOL, Constants.CONSUMER_PROTOCOL})

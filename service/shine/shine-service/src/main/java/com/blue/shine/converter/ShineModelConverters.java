@@ -3,9 +3,8 @@ package com.blue.shine.converter;
 /**
  * model converters in shine project
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class ShineModelConverters {
 
 

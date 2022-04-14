@@ -21,7 +21,7 @@ import static reactor.core.scheduler.Schedulers.boundedElastic;
 /**
  * leaky bucket rate limiter
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class BlueLeakyBucketRateLimiter {

@@ -22,7 +22,7 @@ import static reactor.core.scheduler.Schedulers.boundedElastic;
 /**
  * validator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "unused"})
 public final class BlueValidator {

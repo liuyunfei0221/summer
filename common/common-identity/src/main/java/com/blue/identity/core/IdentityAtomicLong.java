@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Padding bits are used to prevent false sharing
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc"})
 public final class IdentityAtomicLong extends AtomicLong {

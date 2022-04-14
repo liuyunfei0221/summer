@@ -10,7 +10,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * mail valid exp handler
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 public class MailValidationExceptionHandler implements ExceptionHandler {

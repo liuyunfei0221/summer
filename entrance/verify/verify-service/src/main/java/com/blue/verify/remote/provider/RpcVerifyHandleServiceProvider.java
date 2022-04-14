@@ -17,7 +17,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * rpc verify provider
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @DubboService(interfaceClass = RpcVerifyHandleService.class, version = "1.0", methods = {

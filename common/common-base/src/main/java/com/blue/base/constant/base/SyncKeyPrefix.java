@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 /**
  * sync key prefix
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public enum SyncKeyPrefix {

@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 /**
  * generic type getter
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "unused"})
 public final class FunctionParameterClzGetter {

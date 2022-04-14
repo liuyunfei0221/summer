@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * state info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class StateInfo implements Serializable {

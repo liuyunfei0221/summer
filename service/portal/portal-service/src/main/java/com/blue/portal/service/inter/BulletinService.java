@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * bulletin service
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface BulletinService {

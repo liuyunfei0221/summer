@@ -26,7 +26,7 @@ import static reactor.core.publisher.Mono.zip;
 /**
  * auth api handler
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 @Component

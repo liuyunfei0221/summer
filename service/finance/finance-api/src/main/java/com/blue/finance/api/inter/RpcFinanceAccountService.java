@@ -6,7 +6,7 @@ import com.blue.finance.api.model.MemberFinanceInfo;
 /**
  * rpc finance interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface RpcFinanceAccountService {

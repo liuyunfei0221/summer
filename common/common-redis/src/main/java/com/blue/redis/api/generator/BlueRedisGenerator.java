@@ -43,7 +43,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 /**
  * redis components generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class BlueRedisGenerator {

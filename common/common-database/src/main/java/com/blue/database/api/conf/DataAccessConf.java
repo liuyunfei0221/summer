@@ -11,7 +11,7 @@ import java.util.function.UnaryOperator;
 /**
  * data access conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "SpellCheckingInspection"})
 public interface DataAccessConf {

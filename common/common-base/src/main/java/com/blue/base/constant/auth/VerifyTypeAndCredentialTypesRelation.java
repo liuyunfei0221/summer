@@ -11,7 +11,7 @@ import static com.blue.base.constant.verify.VerifyType.SMS;
 /**
  * verify type with credential types relation
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum VerifyTypeAndCredentialTypesRelation {
 

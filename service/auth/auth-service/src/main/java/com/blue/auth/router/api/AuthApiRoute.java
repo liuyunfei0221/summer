@@ -15,7 +15,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 /**
  * auth api route
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Configuration
 public class AuthApiRoute {
@@ -29,10 +29,10 @@ public class AuthApiRoute {
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/login", accept(APPLICATION_JSON), authApiHandler::login)
                 .PUT("/access/refresh", authApiHandler::refreshAccess)
-                .DELETE("/logout", authApiHandler::logout)
-                .DELETE("/logout/everywhere", authApiHandler::logoutEverywhere)
+                .PUT("/logout", authApiHandler::logout)
+                .DELETE("/logout", authApiHandler::logoutEverywhere)
                 .PUT("/access", accept(APPLICATION_JSON), authApiHandler::updateAccess)
-                .PUT("/access/reset", accept(APPLICATION_JSON), authApiHandler::resetAccess)
+                .POST("/access", accept(APPLICATION_JSON), authApiHandler::resetAccess)
                 .POST("/credential", accept(APPLICATION_JSON), authApiHandler::credentialSettingUp)
                 .PUT("/secret", accept(APPLICATION_JSON), authApiHandler::updateSecret)
                 .GET("/authority", authApiHandler::selectAuthority)

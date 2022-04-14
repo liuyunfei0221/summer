@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * summary param
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public final class SummaryParam implements Serializable {
 

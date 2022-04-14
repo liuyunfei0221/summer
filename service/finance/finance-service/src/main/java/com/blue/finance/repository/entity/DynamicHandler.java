@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * dynamic handler config entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class DynamicHandler implements Serializable {

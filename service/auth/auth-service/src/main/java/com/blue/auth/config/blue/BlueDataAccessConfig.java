@@ -14,7 +14,7 @@ import static java.util.Collections.singletonList;
 /**
  * data access config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "data")

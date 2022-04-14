@@ -16,7 +16,7 @@ import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 /**
  * db force algorithm
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class DatabaseForceAlgorithm implements PreciseShardingAlgorithm<Long> {

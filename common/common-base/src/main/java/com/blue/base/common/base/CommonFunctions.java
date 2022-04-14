@@ -37,7 +37,7 @@ import static org.apache.commons.lang3.math.NumberUtils.isDigits;
 /**
  * Common function set
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"WeakerAccess", "JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
 public class CommonFunctions {

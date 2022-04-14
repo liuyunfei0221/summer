@@ -58,20 +58,18 @@ public class CredentialServiceImpl implements CredentialService {
 
         List<Credential> existCredentials = credentialMapper.selectByMemberIds(new ArrayList<>(memberIdAndTypes.keySet()));
 
-        for (Credential credential : existCredentials) {
+        for (Credential credential : existCredentials)
             if (memberIdAndTypes.get(credential.getMemberId()).contains(credential.getType()))
                 throw new BlueException(DATA_ALREADY_EXIST);
-        }
 
         Map<String, Set<String>> credentialAndTypes = credentials.stream().collect(groupingBy(Credential::getCredential))
                 .entrySet().stream().collect(toMap(Map.Entry::getKey, e -> e.getValue().stream().map(Credential::getType).collect(toSet())));
 
         existCredentials = credentialMapper.selectByCredentials(new ArrayList<>(credentialAndTypes.keySet()));
 
-        for (Credential credential : existCredentials) {
+        for (Credential credential : existCredentials)
             if (credentialAndTypes.get(credential.getCredential()).contains(credential.getType()))
                 throw new BlueException(DATA_ALREADY_EXIST);
-        }
     };
 
     /**

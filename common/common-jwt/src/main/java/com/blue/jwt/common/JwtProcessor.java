@@ -3,7 +3,7 @@ package com.blue.jwt.common;
 /**
  * JWT processor interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 
 @SuppressWarnings({"JavaDoc", "unused"})

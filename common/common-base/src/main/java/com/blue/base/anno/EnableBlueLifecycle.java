@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * Used to configure the start and stop sequence of certain beans
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Target(TYPE)
 @Retention(RUNTIME)

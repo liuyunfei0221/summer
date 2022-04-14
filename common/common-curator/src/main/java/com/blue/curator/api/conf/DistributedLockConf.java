@@ -3,7 +3,7 @@ package com.blue.curator.api.conf;
 /**
  * zk lock conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface DistributedLockConf {

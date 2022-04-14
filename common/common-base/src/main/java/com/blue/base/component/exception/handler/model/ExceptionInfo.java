@@ -10,7 +10,7 @@ import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 /**
  * http status code and result
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public final class ExceptionInfo {
 

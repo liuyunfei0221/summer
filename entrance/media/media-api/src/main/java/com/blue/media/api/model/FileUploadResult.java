@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * media upload result
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class FileUploadResult implements Serializable {

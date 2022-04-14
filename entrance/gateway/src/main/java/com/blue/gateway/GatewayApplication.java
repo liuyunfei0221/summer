@@ -10,7 +10,7 @@ import static org.springframework.boot.SpringApplication.run;
 /**
  * gateway application
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SummerSpringBootApplication
 @EnableDiscoveryClient

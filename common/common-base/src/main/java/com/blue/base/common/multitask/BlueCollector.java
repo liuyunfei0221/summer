@@ -7,7 +7,7 @@ import java.util.List;
  * collector interface
  *
  * @param <R>
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface BlueCollector<R> {

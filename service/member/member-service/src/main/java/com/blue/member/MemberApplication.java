@@ -11,7 +11,7 @@ import static org.springframework.boot.SpringApplication.run;
 
 
 /**
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SummerSpringBootApplication
 @EnableDiscoveryClient

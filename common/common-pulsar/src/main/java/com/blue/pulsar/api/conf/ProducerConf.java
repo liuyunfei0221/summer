@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * pulsar producer conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface ProducerConf extends ClientConf {

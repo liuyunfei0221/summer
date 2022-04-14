@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * country entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"SpellCheckingInspection", "unused"})
 public final class Country implements Serializable {

@@ -19,7 +19,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * rpc auth provider
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @DubboService(interfaceClass = RpcAuthService.class,

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * encrypted request params
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class EncryptedRequest implements Serializable {

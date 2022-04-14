@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * reactive rest config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("SpellCheckingInspection")
 @Component

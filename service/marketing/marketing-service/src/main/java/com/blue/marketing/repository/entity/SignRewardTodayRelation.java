@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * reward and date relation entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class SignRewardTodayRelation implements Serializable {

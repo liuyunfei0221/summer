@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * organization entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class Organization implements Serializable {

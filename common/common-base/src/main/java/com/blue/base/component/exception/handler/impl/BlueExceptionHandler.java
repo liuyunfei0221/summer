@@ -10,7 +10,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * blue exp handler
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused"})
 public final class BlueExceptionHandler implements ExceptionHandler {

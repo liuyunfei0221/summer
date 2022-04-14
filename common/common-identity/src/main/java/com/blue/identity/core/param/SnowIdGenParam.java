@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 /**
  * params for SnowflakeIdentityGenerator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public final class SnowIdGenParam {
 

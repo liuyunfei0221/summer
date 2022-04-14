@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * sign in reward
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class SignRewardEvent implements Serializable {

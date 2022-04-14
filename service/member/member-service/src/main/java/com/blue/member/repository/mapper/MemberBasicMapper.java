@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * member basic dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
 public interface MemberBasicMapper {

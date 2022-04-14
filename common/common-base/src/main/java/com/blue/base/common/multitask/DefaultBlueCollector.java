@@ -16,7 +16,7 @@ import static reactor.util.Loggers.getLogger;
  * batch task collector
  *
  * @param <R>
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class DefaultBlueCollector<R> implements BlueCollector<R> {

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * reply entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class Reply implements Serializable {

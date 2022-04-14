@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * link mapper
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface LinkMapper {

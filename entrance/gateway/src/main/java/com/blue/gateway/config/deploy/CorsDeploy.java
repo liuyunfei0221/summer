@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * cors deploy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "cors")

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * reward entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class Reward implements Serializable {

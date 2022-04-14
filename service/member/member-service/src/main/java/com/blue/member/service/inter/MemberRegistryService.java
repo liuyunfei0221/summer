@@ -6,7 +6,7 @@ import com.blue.member.api.model.MemberRegistryParam;
 /**
  * member register service
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface MemberRegistryService {

@@ -20,7 +20,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * data event consumer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused"})
 public final class DataEventConsumer implements BlueLifecycle {

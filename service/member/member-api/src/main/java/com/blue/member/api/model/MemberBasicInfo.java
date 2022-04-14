@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * member basic info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class MemberBasicInfo implements Serializable {

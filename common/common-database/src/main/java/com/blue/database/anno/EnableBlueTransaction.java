@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 /**
  * enable trans
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Target(TYPE)
 @Retention(RUNTIME)

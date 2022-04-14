@@ -5,7 +5,7 @@ import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 /**
  * BlueLifecycle scan conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum BlueLifecycleScanConf {
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * scheduler config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "scheduler")

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * option event
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public class OptEvent implements Serializable {

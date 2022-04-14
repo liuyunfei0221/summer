@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * withdraw info for test
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class WithdrawInfo implements Serializable {

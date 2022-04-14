@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Padding bits are used to prevent false sharing
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc"})
 public final class IdentityAtomicBoolean extends AtomicBoolean {

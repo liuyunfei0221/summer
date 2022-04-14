@@ -3,7 +3,7 @@ package com.blue.base.constant.business;
 /**
  * subject type
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum SubjectType {
 

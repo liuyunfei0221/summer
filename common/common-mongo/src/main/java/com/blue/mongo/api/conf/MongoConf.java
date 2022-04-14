@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * mongo conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface MongoConf {

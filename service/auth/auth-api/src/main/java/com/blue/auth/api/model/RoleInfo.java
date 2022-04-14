@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * role info for rest
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class RoleInfo implements Serializable {

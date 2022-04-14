@@ -157,8 +157,6 @@ CREATE TABLE `undo_log`
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
-
-
 -- seata undo log
 
 -- auth1
@@ -244,213 +242,6 @@ CREATE TABLE `undo_log`
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 
--- init
--- resources
-
-INSERT INTO `auth`.`resource`(`id`, `request_method`, `module`, `uri`, `authenticate`, `request_un_decryption`,
-                              response_un_encryption, `existence_request_body`, `existence_response_body`, `type`,
-                              `name`, `description`, `create_time`, `update_time`, `creator`, `updater`)
-VALUES (1, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
-        'login', 'login', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (2, 'PUT', 'blue-auth', '/auth/access', b'1', b'1', b'1', b'0', b'1', 1,
-        'update access', 'update access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (3, 'PUT', 'blue-auth', '/auth/access/reset', b'1', b'1', b'1', b'0', b'1', 1,
-        'reset access', 'reset access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (4, 'PUT', 'blue-auth', '/auth/secret', b'1', b'1', b'1', b'0', b'1', 1,
-        'refresh private key', 'refresh private key', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (5, 'GET', 'blue-auth', '/auth/authority', b'1', b'1', b'1', b'0', b'1', 1,
-        'query authority', 'query authority', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (6, 'GET', 'blue-member', '/member', b'1', b'1', b'1', b'0', b'1', 1,
-        'member info', 'member info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (7, 'DELETE', 'blue-auth', '/auth/logout', b'1', b'1', b'1', b'0', b'1', 1,
-        'logout', 'logout', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (8, 'GET', 'blue-portal', '/fallBack', b'0', b'1', b'1', b'0', b'1', 1,
-        'GET fallback', 'GET fallback', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (9, 'POST', 'blue-portal', '/fallBack', b'0', b'1', b'1', b'1', b'1', 1,
-        'POST fallback', 'POST fallback', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (10, 'GET', 'blue-portal', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
-        'bulletin list of api', 'bulletin list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (11, 'POST', 'blue-media', '/file/upload', b'1', b'1', b'1', b'1', b'1', 1,
-        'media upload of api', 'media upload of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (12, 'POST', 'blue-media', '/file/download', b'1', b'1', b'1', b'1', b'0', 1,
-        'file download of api', 'file download of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (13, 'POST', 'blue-media', '/attachment/list', b'1', b'1', b'1', b'1', b'1', 1,
-        'attachment list of api', 'attachment list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (14, 'POST', 'blue-marketing', '/signIn', b'1', b'1', b'1', b'0', b'1', 1,
-        'sign in', 'sign in', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (15, 'GET', 'blue-marketing', '/signIn', b'1', b'1', b'1', b'0', b'1', 1,
-        'query sign in record by month', 'query sign in record by month', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (16, 'GET', 'blue-finance', '/finance/balance', b'1', b'1', b'1', b'0', b'1', 1,
-        'query balance', 'query balance', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (17, 'POST', 'blue-member', '/registry', b'0', b'1', b'1', b'1', b'1', 1,
-        'member registry', 'member registry', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (18, 'GET', 'blue-portal', '/formatter/{formatter}.html', b'1', b'1', b'1', b'0', b'1', 1,
-        'formatter test', 'formatter test', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (19, 'POST', 'blue-finance', '/withdraw', b'1', b'0', b'0', 1, b'1', b'1',
-        'withdraw/test encrypt in finance', 'withdraw/test encrypt in finance', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
-        1),
-       (20, 'POST', 'blue-media', '/attachment/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
-        'withdraw/test encrypt in media', 'withdraw/test encrypt in media', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (21, 'GET', 'blue-shine', '/shine', b'0', b'1', b'1', b'0', b'1', 1,
-        'commonweal information', 'commonweal information', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (22, 'GET', 'blue-base', '/dictType', b'0', b'1', b'1', b'0',
-        b'1', 1, 'query dict types', 'query dict types', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (23, 'GET', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
-        'test get endpoint', 'test get endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (24, 'POST', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
-        'test post endpoint', 'test post endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (25, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 1,
-        'countries', 'countries', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (26, 'GET', 'blue-base', '/states/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
-        'states', 'states', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (27, 'GET', 'blue-base', '/cities/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
-        'cities', 'cities', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (28, 'GET', 'blue-base', '/areas/{pid}', b'0', b'1', b'1', b'0', b'1', 1,
-        'areas', 'areas', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (29, 'GET', 'blue-base', '/language', b'0', b'1', b'1', b'0', b'1', 1,
-        'language', 'language', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (30, 'GET', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
-        3, 'GET dynamic endpoint', 'GET dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (31, 'HEAD', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
-        3, 'HEAD dynamic endpoint', 'HEAD dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (32, 'POST', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
-        3, 'POST dynamic endpoint', 'POST dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (33, 'PUT', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
-        3, 'PUT dynamic endpoint', 'PUT dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (34, 'PATCH', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1', b'1',
-        3, 'PATCH dynamic endpoint', 'PATCH dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (35, 'DELETE', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1',
-        b'1', 3, 'DELETE dynamic endpoint', 'DELETE dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (36, 'OPTIONS', 'blue-finance', '/dynamic/{placeholder}', b'0', b'1', b'1', b'1',
-        b'1', 3, 'OPTIONS dynamic endpoint', 'OPTIONS dynamic endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (37, 'POST', 'blue-auth', '/manager/resource/list', b'1', b'1', b'1', b'1', b'1', 2,
-        'resource list', 'resource list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (38, 'POST', 'blue-auth', '/manager/role/list', b'1', b'1', b'1', b'1', b'1', 2,
-        'role list', 'role list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (39, 'POST', 'blue-member', '/manager/member/list', b'1', b'1', b'1', b'1', b'1', 2,
-        'member list', 'member list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (40, 'POST', 'blue-member', '/manager/authority/list', b'1', b'1', b'1', b'1', b'1', 2,
-        'authority list', 'authority list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (41, 'POST', 'blue-auth', '/manager/role', b'1', b'1', b'1', b'1', b'1', 2,
-        'insert role', 'insert role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (42, 'PUT', 'blue-auth', '/manager/role', b'1', b'1', b'1', b'1', b'1', 2,
-        'update role', 'update role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (43, 'DELETE', 'blue-auth', '/manager/role/{id}', b'1', b'1', b'1', b'0', b'1', 2,
-        'delete role', 'delete role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (44, 'POST', 'blue-auth', '/manager/resource', b'1', b'1', b'1', b'1', b'1', 2,
-        'insert resource', 'insert resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (45, 'PUT', 'blue-auth', '/manager/resource', b'1', b'1', b'1', b'1', b'1', 2,
-        'update resource', 'update resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (46, 'DELETE', 'blue-auth', '/manager/resource/{id}', b'1', b'1', b'1', b'0', b'1', 2,
-        'delete resource', 'delete resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (47, 'POST', 'blue-auth', '/manager/role/auth', b'1', b'1', b'1', b'1', b'1', 2,
-        'role auth', 'role auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (48, 'POST', 'blue-auth', '/manager/resource/auth', b'1', b'1', b'1', b'1', b'1', 2,
-        'resource auth', 'resource auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (49, 'PUT', 'blue-auth', '/manager/relation/role-res', b'1', b'1', b'1', b'1', b'1', 2,
-        'update role-resources-relation', 'update role-resources-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (50, 'PUT', 'blue-auth', '/manager/relation/mem-role', b'1', b'1', b'1', b'1', b'1', 2,
-        'update member-role-relation', 'update member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (51, 'GET', 'blue-media', '/mail/send', b'0', b'1', b'1', b'0', b'1', 2,
-        'test send', 'test send', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (52, 'GET', 'blue-media', '/mail/read', b'0', b'1', b'1', b'0', b'1', 2,
-        'test read', 'test read', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (53, 'POST', 'blue-lake', '/event/list', b'0', b'1', b'1', b'1', b'1', 2,
-        'test lake event', 'test lake event', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (54, 'POST', 'blue-analyze', '/statistics/active/simple', b'0', b'1', b'1', b'1', b'1', 2,
-        'statistics active simple', 'statistics active simple', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (55, 'POST', 'blue-analyze', '/statistics/active/merge', b'0', b'1', b'1', b'1', b'1', 2,
-        'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (56, 'POST', 'blue-analyze', '/statistics/active/summary', b'0', b'1', b'1', b'0', b'1', 2,
-        'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (57, 'PUT', 'blue-auth', '/auth/access/refresh', b'0', b'1', b'1', b'1', b'1', 1,
-        'refresh access', 'refresh access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (58, 'DELETE', 'blue-auth', '/auth/logout/everywhere', b'1', b'1', b'1', b'0', b'1', 1,
-        'logout everywhere', 'logout everywhere', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (59, 'POST', 'blue-auth', '/blue-auth/manager/auth', b'1', b'1', b'1', b'0', b'1', 2,
-        'invalidate member auth', 'invalidate member auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (60, 'POST', 'blue-auth', '/blue-auth/credential', b'1', b'1', b'1', b'0', b'1', 1,
-        'credential setting up', 'credential setting up', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
-
-
--- role
-
-INSERT INTO `auth`.`role`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`, `creator`,
-                          `updater`)
-VALUES (1, 'normal', 'normal', 999999999, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (2, 'summer admin', 'summer admin', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
-
--- role resource relations
-
--- admin auth
-
-INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                       `updater`)
-VALUES (1, 2, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (2, 2, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (3, 2, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (4, 2, 4, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (5, 2, 5, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (6, 2, 6, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (7, 2, 7, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (8, 2, 8, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (9, 2, 9, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (10, 2, 10, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (11, 2, 11, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (12, 2, 12, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (13, 2, 13, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (14, 2, 14, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (15, 2, 15, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (16, 2, 16, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (17, 2, 17, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (18, 2, 18, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (19, 2, 19, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (20, 2, 20, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (21, 2, 21, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (22, 2, 37, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (23, 2, 38, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (24, 2, 39, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (25, 2, 40, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (26, 2, 41, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (27, 2, 42, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (28, 2, 43, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (29, 2, 44, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (30, 2, 45, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (31, 2, 46, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (32, 2, 47, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (33, 2, 48, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (34, 2, 49, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (35, 2, 50, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (56, 2, 59, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (57, 2, 60, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
--- manager auth
-
-       (36, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (37, 1, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (38, 1, 4, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (39, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (40, 1, 5, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (41, 1, 6, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (42, 1, 7, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (43, 1, 8, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (44, 1, 9, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (45, 1, 10, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (46, 1, 11, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (47, 1, 12, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (48, 1, 13, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (49, 1, 14, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (50, 1, 15, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (51, 1, 16, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (52, 1, 17, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (53, 1, 19, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (54, 1, 20, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (55, 1, 21, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
-
--- noinspection SqlDialectInspectionForFile
-
--- noinspection SqlNoDataSourceInspectionForFile
-
 -- media0
 
 CREATE
@@ -511,7 +302,6 @@ CREATE TABLE `download_history_1`
     KEY             `idx_create_time`(`create_time`) USING BTREE,
     KEY             `idx_creator`(`creator`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of download history 1';
-
 
 -- seata
 
@@ -588,7 +378,6 @@ CREATE TABLE `download_history_1`
     KEY             `idx_create_time`(`create_time`) USING BTREE,
     KEY             `idx_creator`(`creator`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of download history 1';
-
 
 -- seata
 
@@ -780,7 +569,6 @@ CREATE TABLE `undo_log`
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
-
 -- finance1
 
 CREATE
@@ -935,30 +723,6 @@ CREATE TABLE `undo_log`
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
-
-
-INSERT INTO `finance_1`.`dynamic_handler_1`(`id`, `name`, `description`, `handler_bean`, `create_time`, `update_time`,
-                                            `creator`, `updater`)
-VALUES (1, 'blue_get dynamic endpoint handler', 'blue_get dynamic endpoint handler',
-        'com.blue.finance.component.dynamic.impl.BlueGetDynamicEndPointHandlerImpl', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (2, 'blue_post dynamic endpoint handler', 'blue_post dynamic endpoint handler',
-        'com.blue.finance.component.dynamic.impl.BluePostDynamicEndPointHandlerImpl', UNIX_TIMESTAMP(),
-        UNIX_TIMESTAMP(), 1, 1);
-
-INSERT INTO `finance_1`.`dynamic_resource_1`(`id`, `organization_id`, `handler_id`, `request_method`, `uri_placeholder`,
-                                             `content_type`, `name`,
-                                             description, `create_time`, `update_time`, `creator`, `updater`)
-VALUES (1, 30, 1, 'GET', 1, 'application/json',
-        'blue_get dynamic resource',
-        'blue_get dynamic resource',
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (2, 31, 2, 'POST', 1, 'application/json',
-        'blue_post dynamic resource',
-        'blue_post dynamic resource',
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
-
-
 -- marketing
 
 CREATE
@@ -998,7 +762,6 @@ CREATE TABLE `sign_reward_today_relation`
     KEY           `idx_creator`(`creator`) USING BTREE,
     KEY           `idx_updater`(`updater`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reward and date relation';
-
 
 -- marketing0
 
@@ -1048,7 +811,6 @@ CREATE TABLE `undo_log`
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
-
 -- marketing1
 
 CREATE
@@ -1096,139 +858,6 @@ CREATE TABLE `undo_log`
     PRIMARY KEY (`branch_id`),
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
--- init
-
-INSERT INTO `marketing`.`reward`(`id`, `name`, `detail`, `link`, `type`, `data`, `status`, `create_time`,
-                                 `update_time`, `creator`, `updater`)
-VALUES (1, '1th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (2, '2th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (3, '3th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (4, '4th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (5, '5th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (6, '6th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (7, '7th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (8, '8th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (9, '9th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (10, '10th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (11, '11th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (12, '12th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (13, '13th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (14, '14th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (15, '15th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (16, '16th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (17, '17th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (18, '18th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (19, '19th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (20, '20th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (21, '21th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (22, '22th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (23, '23th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (24, '24th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (25, '25th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (26, '26th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (27, '27th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (28, '28th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (29, '29th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (30, '30th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (31, '31th reward', 'Im a reward...', 'www.baidu.com', 1, '{}', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1);
-
-
-INSERT INTO `marketing`.`sign_reward_today_relation`(`id`, `reward_id`, `year`, `month`, `day`, `create_time`,
-                                                     `update_time`, `creator`, `updater`)
-VALUES (1, 1, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 1,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (2, 2, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 2,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (3, 3, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 3,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (4, 4, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 4,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (5, 5, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 5,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (6, 6, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 6,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (7, 7, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 7,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (8, 8, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 8,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (9, 9, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 9,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (10, 10, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 10,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (11, 11, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 11,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (12, 12, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 12,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (13, 13, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 13,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (14, 14, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 14,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (15, 15, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 15,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (16, 16, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 16,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (17, 17, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 17,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (18, 18, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 18,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (19, 19, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 19,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (20, 20, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 20,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (21, 21, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 21,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (22, 22, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 22,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (23, 23, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 23,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (24, 24, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 24,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (25, 25, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 25,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (26, 26, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 26,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (27, 27, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 27,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (28, 28, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 28,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (29, 29, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 29,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (30, 30, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 30,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (31, 31, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 31,
-        UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 -- member
 
@@ -1496,7 +1125,6 @@ CREATE TABLE `undo_log`
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
-
 -- member1
 
 CREATE
@@ -1749,14 +1377,12 @@ CREATE TABLE `undo_log`
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
-
 -- portal
 
 CREATE
 DATABASE portal CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 portal;
-
 
 CREATE TABLE `bulletin`
 (
@@ -1776,7 +1402,6 @@ CREATE TABLE `bulletin`
     KEY           `idx_stat_pri`(`status`,`priority`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of bulletin';
 
-
 -- seata undo log
 
 CREATE TABLE `undo_log`
@@ -1791,7 +1416,6 @@ CREATE TABLE `undo_log`
     PRIMARY KEY (`branch_id`),
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
 
 -- portal0
 
@@ -1821,24 +1445,6 @@ CREATE TABLE `undo_log`
     PRIMARY KEY (`branch_id`),
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
-
-
-INSERT INTO `portal`.`bulletin`(`id`, `title`, `content`, `link`, `type`, `status`, `priority`, `create_time`,
-                                `update_time`, `creator`, `updater`)
-VALUES (1, 'popular bulletin 2', 'test data', 'www.baidu.com', 1, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (2, 'popular bulletin 1', 'test data', 'cn.bing.com', 1, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
-        1),
-       (3, 'newest bulletin 2', 'test data', 'www.baidu.com', 2, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
-        1),
-       (4, 'newest bulletin 1', 'test data', 'cn.bing.com', 2, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
-        1),
-       (5, 'recommend bulletin 2', 'test data', 'www.baidu.com', 3, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (6, 'recommend bulletin 1', 'test data', 'cn.bing.com', 3, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1);
-
 
 -- business0
 
@@ -1901,7 +1507,6 @@ CREATE TABLE `article_1`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of article 1';
 
 
-
 CREATE TABLE `link_0`
 (
     `id`            bigint        NOT NULL COMMENT 'id',
@@ -1956,7 +1561,6 @@ CREATE TABLE `link_1`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of link 1';
 
 
-
 CREATE TABLE `comment_0`
 (
     `id`            bigint     NOT NULL COMMENT 'id',
@@ -2004,7 +1608,6 @@ CREATE TABLE `comment_1`
     KEY             `idx_boring`(`boring`) USING BTREE,
     KEY             `idx_create`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reply 1';
-
 
 
 CREATE TABLE `reply_0`
@@ -2062,7 +1665,6 @@ CREATE TABLE `reply_1`
     KEY             `idx_boring`(`boring`) USING BTREE,
     KEY             `idx_create`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reply 1';
-
 
 -- business1
 
@@ -2286,7 +1888,6 @@ DATABASE base CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 base;
 
-
 CREATE TABLE `dict_type`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
@@ -2314,8 +1915,6 @@ CREATE TABLE `dict`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_type_name_value`(`dict_type_id`,`name`,`value` ) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dict';
-
-
 
 CREATE
 DATABASE base_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

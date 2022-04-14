@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * mail sender
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public final class MailSender {
 

@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * test entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class BulletinInfo implements Serializable {

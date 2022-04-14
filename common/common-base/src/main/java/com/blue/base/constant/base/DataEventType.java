@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * data event
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public enum DataEventType implements Serializable {

@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * page data
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class PageModelResponse<T extends Serializable> implements Serializable {

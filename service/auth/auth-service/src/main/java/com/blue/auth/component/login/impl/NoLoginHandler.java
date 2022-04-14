@@ -17,7 +17,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * no login handler,for temp visitor
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"DuplicatedCode", "JavaDoc", "unused"})
 public class NoLoginHandler implements LoginHandler {

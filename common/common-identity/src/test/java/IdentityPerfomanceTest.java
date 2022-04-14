@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 import static com.blue.identity.constant.SnowflakeBits.*;
 
 /**
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("ALL")
 public class IdentityPerfomanceTest {

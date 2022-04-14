@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * business thread blocking time config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "blocking")

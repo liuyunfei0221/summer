@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * credential entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class Credential implements Serializable {

@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 /**
  * element/data status
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public enum BlueBoolean {

@@ -15,7 +15,7 @@ import static jakarta.mail.Session.getInstance;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 public final class ReaderComponentProcessor {

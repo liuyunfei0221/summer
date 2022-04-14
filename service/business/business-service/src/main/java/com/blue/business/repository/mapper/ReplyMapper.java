@@ -5,7 +5,7 @@ import com.blue.business.repository.entity.Reply;
 /**
  * reply mapper
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaLowerCamelCaseVariableNaming"})
 public interface ReplyMapper {

@@ -3,7 +3,7 @@ package com.blue.jwt.constant;
 /**
  * Exception information constraint / try to be unified with ResponseElement in common
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public enum JwtResponseElement {

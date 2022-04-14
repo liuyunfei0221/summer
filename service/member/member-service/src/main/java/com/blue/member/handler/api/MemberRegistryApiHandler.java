@@ -20,7 +20,7 @@ import static reactor.core.publisher.Mono.just;
 /**
  * member registry handler
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 @Component

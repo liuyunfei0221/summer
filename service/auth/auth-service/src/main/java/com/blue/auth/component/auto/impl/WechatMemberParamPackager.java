@@ -12,7 +12,7 @@ import static com.blue.base.constant.auth.CredentialType.WECHAT_AUTO_REGISTER;
 /**
  * packager for login by WeChat
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public class WechatMemberParamPackager implements MemberParamByAutoLoginPackager {

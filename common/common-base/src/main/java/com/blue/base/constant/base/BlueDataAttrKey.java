@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 /**
  * attr keys
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum BlueDataAttrKey {
 

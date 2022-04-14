@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * comment entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class Comment implements Serializable {

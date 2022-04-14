@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * member address config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "address")

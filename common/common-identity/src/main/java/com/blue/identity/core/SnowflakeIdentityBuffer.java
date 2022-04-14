@@ -18,7 +18,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * id buffer container
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaThreadPoolCreation", "JavaDoc", "ControlFlowStatementWithoutBraces", "AliControlFlowStatementWithoutBraces"})
 public final class SnowflakeIdentityBuffer {

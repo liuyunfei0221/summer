@@ -3,7 +3,7 @@ package com.blue.marketing.api.model;
 import java.io.Serializable;
 
 /**
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class SignInRewardRecord implements Serializable {

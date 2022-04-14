@@ -8,7 +8,7 @@ import static org.springframework.boot.SpringApplication.run;
 /**
  * registry applicaton
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SpringBootApplication
 @EnableEurekaServer

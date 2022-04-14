@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * reward and date relation dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface SignRewardTodayRelationMapper {

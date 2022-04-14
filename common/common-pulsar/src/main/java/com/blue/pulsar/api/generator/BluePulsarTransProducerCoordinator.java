@@ -20,7 +20,7 @@ import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateClient;
 /**
  * pulsar transaction producer coordinator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public final class BluePulsarTransProducerCoordinator {

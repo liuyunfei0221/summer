@@ -1,7 +1,7 @@
 package com.blue.base.component.scheduler.api.conf;
 
 /**
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface SchedulerConf {

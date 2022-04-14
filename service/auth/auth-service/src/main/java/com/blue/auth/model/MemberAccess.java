@@ -9,7 +9,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 /**
  * member auth with sec key used for access
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public final class MemberAccess implements Serializable {

@@ -9,7 +9,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 /**
  * member payload in jwt
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class MemberPayload implements Serializable {

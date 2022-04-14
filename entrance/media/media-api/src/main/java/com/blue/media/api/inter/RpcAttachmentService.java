@@ -3,7 +3,7 @@ package com.blue.media.api.inter;
 /**
  * rpc attachment interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  * @date 2021/8/12
  * @apiNote
  */

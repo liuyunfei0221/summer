@@ -14,7 +14,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * md5 util
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
 public final class Md5Processor {

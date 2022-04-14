@@ -20,7 +20,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * access expire consumer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class AccessExpireConsumer implements BlueLifecycle {
@@ -45,6 +45,8 @@ public final class AccessExpireConsumer implements BlueLifecycle {
                         .ifPresent(kep -> {
                             LOGGER.info("authExpireDataConsumer received, kep = {}", kep);
                             accessBatchExpireProcessor.expireKey(kep);
+                            //noinspection UnusedAssignment
+                            kep = null;
                         });
 
         this.authExpireConsumer = generateConsumer(blueConsumerConfig.getByKey(ACCESS_EXPIRE.name), authExpireDataConsumer);

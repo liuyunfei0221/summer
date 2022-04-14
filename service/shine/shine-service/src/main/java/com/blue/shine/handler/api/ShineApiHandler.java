@@ -18,7 +18,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * shine api handler
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc"})
 @Component

@@ -8,7 +8,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * rpc weChat reference
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 public class RpcWechatServiceConsumer {

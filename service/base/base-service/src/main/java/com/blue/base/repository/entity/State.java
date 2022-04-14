@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * state entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class State implements Serializable {

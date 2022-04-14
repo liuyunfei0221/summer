@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * single db shard with tables
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class SingleDatabaseWithTablesAttr extends ShardingDatabaseAttr {

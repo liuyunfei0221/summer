@@ -3,7 +3,7 @@ package com.blue.media.api.model;
 /**
  * media valid result
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class FileValidResult {

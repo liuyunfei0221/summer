@@ -4,7 +4,7 @@ package com.blue.excel.api.conf;
 /**
  * work book style conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface WorkBookStyleConf {

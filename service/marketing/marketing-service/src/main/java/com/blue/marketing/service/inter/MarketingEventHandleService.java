@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 /**
  * marketing event handle service
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface MarketingEventHandleService {

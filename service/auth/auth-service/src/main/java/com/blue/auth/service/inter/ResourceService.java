@@ -15,7 +15,7 @@ import java.util.Optional;
 /**
  * resource service interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface ResourceService {

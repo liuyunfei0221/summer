@@ -10,7 +10,7 @@ import static com.blue.base.constant.base.ResponseElement.*;
 /**
  * tree node
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "WeakerAccess", "AliControlFlowStatementWithoutBraces"})
 public final class TreeNode<T> implements Serializable {

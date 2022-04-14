@@ -7,8 +7,9 @@ import jakarta.mail.internet.MimeMultipart;
 /**
  * message parser
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
+@SuppressWarnings("AlibabaUndefineMagicConstant")
 public class MessageParser {
 
     public static void parseMessage(Message message) {

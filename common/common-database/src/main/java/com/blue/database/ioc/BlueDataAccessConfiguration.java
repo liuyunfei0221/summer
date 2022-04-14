@@ -16,7 +16,7 @@ import static org.apache.ibatis.session.ExecutorType.BATCH;
 /**
  * data access components configuration
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Configuration
 public class BlueDataAccessConfiguration {

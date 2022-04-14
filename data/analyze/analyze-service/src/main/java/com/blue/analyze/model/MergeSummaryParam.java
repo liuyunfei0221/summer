@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * merge summary param
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public class MergeSummaryParam implements Serializable {
 

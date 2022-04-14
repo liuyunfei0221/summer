@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * mail reader config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "reader")

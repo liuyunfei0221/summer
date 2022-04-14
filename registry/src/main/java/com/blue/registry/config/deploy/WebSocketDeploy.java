@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * websocket deploy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "websocket")

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * public key - private key pair
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public final class KeyPair implements Serializable {
 

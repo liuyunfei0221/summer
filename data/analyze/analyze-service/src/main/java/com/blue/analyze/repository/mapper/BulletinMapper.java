@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * test mapper
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface BulletinMapper {

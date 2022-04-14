@@ -13,7 +13,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * media api handler
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "Duplicates"})
 @Component

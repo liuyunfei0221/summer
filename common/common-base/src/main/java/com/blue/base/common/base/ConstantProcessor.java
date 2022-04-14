@@ -27,7 +27,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 /**
  * Constant Constraint Checker
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class ConstantProcessor {

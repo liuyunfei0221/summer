@@ -7,7 +7,7 @@ import static com.blue.base.constant.auth.CredentialType.*;
 /**
  * base credential
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused"})
 public enum BaseCredential {

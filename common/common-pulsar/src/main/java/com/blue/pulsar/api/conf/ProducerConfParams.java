@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * pulsar producer params
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "DuplicatedCode"})
 public class ProducerConfParams implements ProducerConf {

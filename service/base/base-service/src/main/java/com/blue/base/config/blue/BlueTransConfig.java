@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * expression trans config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "trans")

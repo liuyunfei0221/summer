@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * redis conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaCommentsMustBeJavadocFormat"})
 public interface RedisConf {

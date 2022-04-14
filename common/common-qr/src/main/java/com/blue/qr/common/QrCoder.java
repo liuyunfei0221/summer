@@ -37,7 +37,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * qrcoder
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "WeakerAccess", "PlaceholderCountMatchesArgumentCount", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
 public final class QrCoder {

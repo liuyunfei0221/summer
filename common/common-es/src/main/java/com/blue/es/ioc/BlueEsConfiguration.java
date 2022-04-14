@@ -13,7 +13,7 @@ import static com.blue.es.api.generator.BlueEsGenerator.generateRestHighLevelCli
 /**
  * es configuration
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @ConditionalOnBean(value = {EsConf.class})
 @Configuration

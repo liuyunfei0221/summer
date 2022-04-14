@@ -10,7 +10,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * JwtProcessor generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public final class BlueJwtProcessorGenerator {

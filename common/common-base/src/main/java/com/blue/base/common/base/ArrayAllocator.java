@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.groupingBy;
 /**
  * list allocator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "WeakerAccess", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class ArrayAllocator {

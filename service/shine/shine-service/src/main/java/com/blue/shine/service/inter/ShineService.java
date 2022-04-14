@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * shine service
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface ShineService {

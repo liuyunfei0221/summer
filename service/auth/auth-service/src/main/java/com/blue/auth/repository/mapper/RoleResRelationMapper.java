@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * role - resource mapping mapper
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface RoleResRelationMapper {

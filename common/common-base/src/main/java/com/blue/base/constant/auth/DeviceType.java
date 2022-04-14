@@ -3,7 +3,7 @@ package com.blue.base.constant.auth;
 /**
  * device type
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused"})
 public enum DeviceType {

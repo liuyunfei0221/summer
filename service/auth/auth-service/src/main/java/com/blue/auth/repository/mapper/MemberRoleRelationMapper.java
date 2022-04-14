@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * member role relation mapper
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "UnusedReturnValue"})
 public interface MemberRoleRelationMapper {

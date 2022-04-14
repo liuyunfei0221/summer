@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 /**
  * params for IdentityGenerator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public final class IdGenParam {
 

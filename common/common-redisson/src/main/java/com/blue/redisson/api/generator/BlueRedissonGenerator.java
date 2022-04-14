@@ -32,7 +32,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * redisson components generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AlibabaRemoveCommentedCode", "AliControlFlowStatementWithoutBraces"})
 public final class BlueRedissonGenerator {

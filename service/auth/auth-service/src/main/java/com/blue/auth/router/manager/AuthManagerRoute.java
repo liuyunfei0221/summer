@@ -28,7 +28,7 @@ public class AuthManagerRoute {
         RequestPredicate pathPredicate = path("/blue-auth/manager/auth");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/member/invalidate", accept(APPLICATION_JSON), authManagerHandler::invalidateAuthByMember)
+                .DELETE("/member", accept(APPLICATION_JSON), authManagerHandler::invalidateAuthByMember)
                 .build();
 
         return nest(pathPredicate, routerFunction);

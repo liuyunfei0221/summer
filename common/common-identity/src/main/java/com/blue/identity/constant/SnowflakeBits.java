@@ -3,7 +3,7 @@ package com.blue.identity.constant;
 /**
  * Snowflake configuration
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum SnowflakeBits {
 

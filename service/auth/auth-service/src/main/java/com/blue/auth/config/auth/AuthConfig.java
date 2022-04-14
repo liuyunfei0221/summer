@@ -18,7 +18,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * jwt config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Configuration

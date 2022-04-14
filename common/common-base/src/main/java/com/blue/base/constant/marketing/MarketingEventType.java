@@ -3,7 +3,7 @@ package com.blue.base.constant.marketing;
 /**
  * marketing event type
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum MarketingEventType {
 

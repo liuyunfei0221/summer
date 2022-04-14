@@ -14,7 +14,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * bean copier base on cglib
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "rawtypes", "AliControlFlowStatementWithoutBraces", "unused"})
 public final class BlueBeanCopier {

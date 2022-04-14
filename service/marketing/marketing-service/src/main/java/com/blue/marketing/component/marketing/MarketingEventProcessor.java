@@ -31,7 +31,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * marketing event handle service
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Component

@@ -3,7 +3,7 @@ package com.blue.base.constant.media;
 /**
  * HTTP headers
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum MailHeader {
 

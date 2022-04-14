@@ -1,7 +1,7 @@
 package com.blue.analyze.api.model;
 
 /**
- * @author DarkBlue
+ * @author liuyunfei
  * @date 2021/8/11
  * @apiNote
  */

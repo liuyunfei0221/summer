@@ -1,6 +1,12 @@
 package com.blue.auth.model;
 
+import com.blue.base.inter.Asserter;
+import com.blue.base.model.exps.BlueException;
+
 import java.io.Serializable;
+
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 
 /**
  * member-role-relation param
@@ -9,7 +15,8 @@ import java.io.Serializable;
  * @date 2021/11/9
  * @apiNote
  */
-public final class MemberRoleRelationParam implements Serializable {
+@SuppressWarnings("AliControlFlowStatementWithoutBraces")
+public final class MemberRoleRelationParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -2777562063739105469L;
 
@@ -20,6 +27,12 @@ public final class MemberRoleRelationParam implements Serializable {
     public MemberRoleRelationParam(Long memberId, Long roleId) {
         this.memberId = memberId;
         this.roleId = roleId;
+    }
+
+    @Override
+    public void asserts() {
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId))
+            throw new BlueException(INVALID_IDENTITY);
     }
 
     public Long getMemberId() {

@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * pulsar producer generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc"})
 public final class BluePulsarProducerGenerator {

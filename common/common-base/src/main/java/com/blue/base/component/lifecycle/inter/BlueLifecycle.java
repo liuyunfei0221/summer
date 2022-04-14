@@ -6,7 +6,7 @@ package com.blue.base.component.lifecycle.inter;
  * will execute start after the program starts according to the priority order, and execute stop at the end of the program.
  * Generally used for elegant online and offline processing during smooth publishing
  *
- * @author DarkBlue
+ * @author liuyunfei
  * @date 2021/8/13
  * @apiNote
  */

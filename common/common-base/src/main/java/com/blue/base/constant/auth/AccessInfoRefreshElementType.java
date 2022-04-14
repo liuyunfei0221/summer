@@ -3,7 +3,7 @@ package com.blue.base.constant.auth;
 /**
  * Dynamically refresh the element type for authentication information
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum AccessInfoRefreshElementType {
 

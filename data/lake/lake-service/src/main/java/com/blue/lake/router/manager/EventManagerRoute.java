@@ -23,10 +23,10 @@ public class EventManagerRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> eventRouter(EventManagerHandler eventManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-lake/event");
+        RequestPredicate pathPredicate = path("/blue-lake");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/list", accept(APPLICATION_JSON), eventManagerHandler::listEvent)
+                .POST("/events", accept(APPLICATION_JSON), eventManagerHandler::listEvent)
                 .build();
 
         return nest(pathPredicate, routerFunction);

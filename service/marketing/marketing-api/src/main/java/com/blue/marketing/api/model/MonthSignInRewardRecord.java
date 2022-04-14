@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * month sign record
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class MonthSignInRewardRecord implements Serializable {

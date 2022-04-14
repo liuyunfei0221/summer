@@ -25,7 +25,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * Registrar for BlueLifecycle obj
  *
- * @author DarkBlue
+ * @author liuyunfei
  * @date 2021/8/15
  * @apiNote
  */

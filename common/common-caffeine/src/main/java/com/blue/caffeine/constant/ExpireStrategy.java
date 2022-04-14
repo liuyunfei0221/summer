@@ -3,7 +3,7 @@ package com.blue.caffeine.constant;
 /**
  * cache expire strategy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum ExpireStrategy {
 

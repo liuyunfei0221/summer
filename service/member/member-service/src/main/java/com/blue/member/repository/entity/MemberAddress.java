@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * member address entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class MemberAddress implements Serializable {

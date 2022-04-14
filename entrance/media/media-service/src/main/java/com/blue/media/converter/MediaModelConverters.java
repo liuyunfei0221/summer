@@ -3,9 +3,8 @@ package com.blue.media.converter;
 /**
  * model converters in media project
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class MediaModelConverters {
 
 

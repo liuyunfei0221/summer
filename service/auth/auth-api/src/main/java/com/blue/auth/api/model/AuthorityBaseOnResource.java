@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Authority base on resource
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class AuthorityBaseOnResource implements Serializable {

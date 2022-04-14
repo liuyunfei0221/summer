@@ -1,1641 +1,1857 @@
 {
 	"info": {
-		"_postman_id": "03962158-cb6d-4f1e-9424-e7d7834e5e3c",
+		"_postman_id": "bbfef19b-b7d6-4afb-abb9-56e3206db1e4",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "成员注册",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"phone\":\"13131693996\",\r\n    \"email\":\"liuyunfei0221@outloot.com\",\r\n    \"access\":\"12345678\",\r\n    \"name\":\"刘云飞\",\r\n    \"gender\":1\r\n}"
-				},
-				"url": {
-					"raw": "localhost:10000/blue-member/registry",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-member",
-						"registry"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "账号密码登录",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"credentialType\":\"EP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"liuyunfei@outloot.com\",\r\n        \"access\":\"12345678\"\r\n    }\r\n}"
-				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/auth/login",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"auth",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "获取短信自动登录验证码",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"PVL_WAR\",\r\n    \"destination\":\"18633783158\"\r\n}"
-				},
-				"url": {
-					"raw": "localhost:16000/blue-verify/verify/generate",
-					"host": [
-						"localhost"
-					],
-					"port": "16000",
-					"path": [
-						"blue-verify",
-						"verify",
-						"generate"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "短信验证码登录并自动注册",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"3309814\"\r\n    }\r\n}"
-				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/auth/login",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"auth",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "使用refresh token刷新access token",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMjI5M2FhYmM2MWY4MjBhZjhjY2Y1YTYwMzM4ODRhOTYzZWFlNTZjZDhmOGRlYjRjMGJlZWFkMDI5ZGI4NDQyNmJiYTgwOWVkM2MzZWVmZjkyMDViMGU1YzczZDk1NzRjNWJjODZjYjlhMDkyNzk0YmRjNGZmMjRlMzY3N2Q3ZGIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjIwOSIsIm5iZiI6MTY0OTMzNjIwOSwidCI6IjFMdEs3Wmhha1VCIiwiZyI6Ik0iLCJoIjoiWk53VVFJY0RDRDMiLCJibHVlRXhwaXJlc0F0U3RhbXAiOjE2NTIwMTQ2MDk1NzYsImkiOiIzMjc5ODIxMTczOTQ4NDE2MSIsImV4cCI6MTY1MjAxNDYwOSwiaWF0IjoxNjQ5MzM2MjA5LCJqdGkiOiJ4TGJCZThPbDJnQ244Z0sxVDMxNzVTS001QjdBRTVjSSIsIm4iOiJQVkFSIn0.U8IzlH_1_zJbcUD6oVG2IpQw-W1dAcyjnrwanz8trQD9w9lELaEDDE3jmVjE8a4FJR3MqAxVzzaT5-vMgVRF0w",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-auth/auth/refreshAccess",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"auth",
-						"refreshAccess"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "刷新密钥",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-auth/auth/updateSecret",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"auth",
-						"updateSecret"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "注销登录",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYmU0ZTYzMTE5NzE3MGY2YmE5MWYzNmNkOWJlMzViN2VlMmMzYzhlOWI0NGI4ZGRlZGUyMzM5MDM2ZWU2MzA2MGVhYzZkYjNmNzAxMTBhNTBlM2U5YWE2MDQwM2QxMmRiMzIwZTU0NzgwOTE4N2M2NDZhYjFmN2I1NTIwNzZlYWQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjI5MSIsIm5iZiI6MTY0OTMzNjI5MSwidCI6Img5MVNoY1JXUGtrIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDY5MTIxMSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0NjkxLCJpYXQiOjE2NDkzMzYyOTEsImp0aSI6ImhpdXl2ZVFzbUJuRlA2SzlSbFRYdmpuQnk4THcxTTNKIiwibiI6IlBWQVIifQ.oCrKLdRtUNlAPMnQQM_jBkgDwhIGrpgPUhGIjRyMOAwIdYTSaVBe0lA608e6qWh4yvdXOR0zWTP8SyIEKbkDpg",
-						"type": "text"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10001/blue-auth/auth/logout",
-					"host": [
-						"localhost"
-					],
-					"port": "10001",
-					"path": [
-						"blue-auth",
-						"auth",
-						"logout"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "注销全部登录端点",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYmVlMzE4MjFiMTM3YTExYzJlZDM2ZmRjYjcxMTQwZDBmNDRkOGNkMWE4YTVkMGMyZDVmNTdmMzMyZTI1Y2RkMmQxZjc3YzMxYWUyOGEwZWU0ODAyM2ZjYzZjNTI2ZGNkNDRkYmMxODliMGNkNDNhZjIwZjA5NmRkZjk3N2UyNWYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTI1MTk0NiIsIm5iZiI6MTY0OTI1MTk0NiwidCI6IlNjbVplTTJ5aFI2IiwiZyI6Ik0iLCJoIjoiQl9TTjozMjcwNjgyMDIwNDEzNDQwMl9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MTkzMDM0Njk4MCwiaSI6IjMyNzA2ODIwMjA0MTM0NDAyIiwiZXhwIjoxNjUxOTMwMzQ2LCJpYXQiOjE2NDkyNTE5NDYsImp0aSI6InZyS2g5VVpXczZjMTV2NzhHTVEzSGtwRUxFbGl1WncwIiwibiI6IlBWQVIifQ.zeuIHM9fjPh4X9SN_c7BDipeeRAlsnVzS8-M1750aqhHA9o16lMMdhcDzSnxNwvPwBl7f6Je8c-dWKu1R5T4sg",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10001/blue-auth/auth/logoutEverywhere",
-					"host": [
-						"localhost"
-					],
-					"port": "10001",
-					"path": [
-						"blue-auth",
-						"auth",
-						"logoutEverywhere"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "查询用户信息",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-member/member",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-member",
-						"member"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "首页公告查询",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZ1VFUkJNS1BiSW9FYVZ2biIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJhdSIsImQiOiJNT0JJTEUiLCJnIjoiUm9ZelZFRHB0S1EiLCJpc3MiOiJfYmx1ZV8xNjI2NzUxODg0NjI3IiwiaSI6IjgyMDE5ODg0NTgxNTE5MzYiLCJrIjoiQl9TTjo4MjAxOTg4NDU4MTUxOTM2X0FQX01PQklMRSIsImwiOiJBUCIsInAiOiJNRnd3RFFZSktvWklodmNOQVFFQkJRQURTd0F3U0FKQkFQQ2M1Z2p0cHFYNmlPUlhZb3ljYnJBV2plWGpOd1lGZ08rUlhxL2l6N2IzYlI3YUxTcUcrZXpmckoyWGEwLzRyR1pyWlVvbE9HWjc4R1BONXB6VlJBTUNBd0VBQVE9PSIsImF1ZCI6ImNuIiwiciI6IjEzOTU5NDg1ODUxNSIsIm5iZiI6MTYyNjc1MTg4NCwiZXhwIjoxNjI5NDMwMjg0LCJpYXQiOjE2MjY3NTE4ODQsImp0aSI6InVrckZwSEpza0JOUllaaFoifQ.A-oE_g7U5hDop0PvgCoDBjqrexWeLTuONypC-4IvCv4",
-						"type": "text"
-					},
-					{
-						"key": "Metadata",
-						"value": "{\"meta\":\"123456789\"}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-portal/bulletin/1",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-portal",
-						"bulletin",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "查询当月签到记录",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "localhost:10000/blue-marketing/signIn",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-marketing",
-						"signIn"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "当日签到",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-marketing/signIn",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-marketing",
-						"signIn"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "前台查询余额",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-finance/finance/balance",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-finance",
-						"finance",
-						"balance"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "查询文件列表",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10\r\n}"
-				},
-				"url": {
-					"raw": "localhost:13000/blue-media/attachment/list",
-					"host": [
-						"localhost"
-					],
-					"port": "13000",
-					"path": [
-						"blue-media",
-						"attachment",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "文件上传",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "multipart/form-data",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "attachments",
-							"type": "file",
-							"src": [
-								"/E:/tempFile/source/walls/a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg",
-								"/E:/tempFile/source/walls/a_bridge_to_autumn-wallpaper-3840x2160.jpg",
-								"/E:/tempFile/source/walls/a_cloudy_day-wallpaper-3840x2160.jpg",
-								"/E:/tempFile/source/walls/a_different_world-wallpaper-3840x2160.jpg",
-								"/E:/tempFile/source/walls/a_field_of_poppies-wallpaper-3840x2160.jpg",
-								"/E:/tempFile/source/walls/a_flower_for_you-wallpaper-3840x2160.jpg",
-								"/E:/tempFile/source/walls/a_foggy_morning-wallpaper-3840x2160.jpg",
-								"/E:/tempFile/source/walls/a_mid_summers_sunrise-wallpaper-3840x2160.jpg",
-								"/E:/tempFile/source/walls/a_poolside_view_of_a_crystal_las_vegas-wallpaper-3840x2160.jpg",
-								"/E:/tempFile/source/walls/a_private_road-wallpaper-3840x2160.jpg",
-								"/E:/tempFile/source/walls/a_quiet_place_infrared_photography-wallpaper-1920x1080.jpg",
-								"/E:/tempFile/source/walls/a_spring_afternoon-wallpaper-3840x2160.jpg"
+			"name": "base",
+			"item": [
+				{
+					"name": "查询全部国家列表",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-base/countries",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-base",
+								"countries"
 							]
 						}
-					]
-				},
-				"url": {
-					"raw": "localhost:13000/blue-media/file/upload",
-					"host": [
-						"localhost"
-					],
-					"port": "13000",
-					"path": [
-						"blue-media",
-						"file",
-						"upload"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "文件下载",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
-						"type": "text"
 					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\":32798298712578712\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"response": []
+				},
+				{
+					"name": "根据国家id查询省/州列表",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:20000/blue-base/states/45",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"blue-base",
+								"states",
+								"45"
+							]
 						}
-					}
-				},
-				"url": {
-					"raw": "localhost:13000/blue-media/file/download",
-					"host": [
-						"localhost"
-					],
-					"port": "13000",
-					"path": [
-						"blue-media",
-						"file",
-						"download"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "前台网关解密测试",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMGNiNmVkNWIyNmRlYWRkYWYwNDRlN2I4MmYxMzI0MWMyZjZjYTdkOTM4YzYyZDVjNjBkOWRjNjA1NmQ4YzQzODk4YjdiMWMzNTRmYjAxOWRiOTBkMDMzNDdiZTY2M2Y5MjI3ODNkZDQwNDgxNDZkOGZjOTY2ZjkzMDU4MTMxNWQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk4MzcwOTcyLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTE5OTcwIiwibmJmIjoxNjQ0OTE5OTcwLCJ0Ijoia3VaWXpxaXZnem4iLCJleHAiOjE2NDc1OTgzNzAsImlhdCI6MTY0NDkxOTk3MCwianRpIjoiM2xtMjZjU0Jibnk0TzlQR1Yza1dhZ1dTVUtsanBaMVgifQ.pNR0JnVB9bQWfNLPL49umrVREaLEZjS9uEaPv2BWWsrLXrqcQcLAyxS08xx0L2mD2gnSQQ5IZKLORjbaYcwz5g",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"encrypted\":\"nVVpvfN9DDrGgI3P0wKYSfEMVnH5/+zc4lb7vQpVUUXjbI2uMGPD7KHPUcB3Y3ilnjAsZr3Wc/InhvAAWVEakRwwcwCkzYAjREhgHm6nw94DzIxhOnBHEbZrwAsBLuyPdcrhT4/XlC5wec06rUuCSBO3XFNWoNcIjjKc3n3zzgRq+EJ/Ygy7oEm3NMDjvzqNm676p5jGJj0lvpj2SFDcOyCY9J7Ff+4nI72tgwBUT/HTBO46YfL1jTYkWPRTbjLobJJ/yGx5EiYz02LSWhAlKuiPECB9TzAbbFdJ7CufErLCzKcB4drQUZWXZcZIVJ6VmTwcqn+SQukNIm2GLcib9A==\",\r\n    \"signature\":\"g5SsuIHVP+KtU969YxfmPmK3iDfviP0qqCu21Zvu7X3y02FApnkz+6X2zpOvD3wko1TeQCKY4j5MOVJ2dCEd6Q==\"\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-finance/withdraw",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-finance",
-						"withdraw"
-					]
-				},
-				"description": "网关加密测试"
-			},
-			"response": []
-		},
-		{
-			"name": "文件网关解密测试",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "根据省/州id查询城市列表",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-base/cities/2257",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-base",
+								"cities",
+								"2257"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMGNiNmVkNWIyNmRlYWRkYWYwNDRlN2I4MmYxMzI0MWMyZjZjYTdkOTM4YzYyZDVjNjBkOWRjNjA1NmQ4YzQzODk4YjdiMWMzNTRmYjAxOWRiOTBkMDMzNDdiZTY2M2Y5MjI3ODNkZDQwNDgxNDZkOGZjOTY2ZjkzMDU4MTMxNWQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk4MzcwOTcyLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTE5OTcwIiwibmJmIjoxNjQ0OTE5OTcwLCJ0Ijoia3VaWXpxaXZnem4iLCJleHAiOjE2NDc1OTgzNzAsImlhdCI6MTY0NDkxOTk3MCwianRpIjoiM2xtMjZjU0Jibnk0TzlQR1Yza1dhZ1dTVUtsanBaMVgifQ.pNR0JnVB9bQWfNLPL49umrVREaLEZjS9uEaPv2BWWsrLXrqcQcLAyxS08xx0L2mD2gnSQQ5IZKLORjbaYcwz5g",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"encrypted\":\"nVVpvfN9DDrGgI3P0wKYSfEMVnH5/+zc4lb7vQpVUUXjbI2uMGPD7KHPUcB3Y3ilnjAsZr3Wc/InhvAAWVEakRwwcwCkzYAjREhgHm6nw94DzIxhOnBHEbZrwAsBLuyPdcrhT4/XlC5wec06rUuCSBO3XFNWoNcIjjKc3n3zzgRq+EJ/Ygy7oEm3NMDjvzqNm676p5jGJj0lvpj2SFDcOyCY9J7Ff+4nI72tgwBUT/HTBO46YfL1jTYkWPRTbjLobJJ/yGx5EiYz02LSWhAlKuiPECB9TzAbbFdJ7CufErLCzKcB4drQUZWXZcZIVJ6VmTwcqn+SQukNIm2GLcib9A==\",\r\n    \"signature\":\"g5SsuIHVP+KtU969YxfmPmK3iDfviP0qqCu21Zvu7X3y02FApnkz+6X2zpOvD3wko1TeQCKY4j5MOVJ2dCEd6Q==\"\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:13000/blue-media/attachment/withdraw",
-					"host": [
-						"localhost"
-					],
-					"port": "13000",
-					"path": [
-						"blue-media",
-						"attachment",
-						"withdraw"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "模板调用测试",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "根据城市id查询地区列表",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-base/areas/19332",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-base",
+								"areas",
+								"19332"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-portal/formatter/index.html",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-portal",
-						"formatter",
-						"index.html"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "查询权限信息",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-auth/auth/authority",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"auth",
-						"authority"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "公益信息",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Accept-Language",
-						"value": "zh-CN;q=0.7,en;q=0.3",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-shine/shine",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-shine",
-						"shine"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "动态端点测试",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-finance/dynamic/1",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-finance",
-						"dynamic",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "测试字典类型",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-base/dictType",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-base",
-						"dictType"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "测试基础服务数据",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-base/bulletin/1",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-base",
-						"bulletin",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "后台成员列表查询",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-member/manager/member/list",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-member",
-						"manager",
-						"member",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "后台成员权限列表查询",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "临时数据移动",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:20000/blue-base/test/move",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"blue-base",
+								"test",
+								"move"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-member/manager/authority/list",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-member",
-						"manager",
-						"authority",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "后台资源列表查询",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "测试区域",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:20000/blue-base/test/region",
+							"host": [
+								"localhost"
+							],
+							"port": "20000",
+							"path": [
+								"blue-base",
+								"test",
+								"region"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/resource/list",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"resource",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "后台角色列表查询",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "测试基础服务数据",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-base/bulletin/1",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-base",
+								"bulletin",
+								"1"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/role/list",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"role",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "根据角色查询相关资源",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "测试字典类型",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-base/dictType",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-base",
+								"dictType"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\":9507591944175638\r\n}"
-				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/role/auth",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"role",
-						"auth"
-					]
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "根据资源查询相关角色",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+			"name": "verify",
+			"item": [
+				{
+					"name": "获取短信自动登录验证码",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"PVL_WAR\",\r\n    \"destination\":\"18633783158\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:16000/blue-verify/verify/generate",
+							"host": [
+								"localhost"
+							],
+							"port": "16000",
+							"path": [
+								"blue-verify",
+								"verify",
+								"generate"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\":9506121983229956\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/resource/auth",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"resource",
-						"auth"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "新增角色",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "发送注册验证码",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"businessType\":\"REG\",\r\n    \"destination\":\"liuyunfei0221@outloot.com\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:16000/blue-verify/verify/generate",
+							"host": [
+								"localhost"
+							],
+							"port": "16000",
+							"path": [
+								"blue-verify",
+								"verify",
+								"generate"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNmU3MDhhYzBiYWUzNDc3YjUxNDU3N2Y0ZDViZTZjN2YzNDRlYWRjMjI4ZDhmMmJlNjRjMTRmYjA2NTYxNjJhN2QxYTE0NWFhMmMzNDYzNTgwNTE2MWU0NTBkYzZiMWYzZjg4NmM3NDBmMGE3ZDlmMjMxZTNjNGE4MmUyNzAxMzgiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MzI4MDQ5NTcwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNjQ5NjQ5IiwibmJmIjoxNjQyNjQ5NjQ5LCJ0IjoiYlMweHBEZDlyYm8iLCJleHAiOjE2NDUzMjgwNDksImlhdCI6MTY0MjY0OTY0OSwianRpIjoiU2YzTmtEbE5OMTByS2ZpSTVOeWlzcERmRUIwN1c1SUkifQ.n5rvJ6rtElaQvat9aVj-1S9MQ38gOS2tFixi4QNE3gFr4MzoOOkE7bESEbBdmD63cqulG4bceWp8QlTJi7zC5w",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\":\"testaac\",\r\n    \"description\":\"test aaaaaaa\",\r\n    \"level\":10002\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/role",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"role"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "修改角色",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "生成图片验证码",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifyType\":\"IMAGE\",\r\n    \"businessType\":\"REGISTER\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:16000/blue-verify/verify/generate",
+							"host": [
+								"localhost"
+							],
+							"port": "16000",
+							"path": [
+								"blue-verify",
+								"verify",
+								"generate"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNmU3MDhhYzBiYWUzNDc3YjUxNDU3N2Y0ZDViZTZjN2YzNDRlYWRjMjI4ZDhmMmJlNjRjMTRmYjA2NTYxNjJhN2QxYTE0NWFhMmMzNDYzNTgwNTE2MWU0NTBkYzZiMWYzZjg4NmM3NDBmMGE3ZDlmMjMxZTNjNGE4MmUyNzAxMzgiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MzI4MDQ5NTcwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNjQ5NjQ5IiwibmJmIjoxNjQyNjQ5NjQ5LCJ0IjoiYlMweHBEZDlyYm8iLCJleHAiOjE2NDUzMjgwNDksImlhdCI6MTY0MjY0OTY0OSwianRpIjoiU2YzTmtEbE5OMTByS2ZpSTVOeWlzcERmRUIwN1c1SUkifQ.n5rvJ6rtElaQvat9aVj-1S9MQ38gOS2tFixi4QNE3gFr4MzoOOkE7bESEbBdmD63cqulG4bceWp8QlTJi7zC5w",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\":25548860994617345,\r\n    \"name\":\"testabcD\",\r\n    \"description\":\"test abcdefg\",\r\n    \"level\":10002\r\n}"
-				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/role",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"role"
-					]
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "删除角色",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+			"name": "auth",
+			"item": [
+				{
+					"name": "账号密码登录",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"loginType\":\"EP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"liuyunfei@outloot.com\",\r\n        \"access\":\"12345678\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/auth/login",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"login"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNmU3MDhhYzBiYWUzNDc3YjUxNDU3N2Y0ZDViZTZjN2YzNDRlYWRjMjI4ZDhmMmJlNjRjMTRmYjA2NTYxNjJhN2QxYTE0NWFhMmMzNDYzNTgwNTE2MWU0NTBkYzZiMWYzZjg4NmM3NDBmMGE3ZDlmMjMxZTNjNGE4MmUyNzAxMzgiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MzI4MDQ5NTcwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNjQ5NjQ5IiwibmJmIjoxNjQyNjQ5NjQ5LCJ0IjoiYlMweHBEZDlyYm8iLCJleHAiOjE2NDUzMjgwNDksImlhdCI6MTY0MjY0OTY0OSwianRpIjoiU2YzTmtEbE5OMTByS2ZpSTVOeWlzcERmRUIwN1c1SUkifQ.n5rvJ6rtElaQvat9aVj-1S9MQ38gOS2tFixi4QNE3gFr4MzoOOkE7bESEbBdmD63cqulG4bceWp8QlTJi7zC5w",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/role/25618703605301249",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"role",
-						"25618703605301249"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "新增资源",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+					"response": []
+				},
+				{
+					"name": "短信验证码登录并自动注册",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"4582655\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/auth/login",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"login"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDRlNmI0ZTNkMGY2YmY1NzUyN2ZlN2ZiNzlhOGNhNGZmMGUyNGVmMGRjNTg4MjhmOGMyMWQ3Y2YwZGMwMjBjOWQ4YjgzZmJmNWE5MzEwZmRiY2MyYzE5MTMwODIzM2RkMmQzNjBhNjc2N2ZlYWRmNjYzNzcyMWJiZTc3NjUzYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MjY3MDIxNzQwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNTg4NjIxIiwibmJmIjoxNjQyNTg4NjIxLCJ0IjoiOUtrVmtKcE9wRW4iLCJleHAiOjE2NDUyNjcwMjEsImlhdCI6MTY0MjU4ODYyMSwianRpIjoiZ3luOWFjS1hKalQ2ZFpBejJ3RE40d2RMblEyYXdtR28ifQ.sp1uCh7aw-izyVX0Js4ECrdB3YZU-ubatxkOuRdaB0uQUawCOPFIGSIl5qL_esur3AAmDqHKQuEZGVUN3G1hQw",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue_auth\",\r\n    \"uri\":\"/test/test\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource\",\r\n    \"description\":\"a test resource\"\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/resource",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"resource"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "修改资源",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "使用refresh token刷新access token",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNThlMjVhNGYzMzUwOTYzMTk0ZWIxZGQ2MzQzZDM0OTI2ZmI5ZGMzZjcwNjgwMDFmZWIxOTk2NmZlZDgwZDE2ZWQyNzUyNGVhY2M1N2I4NWM4NmIyNjBiZGJhNzI2OGE1NmYzMjVmYjg2MzIzYjQ0ODZhZjA2YTY0OWRhZDQzNzAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTY4MDAxMSIsIm5iZiI6MTY0OTY4MDAxMSwidCI6Inc0UzlBMEpuYVJJIiwiZyI6Ik0iLCJoIjoiOHhSaFViem9OZHUiLCJibHVlRXhwaXJlc0F0U3RhbXAiOjE2NTIzNTg0MTEzNDksImkiOiIzMzE2NzAzMzQ2NjA5MzU2OSIsImV4cCI6MTY1MjM1ODQxMSwiaWF0IjoxNjQ5NjgwMDExLCJqdGkiOiJxbHBjTGpucExsQkpOSEMxUTJ4M3pZRERPaFFzOW1KMiIsIm4iOiJQVkFSIn0.MtZDojRJ_YxRqEvkfnDCywk2XM1Rz4rR4eYdzZeHcoXshNs1oC4sqgJg7OTLRooj8bS2EoOq0C7rJ8YF9S21uA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-auth/auth/access/refresh",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"access",
+								"refresh"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDRlNmI0ZTNkMGY2YmY1NzUyN2ZlN2ZiNzlhOGNhNGZmMGUyNGVmMGRjNTg4MjhmOGMyMWQ3Y2YwZGMwMjBjOWQ4YjgzZmJmNWE5MzEwZmRiY2MyYzE5MTMwODIzM2RkMmQzNjBhNjc2N2ZlYWRmNjYzNzcyMWJiZTc3NjUzYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MjY3MDIxNzQwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNTg4NjIxIiwibmJmIjoxNjQyNTg4NjIxLCJ0IjoiOUtrVmtKcE9wRW4iLCJleHAiOjE2NDUyNjcwMjEsImlhdCI6MTY0MjU4ODYyMSwianRpIjoiZ3luOWFjS1hKalQ2ZFpBejJ3RE40d2RMblEyYXdtR28ifQ.sp1uCh7aw-izyVX0Js4ECrdB3YZU-ubatxkOuRdaB0uQUawCOPFIGSIl5qL_esur3AAmDqHKQuEZGVUN3G1hQw",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\":25556541469884418,\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue-lake\",\r\n    \"uri\":\"/event/list\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource111\",\r\n    \"description\":\"a test resource\"\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/resource",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"resource"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "删除资源",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "刷新密钥",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-auth/auth/secret",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"secret"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDRlNmI0ZTNkMGY2YmY1NzUyN2ZlN2ZiNzlhOGNhNGZmMGUyNGVmMGRjNTg4MjhmOGMyMWQ3Y2YwZGMwMjBjOWQ4YjgzZmJmNWE5MzEwZmRiY2MyYzE5MTMwODIzM2RkMmQzNjBhNjc2N2ZlYWRmNjYzNzcyMWJiZTc3NjUzYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MjY3MDIxNzQwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNTg4NjIxIiwibmJmIjoxNjQyNTg4NjIxLCJ0IjoiOUtrVmtKcE9wRW4iLCJleHAiOjE2NDUyNjcwMjEsImlhdCI6MTY0MjU4ODYyMSwianRpIjoiZ3luOWFjS1hKalQ2ZFpBejJ3RE40d2RMblEyYXdtR28ifQ.sp1uCh7aw-izyVX0Js4ECrdB3YZU-ubatxkOuRdaB0uQUawCOPFIGSIl5qL_esur3AAmDqHKQuEZGVUN3G1hQw",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/resource/25556541469884418",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"resource",
-						"25556541469884418"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "修改角色的资源访问权限",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+					"response": []
+				},
+				{
+					"name": "添加认证方式",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"credential\":\"liuyunfei0221@outloot.com\",\r\n    \"verificationCode\":\"123456\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/auth/credential",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"credential"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDRlNmI0ZTNkMGY2YmY1NzUyN2ZlN2ZiNzlhOGNhNGZmMGUyNGVmMGRjNTg4MjhmOGMyMWQ3Y2YwZGMwMjBjOWQ4YjgzZmJmNWE5MzEwZmRiY2MyYzE5MTMwODIzM2RkMmQzNjBhNjc2N2ZlYWRmNjYzNzcyMWJiZTc3NjUzYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MjY3MDIxNzQwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNTg4NjIxIiwibmJmIjoxNjQyNTg4NjIxLCJ0IjoiOUtrVmtKcE9wRW4iLCJleHAiOjE2NDUyNjcwMjEsImlhdCI6MTY0MjU4ODYyMSwianRpIjoiZ3luOWFjS1hKalQ2ZFpBejJ3RE40d2RMblEyYXdtR28ifQ.sp1uCh7aw-izyVX0Js4ECrdB3YZU-ubatxkOuRdaB0uQUawCOPFIGSIl5qL_esur3AAmDqHKQuEZGVUN3G1hQw",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"roleId\":9507591944175638,\r\n    \"resIds\":[9505726846205953,9505726846205965]\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/relation/role-res",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"relation",
-						"role-res"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "修改成员的角色",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
+				{
+					"name": "注销登录",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYmU0ZTYzMTE5NzE3MGY2YmE5MWYzNmNkOWJlMzViN2VlMmMzYzhlOWI0NGI4ZGRlZGUyMzM5MDM2ZWU2MzA2MGVhYzZkYjNmNzAxMTBhNTBlM2U5YWE2MDQwM2QxMmRiMzIwZTU0NzgwOTE4N2M2NDZhYjFmN2I1NTIwNzZlYWQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjI5MSIsIm5iZiI6MTY0OTMzNjI5MSwidCI6Img5MVNoY1JXUGtrIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDY5MTIxMSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0NjkxLCJpYXQiOjE2NDkzMzYyOTEsImp0aSI6ImhpdXl2ZVFzbUJuRlA2SzlSbFRYdmpuQnk4THcxTTNKIiwibiI6IlBWQVIifQ.oCrKLdRtUNlAPMnQQM_jBkgDwhIGrpgPUhGIjRyMOAwIdYTSaVBe0lA608e6qWh4yvdXOR0zWTP8SyIEKbkDpg",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10001/blue-auth/auth/logout",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"blue-auth",
+								"auth",
+								"logout"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMjU5N2M3NDI3Y2QxYmQxYjE2Y2RjMDA4ZWZlZDE2Mzg3YzVmNDM3NWMxYjhjYTM3NmVmMWE1MjFkZDU0MTE2MWYwNDkyZjJmNmUzMzRkNzlkNjdiNGNkMjNjODQxZGMyZGI1NzMwY2RkYzk4MjgyODIyYjM1YTA3ODc1ZDhiZDAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MzI1OTgxMDU1LCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNjQ3NTgxIiwibmJmIjoxNjQyNjQ3NTgxLCJ0IjoiUW10SWhPZXR2UVgiLCJleHAiOjE2NDUzMjU5ODEsImlhdCI6MTY0MjY0NzU4MSwianRpIjoic1Rrck5FNndqNUVGZFNHbVNGcHRQRzFRdFVwS1M2dkkifQ.Ux6PSg9uZKmiqhMW0aZKRfRXc411e79YPfo__H1OlqXFs-On_UH1tWMv3arZNV_T8g0M3JNCdZ6L5Z1OA4wNhQ",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"memberId\":25548843814748161,\r\n    \"roleId\":9507591944175638\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-auth/manager/relation/mem-role",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-auth",
-						"manager",
-						"relation",
-						"mem-role"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "生成验证码",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"verifyType\":\"IMAGE\",\r\n    \"businessType\":\"REGISTER\"\r\n}"
-				},
-				"url": {
-					"raw": "localhost:16000/blue-verify/verify/generate",
-					"host": [
-						"localhost"
-					],
-					"port": "16000",
-					"path": [
-						"blue-verify",
-						"verify",
-						"generate"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "测试查询操作列表",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "default"
+				{
+					"name": "注销全部登录端点",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYmVlMzE4MjFiMTM3YTExYzJlZDM2ZmRjYjcxMTQwZDBmNDRkOGNkMWE4YTVkMGMyZDVmNTdmMzMyZTI1Y2RkMmQxZjc3YzMxYWUyOGEwZWU0ODAyM2ZjYzZjNTI2ZGNkNDRkYmMxODliMGNkNDNhZjIwZjA5NmRkZjk3N2UyNWYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTI1MTk0NiIsIm5iZiI6MTY0OTI1MTk0NiwidCI6IlNjbVplTTJ5aFI2IiwiZyI6Ik0iLCJoIjoiQl9TTjozMjcwNjgyMDIwNDEzNDQwMl9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MTkzMDM0Njk4MCwiaSI6IjMyNzA2ODIwMjA0MTM0NDAyIiwiZXhwIjoxNjUxOTMwMzQ2LCJpYXQiOjE2NDkyNTE5NDYsImp0aSI6InZyS2g5VVpXczZjMTV2NzhHTVEzSGtwRUxFbGl1WncwIiwibiI6IlBWQVIifQ.zeuIHM9fjPh4X9SN_c7BDipeeRAlsnVzS8-M1750aqhHA9o16lMMdhcDzSnxNwvPwBl7f6Je8c-dWKu1R5T4sg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10001/blue-auth/auth/logout",
+							"host": [
+								"localhost"
+							],
+							"port": "10001",
+							"path": [
+								"blue-auth",
+								"auth",
+								"logout"
+							]
+						}
 					},
-					{
-						"key": "Authorization",
-						"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNzNjZTcyODIzZjgwYzdmMDFiOGU2YzQwNTk1Mzc3NDFiNjdiMmMyNDEzMThlNGE4NmU1OGZiNmEyYjI3ZGIxOGYyZWUzMzI0NjQ3OTg2NDlhYzAxNzhlZWViMzgzMjVhMGZhMTliZTdhNmFhZDBiYjMwZTcxYzQ0ZTlkOTQzY2MiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0NzU4MDcxNiIsIm5iZiI6MTY0NzU4MDcxNiwidCI6ImRCc1Zid3o4V0hXIiwiZyI6Ik0iLCJoIjoiQl9TTjozMDU2ODY3MDU5MzgxMDQzM19DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MDI1OTExNjA1OSwiaSI6IjMwNTY4NjcwNTkzODEwNDMzIiwiZXhwIjoxNjUwMjU5MTE2LCJpYXQiOjE2NDc1ODA3MTYsImp0aSI6Ik9nTkFzWU4ybTgwaHU0ekRvYjBPWTZ4MGRIbVVoNGtHIiwibiI6IlBWQVIifQ.-hrKAvKMf6wMlIsB6ZEkPv5ygE0_yLVisr_0PQ4zJKtNUmn2ORXzbXxacYroVwIIoKbyB6014Ey6U5ZMuqtkpQ",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"limit\":0,\r\n    \"rows\":100\r\n}"
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-lake/event/list",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-lake",
-						"event",
-						"list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "测试邮件发送",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "default"
-					}
-				],
-				"url": {
-					"raw": "localhost:13000/blue-media/mail/send",
-					"host": [
-						"localhost"
-					],
-					"port": "13000",
-					"path": [
-						"blue-media",
-						"mail",
-						"send"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "测试邮件读取",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:13000/blue-media/mail/read",
-					"host": [
-						"localhost"
-					],
-					"port": "13000",
-					"path": [
-						"blue-media",
-						"mail",
-						"read"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "查看活跃",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"statisticsType\":\"MA\",\r\n    \"statisticsRange\":\"D\"\r\n}"
+				{
+					"name": "设置/修改密码",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"verificationCode\":\"123456\",\r\n    \"access\":\"password\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/auth/access",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"access"
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-analyze/statistics/active/simple",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-analyze",
-						"statistics",
-						"active",
-						"simple"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "聚合查看活跃",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"statisticsTypes\":[\"MA\"],\r\n    \"statisticsRanges\":[\"D\"]\r\n}"
+				{
+					"name": "重置/找回密码",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"credential\":\"18633783158\",\r\n    \"verificationCode\":\"123456\",\r\n    \"access\":\"password\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/auth/access",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"access"
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-analyze/statistics/active/merge",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-analyze",
-						"statistics",
-						"active",
-						"merge"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "查看活跃统计",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
+				{
+					"name": "查询权限信息",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-auth/auth/authority",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"authority"
+							]
+						}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:10000/blue-analyze/statistics/active/summary",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-analyze",
-						"statistics",
-						"active",
-						"summary"
-					]
+				{
+					"name": "后台管理注销指定用户登录态",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMjU5N2M3NDI3Y2QxYmQxYjE2Y2RjMDA4ZWZlZDE2Mzg3YzVmNDM3NWMxYjhjYTM3NmVmMWE1MjFkZDU0MTE2MWYwNDkyZjJmNmUzMzRkNzlkNjdiNGNkMjNjODQxZGMyZGI1NzMwY2RkYzk4MjgyODIyYjM1YTA3ODc1ZDhiZDAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MzI1OTgxMDU1LCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNjQ3NTgxIiwibmJmIjoxNjQyNjQ3NTgxLCJ0IjoiUW10SWhPZXR2UVgiLCJleHAiOjE2NDUzMjU5ODEsImlhdCI6MTY0MjY0NzU4MSwianRpIjoic1Rrck5FNndqNUVGZFNHbVNGcHRQRzFRdFVwS1M2dkkifQ.Ux6PSg9uZKmiqhMW0aZKRfRXc411e79YPfo__H1OlqXFs-On_UH1tWMv3arZNV_T8g0M3JNCdZ6L5Z1OA4wNhQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":11111\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/auth",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台资源列表查询",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/resources",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"resources"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "新增资源",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDRlNmI0ZTNkMGY2YmY1NzUyN2ZlN2ZiNzlhOGNhNGZmMGUyNGVmMGRjNTg4MjhmOGMyMWQ3Y2YwZGMwMjBjOWQ4YjgzZmJmNWE5MzEwZmRiY2MyYzE5MTMwODIzM2RkMmQzNjBhNjc2N2ZlYWRmNjYzNzcyMWJiZTc3NjUzYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MjY3MDIxNzQwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNTg4NjIxIiwibmJmIjoxNjQyNTg4NjIxLCJ0IjoiOUtrVmtKcE9wRW4iLCJleHAiOjE2NDUyNjcwMjEsImlhdCI6MTY0MjU4ODYyMSwianRpIjoiZ3luOWFjS1hKalQ2ZFpBejJ3RE40d2RMblEyYXdtR28ifQ.sp1uCh7aw-izyVX0Js4ECrdB3YZU-ubatxkOuRdaB0uQUawCOPFIGSIl5qL_esur3AAmDqHKQuEZGVUN3G1hQw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue_auth\",\r\n    \"uri\":\"/test/test\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource\",\r\n    \"description\":\"a test resource\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/resource",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"resource"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改资源",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDRlNmI0ZTNkMGY2YmY1NzUyN2ZlN2ZiNzlhOGNhNGZmMGUyNGVmMGRjNTg4MjhmOGMyMWQ3Y2YwZGMwMjBjOWQ4YjgzZmJmNWE5MzEwZmRiY2MyYzE5MTMwODIzM2RkMmQzNjBhNjc2N2ZlYWRmNjYzNzcyMWJiZTc3NjUzYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MjY3MDIxNzQwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNTg4NjIxIiwibmJmIjoxNjQyNTg4NjIxLCJ0IjoiOUtrVmtKcE9wRW4iLCJleHAiOjE2NDUyNjcwMjEsImlhdCI6MTY0MjU4ODYyMSwianRpIjoiZ3luOWFjS1hKalQ2ZFpBejJ3RE40d2RMblEyYXdtR28ifQ.sp1uCh7aw-izyVX0Js4ECrdB3YZU-ubatxkOuRdaB0uQUawCOPFIGSIl5qL_esur3AAmDqHKQuEZGVUN3G1hQw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":25556541469884418,\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue-lake\",\r\n    \"uri\":\"/event/list\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource111\",\r\n    \"description\":\"a test resource\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/resource",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"resource"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "删除资源",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDRlNmI0ZTNkMGY2YmY1NzUyN2ZlN2ZiNzlhOGNhNGZmMGUyNGVmMGRjNTg4MjhmOGMyMWQ3Y2YwZGMwMjBjOWQ4YjgzZmJmNWE5MzEwZmRiY2MyYzE5MTMwODIzM2RkMmQzNjBhNjc2N2ZlYWRmNjYzNzcyMWJiZTc3NjUzYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MjY3MDIxNzQwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNTg4NjIxIiwibmJmIjoxNjQyNTg4NjIxLCJ0IjoiOUtrVmtKcE9wRW4iLCJleHAiOjE2NDUyNjcwMjEsImlhdCI6MTY0MjU4ODYyMSwianRpIjoiZ3luOWFjS1hKalQ2ZFpBejJ3RE40d2RMblEyYXdtR28ifQ.sp1uCh7aw-izyVX0Js4ECrdB3YZU-ubatxkOuRdaB0uQUawCOPFIGSIl5qL_esur3AAmDqHKQuEZGVUN3G1hQw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/resource/25556541469884418",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"resource",
+								"25556541469884418"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据资源查询相关角色",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":9506121983229956\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/resource/auth",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"resource",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台角色列表查询",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/roles",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "新增角色",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNmU3MDhhYzBiYWUzNDc3YjUxNDU3N2Y0ZDViZTZjN2YzNDRlYWRjMjI4ZDhmMmJlNjRjMTRmYjA2NTYxNjJhN2QxYTE0NWFhMmMzNDYzNTgwNTE2MWU0NTBkYzZiMWYzZjg4NmM3NDBmMGE3ZDlmMjMxZTNjNGE4MmUyNzAxMzgiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MzI4MDQ5NTcwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNjQ5NjQ5IiwibmJmIjoxNjQyNjQ5NjQ5LCJ0IjoiYlMweHBEZDlyYm8iLCJleHAiOjE2NDUzMjgwNDksImlhdCI6MTY0MjY0OTY0OSwianRpIjoiU2YzTmtEbE5OMTByS2ZpSTVOeWlzcERmRUIwN1c1SUkifQ.n5rvJ6rtElaQvat9aVj-1S9MQ38gOS2tFixi4QNE3gFr4MzoOOkE7bESEbBdmD63cqulG4bceWp8QlTJi7zC5w",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"testaac\",\r\n    \"description\":\"test aaaaaaa\",\r\n    \"level\":10002\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/role",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改角色",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNmU3MDhhYzBiYWUzNDc3YjUxNDU3N2Y0ZDViZTZjN2YzNDRlYWRjMjI4ZDhmMmJlNjRjMTRmYjA2NTYxNjJhN2QxYTE0NWFhMmMzNDYzNTgwNTE2MWU0NTBkYzZiMWYzZjg4NmM3NDBmMGE3ZDlmMjMxZTNjNGE4MmUyNzAxMzgiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MzI4MDQ5NTcwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNjQ5NjQ5IiwibmJmIjoxNjQyNjQ5NjQ5LCJ0IjoiYlMweHBEZDlyYm8iLCJleHAiOjE2NDUzMjgwNDksImlhdCI6MTY0MjY0OTY0OSwianRpIjoiU2YzTmtEbE5OMTByS2ZpSTVOeWlzcERmRUIwN1c1SUkifQ.n5rvJ6rtElaQvat9aVj-1S9MQ38gOS2tFixi4QNE3gFr4MzoOOkE7bESEbBdmD63cqulG4bceWp8QlTJi7zC5w",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":25548860994617345,\r\n    \"name\":\"testabcD\",\r\n    \"description\":\"test abcdefg\",\r\n    \"level\":10002\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/role",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "删除角色",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNmU3MDhhYzBiYWUzNDc3YjUxNDU3N2Y0ZDViZTZjN2YzNDRlYWRjMjI4ZDhmMmJlNjRjMTRmYjA2NTYxNjJhN2QxYTE0NWFhMmMzNDYzNTgwNTE2MWU0NTBkYzZiMWYzZjg4NmM3NDBmMGE3ZDlmMjMxZTNjNGE4MmUyNzAxMzgiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MzI4MDQ5NTcwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNjQ5NjQ5IiwibmJmIjoxNjQyNjQ5NjQ5LCJ0IjoiYlMweHBEZDlyYm8iLCJleHAiOjE2NDUzMjgwNDksImlhdCI6MTY0MjY0OTY0OSwianRpIjoiU2YzTmtEbE5OMTByS2ZpSTVOeWlzcERmRUIwN1c1SUkifQ.n5rvJ6rtElaQvat9aVj-1S9MQ38gOS2tFixi4QNE3gFr4MzoOOkE7bESEbBdmD63cqulG4bceWp8QlTJi7zC5w",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/role/25618703605301249",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"role",
+								"25618703605301249"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "根据角色查询相关资源",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":9507591944175638\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/role/auth",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"role",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改角色的资源访问权限",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDRlNmI0ZTNkMGY2YmY1NzUyN2ZlN2ZiNzlhOGNhNGZmMGUyNGVmMGRjNTg4MjhmOGMyMWQ3Y2YwZGMwMjBjOWQ4YjgzZmJmNWE5MzEwZmRiY2MyYzE5MTMwODIzM2RkMmQzNjBhNjc2N2ZlYWRmNjYzNzcyMWJiZTc3NjUzYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MjY3MDIxNzQwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNTg4NjIxIiwibmJmIjoxNjQyNTg4NjIxLCJ0IjoiOUtrVmtKcE9wRW4iLCJleHAiOjE2NDUyNjcwMjEsImlhdCI6MTY0MjU4ODYyMSwianRpIjoiZ3luOWFjS1hKalQ2ZFpBejJ3RE40d2RMblEyYXdtR28ifQ.sp1uCh7aw-izyVX0Js4ECrdB3YZU-ubatxkOuRdaB0uQUawCOPFIGSIl5qL_esur3AAmDqHKQuEZGVUN3G1hQw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roleId\":9507591944175638,\r\n    \"resIds\":[9505726846205953,9505726846205965]\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/relation/role-res",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"relation",
+								"role-res"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改成员的角色",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMjU5N2M3NDI3Y2QxYmQxYjE2Y2RjMDA4ZWZlZDE2Mzg3YzVmNDM3NWMxYjhjYTM3NmVmMWE1MjFkZDU0MTE2MWYwNDkyZjJmNmUzMzRkNzlkNjdiNGNkMjNjODQxZGMyZGI1NzMwY2RkYzk4MjgyODIyYjM1YTA3ODc1ZDhiZDAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MzI1OTgxMDU1LCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNjQ3NTgxIiwibmJmIjoxNjQyNjQ3NTgxLCJ0IjoiUW10SWhPZXR2UVgiLCJleHAiOjE2NDUzMjU5ODEsImlhdCI6MTY0MjY0NzU4MSwianRpIjoic1Rrck5FNndqNUVGZFNHbVNGcHRQRzFRdFVwS1M2dkkifQ.Ux6PSg9uZKmiqhMW0aZKRfRXc411e79YPfo__H1OlqXFs-On_UH1tWMv3arZNV_T8g0M3JNCdZ6L5Z1OA4wNhQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"memberId\":25548843814748161,\r\n    \"roleId\":9507591944175638\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/relation/mem-role",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"relation",
+								"mem-role"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "查询全部国家列表",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-base/countries",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-base",
-						"countries"
-					]
+			"name": "member",
+			"item": [
+				{
+					"name": "成员注册",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone\":\"13131693996\",\r\n    \"phoneVerify\":\"2248833\",\r\n    \"email\":\"liuyunfei0221@outloot.com\",\r\n    \"emailVerify\":\"8314555\",\r\n    \"access\":\"12345678\",\r\n    \"name\":\"刘云飞\",\r\n    \"gender\":1\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-member/registry",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-member",
+								"registry"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "查询用户信息",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYmU5MGQzY2I5NTRkMjc3YjgzMWE4NjNmYmUzZDExYWVkZWI2N2JkYjg5YTk1YTNmZjMxNzVmYTNkOGJiZWI0ZWY5MzUwMDAzZjFkNWZiMTc1ZmU2ZmJlYTljYjYwNDI5MjlhMzU5OGIxMjBhYWY3ZTMyYTFiNWIyZDI0YjU0NjUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTY4MDA3MSIsIm5iZiI6MTY0OTY4MDA3MSwidCI6Im1XeWVUQUI5UW1UIiwiZyI6Ik0iLCJoIjoiQl9TTjozMzE2NzAzMzQ2NjA5MzU2OV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjM1ODQ3MTA2MSwiaSI6IjMzMTY3MDMzNDY2MDkzNTY5IiwiZXhwIjoxNjUyMzU4NDcxLCJpYXQiOjE2NDk2ODAwNzEsImp0aSI6IkpobUV4SnNCR204QVY0R2JsZ2pkQlZCRXJQNGFrdDNlIiwibiI6IlBWQVIifQ.rz69Bet-s0PhAINC3O22vx2swuv-bHUss_p-hbEyhEE4nxe009dLiEgfEV12n3vwnOLqcSkZ_z8h2mCwIs_8aw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-member/member",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-member",
+								"member"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台成员列表查询",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-member/manager/members",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-member",
+								"manager",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台成员权限列表查询",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZjNhZWZkZDIwYWNjYTIzMWYwMzAxMGQwM2E4OTJmYWI3N2Y0YzlhM2E3NTBhOWExMGMwZjk2OGFlMGZjNjgwMDYzZDQ1YTZlNTkxOWQyNjE1N2M4ZWVlYzhkMmFmMTM0MTQyM2JmNDk4MTkwN2I3Mjk3NmFhODAxNTkwOWQyZGYiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NjAyNzQzMzkwLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTI0MzQzIiwibmJmIjoxNjQ0OTI0MzQzLCJ0IjoiQ1d0bTlCMFk5enkiLCJleHAiOjE2NDc2MDI3NDMsImlhdCI6MTY0NDkyNDM0MywianRpIjoiTFFXWEhoS0JZUTFyVXF4dlpyMndSaTRVazJsVEowbm8ifQ.Bzv63GHt2jbqwpsI2N5N64A9nvxEFmNq--DUI8EPAOcCCC99gt3QCWaa5QzJZ_q4O-hBAgw0zAaPqjZNsGuzeg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-member/manager/authorities",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-member",
+								"manager",
+								"authorities"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "根据国家id查询省/州列表",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:20000/blue-base/states/45",
-					"host": [
-						"localhost"
-					],
-					"port": "20000",
-					"path": [
-						"blue-base",
-						"states",
-						"45"
-					]
+			"name": "finance",
+			"item": [
+				{
+					"name": "前台查询余额",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-finance/finance/balance",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-finance",
+								"finance",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "前台网关解密测试",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMGNiNmVkNWIyNmRlYWRkYWYwNDRlN2I4MmYxMzI0MWMyZjZjYTdkOTM4YzYyZDVjNjBkOWRjNjA1NmQ4YzQzODk4YjdiMWMzNTRmYjAxOWRiOTBkMDMzNDdiZTY2M2Y5MjI3ODNkZDQwNDgxNDZkOGZjOTY2ZjkzMDU4MTMxNWQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk4MzcwOTcyLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTE5OTcwIiwibmJmIjoxNjQ0OTE5OTcwLCJ0Ijoia3VaWXpxaXZnem4iLCJleHAiOjE2NDc1OTgzNzAsImlhdCI6MTY0NDkxOTk3MCwianRpIjoiM2xtMjZjU0Jibnk0TzlQR1Yza1dhZ1dTVUtsanBaMVgifQ.pNR0JnVB9bQWfNLPL49umrVREaLEZjS9uEaPv2BWWsrLXrqcQcLAyxS08xx0L2mD2gnSQQ5IZKLORjbaYcwz5g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"encrypted\":\"nVVpvfN9DDrGgI3P0wKYSfEMVnH5/+zc4lb7vQpVUUXjbI2uMGPD7KHPUcB3Y3ilnjAsZr3Wc/InhvAAWVEakRwwcwCkzYAjREhgHm6nw94DzIxhOnBHEbZrwAsBLuyPdcrhT4/XlC5wec06rUuCSBO3XFNWoNcIjjKc3n3zzgRq+EJ/Ygy7oEm3NMDjvzqNm676p5jGJj0lvpj2SFDcOyCY9J7Ff+4nI72tgwBUT/HTBO46YfL1jTYkWPRTbjLobJJ/yGx5EiYz02LSWhAlKuiPECB9TzAbbFdJ7CufErLCzKcB4drQUZWXZcZIVJ6VmTwcqn+SQukNIm2GLcib9A==\",\r\n    \"signature\":\"g5SsuIHVP+KtU969YxfmPmK3iDfviP0qqCu21Zvu7X3y02FApnkz+6X2zpOvD3wko1TeQCKY4j5MOVJ2dCEd6Q==\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-finance/withdraw",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-finance",
+								"withdraw"
+							]
+						},
+						"description": "网关加密测试"
+					},
+					"response": []
+				},
+				{
+					"name": "动态端点测试",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-finance/dynamic/1",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-finance",
+								"dynamic",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "根据省/州id查询城市列表",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-base/cities/2257",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-base",
-						"cities",
-						"2257"
-					]
+			"name": "portal",
+			"item": [
+				{
+					"name": "首页公告查询",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZ1VFUkJNS1BiSW9FYVZ2biIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJhdSIsImQiOiJNT0JJTEUiLCJnIjoiUm9ZelZFRHB0S1EiLCJpc3MiOiJfYmx1ZV8xNjI2NzUxODg0NjI3IiwiaSI6IjgyMDE5ODg0NTgxNTE5MzYiLCJrIjoiQl9TTjo4MjAxOTg4NDU4MTUxOTM2X0FQX01PQklMRSIsImwiOiJBUCIsInAiOiJNRnd3RFFZSktvWklodmNOQVFFQkJRQURTd0F3U0FKQkFQQ2M1Z2p0cHFYNmlPUlhZb3ljYnJBV2plWGpOd1lGZ08rUlhxL2l6N2IzYlI3YUxTcUcrZXpmckoyWGEwLzRyR1pyWlVvbE9HWjc4R1BONXB6VlJBTUNBd0VBQVE9PSIsImF1ZCI6ImNuIiwiciI6IjEzOTU5NDg1ODUxNSIsIm5iZiI6MTYyNjc1MTg4NCwiZXhwIjoxNjI5NDMwMjg0LCJpYXQiOjE2MjY3NTE4ODQsImp0aSI6InVrckZwSEpza0JOUllaaFoifQ.A-oE_g7U5hDop0PvgCoDBjqrexWeLTuONypC-4IvCv4",
+								"type": "text"
+							},
+							{
+								"key": "Metadata",
+								"value": "{\"meta\":\"123456789\"}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-portal/bulletin/1",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-portal",
+								"bulletin",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "模板调用测试",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-portal/formatter/index.html",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-portal",
+								"formatter",
+								"index.html"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "根据城市id查询地区列表",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:10000/blue-base/areas/19332",
-					"host": [
-						"localhost"
-					],
-					"port": "10000",
-					"path": [
-						"blue-base",
-						"areas",
-						"19332"
-					]
+			"name": "marketing",
+			"item": [
+				{
+					"name": "查询当月签到记录",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:10000/blue-marketing/signIn",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-marketing",
+								"signIn"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "当日签到",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-marketing/signIn",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-marketing",
+								"signIn"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "临时数据移动",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:20000/blue-base/test/move",
-					"host": [
-						"localhost"
-					],
-					"port": "20000",
-					"path": [
-						"blue-base",
-						"test",
-						"move"
-					]
+			"name": "media",
+			"item": [
+				{
+					"name": "文件上传",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "attachments",
+									"type": "file",
+									"src": [
+										"/E:/tempFile/source/walls/a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg",
+										"/E:/tempFile/source/walls/a_bridge_to_autumn-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_cloudy_day-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_different_world-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_field_of_poppies-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_flower_for_you-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_foggy_morning-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_mid_summers_sunrise-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_poolside_view_of_a_crystal_las_vegas-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_private_road-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_quiet_place_infrared_photography-wallpaper-1920x1080.jpg",
+										"/E:/tempFile/source/walls/a_spring_afternoon-wallpaper-3840x2160.jpg"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:13000/blue-media/file/upload",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"file",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "查询文件列表",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10\r\n}"
+						},
+						"url": {
+							"raw": "localhost:13000/blue-media/attachment/list",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"attachment",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "文件下载",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNDQxMjMxZjE0MGRkNjFlZWNiM2VjYjZmOWEyMjcyNDk3MGZmNDU5NGViMWJkMDE2NWY1NWQxZmVhMWRjMjU5N2E4OTZjZWIwM2Y3YTg2NTQ5ZWU5MTkwMDdjYjk0OTQ0ZDM1YjM0Y2Y5MWFjNjUzOGMxMzY2YjFiNDY2NTRiMTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0OTMzNjM4NCIsIm5iZiI6MTY0OTMzNjM4NCwidCI6IkdZcmVWQjZzcHZmIiwiZyI6Ik0iLCJoIjoiQl9TTjozMjc5ODIxMTczOTQ4NDE2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MjAxNDc4NDE2MSwiaSI6IjMyNzk4MjExNzM5NDg0MTYxIiwiZXhwIjoxNjUyMDE0Nzg0LCJpYXQiOjE2NDkzMzYzODQsImp0aSI6IkdSTzBqT3k2Nld0RWxtNU1hODBQd3l5SGduRUpIbGRiIiwibiI6IlBWQVIifQ.igOvIk54AoqIw0GYV9LkeGeWJVcYOkNqlvAsMgPk3Zufyl8AQn5S-L2BJH02UGHtPZrAsKpFegx-p_Jsnz7rcA",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":32798298712578712\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:13000/blue-media/file/download",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"file",
+								"download"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "文件网关解密测试",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMGNiNmVkNWIyNmRlYWRkYWYwNDRlN2I4MmYxMzI0MWMyZjZjYTdkOTM4YzYyZDVjNjBkOWRjNjA1NmQ4YzQzODk4YjdiMWMzNTRmYjAxOWRiOTBkMDMzNDdiZTY2M2Y5MjI3ODNkZDQwNDgxNDZkOGZjOTY2ZjkzMDU4MTMxNWQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk4MzcwOTcyLCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTE5OTcwIiwibmJmIjoxNjQ0OTE5OTcwLCJ0Ijoia3VaWXpxaXZnem4iLCJleHAiOjE2NDc1OTgzNzAsImlhdCI6MTY0NDkxOTk3MCwianRpIjoiM2xtMjZjU0Jibnk0TzlQR1Yza1dhZ1dTVUtsanBaMVgifQ.pNR0JnVB9bQWfNLPL49umrVREaLEZjS9uEaPv2BWWsrLXrqcQcLAyxS08xx0L2mD2gnSQQ5IZKLORjbaYcwz5g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"encrypted\":\"nVVpvfN9DDrGgI3P0wKYSfEMVnH5/+zc4lb7vQpVUUXjbI2uMGPD7KHPUcB3Y3ilnjAsZr3Wc/InhvAAWVEakRwwcwCkzYAjREhgHm6nw94DzIxhOnBHEbZrwAsBLuyPdcrhT4/XlC5wec06rUuCSBO3XFNWoNcIjjKc3n3zzgRq+EJ/Ygy7oEm3NMDjvzqNm676p5jGJj0lvpj2SFDcOyCY9J7Ff+4nI72tgwBUT/HTBO46YfL1jTYkWPRTbjLobJJ/yGx5EiYz02LSWhAlKuiPECB9TzAbbFdJ7CufErLCzKcB4drQUZWXZcZIVJ6VmTwcqn+SQukNIm2GLcib9A==\",\r\n    \"signature\":\"g5SsuIHVP+KtU969YxfmPmK3iDfviP0qqCu21Zvu7X3y02FApnkz+6X2zpOvD3wko1TeQCKY4j5MOVJ2dCEd6Q==\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:13000/blue-media/attachment/withdraw",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"attachment",
+								"withdraw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "测试邮件发送",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "localhost:13000/blue-media/mail/send",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"mail",
+								"send"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "测试邮件读取",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:13000/blue-media/mail/read",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"mail",
+								"read"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "测试区域",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "localhost:20000/blue-base/test/region",
-					"host": [
-						"localhost"
-					],
-					"port": "20000",
-					"path": [
-						"blue-base",
-						"test",
-						"region"
-					]
+			"name": "shine",
+			"item": [
+				{
+					"name": "公益信息",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "zh-CN;q=0.7,en;q=0.3",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-shine/shine",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-shine",
+								"shine"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		},
+		{
+			"name": "data",
+			"item": [
+				{
+					"name": "查看活跃",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"statisticsType\":\"MA\",\r\n    \"statisticsRange\":\"D\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-analyze/statistics/active/simple",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-analyze",
+								"statistics",
+								"active",
+								"simple"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "聚合查看活跃",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"statisticsTypes\":[\"MA\"],\r\n    \"statisticsRanges\":[\"D\"]\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-analyze/statistics/active/merge",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-analyze",
+								"statistics",
+								"active",
+								"merge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "查看活跃统计",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:10000/blue-analyze/statistics/active/summary",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-analyze",
+								"statistics",
+								"active",
+								"summary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "测试查询操作列表",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNzNjZTcyODIzZjgwYzdmMDFiOGU2YzQwNTk1Mzc3NDFiNjdiMmMyNDEzMThlNGE4NmU1OGZiNmEyYjI3ZGIxOGYyZWUzMzI0NjQ3OTg2NDlhYzAxNzhlZWViMzgzMjVhMGZhMTliZTdhNmFhZDBiYjMwZTcxYzQ0ZTlkOTQzY2MiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0NzU4MDcxNiIsIm5iZiI6MTY0NzU4MDcxNiwidCI6ImRCc1Zid3o4V0hXIiwiZyI6Ik0iLCJoIjoiQl9TTjozMDU2ODY3MDU5MzgxMDQzM19DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MDI1OTExNjA1OSwiaSI6IjMwNTY4NjcwNTkzODEwNDMzIiwiZXhwIjoxNjUwMjU5MTE2LCJpYXQiOjE2NDc1ODA3MTYsImp0aSI6Ik9nTkFzWU4ybTgwaHU0ekRvYjBPWTZ4MGRIbVVoNGtHIiwibiI6IlBWQVIifQ.-hrKAvKMf6wMlIsB6ZEkPv5ygE0_yLVisr_0PQ4zJKtNUmn2ORXzbXxacYroVwIIoKbyB6014Ey6U5ZMuqtkpQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"limit\":0,\r\n    \"rows\":100\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-lake/events",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-lake",
+								"events"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

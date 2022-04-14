@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * snowflake id attrs
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class IdentityElement implements Serializable {

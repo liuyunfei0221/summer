@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * illegal mark event
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class IllegalMarkEvent implements Serializable {

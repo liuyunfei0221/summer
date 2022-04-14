@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @apiNote
  */
 @SuppressWarnings("unused")
-class BaseCondition implements Serializable {
+class SortCondition implements Serializable {
 
     private static final long serialVersionUID = 5408452099489469143L;
 
@@ -18,14 +18,14 @@ class BaseCondition implements Serializable {
 
     protected String sortType;
 
-    public BaseCondition(String sortAttribute, String sortType) {
+    public SortCondition(String sortAttribute, String sortType) {
         this.sortAttribute = sortAttribute;
         this.sortType = sortType;
     }
 
     @Override
     public String toString() {
-        return "BaseCondition{" +
+        return "SortCondition{" +
                 "sortAttribute='" + sortAttribute + '\'' +
                 ", sortType='" + sortType + '\'' +
                 '}';

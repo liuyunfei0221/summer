@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * sync rest config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "qr")

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 /**
  * es cibfug
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "es")

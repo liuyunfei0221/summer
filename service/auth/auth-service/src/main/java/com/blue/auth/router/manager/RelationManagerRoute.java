@@ -16,7 +16,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 /**
  * relation manager router
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Configuration
 public class RelationManagerRoute {

@@ -3,7 +3,7 @@ package com.blue.dubbo.constant;
 /**
  * constant bean names
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public enum FilterBeanName {

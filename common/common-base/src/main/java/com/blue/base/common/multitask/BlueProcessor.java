@@ -8,7 +8,7 @@ import java.util.function.Function;
  *
  * @param <T>
  * @param <R>
- * @author DarkBlue
+ * @author liuyunfei
  */
 public interface BlueProcessor<T, R> {
 

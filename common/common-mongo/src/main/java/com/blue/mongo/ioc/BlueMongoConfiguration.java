@@ -13,7 +13,7 @@ import static com.blue.mongo.api.generator.BlueMongoGenerator.*;
 /**
  * mongo configuration
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaRemoveCommentedCode"})
 @ConditionalOnBean(value = {MongoConf.class})

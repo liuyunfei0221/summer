@@ -5,7 +5,7 @@ import com.blue.base.component.exception.handler.model.ExceptionInfo;
 /**
  * exp handler interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc"})
 public interface ExceptionHandler {

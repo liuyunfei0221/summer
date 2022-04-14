@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * resource mapper
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface ResourceMapper {

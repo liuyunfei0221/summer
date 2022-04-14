@@ -4,7 +4,7 @@ package com.blue.base.constant.auth;
 /**
  * resource type
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum ResourceType {
 

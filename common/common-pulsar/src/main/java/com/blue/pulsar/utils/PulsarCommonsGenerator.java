@@ -25,7 +25,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * pulsar commons generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "AlibabaMethodTooLong", "AlibabaUndefineMagicConstant", "SpellCheckingInspection", "AlibabaAvoidComplexCondition"})
 public final class PulsarCommonsGenerator {

@@ -3,7 +3,7 @@ package com.blue.base.common.base;
 /**
  * original throwable getter
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 public final class OriginalThrowableGetter {

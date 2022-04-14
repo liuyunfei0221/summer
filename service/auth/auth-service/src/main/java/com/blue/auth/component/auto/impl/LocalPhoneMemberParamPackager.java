@@ -12,7 +12,7 @@ import static com.blue.base.constant.auth.CredentialType.LOCAL_PHONE_AUTO_REGIST
 /**
  * packager for login by local phone
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public class LocalPhoneMemberParamPackager implements MemberParamByAutoLoginPackager {

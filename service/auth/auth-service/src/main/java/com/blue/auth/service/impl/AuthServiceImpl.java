@@ -74,7 +74,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * auth service impl
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
@@ -361,7 +361,7 @@ public class AuthServiceImpl implements AuthService {
 
         RefreshInfo condition = new RefreshInfo();
         condition.setMemberId(memberId);
-        condition.setcredentialType(credentialType);
+        condition.setCredentialType(credentialType);
         condition.setDeviceType(deviceType);
 
         try {
@@ -478,7 +478,7 @@ public class AuthServiceImpl implements AuthService {
                     && memberPayload.getGamma().equals(refreshInfo.getGamma())
                     && memberPayload.getKeyId().equals(refreshInfo.getId())
                     && memberPayload.getId().equals(refreshInfo.getMemberId())
-                    && memberPayload.getCredentialType().equals(refreshInfo.getcredentialType())
+                    && memberPayload.getCredentialType().equals(refreshInfo.getCredentialType())
                     && memberPayload.getLoginTime().equals(refreshInfo.getLoginTime())
                     && parseLong(refreshInfo.getLoginTime()) + maxExpireMillis >= TIME_STAMP_GETTER.get())
                 return;
@@ -572,7 +572,7 @@ public class AuthServiceImpl implements AuthService {
         if (isBlank(elementValue))
             throw new BlueException(BAD_REQUEST);
 
-        List<String> credentialTypes = ofNullable(authInfoRefreshElement.getcredentialTypes())
+        List<String> credentialTypes = ofNullable(authInfoRefreshElement.getCredentialTypes())
                 .filter(lts -> lts.size() > 0)
                 .map(lts ->
                         lts.stream()
@@ -877,7 +877,7 @@ public class AuthServiceImpl implements AuthService {
                                 .switchIfEmpty(error(() -> new BlueException(UNAUTHORIZED)))
                                 .flatMap(refreshInfo -> {
                                     AUTH_ASSERTER.accept(memberPayload, refreshInfo);
-                                    return this.generateAccessMono(parseLong(refreshInfo.getMemberId()), refreshInfo.getcredentialType(), refreshInfo.getDeviceType());
+                                    return this.generateAccessMono(parseLong(refreshInfo.getMemberId()), refreshInfo.getCredentialType(), refreshInfo.getDeviceType());
                                 }));
     }
 
@@ -892,7 +892,7 @@ public class AuthServiceImpl implements AuthService {
         LOGGER.info("Mono<Boolean> invalidateAuthByAccess(Access access), access = {}", access);
         if (access != null) {
             long memberId = access.getId();
-            String credentialType = access.getcredentialType().intern();
+            String credentialType = access.getCredentialType().intern();
             String deviceType = access.getDeviceType().intern();
             String keyId = genSessionKey(memberId, credentialType, deviceType);
             return zip(
@@ -983,7 +983,7 @@ public class AuthServiceImpl implements AuthService {
                 just(initKeyPair())
                         .flatMap(keyPair -> {
                             refreshAccessInfoElementByKeyId(
-                                    genSessionKey(access.getId(), access.getcredentialType().intern(), access.getDeviceType().intern()),
+                                    genSessionKey(access.getId(), access.getCredentialType().intern(), access.getDeviceType().intern()),
                                     PUB_KEY, keyPair.getPubKey());
                             return just(keyPair.getPriKey());
                         })

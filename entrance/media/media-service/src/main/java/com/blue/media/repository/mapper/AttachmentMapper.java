@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * attachment dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface AttachmentMapper {

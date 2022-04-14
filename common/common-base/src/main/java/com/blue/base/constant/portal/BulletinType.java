@@ -3,7 +3,7 @@ package com.blue.base.constant.portal;
 /**
  * bulletin type
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum BulletinType {
 

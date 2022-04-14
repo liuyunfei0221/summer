@@ -12,7 +12,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * conf snowflake bean
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @ConditionalOnBean(value = {IdentityConf.class})
 @Configuration

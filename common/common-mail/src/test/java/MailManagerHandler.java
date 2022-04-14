@@ -97,7 +97,7 @@
 //    private void mailTest() {
 //        EmailPopulatingBuilder builder = EmailBuilder.startingBlank()
 //                .from("blue", FROM)
-//                .toWithFixedName("darkBlue", RECEIVERS)
+//                .toWithFixedName("liuyunfei", RECEIVERS)
 //                .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
 //
 //                .withDispositionNotificationTo(FROM)
@@ -122,7 +122,7 @@
 //
 //        EmailPopulatingBuilder builder = EmailBuilder.startingBlank()
 //                .from("blue", FROM)
-//                .toWithFixedName("darkBlue", RECEIVERS)
+//                .toWithFixedName("liuyunfei", RECEIVERS)
 //                .withHeader(LIST_UNSUBSCRIBE.name, "https://www.baidu.com/")
 //                .withHeader("Content-ID", "<logo.jpg>")
 //                .withSubject("hello world")

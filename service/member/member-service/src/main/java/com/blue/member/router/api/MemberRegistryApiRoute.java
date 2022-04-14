@@ -16,7 +16,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 /**
  * member registry router
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Configuration
 public class MemberRegistryApiRoute {

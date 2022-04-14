@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 /**
  * threshold values or default values
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum BlueNumericalValue {
 

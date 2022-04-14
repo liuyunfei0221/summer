@@ -6,7 +6,7 @@ import com.blue.business.repository.entity.Article;
 /**
  * article mapper
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "AlibabaLowerCamelCaseVariableNaming"})
 public interface ArticleMapper {

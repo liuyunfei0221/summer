@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * qr conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc"})
 public interface QrConf {

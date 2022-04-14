@@ -3,7 +3,7 @@ package com.blue.verify.converter;
 /**
  * model converters in verify project
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public final class VerifyModelConverters {
 

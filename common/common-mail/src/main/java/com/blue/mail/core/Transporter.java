@@ -16,7 +16,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * Transport with auto connect
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "AlibabaAvoidManuallyCreateThread", "unused", "AlibabaLowerCamelCaseVariableNaming"})
 final class Transporter {

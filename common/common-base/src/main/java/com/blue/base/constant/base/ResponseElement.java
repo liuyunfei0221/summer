@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 /**
  * global exception infos
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public enum ResponseElement {

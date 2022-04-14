@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * jwt deploy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "jwt")

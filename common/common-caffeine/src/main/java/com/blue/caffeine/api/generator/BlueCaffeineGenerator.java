@@ -20,7 +20,7 @@ import static java.util.Optional.ofNullable;
 /**
  * caffeine component generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class BlueCaffeineGenerator {

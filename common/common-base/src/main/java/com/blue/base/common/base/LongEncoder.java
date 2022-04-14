@@ -3,7 +3,7 @@ package com.blue.base.common.base;
 /**
  * encode long util
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public final class LongEncoder {

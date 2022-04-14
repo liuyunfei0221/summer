@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 /**
  * login handler interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface LoginHandler {

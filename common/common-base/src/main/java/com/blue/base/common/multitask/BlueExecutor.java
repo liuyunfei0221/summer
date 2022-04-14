@@ -17,7 +17,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @param <T>
  * @param <R>
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces", "JavaDoc"})
 public final class BlueExecutor<T, R> {

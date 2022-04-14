@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * finance account entity, unit is fen
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class FinanceAccount implements Serializable {

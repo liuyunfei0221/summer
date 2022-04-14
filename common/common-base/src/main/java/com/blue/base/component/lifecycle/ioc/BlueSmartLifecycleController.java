@@ -21,7 +21,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * controller for blue lifecycle
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public class BlueSmartLifecycleController implements ApplicationContextAware, SmartLifecycle {

@@ -14,7 +14,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * rpc finance provider
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "FieldCanBeLocal", "DefaultAnnotationParam"})
 @DubboService(interfaceClass = RpcFinanceAccountService.class, version = "1.0", methods = {

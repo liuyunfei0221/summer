@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * summary for active
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class ActiveSummary<T> implements Serializable {

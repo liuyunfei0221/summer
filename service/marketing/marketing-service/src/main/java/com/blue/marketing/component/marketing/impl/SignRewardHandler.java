@@ -11,7 +11,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * sign in reward event handler impl
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public class SignRewardHandler implements EventHandler {

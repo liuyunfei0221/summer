@@ -7,9 +7,10 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 /**
- * @author DarkBlue
+ * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "AlibabaCommentsMustBeJavadocFormat", "AlibabaUndefineMagicConstant", "AlibabaAvoidCommentBehindStatement"})
+
+@SuppressWarnings({"ForLoopReplaceableByForEach", "unused"})
 public class FetchingEmail {
 
     public static void main(String[] args) {

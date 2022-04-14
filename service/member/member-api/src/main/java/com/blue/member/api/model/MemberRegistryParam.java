@@ -1,14 +1,21 @@
 package com.blue.member.api.model;
 
+import com.blue.base.inter.Asserter;
+import com.blue.base.model.exps.BlueException;
+
 import java.io.Serializable;
+
+import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.VERIFY_IS_INVALID;
 
 /**
  * member registry params
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
-@SuppressWarnings({"unused", "WeakerAccess"})
-public final class MemberRegistryParam implements Serializable {
+@SuppressWarnings({"unused", "WeakerAccess", "AliControlFlowStatementWithoutBraces"})
+public final class MemberRegistryParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 8543617230220651524L;
 
@@ -32,6 +39,15 @@ public final class MemberRegistryParam implements Serializable {
     private Integer gender;
 
     public MemberRegistryParam() {
+    }
+
+    @Override
+    public void asserts() {
+        if (isBlank(this.phone) || isBlank(this.email) || isBlank(this.access) || isBlank(this.name))
+            throw new BlueException(BAD_REQUEST);
+
+        if (isBlank(phoneVerify) || isBlank(emailVerify))
+            throw new BlueException(VERIFY_IS_INVALID);
     }
 
     public String getPhone() {

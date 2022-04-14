@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * rpc member interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface RpcMemberService {

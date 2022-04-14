@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * state dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface StateMapper {

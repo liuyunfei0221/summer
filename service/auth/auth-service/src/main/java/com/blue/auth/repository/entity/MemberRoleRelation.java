@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * member role relation entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class MemberRoleRelation implements Serializable {

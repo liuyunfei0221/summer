@@ -1,5 +1,6 @@
 package com.blue.base.model.base;
 
+import com.blue.base.inter.Asserter;
 import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
@@ -10,10 +11,10 @@ import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 /**
  * id param
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public final class IdentityParam implements Serializable {
+public final class IdentityParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 3631693809321831634L;
 
@@ -29,17 +30,17 @@ public final class IdentityParam implements Serializable {
         this.id = id;
     }
 
-    public Long getId() {
+    @Override
+    public void asserts() {
         if (isInvalidIdentity(this.id))
             throw new BlueException(INVALID_IDENTITY);
+    }
 
+    public Long getId() {
         return this.id;
     }
 
     public void setId(Long id) {
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
         this.id = id;
     }
 

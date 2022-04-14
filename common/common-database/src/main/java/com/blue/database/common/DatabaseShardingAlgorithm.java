@@ -18,7 +18,7 @@ import static java.lang.Long.valueOf;
 /**
  * db sharding algorithm
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class DatabaseShardingAlgorithm implements PreciseShardingAlgorithm<Long> {

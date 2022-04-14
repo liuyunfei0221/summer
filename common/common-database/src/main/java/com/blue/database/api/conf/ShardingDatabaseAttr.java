@@ -3,7 +3,7 @@ package com.blue.database.api.conf;
 /**
  * sharding database attributes
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public class ShardingDatabaseAttr {
 

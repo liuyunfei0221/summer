@@ -15,7 +15,7 @@ import static com.google.gson.reflect.TypeToken.getParameterized;
 /**
  * metadata converter
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class MetadataProcessor {

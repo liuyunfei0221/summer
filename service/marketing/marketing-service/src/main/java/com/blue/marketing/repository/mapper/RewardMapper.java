@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * reward dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface RewardMapper {

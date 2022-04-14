@@ -17,7 +17,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 /**
  * auth api route
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("DuplicatedCode")
 @Configuration

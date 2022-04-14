@@ -11,7 +11,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Lexicographic order
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "WeakerAccess", "unused"})
 public final class ListSorter {

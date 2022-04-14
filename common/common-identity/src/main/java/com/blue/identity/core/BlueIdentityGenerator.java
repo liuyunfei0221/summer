@@ -16,7 +16,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * buffered generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public final class BlueIdentityGenerator {

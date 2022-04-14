@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 /**
  * auth service
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
 public interface AuthService {

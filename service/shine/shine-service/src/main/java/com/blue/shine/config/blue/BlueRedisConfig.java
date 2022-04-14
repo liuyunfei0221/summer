@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * redis config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "cache")

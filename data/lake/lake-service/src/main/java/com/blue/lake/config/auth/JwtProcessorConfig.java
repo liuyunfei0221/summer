@@ -12,7 +12,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * jwt config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Configuration
 public class JwtProcessorConfig {

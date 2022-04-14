@@ -27,7 +27,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * pulsar consumer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "AlibabaAvoidManuallyCreateThread", "JavaDoc"})
 public final class BluePulsarConsumer<T extends Serializable> {

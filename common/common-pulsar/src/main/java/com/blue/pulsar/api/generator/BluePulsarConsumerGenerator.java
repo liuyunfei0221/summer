@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 /**
  * pulsar consumer generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "ControlFlowStatementWithoutBraces", "AlibabaAvoidComplexCondition"})
 public final class BluePulsarConsumerGenerator {

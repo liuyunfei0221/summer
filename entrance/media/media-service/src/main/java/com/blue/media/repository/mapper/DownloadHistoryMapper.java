@@ -5,7 +5,7 @@ import com.blue.media.repository.entity.DownloadHistory;
 /**
  * download history dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface DownloadHistoryMapper {

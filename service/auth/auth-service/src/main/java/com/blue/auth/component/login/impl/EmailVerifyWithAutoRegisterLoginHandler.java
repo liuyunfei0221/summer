@@ -49,7 +49,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * email and verify with auto register handler
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "unused"})
 public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {

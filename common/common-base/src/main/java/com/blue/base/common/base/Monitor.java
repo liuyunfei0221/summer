@@ -10,7 +10,7 @@ import static com.blue.base.constant.base.ResponseElement.*;
 /**
  * monitor for value
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class Monitor<T> {

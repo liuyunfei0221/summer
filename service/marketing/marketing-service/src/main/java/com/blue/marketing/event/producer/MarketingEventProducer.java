@@ -21,7 +21,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * marketing event producer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"Duplicates", "JavaDoc"})
 public final class MarketingEventProducer implements BlueLifecycle {

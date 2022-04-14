@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * SessionKey config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "session")

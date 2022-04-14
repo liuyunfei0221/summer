@@ -10,7 +10,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 /**
  * auth assert result
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public final class AccessAsserted implements Serializable {

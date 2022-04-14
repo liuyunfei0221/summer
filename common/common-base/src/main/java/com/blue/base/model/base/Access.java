@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * access info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class Access implements Serializable {
@@ -68,11 +68,11 @@ public final class Access implements Serializable {
         this.roleId = roleId;
     }
 
-    public String getcredentialType() {
+    public String getCredentialType() {
         return credentialType;
     }
 
-    public void setcredentialType(String credentialType) {
+    public void setCredentialType(String credentialType) {
         this.credentialType = credentialType;
     }
 

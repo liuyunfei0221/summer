@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 /**
  * BCrypt encoder
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 public final class AccessEncoder {

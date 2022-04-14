@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * member finance infos with member id
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class MemberFinanceInfo implements Serializable {

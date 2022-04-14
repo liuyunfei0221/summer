@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * part handler interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface PartInfoHandler {

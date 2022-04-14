@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * local auth invalid key id
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class InvalidLocalAuthParam implements Serializable {

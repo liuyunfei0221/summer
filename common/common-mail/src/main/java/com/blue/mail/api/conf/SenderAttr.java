@@ -3,7 +3,7 @@ package com.blue.mail.api.conf;
 import java.util.Map;
 
 /**
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class SenderAttr {

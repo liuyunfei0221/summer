@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * activity reward event
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class ActivityRewardEvent implements Serializable {

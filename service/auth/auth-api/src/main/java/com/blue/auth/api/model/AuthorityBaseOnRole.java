@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Authority base on role
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class AuthorityBaseOnRole implements Serializable {

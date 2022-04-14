@@ -33,7 +33,7 @@ import static org.springframework.util.StringUtils.hasText;
 /**
  * mybatis mapper scanner registrar
  *
- * @author DarkBlue
+ * @author liuyunfei
  * @date 2021/8/15
  * @apiNote
  */

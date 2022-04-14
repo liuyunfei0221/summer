@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * attachment info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class AttachmentInfo implements Serializable {

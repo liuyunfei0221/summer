@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * dict info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class DictInfo implements Serializable {

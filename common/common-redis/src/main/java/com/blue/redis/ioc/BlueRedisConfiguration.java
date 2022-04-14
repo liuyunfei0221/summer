@@ -17,7 +17,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * redis configuration
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaRemoveCommentedCode"})
 @ConditionalOnBean(value = {RedisConf.class})

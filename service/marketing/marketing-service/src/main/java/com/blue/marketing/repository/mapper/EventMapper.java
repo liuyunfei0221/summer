@@ -5,7 +5,7 @@ import com.blue.marketing.repository.entity.Event;
 /**
  * event dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface EventMapper {

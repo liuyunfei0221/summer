@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * link entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class Link implements Serializable {

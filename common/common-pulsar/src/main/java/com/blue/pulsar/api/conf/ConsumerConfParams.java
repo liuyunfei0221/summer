@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * consumer params
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "DuplicatedCode"})
 public class ConsumerConfParams implements ConsumerConf {

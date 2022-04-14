@@ -21,9 +21,9 @@ import static reactor.util.Loggers.getLogger;
 /**
  * invalid auth from local cache consumer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
-@SuppressWarnings({"unused", "SpellCheckingInspection"})
+@SuppressWarnings({"unused"})
 public final class InvalidLocalAccessConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(InvalidLocalAccessConsumer.class);
@@ -43,15 +43,11 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
     private void init() {
         Consumer<InvalidLocalAuthParam> invalidClusterLocalAuthDataConsumer = invalidLocalAuthParam ->
                 ofNullable(invalidLocalAuthParam)
-                        .ifPresent(ilap -> {
-                            LOGGER.info("invalidClusterLocalAuthDataConsumer received, ilap = {}", ilap);
-                            ofNullable(ilap.getKeyId())
-                                    .ifPresent(keyId -> accessInfoCache.invalidLocalAccessInfo(keyId)
-                                            .subscribe(b ->
-                                                    LOGGER.info("authService.invalidLocalAuthByKeyId(keyId), b = {}, ilap = {}", b, ilap)
-                                            )
-                                    );
-                        });
+                        .map(InvalidLocalAuthParam::getKeyId)
+                        .ifPresent(keyId -> accessInfoCache.invalidLocalAccessInfo(keyId)
+                                .subscribe(b ->
+                                        LOGGER.info("authService.invalidLocalAuthByKeyId(keyId), b = {}, keyId = {}", b, keyId)
+                                ));
 
         this.invalidClusterLocalAuthConsumer = generateConsumer(blueConsumerConfig.getByKey(INVALID_LOCAL_ACCESS.name), invalidClusterLocalAuthDataConsumer);
     }

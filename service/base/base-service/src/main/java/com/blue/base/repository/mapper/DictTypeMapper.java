@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * dict type dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
 public interface DictTypeMapper {

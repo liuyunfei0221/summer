@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * dict dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
 public interface DictMapper {

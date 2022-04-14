@@ -12,7 +12,7 @@ import static com.blue.base.constant.auth.CredentialType.EMAIL_VERIFY_AUTO_REGIS
 /**
  * packager for login by email and verify
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public class EmailVerifyMemberParamPackager implements MemberParamByAutoLoginPackager {

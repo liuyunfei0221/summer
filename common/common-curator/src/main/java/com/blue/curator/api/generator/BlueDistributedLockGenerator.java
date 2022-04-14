@@ -21,7 +21,7 @@ import static org.springframework.util.StringUtils.hasText;
 /**
  * zk lock generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class BlueDistributedLockGenerator {

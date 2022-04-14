@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * media deploy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "files")

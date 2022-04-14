@@ -1,7 +1,14 @@
 package com.blue.auth.model;
 
+import com.blue.base.inter.Asserter;
+import com.blue.base.model.exps.BlueException;
+
 import java.io.Serializable;
 import java.util.List;
+
+import static com.blue.base.common.base.BlueChecker.isEmpty;
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 
 /**
  * role-resource-relation param
@@ -10,8 +17,8 @@ import java.util.List;
  * @date 2021/11/9
  * @apiNote
  */
-@SuppressWarnings("unused")
-public final class RoleResRelationParam implements Serializable {
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+public final class RoleResRelationParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -4707222541690629552L;
 
@@ -22,6 +29,12 @@ public final class RoleResRelationParam implements Serializable {
     public RoleResRelationParam(Long roleId, List<Long> resIds) {
         this.roleId = roleId;
         this.resIds = resIds;
+    }
+
+    @Override
+    public void asserts() {
+        if (isInvalidIdentity(roleId) || isEmpty(resIds))
+            throw new BlueException(INVALID_IDENTITY);
     }
 
     public Long getRoleId() {

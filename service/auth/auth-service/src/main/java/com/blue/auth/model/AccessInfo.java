@@ -9,7 +9,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 /**
  * member access info/json str in redis cache
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public final class AccessInfo implements Serializable {

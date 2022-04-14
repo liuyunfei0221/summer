@@ -7,7 +7,7 @@ import static com.blue.jwt.constant.JwtResponseElement.INTERNAL_SERVER_ERROR;
 /**
  * jwt exception
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class AuthenticationException extends RuntimeException {

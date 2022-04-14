@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * member jwt params
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class MemberJwtConfParams implements MemberJwtConf {

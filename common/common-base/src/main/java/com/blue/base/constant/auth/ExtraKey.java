@@ -3,7 +3,7 @@ package com.blue.base.constant.auth;
 /**
  * header extra key
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum ExtraKey {
 

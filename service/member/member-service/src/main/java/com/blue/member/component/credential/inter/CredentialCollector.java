@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * generate credential by member basic
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc"})
 public interface CredentialCollector {

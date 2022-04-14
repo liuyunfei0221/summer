@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * caffeine deploy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "area")

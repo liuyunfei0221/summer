@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * encrypt config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "error")

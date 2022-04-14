@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * reading info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class ReadingInfo implements Serializable {

@@ -21,7 +21,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * access expire producer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"Duplicates", "JavaDoc"})
 public final class AccessExpireProducer implements BlueLifecycle {

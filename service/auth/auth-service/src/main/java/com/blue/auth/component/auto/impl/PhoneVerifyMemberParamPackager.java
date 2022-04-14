@@ -12,7 +12,7 @@ import static com.blue.base.constant.auth.CredentialType.PHONE_VERIFY_AUTO_REGIS
 /**
  * packager for login by phone and verify
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public class PhoneVerifyMemberParamPackager implements MemberParamByAutoLoginPackager {

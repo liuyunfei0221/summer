@@ -12,7 +12,7 @@ import static reactor.core.publisher.Mono.just;
 /**
  * access getter for reactive
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public final class AccessGetterForReactive {

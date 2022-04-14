@@ -1,15 +1,17 @@
 package com.blue.business.model;
 
+import com.blue.base.inter.Asserter;
+
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * article update params
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class ArticleUpdateParam implements Serializable {
+public final class ArticleUpdateParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 3538413339258696917L;
 
@@ -35,6 +37,11 @@ public final class ArticleUpdateParam implements Serializable {
         this.type = type;
         this.content = content;
         this.links = links;
+    }
+
+    @Override
+    public void asserts() {
+
     }
 
     public Long getId() {

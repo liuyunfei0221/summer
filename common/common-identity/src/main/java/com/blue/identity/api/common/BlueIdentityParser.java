@@ -6,7 +6,7 @@ import com.blue.identity.model.IdentityElement;
 /**
  * static id parser
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public final class BlueIdentityParser {

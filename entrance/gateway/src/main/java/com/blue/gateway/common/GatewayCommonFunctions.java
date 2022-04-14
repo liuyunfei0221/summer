@@ -19,7 +19,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * common factory for gateway
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class GatewayCommonFunctions extends ReactiveCommonFunctions {

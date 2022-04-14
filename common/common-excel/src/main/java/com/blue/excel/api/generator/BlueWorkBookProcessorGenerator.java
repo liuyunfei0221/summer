@@ -7,7 +7,7 @@ import com.blue.excel.common.WorkBookProcessor;
 /**
  * workbook process generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public class BlueWorkBookProcessorGenerator {

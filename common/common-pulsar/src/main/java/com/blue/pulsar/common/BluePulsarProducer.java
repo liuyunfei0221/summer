@@ -19,7 +19,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * pulsar producer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
 public final class BluePulsarProducer<T extends Serializable> {

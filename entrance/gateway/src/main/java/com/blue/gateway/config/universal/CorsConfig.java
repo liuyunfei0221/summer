@@ -21,7 +21,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * cors config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Configuration
 public class CorsConfig {

@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 /**
  * pulsar topics
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum BlueTopic {
 

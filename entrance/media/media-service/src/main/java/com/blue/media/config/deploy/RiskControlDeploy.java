@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * risk control deploy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "risk")

@@ -18,7 +18,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * collect processor
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"SameParameterValue", "JavaDoc"})
 public final class CredentialCollectProcessor {

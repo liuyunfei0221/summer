@@ -3,7 +3,7 @@ package com.blue.jwt.constant;
 /**
  * jwt conf schema
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum JwtConfSchema {
 

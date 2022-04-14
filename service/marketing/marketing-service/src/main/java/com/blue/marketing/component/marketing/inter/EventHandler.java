@@ -6,7 +6,7 @@ import com.blue.marketing.api.model.MarketingEvent;
 /**
  * event handler interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface EventHandler {

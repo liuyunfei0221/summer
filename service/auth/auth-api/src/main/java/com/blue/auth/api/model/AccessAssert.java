@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * auth assert params
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class AccessAssert implements Serializable {

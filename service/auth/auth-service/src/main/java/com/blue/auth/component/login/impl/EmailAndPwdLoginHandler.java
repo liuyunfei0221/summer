@@ -38,7 +38,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * email and password login handler
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "unused"})
 public class EmailAndPwdLoginHandler implements LoginHandler {

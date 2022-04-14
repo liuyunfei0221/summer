@@ -20,7 +20,7 @@ import static reactor.core.publisher.Mono.just;
 /**
  * bulletin service impl
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 @Service

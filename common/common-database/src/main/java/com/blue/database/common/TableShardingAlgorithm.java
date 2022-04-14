@@ -18,7 +18,7 @@ import static java.lang.Long.valueOf;
 /**
  * table sharding algorithm
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class TableShardingAlgorithm implements PreciseShardingAlgorithm<Long> {

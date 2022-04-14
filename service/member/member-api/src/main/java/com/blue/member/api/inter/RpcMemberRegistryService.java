@@ -6,7 +6,7 @@ import com.blue.member.api.model.MemberRegistryParam;
 /**
  * rpc member registry interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface RpcMemberRegistryService {

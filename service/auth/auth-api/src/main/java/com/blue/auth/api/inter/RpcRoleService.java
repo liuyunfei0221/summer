@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * rpc role provider
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface RpcRoleService {

@@ -3,9 +3,8 @@ package com.blue.analyze.converter;
 /**
  * model converters in analyze project
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class AnalyzeModelConverters {
 
 

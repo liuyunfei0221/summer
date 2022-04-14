@@ -11,7 +11,7 @@ import static org.springframework.boot.SpringApplication.run;
 /**
  * verify application
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SummerSpringBootApplication
 @EnableBlueLifecycle(basePackages = "com.blue.verify.event")

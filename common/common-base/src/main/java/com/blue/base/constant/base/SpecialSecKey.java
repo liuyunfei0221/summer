@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 /**
  * Special sec key
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum SpecialSecKey {
 

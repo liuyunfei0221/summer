@@ -17,7 +17,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * math util
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class MathProcessor {

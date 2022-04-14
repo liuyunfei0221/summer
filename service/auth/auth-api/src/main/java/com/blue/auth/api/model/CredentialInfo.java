@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * member credential info without member id
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class CredentialInfo implements Serializable {

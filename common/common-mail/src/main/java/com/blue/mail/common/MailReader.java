@@ -27,7 +27,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * mail reader
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "unused", "SpellCheckingInspection", "DuplicatedCode"})
 public final class MailReader {

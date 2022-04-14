@@ -14,7 +14,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 /**
  * shine api routers
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Configuration
 public class ShineApiRoute {

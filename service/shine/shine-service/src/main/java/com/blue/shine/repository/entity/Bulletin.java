@@ -1,12 +1,16 @@
 package com.blue.shine.repository.entity;
 
+import java.io.Serializable;
+
 /**
  * test entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public class Bulletin {
+public class Bulletin implements Serializable {
+
+    private static final long serialVersionUID = -5485781111551363479L;
 
     private Long id;
 

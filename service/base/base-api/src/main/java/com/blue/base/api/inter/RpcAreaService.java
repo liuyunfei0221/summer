@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * rpc area interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface RpcAreaService {

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * request attr deploy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "request")

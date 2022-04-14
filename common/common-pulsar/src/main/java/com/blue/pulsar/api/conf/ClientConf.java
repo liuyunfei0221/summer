@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * pulsar client conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface ClientConf {

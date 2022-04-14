@@ -17,7 +17,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * rpc auth reference
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 @Component

@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * city entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class City implements Serializable {

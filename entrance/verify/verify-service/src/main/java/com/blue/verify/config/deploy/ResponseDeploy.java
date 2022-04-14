@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * response deploy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "response")

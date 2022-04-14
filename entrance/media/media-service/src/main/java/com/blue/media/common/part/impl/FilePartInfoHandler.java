@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * handle AbstractSyncPart
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 public final class FilePartInfoHandler implements PartInfoHandler {

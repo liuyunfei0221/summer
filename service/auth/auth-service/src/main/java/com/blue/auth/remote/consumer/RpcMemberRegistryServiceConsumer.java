@@ -13,7 +13,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * rpc member registry reference
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam"})
 @Component

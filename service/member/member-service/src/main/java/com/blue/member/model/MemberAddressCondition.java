@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @apiNote
  */
 @SuppressWarnings("unused")
-public final class MemberAddressCondition extends BaseCondition implements Serializable {
+public final class MemberAddressCondition extends SortCondition implements Serializable {
 
     private static final long serialVersionUID = -7022130148038680234L;
 

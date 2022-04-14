@@ -24,7 +24,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * login processor
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Component

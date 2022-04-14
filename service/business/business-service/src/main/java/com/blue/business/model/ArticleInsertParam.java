@@ -1,15 +1,22 @@
 package com.blue.business.model;
 
+import com.blue.base.inter.Asserter;
+import com.blue.base.model.exps.BlueException;
+
 import java.io.Serializable;
 import java.util.List;
+
+import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.ConstantProcessor.assertArticleType;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
  * article insert param
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
-@SuppressWarnings("unused")
-public final class ArticleInsertParam implements Serializable {
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+public final class ArticleInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 40217575295999511L;
 
@@ -29,6 +36,17 @@ public final class ArticleInsertParam implements Serializable {
         this.type = type;
         this.content = content;
         this.links = links;
+    }
+
+    @Override
+    public void asserts() {
+        if (isBlank(this.title))
+            throw new BlueException(BAD_REQUEST);
+
+        assertArticleType(this.type, false);
+        
+        if (isBlank(this.content))
+            throw new BlueException(BAD_REQUEST);
     }
 
     public String getTitle() {

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * state region
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class StateRegion implements Serializable {

@@ -33,7 +33,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * default impl of JwtProcessor
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"WeakerAccess", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class BlueJwtProcessor<T> implements JwtProcessor<T> {

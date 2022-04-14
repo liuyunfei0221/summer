@@ -1,16 +1,22 @@
 package com.blue.business.model;
 
+import com.blue.base.inter.Asserter;
+import com.blue.base.model.exps.BlueException;
+
 import java.io.Serializable;
+
+import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
  * link insert param
  *
- * @author DarkBlue
+ * @author liuyunfei
  * @date 2021/8/11
  * @apiNote
  */
-@SuppressWarnings("unused")
-public final class LinkInsertParam implements Serializable {
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+public final class LinkInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -9009080234789649834L;
 
@@ -24,6 +30,12 @@ public final class LinkInsertParam implements Serializable {
     public LinkInsertParam(String linkUrl, String content) {
         this.linkUrl = linkUrl;
         this.content = content;
+    }
+
+    @Override
+    public void asserts() {
+        if (isBlank(this.linkUrl))
+            throw new BlueException(BAD_REQUEST);
     }
 
     public String getLinkUrl() {

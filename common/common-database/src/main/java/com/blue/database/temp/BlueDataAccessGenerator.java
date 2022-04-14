@@ -48,7 +48,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 /**
  * data access component generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "PlaceholderCountMatchesArgumentCount", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection", "DuplicatedCode"})
 public final class BlueDataAccessGenerator {

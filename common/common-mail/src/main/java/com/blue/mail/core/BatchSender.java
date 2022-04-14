@@ -30,7 +30,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * batch sender
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused", "AlibabaLowerCamelCaseVariableNaming"})
 public final class BatchSender {

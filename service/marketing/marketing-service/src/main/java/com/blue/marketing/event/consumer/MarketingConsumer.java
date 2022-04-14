@@ -20,7 +20,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * marketing event consumer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class MarketingConsumer implements BlueLifecycle {

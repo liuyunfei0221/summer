@@ -8,7 +8,7 @@ import static java.util.stream.Stream.of;
 /**
  * XSS asserter
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "RegExpRedundantEscape"})
 public final class XssAsserter {

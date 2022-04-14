@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 /**
  * identity conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 
 @SuppressWarnings("JavaDoc")

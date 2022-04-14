@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * pulsar consumer conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface ConsumerConf extends ClientConf {

@@ -3,7 +3,7 @@ package com.blue.identity.core.exp;
 /**
  * identity exp
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public final class IdentityException extends RuntimeException {
 

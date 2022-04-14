@@ -19,7 +19,7 @@ import static reactor.core.publisher.Mono.just;
 /**
  * dict api handler
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 @Component

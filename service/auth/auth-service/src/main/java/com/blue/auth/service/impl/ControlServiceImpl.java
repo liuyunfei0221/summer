@@ -397,20 +397,16 @@ public class ControlServiceImpl implements ControlService {
         LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
         if (isNull(memberCredentialInfo))
             throw new BlueException(EMPTY_PARAM);
+        memberCredentialInfo.asserts();
 
         Long memberId = memberCredentialInfo.getMemberId();
-        List<CredentialInfo> credentialInfos = memberCredentialInfo.getCredentials();
-        if (isInvalidIdentity(memberId) || isEmpty(credentialInfos))
-            throw new BlueException(INVALID_PARAM);
-
-        memberRoleRelationService.insertMemberRoleRelation(MEMBER_DEFAULT_ROLE_RELATION_GEN.apply(memberId));
-
-        List<Credential> credentials = credentialInfos.stream()
+        List<Credential> credentials = memberCredentialInfo.getCredentials().stream()
                 .map(c -> CREDENTIAL_INFO_AND_MEMBER_ID_2_CREDENTIAL_CONVERTER.apply(c, memberId))
                 .collect(toList());
 
         packageExistAccess(credentials, memberId);
 
+        memberRoleRelationService.insertMemberRoleRelation(MEMBER_DEFAULT_ROLE_RELATION_GEN.apply(memberId));
         credentialService.insertCredentials(credentials);
     }
 
@@ -426,20 +422,16 @@ public class ControlServiceImpl implements ControlService {
         LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo, Long roleId), memberCredentialInfo = {}, roleId = {}", memberCredentialInfo, roleId);
         if (isNull(memberCredentialInfo) || isInvalidIdentity(roleId))
             throw new BlueException(EMPTY_PARAM);
+        memberCredentialInfo.asserts();
 
         Long memberId = memberCredentialInfo.getMemberId();
-        List<CredentialInfo> credentialInfos = memberCredentialInfo.getCredentials();
-        if (isInvalidIdentity(memberId) || isEmpty(credentialInfos))
-            throw new BlueException(INVALID_PARAM);
-
-        memberRoleRelationService.insertMemberRoleRelation(MEMBER_ROLE_RELATION_GEN.apply(memberId, roleId));
-
-        List<Credential> credentials = credentialInfos.stream()
+        List<Credential> credentials = memberCredentialInfo.getCredentials().stream()
                 .map(c -> CREDENTIAL_INFO_AND_MEMBER_ID_2_CREDENTIAL_CONVERTER.apply(c, memberId))
                 .collect(toList());
 
         packageExistAccess(credentials, memberId);
 
+        memberRoleRelationService.insertMemberRoleRelation(MEMBER_ROLE_RELATION_GEN.apply(memberId, roleId));
         credentialService.insertCredentials(credentials);
     }
 
@@ -459,15 +451,12 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(EMPTY_PARAM);
         if (access == null)
             throw new BlueException(UNAUTHORIZED);
+        credentialSettingUpParam.asserts();
 
         String credential = credentialSettingUpParam.getCredential();
-        String verificationCode = credentialSettingUpParam.getVerificationCode();
-        if (isBlank(credential) || isBlank(verificationCode))
-            throw new BlueException(INVALID_PARAM);
-
         long memberId = access.getId();
 
-        return rpcVerifyHandleServiceConsumer.validate(SMS, CREDENTIAL_SETTING_UP, credential, verificationCode, true)
+        return rpcVerifyHandleServiceConsumer.validate(SMS, CREDENTIAL_SETTING_UP, credential, credentialSettingUpParam.getVerificationCode(), true)
                 .flatMap(validate -> {
                     if (validate) {
                         List<String> types = LTS_BY_VT_GETTER.apply(ConstantProcessor.getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()));
@@ -483,7 +472,7 @@ public class ControlServiceImpl implements ControlService {
                                                                 :
                                                                 error(() -> new BlueException(DATA_ALREADY_EXIST)));
                                     }
-                                    return error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently"));
+                                    return error(() -> new BlueException(TOO_MANY_REQUESTS));
                                 });
                     }
                     return error(() -> new BlueException(VERIFY_IS_INVALID));
@@ -537,6 +526,7 @@ public class ControlServiceImpl implements ControlService {
 
         if (accessUpdateParam == null)
             return error(() -> new BlueException(EMPTY_PARAM));
+        accessUpdateParam.asserts();
 
         VerifyType verifyType = getVerifyTypeByIdentity(accessUpdateParam.getVerifyType());
         return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(memberId)), ALLOW, SEND_INTERVAL_MILLIS)
@@ -553,7 +543,7 @@ public class ControlServiceImpl implements ControlService {
                                                                         :
                                                                         error(() -> new BlueException(BAD_REQUEST))))
                                 :
-                                error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently")));
+                                error(() -> new BlueException(TOO_MANY_REQUESTS)));
     }
 
     /**
@@ -568,6 +558,7 @@ public class ControlServiceImpl implements ControlService {
 
         if (accessResetParam == null)
             return error(() -> new BlueException(EMPTY_PARAM));
+        accessResetParam.asserts();
 
         String credential = accessResetParam.getCredential();
 
@@ -586,7 +577,7 @@ public class ControlServiceImpl implements ControlService {
                                                                         :
                                                                         error(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verificationCode is invalid"))))
                                 :
-                                error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently")));
+                                error(() -> new BlueException(TOO_MANY_REQUESTS)));
     }
 
     /**
@@ -755,13 +746,10 @@ public class ControlServiceImpl implements ControlService {
         LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityBaseOnRole(RoleResRelationParam roleResRelationParam, Long operatorId), roleResRelationParam = {}, operatorId = {}", roleResRelationParam, operatorId);
         if (roleResRelationParam == null)
             throw new BlueException(EMPTY_PARAM);
+        roleResRelationParam.asserts();
 
         Long roleId = roleResRelationParam.getRoleId();
-        List<Long> resIds = roleResRelationParam.getResIds();
-        if (isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
-            throw new BlueException(INVALID_IDENTITY);
-        if (isEmpty(resIds))
-            throw new BlueException(INVALID_IDENTITY.status, INVALID_IDENTITY.code, "invalid resIds");
+
         assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return just(roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), operatorId))
@@ -784,10 +772,10 @@ public class ControlServiceImpl implements ControlService {
         if (memberRoleRelationParam == null)
             throw new BlueException(EMPTY_PARAM);
 
+        memberRoleRelationParam.asserts();
+
         Long memberId = memberRoleRelationParam.getMemberId();
         Long roleId = memberRoleRelationParam.getRoleId();
-        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
-            throw new BlueException(INVALID_IDENTITY);
 
         Integer operatorRoleLevel = getRoleByMemberId(operatorId).getLevel();
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), operatorRoleLevel);

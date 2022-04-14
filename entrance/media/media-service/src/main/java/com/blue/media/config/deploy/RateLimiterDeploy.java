@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * rate limiter config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "limit")

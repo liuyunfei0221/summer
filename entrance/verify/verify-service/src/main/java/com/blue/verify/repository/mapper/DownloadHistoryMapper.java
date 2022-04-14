@@ -5,7 +5,7 @@ import com.blue.verify.repository.entity.DownloadHistory;
 /**
  * download history mapper
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface DownloadHistoryMapper {

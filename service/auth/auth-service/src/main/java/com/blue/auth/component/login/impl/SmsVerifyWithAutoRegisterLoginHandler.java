@@ -48,7 +48,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * sms and verify with auto register handler
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "unused"})
 public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {

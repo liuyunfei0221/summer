@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * verify deploy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "verify")

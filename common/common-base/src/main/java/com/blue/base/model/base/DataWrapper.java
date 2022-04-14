@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Encrypted data and timestamp information
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class DataWrapper implements Serializable {

@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toMap;
 /**
  * tree constructor
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 @FunctionalInterface

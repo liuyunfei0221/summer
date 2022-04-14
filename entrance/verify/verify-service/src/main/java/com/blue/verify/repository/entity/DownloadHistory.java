@@ -3,7 +3,7 @@ package com.blue.verify.repository.entity;
 /**
  * download history
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class DownloadHistory {

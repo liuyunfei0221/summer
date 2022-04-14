@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * reward service
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface RewardService {

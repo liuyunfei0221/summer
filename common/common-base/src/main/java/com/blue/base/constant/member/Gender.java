@@ -4,7 +4,7 @@ package com.blue.base.constant.member;
 /**
  * gender
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum Gender {
 

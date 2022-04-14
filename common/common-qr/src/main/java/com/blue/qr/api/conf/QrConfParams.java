@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * default qr conf params
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public class QrConfParams implements QrConf {

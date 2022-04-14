@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * event handling result
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class EventHandleResult implements Serializable {

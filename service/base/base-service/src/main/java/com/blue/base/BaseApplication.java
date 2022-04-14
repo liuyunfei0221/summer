@@ -10,7 +10,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import static org.springframework.boot.SpringApplication.run;
 
 /**
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SummerSpringBootApplication
 @EnableDiscoveryClient

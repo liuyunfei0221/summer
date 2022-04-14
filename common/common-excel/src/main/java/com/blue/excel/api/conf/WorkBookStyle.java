@@ -5,7 +5,7 @@ import static com.blue.excel.constant.WorkBookConf.*;
 /**
  * work book style params
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public class WorkBookStyle implements WorkBookStyleConf {

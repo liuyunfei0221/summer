@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * redisson conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused", "AlibabaCommentsMustBeJavadocFormat"})
 public interface RedissonConf {

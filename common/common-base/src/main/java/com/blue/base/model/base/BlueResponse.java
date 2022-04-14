@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * response result info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class BlueResponse<T> implements Serializable {

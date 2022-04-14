@@ -18,7 +18,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * pulsar transaction producer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
 public final class BlueTransPulsarProducer<T extends Serializable> {

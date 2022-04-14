@@ -26,7 +26,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * IdentityProcessor is the Bean of the context.It also provides a simple static method for obtaining ID.
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class BlueIdentityProcessor {

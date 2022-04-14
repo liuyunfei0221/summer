@@ -7,7 +7,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 /**
  * member, role, login infos for generate member auth
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public final class AuthGenElement {
@@ -57,7 +57,7 @@ public final class AuthGenElement {
         return roleId;
     }
 
-    public String getcredentialType() {
+    public String getCredentialType() {
         return credentialType;
     }
 

@@ -3,7 +3,7 @@ package com.blue.base.constant.marketing;
 /**
  * handle status
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public enum HandleStatus {

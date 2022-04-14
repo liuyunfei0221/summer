@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * marketing event
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class MarketingEvent implements Serializable {

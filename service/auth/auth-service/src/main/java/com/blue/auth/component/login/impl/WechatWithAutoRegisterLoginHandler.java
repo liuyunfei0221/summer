@@ -42,7 +42,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * weChat with auto register handler
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "AlibabaRemoveCommentedCode", "FieldCanBeLocal", "unused"})
 public class WechatWithAutoRegisterLoginHandler implements LoginHandler {

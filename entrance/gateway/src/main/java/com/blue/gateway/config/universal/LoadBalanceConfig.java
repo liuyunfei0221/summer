@@ -14,7 +14,7 @@ import static org.springframework.cloud.loadbalancer.support.LoadBalancerClientF
 /**
  * loadbalancer config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @LoadBalancerClients(defaultConfiguration = LoadBalanceConfig.class)
 public class LoadBalanceConfig {

@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
+import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseElement.VERIFY_IS_INVALID;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.verify.BusinessType.REGISTER;
 import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static com.blue.base.constant.verify.VerifyType.SMS;
@@ -31,7 +31,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * member register service
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DefaultAnnotationParam"})
 @Service
@@ -74,6 +74,7 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
         LOGGER.info("MemberInfo registerMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
+        memberRegistryParam.asserts();
 
         if (!rpcVerifyHandleServiceConsumer.validate(SMS, REGISTER, memberRegistryParam.getPhone(), memberRegistryParam.getPhoneVerify(), true)
                 .toFuture().join())
@@ -118,6 +119,9 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
             throw new BlueException(EMPTY_PARAM);
 
         MemberBasic memberBasic = MEMBER_REGISTRY_INFO_2_MEMBER_BASIC.apply(memberRegistryParam);
+
+        if (isEmpty(collect(memberBasic, memberRegistryParam.getAccess())))
+            throw new BlueException(BAD_REQUEST);
 
         long id = blueIdentityProcessor.generate(MemberBasic.class);
         memberBasic.setId(id);

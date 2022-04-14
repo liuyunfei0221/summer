@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * resource entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class Resource implements Serializable {

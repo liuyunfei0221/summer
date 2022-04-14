@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * circuitBreaker deploy for resilience4j
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "circuit")

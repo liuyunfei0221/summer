@@ -5,7 +5,7 @@ import com.blue.media.repository.entity.DownloadHistory;
 /**
  * download history service
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface DownloadHistoryService {

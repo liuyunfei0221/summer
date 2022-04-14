@@ -7,7 +7,7 @@ import com.blue.qr.common.QrCoder;
 /**
  * qrcoder generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "SpellCheckingInspection"})
 public final class BlueQrCoderGenerator {

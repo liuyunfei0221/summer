@@ -11,7 +11,7 @@ import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
  * auth object and auth str converter
  * (auth -> json) or (json -> auth)
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class AuthProcessor {

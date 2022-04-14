@@ -6,7 +6,7 @@ import static com.blue.identity.constant.SnowflakeBits.WORKER;
 /**
  * identity schema
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum IdentitySchema {
 

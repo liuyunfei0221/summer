@@ -8,7 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 /**
  * params for IdentityBuffer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public final class IdBufferParam {
 

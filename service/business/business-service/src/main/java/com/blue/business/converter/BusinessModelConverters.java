@@ -9,37 +9,29 @@ import com.blue.business.repository.entity.Link;
 import java.time.Instant;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.ConstantProcessor.assertArticleType;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Optional.ofNullable;
 
 /**
  * model converters in business project
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class BusinessModelConverters {
 
     public static final Function<ArticleInsertParam, Article> ARTICLE_INSERT_PARAM_2_ARTICLE = articleInsertParam -> {
-        String title = articleInsertParam.getTitle();
-        if (title == null || "".equals(title))
-            throw new BlueException(BAD_REQUEST);
-
-        Integer type = articleInsertParam.getType();
-        assertArticleType(type, false);
-
-        String content = articleInsertParam.getContent();
-        if (content == null || "".equals(content))
-            throw new BlueException(BAD_REQUEST);
+        if (articleInsertParam == null)
+            throw new BlueException(EMPTY_PARAM);
+        articleInsertParam.asserts();
 
         long epochSecond = Instant.now().getEpochSecond();
 
         Article article = new Article();
-        article.setTitle(title);
-        article.setType(type);
-        article.setContent(content);
+        article.setTitle(articleInsertParam.getTitle());
+        article.setType(articleInsertParam.getType());
+        article.setContent(articleInsertParam.getContent());
 
         article.setFavorites(0L);
         article.setReadings(0L);
@@ -54,15 +46,14 @@ public final class BusinessModelConverters {
     };
 
     public static final Function<LinkInsertParam, Link> LINK_INSERT_PARAM_2_LINK = linkInsertParam -> {
-
-        String linkUrl = linkInsertParam.getLinkUrl();
-        if (linkUrl == null || "".equals(linkUrl))
-            throw new BlueException(BAD_REQUEST);
+        if (linkInsertParam == null)
+            throw new BlueException(EMPTY_PARAM);
+        linkInsertParam.asserts();
 
         long epochSecond = Instant.now().getEpochSecond();
         Link link = new Link();
 
-        link.setLinkUrl(linkUrl);
+        link.setLinkUrl(linkInsertParam.getLinkUrl());
         link.setContent(ofNullable(linkInsertParam.getContent()).orElse(""));
 
         link.setFavorites(0L);

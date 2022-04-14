@@ -7,7 +7,7 @@ import static com.blue.identity.constant.SnowflakeBits.*;
 /**
  * static id parser
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public final class SnowflakeIdentityParser {

@@ -21,7 +21,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * sync id generator by snowflake
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class SnowflakeIdentityGenerator {

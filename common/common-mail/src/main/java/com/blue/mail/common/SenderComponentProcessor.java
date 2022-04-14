@@ -34,7 +34,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "AlibabaLowerCamelCaseVariableNaming", "DuplicatedCode", "UnusedReturnValue"})
 public final class SenderComponentProcessor {

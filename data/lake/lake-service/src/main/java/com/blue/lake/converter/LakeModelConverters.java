@@ -33,7 +33,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 /**
  * model converters in lake project
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 @Component
@@ -99,7 +99,7 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
                 .ifPresent(access -> {
                     optEvent.setMemberId(access.getId());
                     optEvent.setRoleId(access.getRoleId());
-                    optEvent.setCredentialType(access.getcredentialType());
+                    optEvent.setCredentialType(access.getCredentialType());
                     optEvent.setDeviceType(access.getDeviceType());
                     optEvent.setLoginTime(access.getLoginTime());
                 });

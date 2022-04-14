@@ -19,7 +19,7 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 /**
  * project common attr
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public final class SummerAttr {

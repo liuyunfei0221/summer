@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * auth deploy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "auth")

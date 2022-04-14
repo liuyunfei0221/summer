@@ -6,7 +6,7 @@ import java.io.Serializable;
 /**
  * member detail info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "DuplicatedCode"})
 public final class MemberDetailInfo implements Serializable {

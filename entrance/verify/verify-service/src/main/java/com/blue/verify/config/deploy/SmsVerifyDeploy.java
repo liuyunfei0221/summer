@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * image verify deploy
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("SpellCheckingInspection")
 @Component

@@ -12,7 +12,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * activity reward event handler impl
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public class ActivityRewardEventHandler implements EventHandler {

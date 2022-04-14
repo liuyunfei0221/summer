@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * city info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class CityInfo implements Serializable {

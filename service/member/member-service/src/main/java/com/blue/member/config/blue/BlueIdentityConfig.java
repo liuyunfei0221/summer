@@ -12,7 +12,7 @@ import static java.time.Instant.now;
 /**
  * identity config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "identity")

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * city dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface CityMapper {

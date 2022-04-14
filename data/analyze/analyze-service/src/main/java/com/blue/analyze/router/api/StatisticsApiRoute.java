@@ -16,7 +16,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 /**
  * statistics api routers
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Configuration
 public class StatisticsApiRoute {

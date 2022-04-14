@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 /**
  * finance account dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public interface FinanceAccountMapper {

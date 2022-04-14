@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * area info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class AreaInfo implements Serializable {

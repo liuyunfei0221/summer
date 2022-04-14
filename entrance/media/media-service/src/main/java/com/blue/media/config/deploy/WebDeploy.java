@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 /**
  * web config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "web")

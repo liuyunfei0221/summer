@@ -7,7 +7,7 @@ import java.util.function.BiConsumer;
 /**
  * excel elements conf
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public interface WorkBookElementConf<T> {

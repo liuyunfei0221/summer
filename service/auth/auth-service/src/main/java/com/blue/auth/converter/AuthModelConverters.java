@@ -21,7 +21,7 @@ import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
 /**
  * model converters in auth project
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class AuthModelConverters {

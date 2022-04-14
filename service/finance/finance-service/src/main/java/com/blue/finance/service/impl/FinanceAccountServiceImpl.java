@@ -20,7 +20,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * finance account service impl
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
@@ -40,8 +40,8 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
      *
      * @param financeAccount
      */
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public int insertFinanceAccount(FinanceAccount financeAccount) {
         LOGGER.info("int insertFinanceAccount(FinanceAccount financeAccount), financeAccount = {}", financeAccount);
         return financeAccountMapper.insert(financeAccount);

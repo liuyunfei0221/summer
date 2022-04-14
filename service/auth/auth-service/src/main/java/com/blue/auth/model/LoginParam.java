@@ -12,7 +12,7 @@ import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 /**
  * login infos
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused"})
 public final class LoginParam implements Serializable {

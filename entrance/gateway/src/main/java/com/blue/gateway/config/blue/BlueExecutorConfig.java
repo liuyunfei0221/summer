@@ -12,7 +12,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * executor config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "executor")

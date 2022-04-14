@@ -27,7 +27,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * es components generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "SuspiciousToArrayCall", "AliControlFlowStatementWithoutBraces"})
 public final class BlueEsGenerator {

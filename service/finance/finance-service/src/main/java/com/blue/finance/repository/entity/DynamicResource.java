@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * dynamic resource entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class DynamicResource implements Serializable {

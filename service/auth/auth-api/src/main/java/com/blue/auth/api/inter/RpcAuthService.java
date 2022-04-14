@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * rpc auth interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface RpcAuthService {

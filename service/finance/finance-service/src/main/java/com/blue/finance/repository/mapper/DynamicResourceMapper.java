@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * dynamic resource dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface DynamicResourceMapper {

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 /**
  * consumer config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "consumers")

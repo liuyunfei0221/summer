@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * shine info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class ShineInfo implements Serializable {

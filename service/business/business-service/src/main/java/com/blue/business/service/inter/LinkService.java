@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * link service
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "UnnecessaryInterfaceModifier", "unused"})
 public interface LinkService {

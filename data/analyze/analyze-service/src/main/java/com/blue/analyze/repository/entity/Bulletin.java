@@ -1,12 +1,16 @@
 package com.blue.analyze.repository.entity;
 
+import java.io.Serializable;
+
 /**
  * bulletin/test entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public class Bulletin {
+public class Bulletin implements Serializable {
+
+    private static final long serialVersionUID = 8326856202565891659L;
 
     private Long id;
 

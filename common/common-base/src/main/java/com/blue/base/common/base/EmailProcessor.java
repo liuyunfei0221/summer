@@ -10,7 +10,7 @@ import static org.apache.commons.lang3.StringUtils.split;
 /**
  * email address util
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class EmailProcessor {

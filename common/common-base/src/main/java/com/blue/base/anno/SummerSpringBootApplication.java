@@ -21,7 +21,7 @@ import static org.springframework.context.annotation.FilterType.CUSTOM;
 /**
  * Custom startup items for summer
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 @Target(TYPE)

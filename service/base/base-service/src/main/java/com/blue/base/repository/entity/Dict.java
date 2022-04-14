@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * dict entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class Dict implements Serializable {

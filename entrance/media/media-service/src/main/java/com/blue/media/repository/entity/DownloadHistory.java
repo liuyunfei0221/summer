@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * download history
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class DownloadHistory implements Serializable {

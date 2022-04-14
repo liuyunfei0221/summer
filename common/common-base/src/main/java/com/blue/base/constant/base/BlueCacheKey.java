@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 /**
  * cache keys
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 public enum BlueCacheKey {

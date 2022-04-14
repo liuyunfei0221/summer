@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 /**
  * mongo config
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @Component
 @ConfigurationProperties(prefix = "mongo")

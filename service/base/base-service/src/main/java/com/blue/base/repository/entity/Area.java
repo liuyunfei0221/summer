@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * area entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public class Area implements Serializable {

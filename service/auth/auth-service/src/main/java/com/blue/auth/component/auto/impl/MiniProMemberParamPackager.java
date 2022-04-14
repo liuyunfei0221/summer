@@ -12,7 +12,7 @@ import static com.blue.base.constant.auth.CredentialType.MINI_PRO_AUTO_REGISTER;
 /**
  * packager for login by mini pro
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public class MiniProMemberParamPackager implements MemberParamByAutoLoginPackager {

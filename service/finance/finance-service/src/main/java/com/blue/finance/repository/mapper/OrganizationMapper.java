@@ -5,7 +5,7 @@ import com.blue.finance.repository.entity.Organization;
 /**
  * organization dao
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface OrganizationMapper {

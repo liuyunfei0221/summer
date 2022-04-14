@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * rpc state interface
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface RpcStateService {

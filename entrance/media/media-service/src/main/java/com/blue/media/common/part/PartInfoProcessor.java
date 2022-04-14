@@ -19,7 +19,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * media info processor
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"SameParameterValue", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class PartInfoProcessor {

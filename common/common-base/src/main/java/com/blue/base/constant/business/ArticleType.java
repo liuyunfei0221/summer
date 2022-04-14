@@ -3,7 +3,7 @@ package com.blue.base.constant.business;
 /**
  * article types
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("GrazieInspection")
 public enum ArticleType {

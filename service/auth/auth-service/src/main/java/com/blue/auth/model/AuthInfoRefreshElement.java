@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * authInfo refresh params
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class AuthInfoRefreshElement implements Serializable {
@@ -42,11 +42,11 @@ public final class AuthInfoRefreshElement implements Serializable {
         this.memberId = memberId;
     }
 
-    public List<CredentialType> getcredentialTypes() {
+    public List<CredentialType> getCredentialTypes() {
         return credentialTypes;
     }
 
-    public void setcredentialTypes(List<CredentialType> credentialTypes) {
+    public void setCredentialTypes(List<CredentialType> credentialTypes) {
         this.credentialTypes = credentialTypes;
     }
 

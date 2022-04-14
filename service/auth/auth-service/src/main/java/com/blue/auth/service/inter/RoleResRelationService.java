@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * role resource relation service
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "UnusedReturnValue"})
 public interface RoleResRelationService {

@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * unified data
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 public final class DataEvent implements Serializable {

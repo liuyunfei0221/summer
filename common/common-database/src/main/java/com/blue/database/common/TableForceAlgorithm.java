@@ -16,7 +16,7 @@ import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 /**
  * table force algorithm
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class TableForceAlgorithm implements PreciseShardingAlgorithm<Long> {

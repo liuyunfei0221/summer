@@ -10,7 +10,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 /**
  * refresh token info entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
 public class RefreshInfo implements Serializable {
@@ -97,11 +97,11 @@ public class RefreshInfo implements Serializable {
         this.memberId = memberId;
     }
 
-    public String getcredentialType() {
+    public String getCredentialType() {
         return credentialType;
     }
 
-    public void setcredentialType(String credentialType) {
+    public void setCredentialType(String credentialType) {
         this.credentialType = credentialType;
     }
 

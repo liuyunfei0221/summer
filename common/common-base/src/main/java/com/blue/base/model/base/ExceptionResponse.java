@@ -7,7 +7,7 @@ import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 /**
  * exp response result info
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class ExceptionResponse implements Serializable {

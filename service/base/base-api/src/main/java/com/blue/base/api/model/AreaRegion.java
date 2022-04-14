@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * area region
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class AreaRegion implements Serializable {

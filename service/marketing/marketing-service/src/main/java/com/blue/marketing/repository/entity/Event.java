@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * marketing event entity
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class Event implements Serializable {

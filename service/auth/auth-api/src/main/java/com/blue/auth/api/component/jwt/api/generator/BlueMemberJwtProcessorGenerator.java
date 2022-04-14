@@ -17,7 +17,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * Member JwtProcessor generator
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public final class BlueMemberJwtProcessorGenerator {

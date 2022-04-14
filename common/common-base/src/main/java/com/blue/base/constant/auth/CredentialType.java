@@ -4,7 +4,7 @@ package com.blue.base.constant.auth;
 /**
  * credential type
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 @SuppressWarnings({"unused", "SpellCheckingInspection", "GrazieInspection"})
 public enum CredentialType {
