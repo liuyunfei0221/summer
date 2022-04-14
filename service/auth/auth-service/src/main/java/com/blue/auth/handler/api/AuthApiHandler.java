@@ -2,6 +2,7 @@ package com.blue.auth.handler.api;
 
 import com.blue.auth.model.AccessResetParam;
 import com.blue.auth.model.AccessUpdateParam;
+import com.blue.auth.model.CredentialSettingUpParam;
 import com.blue.auth.service.inter.ControlService;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
@@ -125,6 +126,23 @@ public final class AuthApiHandler {
         return serverRequest.bodyToMono(AccessResetParam.class)
                 .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
                 .flatMap(controlService::resetAccessByAccess)
+                .flatMap(r ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, r, serverRequest), BlueResponse.class));
+    }
+
+    /**
+     * add new credential base on verify type for a member
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> credentialSettingUp(ServerRequest serverRequest) {
+        return zip(serverRequest.bodyToMono(CredentialSettingUpParam.class)
+                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 ->
+                        controlService.credentialSettingUp(tuple2.getT1(), tuple2.getT2()))
                 .flatMap(r ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, r, serverRequest), BlueResponse.class));

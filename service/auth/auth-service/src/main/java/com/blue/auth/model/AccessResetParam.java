@@ -17,6 +17,9 @@ public final class AccessResetParam implements Serializable {
      */
     private String verifyType;
 
+    /**
+     * phone/email ...
+     */
     private String credential;
 
     private String verificationCode;

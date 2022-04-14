@@ -11,7 +11,7 @@ public enum ResourceType {
     /**
      * rest for client
      */
-    FRONT(1, "rest for client"),
+    API(1, "rest for client"),
 
     /**
      * rest for manager
@@ -21,7 +21,7 @@ public enum ResourceType {
     /**
      * open api
      */
-    API(3, "open api");
+    OPEN(3, "open api");
 
     public final int identity;
 

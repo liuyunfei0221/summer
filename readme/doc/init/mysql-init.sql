@@ -252,11 +252,11 @@ INSERT INTO `auth`.`resource`(`id`, `request_method`, `module`, `uri`, `authenti
                               `name`, `description`, `create_time`, `update_time`, `creator`, `updater`)
 VALUES (1, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         'login', 'login', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (2, 'PUT', 'blue-auth', '/auth/updateAccess', b'1', b'1', b'1', b'0', b'1', 1,
+       (2, 'PUT', 'blue-auth', '/auth/access', b'1', b'1', b'1', b'0', b'1', 1,
         'update access', 'update access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (3, 'PUT', 'blue-auth', '/auth/resetAccess', b'1', b'1', b'1', b'0', b'1', 1,
+       (3, 'PUT', 'blue-auth', '/auth/access/reset', b'1', b'1', b'1', b'0', b'1', 1,
         'reset access', 'reset access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (4, 'PUT', 'blue-auth', '/auth/updateSecret', b'1', b'1', b'1', b'0', b'1', 1,
+       (4, 'PUT', 'blue-auth', '/auth/secret', b'1', b'1', b'1', b'0', b'1', 1,
         'refresh private key', 'refresh private key', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (5, 'GET', 'blue-auth', '/auth/authority', b'1', b'1', b'1', b'0', b'1', 1,
         'query authority', 'query authority', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -363,12 +363,14 @@ VALUES (1, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (56, 'POST', 'blue-analyze', '/statistics/active/summary', b'0', b'1', b'1', b'0', b'1', 2,
         'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (57, 'PUT', 'blue-auth', '/auth/refreshAccess', b'0', b'1', b'1', b'1', b'1', 1,
+       (57, 'PUT', 'blue-auth', '/auth/access/refresh', b'0', b'1', b'1', b'1', b'1', 1,
         'refresh access', 'refresh access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (58, 'DELETE', 'blue-auth', '/auth/logoutEverywhere', b'1', b'1', b'1', b'0', b'1', 1,
+       (58, 'DELETE', 'blue-auth', '/auth/logout/everywhere', b'1', b'1', b'1', b'0', b'1', 1,
         'logout everywhere', 'logout everywhere', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (59, 'POST', 'blue-auth', '/blue-auth/manager/auth', b'1', b'1', b'1', b'0', b'1', 2,
-        'invalidate member auth', 'invalidate member auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+        'invalidate member auth', 'invalidate member auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (60, 'POST', 'blue-auth', '/blue-auth/credential', b'1', b'1', b'1', b'0', b'1', 1,
+        'credential setting up', 'credential setting up', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 
 -- role
@@ -420,8 +422,9 @@ VALUES (1, 2, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (34, 2, 49, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (35, 2, 50, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (56, 2, 59, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (57, 2, 60, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
--- normal auth
+-- manager auth
 
        (36, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (37, 1, 3, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),

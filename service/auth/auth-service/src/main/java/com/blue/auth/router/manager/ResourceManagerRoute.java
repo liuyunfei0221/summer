@@ -27,14 +27,14 @@ public class ResourceManagerRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> resourceManagerRouter(ResourceManagerHandler resourceManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-auth/manager/resource");
+        RequestPredicate pathPredicate = path("/blue-auth/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("", accept(APPLICATION_JSON), resourceManagerHandler::insert)
-                .PUT("", accept(APPLICATION_JSON), resourceManagerHandler::update)
-                .DELETE("/{" + ID.key + "}", resourceManagerHandler::delete)
-                .POST("/list", accept(APPLICATION_JSON), resourceManagerHandler::select)
-                .POST("/auth", accept(APPLICATION_JSON), resourceManagerHandler::selectAuthority)
+                .POST("/resource", accept(APPLICATION_JSON), resourceManagerHandler::insert)
+                .PUT("/resource", accept(APPLICATION_JSON), resourceManagerHandler::update)
+                .DELETE("/resource/{" + ID.key + "}", resourceManagerHandler::delete)
+                .POST("/resources", accept(APPLICATION_JSON), resourceManagerHandler::select)
+                .POST("/resource/auth", accept(APPLICATION_JSON), resourceManagerHandler::selectAuthority)
                 .build();
 
         return nest(pathPredicate, routerFunction);

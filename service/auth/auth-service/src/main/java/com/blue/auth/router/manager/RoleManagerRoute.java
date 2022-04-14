@@ -27,14 +27,14 @@ public class RoleManagerRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> roleManagerRouter(RoleManagerHandler roleManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-auth/manager/role");
+        RequestPredicate pathPredicate = path("/blue-auth/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("", accept(APPLICATION_JSON), roleManagerHandler::insert)
-                .PUT("", accept(APPLICATION_JSON), roleManagerHandler::update)
-                .DELETE("/{" + ID.key + "}", roleManagerHandler::delete)
-                .POST("/list", accept(APPLICATION_JSON), roleManagerHandler::select)
-                .POST("/auth", accept(APPLICATION_JSON), roleManagerHandler::selectAuthority)
+                .POST("/role", accept(APPLICATION_JSON), roleManagerHandler::insert)
+                .PUT("/role", accept(APPLICATION_JSON), roleManagerHandler::update)
+                .DELETE("/role/{" + ID.key + "}", roleManagerHandler::delete)
+                .POST("/roles", accept(APPLICATION_JSON), roleManagerHandler::select)
+                .POST("/role/auth", accept(APPLICATION_JSON), roleManagerHandler::selectAuthority)
                 .build();
 
         return nest(pathPredicate, routerFunction);

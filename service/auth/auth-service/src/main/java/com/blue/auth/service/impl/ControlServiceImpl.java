@@ -10,6 +10,7 @@ import com.blue.auth.repository.entity.MemberRoleRelation;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.service.inter.*;
 import com.blue.base.common.base.BlueChecker;
+import com.blue.base.common.base.ConstantProcessor;
 import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.auth.VerifyTypeAndCredentialTypesRelation;
 import com.blue.base.constant.verify.VerifyType;
@@ -42,8 +43,8 @@ import static com.blue.base.constant.base.Status.INVALID;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
 import static com.blue.base.constant.base.SyncKeyPrefix.ACCESS_UPDATE_RATE_LIMIT_KEY_PRE;
-import static com.blue.base.constant.verify.BusinessType.RESET_ACCESS;
-import static com.blue.base.constant.verify.BusinessType.UPDATE_ACCESS;
+import static com.blue.base.constant.verify.BusinessType.*;
+import static com.blue.base.constant.verify.VerifyType.SMS;
 import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateLeakyBucketRateLimiter;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -423,60 +424,69 @@ public class ControlServiceImpl implements ControlService {
         credentialService.insertCredentials(credentials);
     }
 
+    private List<Credential> generateCredentialsByElements(List<String> types, String credential, Long memberId) {
+        Long stamp = TIME_STAMP_GETTER.get();
+        return types.stream()
+                .map(type -> {
+                    Credential cre = new Credential();
+
+                    cre.setCredential(credential);
+                    cre.setType(type);
+                    cre.setAccess("");
+                    cre.setMemberId(memberId);
+                    cre.setExtra("from add credential");
+                    cre.setStatus(ALLOW_ACCESS_LT_SET.contains(type) ? INVALID.status : VALID.status);
+                    cre.setCreateTime(stamp);
+                    cre.setUpdateTime(stamp);
+
+                    return cre;
+                }).collect(toList());
+    }
+
     /**
      * add new credential base on verify type for a member
      *
-     * @param memberId
-     * @param verifyType
-     * @param credential
+     * @param credentialSettingUpParam
+     * @param access
+     * @return
      */
     @Override
-    public Mono<Boolean> insertBaseCredential(Long memberId, VerifyType verifyType, String credential) {
-        LOGGER.info("void insertBaseCredential(Long memberId, VerifyType verifyType, String credential), memberId = {}, verifyType = {}, credential = {}",
-                memberId, verifyType, credential);
+    public Mono<Boolean> credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access) {
+        LOGGER.info("Mono<Boolean> credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam,Access access), credentialSettingUpParam = {}, access = {}",
+                credentialSettingUpParam, access);
 
-        if (isInvalidIdentity(memberId) || verifyType == null || isBlank(credential))
+        if (credentialSettingUpParam == null)
+            throw new BlueException(EMPTY_PARAM);
+        if (access == null)
+            throw new BlueException(UNAUTHORIZED);
+
+        String credential = credentialSettingUpParam.getCredential();
+        String verificationCode = credentialSettingUpParam.getVerificationCode();
+        if (isBlank(credential) || isBlank(verificationCode))
             throw new BlueException(INVALID_PARAM);
 
-//        private String credential;
-//        private String type;
-//        private String access;
-//        private Long memberId;
-//        private String extra;
-//        private Integer status;
-//        private Long createTime;
-//        private Long updateTime;
+        long memberId = access.getId();
 
-        return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(memberId)), ALLOW, SEND_INTERVAL_MILLIS)
-                .flatMap(allowed -> {
-                    if (allowed) {
-                        List<String> types = LTS_BY_VT_GETTER.apply(verifyType);
-                        List<Credential> sameTypeCredentials = credentialService.selectCredentialByMemberIdAndTypes(memberId, types);
-                        if (isNotEmpty(sameTypeCredentials))
-                            return error(() -> new BlueException(DATA_ALREADY_EXIST));
-
-                        Long stamp = TIME_STAMP_GETTER.get();
-                        List<Credential> credentials = types.stream()
-                                .map(type -> {
-                                    Credential cre = new Credential();
-
-                                    cre.setCredential(credential);
-                                    cre.setType(type);
-                                    cre.setAccess("");
-                                    cre.setMemberId(memberId);
-                                    cre.setExtra("from add credential");
-                                    cre.setStatus(ALLOW_ACCESS_LT_SET.contains(type) ? INVALID.status : VALID.status);
-                                    cre.setCreateTime(stamp);
-                                    cre.setUpdateTime(stamp);
-
-                                    return cre;
-                                }).collect(toList());
-
-                        credentialService.insertCredentials(credentials);
-
-                        return just(true);
+        return rpcVerifyHandleServiceConsumer.validate(SMS, CREDENTIAL_SETTING_UP, credential, verificationCode, true)
+                .flatMap(validate -> {
+                    if (validate) {
+                        List<String> types = LTS_BY_VT_GETTER.apply(ConstantProcessor.getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()));
+                        return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(memberId)), ALLOW, SEND_INTERVAL_MILLIS)
+                                .flatMap(allowed -> {
+                                    if (allowed) {
+                                        return credentialService.selectCredentialMonoByMemberIdAndTypes(memberId, types)
+                                                .flatMap(sameTypeCredentials ->
+                                                        isEmpty(sameTypeCredentials)
+                                                                ?
+                                                                fromRunnable(() -> credentialService.insertCredentials(generateCredentialsByElements(types, credential, memberId)))
+                                                                        .then(just(true))
+                                                                :
+                                                                error(() -> new BlueException(DATA_ALREADY_EXIST)));
+                                    }
+                                    return error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently"));
+                                });
                     }
-                    return error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently"));
+                    return error(() -> new BlueException(VERIFY_IS_INVALID));
                 });
     }
 

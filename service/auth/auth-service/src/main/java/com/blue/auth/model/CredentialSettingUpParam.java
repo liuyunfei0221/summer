@@ -1,6 +1,6 @@
 package com.blue.auth.model;
 
-import com.blue.base.constant.auth.CredentialType;
+import java.io.Serializable;
 
 /**
  * credential setting up param
@@ -8,15 +8,18 @@ import com.blue.base.constant.auth.CredentialType;
  * @author DarkBlue
  */
 @SuppressWarnings({"unused"})
-public class CredentialSettingUpParam {
+public class CredentialSettingUpParam implements Serializable {
+
+    private static final long serialVersionUID = -4028585836242187864L;
 
     /**
-     * credential type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN
-     *
-     * @see CredentialType
+     * @see com.blue.base.constant.verify.VerifyType
      */
-    private String credentialType;
+    private String verifyType;
 
+    /**
+     * phone/email ...
+     */
     private String credential;
 
     private String verificationCode;
@@ -24,18 +27,18 @@ public class CredentialSettingUpParam {
     public CredentialSettingUpParam() {
     }
 
-    public CredentialSettingUpParam(String credentialType, String credential, String verificationCode) {
-        this.credentialType = credentialType;
+    public CredentialSettingUpParam(String verifyType, String credential, String verificationCode) {
+        this.verifyType = verifyType;
         this.credential = credential;
         this.verificationCode = verificationCode;
     }
 
-    public String getCredentialType() {
-        return credentialType;
+    public String getVerifyType() {
+        return verifyType;
     }
 
-    public void setCredentialType(String credentialType) {
-        this.credentialType = credentialType;
+    public void setVerifyType(String verifyType) {
+        this.verifyType = verifyType;
     }
 
     public String getCredential() {
@@ -57,7 +60,7 @@ public class CredentialSettingUpParam {
     @Override
     public String toString() {
         return "CredentialSettingUpParam{" +
-                "credentialType='" + credentialType + '\'' +
+                "verifyType='" + verifyType + '\'' +
                 ", credential='" + credential + '\'' +
                 ", verificationCode='" + verificationCode + '\'' +
                 '}';
