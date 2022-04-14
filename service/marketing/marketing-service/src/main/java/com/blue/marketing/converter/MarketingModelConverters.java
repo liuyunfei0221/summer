@@ -5,7 +5,6 @@ package com.blue.marketing.converter;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class MarketingModelConverters {
 
 
