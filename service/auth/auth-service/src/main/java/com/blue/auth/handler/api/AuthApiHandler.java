@@ -2,6 +2,7 @@ package com.blue.auth.handler.api;
 
 import com.blue.auth.model.AccessResetParam;
 import com.blue.auth.model.AccessUpdateParam;
+import com.blue.auth.model.CredentialModifyParam;
 import com.blue.auth.model.CredentialSettingUpParam;
 import com.blue.auth.service.inter.ControlService;
 import com.blue.base.model.base.BlueResponse;
@@ -20,8 +21,7 @@ import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * auth api handler
@@ -142,10 +142,27 @@ public final class AuthApiHandler {
                         .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
-                        controlService.credentialSettingUp(tuple2.getT1(), tuple2.getT2()))
-                .flatMap(r ->
+                        just(controlService.credentialSettingUp(tuple2.getT1(), tuple2.getT2())))
+                .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, r, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
+    }
+
+    /**
+     * update credential
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> credentialModify(ServerRequest serverRequest) {
+        return zip(serverRequest.bodyToMono(CredentialModifyParam.class)
+                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 ->
+                        just(controlService.credentialModify(tuple2.getT1(), tuple2.getT2())))
+                .flatMap(mbi ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
     }
 
     /**

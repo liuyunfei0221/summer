@@ -4,6 +4,7 @@ import com.blue.auth.api.model.*;
 import com.blue.auth.model.*;
 import com.blue.base.model.base.Access;
 import com.blue.base.model.base.IdentityParam;
+import com.blue.member.api.model.MemberBasicInfo;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -123,11 +124,21 @@ public interface ControlService {
 
     /**
      * add new credential base on verify type for a member
+     *
      * @param credentialSettingUpParam
      * @param access
      * @return
      */
-    Mono<Boolean> credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam,Access access);
+    MemberBasicInfo credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access);
+
+    /**
+     * update exist credential
+     *
+     * @param credentialModifyParam
+     * @param access
+     * @return
+     */
+    MemberBasicInfo credentialModify(CredentialModifyParam credentialModifyParam, Access access);
 
     /**
      * update member role info by member id

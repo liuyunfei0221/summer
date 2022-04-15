@@ -22,4 +22,13 @@ public interface CredentialCollector {
      */
     void collect(MemberBasic memberBasic, String access, List<CredentialInfo> credentials);
 
+    /**
+     * package credential attribute to member basic
+     *
+     * @param credentialTypes
+     * @param credential
+     * @param memberBasic
+     */
+    void packageCredentialAttr(List<String> credentialTypes, String credential, MemberBasic memberBasic);
+
 }

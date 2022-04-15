@@ -2,7 +2,7 @@ package com.blue.auth.component.login.impl;
 
 import com.blue.auth.component.login.inter.LoginHandler;
 import com.blue.auth.model.LoginParam;
-import com.blue.auth.remote.consumer.RpcMemberServiceConsumer;
+import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.service.inter.AuthService;
 import com.blue.auth.service.inter.CredentialService;
@@ -45,14 +45,14 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
 
     private static final Logger LOGGER = getLogger(EmailAndPwdLoginHandler.class);
 
-    private final RpcMemberServiceConsumer rpcMemberServiceConsumer;
+    private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
     private final CredentialService credentialService;
 
     private final AuthService authService;
 
-    public EmailAndPwdLoginHandler(RpcMemberServiceConsumer rpcMemberServiceConsumer, CredentialService credentialService, AuthService authService) {
-        this.rpcMemberServiceConsumer = rpcMemberServiceConsumer;
+    public EmailAndPwdLoginHandler(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, CredentialService credentialService, AuthService authService) {
+        this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.credentialService = credentialService;
         this.authService = authService;
     }
@@ -88,7 +88,7 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
                                 .filter(c -> matchAccess(access, c.getAccess()))
                                 .map(Credential::getMemberId)
                                 .orElseThrow(() -> new BlueException(INVALID_ACCT_OR_PWD)))
-                ).flatMap(rpcMemberServiceConsumer::selectMemberBasicInfoMonoByPrimaryKey)
+                ).flatMap(rpcMemberBasicServiceConsumer::selectMemberBasicInfoMonoByPrimaryKey)
                 .flatMap(mbi -> {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
                     return authService.generateAuthMono(mbi.getId(), EMAIL_PWD.identity, loginParam.getDeviceType().intern());

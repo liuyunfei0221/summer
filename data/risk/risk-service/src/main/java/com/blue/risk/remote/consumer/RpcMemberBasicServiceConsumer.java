@@ -1,6 +1,6 @@
-package com.blue.auth.remote.consumer;
+package com.blue.risk.remote.consumer;
 
-import com.blue.member.api.inter.RpcMemberService;
+import com.blue.member.api.inter.RpcMemberBasicService;
 import com.blue.member.api.model.MemberBasicInfo;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
@@ -21,9 +21,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
 @Component
-public class RpcMemberServiceConsumer {
+public class RpcMemberBasicServiceConsumer {
 
-    private static final Logger LOGGER = getLogger(RpcMemberServiceConsumer.class);
+    private static final Logger LOGGER = getLogger(RpcMemberBasicServiceConsumer.class);
 
     @DubboReference(version = "1.0", providedBy = {"summer-member"}, methods = {
             @Method(name = "selectMemberBasicInfoMonoByPrimaryKey", async = true),
@@ -31,11 +31,11 @@ public class RpcMemberServiceConsumer {
             @Method(name = "selectMemberBasicInfoByPhone", async = true),
             @Method(name = "selectMemberBasicInfoByEmail", async = true)
     })
-    private RpcMemberService rpcMemberService;
+    private RpcMemberBasicService rpcMemberBasicService;
 
     private final Scheduler scheduler;
 
-    public RpcMemberServiceConsumer(Scheduler scheduler) {
+    public RpcMemberBasicServiceConsumer(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
@@ -45,9 +45,9 @@ public class RpcMemberServiceConsumer {
      * @param id
      * @return
      */
-    public Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id) {
+    Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id) {
         LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id), id = {}", id);
-        return fromFuture(rpcMemberService.selectMemberBasicInfoMonoByPrimaryKey(id)).publishOn(scheduler);
+        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoMonoByPrimaryKey(id)).publishOn(scheduler);
     }
 
     /**
@@ -56,9 +56,9 @@ public class RpcMemberServiceConsumer {
      * @param ids
      * @return
      */
-    public Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids), ids = {}", ids);
-        return fromFuture(rpcMemberService.selectMemberBasicInfoMonoByIds(ids)).publishOn(scheduler);
+    Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
+        LOGGER.info("Mono<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids), ids = {}", ids);
+        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoMonoByIds(ids)).publishOn(scheduler);
     }
 
     /**
@@ -69,7 +69,7 @@ public class RpcMemberServiceConsumer {
      */
     public Mono<MemberBasicInfo> selectMemberBasicInfoByPhone(String phone) {
         LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicInfoByPhone(String phone), phone = {}", phone);
-        return fromFuture(rpcMemberService.selectMemberBasicInfoByPhone(phone)).publishOn(scheduler);
+        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoByPhone(phone)).publishOn(scheduler);
     }
 
     /**
@@ -80,7 +80,7 @@ public class RpcMemberServiceConsumer {
      */
     public Mono<MemberBasicInfo> selectMemberBasicInfoByEmail(String email) {
         LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicInfoByEmail(String email), email = {}", email);
-        return fromFuture(rpcMemberService.selectMemberBasicInfoByEmail(email)).publishOn(scheduler);
+        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoByEmail(email)).publishOn(scheduler);
     }
 
 }

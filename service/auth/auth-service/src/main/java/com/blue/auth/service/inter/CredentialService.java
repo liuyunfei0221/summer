@@ -104,6 +104,14 @@ public interface CredentialService {
     void insertCredential(Credential credential);
 
     /**
+     * batch update credential by ids
+     *
+     * @param credential
+     * @param ids
+     */
+    void updateCredentialByIds(String credential, List<Long> ids);
+
+    /**
      * update a exist role
      *
      * @param credential

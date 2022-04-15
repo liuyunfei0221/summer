@@ -3,7 +3,7 @@ package com.blue.member.handler.api;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberRegistryParam;
-import com.blue.member.service.inter.MemberRegistryService;
+import com.blue.member.service.inter.MemberAuthService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -26,10 +26,10 @@ import static reactor.core.publisher.Mono.just;
 @Component
 public final class MemberRegistryApiHandler {
 
-    private final MemberRegistryService memberRegistryService;
+    private final MemberAuthService memberAuthService;
 
-    public MemberRegistryApiHandler(MemberRegistryService memberRegistryService) {
-        this.memberRegistryService = memberRegistryService;
+    public MemberRegistryApiHandler(MemberAuthService memberAuthService) {
+        this.memberAuthService = memberAuthService;
     }
 
     /**
@@ -43,7 +43,7 @@ public final class MemberRegistryApiHandler {
                 .switchIfEmpty(
                         error(() -> new BlueException(EMPTY_PARAM)))
                 .flatMap(mrp ->
-                        just(memberRegistryService.registerMemberBasic(mrp))
+                        just(memberAuthService.registerMemberBasic(mrp))
                 )
                 .flatMap(mbi ->
                         ok()

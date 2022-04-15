@@ -8,6 +8,9 @@ import com.blue.member.api.model.MemberRegistryParam;
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.EmailProcessor.parsePrefix;
 import static com.blue.base.constant.auth.CredentialType.EMAIL_PWD;
+import static com.blue.base.constant.base.BlueNumericalValue.ID_LEN_MIN;
+import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 /**
  * packager for login by email and pwd
@@ -29,7 +32,7 @@ public class EmailPwdMemberParamPackager implements MemberParamByAutoLoginPackag
         String name = memberRegistryParam.getName();
 
         memberRegistryParam.setEmail(credential);
-        memberRegistryParam.setName(isNotBlank(name) ? name : parsePrefix(credential));
+        memberRegistryParam.setName(isNotBlank(name) ? name : randomAlphabetic((int) ID_LEN_MIN.value) + PAR_CONCATENATION.identity + parsePrefix(credential));
     }
 
     /**

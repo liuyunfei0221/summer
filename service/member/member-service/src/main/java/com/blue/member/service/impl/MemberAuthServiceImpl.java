@@ -11,11 +11,14 @@ import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
 import com.blue.member.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberBasicService;
-import com.blue.member.service.inter.MemberRegistryService;
+import com.blue.member.service.inter.MemberAuthService;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
+
+import java.util.List;
+import java.util.Optional;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.BlueChecker.isNull;
@@ -24,6 +27,7 @@ import static com.blue.base.constant.verify.BusinessType.REGISTER;
 import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static com.blue.base.constant.verify.VerifyType.SMS;
 import static com.blue.member.component.credential.CredentialCollectProcessor.collect;
+import static com.blue.member.component.credential.CredentialCollectProcessor.packageCredentialAttr;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static reactor.util.Loggers.getLogger;
@@ -35,9 +39,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DefaultAnnotationParam"})
 @Service
-public class MemberRegistryServiceImpl implements MemberRegistryService {
+public class MemberAuthServiceImpl implements MemberAuthService {
 
-    private static final Logger LOGGER = getLogger(MemberRegistryServiceImpl.class);
+    private static final Logger LOGGER = getLogger(MemberAuthServiceImpl.class);
 
     private final MemberBasicService memberBasicService;
 
@@ -49,8 +53,8 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
 
     private final RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer;
 
-    public MemberRegistryServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
-                                     RpcControlServiceConsumer rpcControlServiceConsumer, RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer) {
+    public MemberAuthServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
+                                 RpcControlServiceConsumer rpcControlServiceConsumer, RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer) {
         this.memberBasicService = memberBasicService;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
@@ -136,6 +140,29 @@ public class MemberRegistryServiceImpl implements MemberRegistryService {
 //            throw new BlueException(666, 666, "test rollback");
 
         return memberBasicInfo;
+    }
+
+    /**
+     * package credential attribute to member basic
+     *
+     * @param credentialTypes
+     * @param credential
+     * @param memberId
+     */
+    @Override
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
+            rollbackFor = Exception.class, timeout = 60)
+    public MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId) {
+
+        Optional<MemberBasic> memberBasicOpt = memberBasicService.getMemberBasicByPrimaryKey(memberId);
+        if (memberBasicOpt.isEmpty())
+            throw new BlueException(DATA_NOT_EXIST);
+
+        MemberBasic memberBasic = memberBasicOpt.get();
+
+        packageCredentialAttr(credentialTypes, credential, memberBasic);
+
+        return memberBasicService.updateMemberBasic(memberBasic);
     }
 
 }

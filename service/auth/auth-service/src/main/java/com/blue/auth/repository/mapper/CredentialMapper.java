@@ -43,4 +43,6 @@ public interface CredentialMapper {
 
     int updateAccessByMemberAndTypes(@Param("memberId") Long memberId, @Param("credentialTypes") List<String> credentialTypes, @Param("access") String access, @Param("status") Integer status);
 
+    int updateCredentialByIds(@Param("credential") String credential, @Param("ids") List<Long> ids);
+
 }

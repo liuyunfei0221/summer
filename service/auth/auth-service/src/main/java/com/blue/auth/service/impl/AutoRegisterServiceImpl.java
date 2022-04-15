@@ -3,7 +3,7 @@ package com.blue.auth.service.impl;
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.component.auto.MemberParamPackagerProcessor;
-import com.blue.auth.remote.consumer.RpcMemberRegistryServiceConsumer;
+import com.blue.auth.remote.consumer.RpcMemberAuthServiceConsumer;
 import com.blue.auth.service.inter.AutoRegisterService;
 import com.blue.auth.service.inter.ControlService;
 import com.blue.member.api.model.MemberBasicInfo;
@@ -33,13 +33,13 @@ public class AutoRegisterServiceImpl implements AutoRegisterService {
 
     private MemberParamPackagerProcessor memberParamPackagerProcessor;
 
-    private final RpcMemberRegistryServiceConsumer rpcMemberRegistryServiceConsumer;
+    private final RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer;
 
     private final ControlService controlService;
 
-    public AutoRegisterServiceImpl(MemberParamPackagerProcessor memberParamPackagerProcessor, RpcMemberRegistryServiceConsumer rpcMemberRegistryServiceConsumer, ControlService controlService) {
+    public AutoRegisterServiceImpl(MemberParamPackagerProcessor memberParamPackagerProcessor, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer, ControlService controlService) {
         this.memberParamPackagerProcessor = memberParamPackagerProcessor;
-        this.rpcMemberRegistryServiceConsumer = rpcMemberRegistryServiceConsumer;
+        this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
         this.controlService = controlService;
     }
 
@@ -66,7 +66,7 @@ public class AutoRegisterServiceImpl implements AutoRegisterService {
     public MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials, Long roleId) {
         LOGGER.info("MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials), credentials = {}", credentials);
 
-        MemberBasicInfo memberBasicInfo = rpcMemberRegistryServiceConsumer.autoRegisterMemberBasic(REGISTRY_PARAM_CONVERTER.apply(credentials));
+        MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.autoRegisterMemberBasic(REGISTRY_PARAM_CONVERTER.apply(credentials));
 
         controlService.initMemberAuthInfo(new MemberCredentialInfo(memberBasicInfo.getId(), credentials), roleId);
 

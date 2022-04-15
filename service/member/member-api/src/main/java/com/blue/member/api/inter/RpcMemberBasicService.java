@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * rpc member interface
+ * rpc member basic interface
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public interface RpcMemberService {
+public interface RpcMemberBasicService {
 
     /**
      * query member by id

@@ -19,12 +19,20 @@ import java.util.Optional;
 public interface MemberBasicService {
 
     /**
-     * query member by id
+     * get opt by id
      *
      * @param id
      * @return
      */
-    Mono<Optional<MemberBasic>> selectMemberBasicMonoByPrimaryKey(Long id);
+    Optional<MemberBasic> getMemberBasicByPrimaryKey(Long id);
+
+    /**
+     * get member by id
+     *
+     * @param id
+     * @return
+     */
+    Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id);
 
     /**
      * query member by phone
@@ -73,6 +81,14 @@ public interface MemberBasicService {
      * @return
      */
     MemberBasicInfo insertMemberBasic(MemberBasic memberBasic);
+
+    /**
+     * update member
+     *
+     * @param memberBasic
+     * @return
+     */
+    MemberBasicInfo updateMemberBasic(MemberBasic memberBasic);
 
     /**
      * select members by ids

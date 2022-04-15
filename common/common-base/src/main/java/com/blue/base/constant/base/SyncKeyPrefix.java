@@ -21,27 +21,7 @@ public enum SyncKeyPrefix {
     /**
      * invalid member auth key pre
      */
-    AUTH_INVALID_BY_MEMBER_ID_PRE("AUTH_INVALID_BY_MEMBER_ID_PRE:"),
-
-    /**
-     * IMAGE_VERIFY_RATE_LIMIT_KEY_PRE
-     */
-    IMAGE_VERIFY_RATE_LIMIT_KEY_PRE("image_v_"),
-
-    /**
-     * SMS_VERIFY_RATE_LIMIT_KEY_PRE
-     */
-    SMS_VERIFY_RATE_LIMIT_KEY_PRE("sms_v_"),
-
-    /**
-     * MAIL_VERIFY_RATE_LIMIT_KEY_PRE
-     */
-    MAIL_VERIFY_RATE_LIMIT_KEY_PRE("mail_v_"),
-
-    /**
-     * ACCESS_UPDATE_RATE_LIMIT_KEY_PRE
-     */
-    ACCESS_UPDATE_RATE_LIMIT_KEY_PRE("acc_up_v_");
+    AUTH_INVALID_BY_MEMBER_ID_PRE("AUTH_INVALID_BY_MEMBER_ID_PRE:");
 
     public final String prefix;
 

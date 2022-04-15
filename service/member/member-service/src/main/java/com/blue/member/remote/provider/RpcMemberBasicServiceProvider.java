@@ -1,7 +1,7 @@
 package com.blue.member.remote.provider;
 
 import com.blue.base.model.exps.BlueException;
-import com.blue.member.api.inter.RpcMemberService;
+import com.blue.member.api.inter.RpcMemberBasicService;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.service.inter.MemberBasicService;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -19,26 +19,26 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * rpc member provider
+ * rpc member basic provider
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
-@DubboService(interfaceClass = RpcMemberService.class, version = "1.0", methods = {
+@DubboService(interfaceClass = RpcMemberBasicService.class, version = "1.0", methods = {
         @Method(name = "selectMemberBasicInfoMonoByPrimaryKey", async = true),
         @Method(name = "selectMemberBasicInfoMonoByIds", async = true),
         @Method(name = "selectMemberBasicInfoByPhone", async = true),
         @Method(name = "selectMemberBasicInfoByEmail", async = true)
 })
-public class RpcMemberServiceProvider implements RpcMemberService {
+public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
 
-    private static final Logger LOGGER = getLogger(RpcMemberServiceProvider.class);
+    private static final Logger LOGGER = getLogger(RpcMemberBasicServiceProvider.class);
 
     private final MemberBasicService memberBasicService;
 
     private final Scheduler scheduler;
 
-    public RpcMemberServiceProvider(MemberBasicService memberBasicService, Scheduler scheduler) {
+    public RpcMemberBasicServiceProvider(MemberBasicService memberBasicService, Scheduler scheduler) {
         this.memberBasicService = memberBasicService;
         this.scheduler = scheduler;
     }
@@ -53,7 +53,7 @@ public class RpcMemberServiceProvider implements RpcMemberService {
     public CompletableFuture<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id) {
         LOGGER.info("CompletableFuture<Optional<MemberBasicInfo>> selectMemberBasicInfoMonoByPrimaryKey(Long id), id = {},", id);
         return just(id).publishOn(scheduler)
-                .flatMap(memberBasicService::selectMemberBasicMonoByPrimaryKey)
+                .flatMap(memberBasicService::getMemberBasicMonoByPrimaryKey)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))

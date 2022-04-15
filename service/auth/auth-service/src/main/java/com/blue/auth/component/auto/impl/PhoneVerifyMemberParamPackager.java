@@ -8,6 +8,9 @@ import com.blue.member.api.model.MemberRegistryParam;
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.PhoneProcessor.parseLast4no;
 import static com.blue.base.constant.auth.CredentialType.PHONE_VERIFY_AUTO_REGISTER;
+import static com.blue.base.constant.base.BlueNumericalValue.ID_LEN_MIN;
+import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 /**
  * packager for login by phone and verify
@@ -29,7 +32,7 @@ public class PhoneVerifyMemberParamPackager implements MemberParamByAutoLoginPac
         String name = memberRegistryParam.getName();
 
         memberRegistryParam.setPhone(credential);
-        memberRegistryParam.setName(isNotBlank(name) ? name : parseLast4no(credential));
+        memberRegistryParam.setName(isNotBlank(name) ? name : randomAlphabetic((int) ID_LEN_MIN.value) + PAR_CONCATENATION.identity + parseLast4no(credential));
     }
 
     /**

@@ -18,12 +18,12 @@ public enum VerifyTypeAndCredentialTypesRelation {
     /**
      * sms with credential types
      */
-    SMS_VT_AND_LTS(SMS, Set.of(PHONE_VERIFY_AUTO_REGISTER, PHONE_PWD)),
+    SMS_VT_AND_CTS(SMS, Set.of(PHONE_VERIFY_AUTO_REGISTER, PHONE_PWD, LOCAL_PHONE_AUTO_REGISTER, WECHAT_AUTO_REGISTER, MINI_PRO_AUTO_REGISTER)),
 
     /**
      * email with credential types
      */
-    EMAIL_VT_AND_LTS(MAIL, Set.of(EMAIL_VERIFY_AUTO_REGISTER, EMAIL_PWD));
+    EMAIL_VT_AND_CTS(MAIL, Set.of(EMAIL_VERIFY_AUTO_REGISTER, EMAIL_PWD));
 
     public final VerifyType verifyType;
 

@@ -85,4 +85,19 @@ public final class CredentialCollectProcessor {
         return CREDENTIALS_COLLECTOR.apply(memberBasic, access);
     }
 
+    /**
+     * package credential attribute to member basic
+     *
+     * @param credentialTypes
+     * @param credential
+     * @param memberBasic
+     */
+    public static void packageCredentialAttr(List<String> credentialTypes, String credential, MemberBasic memberBasic) {
+        LOGGER.info("void packageCredentialAttr(List<String> credentialTypes, String credential, MemberBasic memberBasic), credentialTypes = {}, credential = {}, memberBasic = {}",
+                credentialTypes, credential, memberBasic);
+
+        COLLECTORS.forEach(collector -> collector.packageCredentialAttr(credentialTypes, credential, memberBasic));
+    }
+
+
 }

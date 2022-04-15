@@ -34,6 +34,7 @@ public class AuthApiRoute {
                 .PUT("/access", accept(APPLICATION_JSON), authApiHandler::updateAccess)
                 .POST("/access", accept(APPLICATION_JSON), authApiHandler::resetAccess)
                 .POST("/credential", accept(APPLICATION_JSON), authApiHandler::credentialSettingUp)
+                .PUT("/credential", accept(APPLICATION_JSON), authApiHandler::credentialModify)
                 .PUT("/secret", accept(APPLICATION_JSON), authApiHandler::updateSecret)
                 .GET("/authority", authApiHandler::selectAuthority)
                 .build();

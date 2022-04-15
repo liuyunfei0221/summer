@@ -28,6 +28,11 @@ public enum BusinessType {
     CREDENTIAL_SETTING_UP("CSU"),
 
     /**
+     * update credential
+     */
+    CREDENTIAL_UPDATE("CUP"),
+
+    /**
      * update access/password
      */
     UPDATE_ACCESS("UPD_ACC"),

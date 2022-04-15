@@ -6,20 +6,38 @@ import com.blue.member.repository.entity.MemberBasic;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.stream.Stream;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.auth.CredentialType.*;
+import static com.blue.base.constant.base.Status.INVALID;
 import static com.blue.base.constant.base.Status.VALID;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * generate credential by phone
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces", "JavadocDeclaration", "DuplicatedCode"})
 public final class PhoneCredentialCollector implements CredentialCollector {
 
+    private static final Set<String> TAR_TYPES = Stream.of(
+            PHONE_VERIFY_AUTO_REGISTER, LOCAL_PHONE_AUTO_REGISTER, WECHAT_AUTO_REGISTER, MINI_PRO_AUTO_REGISTER, PHONE_PWD
+    ).map(t -> t.identity).collect(toSet());
+
+    private static final BiPredicate<String, String> STATUS_GETTER = (type, access) ->
+            !PHONE_PWD.identity.equals(type) || isNotBlank(access);
+
+    /**
+     * collect credential
+     *
+     * @param memberBasic
+     * @param access
+     * @param credentials
+     */
     @Override
     public void collect(MemberBasic memberBasic, String access, List<CredentialInfo> credentials) {
         if (credentials == null)
@@ -32,13 +50,29 @@ public final class PhoneCredentialCollector implements CredentialCollector {
         if (isBlank(phone))
             return;
 
-        credentials.add(new CredentialInfo(phone, PHONE_VERIFY_AUTO_REGISTER.identity, "", VALID.status, "from registry"));
-        credentials.add(new CredentialInfo(phone, LOCAL_PHONE_AUTO_REGISTER.identity, "", VALID.status, "from registry"));
-        credentials.add(new CredentialInfo(phone, WECHAT_AUTO_REGISTER.identity, "", VALID.status, "from registry"));
-        credentials.add(new CredentialInfo(phone, MINI_PRO_AUTO_REGISTER.identity, "", VALID.status, "from registry"));
+        String tarAccess = access != null ? access : "";
+        TAR_TYPES.stream()
+                .map(type -> new CredentialInfo(phone, type, tarAccess, STATUS_GETTER.test(type, tarAccess) ? VALID.status : INVALID.status, "from registry"))
+                .forEach(credentials::add);
+    }
 
-        if (isNotBlank(access))
-            credentials.add(new CredentialInfo(phone, PHONE_PWD.identity, access, VALID.status, "from registry"));
+    /**
+     * package credential attribute to member basic
+     *
+     * @param credentialTypes
+     * @param credential
+     * @param memberBasic
+     */
+    @Override
+    public void packageCredentialAttr(List<String> credentialTypes, String credential, MemberBasic memberBasic) {
+        if (isEmpty(credentialTypes) || isBlank(credential) || memberBasic == null)
+            return;
+
+        for (String type : credentialTypes)
+            if (TAR_TYPES.contains(type)) {
+                memberBasic.setPhone(credential);
+                return;
+            }
     }
 
 }

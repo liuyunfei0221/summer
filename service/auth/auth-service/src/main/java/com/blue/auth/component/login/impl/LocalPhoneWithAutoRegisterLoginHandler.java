@@ -4,7 +4,7 @@ import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.login.inter.LoginHandler;
 import com.blue.auth.model.LoginParam;
 import com.blue.auth.remote.consumer.RpcLocalPhoneServiceConsumer;
-import com.blue.auth.remote.consumer.RpcMemberServiceConsumer;
+import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.service.inter.AuthService;
 import com.blue.auth.service.inter.AutoRegisterService;
 import com.blue.auth.service.inter.CredentialService;
@@ -52,7 +52,7 @@ public class LocalPhoneWithAutoRegisterLoginHandler implements LoginHandler {
 
     private final RpcLocalPhoneServiceConsumer rpcLocalPhoneServiceConsumer;
 
-    private final RpcMemberServiceConsumer rpcMemberServiceConsumer;
+    private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
     private final AutoRegisterService autoRegisterService;
 
@@ -62,10 +62,10 @@ public class LocalPhoneWithAutoRegisterLoginHandler implements LoginHandler {
 
     private final AuthService authService;
 
-    public LocalPhoneWithAutoRegisterLoginHandler(RpcLocalPhoneServiceConsumer rpcLocalPhoneServiceConsumer, RpcMemberServiceConsumer rpcMemberServiceConsumer,
+    public LocalPhoneWithAutoRegisterLoginHandler(RpcLocalPhoneServiceConsumer rpcLocalPhoneServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
                                                   AutoRegisterService autoRegisterService, CredentialService credentialService, RoleService roleService, AuthService authService) {
         this.rpcLocalPhoneServiceConsumer = rpcLocalPhoneServiceConsumer;
-        this.rpcMemberServiceConsumer = rpcMemberServiceConsumer;
+        this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.autoRegisterService = autoRegisterService;
         this.credentialService = credentialService;
         this.roleService = roleService;
@@ -107,7 +107,7 @@ public class LocalPhoneWithAutoRegisterLoginHandler implements LoginHandler {
                 .flatMap(credentialOpt ->
                         credentialOpt.map(credential -> {
                                     extra.put(NEW_MEMBER.key, false);
-                                    return rpcMemberServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(credential.getMemberId())
+                                    return rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(credential.getMemberId())
                                             .flatMap(mbi -> {
                                                 MEMBER_STATUS_ASSERTER.accept(mbi);
                                                 return authService.generateAuthMono(mbi.getId(), LOCAL_PHONE_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());

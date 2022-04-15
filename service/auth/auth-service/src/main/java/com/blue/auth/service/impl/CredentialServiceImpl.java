@@ -20,6 +20,7 @@ import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.*;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -232,6 +233,26 @@ public class CredentialServiceImpl implements CredentialService {
         credential.setId(blueIdentityProcessor.generate(Credential.class));
 
         credentialMapper.insert(credential);
+    }
+
+    /**
+     * insert credential
+     *
+     * @param credential
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    public void updateCredentialByIds(String credential, List<Long> ids) {
+        LOGGER.info("void updateCredentialByIds(String credential, List<Long> ids), credential = {}, ids = {}", credential, ids);
+
+        if (isBlank(credential) || isEmpty(ids))
+            throw new BlueException(EMPTY_PARAM);
+
+        if (isNotEmpty(credentialMapper.selectByCredentials(singletonList(credential))))
+            throw new BlueException(DATA_ALREADY_EXIST);
+
+        credentialMapper.updateCredentialByIds(credential, ids);
     }
 
     /**

@@ -4,6 +4,7 @@ import com.blue.auth.api.model.*;
 import com.blue.auth.common.AccessEncoder;
 import com.blue.auth.event.producer.SystemAuthorityInfosRefreshProducer;
 import com.blue.auth.model.*;
+import com.blue.auth.remote.consumer.RpcMemberAuthServiceConsumer;
 import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.repository.entity.MemberRoleRelation;
@@ -17,7 +18,9 @@ import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.base.Access;
 import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.exps.BlueException;
+import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.redis.common.BlueLeakyBucketRateLimiter;
+import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,11 +41,11 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.base.common.base.ConstantProcessor.getVerifyTypeByIdentity;
+import static com.blue.base.constant.base.RateLimitKeyPrefix.ACCESS_UPDATE_RATE_LIMIT_KEY_PRE;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.INVALID;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
-import static com.blue.base.constant.base.SyncKeyPrefix.ACCESS_UPDATE_RATE_LIMIT_KEY_PRE;
 import static com.blue.base.constant.verify.BusinessType.*;
 import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateLeakyBucketRateLimiter;
 import static java.util.Optional.ofNullable;
@@ -61,13 +64,15 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/11/1
  * @apiNote
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service
 public class ControlServiceImpl implements ControlService {
 
     private static final Logger LOGGER = getLogger(ControlServiceImpl.class);
 
     private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
+
+    private final RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer;
 
     private final LoginService loginService;
 
@@ -88,10 +93,11 @@ public class ControlServiceImpl implements ControlService {
     private final BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, LoginService loginService, AuthService authService, RoleService roleService, CredentialService credentialService,
+    public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer, LoginService loginService, AuthService authService, RoleService roleService, CredentialService credentialService,
                               RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService, SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService,
                               ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
+        this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
         this.loginService = loginService;
         this.authService = authService;
         this.roleService = roleService;
@@ -163,7 +169,7 @@ public class ControlServiceImpl implements ControlService {
 
         credential.setMemberId(memberId);
         credential.setExtra(credentialInfo.getExtra());
-        credential.setStatus(VALID.status);
+        credential.setStatus(credentialInfo.getStatus());
 
         Long stamp = TIME_STAMP_GETTER.get();
         credential.setCreateTime(stamp);
@@ -187,14 +193,14 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(FORBIDDEN);
     }
 
-    private static final Map<VerifyType, List<String>> VT_WITH_LTS_REL = Stream.of(VerifyTypeAndCredentialTypesRelation.values())
+    private static final Map<VerifyType, List<String>> VT_WITH_CTS_REL = Stream.of(VerifyTypeAndCredentialTypesRelation.values())
             .collect(toMap(e -> e.verifyType, e -> e.credentialTypes.stream().map(lt -> lt.identity).collect(toList()), (a, b) -> a));
 
-    private static final Function<VerifyType, List<String>> LTS_BY_VT_GETTER = verifyType -> {
+    private static final Function<VerifyType, List<String>> CTS_BY_VT_GETTER = verifyType -> {
         if (verifyType == null)
             throw new BlueException(BAD_REQUEST);
 
-        List<String> credentialTypes = VT_WITH_LTS_REL.get(verifyType);
+        List<String> credentialTypes = VT_WITH_CTS_REL.get(verifyType);
         if (isEmpty(credentialTypes))
             throw new BlueException(BAD_REQUEST);
 
@@ -214,7 +220,7 @@ public class ControlServiceImpl implements ControlService {
     };
 
     private final int ALLOW = 1;
-    private final long SEND_INTERVAL_MILLIS = 10;
+    private final long SEND_INTERVAL_MILLIS = 5;
 
     private void packageExistAccess(List<Credential> credentials, Long memberId) {
         credentialService.selectCredentialByMemberIdAndTypes(memberId, ALLOW_ACCESS_LTS).stream().findAny()
@@ -442,8 +448,12 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public Mono<Boolean> credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access) {
-        LOGGER.info("Mono<Boolean> credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam,Access access), credentialSettingUpParam = {}, access = {}",
+    @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
+            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
+            rollbackFor = Exception.class, timeout = 60)
+    public MemberBasicInfo credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access) {
+        LOGGER.info("MemberBasicInfo credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access), credentialSettingUpParam = {}, access = {}",
                 credentialSettingUpParam, access);
 
         if (credentialSettingUpParam == null)
@@ -452,29 +462,76 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(UNAUTHORIZED);
         credentialSettingUpParam.asserts();
 
-        String credential = credentialSettingUpParam.getCredential();
         long memberId = access.getId();
-        return rpcVerifyHandleServiceConsumer.validate(getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()), CREDENTIAL_SETTING_UP, credential, credentialSettingUpParam.getVerificationCode(), true)
-                .flatMap(validate -> {
-                    if (validate) {
-                        List<String> types = LTS_BY_VT_GETTER.apply(ConstantProcessor.getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()));
-                        return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(memberId)), ALLOW, SEND_INTERVAL_MILLIS)
-                                .flatMap(allowed -> {
-                                    if (allowed) {
-                                        return credentialService.selectCredentialMonoByMemberIdAndTypes(memberId, types)
-                                                .flatMap(sameTypeCredentials ->
-                                                        isEmpty(sameTypeCredentials)
-                                                                ?
-                                                                fromRunnable(() -> credentialService.insertCredentials(generateCredentialsByElements(types, credential, memberId)))
-                                                                        .then(just(true))
-                                                                :
-                                                                error(() -> new BlueException(DATA_ALREADY_EXIST)));
-                                    }
-                                    return error(() -> new BlueException(TOO_MANY_REQUESTS));
-                                });
-                    }
-                    return error(() -> new BlueException(VERIFY_IS_INVALID));
-                });
+        if (!blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(memberId)), ALLOW, SEND_INTERVAL_MILLIS).toFuture().join())
+            throw new BlueException(TOO_MANY_REQUESTS);
+
+        String credential = credentialSettingUpParam.getCredential();
+
+        if (!rpcVerifyHandleServiceConsumer.validate(getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()),
+                CREDENTIAL_SETTING_UP, credential, credentialSettingUpParam.getVerificationCode(), true).toFuture().join())
+            throw new BlueException(VERIFY_IS_INVALID);
+
+        List<String> types = CTS_BY_VT_GETTER.apply(ConstantProcessor.getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()));
+
+        List<Credential> sameTypeCredentials = credentialService.selectCredentialByMemberIdAndTypes(memberId, types);
+        if (isNotEmpty(sameTypeCredentials))
+            throw new BlueException(DATA_ALREADY_EXIST);
+
+        credentialService.insertCredentials(generateCredentialsByElements(types, credential, memberId));
+
+        return rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(types, credential, memberId);
+    }
+
+    /**
+     * update exist credential
+     *
+     * @param credentialModifyParam
+     * @param access
+     * @return
+     */
+    @Override
+    @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
+            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
+            rollbackFor = Exception.class, timeout = 60)
+    public MemberBasicInfo credentialModify(CredentialModifyParam credentialModifyParam, Access access) {
+        LOGGER.info("MemberBasicInfo credentialModify(CredentialModifyParam credentialModifyParam, Access access), credentialModifyParam = {}, access = {}",
+                credentialModifyParam, access);
+
+        if (credentialModifyParam == null)
+            throw new BlueException(EMPTY_PARAM);
+        if (access == null)
+            throw new BlueException(UNAUTHORIZED);
+        credentialModifyParam.asserts();
+
+        long memberId = access.getId();
+        if (!blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(memberId)), ALLOW, SEND_INTERVAL_MILLIS).toFuture().join())
+            throw new BlueException(TOO_MANY_REQUESTS);
+
+        VerifyType currentVerifyType = getVerifyTypeByIdentity(credentialModifyParam.getCurrentVerifyType());
+        Optional<Credential> currentCredentialOpt = credentialService.selectCredentialByMemberIdAndTypes(memberId, CTS_BY_VT_GETTER.apply(currentVerifyType)).stream().findAny();
+        if (currentCredentialOpt.isEmpty())
+            throw new BlueException(BAD_REQUEST);
+
+        if (!rpcVerifyHandleServiceConsumer.validate(currentVerifyType, CREDENTIAL_UPDATE, currentCredentialOpt.get().getCredential(),
+                credentialModifyParam.getCurrentVerificationCode(), true).toFuture().join())
+            throw new BlueException(VERIFY_IS_INVALID);
+
+
+        VerifyType destinationVerifyType = getVerifyTypeByIdentity(credentialModifyParam.getDestinationVerifyType());
+        String destinationCredential = credentialModifyParam.getDestinationCredential();
+        if (!rpcVerifyHandleServiceConsumer.validate(destinationVerifyType, CREDENTIAL_UPDATE, destinationCredential,
+                credentialModifyParam.getDestinationVerificationCode(), true).toFuture().join())
+            throw new BlueException(VERIFY_IS_INVALID);
+
+        List<String> destinationCredentialTypes = CTS_BY_VT_GETTER.apply(destinationVerifyType);
+        List<Credential> destinationCredentials = credentialService.selectCredentialByMemberIdAndTypes(memberId, destinationCredentialTypes);
+        if (isEmpty(destinationCredentials))
+            throw new BlueException(DATA_NOT_EXIST);
+
+        credentialService.updateCredentialByIds(destinationCredential, destinationCredentials.stream().map(Credential::getId).collect(toList()));
+        return rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(destinationCredentialTypes, destinationCredential, memberId);
     }
 
     /**
@@ -530,7 +587,7 @@ public class ControlServiceImpl implements ControlService {
         return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(memberId)), ALLOW, SEND_INTERVAL_MILLIS)
                 .flatMap(allowed ->
                         allowed ?
-                                credentialService.selectCredentialMonoByMemberIdAndTypes(memberId, LTS_BY_VT_GETTER.apply(verifyType))
+                                credentialService.selectCredentialMonoByMemberIdAndTypes(memberId, CTS_BY_VT_GETTER.apply(verifyType))
                                         .flatMap(credentials ->
                                                 just(credentials.stream().findAny().orElseThrow(() -> new BlueException(BAD_REQUEST))))
                                         .flatMap(credential ->
@@ -539,7 +596,7 @@ public class ControlServiceImpl implements ControlService {
                                                                 validate ?
                                                                         just(credentialService.updateAccess(memberId, ALLOW_ACCESS_LTS, accessUpdateParam.getAccess()))
                                                                         :
-                                                                        error(() -> new BlueException(BAD_REQUEST))))
+                                                                        error(() -> new BlueException(VERIFY_IS_INVALID))))
                                 :
                                 error(() -> new BlueException(TOO_MANY_REQUESTS)));
     }
@@ -564,7 +621,7 @@ public class ControlServiceImpl implements ControlService {
         return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(credential), ALLOW, SEND_INTERVAL_MILLIS)
                 .flatMap(allowed ->
                         allowed ?
-                                credentialService.selectCredentialMonoByCredentialAndTypes(credential, LTS_BY_VT_GETTER.apply(verifyType))
+                                credentialService.selectCredentialMonoByCredentialAndTypes(credential, CTS_BY_VT_GETTER.apply(verifyType))
                                         .flatMap(credentials ->
                                                 just(credentials.stream().findAny().orElseThrow(() -> new BlueException(BAD_REQUEST))))
                                         .flatMap(cre ->
@@ -573,7 +630,7 @@ public class ControlServiceImpl implements ControlService {
                                                                 validate ?
                                                                         just(credentialService.updateAccess(cre.getMemberId(), ALLOW_ACCESS_LTS, accessResetParam.getAccess()))
                                                                         :
-                                                                        error(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "verificationCode is invalid"))))
+                                                                        error(() -> new BlueException(VERIFY_IS_INVALID))))
                                 :
                                 error(() -> new BlueException(TOO_MANY_REQUESTS)));
     }

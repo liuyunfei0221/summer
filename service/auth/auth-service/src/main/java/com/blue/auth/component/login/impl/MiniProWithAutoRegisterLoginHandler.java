@@ -3,7 +3,7 @@ package com.blue.auth.component.login.impl;
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.login.inter.LoginHandler;
 import com.blue.auth.model.LoginParam;
-import com.blue.auth.remote.consumer.RpcMemberServiceConsumer;
+import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.remote.consumer.RpcMiniProServiceConsumer;
 import com.blue.auth.service.inter.AuthService;
 import com.blue.auth.service.inter.AutoRegisterService;
@@ -51,7 +51,7 @@ public class MiniProWithAutoRegisterLoginHandler implements LoginHandler {
 
     private final RpcMiniProServiceConsumer rpcMiniProServiceConsumer;
 
-    private final RpcMemberServiceConsumer rpcMemberServiceConsumer;
+    private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
     private final AutoRegisterService autoRegisterService;
 
@@ -61,9 +61,9 @@ public class MiniProWithAutoRegisterLoginHandler implements LoginHandler {
 
     private final AuthService authService;
 
-    public MiniProWithAutoRegisterLoginHandler(RpcMiniProServiceConsumer rpcMiniProServiceConsumer, RpcMemberServiceConsumer rpcMemberServiceConsumer,
+    public MiniProWithAutoRegisterLoginHandler(RpcMiniProServiceConsumer rpcMiniProServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
                                                AutoRegisterService autoRegisterService, CredentialService credentialService, RoleService roleService, AuthService authService) {
-        this.rpcMemberServiceConsumer = rpcMemberServiceConsumer;
+        this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.rpcMiniProServiceConsumer = rpcMiniProServiceConsumer;
         this.autoRegisterService = autoRegisterService;
         this.credentialService = credentialService;
@@ -110,7 +110,7 @@ public class MiniProWithAutoRegisterLoginHandler implements LoginHandler {
                 .flatMap(credentialOpt ->
                         credentialOpt.map(credential -> {
                                     extra.put(NEW_MEMBER.key, false);
-                                    return rpcMemberServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(credential.getMemberId())
+                                    return rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(credential.getMemberId())
                                             .flatMap(mbi -> {
                                                 MEMBER_STATUS_ASSERTER.accept(mbi);
                                                 return authService.generateAuthMono(mbi.getId(), MINI_PRO_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());
