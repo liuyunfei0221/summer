@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.constant.base.ResponseElement.ILLEGAL_REQUEST;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
@@ -49,7 +50,7 @@ public class VerifyServiceImpl implements VerifyService {
     public VerifyServiceImpl(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, VerifyDeploy verifyDeploy) {
         this.blueValidator = BlueValidatorGenerator.generateValidator(reactiveStringRedisTemplate, scheduler);
 
-        if (verifyDeploy == null)
+        if (isNull(verifyDeploy))
             throw new RuntimeException("verifyDeploy can't be null");
 
         Integer keyLength = verifyDeploy.getKeyLength();

@@ -7,6 +7,8 @@ import com.blue.portal.repository.entity.Bulletin;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -23,7 +25,7 @@ public final class PortalModelConverters {
      * bulletin -> bulletinInfo
      */
     public static final Function<Bulletin, BulletinInfo> BULLETIN_2_BULLETIN_INFO_CONVERTER = bulletin -> {
-        if (bulletin == null)
+        if (isNull(bulletin))
             throw new BlueException(EMPTY_PARAM);
 
         return new BulletinInfo(bulletin.getId(), bulletin.getTitle(), bulletin.getContent(), bulletin.getLink(), bulletin.getType());
@@ -33,7 +35,7 @@ public final class PortalModelConverters {
      * bulletins -> bulletinInfos
      */
     public static final Function<List<Bulletin>, List<BulletinInfo>> BULLETINS_2_BULLETIN_INFOS_CONVERTER = bls ->
-            bls != null && bls.size() > 0 ? bls.stream()
+            isNotNull(bls) && bls.size() > 0 ? bls.stream()
                     .map(BULLETIN_2_BULLETIN_INFO_CONVERTER)
                     .collect(toList()) : emptyList();
 

@@ -2,6 +2,8 @@ package com.blue.member.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * member real name entity
  *
@@ -65,7 +67,7 @@ public final class MemberRealName implements Serializable {
     }
 
     public void setRealName(String realName) {
-        this.realName = realName == null ? null : realName.trim();
+        this.realName = isNull(realName) ? null : realName.trim();
     }
 
     public Integer getGender() {
@@ -81,7 +83,7 @@ public final class MemberRealName implements Serializable {
     }
 
     public void setBirthday(String birthday) {
-        this.birthday = birthday == null ? null : birthday.trim();
+        this.birthday = isNull(birthday) ? null : birthday.trim();
     }
 
     public Long getNationalityId() {
@@ -105,7 +107,7 @@ public final class MemberRealName implements Serializable {
     }
 
     public void setIdCardNo(String idCardNo) {
-        this.idCardNo = idCardNo == null ? null : idCardNo.trim();
+        this.idCardNo = isNull(idCardNo) ? null : idCardNo.trim();
     }
 
     public String getResidenceAddress() {
@@ -113,7 +115,7 @@ public final class MemberRealName implements Serializable {
     }
 
     public void setResidenceAddress(String residenceAddress) {
-        this.residenceAddress = residenceAddress == null ? null : residenceAddress.trim();
+        this.residenceAddress = isNull(residenceAddress) ? null : residenceAddress.trim();
     }
 
     public String getIssuingAuthority() {
@@ -121,7 +123,7 @@ public final class MemberRealName implements Serializable {
     }
 
     public void setIssuingAuthority(String issuingAuthority) {
-        this.issuingAuthority = issuingAuthority == null ? null : issuingAuthority.trim();
+        this.issuingAuthority = isNull(issuingAuthority) ? null : issuingAuthority.trim();
     }
 
     public String getSinceDate() {
@@ -129,7 +131,7 @@ public final class MemberRealName implements Serializable {
     }
 
     public void setSinceDate(String sinceDate) {
-        this.sinceDate = sinceDate == null ? null : sinceDate.trim();
+        this.sinceDate = isNull(sinceDate) ? null : sinceDate.trim();
     }
 
     public String getExpireDate() {
@@ -137,7 +139,7 @@ public final class MemberRealName implements Serializable {
     }
 
     public void setExpireDate(String expireDate) {
-        this.expireDate = expireDate == null ? null : expireDate.trim();
+        this.expireDate = isNull(expireDate) ? null : expireDate.trim();
     }
 
     public String getExtra() {
@@ -145,7 +147,7 @@ public final class MemberRealName implements Serializable {
     }
 
     public void setExtra(String extra) {
-        this.extra = extra == null ? null : extra.trim();
+        this.extra = isNull(extra) ? null : extra.trim();
     }
 
     public Integer getStatus() {

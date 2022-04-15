@@ -13,6 +13,7 @@ import reactor.util.Loggers;
 
 import java.util.List;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.BlueNumericalValue.ROWS;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static reactor.core.publisher.Mono.just;
@@ -55,7 +56,7 @@ public class BulletinServiceImpl implements BulletinService {
     @Override
     public List<Bulletin> selectTargetActiveBulletinByType(BulletinType bulletinType) {
         LOGGER.info("List<Bulletin> selectActiveBulletinByType(BulletinType bulletinType), bulletinType = {}", bulletinType);
-        if (bulletinType == null)
+        if (isNull(bulletinType))
             throw new BlueException(INVALID_IDENTITY);
 
         List<Bulletin> bulletins = bulletinMapper.selectByRowsAndCondition(bulletinType.identity, Status.VALID.status, ROWS.value);

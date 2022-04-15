@@ -220,7 +220,7 @@ public class ControlServiceImpl implements ControlService {
     };
 
     private final int ALLOW = 1;
-    private final long SEND_INTERVAL_MILLIS = 5;
+    private final long SEND_INTERVAL_MILLIS = 5000;
 
     private void packageExistAccess(List<Credential> credentials, Long memberId) {
         credentialService.selectCredentialByMemberIdAndTypes(memberId, ALLOW_ACCESS_LTS).stream().findAny()

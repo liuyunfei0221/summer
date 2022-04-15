@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
@@ -81,7 +82,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
     private final Function<HttpHeaders, RequestBodyReader> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
         RequestBodyReader processor = REQUEST_BODY_READER_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, HttpHeaders.CONTENT_TYPE));
 
-        if (processor == null)
+        if (isNull(processor))
             throw new BlueException(UNSUPPORTED_MEDIA_TYPE);
 
         return processor;

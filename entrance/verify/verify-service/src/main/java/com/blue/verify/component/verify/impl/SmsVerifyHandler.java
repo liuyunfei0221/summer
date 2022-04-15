@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IP_SYNC_KEY_GETTER;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
@@ -63,19 +64,19 @@ public class SmsVerifyHandler implements VerifyHandler {
         this.blueLeakyBucketRateLimiter = generateLeakyBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
 
         Integer verifyLength = smsVerifyDeploy.getVerifyLength();
-        if (verifyLength == null || verifyLength < 1)
+        if (isNull(verifyLength) || verifyLength < 1)
             throw new RuntimeException("verifyLength can't be null or less than 1");
 
         Long expireMillis = smsVerifyDeploy.getExpireMillis();
-        if (expireMillis == null || expireMillis < 1L)
+        if (isNull(expireMillis) || expireMillis < 1L)
             throw new RuntimeException("expireMillis can't be null or less than 1");
 
         Integer allow = smsVerifyDeploy.getAllow();
-        if (allow == null || allow < 1)
+        if (isNull(allow) || allow < 1)
             throw new RuntimeException("allow can't be null or less than 1");
 
         Long sendIntervalMillis = smsVerifyDeploy.getSendIntervalMillis();
-        if (sendIntervalMillis == null || sendIntervalMillis < 1L)
+        if (isNull(sendIntervalMillis) || sendIntervalMillis < 1L)
             throw new RuntimeException("sendIntervalMillis can't be null or less than 1");
 
         this.VERIFY_LEN = verifyLength;
@@ -85,14 +86,14 @@ public class SmsVerifyHandler implements VerifyHandler {
     }
 
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
-        if (key == null)
+        if (isNull(key))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
 
         return SMS_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
     private static final BiFunction<BusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
-        if (type == null || key == null)
+        if (isNull(type) || isNull(key))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
 
         return type.identity + PAR_CONCATENATION.identity + key;

@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.*;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
@@ -76,7 +77,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
      * assert media
      */
     private final Function<Part, String> PART_NAME_GETTER = part -> {
-        if (part == null)
+        if (isNull(part))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "part can't be empty");
 
         FilePart filePart = (FilePart) part;

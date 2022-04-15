@@ -4,6 +4,8 @@ import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * country entity
  *
@@ -60,7 +62,7 @@ public final class Country implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = isNull(name) ? null : name.trim();
     }
 
     public String getNativeName() {
@@ -68,7 +70,7 @@ public final class Country implements Serializable {
     }
 
     public void setNativeName(String nativeName) {
-        this.nativeName = nativeName == null ? null : nativeName.trim();
+        this.nativeName = isNull(nativeName) ? null : nativeName.trim();
     }
 
     public String getNumericCode() {
@@ -76,7 +78,7 @@ public final class Country implements Serializable {
     }
 
     public void setNumericCode(String numericCode) {
-        this.numericCode = numericCode == null ? null : numericCode.trim();
+        this.numericCode = isNull(numericCode) ? null : numericCode.trim();
     }
 
     public String getCountryCode() {
@@ -84,7 +86,7 @@ public final class Country implements Serializable {
     }
 
     public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode == null ? null : countryCode.trim();
+        this.countryCode = isNull(countryCode) ? null : countryCode.trim();
     }
 
     public String getPhoneCode() {
@@ -92,7 +94,7 @@ public final class Country implements Serializable {
     }
 
     public void setPhoneCode(String phoneCode) {
-        this.phoneCode = phoneCode == null ? null : phoneCode.trim();
+        this.phoneCode = isNull(phoneCode) ? null : phoneCode.trim();
     }
 
     public String getCapital() {
@@ -100,7 +102,7 @@ public final class Country implements Serializable {
     }
 
     public void setCapital(String capital) {
-        this.capital = capital == null ? null : capital.trim();
+        this.capital = isNull(capital) ? null : capital.trim();
     }
 
     public String getCurrency() {
@@ -108,7 +110,7 @@ public final class Country implements Serializable {
     }
 
     public void setCurrency(String currency) {
-        this.currency = currency == null ? null : currency.trim();
+        this.currency = isNull(currency) ? null : currency.trim();
     }
 
     public String getCurrencySymbol() {
@@ -116,7 +118,7 @@ public final class Country implements Serializable {
     }
 
     public void setCurrencySymbol(String currencySymbol) {
-        this.currencySymbol = currencySymbol == null ? null : currencySymbol.trim();
+        this.currencySymbol = isNull(currencySymbol) ? null : currencySymbol.trim();
     }
 
     public String getTopLevelDomain() {
@@ -124,7 +126,7 @@ public final class Country implements Serializable {
     }
 
     public void setTopLevelDomain(String topLevelDomain) {
-        this.topLevelDomain = topLevelDomain == null ? null : topLevelDomain.trim();
+        this.topLevelDomain = isNull(topLevelDomain) ? null : topLevelDomain.trim();
     }
 
     public String getRegion() {
@@ -132,7 +134,7 @@ public final class Country implements Serializable {
     }
 
     public void setRegion(String region) {
-        this.region = region == null ? null : region.trim();
+        this.region = isNull(region) ? null : region.trim();
     }
 
     public String getEmoji() {
@@ -140,7 +142,7 @@ public final class Country implements Serializable {
     }
 
     public void setEmoji(String emoji) {
-        this.emoji = emoji == null ? null : emoji.trim();
+        this.emoji = isNull(emoji) ? null : emoji.trim();
     }
 
     public String getEmojiu() {
@@ -148,7 +150,7 @@ public final class Country implements Serializable {
     }
 
     public void setEmojiu(String emojiu) {
-        this.emojiu = emojiu == null ? null : emojiu.trim();
+        this.emojiu = isNull(emojiu) ? null : emojiu.trim();
     }
 
     public Integer getStatus() {

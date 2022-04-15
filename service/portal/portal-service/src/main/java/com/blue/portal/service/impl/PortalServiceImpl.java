@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.constant.base.BlueCacheKey.PORTALS_PRE;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_WAIT_MILLIS_FOR_REDISSON_SYNC;
@@ -166,7 +167,7 @@ public class PortalServiceImpl implements PortalService {
      * list bulletin infos from local cache
      */
     private final Function<BulletinType, Mono<List<BulletinInfo>>> LOCAL_CACHE_PORTAL_FUNC = type -> {
-        if (type == null)
+        if (isNull(type))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null");
 
         return justOrEmpty(LOCAL_CACHE.get(type, REDIS_PORTAL_GETTER_WITH_CACHE)).switchIfEmpty(just(emptyList()));

@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
@@ -178,7 +179,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
     private final Function<HttpHeaders, RequestBodyReporter> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
         RequestBodyReporter reporter = REQUEST_BODY_PROCESSOR_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE));
 
-        if (reporter == null)
+        if (isNull(reporter))
             throw new BlueException(UNSUPPORTED_MEDIA_TYPE);
 
         return reporter;
@@ -205,10 +206,6 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
     public int getOrder() {
         return BLUE_BODY_PROCESS_AND_DATA_REPORT.order;
     }
-
-
-
-
 
 
     /**

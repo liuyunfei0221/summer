@@ -80,11 +80,11 @@ public class AttachmentServiceImpl implements AttachmentService {
     public Mono<Attachment> getAttachment(Long id) {
         LOGGER.info("getAttachment(Long id), id = {}", id);
 
-        if (id == null || id < 1L)
+        if (isNull(id) || id < 1L)
             throw new BlueException(INVALID_IDENTITY);
 
         Attachment attachment = attachmentMapper.selectByPrimaryKey(id);
-        if (attachment == null)
+        if (isNull(attachment))
             throw new BlueException(DATA_NOT_EXIST);
 
         LOGGER.info("attachment = {}", attachment);

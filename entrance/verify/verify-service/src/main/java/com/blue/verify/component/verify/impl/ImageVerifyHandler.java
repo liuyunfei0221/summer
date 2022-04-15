@@ -27,8 +27,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER;
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
@@ -80,11 +79,11 @@ public class ImageVerifyHandler implements VerifyHandler {
         this.executorService = executorService;
 
         Integer keyLength = imageVerifyDeploy.getKeyLength();
-        if (keyLength == null || keyLength < 1)
+        if (isNull(keyLength) || keyLength < 1)
             throw new RuntimeException("keyLength can't be null or less than 1");
 
         RandomType keyRandomType = imageVerifyDeploy.getKeyRandomType();
-        if (keyRandomType == null)
+        if (isNull(keyRandomType))
             throw new RuntimeException("randomType can't be null");
 
         String imageType = imageVerifyDeploy.getImageType();
@@ -92,19 +91,19 @@ public class ImageVerifyHandler implements VerifyHandler {
             throw new RuntimeException("imageType can't be blank");
 
         Integer verifyLength = imageVerifyDeploy.getVerifyLength();
-        if (verifyLength == null || verifyLength < 1)
+        if (isNull(verifyLength) || verifyLength < 1)
             throw new RuntimeException("verifyLength can't be null or less than 1");
 
         Integer expireMillis = imageVerifyDeploy.getExpireMillis();
-        if (expireMillis == null || expireMillis < 1)
+        if (isNull(expireMillis) || expireMillis < 1)
             throw new RuntimeException("expireMillis can't be null or less than 1");
 
         Integer allow = imageVerifyDeploy.getAllow();
-        if (allow == null || allow < 1)
+        if (isNull(allow) || allow < 1)
             throw new RuntimeException("allow can't be null or less than 1");
 
         Long sendIntervalMillis = imageVerifyDeploy.getSendIntervalMillis();
-        if (sendIntervalMillis == null || sendIntervalMillis < 1L)
+        if (isNull(sendIntervalMillis) || sendIntervalMillis < 1L)
             throw new RuntimeException("sendIntervalMillis can't be null or less than 1");
 
         this.KEY_LEN = keyLength;
@@ -117,14 +116,14 @@ public class ImageVerifyHandler implements VerifyHandler {
     }
 
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
-        if (key == null)
+        if (isNull(key))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
 
         return IMAGE_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
     private static final BiFunction<BusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
-        if (type == null || key == null)
+        if (isNull(type) || isNull(key))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
 
         return type.identity + PAR_CONCATENATION.identity + key;
@@ -157,7 +156,7 @@ public class ImageVerifyHandler implements VerifyHandler {
 
     @Override
     public Mono<String> handle(BusinessType businessType, String destination) {
-        if (businessType == null && isNotBlank(destination))
+        if (isNull(businessType) && isNotBlank(destination))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "verifyBusinessType can't be null");
 
         return verifyService.generate(IMAGE, BUSINESS_KEY_WRAPPER.apply(businessType, destination), VERIFY_LEN, DEFAULT_DURATION);

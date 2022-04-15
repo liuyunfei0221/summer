@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static com.blue.base.common.auth.AuthProcessor.accessToJson;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.HEADER_VALUE_GETTER;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
@@ -43,7 +44,7 @@ public final class BlueAuthFilter implements WebFilter, Ordered {
             (request, accessInfo) -> request.mutate().headers(hs -> hs.set(AUTHORIZATION.name, accessInfo));
 
     private static void authProcess(AccessAsserted accessAsserted, ServerHttpRequest request, Map<String, Object> attributes) {
-        if (accessAsserted == null || attributes == null)
+        if (isNull(accessAsserted) || isNull(attributes))
             throw new BlueException(UNAUTHORIZED);
 
         String accStr = accessToJson(ofNullable(accessAsserted.getAccessInfo()).orElse(VISITOR.access));

@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.BlueChecker.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
@@ -57,7 +58,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
     private final Map<String, String> CURRENT_KEY_VALUE_HOLDER = new ConcurrentHashMap<>(StatisticsType.values().length * StatisticsRange.values().length, 1.0f);
 
     private static final BiConsumer<StatisticsType, StatisticsRange> PARAMS_ASSERTER = (type, range) -> {
-        if (type == null || range == null)
+        if (isNull(type) || isNull(range))
             throw new BlueException(INVALID_IDENTITY);
     };
 
