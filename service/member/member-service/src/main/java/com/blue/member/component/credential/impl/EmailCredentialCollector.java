@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.toSet;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces", "JavadocDeclaration", "DuplicatedCode"})
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces", "JavadocDeclaration", "DuplicatedCode", "JavaDoc"})
 public final class EmailCredentialCollector implements CredentialCollector {
 
     private static final Set<String> TAR_TYPES = Stream.of(
@@ -41,10 +41,10 @@ public final class EmailCredentialCollector implements CredentialCollector {
      */
     @Override
     public void collect(MemberBasic memberBasic, String access, List<CredentialInfo> credentials) {
-        if (credentials == null)
+        if (isNull(credentials))
             credentials = new LinkedList<>();
 
-        if (memberBasic == null)
+        if (isNull(memberBasic))
             return;
 
         String email = memberBasic.getEmail();
@@ -66,7 +66,7 @@ public final class EmailCredentialCollector implements CredentialCollector {
      */
     @Override
     public void packageCredentialAttr(List<String> credentialTypes, String credential, MemberBasic memberBasic) {
-        if (isEmpty(credentialTypes) || isBlank(credential) || memberBasic == null)
+        if (isEmpty(credentialTypes) || isBlank(credential) || isNull(memberBasic))
             return;
 
         for (String type : credentialTypes)

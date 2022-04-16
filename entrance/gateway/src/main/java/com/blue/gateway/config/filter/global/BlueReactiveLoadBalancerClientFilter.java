@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.NOT_FOUND;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_LOAD_BALANCER_CLIENT;
 import static java.util.Optional.ofNullable;
@@ -64,7 +65,7 @@ public class BlueReactiveLoadBalancerClientFilter implements GlobalFilter, Order
                         if (response.hasServer()) {
                             ServiceInstance retrievedInstance = response.getServer();
                             exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR,
-                                    URI_RE_CONSTRUCTOR.apply(new DelegatingServiceInstance(retrievedInstance, schemePrefix == null ? retrievedInstance.isSecure() ? SECURE_PROTOCOL : PROTOCOL : urlSchema), uri));
+                                    URI_RE_CONSTRUCTOR.apply(new DelegatingServiceInstance(retrievedInstance, isNull(schemePrefix) ? retrievedInstance.isSecure() ? SECURE_PROTOCOL : PROTOCOL : urlSchema), uri));
                         } else {
                             throw new BlueException(NOT_FOUND);
                         }

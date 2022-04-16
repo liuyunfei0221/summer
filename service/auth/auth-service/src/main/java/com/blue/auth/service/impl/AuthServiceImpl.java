@@ -266,7 +266,7 @@ public class AuthServiceImpl implements AuthService {
 
     static {
         RE_PACKAGERS.put(ROLE, (ai, ele) -> {
-            if (ai == null || ele == null || "".equals(ele))
+            if (isNull(ai) || isNull(ele) || "".equals(ele))
                 throw new BlueException(BAD_REQUEST);
 
             long roleId;
@@ -278,7 +278,7 @@ public class AuthServiceImpl implements AuthService {
             ai.setRoleId(roleId);
         });
         RE_PACKAGERS.put(PUB_KEY, (ai, ele) -> {
-            if (ai == null || ele == null || "".equals(ele))
+            if (isNull(ai) || isNull(ele) || "".equals(ele))
                 throw new BlueException(BAD_REQUEST);
             ai.setPubKey(ele);
         });
@@ -317,7 +317,7 @@ public class AuthServiceImpl implements AuthService {
      */
     private static String genSessionKey(Long id, String credentialTypeIdentity, String deviceTypeIdentity) {
         LOGGER.info("String genSessionKey(Long id, String credentialTypeIdentity, String deviceTypeIdentity), id = {}, credentialTypeIdentity = {}, deviceTypeIdentity = {}", id, credentialTypeIdentity, deviceTypeIdentity);
-        if (id != null && id >= 0L && deviceTypeIdentity != null && !"".equals(deviceTypeIdentity))
+        if (isNotNull(id) && id >= 0L && isNotNull(deviceTypeIdentity) && !"".equals(deviceTypeIdentity))
             return SESSION_KEY_PRE + id + PAR_CONCATENATION + CREDENTIAL_TYPE_2_NATURE_CONVERTER.apply(credentialTypeIdentity).intern() + PAR_CONCATENATION + deviceTypeIdentity;
 
         throw new BlueException(BAD_REQUEST);
@@ -338,7 +338,7 @@ public class AuthServiceImpl implements AuthService {
      */
     private static String genAccessInfoRefreshLockKey(String snKey, AccessInfoRefreshElementType elementType, String elementValue) {
         LOGGER.info("String genAccessInfoRefreshLockKey(String snKey, AuthInfoRefreshElementType elementType, String elementValue), snKey = {}, elementType = {}, elementValue = {}", snKey, elementType, elementValue);
-        if (isNotBlank(snKey) && elementType != null && isNotBlank(elementValue))
+        if (isNotBlank(snKey) && isNotNull(elementType) && isNotBlank(elementValue))
             return ACCESS_REFRESH_KEY_GENS.get(elementType).apply(snKey, elementValue);
 
         throw new BlueException(BAD_REQUEST);
@@ -565,7 +565,7 @@ public class AuthServiceImpl implements AuthService {
             throw new BlueException(BAD_REQUEST);
 
         AccessInfoRefreshElementType elementType = authInfoRefreshElement.getElementType();
-        if (elementType == null)
+        if (isNull(elementType))
             throw new BlueException(BAD_REQUEST);
 
         String elementValue = authInfoRefreshElement.getElementValue();
@@ -765,7 +765,7 @@ public class AuthServiceImpl implements AuthService {
                             aa.getMethod().intern(), aa.getUri());
 
                     Resource resource = RESOURCE_GETTER.apply(resourceKey);
-                    if (resource == null)
+                    if (isNull(resource))
                         return error(() -> new BlueException(NOT_FOUND));
 
                     if (!resource.getAuthenticate())
@@ -776,7 +776,7 @@ public class AuthServiceImpl implements AuthService {
 
                     return accessInfoCache.getAccessInfo(memberPayload.getKeyId())
                             .flatMap(v -> {
-                                if (v == null || "".equals(v))
+                                if (isBlank(v))
                                     return error(() -> new BlueException(UNAUTHORIZED));
 
                                 AccessInfo accessInfo = ACCESS_INFO_PARSER.apply(v);

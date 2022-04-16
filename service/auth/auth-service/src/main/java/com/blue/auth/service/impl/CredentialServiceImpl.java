@@ -264,7 +264,7 @@ public class CredentialServiceImpl implements CredentialService {
     @Override
     public void updateCredential(Credential credential) {
         LOGGER.info("void updateCredential(Credential credential), credential = {}", credential);
-        if (credential == null)
+        if (isNull(credential))
             throw new BlueException(EMPTY_PARAM);
 
         if (isInvalidIdentity(credential.getId()))

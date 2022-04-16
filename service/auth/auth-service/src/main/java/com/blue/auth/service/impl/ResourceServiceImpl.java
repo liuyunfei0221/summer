@@ -92,7 +92,7 @@ public class ResourceServiceImpl implements ResourceService {
      * is a resource exist?
      */
     private final Consumer<ResourceInsertParam> INSERT_RESOURCE_VALIDATOR = rip -> {
-        if (rip == null)
+        if (isNull(rip))
             throw new BlueException(EMPTY_PARAM);
 
         String requestMethod = rip.getRequestMethod();
@@ -106,23 +106,23 @@ public class ResourceServiceImpl implements ResourceService {
         REST_URI_ASSERTER.accept(uri);
 
         Boolean authenticate = rip.getAuthenticate();
-        if (authenticate == null)
+        if (isNull(authenticate))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "authenticate can't be null");
 
         Boolean requestUnDecryption = rip.getRequestUnDecryption();
-        if (requestUnDecryption == null)
+        if (isNull(requestUnDecryption))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestUnDecryption can't be null");
 
         Boolean responseUnEncryption = rip.getResponseUnEncryption();
-        if (responseUnEncryption == null)
+        if (isNull(responseUnEncryption))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "responseUnEncryption can't be null");
 
         Boolean existenceRequestBody = rip.getExistenceRequestBody();
-        if (existenceRequestBody == null)
+        if (isNull(existenceRequestBody))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceRequestBody can't be null");
 
         Boolean existenceResponseBody = rip.getExistenceResponseBody();
-        if (existenceResponseBody == null)
+        if (isNull(existenceResponseBody))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceResponseBody can't be null");
 
         Integer type = rip.getType();
@@ -161,7 +161,7 @@ public class ResourceServiceImpl implements ResourceService {
                 });
 
         Resource resource = resourceMapper.selectByPrimaryKey(id);
-        if (resource == null)
+        if (isNull(resource))
             throw new BlueException(DATA_NOT_EXIST);
 
         ofNullable(resourceMapper.selectByUnique(

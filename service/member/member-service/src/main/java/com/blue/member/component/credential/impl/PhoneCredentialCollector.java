@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toSet;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces", "JavadocDeclaration", "DuplicatedCode"})
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces", "JavadocDeclaration", "DuplicatedCode", "JavaDoc"})
 public final class PhoneCredentialCollector implements CredentialCollector {
 
     private static final Set<String> TAR_TYPES = Stream.of(
@@ -40,17 +40,17 @@ public final class PhoneCredentialCollector implements CredentialCollector {
      */
     @Override
     public void collect(MemberBasic memberBasic, String access, List<CredentialInfo> credentials) {
-        if (credentials == null)
+        if (isNull(credentials))
             credentials = new LinkedList<>();
 
-        if (memberBasic == null)
+        if (isNull(memberBasic))
             return;
 
         String phone = memberBasic.getPhone();
         if (isBlank(phone))
             return;
 
-        String tarAccess = access != null ? access : "";
+        String tarAccess = isNotNull(access) ? access : "";
         TAR_TYPES.stream()
                 .map(type -> new CredentialInfo(phone, type, tarAccess, STATUS_GETTER.test(type, tarAccess) ? VALID.status : INVALID.status, "from registry"))
                 .forEach(credentials::add);
@@ -65,7 +65,7 @@ public final class PhoneCredentialCollector implements CredentialCollector {
      */
     @Override
     public void packageCredentialAttr(List<String> credentialTypes, String credential, MemberBasic memberBasic) {
-        if (isEmpty(credentialTypes) || isBlank(credential) || memberBasic == null)
+        if (isEmpty(credentialTypes) || isBlank(credential) || isNull(memberBasic))
             return;
 
         for (String type : credentialTypes)

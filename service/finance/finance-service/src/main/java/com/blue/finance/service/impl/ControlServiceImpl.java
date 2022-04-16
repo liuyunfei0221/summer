@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -74,7 +75,7 @@ public class ControlServiceImpl implements ControlService {
     public void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo) {
         LOGGER.info("void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo), memberFinanceInfo = {}", memberFinanceInfo);
 
-        if (memberFinanceInfo == null)
+        if (isNull(memberFinanceInfo))
             throw new BlueException(EMPTY_PARAM);
 
         financeAccountService.insertFinanceAccount(INIT_FINANCE_ACCT_GEN.apply(memberFinanceInfo.getMemberId()));

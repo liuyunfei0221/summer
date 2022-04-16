@@ -131,7 +131,7 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
 
         Role role = roleResRelationService.getDefaultRole();
-        if (role == null)
+        if (isNull(role))
             throw new BlueException(DATA_NOT_EXIST);
 
         long epochSecond = TIME_STAMP_GETTER.get();
@@ -151,7 +151,7 @@ public class ControlServiceImpl implements ControlService {
      * credential info, member id -> credential
      */
     public static final BiFunction<CredentialInfo, Long, Credential> CREDENTIAL_INFO_AND_MEMBER_ID_2_CREDENTIAL_CONVERTER = (credentialInfo, memberId) -> {
-        if (credentialInfo == null || isInvalidIdentity(memberId))
+        if (isNull(credentialInfo) || isInvalidIdentity(memberId))
             throw new BlueException(EMPTY_PARAM);
 
         String type = credentialInfo.getType();
@@ -197,7 +197,7 @@ public class ControlServiceImpl implements ControlService {
             .collect(toMap(e -> e.verifyType, e -> e.credentialTypes.stream().map(lt -> lt.identity).collect(toList()), (a, b) -> a));
 
     private static final Function<VerifyType, List<String>> CTS_BY_VT_GETTER = verifyType -> {
-        if (verifyType == null)
+        if (isNull(verifyType))
             throw new BlueException(BAD_REQUEST);
 
         List<String> credentialTypes = VT_WITH_CTS_REL.get(verifyType);
@@ -456,9 +456,9 @@ public class ControlServiceImpl implements ControlService {
         LOGGER.info("MemberBasicInfo credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access), credentialSettingUpParam = {}, access = {}",
                 credentialSettingUpParam, access);
 
-        if (credentialSettingUpParam == null)
+        if (isNull(credentialSettingUpParam))
             throw new BlueException(EMPTY_PARAM);
-        if (access == null)
+        if (isNull(access))
             throw new BlueException(UNAUTHORIZED);
         credentialSettingUpParam.asserts();
 
@@ -499,9 +499,9 @@ public class ControlServiceImpl implements ControlService {
         LOGGER.info("MemberBasicInfo credentialModify(CredentialModifyParam credentialModifyParam, Access access), credentialModifyParam = {}, access = {}",
                 credentialModifyParam, access);
 
-        if (credentialModifyParam == null)
+        if (isNull(credentialModifyParam))
             throw new BlueException(EMPTY_PARAM);
-        if (access == null)
+        if (isNull(access))
             throw new BlueException(UNAUTHORIZED);
         credentialModifyParam.asserts();
 
@@ -579,7 +579,7 @@ public class ControlServiceImpl implements ControlService {
         if (isInvalidIdentity(memberId))
             return error(() -> new BlueException(UNAUTHORIZED));
 
-        if (accessUpdateParam == null)
+        if (isNull(accessUpdateParam))
             return error(() -> new BlueException(EMPTY_PARAM));
         accessUpdateParam.asserts();
 
@@ -611,7 +611,7 @@ public class ControlServiceImpl implements ControlService {
     public Mono<Boolean> resetAccessByAccess(AccessResetParam accessResetParam) {
         LOGGER.info("Mono<Boolean> resetAccessByAccess(AccessResetParam accessResetParam), accessResetParam = {}", accessResetParam);
 
-        if (accessResetParam == null)
+        if (isNull(accessResetParam))
             return error(() -> new BlueException(EMPTY_PARAM));
         accessResetParam.asserts();
 
@@ -799,7 +799,7 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<AuthorityBaseOnRole> updateAuthorityByRole(RoleResRelationParam roleResRelationParam, Long operatorId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityBaseOnRole(RoleResRelationParam roleResRelationParam, Long operatorId), roleResRelationParam = {}, operatorId = {}", roleResRelationParam, operatorId);
-        if (roleResRelationParam == null)
+        if (isNull(roleResRelationParam))
             throw new BlueException(EMPTY_PARAM);
         roleResRelationParam.asserts();
 
@@ -824,7 +824,7 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId), memberRoleRelationParam = {}, operatorId = {}", memberRoleRelationParam, operatorId);
-        if (memberRoleRelationParam == null)
+        if (isNull(memberRoleRelationParam))
             throw new BlueException(EMPTY_PARAM);
 
         memberRoleRelationParam.asserts();
@@ -855,7 +855,7 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<Boolean> invalidateAuthByMember(IdentityParam identityParam, Long operatorId) {
         LOGGER.info("Mono<Boolean> invalidateAuthByMembers(IdentitiesParam identitiesParam, Long operatorId), identityParam = {}, operatorId = {}", identityParam, operatorId);
-        if (identityParam == null)
+        if (isNull(identityParam))
             throw new BlueException(EMPTY_PARAM);
 
         Long memberId = identityParam.getId();

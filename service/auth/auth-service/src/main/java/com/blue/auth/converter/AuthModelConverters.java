@@ -11,6 +11,7 @@ import com.blue.auth.model.RoleInsertParam;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
@@ -30,7 +31,7 @@ public final class AuthModelConverters {
      * role insert param -> role
      */
     public static final Function<RoleInsertParam, Role> ROLE_INSERT_PARAM_2_ROLE_CONVERTER = param -> {
-        if (param == null)
+        if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
 
         String name = param.getName();
@@ -42,7 +43,7 @@ public final class AuthModelConverters {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
 
         Integer level = param.getLevel();
-        if (level == null || level < 1)
+        if (isNull(level) || level < 1)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "level can't be null or less than 1");
 
         Long stamp = TIME_STAMP_GETTER.get();
@@ -63,7 +64,7 @@ public final class AuthModelConverters {
      * role -> role info
      */
     public static final Function<Role, RoleInfo> ROLE_2_ROLE_INFO_CONVERTER = role -> {
-        if (role == null)
+        if (isNull(role))
             throw new BlueException(EMPTY_PARAM);
 
         return new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault());
@@ -73,7 +74,7 @@ public final class AuthModelConverters {
      * resource insert param -> resource
      */
     public static final Function<ResourceInsertParam, Resource> RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER = param -> {
-        if (param == null)
+        if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
 
         String requestMethod = param.getRequestMethod();
@@ -88,23 +89,23 @@ public final class AuthModelConverters {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be blank");
 
         Boolean authenticate = param.getAuthenticate();
-        if (authenticate == null)
+        if (isNull(authenticate))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "authenticate can't be null");
 
         Boolean requestUnDecryption = param.getRequestUnDecryption();
-        if (requestUnDecryption == null)
+        if (isNull(requestUnDecryption))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestUnDecryption can't be null");
 
         Boolean responseUnEncryption = param.getResponseUnEncryption();
-        if (responseUnEncryption == null)
+        if (isNull(responseUnEncryption))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "responseUnEncryption can't be null");
 
         Boolean existenceRequestBody = param.getExistenceRequestBody();
-        if (existenceRequestBody == null)
+        if (isNull(existenceRequestBody))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceRequestBody can't be null");
 
         Boolean existenceResponseBody = param.getExistenceResponseBody();
-        if (existenceResponseBody == null)
+        if (isNull(existenceResponseBody))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceResponseBody can't be null");
 
         Integer type = param.getType();
@@ -144,7 +145,7 @@ public final class AuthModelConverters {
      * resource -> resource info
      */
     public static final Function<Resource, ResourceInfo> RESOURCE_2_RESOURCE_INFO_CONVERTER = resource -> {
-        if (resource == null)
+        if (isNull(resource))
             throw new BlueException(EMPTY_PARAM);
 
         String module = resource.getModule().intern();

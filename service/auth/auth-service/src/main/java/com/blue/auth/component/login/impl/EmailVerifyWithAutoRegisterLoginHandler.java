@@ -27,8 +27,7 @@ import java.util.function.Function;
 
 import static com.blue.auth.constant.LoginAttribute.ACCESS;
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.auth.CredentialType.EMAIL_PWD;
@@ -96,7 +95,7 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
         LOGGER.info("EmailVerifyWithAutoRegisterLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
-        if (loginParam == null)
+        if (isNull(loginParam))
             throw new BlueException(EMPTY_PARAM);
 
         String email = loginParam.getData(IDENTITY.key);

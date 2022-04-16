@@ -7,6 +7,8 @@ import com.blue.base.repository.entity.*;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.BlueChecker.isNotEmpty;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -23,7 +25,7 @@ public final class BaseModelConverters {
      * country -> country info
      */
     public static final Function<Country, CountryInfo> COUNTRY_2_COUNTRY_INFO_CONVERTER = country -> {
-        if (country == null)
+        if (isNull(country))
             throw new BlueException(EMPTY_PARAM);
 
         return new CountryInfo(country.getId(), country.getName(), country.getCountryCode(), country.getPhoneCode(), country.getEmoji(), country.getEmojiu());
@@ -41,7 +43,7 @@ public final class BaseModelConverters {
      * state -> state info
      */
     public static final Function<State, StateInfo> STATE_2_STATE_INFO_CONVERTER = state -> {
-        if (state == null)
+        if (isNull(state))
             throw new BlueException(EMPTY_PARAM);
 
         return new StateInfo(state.getId(), state.getCountryId(), state.getName(), state.getFipsCode(), state.getCountryCode(), state.getStateCode());
@@ -59,7 +61,7 @@ public final class BaseModelConverters {
      * city -> city info
      */
     public static final Function<City, CityInfo> CITY_2_CITY_INFO_CONVERTER = city -> {
-        if (city == null)
+        if (isNull(city))
             throw new BlueException(EMPTY_PARAM);
 
         return new CityInfo(city.getId(), city.getCountryId(), city.getStateId(), city.getName());
@@ -77,7 +79,7 @@ public final class BaseModelConverters {
      * area -> area info
      */
     public static final Function<Area, AreaInfo> AREA_2_AREA_INFO_CONVERTER = area -> {
-        if (area == null)
+        if (isNull(area))
             throw new BlueException(EMPTY_PARAM);
 
         return new AreaInfo(area.getId(), area.getCountryId(), area.getStateId(), area.getCityId(), area.getName());
@@ -87,7 +89,7 @@ public final class BaseModelConverters {
      * areas -> area infos
      */
     public static final Function<List<Area>, List<AreaInfo>> AREAS_2_AREA_INFOS_CONVERTER = as ->
-            as != null && as.size() > 0 ? as.stream()
+            isNotEmpty(as) ? as.stream()
                     .map(AREA_2_AREA_INFO_CONVERTER)
                     .collect(toList()) : emptyList();
 
@@ -95,7 +97,7 @@ public final class BaseModelConverters {
      * type -> type info
      */
     public static final Function<DictType, DictTypeInfo> DICT_TYPE_2_DICT_TYPE_INFO_CONVERTER = type -> {
-        if (type == null)
+        if (isNull(type))
             throw new BlueException(EMPTY_PARAM);
 
         return new DictTypeInfo(type.getId(), type.getCode(), type.getName());
@@ -105,7 +107,7 @@ public final class BaseModelConverters {
      * types -> type infos
      */
     public static final Function<List<DictType>, List<DictTypeInfo>> DICT_TYPES_2_DICT_TYPE_INFOS_CONVERTER = ts ->
-            ts != null && ts.size() > 0 ? ts.stream()
+            isNotEmpty(ts) ? ts.stream()
                     .map(DICT_TYPE_2_DICT_TYPE_INFO_CONVERTER)
                     .collect(toList()) : emptyList();
 
@@ -113,7 +115,7 @@ public final class BaseModelConverters {
      * dict -> dict info
      */
     public static final Function<Dict, DictInfo> DICT_2_DICT_INFO_CONVERTER = dict -> {
-        if (dict == null)
+        if (isNull(dict))
             throw new BlueException(EMPTY_PARAM);
 
         return new DictInfo(dict.getId(), dict.getName(), dict.getValue());
@@ -122,8 +124,8 @@ public final class BaseModelConverters {
     /**
      * dict -> dict infos
      */
-    public static final Function<List<Dict>, List<DictInfo>> DICT_2_DICT_INFOS_CONVERTER = d ->
-            d != null && d.size() > 0 ? d.stream()
+    public static final Function<List<Dict>, List<DictInfo>> DICT_2_DICT_INFOS_CONVERTER = ds ->
+            isNotEmpty(ds) ? ds.stream()
                     .map(DICT_2_DICT_INFO_CONVERTER)
                     .collect(toList()) : emptyList();
 

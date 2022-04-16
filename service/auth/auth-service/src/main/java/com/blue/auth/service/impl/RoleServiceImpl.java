@@ -188,7 +188,7 @@ public class RoleServiceImpl implements RoleService {
      * is a role exist?
      */
     private final Consumer<RoleInsertParam> INSERT_ROLE_VALIDATOR = rip -> {
-        if (rip == null)
+        if (isNull(rip))
             throw new BlueException(EMPTY_PARAM);
 
         String name = rip.getName();
@@ -232,7 +232,7 @@ public class RoleServiceImpl implements RoleService {
                 });
 
         Role role = roleMapper.selectByPrimaryKey(id);
-        if (role == null)
+        if (isNull(role))
             throw new BlueException(DATA_NOT_EXIST);
 
         return role;
@@ -340,7 +340,7 @@ public class RoleServiceImpl implements RoleService {
             throw new BlueException(INVALID_IDENTITY);
 
         Role role = roleMapper.selectByPrimaryKey(id);
-        if (role != null) {
+        if (isNotNull(role)) {
             roleMapper.deleteByPrimaryKey(id);
             return AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(role);
         }

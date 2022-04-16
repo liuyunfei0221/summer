@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
@@ -67,18 +68,18 @@ public class MarketingEventProcessor implements ApplicationListener<ContextRefre
 
     private final Consumer<MarketingEvent> EVENT_HANDLER = marketingEvent -> {
         MarketingEventType marketingEventType = marketingEvent.getEventType();
-        if (marketingEventType == null)
+        if (isNull(marketingEventType))
             throw new BlueException(INVALID_IDENTITY);
 
         EventHandler eventHandler = eventHandlers.get(marketingEventType);
-        if (eventHandler == null)
+        if (isNull(eventHandler))
             throw new BlueException(BAD_REQUEST);
 
         eventHandler.handleEvent(marketingEvent);
     };
 
     private final Function<MarketingEvent, Event> EVENT_ENTITY_GEN = marketingEvent -> {
-        if (marketingEvent == null)
+        if (isNull(marketingEvent))
             throw new BlueException(INVALID_IDENTITY);
 
         Event event = new Event();

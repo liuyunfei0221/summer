@@ -54,31 +54,31 @@ public class VerifyServiceImpl implements VerifyService {
             throw new RuntimeException("verifyDeploy can't be null");
 
         Integer keyLength = verifyDeploy.getKeyLength();
-        if (keyLength == null || keyLength < 1)
+        if (isNull(keyLength) || keyLength < 1)
             throw new RuntimeException("keyLength can't be null or less than 1");
 
         RandomType randomType = verifyDeploy.getRandomType();
-        if (randomType == null)
+        if (isNull(randomType))
             throw new RuntimeException("randomType can't be null");
 
         Integer verifyLength = verifyDeploy.getVerifyLength();
-        if (verifyLength == null || verifyLength < 1)
+        if (isNull(verifyLength) || verifyLength < 1)
             throw new RuntimeException("verifyLength can't be null or less than 1");
 
         Integer minLength = verifyDeploy.getMinLength();
-        if (minLength == null || minLength < 1)
+        if (isNull(minLength) || minLength < 1)
             throw new RuntimeException("minLength can't be null or less than 1");
 
         Integer maxLength = verifyDeploy.getMaxLength();
-        if (maxLength == null || maxLength < minLength)
+        if (isNull(maxLength) || maxLength < minLength)
             throw new RuntimeException("maxLength can't be null or less than minLength");
 
         Integer expireMillis = verifyDeploy.getExpireMillis();
-        if (expireMillis == null || expireMillis < 1)
+        if (isNull(expireMillis) || expireMillis < 1)
             throw new RuntimeException("expireMillis can't be null or less than 1");
 
         Boolean repeatable = verifyDeploy.getRepeatable();
-        if (repeatable == null)
+        if (isNull(repeatable))
             throw new RuntimeException("repeatable can't be null");
 
         this.KEY_LEN = keyLength;

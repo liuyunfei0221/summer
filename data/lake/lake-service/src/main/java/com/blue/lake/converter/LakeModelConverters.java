@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.getBoolByBool;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
@@ -68,7 +69,7 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
      * data event -> option event
      */
     public static final Function<DataEvent, OptEvent> DATA_EVENT_2_OPT_EVENT = param -> {
-        if (param == null)
+        if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
 
         OptEvent optEvent = new OptEvent();

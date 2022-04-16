@@ -9,6 +9,7 @@ import com.blue.business.repository.entity.Link;
 import java.time.Instant;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Optional.ofNullable;
@@ -22,7 +23,7 @@ import static java.util.Optional.ofNullable;
 public final class BusinessModelConverters {
 
     public static final Function<ArticleInsertParam, Article> ARTICLE_INSERT_PARAM_2_ARTICLE = articleInsertParam -> {
-        if (articleInsertParam == null)
+        if (isNull(articleInsertParam))
             throw new BlueException(EMPTY_PARAM);
         articleInsertParam.asserts();
 
@@ -46,7 +47,7 @@ public final class BusinessModelConverters {
     };
 
     public static final Function<LinkInsertParam, Link> LINK_INSERT_PARAM_2_LINK = linkInsertParam -> {
-        if (linkInsertParam == null)
+        if (isNull(linkInsertParam))
             throw new BlueException(EMPTY_PARAM);
         linkInsertParam.asserts();
 

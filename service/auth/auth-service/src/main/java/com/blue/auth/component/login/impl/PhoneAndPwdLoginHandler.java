@@ -72,7 +72,7 @@ public class PhoneAndPwdLoginHandler implements LoginHandler {
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
         LOGGER.info("PhoneAndPwdLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
-        if (loginParam == null)
+        if (isNull(loginParam))
             throw new BlueException(EMPTY_PARAM);
 
         String phone = loginParam.getData(IDENTITY.key);

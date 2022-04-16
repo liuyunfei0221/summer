@@ -19,6 +19,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
@@ -207,34 +208,34 @@ public final class AccessInfoCache {
     private static void assertConf(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer,
                                    Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
                                    Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
-        if (reactiveStringRedisTemplate == null)
+        if (isNull(reactiveStringRedisTemplate))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveStringRedisTemplate can't be null");
 
-        if (accessExpireProducer == null)
+        if (isNull(accessExpireProducer))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "authExpireProducer can't be null");
 
-        if (refresherCorePoolSize == null || refresherCorePoolSize < 1)
+        if (isNull(refresherCorePoolSize) || refresherCorePoolSize < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherCorePoolSize can't be null or less than 1");
 
-        if (refresherMaximumPoolSize == null || refresherMaximumPoolSize < 1)
+        if (isNull(refresherMaximumPoolSize) || refresherMaximumPoolSize < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherMaximumPoolSize can't be null or less than 1");
 
-        if (refresherKeepAliveSeconds == null || refresherKeepAliveSeconds < 1)
+        if (isNull(refresherKeepAliveSeconds) || refresherKeepAliveSeconds < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherKeepAliveSeconds can't be null or less than 1");
 
-        if (refresherBlockingQueueCapacity == null || refresherBlockingQueueCapacity < 1)
+        if (isNull(refresherBlockingQueueCapacity) || refresherBlockingQueueCapacity < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "refresherBlockingQueueCapacity can't be null or less than 1");
 
-        if (globalExpireMillis == null || globalExpireMillis < 1L)
+        if (isNull(globalExpireMillis) || globalExpireMillis < 1L)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "globalExpireSeconds can't be null or less than 1");
 
-        if (localExpireMillis == null || localExpireMillis < 1L)
+        if (isNull(localExpireMillis) || localExpireMillis < 1L)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "localExpireSeconds can't be null or less than 1");
 
         if (localExpireMillis > globalExpireMillis)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "localExpireSeconds can't be null or greater than globalExpireSeconds");
 
-        if (capacity == null || capacity < 1)
+        if (isNull(capacity) || capacity < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "capacity can't be null or less than 1");
     }
 

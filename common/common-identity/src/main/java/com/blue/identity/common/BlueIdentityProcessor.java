@@ -15,6 +15,8 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.identity.core.ConfAsserter.assertConf;
 import static java.time.Instant.now;
 import static java.util.Optional.ofNullable;
@@ -108,11 +110,11 @@ public final class BlueIdentityProcessor {
      */
     private final Function<String, BlueIdentityGenerator> HANDLER_GETTER = key -> {
         BlueIdentityGenerator generator = GENERATORS.get(key.intern());
-        if (generator != null)
+        if (isNotNull(generator))
             return generator;
 
         synchronized (key.intern()) {
-            if ((generator = GENERATORS.get(key)) == null) {
+            if (isNull((generator = GENERATORS.get(key)))) {
                 generator = new BlueIdentityGenerator(idGenParam);
                 GENERATORS.put(key, generator);
                 LOGGER.info("processor init, key = {}", key);

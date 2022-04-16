@@ -9,8 +9,7 @@ import com.blue.member.repository.entity.*;
 import java.time.Instant;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
@@ -26,7 +25,7 @@ import static java.util.Optional.ofNullable;
 public final class MemberModelConverters {
 
     public static final Function<MemberRegistryParam, MemberBasic> MEMBER_REGISTRY_INFO_2_MEMBER_BASIC = memberRegistryParam -> {
-        if (memberRegistryParam == null)
+        if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
 
         String phone = memberRegistryParam.getPhone();

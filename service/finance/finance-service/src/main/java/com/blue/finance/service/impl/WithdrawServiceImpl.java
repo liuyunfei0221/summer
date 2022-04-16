@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
@@ -36,7 +37,7 @@ public class WithdrawServiceImpl implements WithdrawService {
     public Boolean withdraw(WithdrawInfo withdrawInfo, Access access) {
         LOGGER.info("Boolean withdraw(WithdrawInfo withdrawInfo, Access access), withdrawInfo = {}, access = {}", withdrawInfo, access);
 
-        if (withdrawInfo == null || access == null)
+        if (isNull(withdrawInfo) || isNull(access))
             throw new BlueException(BAD_REQUEST);
         withdrawInfo.asserts();
 

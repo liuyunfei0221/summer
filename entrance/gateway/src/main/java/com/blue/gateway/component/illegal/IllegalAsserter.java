@@ -18,8 +18,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isEmpty;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
 import static com.blue.base.constant.base.BlueCacheKey.ILLEGAL_IP_PRE;
 import static com.blue.base.constant.base.BlueCacheKey.ILLEGAL_JWT_PRE;
@@ -49,7 +48,7 @@ public final class IllegalAsserter {
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
 
         Long illegalExpireSeconds = riskControlDeploy.getIllegalExpireSeconds();
-        if (illegalExpireSeconds == null || illegalExpireSeconds < 1L)
+        if (isNull(illegalExpireSeconds) || illegalExpireSeconds < 1L)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalExpireSeconds can't be null or less than 1");
 
         defaultIllegalExpireDuration = Duration.of(illegalExpireSeconds, SECONDS);
@@ -95,19 +94,19 @@ public final class IllegalAsserter {
      */
     private final Function<IllegalMarkEvent, Mono<Boolean>>
             MARKER = event -> {
-                String resKey = ofNullable(event.getResourceKey()).orElse(ALL_RESOURCE);
-                return zip(ofNullable(event.getJwt())
-                                .filter(BlueChecker::isNotBlank)
-                                .map(JWT_KEY_WRAPPER)
-                                .map(key -> markWithExpire(key, resKey, event.getIllegalExpireSeconds()))
-                                .orElseGet(() -> just(false)),
-                        ofNullable(event.getIp())
-                                .filter(BlueChecker::isNotBlank)
-                                .map(IP_KEY_WRAPPER)
-                                .map(key -> markWithExpire(key, resKey, event.getIllegalExpireSeconds()))
-                                .orElseGet(() -> just(false))
-                ).flatMap(tuple2 -> just(tuple2.getT1() || tuple2.getT2()));
-            },
+        String resKey = ofNullable(event.getResourceKey()).orElse(ALL_RESOURCE);
+        return zip(ofNullable(event.getJwt())
+                        .filter(BlueChecker::isNotBlank)
+                        .map(JWT_KEY_WRAPPER)
+                        .map(key -> markWithExpire(key, resKey, event.getIllegalExpireSeconds()))
+                        .orElseGet(() -> just(false)),
+                ofNullable(event.getIp())
+                        .filter(BlueChecker::isNotBlank)
+                        .map(IP_KEY_WRAPPER)
+                        .map(key -> markWithExpire(key, resKey, event.getIllegalExpireSeconds()))
+                        .orElseGet(() -> just(false))
+        ).flatMap(tuple2 -> just(tuple2.getT1() || tuple2.getT2()));
+    },
             CLEARER = event -> {
                 String resKey = ofNullable(event.getResourceKey()).orElse(ALL_RESOURCE);
                 return zip(ofNullable(event.getJwt())

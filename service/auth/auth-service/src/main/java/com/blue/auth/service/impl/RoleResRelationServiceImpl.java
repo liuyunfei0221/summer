@@ -81,7 +81,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * is a relation exist?
      */
     private final Consumer<RoleResRelation> INSERT_RELATION_VALIDATOR = relation -> {
-        if (relation == null)
+        if (isNull(relation))
             throw new BlueException(EMPTY_PARAM);
 
         Long id = relation.getId();
@@ -98,7 +98,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
 
         Long createTime = relation.getCreateTime();
         Long updateTime = relation.getUpdateTime();
-        if (createTime == null || updateTime == null)
+        if (isNull(createTime) || isNull(updateTime))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "createTime or updateTime is invalid");
 
         Long creator = relation.getCreator();
@@ -615,7 +615,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public int insertRelation(RoleResRelation roleResRelation) {
         LOGGER.info("void insertRelation(RoleResRelation roleResRelation), roleResRelation = {}", roleResRelation);
-        if (roleResRelation == null)
+        if (isNull(roleResRelation))
             throw new BlueException(EMPTY_PARAM);
 
         INSERT_RELATION_VALIDATOR.accept(roleResRelation);

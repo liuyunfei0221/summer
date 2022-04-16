@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
@@ -66,7 +67,7 @@ public class MemberParamPackagerProcessor implements ApplicationListener<Context
         LOGGER.info("void packageCredentialInfoToRegistryParam(CredentialInfo credentialInfo, MemberRegistryParam memberRegistryParam), credentialInfo = {}, memberRegistryParam = {}",
                 credentialInfo, memberRegistryParam);
 
-        if (memberRegistryParam == null)
+        if (isNull(memberRegistryParam))
             throw new BlueException(INVALID_IDENTITY);
 
         REGISTRY_PARAM_PACKAGER.accept(credentialInfo, memberRegistryParam);

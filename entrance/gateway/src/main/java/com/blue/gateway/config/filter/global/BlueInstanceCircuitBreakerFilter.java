@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_INSTANCE_CIRCUIT_BREAKER;
 import static io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator.of;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -51,7 +52,7 @@ public final class BlueInstanceCircuitBreakerFilter implements GlobalFilter, Ord
     private static final Function<CircuitBreakerDeploy, CircuitBreakerRegistry> REGISTRY_GENERATOR = deploy -> {
         LOGGER.info("REGISTRY_GENERATOR, deploy = {}", deploy);
 
-        if (deploy == null)
+        if (isNull(deploy))
             throw new RuntimeException("deploy can't be null");
 
         Predicate<Throwable> expPredicate;
@@ -111,7 +112,7 @@ public final class BlueInstanceCircuitBreakerFilter implements GlobalFilter, Ord
 
         synchronized (this) {
             circuitBreaker = CIRCUIT_BREAKER_HOLDER.get(name);
-            if (circuitBreaker == null) {
+            if (isNull(circuitBreaker)) {
                 circuitBreaker = circuitBreakerRegistry.circuitBreaker(name);
                 CIRCUIT_BREAKER_HOLDER.put(name, circuitBreaker);
             }
