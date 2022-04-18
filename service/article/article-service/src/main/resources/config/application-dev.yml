@@ -1,0 +1,283 @@
+server:
+  #  address: 172.30.128.25
+  port: 41000
+  netty:
+    connection-timeout: 6s
+    h2c-max-content-length: 0B
+    initial-buffer-size: 128B
+    max-chunk-size: 8KB
+    max-initial-line-length: 4KB
+    validate-headers: true
+  http2:
+    enabled: true
+  error:
+    path: /error
+#  ssl:
+#    client-auth: need
+#    ciphers: [ ]
+#    enabled-protocols: [ ]
+#    key-alias:
+#    key-password:
+#    key-store:
+#    key-store-password:
+#    key-store-type:
+#    key-store-provider:
+#    trust-store:
+#    trust-store-password:
+#    trust-store-type:
+#    trust-store-provider:
+#    protocol: TLS
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 300
+    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
+    hostname: ${spring.cloud.client.ip-address}
+  client:
+    service-url:
+      defaultZone: http://localhost:3000/eureka/
+    registry-fetch-interval-seconds: 300
+
+
+data:
+  shardingDatabases:
+    - url: jdbc:mysql://172.16.201.160:3306/article_0
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+
+    - url: jdbc:mysql://172.16.201.160:3306/article_1
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+  shardingTables:
+    - tableName: article
+      shardingColumn: id
+
+    - tableName: link
+      shardingColumn: id
+
+    - tableName: comment
+      shardingColumn: id
+
+    - tableName: reply
+      shardingColumn: id
+  shardingTableSizePerDataBase: 2
+  dataCenterToDatabaseMappings:
+    - id: 0
+      index: 0
+
+    - id: 1
+      index: 1
+  workerToTableMappings:
+    - id: 0
+      index: 0
+
+    - id: 1
+      index: 1
+  broadcastTables: [ ]
+  singleDatabasesWithTables:
+  cacheEnabled: false
+  lazyLoadingEnabled: false
+  aggressiveLazyLoading: false
+  multipleResultSetsEnabled: false
+  useColumnLabel: true
+  useGeneratedKeys: false
+  connectionTimeout: 30000
+  autoMappingBehavior: FULL
+  executorType: BATCH
+  mapperLocation: classpath:mapper/*.xml
+  props:
+    sql.show: true
+    sql.simple: false
+    executor.size: 128
+    max.connections.size.per.query: 2
+    check.table.metadata.enabled: true
+    query.with.cipher.column: false
+    xa.transaction.manager.type: Atomikos
+  debugLogging: true
+
+
+identity:
+  dataCenter: 0
+  worker: 0
+  serviceName: blue-article
+  bootSeconds: 1618790400
+  bufferPower: 3
+  paddingFactor: 50
+  paddingCorePoolSize: 1
+  paddingMaximumPoolSize: 2
+  keepAliveSeconds: 128
+  paddingBlockingQueueSize: 1024
+  paddingScheduled: true
+  paddingScheduledCorePoolSize: 2
+  paddingScheduledInitialDelayMillis: 5000
+  paddingScheduledDelayMillis: 15000
+
+
+es:
+  esNodes:
+    - server:
+        host: 127.0.0.1
+        port: 9200
+        schema: http
+      boundServers: [ ]
+      name: blue-es
+      version: 7.14.1
+      roles: [ ]
+      attributes: [ ]
+  defaultHeaders:
+  pathPrefix: /
+  strictDeprecationMode: false
+  metaHeaderEnabled: false
+  compressionEnabled: false
+
+
+cache:
+  serverMode: SINGLE
+  nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
+  password: sfakjfiju99jjf87LJSDDU8
+  maxRedirects: 4
+  host: 172.16.201.160
+  port: 6379
+  minIdle: 4
+  maxIdle: 64
+  maxTotal: 128
+  maxWaitMillis: 16
+  autoReconnect: true
+  bufferUsageRatio: 32.0
+  cancelCommandsOnReconnectFailure: false
+  pingBeforeActivateConnection: false
+  requestQueueSize: 64
+  publishOnScheduler: true
+  tcpNoDelay: true
+  connectTimeout: 10
+  keepAlive: false
+  suspendReconnectOnProtocolFailure: false
+  fixedTimeout: 4
+  commandTimeout: 4
+  shutdownTimeout: 8
+  shutdownQuietPeriod: 4
+  entryTtl: 60
+
+
+localcache:
+  size: 300
+  expireTime: 120
+
+
+executor:
+  corePoolSize: 4
+  maximumPoolSize: 8
+  keepAliveSeconds: 64
+  blockingQueueCapacity: 128
+  threadNamePre: blue-summer
+
+
+scheduler:
+  threadCap: 4
+  queuedTaskCap: 4096
+  threadNamePre: blue-summer-scheduler
+  ttlSeconds: 128
+
+
+redisson:
+  serverMode: SINGLE
+  nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
+  password: sfakjfiju99jjf87LJSDDU8
+  host: 172.16.201.160
+  port: 6379
+  scanInterval: 8000
+  checkSlotsCoverage: false
+  tcpNoDelay: true
+  masterConnectionMinimumIdleSize: 2
+  slaveConnectionMinimumIdleSize: 2
+  masterConnectionPoolSize: 2
+  slaveConnectionPoolSize: 2
+  subscriptionConnectionMinimumIdleSize: 2
+  subscriptionConnectionPoolSize: 2
+  subscriptionsPerConnection: 2
+  subscriptionMode: MASTER
+  timeout: 60000
+  connectTimeout: 60000
+  idleConnectionTimeout: 32000
+  retryAttempts: 2
+  retryInterval: 4000
+  keepAlive: true
+  dnsMonitoringInterval: -1
+  pingConnectionInterval: 300000
+  executorCorePoolSize: 4
+  executorMaximumPoolSize: 8
+  executorkeepAliveSeconds: 64
+  executorBlockingQueueCapacity: 128
+
+
+reactrest:
+  maxConnections: 64
+  workerCount: 64
+  useGlobalResources: false
+  connectTimeoutMillis: 7000
+  useTcpNodelay: false
+  protocols: [ HTTP11,H2,H2C ]
+  responseTimeoutMillis: 3000
+  readTimeoutMillis: 3000
+  writeTimeoutMillis: 3000
+  maxByteInMemorySize: 1048576
+
+
+dubbo:
+  registry:
+    id: summer-registry
+    client: curator
+    zone: summer
+    protocol: zookeeper
+    address: zookeeper://172.16.201.160:2181
+    group: summer
+    file: D:/locallogs/dubbo/article/registry.properties
+    check: false
+    timeout: 60000
+  application:
+    id: summer-article
+    name: summer-article
+    owner: blue
+    organization: blue
+    shutwait: 20s
+    enable-file-cache: false
+  protocol:
+    name: dubbo
+    host: localhost
+    port: 42000
+    accesslog: D:/locallogs/dubbo/article/access.log
+  provider:
+    retries: 0
+    timeout: 10000
+    loadbalance: random
+    filter: -exception
+  consumer:
+    retries: 0
+    timeout: 10000
+    loadbalance: random
+    check: false
+
+
+debug: false

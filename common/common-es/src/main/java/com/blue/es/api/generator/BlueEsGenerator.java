@@ -10,8 +10,6 @@ import org.apache.http.message.BasicHeaderElement;
 import org.elasticsearch.client.Node;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import reactor.util.Logger;
 
 import java.util.*;
@@ -43,8 +41,10 @@ public final class BlueEsGenerator {
      * @param esConf
      * @return
      */
-    public static RestHighLevelClient generateRestHighLevelClient(EsConf esConf) {
-        LOGGER.info("RestHighLevelClient generateRestHighLevelClient(EsConf esConf), esConf = {}", esConf);
+    public static RestClient generateRestClient(EsConf esConf) {
+        LOGGER.info("RestClient generateRestClient(EsConf esConf), esConf = {}", esConf);
+
+        confAssert(esConf);
 
         List<Node> nodeList = esConf.getEsNodes()
                 .stream().map(esNode -> {
@@ -106,19 +106,17 @@ public final class BlueEsGenerator {
         ofNullable(esConf.getNodeSelector())
                 .ifPresent(builder::setNodeSelector);
 
-        return new RestHighLevelClient(builder);
+        return builder.build();
     }
 
     /**
-     * generate es template
+     * assert param
      *
-     * @param restHighLevelClient
-     * @return
+     * @param esNode
      */
-    public static ElasticsearchRestTemplate generateElasticsearchTemplate(RestHighLevelClient restHighLevelClient) {
-        if (isNull(restHighLevelClient))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "restHighLevelClient can't be null");
-        return new ElasticsearchRestTemplate(restHighLevelClient);
+    private static void nodeAsserter(EsNode esNode) {
+        if (isNull(esNode.getServer()))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "server can't be null");
     }
 
     /**
@@ -126,13 +124,15 @@ public final class BlueEsGenerator {
      *
      * @param conf
      */
-    private static void confAsserter(EsConf conf) {
+    private static void confAssert(EsConf conf) {
         if (isNull(conf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         List<EsNode> esNodes = conf.getEsNodes();
         if (isEmpty(esNodes))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "esNodes can't be empty");
+
+        esNodes.forEach(BlueEsGenerator::nodeAsserter);
     }
 
 }

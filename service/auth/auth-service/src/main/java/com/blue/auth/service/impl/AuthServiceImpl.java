@@ -851,7 +851,7 @@ public class AuthServiceImpl implements AuthService {
         return isValidIdentity(memberId) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 zip(genMemberPayloadMono(memberId, credentialType, deviceType),
                         memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
-                                .map(ridOpt -> ridOpt.orElseThrow(() -> new BlueException(MEMBER_NOT_HAS_A_ROLE)))
+                                .map(ridOpt -> ridOpt.orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))
                 ).flatMap(tuple2 ->
                         ACCESS_GENERATOR.apply(tuple2.getT1(), tuple2.getT2()))
                 :

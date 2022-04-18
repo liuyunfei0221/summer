@@ -13,6 +13,7 @@ import static org.springframework.boot.SpringApplication.run;
  *
  * @author liuyunfei
  */
+@SuppressWarnings("resource")
 @SummerSpringBootApplication
 @EnableBlueLifecycle(basePackages = "com.blue.media.event")
 @EnableBlueDataAccess(basePackages = "com.blue.media.repository.mapper")

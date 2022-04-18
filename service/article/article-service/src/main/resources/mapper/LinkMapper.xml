@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.article.repository.mapper.LinkMapper">
+    <resultMap id="BaseResultMap" type="com.blue.article.repository.entity.Link">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="sub_id" jdbcType="BIGINT" property="subId"/>
+        <result column="sub_type" jdbcType="TINYINT" property="subType"/>
+        <result column="sub_author_id" jdbcType="BIGINT" property="subAuthorId"/>
+        <result column="link_url" jdbcType="VARCHAR" property="linkUrl"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="favorites" jdbcType="BIGINT" property="favorites"/>
+        <result column="readings" jdbcType="BIGINT" property="readings"/>
+        <result column="comments" jdbcType="BIGINT" property="comments"/>
+        <result column="likes" jdbcType="BIGINT" property="likes"/>
+        <result column="boring" jdbcType="BIGINT" property="boring"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , sub_id, sub_type, sub_author_id, link_url, content, favorites, readings, comments,
+    likes, boring, status, create_time
+    </sql>
+
+    <insert id="insert" parameterType="com.blue.article.repository.entity.Link">
+        insert into link (id, sub_id, sub_type,
+                          sub_author_id, link_url, content,
+                          favorites, readings, comments,
+                          likes, boring, status,
+                          create_time)
+        values (#{id,jdbcType=BIGINT}, #{subId,jdbcType=BIGINT}, #{subType,jdbcType=TINYINT},
+                #{subAuthorId,jdbcType=BIGINT}, #{linkUrl,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+                #{favorites,jdbcType=BIGINT}, #{readings,jdbcType=BIGINT}, #{comments,jdbcType=BIGINT},
+                #{likes,jdbcType=BIGINT}, #{boring,jdbcType=BIGINT}, #{status,jdbcType=TINYINT},
+                #{createTime,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.article.repository.entity.Link">
+        insert into link
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="subId != null">
+                sub_id,
+            </if>
+            <if test="subType != null">
+                sub_type,
+            </if>
+            <if test="subAuthorId != null">
+                sub_author_id,
+            </if>
+            <if test="linkUrl != null">
+                link_url,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="favorites != null">
+                favorites,
+            </if>
+            <if test="readings != null">
+                readings,
+            </if>
+            <if test="comments != null">
+                comments,
+            </if>
+            <if test="likes != null">
+                likes,
+            </if>
+            <if test="boring != null">
+                boring,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="subId != null">
+                #{subId,jdbcType=BIGINT},
+            </if>
+            <if test="subType != null">
+                #{subType,jdbcType=TINYINT},
+            </if>
+            <if test="subAuthorId != null">
+                #{subAuthorId,jdbcType=BIGINT},
+            </if>
+            <if test="linkUrl != null">
+                #{linkUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="favorites != null">
+                #{favorites,jdbcType=BIGINT},
+            </if>
+            <if test="readings != null">
+                #{readings,jdbcType=BIGINT},
+            </if>
+            <if test="comments != null">
+                #{comments,jdbcType=BIGINT},
+            </if>
+            <if test="likes != null">
+                #{likes,jdbcType=BIGINT},
+            </if>
+            <if test="boring != null">
+                #{boring,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.article.repository.entity.Link">
+        update link
+        set sub_id        = #{subId,jdbcType=BIGINT},
+            sub_type      = #{subType,jdbcType=TINYINT},
+            sub_author_id = #{subAuthorId,jdbcType=BIGINT},
+            link_url      = #{linkUrl,jdbcType=VARCHAR},
+            content       = #{content,jdbcType=VARCHAR},
+            favorites     = #{favorites,jdbcType=BIGINT},
+            readings      = #{readings,jdbcType=BIGINT},
+            comments      = #{comments,jdbcType=BIGINT},
+            likes         = #{likes,jdbcType=BIGINT},
+            boring        = #{boring,jdbcType=BIGINT},
+            status        = #{status,jdbcType=TINYINT},
+            create_time   = #{createTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.article.repository.entity.Link">
+        update link
+        <set>
+            <if test="subId != null">
+                sub_id = #{subId,jdbcType=BIGINT},
+            </if>
+            <if test="subType != null">
+                sub_type = #{subType,jdbcType=TINYINT},
+            </if>
+            <if test="subAuthorId != null">
+                sub_author_id = #{subAuthorId,jdbcType=BIGINT},
+            </if>
+            <if test="linkUrl != null">
+                link_url = #{linkUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="favorites != null">
+                favorites = #{favorites,jdbcType=BIGINT},
+            </if>
+            <if test="readings != null">
+                readings = #{readings,jdbcType=BIGINT},
+            </if>
+            <if test="comments != null">
+                comments = #{comments,jdbcType=BIGINT},
+            </if>
+            <if test="likes != null">
+                likes = #{likes,jdbcType=BIGINT},
+            </if>
+            <if test="boring != null">
+                boring = #{boring,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from link
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from link
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        INSERT INTO link
+        (id, sub_id, sub_type,
+        sub_author_id, link_url, content,
+        favorites, readings, comments,
+        likes, boring, status,
+        create_time)
+        VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            (
+            #{item.id,jdbcType=BIGINT},
+            #{item.subId,jdbcType=BIGINT},
+            #{item.subType,jdbcType=TINYINT},
+            #{item.subAuthorId,jdbcType=BIGINT},
+            #{item.linkUrl,jdbcType=VARCHAR},
+            #{item.content,jdbcType=VARCHAR},
+            #{item.favorites,jdbcType=BIGINT},
+            #{item.readings,jdbcType=BIGINT},
+            #{item.comments,jdbcType=BIGINT},
+            #{item.likes,jdbcType=BIGINT},
+            #{item.boring,jdbcType=BIGINT},
+            #{item.status,jdbcType=TINYINT},
+            #{item.createTime,jdbcType=BIGINT}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectBySubIdAndSubType" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from link force index(idx_sid_stype)
+        where sub_id = #{subId}
+        and sub_type = #{subType};
+    </select>
+
+</mapper>

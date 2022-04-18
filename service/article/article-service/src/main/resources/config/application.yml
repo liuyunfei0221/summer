@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: blue-article
+  aop:
+    proxy-target-class: true
+  profiles:
+    active: dev
+  messages:
+    basename: i18n.messages
+  webflux:
+    static-path-pattern: /*
+  web:
+    resources:
+      static-locations: classpath:static
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+
+  main:
+    allow-bean-definition-overriding: true
+
+  cloud:
+    loadbalancer:
+      enabled: true
+      eureka:
+        approximate-zone-from-hostname: false
+      service-discovery:
+        timeout: 35s
+      zone: summer
+      retry:
+        enabled: true
+        avoid-previous-instance: false
+      cache:
+        enabled: true
+        caffeine:
+          spec: initialCapacity=1024,expireAfterWrite=35s
+        capacity: 1024
+        ttl: 35s
+
+
+server:
+  shutdown: graceful
+
+
+logging:
+  config: classpath:config/log4j2.xml

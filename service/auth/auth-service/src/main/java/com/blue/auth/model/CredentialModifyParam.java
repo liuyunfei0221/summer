@@ -30,21 +30,22 @@ public class CredentialModifyParam implements Serializable, Asserter {
      */
     private String destinationVerifyType;
 
-    private String destinationVerificationCode;
     /**
      * phone/email ...
      */
     private String destinationCredential;
 
+    private String destinationVerificationCode;
+
     public CredentialModifyParam() {
     }
 
-    public CredentialModifyParam(String currentVerifyType, String currentVerificationCode, String destinationVerifyType, String destinationVerificationCode, String destinationCredential) {
+    public CredentialModifyParam(String currentVerifyType, String currentVerificationCode, String destinationVerifyType, String destinationCredential, String destinationVerificationCode) {
         this.currentVerifyType = currentVerifyType;
         this.currentVerificationCode = currentVerificationCode;
         this.destinationVerifyType = destinationVerifyType;
-        this.destinationVerificationCode = destinationVerificationCode;
         this.destinationCredential = destinationCredential;
+        this.destinationVerificationCode = destinationVerificationCode;
     }
 
     @Override
@@ -77,14 +78,6 @@ public class CredentialModifyParam implements Serializable, Asserter {
         this.destinationVerifyType = destinationVerifyType;
     }
 
-    public String getDestinationVerificationCode() {
-        return destinationVerificationCode;
-    }
-
-    public void setDestinationVerificationCode(String destinationVerificationCode) {
-        this.destinationVerificationCode = destinationVerificationCode;
-    }
-
     public String getDestinationCredential() {
         return destinationCredential;
     }
@@ -93,14 +86,22 @@ public class CredentialModifyParam implements Serializable, Asserter {
         this.destinationCredential = destinationCredential;
     }
 
+    public String getDestinationVerificationCode() {
+        return destinationVerificationCode;
+    }
+
+    public void setDestinationVerificationCode(String destinationVerificationCode) {
+        this.destinationVerificationCode = destinationVerificationCode;
+    }
+
     @Override
     public String toString() {
         return "CredentialModifyParam{" +
                 "currentVerifyType='" + currentVerifyType + '\'' +
                 ", currentVerificationCode='" + currentVerificationCode + '\'' +
                 ", destinationVerifyType='" + destinationVerifyType + '\'' +
-                ", destinationVerificationCode='" + destinationVerificationCode + '\'' +
                 ", destinationCredential='" + destinationCredential + '\'' +
+                ", destinationVerificationCode='" + destinationVerificationCode + '\'' +
                 '}';
     }
 

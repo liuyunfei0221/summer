@@ -18,9 +18,9 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>article</module>
         <module>auth</module>
         <module>base</module>
-        <module>business</module>
         <module>finance</module>
         <module>marketing</module>
         <module>member</module>

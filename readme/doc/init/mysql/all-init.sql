@@ -1876,9 +1876,9 @@ VALUES (1, 'popular bulletin 2', 'test data', 'www.baidu.com', 1, 1, 2, UNIX_TIM
 -- business0
 
 CREATE
-DATABASE business_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DATABASE article_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
-business_0;
+article_0;
 
 CREATE TABLE `article_0`
 (
@@ -2100,9 +2100,9 @@ CREATE TABLE `reply_1`
 -- business1
 
 CREATE
-DATABASE business_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+DATABASE article_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
-business_1;
+article_1;
 
 CREATE TABLE `article_0`
 (
