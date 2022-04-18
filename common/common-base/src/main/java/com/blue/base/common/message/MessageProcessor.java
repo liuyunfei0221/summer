@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.*;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.parseProp;
 import static com.blue.base.common.message.DictProcessor.resolveToValues;
@@ -78,7 +80,7 @@ public final class MessageProcessor {
         Map<String, String> messages;
         String identity;
         for (File f : files) {
-            if (f == null)
+            if (isNull(f))
                 continue;
 
             messages = parseProp(f);
@@ -114,7 +116,7 @@ public final class MessageProcessor {
         if (BlueChecker.isNotEmpty(languages)) {
             Map<Integer, String> message;
             for (String language : languages)
-                if ((message = I_18_N.get(lowerCase(language))) != null)
+                if (isNotNull(message = I_18_N.get(lowerCase(language))))
                     return message;
         }
 
@@ -127,10 +129,10 @@ public final class MessageProcessor {
                     .orElse(DEFAULT_MESSAGE).intern();
 
     private static final Predicate<DictKey[]> NON_KEY_REPLACEMENTS_PRE = replacements ->
-            replacements == null || replacements.length == 0;
+            isNull(replacements) || replacements.length == 0;
 
     private static final Predicate<String[]> NON_STR_REPLACEMENTS_PRE = replacements ->
-            replacements == null || replacements.length == 0;
+            isNull(replacements) || replacements.length == 0;
 
     private static final BiFunction<String, String[], String> FILLING_FUNC = (msg, replacements) -> {
         try {

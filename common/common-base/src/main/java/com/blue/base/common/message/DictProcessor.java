@@ -15,6 +15,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.constant.base.DictKey.DEFAULT;
@@ -66,10 +67,10 @@ public final class DictProcessor {
     };
 
     private static final Function<List<String>, Map<String, String>> DICT_GETTER = languages -> {
-        if (languages != null) {
+        if (isNotNull(languages)) {
             Map<String, String> dict;
             for (String language : languages)
-                if ((dict = I_18_N.get(lowerCase(language))) != null)
+                if (isNotNull(dict = I_18_N.get(lowerCase(language))))
                     return dict;
         }
 

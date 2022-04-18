@@ -18,6 +18,8 @@ import org.springframework.http.MediaType;
 
 import java.util.Map;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static java.util.stream.Collectors.toMap;
@@ -154,7 +156,7 @@ public final class ConstantProcessor {
      * @param status
      */
     public static void assertBoolStatus(Integer status, boolean nullable) {
-        if (nullable && status == null)
+        if (nullable && isNull(status))
             return;
 
         if (!BOOL_STATUS_MAPPING.containsKey(status))
@@ -167,7 +169,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertResourceType(Integer identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (!RESOURCE_TYPE_MAPPING.containsKey(identity))
@@ -181,7 +183,7 @@ public final class ConstantProcessor {
      * @return
      */
     public static void assertHttpMethod(String value, boolean nullable) {
-        if (nullable && value == null)
+        if (nullable && isNull(value))
             return;
 
         if (isBlank(value) || !HTTP_METHOD_MAPPING.containsKey(value.toUpperCase()))
@@ -195,7 +197,7 @@ public final class ConstantProcessor {
      * @return
      */
     public static void assertMediaType(String identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (isBlank(identity) || !MEDIA_TYPE_MAPPING.containsKey(identity.toLowerCase()))
@@ -209,7 +211,7 @@ public final class ConstantProcessor {
      * @return
      */
     public static void assertFileType(String identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (isBlank(identity) || !FILE_MEDIA_TYPE_MAPPING.containsKey(identity.toLowerCase()))
@@ -222,7 +224,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertCredentialType(String identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (isBlank(identity) || !CREDENTIAL_TYPE_MAPPING.containsKey(identity.toUpperCase()))
@@ -235,7 +237,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertDeviceType(String identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (isBlank(identity) || !DEVICE_TYPE_MAPPING.containsKey(identity.toUpperCase()))
@@ -248,7 +250,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertGenderIdentity(Integer identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (!GENDER_MAPPING.containsKey(identity))
@@ -261,7 +263,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertStatus(Integer identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (!STATUS_MAPPING.containsKey(identity))
@@ -274,7 +276,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertSortType(String identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (isBlank(identity) || !SORT_TYPE_MAPPING.containsKey(identity))
@@ -287,7 +289,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertBulletinType(Integer identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (!BULLETIN_TYPE_MAPPING.containsKey(identity))
@@ -300,7 +302,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertStatisticsRange(String identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (isBlank(identity) || !STATISTICS_RANGE_MAPPING.containsKey(identity.toUpperCase()))
@@ -313,7 +315,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertStatisticsType(String identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (isBlank(identity) || !STATISTICS_TYPE_MAPPING.containsKey(identity.toUpperCase()))
@@ -326,7 +328,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertSubjectType(Integer identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (!SUBJECT_TYPE_MAPPING.containsKey(identity))
@@ -339,7 +341,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertArticleType(Integer identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (!ARTICLE_TYPE_MAPPING.containsKey(identity))
@@ -352,7 +354,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertBusinessType(String identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (!BUSINESS_TYPE_MAPPING.containsKey(identity))
@@ -365,7 +367,7 @@ public final class ConstantProcessor {
      * @param identity
      */
     public static void assertVerifyType(String identity, boolean nullable) {
-        if (nullable && identity == null)
+        if (nullable && isNull(identity))
             return;
 
         if (!VERIFY_TYPE_MAPPING.containsKey(identity))
@@ -382,11 +384,11 @@ public final class ConstantProcessor {
      * @return
      */
     public static BlueBoolean getBoolByStatus(Integer status) {
-        if (status == null)
+        if (isNull(status))
             throw new BlueException(INVALID_IDENTITY);
 
         BlueBoolean blueBoolean = BOOL_STATUS_MAPPING.get(status);
-        if (blueBoolean == null)
+        if (isNull(blueBoolean))
             throw new BlueException(INVALID_IDENTITY);
 
         return blueBoolean;
@@ -399,11 +401,11 @@ public final class ConstantProcessor {
      * @return
      */
     public static BlueBoolean getBoolByBool(Boolean bool) {
-        if (bool == null)
+        if (isNull(bool))
             throw new BlueException(INVALID_IDENTITY);
 
         BlueBoolean blueBoolean = STATUS_BOOL_MAPPING.get(bool);
-        if (blueBoolean == null)
+        if (isNull(blueBoolean))
             throw new BlueException(INVALID_IDENTITY);
 
         return blueBoolean;
@@ -416,11 +418,11 @@ public final class ConstantProcessor {
      * @return
      */
     public static ResponseElement getResponseElementByStatus(Integer identity) {
-        if (identity == null)
+        if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
 
         ResponseElement responseElement = RESPONSE_ELEMENT_MAPPING.get(identity);
-        return responseElement != null ? responseElement : INTERNAL_SERVER_ERROR;
+        return isNotNull(responseElement) ? responseElement : INTERNAL_SERVER_ERROR;
     }
 
     /**
@@ -430,11 +432,11 @@ public final class ConstantProcessor {
      * @return
      */
     public static ResourceType getResourceTypeByIdentity(Integer identity) {
-        if (identity == null)
+        if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
 
         ResourceType resourceType = RESOURCE_TYPE_MAPPING.get(identity);
-        if (resourceType == null)
+        if (isNull(resourceType))
             throw new BlueException(INVALID_IDENTITY);
 
         return resourceType;
@@ -451,7 +453,7 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         HttpMethod httpMethod = HTTP_METHOD_MAPPING.get(value.toUpperCase());
-        if (httpMethod == null)
+        if (isNull(httpMethod))
             throw new BlueException(INVALID_IDENTITY);
 
         return httpMethod;
@@ -468,7 +470,7 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         MediaType mediaType = MEDIA_TYPE_MAPPING.get(identity.toLowerCase());
-        if (mediaType == null)
+        if (isNull(mediaType))
             throw new BlueException(INVALID_IDENTITY);
 
         return mediaType;
@@ -485,7 +487,7 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         MediaType mediaType = FILE_MEDIA_TYPE_MAPPING.get(identity.toLowerCase());
-        if (mediaType == null)
+        if (isNull(mediaType))
             throw new BlueException(INVALID_IDENTITY);
 
         return mediaType;
@@ -502,7 +504,7 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         CredentialType credentialType = CREDENTIAL_TYPE_MAPPING.get(identity.toUpperCase());
-        if (credentialType == null)
+        if (isNull(credentialType))
             throw new BlueException(INVALID_IDENTITY);
 
         return credentialType;
@@ -519,7 +521,7 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         DeviceType deviceType = DEVICE_TYPE_MAPPING.get(identity.toUpperCase());
-        if (deviceType == null)
+        if (isNull(deviceType))
             throw new BlueException(INVALID_IDENTITY);
 
         return deviceType;
@@ -532,11 +534,11 @@ public final class ConstantProcessor {
      * @return
      */
     public static Gender getGenderTypeByIdentity(Integer identity) {
-        if (identity == null)
+        if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
 
         Gender gender = GENDER_MAPPING.get(identity);
-        if (gender == null)
+        if (isNull(gender))
             throw new BlueException(INVALID_IDENTITY);
 
         return gender;
@@ -549,11 +551,11 @@ public final class ConstantProcessor {
      * @return
      */
     public static Status getStatusByIdentity(Integer identity) {
-        if (identity == null)
+        if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
 
         Status status = STATUS_MAPPING.get(identity);
-        if (status == null)
+        if (isNull(status))
             throw new BlueException(INVALID_IDENTITY);
 
         return status;
@@ -570,7 +572,7 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         SortType sortType = SORT_TYPE_MAPPING.get(identity);
-        if (sortType == null)
+        if (isNull(sortType))
             throw new BlueException(INVALID_IDENTITY);
 
         return sortType;
@@ -583,11 +585,11 @@ public final class ConstantProcessor {
      * @return
      */
     public static BulletinType getBulletinTypeByIdentity(Integer identity) {
-        if (identity == null)
+        if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
 
         BulletinType type = BULLETIN_TYPE_MAPPING.get(identity);
-        if (type == null)
+        if (isNull(type))
             throw new BlueException(INVALID_IDENTITY);
 
         return type;
@@ -604,7 +606,7 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         StatisticsRange range = STATISTICS_RANGE_MAPPING.get(identity.toUpperCase());
-        if (range == null)
+        if (isNull(range))
             throw new BlueException(INVALID_IDENTITY);
 
         return range;
@@ -621,7 +623,7 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         StatisticsType type = STATISTICS_TYPE_MAPPING.get(identity.toUpperCase());
-        if (type == null)
+        if (isNull(type))
             throw new BlueException(INVALID_IDENTITY);
 
         return type;
@@ -634,11 +636,11 @@ public final class ConstantProcessor {
      * @return
      */
     public static SubjectType getSubjectTypeByIdentity(Integer identity) {
-        if (identity == null)
+        if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
 
         SubjectType type = SUBJECT_TYPE_MAPPING.get(identity);
-        if (type == null)
+        if (isNull(type))
             throw new BlueException(INVALID_IDENTITY);
 
         return type;
@@ -651,11 +653,11 @@ public final class ConstantProcessor {
      * @return
      */
     public static ArticleType getArticleTypeByIdentity(Integer identity) {
-        if (identity == null)
+        if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
 
         ArticleType type = ARTICLE_TYPE_MAPPING.get(identity);
-        if (type == null)
+        if (isNull(type))
             throw new BlueException(INVALID_IDENTITY);
 
         return type;
@@ -668,11 +670,11 @@ public final class ConstantProcessor {
      * @return
      */
     public static BusinessType getBusinessTypeByIdentity(String identity) {
-        if (identity == null)
+        if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
 
         BusinessType type = BUSINESS_TYPE_MAPPING.get(identity);
-        if (type == null)
+        if (isNull(type))
             throw new BlueException(INVALID_IDENTITY);
 
         return type;
@@ -685,11 +687,11 @@ public final class ConstantProcessor {
      * @return
      */
     public static VerifyType getVerifyTypeByIdentity(String identity) {
-        if (identity == null)
+        if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
 
         VerifyType type = VERIFY_TYPE_MAPPING.get(identity);
-        if (type == null)
+        if (isNull(type))
             throw new BlueException(INVALID_IDENTITY);
 
         return type;

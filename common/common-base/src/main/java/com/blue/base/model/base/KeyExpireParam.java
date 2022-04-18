@@ -5,8 +5,7 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
@@ -42,7 +41,7 @@ public final class KeyExpireParam implements Serializable {
             throw new BlueException(BAD_REQUEST);
         if (isInvalidIdentity(expire))
             throw new BlueException(BAD_REQUEST);
-        if (unit == null)
+        if (isNull(unit))
             throw new BlueException(BAD_REQUEST);
 
         this.key = key;
@@ -75,7 +74,7 @@ public final class KeyExpireParam implements Serializable {
     }
 
     public void setUnit(ChronoUnit unit) {
-        if (unit == null)
+        if (isNull(unit))
             throw new BlueException(BAD_REQUEST);
         this.unit = unit;
     }

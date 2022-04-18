@@ -2,6 +2,8 @@ package com.blue.auth.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * role entity
  *
@@ -46,7 +48,7 @@ public final class Role implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = isNull(name) ? null : name.trim();
     }
 
     public String getDescription() {
@@ -54,7 +56,7 @@ public final class Role implements Serializable {
     }
 
     public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+        this.description = isNull(description) ? null : description.trim();
     }
 
     public Integer getLevel() {

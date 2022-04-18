@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.message.MessageProcessor.resolveToMessage;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.Symbol.LIST_ELEMENT_SEPARATOR;
@@ -42,7 +43,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
     private static final String X_REAL_IP = "X-Real-IP";
 
     private static final Predicate<String> VALID_IP_PRE = h ->
-            h != null && !"".equals(h) && !UNKNOWN.equalsIgnoreCase(h);
+            isNotBlank(h) && !UNKNOWN.equalsIgnoreCase(h);
 
     /**
      * request identity getter func
@@ -90,7 +91,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
     private static final int MAX_LANGUAGE_COUNT = 32;
 
     private static List<String> parseAcceptLanguages(List<Locale.LanguageRange> languageRanges) {
-        if (languageRanges != null && languageRanges.size() <= MAX_LANGUAGE_COUNT)
+        if (isNotNull(languageRanges) && languageRanges.size() <= MAX_LANGUAGE_COUNT)
             return languageRanges.stream()
                     .sorted((a, b) -> compare(b.getWeight(), a.getWeight()))
                     .map(Locale.LanguageRange::getRange)
@@ -192,7 +193,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @return
      */
     public static String getIp(ServerRequest serverRequest) {
-        if (serverRequest == null)
+        if (isNull(serverRequest))
             return UNKNOWN;
 
         ServerRequest.Headers headers = serverRequest.headers();
@@ -234,7 +235,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @return
      */
     public static String getIp(ServerHttpRequest serverHttpRequest) {
-        if (serverHttpRequest == null)
+        if (isNull(serverHttpRequest))
             return UNKNOWN;
 
         HttpHeaders headers = serverHttpRequest.getHeaders();

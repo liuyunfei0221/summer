@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.HEADER_VALUE_GETTER;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.media.config.filter.BlueFilterOrder.BLUE_REQUEST_ATTR;
@@ -96,7 +97,7 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
                     error(() -> new BlueException(PAYLOAD_TOO_LARGE));
 
     private static final Function<ServerHttpRequest, Mono<Boolean>> REQUEST_ASSERTER = request ->
-            request != null
+            isNotNull(request)
                     ?
                     zip(URI_ASSERTER.apply(request), HEADER_ASSERTER.apply(request), CONTENT_ASSERTER.apply(request)).flatMap(tuple3 -> just(true))
                     :

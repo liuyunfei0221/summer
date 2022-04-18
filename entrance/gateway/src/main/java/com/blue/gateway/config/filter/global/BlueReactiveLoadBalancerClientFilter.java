@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.NOT_FOUND;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_LOAD_BALANCER_CLIENT;
@@ -58,7 +59,7 @@ public class BlueReactiveLoadBalancerClientFilter implements GlobalFilter, Order
         URI uri = exchange.getAttribute(GATEWAY_REQUEST_URL_ATTR);
         String schemePrefix = exchange.getAttribute(GATEWAY_SCHEME_PREFIX_ATTR);
         String urlSchema;
-        if (uri != null && (LOAD_BALANCE_SCHEME.equals((urlSchema = uri.getScheme()).intern()) || LOAD_BALANCE_SCHEME.equals(schemePrefix))) {
+        if (isNotNull(uri) && (LOAD_BALANCE_SCHEME.equals((urlSchema = uri.getScheme()).intern()) || LOAD_BALANCE_SCHEME.equals(schemePrefix))) {
             addOriginalRequestUrl(exchange, uri);
             return choose(exchange)
                     .doOnNext(response -> {

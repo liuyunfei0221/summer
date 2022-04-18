@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
@@ -159,7 +160,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
 
     private static final Function<String, MediaType> MEDIA_GETTER = suffix -> {
         MediaType mediaType = FILE_MEDIA_MAPPING.get(suffix);
-        return mediaType != null ? mediaType : DEFAULT_MEDIA_TYPE;
+        return isNotNull(mediaType) ? mediaType : DEFAULT_MEDIA_TYPE;
     };
 
     private final BiConsumer<Long, Long> DOWNLOAD_RECORDER = (attachmentId, memberId) -> {

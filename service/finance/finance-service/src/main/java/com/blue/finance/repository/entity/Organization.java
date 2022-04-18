@@ -2,6 +2,8 @@ package com.blue.finance.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * organization entity
  *
@@ -43,7 +45,7 @@ public final class Organization implements Serializable {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+        this.phone = isNull(phone) ? null : phone.trim();
     }
 
     public String getEmail() {
@@ -51,7 +53,7 @@ public final class Organization implements Serializable {
     }
 
     public void setEmail(String email) {
-        this.email = email == null ? null : email.trim();
+        this.email = isNull(email) ? null : email.trim();
     }
 
     public String getName() {
@@ -59,7 +61,7 @@ public final class Organization implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = isNull(name) ? null : name.trim();
     }
 
     public Byte getStatus() {

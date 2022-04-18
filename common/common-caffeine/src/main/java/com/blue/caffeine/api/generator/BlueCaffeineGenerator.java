@@ -15,6 +15,7 @@ import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static com.github.benmanes.caffeine.cache.Caffeine.newBuilder;
 import static java.lang.Integer.numberOfLeadingZeros;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -40,11 +41,11 @@ public final class BlueCaffeineGenerator {
      * @param duration
      */
     private static void packageExpire(Caffeine<Object, Object> caffeine, ExpireStrategy expireStrategy, Duration duration) {
-        if (expireStrategy == null)
+        if (isNull(expireStrategy))
             throw new RuntimeException("expireStrategy can't be null");
 
         BiConsumer<Caffeine<Object, Object>, Duration> packager = EXPIRE_STRATEGY_PACKAGERS_HOLDER.get(expireStrategy);
-        if (packager == null)
+        if (isNull(packager))
             throw new RuntimeException("the packager for expireStrategy -> (" + expireStrategy + ") doesn't exist");
 
         packager.accept(caffeine, duration);
@@ -82,11 +83,11 @@ public final class BlueCaffeineGenerator {
      * @param conf
      */
     private static void confAsserter(CaffeineConf conf) {
-        if (conf == null)
+        if (isNull(conf))
             throw new RuntimeException("caffeineConf can't be null");
 
         Duration expireDuration = conf.getExpireDuration();
-        if (expireDuration == null)
+        if (isNull(expireDuration))
             throw new RuntimeException("expireDuration can't be null");
     }
 

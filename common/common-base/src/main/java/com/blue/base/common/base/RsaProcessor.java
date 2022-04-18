@@ -17,6 +17,7 @@ import java.util.Base64;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.RsaProcessor.HandleMode.*;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.lang.Math.min;
@@ -37,12 +38,12 @@ public final class RsaProcessor {
 
     private static final Logger LOGGER = getLogger(RsaProcessor.class);
 
-    private static final transient String KEY_ALGORITHM = "RSA";
-    private static final transient String SIGN_ALGORITHM = "SHA1WithRSA";
-    private static final transient Charset DEFAULT_CHARSET = UTF_8;
+    private static final String KEY_ALGORITHM = "RSA";
+    private static final String SIGN_ALGORITHM = "SHA1WithRSA";
+    private static final Charset DEFAULT_CHARSET = UTF_8;
 
-    private static final transient Base64.Encoder ENCODER = getEncoder();
-    private static final transient Base64.Decoder DECODER = getDecoder();
+    private static final Base64.Encoder ENCODER = getEncoder();
+    private static final Base64.Decoder DECODER = getDecoder();
 
     private static final Supplier<Cipher> CIPHER_SUP = () -> {
         try {
@@ -85,9 +86,9 @@ public final class RsaProcessor {
      * params asserter
      */
     private static final BiConsumer<String, String> PAR_ASSERT = (data, secKey) -> {
-        if (data == null || "".equals(data))
+        if (isBlank(data))
             throw new BlueException(EMPTY_PARAM);
-        if (secKey == null || "".equals(secKey))
+        if (isBlank(secKey))
             throw new BlueException(BAD_REQUEST);
     };
 
@@ -276,7 +277,7 @@ public final class RsaProcessor {
      */
     public static boolean verify(String data, String sign, String pubKey) {
         PAR_ASSERT.accept(data, pubKey);
-        if (sign == null || "".equals(sign))
+        if (isBlank(sign))
             throw new BlueException(BAD_REQUEST);
 
         Signature signature = SIGNATURE_SUP.get();

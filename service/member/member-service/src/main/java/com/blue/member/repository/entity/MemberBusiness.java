@@ -2,6 +2,8 @@ package com.blue.member.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * member business entity
  *
@@ -49,7 +51,7 @@ public final class MemberBusiness implements Serializable {
     }
 
     public void setQrCode(String qrCode) {
-        this.qrCode = qrCode == null ? null : qrCode.trim();
+        this.qrCode = isNull(qrCode) ? null : qrCode.trim();
     }
 
     public String getProfile() {
@@ -57,7 +59,7 @@ public final class MemberBusiness implements Serializable {
     }
 
     public void setProfile(String profile) {
-        this.profile = profile == null ? null : profile.trim();
+        this.profile = isNull(profile) ? null : profile.trim();
     }
 
     public String getExtra() {
@@ -65,7 +67,7 @@ public final class MemberBusiness implements Serializable {
     }
 
     public void setExtra(String extra) {
-        this.extra = extra == null ? null : extra.trim();
+        this.extra = isNull(extra) ? null : extra.trim();
     }
 
     public Integer getStatus() {

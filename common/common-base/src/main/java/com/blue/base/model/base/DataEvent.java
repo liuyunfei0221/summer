@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+
 /**
  * unified data
  *
@@ -42,7 +44,7 @@ public final class DataEvent implements Serializable {
         this.dataEventType = dataEventType;
         this.stamp = stamp;
 
-        this.entries = entries != null ? entries : new HashMap<>();
+        this.entries = isNotNull(entries) ? entries : new HashMap<>();
     }
 
     public DataEventType getDataEventType() {

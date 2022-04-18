@@ -15,8 +15,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.getBusinessTypeByIdentity;
 import static com.blue.base.common.base.ConstantProcessor.getVerifyTypeByIdentity;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -58,7 +57,7 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
      * @return
      */
     public Mono<String> handle(VerifyType verifyType, BusinessType businessType, String destination) {
-        if (verifyType != null && businessType != null)
+        if (isNotNull(verifyType) && isNotNull(businessType))
             return ofNullable(verifyHandlers.get(verifyType))
                     .map(h -> h.handle(businessType, destination))
                     .orElseThrow(() -> new BlueException(INVALID_PARAM));
@@ -94,7 +93,7 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
      * @return
      */
     public Mono<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
-        if (verifyType != null && businessType != null && isNotBlank(key) && isNotBlank(verify))
+        if (isNotNull(verifyType) && isNotNull(businessType) && isNotBlank(key) && isNotBlank(verify))
             return ofNullable(verifyHandlers.get(verifyType))
                     .map(h -> h.validate(businessType, key, verify, repeatable))
                     .orElseThrow(() -> new BlueException(INVALID_PARAM));

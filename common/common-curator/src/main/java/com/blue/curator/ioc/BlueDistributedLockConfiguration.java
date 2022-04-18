@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static java.util.Objects.isNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -14,7 +15,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AlibabaRemoveCommentedCode", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"AlibabaRemoveCommentedCode", "JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @ConditionalOnBean(value = {DistributedLockConf.class})
 @Configuration
 public class BlueDistributedLockConfiguration {
@@ -34,11 +35,11 @@ public class BlueDistributedLockConfiguration {
      * @param conf
      */
     private static void assertConf(DistributedLockConf conf) {
-        if (conf == null)
+        if (isNull(conf))
             throw new RuntimeException("distributedLockConf can't be null");
 
         String connectString = conf.getConnectString();
-        if (connectString == null || "".equals(connectString))
+        if (isNull(connectString) || "".equals(connectString))
             throw new RuntimeException("connectString can't be null");
     }
 

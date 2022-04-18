@@ -4,6 +4,7 @@ import com.blue.base.model.base.Access;
 import com.blue.base.model.exps.BlueException;
 import com.google.gson.JsonSyntaxException;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
 
@@ -23,7 +24,7 @@ public final class AuthProcessor {
      * @return
      */
     public static String accessToJson(Access access) {
-        if (access != null)
+        if (isNotNull(access))
             return GSON.toJson(access);
 
         throw new BlueException(UNAUTHORIZED);
@@ -36,7 +37,7 @@ public final class AuthProcessor {
      * @return
      */
     public static Access jsonToAccess(String json) {
-        if (json != null)
+        if (isNotNull(json))
             try {
                 return GSON.fromJson(json, Access.class);
             } catch (JsonSyntaxException e) {

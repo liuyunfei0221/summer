@@ -2,6 +2,8 @@ package com.blue.auth.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * resource entity
  *
@@ -87,7 +89,7 @@ public final class Resource implements Serializable {
     }
 
     public void setRequestMethod(String requestMethod) {
-        this.requestMethod = requestMethod == null ? null : requestMethod.trim();
+        this.requestMethod = isNull(requestMethod) ? null : requestMethod.trim();
     }
 
     public String getModule() {
@@ -103,7 +105,7 @@ public final class Resource implements Serializable {
     }
 
     public void setUri(String uri) {
-        this.uri = uri == null ? null : uri.trim();
+        this.uri = isNull(uri) ? null : uri.trim();
     }
 
     public Boolean getAuthenticate() {
@@ -159,7 +161,7 @@ public final class Resource implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = isNull(name) ? null : name.trim();
     }
 
     public String getDescription() {
@@ -167,7 +169,7 @@ public final class Resource implements Serializable {
     }
 
     public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+        this.description = isNull(description) ? null : description.trim();
     }
 
     public Long getCreateTime() {

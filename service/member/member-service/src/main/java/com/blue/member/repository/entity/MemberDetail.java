@@ -2,6 +2,8 @@ package com.blue.member.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * member detail entity
  *
@@ -76,7 +78,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = isNull(name) ? null : name.trim();
     }
 
     public Integer getGender() {
@@ -92,7 +94,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+        this.phone = isNull(phone) ? null : phone.trim();
     }
 
     public String getEmail() {
@@ -100,7 +102,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setEmail(String email) {
-        this.email = email == null ? null : email.trim();
+        this.email = isNull(email) ? null : email.trim();
     }
 
     public Long getCountryId() {
@@ -116,7 +118,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setCountry(String country) {
-        this.country = country == null ? null : country.trim();
+        this.country = isNull(country) ? null : country.trim();
     }
 
     public Long getStateId() {
@@ -132,7 +134,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setState(String state) {
-        this.state = state == null ? null : state.trim();
+        this.state = isNull(state) ? null : state.trim();
     }
 
     public Long getCityId() {
@@ -148,7 +150,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setCity(String city) {
-        this.city = city == null ? null : city.trim();
+        this.city = isNull(city) ? null : city.trim();
     }
 
     public String getAddress() {
@@ -156,7 +158,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
+        this.address = isNull(address) ? null : address.trim();
     }
 
     public String getProfile() {
@@ -164,7 +166,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setProfile(String profile) {
-        this.profile = profile == null ? null : profile.trim();
+        this.profile = isNull(profile) ? null : profile.trim();
     }
 
     public String getHobby() {
@@ -172,7 +174,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setHobby(String hobby) {
-        this.hobby = hobby == null ? null : hobby.trim();
+        this.hobby = isNull(hobby) ? null : hobby.trim();
     }
 
     public String getHomepage() {
@@ -180,7 +182,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setHomepage(String homepage) {
-        this.homepage = homepage == null ? null : homepage.trim();
+        this.homepage = isNull(homepage) ? null : homepage.trim();
     }
 
     public String getExtra() {
@@ -188,7 +190,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setExtra(String extra) {
-        this.extra = extra == null ? null : extra.trim();
+        this.extra = isNull(extra) ? null : extra.trim();
     }
 
     public Integer getStatus() {

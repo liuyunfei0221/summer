@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.google.gson.reflect.TypeToken.getParameterized;
@@ -39,7 +40,7 @@ public final class MetadataProcessor {
      * @return
      */
     public static String metadataToJson(Map<String, String> metadata) {
-        if (metadata != null)
+        if (isNotNull(metadata))
             return GSON.toJson(metadata);
 
         return EMPTY_JSON;
@@ -52,7 +53,7 @@ public final class MetadataProcessor {
      * @return
      */
     public static Map<String, String> jsonToMetadata(String json) {
-        if (json != null)
+        if (isNotNull(json))
             try {
                 return GSON.fromJson(json, METADATA_TYPE);
             } catch (JsonSyntaxException e) {

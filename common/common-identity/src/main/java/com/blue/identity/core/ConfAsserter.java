@@ -7,6 +7,7 @@ import reactor.util.Logger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.identity.constant.SnowflakeBits.*;
 import static com.blue.identity.constant.SnowflakeBufferThreshold.MAX_PADDING_FACTOR;
 import static com.blue.identity.constant.SnowflakeBufferThreshold.MIN_PADDING_FACTOR;
@@ -46,7 +47,7 @@ public final class ConfAsserter {
     public static void assertConf(IdentityConf identityConf) {
         LOGGER.info("void assertConf(IdentityConf identityConf), identityConf = {}", identityConf);
 
-        if (identityConf == null)
+        if (isNull(identityConf))
             throw new IdentityException("identityConf can't be null");
 
         int timestampBits = TIME_STAMP.len;
@@ -64,13 +65,13 @@ public final class ConfAsserter {
         Integer dataCenter = identityConf.getDataCenter();
         Integer worker = identityConf.getWorker();
 
-        if (dataCenter == null || dataCenter.longValue() > maxDataCenter)
+        if (isNull(dataCenter) || dataCenter.longValue() > maxDataCenter)
             throw new IdentityException("dataCenter cannot be null or greater than " + maxDataCenter);
-        if (worker == null || worker.longValue() > maxWorker)
+        if (isNull(worker) || worker.longValue() > maxWorker)
             throw new IdentityException("maxWorker cannot be null or greater than " + maxWorker);
 
         String serviceName = identityConf.getServiceName();
-        if (serviceName == null || "".equals(serviceName))
+        if (isNull(serviceName) || "".equals(serviceName))
             throw new IdentityException("serviceName cannot be null or ''");
 
         long maxStepTimestamp = ~(-1L << timestampBits);
@@ -82,7 +83,7 @@ public final class ConfAsserter {
                 .filter(ls -> ls > 0)
                 .orElseGet(() -> now().getEpochSecond());
 
-        if (bootSeconds == null || bootSeconds >= currentSecond || bootSeconds >= lastSeconds)
+        if (isNull(bootSeconds) || bootSeconds >= currentSecond || bootSeconds >= lastSeconds)
             throw new IdentityException("bootSeconds cannot be greater than " + currentSecond + " or " + lastSeconds);
 
         long stepSeconds = lastSeconds - bootSeconds + MAX_RAN_ADVANCE_SEC_BOUND;
@@ -90,43 +91,43 @@ public final class ConfAsserter {
             throw new IdentityException("stepSeconds cannot be greater than " + maxStepTimestamp);
 
         Consumer<Long> maximumTimeAlarm = identityConf.getMaximumTimeAlarm();
-        if (maximumTimeAlarm == null)
+        if (isNull(maximumTimeAlarm))
             throw new IdentityException("maximumTimeAlarm can't be null");
 
         Integer paddingFactor = identityConf.getPaddingFactor();
-        if (paddingFactor == null || paddingFactor < MIN_PADDING_FACTOR.threshold || paddingFactor > MAX_PADDING_FACTOR.threshold)
+        if (isNull(paddingFactor) || paddingFactor < MIN_PADDING_FACTOR.threshold || paddingFactor > MAX_PADDING_FACTOR.threshold)
             throw new IdentityException("paddingFactor range must be in (" + MIN_PADDING_FACTOR.threshold + " - " + MAX_PADDING_FACTOR.threshold + ")");
 
         Integer paddingCorePoolSize = identityConf.getPaddingCorePoolSize();
-        if (paddingCorePoolSize == null || paddingCorePoolSize < 1)
+        if (isNull(paddingCorePoolSize) || paddingCorePoolSize < 1)
             throw new IdentityException("paddingCorePoolSize can't be null or less than 1");
 
         Integer paddingMaximumPoolSize = identityConf.getPaddingMaximumPoolSize();
-        if (paddingMaximumPoolSize == null || paddingMaximumPoolSize < 1)
+        if (isNull(paddingMaximumPoolSize) || paddingMaximumPoolSize < 1)
             throw new IdentityException("paddingMaximumPoolSize can't be null or less than 1");
 
         if (paddingMaximumPoolSize < paddingCorePoolSize)
             throw new IdentityException("paddingMaximumPoolSize can't less than paddingCorePoolSize");
 
         Long keepAliveSeconds = identityConf.getKeepAliveSeconds();
-        if (keepAliveSeconds == null || keepAliveSeconds < 1L)
+        if (isNull(keepAliveSeconds) || keepAliveSeconds < 1L)
             throw new IdentityException("keepAliveSeconds can't be null or less than 1");
 
         Integer paddingBlockingQueueSize = identityConf.getPaddingBlockingQueueSize();
-        if (paddingBlockingQueueSize == null || paddingBlockingQueueSize < 1)
+        if (isNull(paddingBlockingQueueSize) || paddingBlockingQueueSize < 1)
             throw new IdentityException("paddingBlockingQueueSize can't be null or less than 1");
 
         if (ofNullable(identityConf.getPaddingScheduled()).orElse(false)) {
             Integer paddingScheduledCorePoolSize = identityConf.getPaddingScheduledCorePoolSize();
-            if (paddingScheduledCorePoolSize == null || paddingScheduledCorePoolSize < 1)
+            if (isNull(paddingScheduledCorePoolSize) || paddingScheduledCorePoolSize < 1)
                 throw new IdentityException("paddingScheduledCorePoolSize can't be null or less than 1");
 
             Long paddingScheduledInitialDelayMillis = identityConf.getPaddingScheduledInitialDelayMillis();
-            if (paddingScheduledInitialDelayMillis == null || paddingScheduledInitialDelayMillis < 1)
+            if (isNull(paddingScheduledInitialDelayMillis) || paddingScheduledInitialDelayMillis < 1)
                 throw new IdentityException("paddingScheduledInitialDelayMillis can't be null or less than 1");
 
             Long paddingScheduledDelayMillis = identityConf.getPaddingScheduledDelayMillis();
-            if (paddingScheduledDelayMillis == null || paddingScheduledDelayMillis < 1)
+            if (isNull(paddingScheduledDelayMillis) || paddingScheduledDelayMillis < 1)
                 throw new IdentityException("paddingScheduledDelayMillis can't be null or less than 1");
         }
     }

@@ -21,8 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isEmpty;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.FileGetter.getFile;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
@@ -116,14 +115,14 @@ public final class SenderComponentProcessor {
 
             String line;
             StringBuilder sb = null;
-            while ((line = br.readLine()) != null)
+            while (isNotNull((line = br.readLine())))
                 if (line.equals(PRI_KEY_BEGIN))
                     sb = new StringBuilder();
                 else if (line.equals(PRI_KEY_END))
                     break;
-                else if (sb != null) sb.append(line);
+                else if (isNotNull(sb)) sb.append(line);
 
-            if (sb == null || line == null)
+            if (isNull(sb) || isNull(line))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "private key is invalid");
 
             return Base64.getDecoder().decode(sb.toString());
@@ -153,29 +152,29 @@ public final class SenderComponentProcessor {
      * @param conf
      */
     public static void confAsserter(MailSenderConf conf) {
-        if (conf == null)
+        if (isNull(conf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         if (isEmpty(conf.getSmtpAttrs()))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "smtpAttrs can't be blank");
 
         Integer corePoolSize = conf.getCorePoolSize();
-        if (corePoolSize == null || corePoolSize < 1)
+        if (isNull(corePoolSize) || corePoolSize < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "corePoolSize can't be null or less than 1");
 
         Integer maximumPoolSize = conf.getMaximumPoolSize();
-        if (maximumPoolSize == null || maximumPoolSize < 1 || maximumPoolSize < corePoolSize)
+        if (isNull(maximumPoolSize) || maximumPoolSize < 1 || maximumPoolSize < corePoolSize)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maximumPoolSize can't be null or less than 1 or less than corePoolSize");
 
         Long keepAliveTime = conf.getKeepAliveSeconds();
-        if (keepAliveTime == null || keepAliveTime < 1L)
+        if (isNull(keepAliveTime) || keepAliveTime < 1L)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keepAliveTime can't be null or less than 1");
 
         Integer blockingQueueCapacity = conf.getBlockingQueueCapacity();
-        if (blockingQueueCapacity == null || blockingQueueCapacity < 1)
+        if (isNull(blockingQueueCapacity) || blockingQueueCapacity < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "blockingQueueCapacity can't be null or less than 1");
 
-        if (conf.getBufferSize() == null)
+        if (isNull(conf.getBufferSize()))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "bufferSize can't be null");
 
         Boolean withDKIM = ofNullable(conf.getWithDKIM()).orElse(false);

@@ -13,6 +13,7 @@ import java.util.function.BiConsumer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.io.File.separator;
 import static java.lang.Class.forName;
@@ -86,7 +87,7 @@ public final class ClassGetter {
 
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
-                if (url != null) {
+                if (isNotNull(url)) {
                     protocol = url.getProtocol();
                     if (FILE_PROTOCOL.equals(protocol)) {
                         path = url.getPath();
@@ -98,7 +99,7 @@ public final class ClassGetter {
                         } catch (Exception e) {
                             LOGGER.error("getClassesByPackage(String packageName, boolean recursive) failed, Exception e = {}", e);
                         }
-                        if (jarFile != null)
+                        if (isNotNull(jarFile))
                             clzNames.addAll(getAllClassNameByJar(jarFile, packageName, recursive));
                     }
                 }
@@ -136,7 +137,7 @@ public final class ClassGetter {
             HANDLE_FILE.accept(file, clzNames);
         } else {
             File[] listFiles = file.listFiles();
-            if (listFiles != null && listFiles.length > 0) {
+            if (isNotNull(listFiles) && listFiles.length > 0) {
                 for (File f : listFiles)
                     if (recursive) {
                         clzNames.addAll(getAllClassNameByFile(f, true));

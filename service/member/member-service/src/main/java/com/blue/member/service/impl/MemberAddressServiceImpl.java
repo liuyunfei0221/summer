@@ -80,7 +80,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<MemberAddressCondition> MEMBER_ADDRESS_CONDITION_PROCESSOR = condition -> {
-        if (condition != null) {
+        if (isNotNull(condition)) {
             condition.setSortAttribute(
                     ofNullable(condition.getSortAttribute())
                             .filter(BlueChecker::isNotBlank)
@@ -233,7 +233,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         LOGGER.info("Mono<List<MemberAddress>> selectMemberAddressMonoByLimitAndCondition(Long limit, Long rows, MemberAddressCondition memberAddressCondition), " +
                 "limit = {}, rows = {}, memberAddressCondition = {}", limit, rows, memberAddressCondition);
 
-        if (limit != null && limit >= 0 && rows != null && rows >= 1)
+        if (isNotNull(limit) && limit >= 0 && isNotNull(rows) && rows >= 1)
             return just(memberAddressMapper.selectByLimitAndCondition(limit, rows, memberAddressCondition));
 
         throw new BlueException(INVALID_PARAM);

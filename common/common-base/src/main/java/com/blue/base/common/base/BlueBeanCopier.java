@@ -8,6 +8,7 @@ import reactor.util.Logger;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static reactor.util.Loggers.getLogger;
 
@@ -34,7 +35,7 @@ public final class BlueBeanCopier {
      * @return
      */
     private static String generateKey(Class source, Class target, boolean useConverter) {
-        if (source == null || target == null)
+        if (isNull(source) || isNull(target))
             throw new BlueException(BAD_REQUEST);
 
         return source.getName() + PAR_CONCATENATION + target.getName() + PAR_CONCATENATION + useConverter;
@@ -52,10 +53,10 @@ public final class BlueBeanCopier {
         String key = generateKey(source, target, useConverter);
 
         BeanCopier beanCopier = COPIERS_HOLDER.get(key);
-        if (beanCopier == null)
+        if (isNull(beanCopier))
             synchronized (BlueBeanCopier.class) {
                 beanCopier = COPIERS_HOLDER.get(key);
-                if (beanCopier == null) {
+                if (isNull(beanCopier)) {
                     BeanCopier copier = BeanCopier.create(source, target, useConverter);
                     COPIERS_HOLDER.put(key, copier);
                     beanCopier = copier;

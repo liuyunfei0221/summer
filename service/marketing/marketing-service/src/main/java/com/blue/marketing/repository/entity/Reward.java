@@ -2,6 +2,8 @@ package com.blue.marketing.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * reward entity
  *
@@ -60,7 +62,7 @@ public final class Reward implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = isNull(name) ? null : name.trim();
     }
 
     public String getDetail() {
@@ -68,7 +70,7 @@ public final class Reward implements Serializable {
     }
 
     public void setDetail(String detail) {
-        this.detail = detail == null ? null : detail.trim();
+        this.detail = isNull(detail) ? null : detail.trim();
     }
 
     public String getLink() {
@@ -76,7 +78,7 @@ public final class Reward implements Serializable {
     }
 
     public void setLink(String link) {
-        this.link = link == null ? null : link.trim();
+        this.link = isNull(link) ? null : link.trim();
     }
 
     public Integer getType() {
@@ -92,7 +94,7 @@ public final class Reward implements Serializable {
     }
 
     public void setData(String data) {
-        this.data = data == null ? null : data.trim();
+        this.data = isNull(data) ? null : data.trim();
     }
 
     public Integer getStatus() {

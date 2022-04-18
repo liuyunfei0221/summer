@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
@@ -121,7 +122,7 @@ public class PathVariableGetter {
         if (isBlank(placeHolder))
             throw new BlueException(EMPTY_PATH_VARIABLE);
 
-        if (serverRequest == null)
+        if (isNull(serverRequest))
             throw new BlueException(INTERNAL_SERVER_ERROR);
     }
 

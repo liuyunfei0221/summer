@@ -2,6 +2,8 @@ package com.blue.marketing.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * marketing event entity
  *
@@ -64,7 +66,7 @@ public final class Event implements Serializable {
     }
 
     public void setData(String data) {
-        this.data = data == null ? null : data.trim();
+        this.data = isNull(data) ? null : data.trim();
     }
 
     public Integer getStatus() {

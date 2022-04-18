@@ -4,6 +4,7 @@ import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
@@ -27,9 +28,9 @@ public final class MemberAccess implements Serializable {
     private final String secKey;
 
     public MemberAccess(String auth, String secKey) {
-        if (auth == null || "".equals(auth))
+        if (isBlank(auth))
             throw new BlueException(BAD_REQUEST);
-        if (secKey == null || "".equals(secKey))
+        if (isBlank(secKey))
             throw new BlueException(BAD_REQUEST);
 
         this.auth = auth;

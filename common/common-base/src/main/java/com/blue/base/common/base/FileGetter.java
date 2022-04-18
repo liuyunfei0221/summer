@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -33,10 +34,10 @@ public final class FileGetter {
      * @return
      */
     private static List<File> listFile(List<File> files, File file, boolean recursive) {
-        if (files == null)
+        if (isNull(files))
             files = new LinkedList<>();
 
-        if (file == null)
+        if (isNull(file))
             return files;
 
         if (file.isDirectory() && recursive)

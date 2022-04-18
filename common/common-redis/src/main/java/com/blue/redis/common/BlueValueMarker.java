@@ -14,7 +14,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
@@ -62,7 +62,7 @@ public final class BlueValueMarker {
             new Object[]{v, String.valueOf(expire)};
 
     private boolean expireHllOrWithInit(String key, String initValue, Long expireMillis) {
-        if (isNotBlank(key) && isNotBlank(initValue) && expireMillis != null && expireMillis > 0L)
+        if (isNotBlank(key) && isNotBlank(initValue) && isNotNull(expireMillis) && expireMillis > 0L)
             return ofNullable(stringRedisTemplate.execute(EXPIRE_HLL_OR_WITH_INIT_SCRIPT, SCRIPT_KEYS_WRAPPER.apply(key),
                     SCRIPT_ARGS_WRAPPER.apply(initValue, expireMillis))).orElse(false);
 
@@ -158,7 +158,7 @@ public final class BlueValueMarker {
      * @param stringRedisTemplate
      */
     private void assertParam(StringRedisTemplate stringRedisTemplate) {
-        if (stringRedisTemplate == null)
+        if (isNull(stringRedisTemplate))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stringRedisTemplate can't be null");
     }
 

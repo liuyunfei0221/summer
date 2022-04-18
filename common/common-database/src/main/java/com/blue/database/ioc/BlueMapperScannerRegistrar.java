@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.beans.BeanUtils.instantiateClass;
@@ -46,7 +47,7 @@ public class BlueMapperScannerRegistrar implements ImportBeanDefinitionRegistrar
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         AnnotationAttributes mapperScanAttrs = fromMap(importingClassMetadata.getAnnotationAttributes(EnableBlueDataAccess.class.getName()));
-        if (mapperScanAttrs != null)
+        if (isNotNull(mapperScanAttrs))
             registerBeanDefinitions(mapperScanAttrs, registry, generateBaseBeanName(importingClassMetadata));
     }
 

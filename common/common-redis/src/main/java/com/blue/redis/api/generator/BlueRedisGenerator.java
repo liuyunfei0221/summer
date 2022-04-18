@@ -27,6 +27,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redis.constant.ServerMode.CLUSTER;
 import static com.blue.redis.constant.ServerMode.SINGLE;
@@ -56,7 +57,7 @@ public final class BlueRedisGenerator {
 
     static {
         SERVER_MODE_ASSERTERS.put(CLUSTER, conf -> {
-            if (conf == null)
+            if (isNull(conf))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
             List<String> nodes = conf.getNodes();
@@ -65,11 +66,11 @@ public final class BlueRedisGenerator {
         });
 
         SERVER_MODE_ASSERTERS.put(SINGLE, conf -> {
-            if (conf == null)
+            if (isNull(conf))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
             Integer port = conf.getPort();
-            if (isBlank(conf.getHost()) || port == null || port < 1)
+            if (isBlank(conf.getHost()) || isNull(port) || port < 1)
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1");
         });
 
@@ -78,30 +79,30 @@ public final class BlueRedisGenerator {
     }
 
     private static final Consumer<RedisConf> SERVER_MODE_ASSERTER = conf -> {
-        if (conf == null)
+        if (isNull(conf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         ServerMode serverMode = conf.getServerMode();
-        if (serverMode == null)
+        if (isNull(serverMode))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
 
         Consumer<RedisConf> asserter = SERVER_MODE_ASSERTERS.get(serverMode);
-        if (asserter == null)
+        if (isNull(asserter))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
 
         asserter.accept(conf);
     };
 
     private static final Function<RedisConf, RedisConfiguration> CONF_GENERATOR = conf -> {
-        if (conf == null)
+        if (isNull(conf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         ServerMode serverMode = conf.getServerMode();
-        if (serverMode == null)
+        if (isNull(serverMode))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
 
         Function<RedisConf, RedisConfiguration> generator = CONF_GENERATORS.get(serverMode);
-        if (generator == null)
+        if (isNull(generator))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
 
         return generator.apply(conf);
@@ -113,7 +114,7 @@ public final class BlueRedisGenerator {
      * @param conf
      */
     private static void confAsserter(RedisConf conf) {
-        if (conf == null)
+        if (isNull(conf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         SERVER_MODE_ASSERTER.accept(conf);

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.ClassGetter.getClassesByPackage;
 import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
 import static com.blue.base.common.message.MessageProcessor.resolveToMessage;
@@ -89,7 +90,7 @@ public final class ExceptionProcessor {
         Throwable original = getOriginalThrowable(throwable);
 
         ExceptionHandler handler = MAPPING.get(original.getClass().getName());
-        if (handler != null)
+        if (isNotNull(handler))
             try {
                 return EXP_RES_GETTER.apply(languages, handler.handle(original));
             } catch (Exception e) {

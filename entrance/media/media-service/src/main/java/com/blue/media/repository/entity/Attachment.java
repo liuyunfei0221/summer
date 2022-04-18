@@ -3,6 +3,8 @@ package com.blue.media.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * attachment
  *
@@ -42,7 +44,7 @@ public final class Attachment implements Serializable {
     }
 
     public void setLink(String link) {
-        this.link = link == null ? null : link.trim();
+        this.link = isNull(link) ? null : link.trim();
     }
 
     public String getName() {
@@ -50,7 +52,7 @@ public final class Attachment implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = isNull(name) ? null : name.trim();
     }
 
     public String getFileType() {

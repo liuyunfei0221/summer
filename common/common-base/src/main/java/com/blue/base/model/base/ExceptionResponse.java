@@ -2,6 +2,7 @@ package com.blue.base.model.base;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 
 /**
@@ -33,7 +34,7 @@ public final class ExceptionResponse implements Serializable {
     }
 
     public ExceptionResponse(Integer status, Integer code, String message) {
-        if (status != null && code != null && message != null) {
+        if (isNotNull(status) && isNotNull(code) && isNotNull(message)) {
             this.status = status;
             this.code = code;
             this.message = message;

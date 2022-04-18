@@ -4,6 +4,8 @@ import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * dict type entity
  *
@@ -42,7 +44,7 @@ public final class DictType implements Serializable {
     }
 
     public void setCode(String code) {
-        this.code = code == null ? null : code.trim();
+        this.code = isNull(code) ? null : code.trim();
     }
 
     public String getName() {
@@ -50,7 +52,7 @@ public final class DictType implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = isNull(name) ? null : name.trim();
     }
 
     public Long getCreateTime() {

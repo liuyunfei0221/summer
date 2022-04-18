@@ -17,6 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.mail.common.SenderComponentProcessor.*;
@@ -106,7 +108,7 @@ public final class BatchSender {
     }
 
     private final Predicate<Throwable> RETRY_PREDICATE = throwable ->
-            throwable != null && throwableForRetry.contains(getOriginalThrowable(throwable).getClass().getName());
+            isNotNull(throwable) && throwableForRetry.contains(getOriginalThrowable(throwable).getClass().getName());
 
     private final BiConsumer<Transporter, Message> MESSAGE_SENDER = (transport, message) -> {
         try {
@@ -137,7 +139,7 @@ public final class BatchSender {
     }
 
     public CompletableFuture<Void> sendMessage(Message message) {
-        if (message == null)
+        if (isNull(message))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "message can't be null");
 
         signDkim(message);

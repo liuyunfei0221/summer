@@ -4,6 +4,7 @@ import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.BlueNumericalValue.*;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static java.util.Optional.ofNullable;
@@ -40,9 +41,9 @@ public final class LimitModelRequest<T> implements Serializable {
     }
 
     public LimitModelRequest(Long limit, Long rows, T param) {
-        if (limit == null || limit < 0L)
+        if (isNull(limit) || limit < 0L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "limit can't be less than 0, max rows per page can't be greater than " + MAX_ROWS.value);
-        if (rows == null || rows < 1L || rows > MAX_ROWS_PER_REQ)
+        if (isNull(rows) || rows < 1L || rows > MAX_ROWS_PER_REQ)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "limit can't be less than 0, max rows per page can't be greater than " + MAX_ROWS.value);
 
         this.limit = limit;
@@ -59,14 +60,14 @@ public final class LimitModelRequest<T> implements Serializable {
     }
 
     public void setLimit(Long limit) {
-        if (limit == null || limit < 0L)
+        if (isNull(limit) || limit < 0L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "limit can't be less than 0, max rows per page can't be greater than " + MAX_ROWS.value);
 
         this.limit = limit;
     }
 
     public void setRows(Long rows) {
-        if (rows == null || rows < 1L || rows > MAX_ROWS_PER_REQ)
+        if (isNull(rows) || rows < 1L || rows > MAX_ROWS_PER_REQ)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "limit can't be less than 0, max rows per page can't be greater than " + MAX_ROWS.value);
 
         this.rows = rows;

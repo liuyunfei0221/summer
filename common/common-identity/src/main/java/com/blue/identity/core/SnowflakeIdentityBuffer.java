@@ -7,6 +7,7 @@ import reactor.util.Logger;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.identity.constant.SnowflakeBufferThreshold.MAX_PADDING_FACTOR;
 import static com.blue.identity.constant.SnowflakeBufferThreshold.MIN_PADDING_FACTOR;
 import static java.lang.Integer.bitCount;
@@ -73,12 +74,12 @@ public final class SnowflakeIdentityBuffer {
         LOGGER.info("SnowflakeIdentityBuffer init, idBufferParam = {}", idBufferParam);
 
         SnowflakeIdentityGenerator snowflakeIdentityGenerator = idBufferParam.getSnowflakeIdentityGenerator();
-        if (snowflakeIdentityGenerator == null)
+        if (isNull(snowflakeIdentityGenerator))
             throw new IdentityException("blueIdentityGenerator must not be null");
         this.snowflakeIdentityGenerator = snowflakeIdentityGenerator;
 
         ExecutorService bufferPadExecutor = idBufferParam.getBufferPadExecutor();
-        if (bufferPadExecutor == null)
+        if (isNull(bufferPadExecutor))
             throw new IdentityException("bufferPadExecutor must not be null");
         this.bufferPadExecutor = bufferPadExecutor;
 
@@ -98,7 +99,7 @@ public final class SnowflakeIdentityBuffer {
 
         if (ofNullable(idBufferParam.getPaddingScheduled()).orElse(false)) {
             ScheduledExecutorService bufferPadSchedule = idBufferParam.getBufferPadSchedule();
-            if (bufferPadSchedule == null)
+            if (isNull(bufferPadSchedule))
                 throw new IdentityException("when paddingScheduled is true, bufferPadSchedule must not be null");
 
             long paddingScheduledInitialDelayMillis = ofNullable(idBufferParam.getPaddingScheduledInitialDelayMillis()).orElse(-1L);

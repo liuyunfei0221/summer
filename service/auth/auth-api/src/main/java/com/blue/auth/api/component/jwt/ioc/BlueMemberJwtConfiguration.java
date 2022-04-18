@@ -16,6 +16,7 @@ import static com.blue.auth.api.component.jwt.api.generator.BlueMemberJwtProcess
  * @date 2021/9/10
  * @apiNote
  */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ConditionalOnBean(value = {MemberJwtConf.class})
 @Configuration
 public class BlueMemberJwtConfiguration {

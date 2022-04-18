@@ -21,6 +21,7 @@ import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static com.blue.jwt.constant.JwtConfSchema.*;
 import static com.blue.jwt.constant.JwtResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.jwt.constant.JwtResponseElement.UNAUTHORIZED;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -44,13 +45,13 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     /**
      * header info
      */
-    private static final transient String HEADER_TYPE_NAME = "Type", HEADER_TYPE_VALUE = "Jwt";
-    private static final transient String HEADER_ALG_NAME = "alg", HEADER_ALG_VALUE = "HS512";
+    private static final String HEADER_TYPE_NAME = "Type", HEADER_TYPE_VALUE = "Jwt";
+    private static final String HEADER_ALG_NAME = "alg", HEADER_ALG_VALUE = "HS512";
 
     /**
      * header
      */
-    private static final transient Map<String, Object> JWT_HEADER = new HashMap<>(4, 1.0f);
+    private static final Map<String, Object> JWT_HEADER = new HashMap<>(4, 1.0f);
 
     static {
         JWT_HEADER.put(HEADER_TYPE_NAME, HEADER_TYPE_VALUE);
@@ -60,7 +61,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     /**
      * constants
      */
-    private static final transient int
+    private static final int
             RANDOM_JWT_ID_LEN = RANDOM_JWT_ID.len,
             SEC_KEY_STR_MIN_LEN = SEC_KEY_STR_MIN.len,
             SEC_KEY_STR_MAX_LEN = SEC_KEY_STR_MAX.len,
@@ -113,7 +114,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     /**
      * expire key
      */
-    private static final transient String EXPIRES_AT_STAMP_KEY = "blueExpiresAtStamp";
+    private static final String EXPIRES_AT_STAMP_KEY = "blueExpiresAtStamp";
 
     /**
      * date generator
@@ -195,7 +196,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
      */
     @Override
     public String create(T t) {
-        if (t == null) {
+        if (isNull(t)) {
             LOGGER.error("String create(T t), t can't be null");
             throw new AuthenticationException(INTERNAL_SERVER_ERROR);
         }
@@ -274,23 +275,23 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
      */
     private static <T> void assertConf(JwtConf<T> conf) {
         Long minExpireMillis = conf.getMinExpireMillis();
-        if (minExpireMillis == null || minExpireMillis < 0L)
+        if (isNull(minExpireMillis) || minExpireMillis < 0L)
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "minExpireMillis can't be null or less than 0L");
         Long maxExpireMillis = conf.getMaxExpireMillis();
-        if (maxExpireMillis == null || maxExpireMillis < 0L)
+        if (isNull(maxExpireMillis) || maxExpireMillis < 0L)
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxExpireMillis can't be null or less than 0L");
         if (maxExpireMillis <= minExpireMillis)
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxExpireMillis can't less than minExpireMillis");
 
         String signKey = conf.getSignKey();
-        if (signKey == null || "".equals(signKey))
+        if (isBlank(signKey))
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "signKey can't be blank");
         int secKeyLen = signKey.length();
         if (secKeyLen < SEC_KEY_STR_MIN_LEN || secKeyLen > SEC_KEY_STR_MAX_LEN)
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "signKey len can't less than " + SEC_KEY_STR_MIN_LEN + " or greater than " + SEC_KEY_STR_MAX_LEN);
 
         List<String> gammaSecrets = conf.getGammaSecrets();
-        if (gammaSecrets == null || gammaSecrets.size() < 1)
+        if (isNull(gammaSecrets) || gammaSecrets.size() < 1)
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets can't be empty");
 
         int gammaSecretSize = gammaSecrets.size();
@@ -310,9 +311,9 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
         if (gammaSecrets.size() != gammaSecretSize)
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets elements can't be same");
 
-        if (conf.getDataToClaimProcessor() == null)
+        if (isNull(conf.getDataToClaimProcessor()))
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dataToClaimProcessor can't be null");
-        if (conf.getClaimToDataProcessor() == null)
+        if (isNull(conf.getClaimToDataProcessor()))
             throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "claimToDataProcessor can't be null");
     }
 

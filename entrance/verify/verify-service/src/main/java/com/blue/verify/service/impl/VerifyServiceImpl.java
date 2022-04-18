@@ -18,8 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.constant.base.ResponseElement.ILLEGAL_REQUEST;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
@@ -110,7 +109,7 @@ public class VerifyServiceImpl implements VerifyService {
     private final Map<Boolean, BiFunction<String, String, Mono<Boolean>>> VALIDATORS = new HashMap<>(4, 1.0f);
 
     private static final BiFunction<VerifyType, String, String> KEY_WRAPPER = (type, k) -> {
-        if (type != null && isNotBlank(k) && k.length() <= MAX_KEY_LEN)
+        if (isNotNull(type) && isNotBlank(k) && k.length() <= MAX_KEY_LEN)
             return type.identity + PAR_CONCATENATION.identity + k;
 
         throw new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type,key can't be null and key len can't be greater than " + MAX_KEY_LEN);
@@ -165,12 +164,12 @@ public class VerifyServiceImpl implements VerifyService {
     public Mono<String> generate(VerifyType type, String key, Integer length, Duration expire) {
         LOGGER.info("Mono<VerifyPair> generate(VerifyType type, String key, Integer length,  Duration expire) , type = {}, key = {}, length = {}, expire = {}", type, key, length, expire);
 
-        if (type != null) {
-            String v = generateRandom(type.randomType, length != null && length >= MIN_LEN && length <= MAX_LEN ? length : VERIFY_LEN);
+        if (isNotNull(type)) {
+            String v = generateRandom(type.randomType, isNotNull(length) && length >= MIN_LEN && length <= MAX_LEN ? length : VERIFY_LEN);
 
             LOGGER.info("Mono<VerifyPair> generate(RandomType type, int length, Duration expire), key = {}, v = {}", key, v);
 
-            return blueValidator.setKeyValueWithExpire(KEY_WRAPPER.apply(type, isNotBlank(key) ? key : generateRandom(RANDOM_TYPE, KEY_LEN)), v, expire != null ? expire : DEFAULT_DURATION)
+            return blueValidator.setKeyValueWithExpire(KEY_WRAPPER.apply(type, isNotBlank(key) ? key : generateRandom(RANDOM_TYPE, KEY_LEN)), v, isNotNull(expire) ? expire : DEFAULT_DURATION)
                     .flatMap(ignore -> just(v));
         }
 
@@ -204,8 +203,8 @@ public class VerifyServiceImpl implements VerifyService {
         LOGGER.info("Mono<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable), type = {}, key = {}, verify = {}, repeatable = {}",
                 type, key, verify, repeatable);
 
-        return type != null && isNotBlank(key) && isNotBlank(verify) ?
-                VALIDATORS.get(repeatable != null ? repeatable : DEFAULT_REPEATABLE)
+        return isNotNull(type) && isNotBlank(key) && isNotBlank(verify) ?
+                VALIDATORS.get(isNotNull(repeatable) ? repeatable : DEFAULT_REPEATABLE)
                         .apply(KEY_WRAPPER.apply(type, key), verify)
                 :
                 error(() -> new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type or verifyPair can't be null"));

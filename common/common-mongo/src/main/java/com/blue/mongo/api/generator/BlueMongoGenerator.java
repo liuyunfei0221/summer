@@ -13,6 +13,7 @@ import reactor.util.Logger;
 
 import java.util.List;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -110,7 +111,7 @@ public final class BlueMongoGenerator {
      */
     public static MongoClient generateMongoClient(MongoClientSettings mongoClientSettings) {
         LOGGER.info("MongoClient generateMongoClient(MongoClientSettings mongoClientSettings), mongoClientSettings = {}", mongoClientSettings);
-        if (mongoClientSettings == null)
+        if (isNull(mongoClientSettings))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "mongoClientSettings can't be null");
 
         return MongoClients.create(mongoClientSettings);
@@ -136,7 +137,7 @@ public final class BlueMongoGenerator {
      * @param conf
      */
     private static void confAsserter(MongoConf conf) {
-        if (conf == null)
+        if (isNull(conf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         List<AddressAttr> addressAttrs = conf.getAddressAttrs();

@@ -4,6 +4,8 @@ import com.blue.verify.api.conf.CaptchaConf;
 import com.blue.verify.api.conf.CaptchaConfParams;
 import com.blue.verify.common.CaptchaProcessor;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+
 /**
  * captcha processor generator
  *
@@ -19,7 +21,7 @@ public final class BlueCaptchaGenerator {
     }
 
     public static CaptchaProcessor generateCaptchaProcessor(CaptchaConf captchaConf) {
-        return new CaptchaProcessor(captchaConf != null ? captchaConf : DEFAULT_CONF);
+        return new CaptchaProcessor(isNotNull(captchaConf) ? captchaConf : DEFAULT_CONF);
     }
 
 }

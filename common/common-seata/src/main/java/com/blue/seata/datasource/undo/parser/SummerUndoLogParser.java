@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.MapperFeature.PROPAGATE_TRANSIENT_MARKER;
 import static io.seata.common.Constants.DEFAULT_CHARSET;
@@ -80,10 +81,10 @@ public final class SummerUndoLogParser implements UndoLogParser, Initialize {
                     type = jacksonSerializer.type();
                     ser = jacksonSerializer.ser();
                     deser = jacksonSerializer.deser();
-                    if (type != null) {
-                        if (ser != null)
+                    if (isNotNull(type)) {
+                        if (isNotNull(ser))
                             module.addSerializer(type, ser);
-                        if (deser != null)
+                        if (isNotNull(deser))
                             module.addDeserializer(type, deser);
                         LOGGER.info("jackson undo log parser load [{}].", jacksonSerializer.getClass().getName());
                     }

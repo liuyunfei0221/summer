@@ -16,6 +16,7 @@ import reactor.util.Logger;
 
 import java.util.*;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -49,14 +50,14 @@ public final class BlueEsGenerator {
                 .stream().map(esNode -> {
 
                     Server server = esNode.getServer();
-                    if (server == null)
+                    if (isNull(server))
                         throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "server can't be null");
 
                     String serverHost = server.getHost();
                     Integer serverPort = server.getPort();
                     String serverSchema = server.getSchema();
 
-                    if (isBlank(serverHost) || isBlank(serverSchema) || serverPort == null || serverPort < 1)
+                    if (isBlank(serverHost) || isBlank(serverSchema) || isNull(serverPort) || serverPort < 1)
                         throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverHost or serverSchema can't be blank, serverPort can't be null or less than 1");
 
                     HttpHost host = new HttpHost(serverHost, serverPort, serverSchema);
@@ -115,7 +116,7 @@ public final class BlueEsGenerator {
      * @return
      */
     public static ElasticsearchRestTemplate generateElasticsearchTemplate(RestHighLevelClient restHighLevelClient) {
-        if (restHighLevelClient == null)
+        if (isNull(restHighLevelClient))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "restHighLevelClient can't be null");
         return new ElasticsearchRestTemplate(restHighLevelClient);
     }
@@ -126,7 +127,7 @@ public final class BlueEsGenerator {
      * @param conf
      */
     private static void confAsserter(EsConf conf) {
-        if (conf == null)
+        if (isNull(conf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         List<EsNode> esNodes = conf.getEsNodes();

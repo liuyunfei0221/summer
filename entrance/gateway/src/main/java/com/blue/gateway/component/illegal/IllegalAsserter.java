@@ -165,7 +165,7 @@ public final class IllegalAsserter {
      * marker
      */
     private static final Function<IllegalMarkEvent, Mono<Boolean>> ILLEGAL_MARKER = event ->
-            event != null ? MARKERS.get(ofNullable(event.getMark()).orElse(true)).apply(event) : just(false);
+            isNotNull(event) ? MARKERS.get(ofNullable(event.getMark()).orElse(true)).apply(event) : just(false);
 
     /**
      * assert request

@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.constant.base.ResponseElement.TIME_FORMAT_IS_INVALID;
 import static com.blue.base.constant.base.SummerAttr.DATE_TIME_FORMATTER;
 import static com.blue.base.constant.base.SummerAttr.TIME_ZONE;
@@ -71,7 +72,7 @@ public final class TimeUnity {
      * @return
      */
     public static long convertDateToEpochSecond(Date date) {
-        Assert.isTrue(date != null, "date can't be null");
+        Assert.isTrue(isNotNull(date), "date can't be null");
         return date.toInstant().getEpochSecond();
     }
 
@@ -81,7 +82,7 @@ public final class TimeUnity {
      * @return
      */
     public static long convertLocalDateTimeToMilli(LocalDateTime localDateTime) {
-        Assert.isTrue(localDateTime != null, "localDateTime can't be null");
+        Assert.isTrue(isNotNull(localDateTime), "localDateTime can't be null");
         return localDateTime.atZone(ZONE_ID).toInstant().toEpochMilli();
     }
 
@@ -91,7 +92,7 @@ public final class TimeUnity {
      * @return
      */
     public static long convertLocalDateTimeToEpochSecond(LocalDateTime localDateTime) {
-        Assert.isTrue(localDateTime != null, "localDateTime can't be null");
+        Assert.isTrue(isNotNull(localDateTime), "localDateTime can't be null");
         return localDateTime.atZone(ZONE_ID).toInstant().getEpochSecond();
     }
 
@@ -121,7 +122,7 @@ public final class TimeUnity {
      * @return
      */
     public static Date convertLocalDateTimeToDate(LocalDateTime localDateTime) {
-        Assert.isTrue(localDateTime != null, "localDateTime can't be null");
+        Assert.isTrue(isNotNull(localDateTime), "localDateTime can't be null");
         return Date.from(localDateTime.atZone(ZONE_ID).toInstant());
     }
 
@@ -151,7 +152,7 @@ public final class TimeUnity {
      * @return
      */
     public static LocalDateTime convertDateToLocalDateTime(Date date) {
-        Assert.isTrue(date != null, "date can't be null");
+        Assert.isTrue(isNotNull(date), "date can't be null");
         return LocalDateTime.ofInstant(date.toInstant(), ZONE_ID);
     }
 
@@ -215,7 +216,7 @@ public final class TimeUnity {
      * @return
      */
     public static String convertLocalDateTimeToStr(LocalDateTime localDateTime) {
-        Assert.isTrue(localDateTime != null, "localDateTime can't be null");
+        Assert.isTrue(isNotNull(localDateTime), "localDateTime can't be null");
         return localDateTime.format(FORMATTER);
     }
 

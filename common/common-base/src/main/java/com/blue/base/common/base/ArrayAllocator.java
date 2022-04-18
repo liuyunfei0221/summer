@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static java.lang.Long.valueOf;
 import static java.lang.Math.round;
@@ -27,7 +28,7 @@ public final class ArrayAllocator {
     private static final int THRESHOLD = 1 << 8;
 
     private static <T> void checkArgs(List<T> list, int par) {
-        if (list == null || list.size() < 1 || par < 1)
+        if (isNull(list) || list.size() < 1 || par < 1)
             throw new BlueException(BAD_REQUEST);
     }
 

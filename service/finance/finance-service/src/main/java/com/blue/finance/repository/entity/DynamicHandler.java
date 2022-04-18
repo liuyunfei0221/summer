@@ -2,6 +2,8 @@ package com.blue.finance.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * dynamic handler config entity
  *
@@ -41,7 +43,7 @@ public final class DynamicHandler implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = isNull(name) ? null : name.trim();
     }
 
     public String getDescription() {
@@ -49,7 +51,7 @@ public final class DynamicHandler implements Serializable {
     }
 
     public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+        this.description = isNull(description) ? null : description.trim();
     }
 
     public String getHandlerBean() {
@@ -57,7 +59,7 @@ public final class DynamicHandler implements Serializable {
     }
 
     public void setHandlerBean(String handlerBean) {
-        this.handlerBean = handlerBean == null ? null : handlerBean.trim();
+        this.handlerBean = isNull(handlerBean) ? null : handlerBean.trim();
     }
 
     public Long getCreateTime() {

@@ -1,5 +1,6 @@
 package com.blue.database.temp;
 
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
 import com.blue.database.api.conf.*;
 import com.blue.database.common.DatabaseForceAlgorithm;
@@ -32,6 +33,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.MathProcessor.assertDisorderIntegerContinuous;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.*;
@@ -63,7 +65,7 @@ public final class BlueDataAccessGenerator {
      * @return
      */
     public static DataSource generateDataSource(DataAccessConf dataAccessConf, IdentityConf identityConf) {
-        if (dataAccessConf == null || identityConf == null)
+        if (isNull(dataAccessConf) || isNull(identityConf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingConf or identityConf can't be null");
 
         try {
@@ -188,7 +190,7 @@ public final class BlueDataAccessGenerator {
     @SuppressWarnings("AlibabaMethodTooLong")
     private static DataAccessConfElements generateDataConfAttr(DataAccessConf dataAccessConf, IdentityConf identityConf) {
         //prepare
-        if (dataAccessConf == null || identityConf == null)
+        if (isNull(dataAccessConf) || isNull(identityConf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingConf or shardingIdentityConf can't be null");
 
         int shardingSize = ofNullable(dataAccessConf.getShardingDatabases()).map(List::size).orElse(0);
@@ -227,7 +229,7 @@ public final class BlueDataAccessGenerator {
      */
     @SuppressWarnings("AlibabaMethodTooLong")
     private static void processShardingDb(ShardingRuleConfiguration shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf dataAccessConf, IdentityConf identityConf) {
-        if (shardingRuleConfiguration == null || dataSources == null || existDatabases == null || dataAccessConf == null || identityConf == null)
+        if (isNull(shardingRuleConfiguration) || isNull(dataSources) || isNull(existDatabases) || isNull(dataAccessConf) || isNull(identityConf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingRuleConfiguration or dataSources or existDatabases or dataAccessConf or identityConf can't be null");
 
         List<ShardingDatabaseAttr> shardingDatabases = dataAccessConf.getShardingDatabases();
@@ -274,7 +276,7 @@ public final class BlueDataAccessGenerator {
 
             assertIndexList.add(dataBaseIndex);
 
-            if (logicDataBaseName != null) {
+            if (isNotNull(logicDataBaseName)) {
                 if (!tempLogicDataBaseName.equals(logicDataBaseName))
                     throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "sharding db in same micro service must has the same prefix, " + tempLogicDataBaseName + "/" + logicDataBaseName);
             } else {
@@ -297,14 +299,14 @@ public final class BlueDataAccessGenerator {
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "The database index set should be a continuous number starting from 0");
 
         Integer shardingTableSizePerDataBase = dataAccessConf.getShardingTableSizePerDataBase();
-        if (shardingTableSizePerDataBase == null || shardingTableSizePerDataBase < 1 || shardingTableSizePerDataBase > MAX_WORKER_ID.max)
+        if (isNull(shardingTableSizePerDataBase) || shardingTableSizePerDataBase < 1 || shardingTableSizePerDataBase > MAX_WORKER_ID.max)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "the number of table splits in each database cannot be less than 1 or greater than the maximum number of machines in each data center -> " + MAX_WORKER_ID.max);
 
         int maxDataBaseIndex = shardingSize - 1;
         int maxTableIndex = shardingTableSizePerDataBase - 1;
 
         Integer dataCenter = identityConf.getDataCenter();
-        if (dataCenter == null || dataCenter < 0)
+        if (isNull(dataCenter) || dataCenter < 0)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dataCenter can't be null or less than 0");
 
         List<IdentityToShardingMappingAttr> dataCenterToDatabaseMappings = dataAccessConf.getDataCenterToDatabaseMappings();
@@ -323,7 +325,7 @@ public final class BlueDataAccessGenerator {
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxDbMappingIndex can't be greater than maxDataBaseIndex, maxDbMappingIndex = " + maxDbMappingIndex + ", maxDataBaseIndex = " + maxDataBaseIndex);
 
         Integer worker = identityConf.getWorker();
-        if (worker == null || worker < 0)
+        if (isNull(worker) || worker < 0)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "worker can't be null or less than 0");
 
         List<IdentityToShardingMappingAttr> workerToTableMappings = dataAccessConf.getWorkerToTableMappings();
@@ -350,11 +352,11 @@ public final class BlueDataAccessGenerator {
         shardingRuleConfiguration.getTableRuleConfigs().addAll(
                 shardingTables.stream().distinct().map(tableAttr -> {
                     String logicTableName = tableAttr.getTableName();
-                    if (logicTableName == null || "".equals(logicTableName))
+                    if (isBlank(logicTableName))
                         throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "logicTableName can't be blank");
 
                     String shardingColumn = tableAttr.getShardingColumn();
-                    if (shardingColumn == null || "".equals(shardingColumn))
+                    if (isBlank(shardingColumn))
                         throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingColumn can't be blank");
 
                     String expression = shardingLogicDataBaseName + "_$->{0.." + maxDataBaseIndex + "}." + logicTableName + "_$->{0.." + maxTableIndex + "}";
@@ -372,11 +374,11 @@ public final class BlueDataAccessGenerator {
                         shardingRuleConfiguration.getTableRuleConfigs().addAll(
                                 fwts.stream().distinct().map(tableAttr -> {
                                     String logicTableName = tableAttr.getTableName();
-                                    if (logicTableName == null || "".equals(logicTableName))
+                                    if (isBlank(logicTableName))
                                         throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "logicTableName can't be blank");
 
                                     String shardingColumn = tableAttr.getShardingColumn();
-                                    if (shardingColumn == null || "".equals(shardingColumn))
+                                    if (isNull(shardingColumn))
                                         throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingColumn can't be blank");
 
                                     String expression = shardingLogicDataBaseName + "_$->{0.." + maxDataBaseIndex + "}." + logicTableName + "_$->{0.." + maxTableIndex + "}";
@@ -398,7 +400,7 @@ public final class BlueDataAccessGenerator {
                 .ifPresent(sbts ->
                         shardingRuleConfiguration.getBroadcastTables().addAll(
                                 sbts.stream()
-                                        .filter(tb -> tb != null && !"".equals(tb))
+                                        .filter(BlueChecker::isNotBlank)
                                         .distinct()
                                         .collect(toList())
                         ));
@@ -414,7 +416,7 @@ public final class BlueDataAccessGenerator {
      * @param identityConf
      */
     private static void processSingleDb(ShardingRuleConfiguration shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf dataAccessConf, IdentityConf identityConf) {
-        if (shardingRuleConfiguration == null || dataSources == null || existDatabases == null || dataAccessConf == null || identityConf == null)
+        if (isNull(shardingRuleConfiguration) || isNull(dataSources) || isNull(existDatabases) || isNull(dataAccessConf) || isNull(identityConf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingRuleConfiguration or dataSources or existDatabases or dataAccessConf or identityConf can't be null");
 
         List<SingleDatabaseWithTablesAttr> singleDatabasesWithTables = dataAccessConf.getSingleDatabasesWithTables();
@@ -466,7 +468,7 @@ public final class BlueDataAccessGenerator {
      * @return
      */
     private static String parseDbName(ShardingDatabaseAttr attr) {
-        if (attr == null)
+        if (isNull(attr))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "attr can't be null");
 
         String[] urlParts;
@@ -496,7 +498,7 @@ public final class BlueDataAccessGenerator {
         private final Properties props;
 
         DataAccessConfElements(Map<String, DataSource> dataSources, ShardingRuleConfiguration shardingRuleConfiguration, Properties props) {
-            if (dataSources == null || shardingRuleConfiguration == null || props == null)
+            if (isNull(dataSources) || isNull(shardingRuleConfiguration) || isNull(props))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dataSources or shardingRuleConfiguration or props can't be null");
 
             this.dataSources = dataSources;

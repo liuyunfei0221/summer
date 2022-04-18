@@ -99,7 +99,7 @@ public final class BlueIdentityProcessor {
      * key gen
      */
     private final Function<Class<?>, String> KEY_GEN = entityClz -> {
-        if (entityClz != null)
+        if (isNotNull(entityClz))
             return (handlerKeyPre + entityClz.getName().intern()).intern();
 
         throw new IdentityException("entityClz can't be null");

@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.SummerAttr.*;
 import static com.blue.identity.constant.SnowflakeBits.*;
@@ -137,15 +138,15 @@ public final class SnowflakeIdentityGenerator {
         this.dataCenterWithWorkerBitsMask = (dataCenter << (workerBits + sequenceBits)) | (worker << sequenceBits);
 
         this.executorService = snowIdGenParam.getExecutorService();
-        if (this.executorService == null)
+        if (isNull(this.executorService))
             throw new IdentityException("executorService can't be null");
 
         this.secondsRecorder = snowIdGenParam.getSecondsRecorder();
-        this.notRecord = this.secondsRecorder == null;
+        this.notRecord = isNull(this.secondsRecorder);
         this.recordInterval = ofNullable(snowIdGenParam.getRecordInterval()).filter(ri -> ri >= 1L).orElse(1L);
 
         this.maximumTimeAlarm = snowIdGenParam.getMaximumTimeAlarm();
-        this.notAlarm = this.maximumTimeAlarm == null;
+        this.notAlarm = isNull(this.maximumTimeAlarm);
 
         ZoneId zoneId = ZoneId.of(TIME_ZONE);
         LOGGER.info(

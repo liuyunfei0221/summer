@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_INSTANCE_CIRCUIT_BREAKER;
 import static io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator.of;
@@ -106,7 +107,7 @@ public final class BlueInstanceCircuitBreakerFilter implements GlobalFilter, Ord
     private final Function<String, CircuitBreaker> CIRCUIT_BREAKER_GETTER = name -> {
         CircuitBreaker circuitBreaker = CIRCUIT_BREAKER_HOLDER.get(name);
 
-        if (circuitBreaker != null) {
+        if (isNotNull(circuitBreaker)) {
             return circuitBreaker;
         }
 

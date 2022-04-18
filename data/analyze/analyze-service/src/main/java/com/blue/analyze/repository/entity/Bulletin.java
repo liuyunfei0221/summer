@@ -2,6 +2,8 @@ package com.blue.analyze.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * bulletin/test entity
  *
@@ -47,7 +49,7 @@ public class Bulletin implements Serializable {
     }
 
     public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
+        this.title = isNull(title) ? null : title.trim();
     }
 
     public String getContent() {
@@ -55,7 +57,7 @@ public class Bulletin implements Serializable {
     }
 
     public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
+        this.content = isNull(content) ? null : content.trim();
     }
 
     public String getLink() {
@@ -63,7 +65,7 @@ public class Bulletin implements Serializable {
     }
 
     public void setLink(String link) {
-        this.link = link == null ? null : link.trim();
+        this.link = isNull(link) ? null : link.trim();
     }
 
     public Integer getType() {

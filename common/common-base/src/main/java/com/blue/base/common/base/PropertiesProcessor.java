@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -37,7 +38,7 @@ public final class PropertiesProcessor {
     public static Properties loadProp(File file) {
         Properties prop = new Properties();
 
-        if (file != null && file.isFile() && file.canRead()) {
+        if (isNotNull(file) && file.isFile() && file.canRead()) {
             try (InputStream inputStream = new FileInputStream(file)) {
                 prop.load(inputStream);
                 LOGGER.info("Properties loadProp(File file), prop = {}", prop);

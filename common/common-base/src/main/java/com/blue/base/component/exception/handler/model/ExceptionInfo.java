@@ -5,6 +5,7 @@ import com.blue.base.model.exps.BlueException;
 
 import java.util.Arrays;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 
 /**
@@ -27,7 +28,7 @@ public final class ExceptionInfo {
     }
 
     public ExceptionInfo(BlueException blueException) {
-        if (blueException != null) {
+        if (isNotNull(blueException)) {
             this.status = blueException.getStatus();
             this.code = blueException.getCode();
             this.replacements = blueException.getReplacements();
@@ -39,7 +40,7 @@ public final class ExceptionInfo {
     }
 
     public ExceptionInfo(BlueException blueException, String[] replacements) {
-        if (blueException != null) {
+        if (isNotNull(blueException)) {
             this.status = blueException.getStatus();
             this.code = blueException.getCode();
         } else {
@@ -50,7 +51,7 @@ public final class ExceptionInfo {
     }
 
     public ExceptionInfo(ResponseElement responseElement) {
-        if (responseElement != null) {
+        if (isNotNull(responseElement)) {
             this.status = responseElement.status;
             this.code = responseElement.code;
         } else {
@@ -62,7 +63,7 @@ public final class ExceptionInfo {
     }
 
     public ExceptionInfo(ResponseElement responseElement, String[] replacements) {
-        if (responseElement != null) {
+        if (isNotNull(responseElement)) {
             this.status = responseElement.status;
             this.code = responseElement.code;
         } else {
@@ -74,14 +75,14 @@ public final class ExceptionInfo {
     }
 
     public ExceptionInfo(Integer status, Integer code) {
-        this.status = status != null ? status : INTERNAL_SERVER_ERROR.code;
-        this.code = code != null ? code : INTERNAL_SERVER_ERROR.code;
+        this.status = isNotNull(status) ? status : INTERNAL_SERVER_ERROR.code;
+        this.code = isNotNull(code) ? code : INTERNAL_SERVER_ERROR.code;
         this.replacements = null;
     }
 
     public ExceptionInfo(Integer status, Integer code, String[] replacements) {
-        this.status = status != null ? status : INTERNAL_SERVER_ERROR.code;
-        this.code = code != null ? code : INTERNAL_SERVER_ERROR.code;
+        this.status = isNotNull(status) ? status : INTERNAL_SERVER_ERROR.code;
+        this.code = isNotNull(code) ? code : INTERNAL_SERVER_ERROR.code;
         this.replacements = replacements;
     }
 

@@ -11,6 +11,7 @@ import java.security.Key;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getDecoder;
@@ -29,16 +30,16 @@ public final class AesProcessor {
 
     private static final Logger LOGGER = getLogger(AesProcessor.class);
 
-    private static final transient int KEY_LEN = 128;
+    private static final int KEY_LEN = 128;
 
-    private static final transient String RAN_ALGORITHM = "SHA1PRNG";
-    private static final transient String ALGORITHM = "AES";
+    private static final String RAN_ALGORITHM = "SHA1PRNG";
+    private static final String ALGORITHM = "AES";
 
     private final transient Cipher ENCRYPT;
     private final transient Cipher DECRYPT;
 
-    private static final transient Base64.Encoder ENCODER = getEncoder();
-    private static final transient Base64.Decoder DECODER = getDecoder();
+    private static final Base64.Encoder ENCODER = getEncoder();
+    private static final Base64.Decoder DECODER = getDecoder();
 
     public AesProcessor(String salt) {
         if (isBlank(salt))
@@ -109,7 +110,7 @@ public final class AesProcessor {
      * @return
      */
     public byte[] encrypt(byte[] originalData) {
-        if (originalData == null)
+        if (isNull(originalData))
             throw new BlueException(EMPTY_PARAM);
 
         try {
@@ -127,7 +128,7 @@ public final class AesProcessor {
      * @return
      */
     public byte[] decrypt(byte[] encryptData) {
-        if (encryptData == null)
+        if (isNull(encryptData))
             throw new BlueException(EMPTY_PARAM);
 
         try {

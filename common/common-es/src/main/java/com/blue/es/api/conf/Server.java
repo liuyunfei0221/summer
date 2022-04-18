@@ -2,6 +2,8 @@ package com.blue.es.api.conf;
 
 import java.util.Objects;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * es server
  *
@@ -54,7 +56,7 @@ public final class Server {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (isNull(o) || getClass() != o.getClass()) return false;
         Server server = (Server) o;
         return Objects.equals(host, server.host) && Objects.equals(port, server.port) && Objects.equals(schema, server.schema);
     }

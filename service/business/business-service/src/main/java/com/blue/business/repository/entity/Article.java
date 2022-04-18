@@ -4,6 +4,8 @@ import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * article entity
  *
@@ -72,7 +74,7 @@ public final class Article implements Serializable {
     }
 
     public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
+        this.title = isNull(title) ? null : title.trim();
     }
 
     public String getAuthor() {
@@ -80,7 +82,7 @@ public final class Article implements Serializable {
     }
 
     public void setAuthor(String author) {
-        this.author = author == null ? null : author.trim();
+        this.author = isNull(author) ? null : author.trim();
     }
 
     public Long getFavorites() {
@@ -152,6 +154,6 @@ public final class Article implements Serializable {
     }
 
     public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
+        this.content = isNull(content) ? null : content.trim();
     }
 }

@@ -4,6 +4,7 @@ import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
@@ -47,17 +48,17 @@ public final class MemberPayload implements Serializable {
     private final String loginTime;
 
     public MemberPayload(String gamma, String keyId, String id, String credentialType, String deviceType, String loginTime) {
-        if (gamma == null || "".equals(gamma))
+        if (isBlank(gamma))
             throw new BlueException(BAD_REQUEST);
-        if (keyId == null || "".equals(keyId))
+        if (isBlank(keyId))
             throw new BlueException(BAD_REQUEST);
-        if (id == null || "".equals(id))
+        if (isBlank(id))
             throw new BlueException(BAD_REQUEST);
-        if (credentialType == null || "".equals(credentialType))
+        if (isBlank(credentialType))
             throw new BlueException(BAD_REQUEST);
-        if (deviceType == null || "".equals(deviceType))
+        if (isBlank(deviceType))
             throw new BlueException(BAD_REQUEST);
-        if (loginTime == null || "".equals(loginTime))
+        if (isBlank(loginTime))
             throw new BlueException(BAD_REQUEST);
 
         this.gamma = gamma;

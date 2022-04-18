@@ -2,6 +2,8 @@ package com.blue.business.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * link entity
  *
@@ -75,7 +77,7 @@ public final class Link implements Serializable {
     }
 
     public void setLinkUrl(String linkUrl) {
-        this.linkUrl = linkUrl == null ? null : linkUrl.trim();
+        this.linkUrl = isNull(linkUrl) ? null : linkUrl.trim();
     }
 
     public String getContent() {
@@ -83,7 +85,7 @@ public final class Link implements Serializable {
     }
 
     public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
+        this.content = isNull(content) ? null : content.trim();
     }
 
     public Long getFavorites() {

@@ -2,6 +2,8 @@ package com.blue.finance.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * dynamic resource entity
  *
@@ -65,7 +67,7 @@ public final class DynamicResource implements Serializable {
     }
 
     public void setRequestMethod(String requestMethod) {
-        this.requestMethod = requestMethod == null ? null : requestMethod.trim();
+        this.requestMethod = isNull(requestMethod) ? null : requestMethod.trim();
     }
 
     public Long getUriPlaceholder() {
@@ -81,7 +83,7 @@ public final class DynamicResource implements Serializable {
     }
 
     public void setContentType(String contentType) {
-        this.contentType = contentType == null ? null : contentType.trim();
+        this.contentType = isNull(contentType) ? null : contentType.trim();
     }
 
     public String getName() {
@@ -89,7 +91,7 @@ public final class DynamicResource implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = isNull(name) ? null : name.trim();
     }
 
     public String getDescription() {
@@ -97,7 +99,7 @@ public final class DynamicResource implements Serializable {
     }
 
     public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+        this.description = isNull(description) ? null : description.trim();
     }
 
     public Long getCreateTime() {

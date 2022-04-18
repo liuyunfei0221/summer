@@ -8,8 +8,7 @@ import reactor.util.Logger;
 
 import java.util.Properties;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isEmpty;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static jakarta.mail.Session.getInstance;
 import static reactor.util.Loggers.getLogger;
@@ -60,7 +59,7 @@ public final class ReaderComponentProcessor {
      * @return
      */
     public static Store generateStore(Session session) {
-        if (session == null)
+        if (isNull(session))
             throw new RuntimeException("session can't be null");
 
         try {
@@ -82,7 +81,7 @@ public final class ReaderComponentProcessor {
      * @return
      */
     public static Folder openFolder(Store store, String folderName) {
-        if (store == null || isBlank(folderName))
+        if (isNull(store) || isBlank(folderName))
             throw new RuntimeException("store or mailReaderConf can't be null");
 
         try {
@@ -106,7 +105,7 @@ public final class ReaderComponentProcessor {
      * @param conf
      */
     public static void confAsserter(MailReaderConf conf) {
-        if (conf == null)
+        if (isNull(conf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
 
         if (isBlank(conf.getUser()))
@@ -122,7 +121,7 @@ public final class ReaderComponentProcessor {
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "folder name can't be empty");
 
         Integer maxWaitingMillisForRefresh = conf.getMaxWaitingMillisForRefresh();
-        if (maxWaitingMillisForRefresh == null || maxWaitingMillisForRefresh < 1)
+        if (isNull(maxWaitingMillisForRefresh) || maxWaitingMillisForRefresh < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxWaitingMillisForRefresh can't be null or empty");
     }
 

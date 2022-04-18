@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
@@ -37,12 +38,12 @@ public final class MathProcessor {
         Integer previous = null;
 
         for (Integer i : sorted) {
-            if (i == null) {
+            if (isNull(i)) {
                 LOGGER.info("boolean assertDisorderIntegerContinuous(Collection<Integer> collection), collection has null element");
                 return false;
             }
 
-            if (previous == null) {
+            if (isNull(previous)) {
                 previous = i;
             } else {
                 if ((i - previous) != 1)
@@ -66,12 +67,12 @@ public final class MathProcessor {
         Long previous = null;
 
         for (Long l : sorted) {
-            if (l == null) {
+            if (isNull(l)) {
                 LOGGER.info("boolean assertDisorderLongContinuous(Collection<Long> collection), collection has null element");
                 return false;
             }
 
-            if (previous == null) {
+            if (isNull(previous)) {
                 previous = l;
             } else {
                 if ((l - previous) != 1L)

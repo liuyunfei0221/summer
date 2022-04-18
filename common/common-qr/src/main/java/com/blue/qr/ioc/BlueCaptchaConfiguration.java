@@ -15,6 +15,7 @@ import static com.blue.qr.api.generator.BlueQrCoderGenerator.generateQrCoder;
  * @date 2021/9/9
  * @apiNote
  */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ConditionalOnBean(value = {QrConf.class})
 @Configuration
 public class BlueCaptchaConfiguration {

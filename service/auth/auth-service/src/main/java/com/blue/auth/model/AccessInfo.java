@@ -4,6 +4,8 @@ import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
@@ -35,11 +37,11 @@ public final class AccessInfo implements Serializable {
     }
 
     public AccessInfo(String jwt, Long roleId, String pubKey) {
-        if (jwt == null || "".equals(jwt))
+        if (isBlank(jwt))
             throw new BlueException(BAD_REQUEST);
-        if (roleId == null || roleId < 1L)
+        if (isNull(roleId) || roleId < 1L)
             throw new BlueException(BAD_REQUEST);
-        if (pubKey == null || "".equals(pubKey))
+        if (isBlank(pubKey))
             throw new BlueException(BAD_REQUEST);
 
         this.jwt = jwt;
@@ -52,7 +54,7 @@ public final class AccessInfo implements Serializable {
     }
 
     public void setJwt(String jwt) {
-        if (jwt == null || "".equals(jwt))
+        if (isBlank(jwt))
             throw new BlueException(BAD_REQUEST);
 
         this.jwt = jwt;
@@ -63,7 +65,7 @@ public final class AccessInfo implements Serializable {
     }
 
     public void setRoleId(Long roleId) {
-        if (roleId == null || roleId < 1L)
+        if (isNull(roleId) || roleId < 1L)
             throw new BlueException(BAD_REQUEST);
 
         this.roleId = roleId;
@@ -74,7 +76,7 @@ public final class AccessInfo implements Serializable {
     }
 
     public void setPubKey(String pubKey) {
-        if (pubKey == null || "".equals(pubKey))
+        if (isBlank(pubKey))
             throw new BlueException(BAD_REQUEST);
 
         this.pubKey = pubKey;

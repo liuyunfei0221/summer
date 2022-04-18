@@ -2,6 +2,8 @@ package com.blue.business.repository.entity;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * comment entity
  *
@@ -129,7 +131,7 @@ public final class Comment implements Serializable {
     }
 
     public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
+        this.content = isNull(content) ? null : content.trim();
     }
 
 }

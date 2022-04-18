@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.google.zxing.BarcodeFormat.QR_CODE;
 import static com.google.zxing.DecodeHintType.PURE_BARCODE;
@@ -101,7 +102,7 @@ public final class QrCoder {
      * @return
      */
     public static String parseCode(byte[] qrData) {
-        if (qrData == null || qrData.length < 1)
+        if (isNull(qrData) || qrData.length < 1)
             throw new BlueException(BAD_REQUEST);
 
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(qrData);
@@ -124,7 +125,7 @@ public final class QrCoder {
      * @return
      */
     public byte[] generateCodeWithoutLogo(String content) {
-        if (content == null || "".equals(content))
+        if (isNull(content) || "".equals(content))
             throw new BlueException(BAD_REQUEST);
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -149,10 +150,10 @@ public final class QrCoder {
      * @return
      */
     public byte[] generateCodeWithLogo(String content, byte[] logoData) {
-        if (content == null || "".equals(content))
+        if (isNull(content) || "".equals(content))
             throw new BlueException(BAD_REQUEST);
 
-        if (logoData == null || logoData.length < 1)
+        if (isNull(logoData) || logoData.length < 1)
             throw new BlueException(BAD_REQUEST);
 
         try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(logoData);

@@ -185,7 +185,7 @@ public class PortalServiceImpl implements PortalService {
      * list bulletin infos from local cache
      */
     private final Function<BulletinType, Mono<List<BulletinInfo>>> LOCAL_CACHE_PORTAL_FUNC = type -> {
-        if (type == null)
+        if (isNull(type))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null");
 
         return justOrEmpty(LOCAL_CACHE.get(type, REDIS_CACHE_PORTAL_GETTER_WITH_CACHE)).switchIfEmpty(just(emptyList()));

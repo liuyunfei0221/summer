@@ -1,5 +1,8 @@
 package com.blue.base.common.base;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * original throwable getter
  *
@@ -15,12 +18,12 @@ public final class OriginalThrowableGetter {
      * @return
      */
     public static Throwable getOriginalThrowable(Throwable throwable) {
-        if (throwable == null)
+        if (isNull(throwable))
             throw new RuntimeException("throwable can't be null");
 
         Throwable original = throwable;
         Throwable cause;
-        while ((cause = original.getCause()) != null)
+        while (isNotNull(cause = original.getCause()))
             original = cause;
 
         return original;

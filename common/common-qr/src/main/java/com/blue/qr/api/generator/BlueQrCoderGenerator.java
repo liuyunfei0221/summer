@@ -4,6 +4,8 @@ import com.blue.qr.api.conf.QrConfParams;
 import com.blue.qr.api.conf.QrConf;
 import com.blue.qr.common.QrCoder;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+
 /**
  * qrcoder generator
  *
@@ -30,7 +32,7 @@ public final class BlueQrCoderGenerator {
      * @return
      */
     public static QrCoder generateQrCoder(QrConf qrConf) {
-        return new QrCoder(qrConf != null ? qrConf : DEFAULT_CONF);
+        return new QrCoder(isNotNull(qrConf) ? qrConf : DEFAULT_CONF);
     }
 
 }

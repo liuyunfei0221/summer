@@ -6,6 +6,7 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
@@ -44,7 +45,7 @@ public final class WithdrawInfo implements Serializable, Asserter {
 
     @Override
     public void asserts() {
-        if (amount == null || amount < 0L || isInvalidIdentity(bankCardId))
+        if (isNull(amount) || amount < 0L || isInvalidIdentity(bankCardId))
             throw new BlueException(BAD_REQUEST);
     }
 

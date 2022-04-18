@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.mail.common.ReaderComponentProcessor.*;
@@ -85,7 +86,7 @@ public final class MailReader {
     };
 
     private final Predicate<Throwable> REFRESH_PREDICATE = throwable ->
-            throwable != null && throwableForRetry.contains(getOriginalThrowable(throwable).getClass().getName());
+            isNotNull(throwable) && throwableForRetry.contains(getOriginalThrowable(throwable).getClass().getName());
 
 
     public void parseMessage(Message message) {

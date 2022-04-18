@@ -17,6 +17,7 @@ import reactor.util.Logger;
 import java.time.Duration;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
 import static io.netty.channel.ChannelOption.TCP_NODELAY;
@@ -43,7 +44,7 @@ public final class BlueReactRestGenerator {
     private static final boolean DAEMON = true;
 
     public static WebClient generateWebClient(ReactRestConf reactRestConf) {
-        if (reactRestConf == null)
+        if (isNull(reactRestConf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactRestConf can't be null");
 
         LOGGER.info("WebClient createWebClient(ReactRestConf reactRestConf), reactRestConf = {}", reactRestConf);
@@ -64,8 +65,8 @@ public final class BlueReactRestGenerator {
                         .responseTimeout(Duration.of(reactRestConf.getReadTimeoutMillis(), MILLIS))
                         .doOnConnected(
                                 connection -> connection
-                                        .addHandler(new ReadTimeoutHandler(reactRestConf.getReadTimeoutMillis(), MILLISECONDS))
-                                        .addHandler(new WriteTimeoutHandler(reactRestConf.getWriteTimeoutMillis(), MILLISECONDS)));
+                                        .addHandlerFirst(new ReadTimeoutHandler(reactRestConf.getReadTimeoutMillis(), MILLISECONDS))
+                                        .addHandlerFirst(new WriteTimeoutHandler(reactRestConf.getWriteTimeoutMillis(), MILLISECONDS)));
 
         ReactorClientHttpConnector reactorClientHttpConnector = new ReactorClientHttpConnector(reactorResourceFactory, mapper);
 

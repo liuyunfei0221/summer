@@ -22,6 +22,7 @@ import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.database.api.generator.BlueDataAccessGenerator.generateTxManager;
 import static java.util.List.of;
@@ -94,15 +95,15 @@ public class BlueTransactionConfiguration {
      */
     private static void assertConf(TransConf conf) {
         Isolation isolation = conf.getIsolation();
-        if (isolation == null)
+        if (isNull(isolation))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "isolation can't be null");
 
         Propagation propagation = conf.getPropagation();
-        if (propagation == null)
+        if (isNull(propagation))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "propagation can't be null");
 
         Integer transTimeout = conf.getTransTimeout();
-        if (transTimeout == null || transTimeout < 1)
+        if (isNull(transTimeout) || transTimeout < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "transTimeout can't be null or less than 1");
 
         List<String> methodPreWithTrans = conf.getMethodPreWithTrans();

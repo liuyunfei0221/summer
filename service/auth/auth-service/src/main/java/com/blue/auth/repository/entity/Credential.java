@@ -4,6 +4,8 @@ import com.blue.base.constant.auth.CredentialType;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * credential entity
  *
@@ -65,7 +67,7 @@ public final class Credential implements Serializable {
     }
 
     public void setCredential(String credential) {
-        this.credential = credential == null ? null : credential.trim();
+        this.credential = isNull(credential) ? null : credential.trim();
     }
 
     public String getType() {
@@ -73,7 +75,7 @@ public final class Credential implements Serializable {
     }
 
     public void setType(String type) {
-        this.type = type == null ? null : type.trim();
+        this.type = isNull(type) ? null : type.trim();
     }
 
     public String getAccess() {
@@ -81,7 +83,7 @@ public final class Credential implements Serializable {
     }
 
     public void setAccess(String access) {
-        this.access = access == null ? null : access.trim();
+        this.access = isNull(access) ? null : access.trim();
     }
 
     public Long getMemberId() {
@@ -97,7 +99,7 @@ public final class Credential implements Serializable {
     }
 
     public void setExtra(String extra) {
-        this.extra = extra == null ? null : extra.trim();
+        this.extra = isNull(extra) ? null : extra.trim();
     }
 
     public Integer getStatus() {

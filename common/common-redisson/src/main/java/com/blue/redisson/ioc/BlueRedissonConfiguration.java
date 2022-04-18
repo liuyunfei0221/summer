@@ -17,7 +17,7 @@ import static reactor.util.Loggers.getLogger;
  * @date 2021/8/24
  * @apiNote
  */
-@SuppressWarnings({"AlibabaRemoveCommentedCode"})
+@SuppressWarnings({"AlibabaRemoveCommentedCode", "SpringJavaInjectionPointsAutowiringInspection"})
 @ConditionalOnBean(value = RedissonConf.class)
 @Configuration
 public class BlueRedissonConfiguration {

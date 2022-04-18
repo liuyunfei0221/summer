@@ -24,6 +24,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
@@ -120,7 +121,7 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
 
         DynamicEndPointHandler dynamicEndPointHandler = placeHolderHandlerMapping.get(DYNAMIC_KEY_GENERATOR.apply(maybePlaceholder, serverRequest.methodName()));
 
-        if (dynamicEndPointHandler != null)
+        if (isNotNull(dynamicEndPointHandler))
             return dynamicEndPointHandler;
 
         throw new BlueException(INTERNAL_SERVER_ERROR);

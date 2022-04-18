@@ -6,6 +6,7 @@ import net.openhft.affinity.AffinityThreadFactory;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.util.Optional.ofNullable;
@@ -50,15 +51,15 @@ public final class SchedulerGenerator {
      */
     private static void assertConf(SchedulerConf schedulerConf) {
         Integer threadCap = schedulerConf.getThreadCap();
-        if (threadCap == null || threadCap < 1)
+        if (isNull(threadCap) || threadCap < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "threadCap can't be null or less than 1");
 
         Integer queuedTaskCap = schedulerConf.getQueuedTaskCap();
-        if (queuedTaskCap == null || queuedTaskCap < 1)
+        if (isNull(queuedTaskCap) || queuedTaskCap < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "queuedTaskCap can't be null or less than 1");
 
         Integer ttlSeconds = schedulerConf.getTtlSeconds();
-        if (ttlSeconds == null || ttlSeconds < 1L)
+        if (isNull(ttlSeconds) || ttlSeconds < 1L)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "ttlSeconds can't be null or less than 1");
     }
 

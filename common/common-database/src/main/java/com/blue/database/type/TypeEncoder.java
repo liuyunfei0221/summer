@@ -7,28 +7,29 @@ import java.util.List;
 import java.util.Properties;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.loadProp;
 
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 final class TypeEncoder {
 
-    private static final transient AesProcessor AES_PROCESSOR;
+    private static final AesProcessor AES_PROCESSOR;
 
     /**
      * data prop location
      */
-    private static final transient String
+    private static final String
             MESSAGES_URI = "classpath:config/data.properties";
 
     /**
      * salt key
      */
-    private static final transient String SALT_KEY = "salt";
+    private static final String SALT_KEY = "salt";
 
     static {
         List<File> files = getFiles(MESSAGES_URI, false);
-        if (files == null || files.size() < 1)
+        if (isEmpty(files))
             throw new RuntimeException("data.properties is not exist");
 
         Properties properties = loadProp(files.get(0));

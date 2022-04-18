@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.ConstantProcessor.getMediaTypeByIdentity;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
@@ -63,7 +64,7 @@ public class BlueDynamicRoute {
         String requestMethod = dynamicResource.getRequestMethod().intern().toUpperCase().intern();
         Long uriPlaceholder = dynamicResource.getUriPlaceholder();
 
-        if (uriPlaceholder == null)
+        if (isNull(uriPlaceholder))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uriPlaceholder can't be null");
 
         switch (requestMethod) {

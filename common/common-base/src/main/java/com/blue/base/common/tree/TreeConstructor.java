@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -42,8 +44,8 @@ public interface TreeConstructor<T> {
         TreeNode<T> pNode;
         List<TreeNode<T>> pChildren;
         for (TreeNode<T> cNode : nodes) {
-            if ((pIdentity = cNode.getParentIdentity()) != null && (pNode = mapping.get(pIdentity)) != null) {
-                if ((pChildren = pNode.getChildren()) == null) {
+            if (isNotNull(pIdentity = cNode.getParentIdentity()) && isNotNull(pNode = mapping.get(pIdentity))) {
+                if (isNull(pChildren = pNode.getChildren())) {
                     pChildren = new LinkedList<>();
                     pNode.setChildren(pChildren);
                 }

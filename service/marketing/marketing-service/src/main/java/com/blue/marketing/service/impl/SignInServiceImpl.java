@@ -25,8 +25,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -96,7 +95,7 @@ public class SignInServiceImpl implements SignInService {
     private static final String PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity;
 
     private static final Function<Reward, SignInReward> REWARD_CONVERTER = r ->
-            new SignInReward(r != null ? new RewardInfo(r.getId(), r.getName(), r.getDetail(), r.getLink()) : null);
+            new SignInReward(isNotNull(r) ? new RewardInfo(r.getId(), r.getName(), r.getDetail(), r.getLink()) : null);
 
     private final BiConsumer<Integer, Integer> DAY_REWARD_INITIALIZER = (year, month) -> {
         List<SignRewardTodayRelation> relations = rewardService.selectRelationByYearAndMonth(year, month);

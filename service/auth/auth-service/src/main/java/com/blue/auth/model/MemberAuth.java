@@ -4,6 +4,7 @@ import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
@@ -32,11 +33,11 @@ public final class MemberAuth implements Serializable {
     private final String refresh;
 
     public MemberAuth(String auth, String secKey, String refresh) {
-        if (auth == null || "".equals(auth))
+        if (isBlank(auth))
             throw new BlueException(BAD_REQUEST);
-        if (secKey == null || "".equals(secKey))
+        if (isBlank(secKey))
             throw new BlueException(BAD_REQUEST);
-        if (refresh == null || "".equals(refresh))
+        if (isBlank(refresh))
             throw new BlueException(BAD_REQUEST);
 
         this.auth = auth;

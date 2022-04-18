@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.REPEATABLE_UNTIL_SUCCESS_OR_TIMEOUT_VALIDATION;
@@ -35,13 +37,13 @@ public final class BlueValidator {
         assertParam(reactiveStringRedisTemplate);
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
-        this.scheduler = scheduler != null ? scheduler : boundedElastic();
+        this.scheduler = isNotNull(scheduler) ? scheduler : boundedElastic();
     }
 
     private static final String KEY_PREFIX = "vk_";
 
     private static final UnaryOperator<String> KEY_WRAPPER = key -> {
-        if (key == null)
+        if (isNull(key))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
 
         return KEY_PREFIX + key;
@@ -51,7 +53,7 @@ public final class BlueValidator {
             List.of(KEY_WRAPPER.apply(key));
 
     private final Function<String, List<String>> SCRIPT_ARGS_WRAPPER = value -> {
-        if (value == null)
+        if (isNull(value))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "value can't be null");
 
         return List.of(value);
@@ -73,11 +75,11 @@ public final class BlueValidator {
      * @return
      */
     public Mono<Boolean> setKeyValueWithExpire(String key, String value, Duration expire) {
-        if (key == null)
+        if (isNull(key))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
-        if (value == null)
+        if (isNull(value))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "value can't be null");
-        if (expire == null)
+        if (isNull(expire))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "expire can't be null");
 
         return reactiveStringRedisTemplate.opsForValue()
@@ -123,7 +125,7 @@ public final class BlueValidator {
      * @return
      */
     public Mono<Boolean> repeatableValidateUntilTimeout(String key, String value) {
-        if (value == null)
+        if (isNull(value))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "value can't be null");
 
         return reactiveStringRedisTemplate.opsForValue().get(KEY_WRAPPER.apply(key))
@@ -137,7 +139,7 @@ public final class BlueValidator {
      * @param reactiveStringRedisTemplate
      */
     private void assertParam(ReactiveStringRedisTemplate reactiveStringRedisTemplate) {
-        if (reactiveStringRedisTemplate == null)
+        if (isNull(reactiveStringRedisTemplate))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveStringRedisTemplate can't be null");
     }
 

@@ -5,6 +5,8 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 import java.util.List;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.*;
 
 /**
@@ -39,12 +41,12 @@ public final class TreeNode<T> implements Serializable {
 
 
     private static void checkIdentity(Long identity) {
-        if (identity == null)
+        if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
     private static <T> void checkData(T data) {
-        if (data == null)
+        if (isNull(data))
             throw new BlueException(EMPTY_PARAM);
     }
 
@@ -104,9 +106,9 @@ public final class TreeNode<T> implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5381;
-        if (identity != null)
+        if (isNotNull(identity))
             hash = hash + (((int) (long) identity) << 5);
-        if (parentIdentity != null)
+        if (isNotNull(parentIdentity))
             hash = hash + (((int) (long) parentIdentity) << 5);
         return hash;
     }
@@ -115,19 +117,19 @@ public final class TreeNode<T> implements Serializable {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null || this.getClass() != obj.getClass())
+        if (isNull(obj) || this.getClass() != obj.getClass())
             return false;
 
         TreeNode<T> other;
 
         //noinspection unchecked
-        if (this.identity == null || (other = (TreeNode<T>) obj).getIdentity() == null)
+        if (isNull(this.identity) || isNull((other = (TreeNode<T>) obj).getIdentity()))
             return false;
-        if (this.parentIdentity == null || other.getParentIdentity() == null)
+        if (isNull(this.parentIdentity) || isNull(other.getParentIdentity()))
             return false;
 
         T otherData;
-        return data != null && (otherData = other.getData()) != null && data.equals(otherData);
+        return isNotNull(data) && isNotNull((otherData = other.getData())) && data.equals(otherData);
     }
 
     @Override

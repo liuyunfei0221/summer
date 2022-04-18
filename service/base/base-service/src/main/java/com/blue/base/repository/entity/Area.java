@@ -4,6 +4,8 @@ import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * area entity
  *
@@ -72,7 +74,7 @@ public class Area implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = isNull(name) ? null : name.trim();
     }
 
     public String getCountryCode() {
@@ -80,7 +82,7 @@ public class Area implements Serializable {
     }
 
     public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode == null ? null : countryCode.trim();
+        this.countryCode = isNull(countryCode) ? null : countryCode.trim();
     }
 
     public String getStateCode() {
@@ -88,7 +90,7 @@ public class Area implements Serializable {
     }
 
     public void setStateCode(String stateCode) {
-        this.stateCode = stateCode == null ? null : stateCode.trim();
+        this.stateCode = isNull(stateCode) ? null : stateCode.trim();
     }
 
     public Integer getStatus() {

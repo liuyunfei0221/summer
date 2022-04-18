@@ -2,6 +2,8 @@ package com.blue.marketing.api.model;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+
 /**
  * sign in reward info
  *
@@ -24,7 +26,7 @@ public final class SignInReward implements Serializable {
 
     public SignInReward(RewardInfo reward) {
         this.reward = reward;
-        this.present = this.reward != null;
+        this.present = isNotNull(this.reward);
     }
 
     public RewardInfo getReward() {
@@ -38,7 +40,7 @@ public final class SignInReward implements Serializable {
     @Override
     public String toString() {
         return "DayRewardVO{" +
-                "reward=" + (reward != null ? reward.toString() : "null") +
+                "reward=" + (isNotNull(reward) ? reward.toString() : "null") +
                 ", present=" + present +
                 '}';
     }

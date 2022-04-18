@@ -15,6 +15,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -132,13 +133,13 @@ public final class AccessBatchExpireProcessor {
      */
     private void handleExpireTask() {
         KeyExpireParam firstData = NULLABLE_ELEMENT_GETTER.get();
-        if (firstData != null) {
+        if (isNotNull(firstData)) {
             stringRedisTemplate.executePipelined((RedisCallback<Boolean>) connection -> {
                 DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(firstData, connection);
 
                 int size = 1;
                 KeyExpireParam data;
-                while (size <= BATCH_EXPIRE_MAX_PER_HANDLE && (data = NULLABLE_ELEMENT_GETTER.get()) != null) {
+                while (size <= BATCH_EXPIRE_MAX_PER_HANDLE && isNotNull(data = NULLABLE_ELEMENT_GETTER.get())) {
                     DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(data, connection);
                     size++;
                 }

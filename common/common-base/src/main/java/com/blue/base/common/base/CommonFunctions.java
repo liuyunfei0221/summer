@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.function.*;
 import java.util.stream.Stream;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.RsaProcessor.*;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -75,7 +76,8 @@ public class CommonFunctions {
     /**
      * index of non element
      */
-    public static final int NON_EXIST_INDEX = -1;
+    public static final int NON_EXIST_INDEX = -1,
+            START_IDX = 0;
 
     /**
      * clock
@@ -92,7 +94,7 @@ public class CommonFunctions {
      * uri parser - for request
      */
     public static final UnaryOperator<String> REQUEST_REST_URI_PROCESSOR = uri -> {
-        if (uri == null || "".equals(uri))
+        if (isBlank(uri))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be null");
 
         int lastPartIdx = lastIndexOf(uri, PATH_SEPARATOR);
@@ -115,14 +117,14 @@ public class CommonFunctions {
      * uri asserter
      */
     public static final Consumer<String> REST_URI_ASSERTER = uri -> {
-        if (uri == null || "".equals(uri))
+        if (isBlank(uri))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be null");
 
         int idx = indexOf(uri, PATH_SEPARATOR);
 
-        if (idx == -1)
+        if (idx == NON_EXIST_INDEX)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid uri, not contains / -> " + uri);
-        if (idx != 0)
+        if (idx != START_IDX)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid uri, not start with / -> " + uri);
         if (isBlank(substring(uri, idx)))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid uri, non content but / -> " + uri);
@@ -135,7 +137,7 @@ public class CommonFunctions {
         REST_URI_ASSERTER.accept(uri);
 
         int lastPartIdx = lastIndexOf(uri, PATH_SEPARATOR);
-        if (lastPartIdx == -1)
+        if (lastPartIdx == NON_EXIST_INDEX)
             throw new BlueException(BAD_REQUEST.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
 
         String maybePathVariable = substring(uri, lastPartIdx);
@@ -143,7 +145,7 @@ public class CommonFunctions {
         int left = indexOf(maybePathVariable, "{");
         int right = lastIndexOf(maybePathVariable, "}");
 
-        if (left == -1 && right == -1)
+        if (left == NON_EXIST_INDEX && right == NON_EXIST_INDEX)
             return uri.intern();
 
         int maybePathVariableLength = length(maybePathVariable);
@@ -265,7 +267,7 @@ public class CommonFunctions {
      * package info to event
      */
     public static final BiConsumer<Map<String, Object>, DataEvent> EVENT_PACKAGER = (attributes, dataEvent) -> {
-        if (attributes != null && dataEvent != null)
+        if (isNotNull(attributes) && isNotNull(dataEvent))
             ATTR_KEYS.forEach(key -> ofNullable(attributes.get(key)).map(String::valueOf)
                     .ifPresent(metadata -> dataEvent.addData(key, metadata)));
     };
@@ -290,7 +292,7 @@ public class CommonFunctions {
      * @return
      */
     public static String decryptRequestBody(String requestBody, String secKey, long expire) {
-        if (requestBody == null || "".equals(requestBody) || secKey == null || "".equals(secKey))
+        if (isBlank(requestBody) || isBlank(secKey))
             throw new BlueException(BAD_REQUEST);
 
         EncryptedRequest encryptedRequest = GSON.fromJson(requestBody, EncryptedRequest.class);
@@ -310,7 +312,7 @@ public class CommonFunctions {
      * @return
      */
     public static String encryptResponseBody(String responseBody, String secKey) {
-        if (responseBody == null || "".equals(responseBody) || secKey == null || "".equals(secKey))
+        if (isBlank(responseBody) || isBlank(secKey))
             throw new BlueException(BAD_REQUEST);
 
         return GSON.toJson(new EncryptedResponse(encryptByPublicKey(GSON.toJson(new DataWrapper(responseBody, TIME_STAMP_GETTER.get())), secKey)));

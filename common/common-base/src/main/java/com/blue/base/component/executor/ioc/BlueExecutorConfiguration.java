@@ -16,6 +16,7 @@ import static com.blue.base.component.executor.api.generator.BlueExecutorGenerat
  * @date 2021/9/9
  * @apiNote
  */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ConditionalOnBean(value = {ExecutorConf.class})
 @Configuration
 public class BlueExecutorConfiguration {

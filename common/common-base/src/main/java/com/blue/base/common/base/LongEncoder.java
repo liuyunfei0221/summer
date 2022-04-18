@@ -1,5 +1,7 @@
 package com.blue.base.common.base;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+
 /**
  * encode long util
  *
@@ -26,7 +28,7 @@ public final class LongEncoder {
     }
 
     private Long encrypt(Long originalData) {
-        if (originalData != null) {
+        if (isNotNull(originalData)) {
             long tar = originalData ^ SALT_A;
             tar = tar ^ SALT_B;
 
@@ -36,7 +38,7 @@ public final class LongEncoder {
     }
 
     private Long decrypt(Long encryptData) {
-        if (encryptData != null) {
+        if (isNotNull(encryptData)) {
             long tar = encryptData ^ SALT_B;
             tar = tar ^ SALT_A;
 

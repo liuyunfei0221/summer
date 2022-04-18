@@ -15,6 +15,7 @@ import static com.blue.verify.api.generator.BlueCaptchaGenerator.generateCaptcha
  * @date 2021/9/9
  * @apiNote
  */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ConditionalOnBean(value = {CaptchaConf.class})
 @Configuration
 public class BlueCaptchaConfiguration {

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.curator.framework.CuratorFrameworkFactory.builder;
 import static org.springframework.util.StringUtils.hasText;
@@ -48,7 +49,7 @@ public final class BlueDistributedLockGenerator {
         Integer retryMaxSleepTimeMs = distributedLockConf.getRetryMaxSleepTimeMs();
         Integer retryMaxRetries = distributedLockConf.getRetryMaxRetries();
 
-        if (retryBaseSleepTimeMs != null && retryMaxSleepTimeMs != null && retryMaxRetries != null)
+        if (!isNull(retryBaseSleepTimeMs) && !isNull(retryMaxSleepTimeMs) && !isNull(retryMaxRetries))
             builder.retryPolicy(new BoundedExponentialBackoffRetry(distributedLockConf.getRetryBaseSleepTimeMs(),
                     distributedLockConf.getRetryMaxSleepTimeMs(), distributedLockConf.getRetryMaxRetries()));
 
@@ -69,7 +70,7 @@ public final class BlueDistributedLockGenerator {
      * assert lock name
      */
     private static final Consumer<String> NAME_ASSERTER = name -> {
-        if (name == null || "".equals(name))
+        if (isNull(name) || "".equals(name))
             throw new RuntimeException("name can't be null");
     };
 
@@ -77,7 +78,7 @@ public final class BlueDistributedLockGenerator {
      * assert lock name list
      */
     private static final Consumer<List<String>> NAMES_ASSERTER = names -> {
-        if (names == null)
+        if (isNull(names))
             throw new RuntimeException("names can't be null");
 
         int size = names.size();
@@ -138,7 +139,7 @@ public final class BlueDistributedLockGenerator {
      * @param conf
      */
     private static void confAsserter(DistributedLockConf conf) {
-        if (conf == null)
+        if (isNull(conf))
             throw new RuntimeException("distributedLockConf can't be null");
 
         if (!hasText(conf.getConnectString()))

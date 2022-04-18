@@ -19,6 +19,9 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.StreamSupport;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.isNull;
+
 /**
  * safe random generator
  *
@@ -119,7 +122,7 @@ public class TheRandom extends Random {
 
     @Override
     public void setSeed(long seed) {
-        if (SEEDER != null)
+        if (isNotNull(SEEDER))
             SEEDER.set(seed);
     }
 
@@ -273,7 +276,7 @@ public class TheRandom extends Random {
     @Override
     public double nextGaussian() {
         Double d = NEXT_LOCAL_GAUSSIAN.get();
-        if (d != null) {
+        if (isNotNull(d)) {
             NEXT_LOCAL_GAUSSIAN.set(null);
             return d;
         }
@@ -447,7 +450,7 @@ public class TheRandom extends Random {
 
         @Override
         public boolean tryAdvance(IntConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (isNull(consumer)) throw new NullPointerException();
             long i = index, f = fence;
             if (i < f) {
                 consumer.accept(TheRandom.current().internalNextInt(origin, bound));
@@ -459,7 +462,7 @@ public class TheRandom extends Random {
 
         @Override
         public void forEachRemaining(IntConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (isNull(consumer)) throw new NullPointerException();
             long i = index, f = fence;
             if (i < f) {
                 index = f;
@@ -508,7 +511,7 @@ public class TheRandom extends Random {
 
         @Override
         public boolean tryAdvance(LongConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (isNull(consumer)) throw new NullPointerException();
             long i = index, f = fence;
             if (i < f) {
                 consumer.accept(TheRandom.current().internalNextLong(origin, bound));
@@ -520,7 +523,7 @@ public class TheRandom extends Random {
 
         @Override
         public void forEachRemaining(LongConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (isNull(consumer)) throw new NullPointerException();
             long i = index, f = fence;
             if (i < f) {
                 index = f;
@@ -570,7 +573,7 @@ public class TheRandom extends Random {
 
         @Override
         public boolean tryAdvance(DoubleConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (isNull(consumer)) throw new NullPointerException();
             long i = index, f = fence;
             if (i < f) {
                 consumer.accept(TheRandom.current().internalNextDouble(origin, bound));
@@ -582,7 +585,7 @@ public class TheRandom extends Random {
 
         @Override
         public void forEachRemaining(DoubleConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (isNull(consumer)) throw new NullPointerException();
             long i = index, f = fence;
             if (i < f) {
                 index = f;

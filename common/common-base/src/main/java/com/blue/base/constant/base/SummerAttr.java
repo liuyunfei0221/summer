@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Properties;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.loadProp;
 import static com.blue.base.common.base.TimeUnity.convertStrToEpochSecond;
@@ -82,7 +83,7 @@ public final class SummerAttr {
 
     static {
         List<File> files = getFiles(MESSAGES_URI, false);
-        if (files == null || files.size() < 1)
+        if (isEmpty(files))
             throw new RuntimeException("summer.properties is not exist");
 
         Properties properties = loadProp(files.get(0));

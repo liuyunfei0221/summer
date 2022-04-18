@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.lang.String.valueOf;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -136,31 +137,31 @@ public final class WorkBookProcessor<T> {
      * assert processor params
      */
     private void assertParam(WorkBookElementConf<T> workBookElementConf, WorkBookStyleConf workBookStyleConf) {
-        if (workBookElementConf == null)
+        if (isNull(workBookElementConf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "workBookElement can't be null");
 
         String[] headers = workBookElementConf.getHeaders();
-        if (headers == null || headers.length < 1)
+        if (isNull(headers) || headers.length < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "headers can't be null");
 
         BiConsumer<XSSFRow, T> rowElementPackager = workBookElementConf.getRowElementPackager();
-        if (rowElementPackager == null)
+        if (isNull(rowElementPackager))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "row packager can't be null");
 
         Integer columnWidth = workBookStyleConf.getColumnWidth();
-        if (columnWidth == null || columnWidth < 1)
+        if (isNull(columnWidth) || columnWidth < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "columnWidth can't be null or less than 1");
 
         Short columnHeight = workBookStyleConf.getColumnHeight();
-        if (columnHeight == null || columnHeight < 1)
+        if (isNull(columnHeight) || columnHeight < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "columnHeight can't be null or less than 1");
 
         String fontName = workBookStyleConf.getFontName();
-        if (fontName == null || "".equals(fontName))
+        if (isBlank(fontName))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "fontName can't be blank");
 
         Short fontSize = workBookStyleConf.getFontSize();
-        if (fontSize == null || fontSize < 1)
+        if (isNull(fontSize) || fontSize < 1)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "fontSize can't be null or less than 1");
     }
 
@@ -170,12 +171,12 @@ public final class WorkBookProcessor<T> {
      * @param sheetElements
      */
     private void elementsAsserter(List<List<T>> sheetElements) {
-        if (sheetElements == null || sheetElements.size() < 1)
+        if (isEmpty(sheetElements))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "elements can't be empty");
 
         int sheetCheckIndex = 1;
         for (List<T> sheetElement : sheetElements) {
-            if (sheetElement == null || sheetElement.size() < 1)
+            if (isEmpty(sheetElement))
                 throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "elements in page " + sheetCheckIndex + "is empty");
             sheetCheckIndex++;
         }
