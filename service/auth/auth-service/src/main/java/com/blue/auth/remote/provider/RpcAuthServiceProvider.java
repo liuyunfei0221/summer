@@ -52,7 +52,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
     @Override
     public CompletableFuture<AccessAsserted> assertAccess(AccessAssert accessAssert) {
         LOGGER.info("CompletableFuture<AuthAsserted> assertAccess(AssertAuth assertAuth), assertAuth = {}", accessAssert);
-        return just(accessAssert).publishOn(scheduler).flatMap(authService::assertAccessMono).toFuture();
+        return just(accessAssert).subscribeOn(scheduler).flatMap(authService::assertAccessMono).toFuture();
     }
 
     /**
@@ -64,7 +64,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
     @Override
     public CompletableFuture<Boolean> invalidateAuthByAccess(Access access) {
         LOGGER.info("CompletableFuture<Boolean> invalidateAuthByAccess(Access access), access = {}", access);
-        return just(access).publishOn(scheduler).flatMap(authService::invalidateAuthByAccess).toFuture();
+        return just(access).subscribeOn(scheduler).flatMap(authService::invalidateAuthByAccess).toFuture();
     }
 
     /**
@@ -76,7 +76,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
     @Override
     public CompletableFuture<Boolean> invalidateAuthByJwt(String jwt) {
         LOGGER.info("CompletableFuture<Boolean> invalidateAuthByJwt(String jwt), jwt = {}", jwt);
-        return just(jwt).publishOn(scheduler).flatMap(authService::invalidateAuthByJwt).toFuture();
+        return just(jwt).subscribeOn(scheduler).flatMap(authService::invalidateAuthByJwt).toFuture();
     }
 
     /**

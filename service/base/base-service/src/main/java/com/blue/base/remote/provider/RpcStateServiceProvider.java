@@ -83,7 +83,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     public CompletableFuture<StateInfo> getStateInfoMonoById(Long id) {
         LOGGER.info("CompletableFuture<StateInfo> getStateInfoMonoById(Long id), id = {}", id);
         return just(id)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(stateService::getStateInfoMonoById)
                 .toFuture();
     }
@@ -110,7 +110,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     public CompletableFuture<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId) {
         LOGGER.info("CompletableFuture<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId), countryId = {}", countryId);
         return just(countryId)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(stateService::selectStateInfoMonoByCountryId)
                 .toFuture();
     }
@@ -137,7 +137,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     public CompletableFuture<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids) {
         LOGGER.info("CompletableFuture<Map<Long,StateInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(stateService::selectStateInfoMonoByIds)
                 .toFuture();
     }
@@ -164,7 +164,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     public CompletableFuture<StateRegion> getStateRegionMonoById(Long id) {
         LOGGER.info("CompletableFuture<StateRegion> getStateRegionMonoById(Long id), id = {}", id);
         return just(id)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(stateService::getStateRegionMonoById)
                 .toFuture();
     }
@@ -191,7 +191,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     public CompletableFuture<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids) {
         LOGGER.info("CompletableFuture<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(stateService::selectStateRegionMonoByIds)
                 .toFuture();
     }

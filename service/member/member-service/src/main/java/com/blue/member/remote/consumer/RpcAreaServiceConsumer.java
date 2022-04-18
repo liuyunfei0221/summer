@@ -76,7 +76,7 @@ public class RpcAreaServiceConsumer {
      * @return
      */
     public Mono<AreaInfo> getAreaInfoMonoById(Long id) {
-        return fromFuture(rpcAreaService.getAreaInfoMonoById(id)).publishOn(scheduler);
+        return fromFuture(rpcAreaService.getAreaInfoMonoById(id)).subscribeOn(scheduler);
     }
 
     /**
@@ -96,7 +96,7 @@ public class RpcAreaServiceConsumer {
      * @return
      */
     public Mono<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId) {
-        return fromFuture(rpcAreaService.selectAreaInfoMonoByCityId(cityId)).publishOn(scheduler);
+        return fromFuture(rpcAreaService.selectAreaInfoMonoByCityId(cityId)).subscribeOn(scheduler);
     }
 
     /**
@@ -116,7 +116,7 @@ public class RpcAreaServiceConsumer {
      * @return
      */
     public Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids) {
-        return fromFuture(rpcAreaService.selectAreaInfoMonoByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcAreaService.selectAreaInfoMonoByIds(ids)).subscribeOn(scheduler);
     }
 
     /**
@@ -136,7 +136,7 @@ public class RpcAreaServiceConsumer {
      * @return
      */
     public Mono<AreaRegion> getAreaRegionMonoById(Long id) {
-        return fromFuture(rpcAreaService.getAreaRegionMonoById(id)).publishOn(scheduler);
+        return fromFuture(rpcAreaService.getAreaRegionMonoById(id)).subscribeOn(scheduler);
     }
 
     /**
@@ -156,7 +156,7 @@ public class RpcAreaServiceConsumer {
      * @return
      */
     public Mono<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids) {
-        return fromFuture(rpcAreaService.selectAreaRegionMonoByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcAreaService.selectAreaRegionMonoByIds(ids)).subscribeOn(scheduler);
     }
 
 }

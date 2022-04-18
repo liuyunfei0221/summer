@@ -45,7 +45,7 @@ public class RpcAuthServiceConsumer {
      */
     public Mono<AccessAsserted> assertAccess(AccessAssert accessAssert) {
         LOGGER.info("Mono<AuthAsserted> assertAccess(AssertAuth assertAuth), assertAuth = {}", accessAssert);
-        return fromFuture(rpcAuthService.assertAccess(accessAssert)).publishOn(scheduler);
+        return fromFuture(rpcAuthService.assertAccess(accessAssert)).subscribeOn(scheduler);
     }
 
 }

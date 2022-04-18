@@ -45,7 +45,7 @@ public class RpcResourceServiceConsumer {
      */
     public Mono<List<ResourceInfo>> selectResourceInfo() {
         LOGGER.info("Mono<List<ResourceInfo>> selectResourceInfo()");
-        return fromFuture(rpcResourceService.selectResourceInfo()).publishOn(scheduler);
+        return fromFuture(rpcResourceService.selectResourceInfo()).subscribeOn(scheduler);
     }
 
 }

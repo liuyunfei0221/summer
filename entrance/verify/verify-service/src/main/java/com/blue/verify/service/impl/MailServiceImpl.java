@@ -9,7 +9,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import static com.blue.base.constant.media.MailHeader.LIST_UNSUBSCRIBE;
-import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -48,17 +47,16 @@ public class MailServiceImpl implements MailService {
             message.setSubject("email verify code");
             message.setText("verify code is " + text);
 
-
-            return fromFuture(mailSender.sendMessage(message)
-                    .thenAcceptAsync(v ->
+            mailSender.sendMessage(message).thenAcceptAsync(v ->
                             System.err.println("SEND SUCCESS!!!")
                     )
                     .exceptionally(t -> {
                         LOGGER.error("SEND FAILED!!!");
                         LOGGER.error("t = {}", t);
                         return null;
-                    }))
-                    .then(just(true));
+                    });
+
+            return just(true);
         } catch (Exception e) {
             LOGGER.error("Mono<Boolean> send(String email, String text) failed, email = {}, text = {}, e = {}", email, text, e);
             return just(false);

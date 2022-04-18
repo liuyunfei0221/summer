@@ -61,7 +61,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     public CompletableFuture<List<RoleInfo>> selectRoleInfo() {
         LOGGER.info("CompletableFuture<RoleInfo> selectRoleInfo()");
         return just(true)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(v -> roleService.selectRole())
                 .flatMap(roles -> just(roles.stream().map(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))
                 .toFuture();
@@ -76,7 +76,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     @Override
     public CompletableFuture<RoleInfo> selectRoleInfoByMemberId(Long memberId) {
         LOGGER.info("CompletableFuture<RoleInfo> selectRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
-        return just(memberId).publishOn(scheduler)
+        return just(memberId).subscribeOn(scheduler)
                 .flatMap(memberRoleRelationService::getRoleIdMonoByMemberId)
                 .flatMap(roleIdOpt ->
                         roleIdOpt.map(roleService::getRoleMonoById).orElseGet(() -> error(() -> new BlueException(INVALID_IDENTITY)))
@@ -95,7 +95,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     @Override
     public CompletableFuture<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
         LOGGER.info("CompletableFuture<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
-        return just(memberIds).publishOn(scheduler)
+        return just(memberIds).subscribeOn(scheduler)
                 .flatMap(memberRoleRelationService::selectRelationMonoByMemberIds)
                 .flatMap(relations ->
                         roleService.selectRoleMonoByIds(relations.stream().map(MemberRoleRelation::getRoleId).collect(toList()))

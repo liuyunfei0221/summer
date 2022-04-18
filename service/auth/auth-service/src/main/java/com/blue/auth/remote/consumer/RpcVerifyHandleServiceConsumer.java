@@ -46,7 +46,7 @@ public class RpcVerifyHandleServiceConsumer {
         LOGGER.info("Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination), verifyType = {}, verifyBusinessType = {}, destination = {}",
                 verifyType, businessType, destination);
 
-        return fromFuture(rpcVerifyHandleService.generate(verifyType, businessType, destination)).publishOn(scheduler);
+        return fromFuture(rpcVerifyHandleService.generate(verifyType, businessType, destination)).subscribeOn(scheduler);
     }
 
     /**
@@ -63,7 +63,7 @@ public class RpcVerifyHandleServiceConsumer {
         LOGGER.info("Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable), " +
                 "verifyType = {}, verifyBusinessType = {}, key = {}, verify = {}, repeatable = {}", verifyType, businessType, key, verify, repeatable);
 
-        return fromFuture(rpcVerifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).publishOn(scheduler);
+        return fromFuture(rpcVerifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).subscribeOn(scheduler);
     }
 
 }

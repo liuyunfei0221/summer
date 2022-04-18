@@ -45,7 +45,7 @@ public class RpcRoleServiceConsumer {
      */
     public Mono<List<RoleInfo>> selectRoleInfo() {
         LOGGER.info("Mono<List<RoleInfo>> selectRoleInfo()");
-        return fromFuture(rpcRoleService.selectRoleInfo()).publishOn(scheduler);
+        return fromFuture(rpcRoleService.selectRoleInfo()).subscribeOn(scheduler);
     }
 
 }

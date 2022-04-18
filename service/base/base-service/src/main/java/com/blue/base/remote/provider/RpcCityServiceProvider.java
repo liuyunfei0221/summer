@@ -83,7 +83,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     public CompletableFuture<CityInfo> getCityInfoMonoById(Long id) {
         LOGGER.info("CompletableFuture<CityInfo> getCityInfoMonoById(Long id), id = {}", id);
         return just(id)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(cityService::getCityInfoMonoById)
                 .toFuture();
     }
@@ -110,7 +110,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     public CompletableFuture<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId) {
         LOGGER.info("CompletableFuture<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId), countryId = {}", stateId);
         return just(stateId)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(cityService::selectCityInfoMonoByStateId)
                 .toFuture();
     }
@@ -137,7 +137,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     public CompletableFuture<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids) {
         LOGGER.info("CompletableFuture<Map<Long, CityInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(cityService::selectCityInfoMonoByIds)
                 .toFuture();
     }
@@ -164,7 +164,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     public CompletableFuture<CityRegion> getCityRegionMonoById(Long id) {
         LOGGER.info("CompletableFuture<CityRegion> getCityRegionMonoById(Long id), id = {}", id);
         return just(id)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(cityService::getCityRegionMonoById)
                 .toFuture();
     }
@@ -191,7 +191,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     public CompletableFuture<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids) {
         LOGGER.info("CompletableFuture<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(cityService::selectCityRegionMonoByIds)
                 .toFuture();
     }

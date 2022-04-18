@@ -47,7 +47,7 @@ public class RpcMemberBasicServiceConsumer {
      */
     Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id) {
         LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id), id = {}", id);
-        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoMonoByPrimaryKey(id)).publishOn(scheduler);
+        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoMonoByPrimaryKey(id)).subscribeOn(scheduler);
     }
 
     /**
@@ -58,7 +58,7 @@ public class RpcMemberBasicServiceConsumer {
      */
     Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberBasicInfo>> selectMemberBasicMonoByIds(List<Long> ids), ids = {}", ids);
-        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoMonoByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoMonoByIds(ids)).subscribeOn(scheduler);
     }
 
     /**
@@ -69,7 +69,7 @@ public class RpcMemberBasicServiceConsumer {
      */
     public Mono<MemberBasicInfo> selectMemberBasicInfoByPhone(String phone) {
         LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicInfoByPhone(String phone), phone = {}", phone);
-        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoByPhone(phone)).publishOn(scheduler);
+        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoByPhone(phone)).subscribeOn(scheduler);
     }
 
     /**
@@ -80,7 +80,7 @@ public class RpcMemberBasicServiceConsumer {
      */
     public Mono<MemberBasicInfo> selectMemberBasicInfoByEmail(String email) {
         LOGGER.info("Mono<MemberBasicInfo> selectMemberBasicInfoByEmail(String email), email = {}", email);
-        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoByEmail(email)).publishOn(scheduler);
+        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoByEmail(email)).subscribeOn(scheduler);
     }
 
 }

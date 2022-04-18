@@ -75,7 +75,7 @@ public class RpcControlServiceProvider implements RpcControlService {
     @Override
     public CompletableFuture<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByAccess(Access access), access = {}", access);
-        return just(access).publishOn(scheduler).flatMap(controlService::getAuthorityMonoByAccess).toFuture();
+        return just(access).subscribeOn(scheduler).flatMap(controlService::getAuthorityMonoByAccess).toFuture();
     }
 
     /**
@@ -87,7 +87,7 @@ public class RpcControlServiceProvider implements RpcControlService {
     @Override
     public CompletableFuture<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
-        return just(memberId).publishOn(scheduler).flatMap(controlService::getAuthorityMonoByMemberId).toFuture();
+        return just(memberId).subscribeOn(scheduler).flatMap(controlService::getAuthorityMonoByMemberId).toFuture();
     }
 
 }

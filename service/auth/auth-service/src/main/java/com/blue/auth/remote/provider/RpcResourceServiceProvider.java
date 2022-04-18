@@ -47,7 +47,7 @@ public class RpcResourceServiceProvider implements RpcResourceService {
     public CompletableFuture<List<ResourceInfo>> selectResourceInfo() {
         LOGGER.info("CompletableFuture<RoleInfo> selectRoleInfo()");
         return just(true)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(v -> resourceService.selectResource())
                 .flatMap(resources -> just(resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList())))
                 .toFuture();

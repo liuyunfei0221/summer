@@ -52,7 +52,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     @Override
     public CompletableFuture<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id) {
         LOGGER.info("CompletableFuture<Optional<MemberBasicInfo>> selectMemberBasicInfoMonoByPrimaryKey(Long id), id = {},", id);
-        return just(id).publishOn(scheduler)
+        return just(id).subscribeOn(scheduler)
                 .flatMap(memberBasicService::getMemberBasicMonoByPrimaryKey)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
@@ -69,7 +69,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     @Override
     public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
         LOGGER.info("CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids), ids = {},", ids);
-        return just(ids).publishOn(scheduler)
+        return just(ids).subscribeOn(scheduler)
                 .flatMap(memberBasicService::selectMemberBasicInfoMonoByIds)
                 .toFuture();
     }
@@ -83,7 +83,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     @Override
     public CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByPhone(String phone) {
         LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByPhone(String phone), phone = {},", phone);
-        return just(phone).publishOn(scheduler)
+        return just(phone).subscribeOn(scheduler)
                 .flatMap(memberBasicService::selectMemberBasicMonoByPhone)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
@@ -100,7 +100,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     @Override
     public CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByEmail(String email) {
         LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByEmail(String email), email = {},", email);
-        return just(email).publishOn(scheduler)
+        return just(email).subscribeOn(scheduler)
                 .flatMap(memberBasicService::selectMemberBasicMonoByEmail)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)

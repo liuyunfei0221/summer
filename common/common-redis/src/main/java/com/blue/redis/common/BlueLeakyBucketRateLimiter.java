@@ -76,7 +76,7 @@ public final class BlueLeakyBucketRateLimiter {
                         SCRIPT_ARGS_WRAPPER.apply(allow, expireMillis))
                 .onErrorResume(FALL_BACKER)
                 .elementAt(0)
-                .publishOn(scheduler);
+                .subscribeOn(scheduler);
     }
 
     /**

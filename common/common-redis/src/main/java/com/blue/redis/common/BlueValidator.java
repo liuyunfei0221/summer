@@ -84,7 +84,7 @@ public final class BlueValidator {
 
         return reactiveStringRedisTemplate.opsForValue()
                 .set(KEY_WRAPPER.apply(key), value, expire)
-                .publishOn(scheduler);
+                .subscribeOn(scheduler);
     }
 
     /**
@@ -99,7 +99,7 @@ public final class BlueValidator {
                         SCRIPT_KEYS_WRAPPER.apply(key), SCRIPT_ARGS_WRAPPER.apply(value))
                 .onErrorResume(FALL_BACKER)
                 .elementAt(0)
-                .publishOn(scheduler);
+                .subscribeOn(scheduler);
     }
 
     /**
@@ -114,7 +114,7 @@ public final class BlueValidator {
                         SCRIPT_KEYS_WRAPPER.apply(key), SCRIPT_ARGS_WRAPPER.apply(value))
                 .onErrorResume(FALL_BACKER)
                 .elementAt(0)
-                .publishOn(scheduler);
+                .subscribeOn(scheduler);
     }
 
     /**
@@ -130,7 +130,7 @@ public final class BlueValidator {
 
         return reactiveStringRedisTemplate.opsForValue().get(KEY_WRAPPER.apply(key))
                 .flatMap(v -> just(value.equals(v)))
-                .publishOn(scheduler);
+                .subscribeOn(scheduler);
     }
 
     /**

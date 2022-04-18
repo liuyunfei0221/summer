@@ -59,7 +59,7 @@ public class RpcControlServiceConsumer {
      */
     public Mono<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByAccess(Access access), access = {}", access);
-        return fromFuture(rpcControlService.getAuthorityByAccess(access)).publishOn(scheduler).publishOn(scheduler);
+        return fromFuture(rpcControlService.getAuthorityByAccess(access)).subscribeOn(scheduler).subscribeOn(scheduler);
     }
 
     /**
@@ -70,7 +70,7 @@ public class RpcControlServiceConsumer {
      */
     public Mono<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
-        return fromFuture(rpcControlService.getAuthorityByMemberId(memberId)).publishOn(scheduler).publishOn(scheduler);
+        return fromFuture(rpcControlService.getAuthorityByMemberId(memberId)).subscribeOn(scheduler).subscribeOn(scheduler);
     }
 
 }

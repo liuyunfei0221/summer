@@ -68,7 +68,7 @@ public final class BlueTokenBucketRateLimiter {
                             SCRIPT_ARGS_SUP.get())
                     .onErrorResume(FALL_BACKER)
                     .elementAt(0)
-                    .publishOn(scheduler);
+                    .subscribeOn(scheduler);
 
     /**
      * key allowed?

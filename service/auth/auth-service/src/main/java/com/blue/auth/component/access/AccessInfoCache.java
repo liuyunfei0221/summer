@@ -134,7 +134,7 @@ public final class AccessInfoCache {
                     if (!"".equals(accessInfo))
                         REDIS_ACCESS_REFRESHER.accept(keyId, accessInfo);
                     return just(accessInfo);
-                }).publishOn(scheduler);
+                }).subscribeOn(scheduler);
     };
 
     /**
@@ -145,7 +145,7 @@ public final class AccessInfoCache {
      */
     public Mono<String> getAccessInfo(String keyId) {
         return isNotBlank(keyId) ?
-                justOrEmpty(CACHE.getIfPresent(keyId)).switchIfEmpty(REDIS_ACCESS_GETTER.apply(keyId)).publishOn(scheduler)
+                justOrEmpty(CACHE.getIfPresent(keyId)).switchIfEmpty(REDIS_ACCESS_GETTER.apply(keyId)).subscribeOn(scheduler)
                 :
                 error(() -> new BlueException(UNAUTHORIZED));
     }
@@ -160,7 +160,7 @@ public final class AccessInfoCache {
         LOGGER.info("setAccessInfo(), keyId = {},accessInfo = {}", keyId, accessInfo);
         return reactiveStringRedisTemplate.opsForValue()
                 .set(keyId, accessInfo, globalExpireDuration)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .onErrorResume(throwable -> {
                     LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
                     return just(false);
@@ -181,9 +181,9 @@ public final class AccessInfoCache {
                                 .flatMap(l -> {
                                     CACHE.invalidate(keyId);
                                     return just(l > 0L);
-                                }).publishOn(scheduler)
+                                }).subscribeOn(scheduler)
                         :
-                        just(false).publishOn(scheduler);
+                        just(false).subscribeOn(scheduler);
     }
 
     /**
@@ -196,9 +196,9 @@ public final class AccessInfoCache {
         try {
             if (isNotBlank(keyId))
                 CACHE.invalidate(keyId);
-            return just(true).publishOn(scheduler);
+            return just(true).subscribeOn(scheduler);
         } catch (Exception e) {
-            return just(false).publishOn(scheduler);
+            return just(false).subscribeOn(scheduler);
         }
     }
 

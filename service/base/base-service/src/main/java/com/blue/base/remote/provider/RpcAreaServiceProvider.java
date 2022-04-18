@@ -83,7 +83,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     public CompletableFuture<AreaInfo> getAreaInfoMonoById(Long id) {
         LOGGER.info("CompletableFuture<AreaInfo> getAreaInfoMonoById(Long id), id = {}", id);
         return just(id)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(areaService::getAreaInfoMonoById)
                 .toFuture();
     }
@@ -110,7 +110,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     public CompletableFuture<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId) {
         LOGGER.info("CompletableFuture<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId), countryId = {}", cityId);
         return just(cityId)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(areaService::selectAreaInfoMonoByCityId)
                 .toFuture();
     }
@@ -137,7 +137,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     public CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids) {
         LOGGER.info("CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(areaService::selectAreaInfoMonoByIds)
                 .toFuture();
     }
@@ -164,7 +164,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     public CompletableFuture<AreaRegion> getAreaRegionMonoById(Long id) {
         LOGGER.info("CompletableFuture<AreaRegion> getAreaRegionMonoById(Long id), id = {}", id);
         return just(id)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(areaService::getAreaRegionMonoById)
                 .toFuture();
     }
@@ -191,7 +191,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     public CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids) {
         LOGGER.info("CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
-                .publishOn(scheduler)
+                .subscribeOn(scheduler)
                 .flatMap(areaService::selectAreaRegionMonoByIds)
                 .toFuture();
     }

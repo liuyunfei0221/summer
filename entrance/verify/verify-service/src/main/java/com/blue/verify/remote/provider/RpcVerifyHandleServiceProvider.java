@@ -50,7 +50,7 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
         LOGGER.info("CompletableFuture<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination), verifyType = {}, verifyBusinessType = {}, destination = {}",
                 verifyType, businessType, destination);
 
-        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.generate(verifyType, businessType, destination)).toFuture();
+        return just(true).subscribeOn(scheduler).flatMap(v -> verifyHandleService.generate(verifyType, businessType, destination)).toFuture();
     }
 
     /**
@@ -68,7 +68,7 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
         LOGGER.info("CompletableFuture<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable), " +
                 "verifyType = {}, verifyBusinessType = {}, key = {}, verify = {}, repeatable = {}", verifyType, businessType, key, verify, repeatable);
 
-        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).toFuture();
+        return just(true).subscribeOn(scheduler).flatMap(v -> verifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).toFuture();
     }
 
 }
