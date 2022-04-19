@@ -97,6 +97,20 @@ data:
       index: 1
   broadcastTables: [ ]
   singleDatabasesWithTables:
+    - url: jdbc:mysql://172.16.201.160:3306/article
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+      singleTables: [ resource,role,role_res_relation,undo_log ]
   cacheEnabled: false
   lazyLoadingEnabled: false
   aggressiveLazyLoading: false
@@ -133,6 +147,36 @@ identity:
   paddingScheduledCorePoolSize: 2
   paddingScheduledInitialDelayMillis: 5000
   paddingScheduledDelayMillis: 15000
+
+
+mongo:
+  addressAttrs:
+    - address: 172.16.201.160
+      port: 27017
+  auth: false
+  userName:
+  password:
+  database: article
+  retryReads: true
+  retryWrites: false
+  applicationName: blue-article
+  uuidRepresentation: JAVA_LEGACY
+  socketConnectTimeoutMillis: 5000
+  socketReadTimeoutMillis: 5000
+  socketReceiveBufferSize: 1000000
+  socketSendBufferSize: 1024
+  clusterConnectionMode: MULTIPLE
+  clusterType: STANDALONE
+  clusterLocalThresholdMillis: 5000
+  serverSelectionTimeoutMillis: 5000
+  poolMaxSize: 12
+  poolMinSize: 4
+  poolMaxWaitTimeMillis: 3000
+  poolMaxConnectionLifeTimeMillis: 60000
+  poolMaxConnectionIdleTimeMillis: 60000
+  poolMaintenanceInitialDelayMillis: 3000
+  poolMaintenanceFrequencyMillis: 60000
+  sslEnabled: false
 
 
 es:

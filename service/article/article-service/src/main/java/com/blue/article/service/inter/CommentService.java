@@ -1,9 +1,9 @@
 package com.blue.article.service.inter;
 
 /**
- * common service
+ * comment service
  *
  * @author liuyunfei
  */
-public interface CommonService {
+public interface CommentService {
 }

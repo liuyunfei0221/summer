@@ -1,7 +1,7 @@
 package com.blue.article.service.impl;
 
 import com.blue.article.repository.entity.Link;
-import com.blue.article.repository.mapper.LinkMapper;
+import com.blue.article.repository.template.LinkRepository;
 import com.blue.article.service.inter.LinkService;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.Optional;
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.common.base.BlueChecker.isValidIdentity;
 import static com.blue.base.common.base.ConstantProcessor.assertSubjectType;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -28,11 +28,10 @@ public class LinkServiceImpl implements LinkService {
 
     private static final Logger LOGGER = getLogger(LinkServiceImpl.class);
 
-    private final LinkMapper linkMapper;
+    private final LinkRepository linkRepository;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public LinkServiceImpl(LinkMapper linkMapper) {
-        this.linkMapper = linkMapper;
+    public LinkServiceImpl(LinkRepository linkRepository) {
+        this.linkRepository = linkRepository;
     }
 
     /**
@@ -45,7 +44,7 @@ public class LinkServiceImpl implements LinkService {
     public Optional<Link> getByPrimaryKey(Long id) {
         LOGGER.info("id = {}", id);
         if (isValidIdentity(id))
-            return ofNullable(linkMapper.selectByPrimaryKey(id));
+            return ofNullable(linkRepository.findById(id).toFuture().join());
 
         throw new BlueException(INVALID_IDENTITY);
     }
@@ -75,7 +74,8 @@ public class LinkServiceImpl implements LinkService {
             throw new BlueException(INVALID_IDENTITY);
 
         assertSubjectType(subType, false);
-        return linkMapper.selectBySubIdAndSubType(subId, subType);
+//        return linkMapper.selectBySubIdAndSubType(subId, subType);
+        return null;
     }
 
     /**

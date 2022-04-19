@@ -1,5 +1,7 @@
 package com.blue.media.repository.entity;
 
+import org.springframework.data.annotation.Id;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,7 @@ public final class DownloadHistory implements Serializable {
 
     private static final long serialVersionUID = -1824231125493320466L;
 
+    @Id
     private Long id;
 
     private Long attachmentId;

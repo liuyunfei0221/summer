@@ -46,7 +46,7 @@ public class ControlServiceImpl implements ControlService {
 
     private final LinkService linkService;
 
-    private final CommonService commonService;
+    private final CommentService commentService;
 
     private final ReplyService replyService;
 
@@ -54,11 +54,11 @@ public class ControlServiceImpl implements ControlService {
 
     private final ExecutorService executorService;
 
-    public ControlServiceImpl(ArticleService articleService, LinkService linkService, CommonService commonService,
+    public ControlServiceImpl(ArticleService articleService, LinkService linkService, CommentService commentService,
                               ReplyService replyService, BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService) {
         this.articleService = articleService;
         this.linkService = linkService;
-        this.commonService = commonService;
+        this.commentService = commentService;
         this.replyService = replyService;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.executorService = executorService;

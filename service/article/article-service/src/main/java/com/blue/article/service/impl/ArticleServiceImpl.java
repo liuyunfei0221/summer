@@ -1,7 +1,7 @@
 package com.blue.article.service.impl;
 
 import com.blue.article.repository.entity.Article;
-import com.blue.article.repository.mapper.ArticleMapper;
+import com.blue.article.repository.template.ArticleRepository;
 import com.blue.article.service.inter.ArticleService;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
@@ -32,13 +32,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final RestClient restClient;
 
-    private final ArticleMapper articleMapper;
+    private final ArticleRepository articleRepository;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ArticleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RestClient restClient, ArticleMapper articleMapper) {
+    public ArticleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RestClient restClient, ArticleRepository articleRepository) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.restClient = restClient;
-        this.articleMapper = articleMapper;
+        this.articleRepository = articleRepository;
     }
 
     /**
@@ -51,7 +50,7 @@ public class ArticleServiceImpl implements ArticleService {
     public Optional<Article> getByPrimaryKey(Long id) {
         LOGGER.info("id = {}", id);
         if (isValidIdentity(id))
-            return ofNullable(articleMapper.selectByPrimaryKey(id));
+            return ofNullable(articleRepository.findById(id).toFuture().join());
 
         throw new BlueException(INVALID_IDENTITY);
     }
