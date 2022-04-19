@@ -21,8 +21,6 @@ import static reactor.util.Loggers.getLogger;
  * asserter
  *
  * @author liuyunfei
- * @date 2021/9/2
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "AlibabaMethodTooLong"})
 public final class ConfAsserter {

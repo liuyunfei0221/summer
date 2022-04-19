@@ -8,8 +8,6 @@ import static com.blue.base.common.base.BlueChecker.isNull;
  * es server
  *
  * @author liuyunfei
- * @date 2021/9/19
- * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
 public final class Server {

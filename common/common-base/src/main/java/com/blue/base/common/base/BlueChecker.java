@@ -8,14 +8,13 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
 
 /**
  * @author liuyunfei
- * @date 2021/10/29
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
 public final class BlueChecker {
@@ -78,6 +77,28 @@ public final class BlueChecker {
      */
     public static <T> boolean isNotEmpty(List<T> list) {
         return list != null && list.size() > 0;
+    }
+
+    /**
+     * check an empty set
+     *
+     * @param set
+     * @param <T>
+     * @return
+     */
+    public static <T> boolean isEmpty(Set<T> set) {
+        return set == null || set.size() < 1;
+    }
+
+    /**
+     * check not an empty set
+     *
+     * @param set
+     * @param <T>
+     * @return
+     */
+    public static <T> boolean isNotEmpty(Set<T> set) {
+        return set != null && set.size() > 0;
     }
 
     /**

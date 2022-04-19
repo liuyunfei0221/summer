@@ -10,8 +10,6 @@ import reactor.core.publisher.Mono;
  * member authority service
  *
  * @author liuyunfei
- * @date 2021/10/19
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 public interface MemberAuthorityService {

@@ -80,8 +80,6 @@ public class ProducerConfParams implements ProducerConf {
 
     protected Integer maxPendingMessages;
 
-    protected Integer maxPendingMessagesAcrossPartitions;
-
     protected Boolean blockIfQueueFull;
 
     protected MessageRoutingMode messageRoutingMode;
@@ -119,7 +117,15 @@ public class ProducerConfParams implements ProducerConf {
     public ProducerConfParams() {
     }
 
-    public ProducerConfParams(List<String> services, Boolean enableTls, String tlsTrustCertsFilePath, String tlsCertFilePath, String tlsKeyFilePath, Boolean tlsAllowInsecureConnection, Boolean tlsHostnameVerificationEnable, String listenerName, Integer operationTimeoutMillis, Long statsIntervalMillis, Integer ioThreads, Integer listenerThreads, Integer connectionsPerBroker, Boolean useTcpNoDelay, Integer memoryLimitKiloBytes, Integer maxConcurrentLookupRequests, Integer maxLookupRequest, Integer maxLookupRedirects, Integer maxNumberOfRejectedRequestPerConnection, Integer keepAliveIntervalMillis, Integer connectionTimeoutMillis, Long startingBackoffIntervalMillis, Long maxBackoffIntervalMillis, Boolean enableBusyWait, String clockZoneId, Boolean enableTransaction, Boolean enableProxy, String proxyServiceUrl, ProxyProtocol proxyProtocol, String topic, String producerName, ProducerAccessMode accessMode, Integer sendTimeoutMillis, Integer maxPendingMessages, Integer maxPendingMessagesAcrossPartitions, Boolean blockIfQueueFull, MessageRoutingMode messageRoutingMode, CompressionType compressionType, Boolean enableBatching, Boolean enableChunking, Long batchingMaxPublishDelayMillis, Integer roundRobinRouterBatchingPartitionSwitchFrequency, Integer batchingMaxMessages, Integer batchingMaxBytes, Long initialSequenceId, Boolean autoUpdatePartitions, Integer autoUpdatePartitionsIntervalMillis, Boolean enableMultiSchema, List<HashingScheme> hashingSchemes, Boolean enableEncrypt, String encryptionKey, ProducerCryptoFailureAction producerCryptoFailureAction) {
+    public ProducerConfParams(List<String> services, Boolean enableTls, String tlsTrustCertsFilePath, String tlsCertFilePath, String tlsKeyFilePath,
+                              Boolean tlsAllowInsecureConnection, Boolean tlsHostnameVerificationEnable, String listenerName, Integer operationTimeoutMillis, Long statsIntervalMillis,
+                              Integer ioThreads, Integer listenerThreads, Integer connectionsPerBroker, Boolean useTcpNoDelay, Integer memoryLimitKiloBytes, Integer maxConcurrentLookupRequests,
+                              Integer maxLookupRequest, Integer maxLookupRedirects, Integer maxNumberOfRejectedRequestPerConnection, Integer keepAliveIntervalMillis, Integer connectionTimeoutMillis,
+                              Long startingBackoffIntervalMillis, Long maxBackoffIntervalMillis, Boolean enableBusyWait, String clockZoneId, Boolean enableTransaction, Boolean enableProxy,
+                              String proxyServiceUrl, ProxyProtocol proxyProtocol, String topic, String producerName, ProducerAccessMode accessMode, Integer sendTimeoutMillis, Integer maxPendingMessages,
+                              Boolean blockIfQueueFull, MessageRoutingMode messageRoutingMode, CompressionType compressionType, Boolean enableBatching, Boolean enableChunking, Long batchingMaxPublishDelayMillis,
+                              Integer roundRobinRouterBatchingPartitionSwitchFrequency, Integer batchingMaxMessages, Integer batchingMaxBytes, Long initialSequenceId, Boolean autoUpdatePartitions,
+                              Integer autoUpdatePartitionsIntervalMillis, Boolean enableMultiSchema, List<HashingScheme> hashingSchemes, Boolean enableEncrypt, String encryptionKey, ProducerCryptoFailureAction producerCryptoFailureAction) {
         this.services = services;
         this.enableTls = enableTls;
         this.tlsTrustCertsFilePath = tlsTrustCertsFilePath;
@@ -154,7 +160,6 @@ public class ProducerConfParams implements ProducerConf {
         this.accessMode = accessMode;
         this.sendTimeoutMillis = sendTimeoutMillis;
         this.maxPendingMessages = maxPendingMessages;
-        this.maxPendingMessagesAcrossPartitions = maxPendingMessagesAcrossPartitions;
         this.blockIfQueueFull = blockIfQueueFull;
         this.messageRoutingMode = messageRoutingMode;
         this.compressionType = compressionType;
@@ -342,11 +347,6 @@ public class ProducerConfParams implements ProducerConf {
     @Override
     public Integer getMaxPendingMessages() {
         return maxPendingMessages;
-    }
-
-    @Override
-    public Integer getMaxPendingMessagesAcrossPartitions() {
-        return maxPendingMessagesAcrossPartitions;
     }
 
     @Override
@@ -570,10 +570,6 @@ public class ProducerConfParams implements ProducerConf {
         this.maxPendingMessages = maxPendingMessages;
     }
 
-    public void setMaxPendingMessagesAcrossPartitions(Integer maxPendingMessagesAcrossPartitions) {
-        this.maxPendingMessagesAcrossPartitions = maxPendingMessagesAcrossPartitions;
-    }
-
     public void setBlockIfQueueFull(Boolean blockIfQueueFull) {
         this.blockIfQueueFull = blockIfQueueFull;
     }
@@ -679,7 +675,6 @@ public class ProducerConfParams implements ProducerConf {
                 ", accessMode=" + accessMode +
                 ", sendTimeoutMillis=" + sendTimeoutMillis +
                 ", maxPendingMessages=" + maxPendingMessages +
-                ", maxPendingMessagesAcrossPartitions=" + maxPendingMessagesAcrossPartitions +
                 ", blockIfQueueFull=" + blockIfQueueFull +
                 ", messageRoutingMode=" + messageRoutingMode +
                 ", compressionType=" + compressionType +

@@ -6,8 +6,6 @@ import com.blue.finance.api.model.MemberFinanceInfo;
  * config finance
  *
  * @author liuyunfei
- * @date 2021/11/1
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
 public interface ControlService {

@@ -20,8 +20,6 @@ import static reactor.util.Loggers.getLogger;
  * scheduler generator
  *
  * @author liuyunfei
- * @date 2021/9/11
- * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "JavaDoc"})
 public final class SchedulerGenerator {

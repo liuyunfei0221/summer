@@ -10,6 +10,7 @@ import org.springframework.scripting.support.ResourceScriptSource;
 
 import java.io.IOException;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -18,8 +19,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * redis script generator
  *
  * @author liuyunfei
- * @date 2021/8/19
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class BlueRedisScriptGenerator {
@@ -32,8 +31,8 @@ public final class BlueRedisScriptGenerator {
      * @return
      */
     public static <T> RedisScript<T> generateScriptByFile(String location, Class<T> clz) {
-        if (isBlank(location))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "location can't be null or ''");
+        if (isBlank(location) || isNull(clz))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "location can't be blank, clz can't be null");
 
         Resource resource = new ClassPathResource(location);
         EncodedResource encodedResource = new EncodedResource(resource, UTF_8.name());
@@ -56,8 +55,8 @@ public final class BlueRedisScriptGenerator {
      * @return
      */
     public static <T> RedisScript<T> generateScriptByScriptStr(String script, Class<T> clz) {
-        if (isBlank(script))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "script can't be null or ''");
+        if (isBlank(script) || isNull(clz))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "script can't be blank, clz can't be null");
 
         return new BlueRedisScript<>(script, clz);
     }

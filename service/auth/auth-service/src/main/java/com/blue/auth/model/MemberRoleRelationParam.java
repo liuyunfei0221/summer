@@ -12,8 +12,6 @@ import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
  * member-role-relation param
  *
  * @author liuyunfei
- * @date 2021/11/9
- * @apiNote
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class MemberRoleRelationParam implements Serializable, Asserter {

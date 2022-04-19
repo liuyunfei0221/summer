@@ -18,9 +18,8 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  * param packager registrar
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Import(BlueParamPackagerBeanDefinitionRegistrar.class)
 @Configuration
 @Order(HIGHEST_PRECEDENCE)

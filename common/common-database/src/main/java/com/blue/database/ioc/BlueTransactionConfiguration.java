@@ -37,8 +37,6 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  * transaction configuration base on expression
  *
  * @author liuyunfei
- * @date 2021/9/10
- * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "DefaultAnnotationParam"})
 @EnableTransactionManagement(proxyTargetClass = true, mode = PROXY, order = LOWEST_PRECEDENCE)

@@ -4,8 +4,6 @@ package com.blue.base.constant.base;
  * sort type
  *
  * @author liuyunfei
- * @date 2021/10/21
- * @apiNote
  */
 public enum SortType {
 

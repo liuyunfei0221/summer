@@ -24,12 +24,14 @@ public class RpcAuthServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcAuthServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-auth"}, methods = {
-            @Method(name = "assertAccess", async = true),
-            @Method(name = "invalidateAuthByAccess", async = true),
-            @Method(name = "invalidateAuthByJwt", async = true),
-            @Method(name = "invalidateAuthByMemberId", async = true)
-    })
+    @DubboReference(version = "1.0",
+            providedBy = {"summer-auth"},
+            methods = {
+                    @Method(name = "assertAccess", async = true),
+                    @Method(name = "invalidateAuthByAccess", async = true),
+                    @Method(name = "invalidateAuthByJwt", async = true),
+                    @Method(name = "invalidateAuthByMemberId", async = true)
+            })
     private RpcAuthService rpcAuthService;
 
     /**

@@ -6,8 +6,6 @@ import java.io.Serializable;
  * String value wrapper
  *
  * @author liuyunfei
- * @date 2021/10/14
- * @apiNote
  */
 @SuppressWarnings("unused")
 public final class StringValueParam implements Serializable {

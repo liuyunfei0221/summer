@@ -17,8 +17,6 @@ import static reactor.util.Loggers.getLogger;
  * DataBufferLimitException handler
  *
  * @author liuyunfei
- * @date 2021/8/23
- * @apiNote
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public class DataBufferLimitExceptionHandler implements ExceptionHandler {

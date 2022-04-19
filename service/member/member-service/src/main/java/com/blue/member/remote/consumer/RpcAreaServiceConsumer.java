@@ -28,19 +28,21 @@ public class RpcAreaServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcAreaServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-base"}, methods = {
-            @Method(name = "getAreaInfoOptById", async = false),
-            @Method(name = "getAreaInfoById", async = false),
-            @Method(name = "getAreaInfoMonoById", async = true),
-            @Method(name = "selectAreaInfoByCityId", async = false),
-            @Method(name = "selectAreaInfoMonoByCityId", async = true),
-            @Method(name = "selectAreaInfoByIds", async = false),
-            @Method(name = "selectAreaInfoMonoByIds", async = true),
-            @Method(name = "getAreaRegionById", async = true),
-            @Method(name = "getAreaRegionMonoById", async = true),
-            @Method(name = "selectAreaRegionByIds", async = true),
-            @Method(name = "selectAreaRegionMonoByIds", async = true)
-    })
+    @DubboReference(version = "1.0",
+            providedBy = {"summer-base"},
+            methods = {
+                    @Method(name = "getAreaInfoOptById", async = false),
+                    @Method(name = "getAreaInfoById", async = false),
+                    @Method(name = "getAreaInfoMonoById", async = true),
+                    @Method(name = "selectAreaInfoByCityId", async = false),
+                    @Method(name = "selectAreaInfoMonoByCityId", async = true),
+                    @Method(name = "selectAreaInfoByIds", async = false),
+                    @Method(name = "selectAreaInfoMonoByIds", async = true),
+                    @Method(name = "getAreaRegionById", async = true),
+                    @Method(name = "getAreaRegionMonoById", async = true),
+                    @Method(name = "selectAreaRegionByIds", async = true),
+                    @Method(name = "selectAreaRegionMonoByIds", async = true)
+            })
     private RpcAreaService rpcAreaService;
 
     private final Scheduler scheduler;

@@ -9,8 +9,6 @@ import reactor.core.publisher.Mono;
  * dynamic endpoint handler interface
  *
  * @author liuyunfei
- * @date 2021/9/14
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 public interface DynamicEndPointHandler {

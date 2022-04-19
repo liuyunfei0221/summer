@@ -6,8 +6,6 @@ import java.io.Serializable;
  * non value wrapper
  *
  * @author liuyunfei
- * @date 2021/10/14
- * @apiNote
  */
 @SuppressWarnings("unused")
 public class NonValueParam implements Serializable {

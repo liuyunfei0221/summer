@@ -22,8 +22,6 @@ public interface ProducerConf extends ClientConf {
 
     Integer getMaxPendingMessages();
 
-    Integer getMaxPendingMessagesAcrossPartitions();
-
     Boolean getBlockIfQueueFull();
 
     MessageRoutingMode getMessageRoutingMode();

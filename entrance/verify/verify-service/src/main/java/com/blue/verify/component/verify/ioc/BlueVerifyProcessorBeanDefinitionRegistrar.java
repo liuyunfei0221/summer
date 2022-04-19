@@ -3,6 +3,7 @@ package com.blue.verify.component.verify.ioc;
 import com.blue.base.component.common.BlueBeanDefinitionScanner;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -18,17 +19,16 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  * verify registrar
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 @Import(BlueVerifyProcessorBeanDefinitionRegistrar.class)
 @Configuration
 @Order(HIGHEST_PRECEDENCE)
-public class BlueVerifyProcessorBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
+public class BlueVerifyProcessorBeanDefinitionRegistrar implements ResourceLoaderAware, ImportBeanDefinitionRegistrar {
 
-    private final ResourceLoader resourceLoader;
+    private ResourceLoader resourceLoader;
 
-    public BlueVerifyProcessorBeanDefinitionRegistrar(ResourceLoader resourceLoader) {
+    @Override
+    public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 

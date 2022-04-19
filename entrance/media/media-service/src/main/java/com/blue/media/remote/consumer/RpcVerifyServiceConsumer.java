@@ -23,10 +23,12 @@ public class RpcVerifyServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcVerifyServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-verify"}, methods = {
-            @Method(name = "generate", async = true),
-            @Method(name = "validate", async = true)
-    })
+    @DubboReference(version = "1.0",
+            providedBy = {"summer-verify"},
+            methods = {
+                    @Method(name = "generate", async = true),
+                    @Method(name = "validate", async = true)
+            })
     private RpcVerifyService rpcVerifyService;
 
     private final Scheduler scheduler;

@@ -19,8 +19,6 @@ import static reactor.util.Loggers.getLogger;
 
 /**
  * @author liuyunfei
- * @date 2021/10/14
- * @apiNote
  */
 public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle {
 

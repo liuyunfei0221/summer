@@ -22,7 +22,6 @@ import static reactor.util.Loggers.getLogger;
  * prop processor
  *
  * @author liuyunfei
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public final class PropertiesProcessor {

@@ -1,5 +1,6 @@
 package com.blue.auth.service.inter;
 
+import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.repository.entity.Credential;
 import reactor.core.publisher.Mono;
 
@@ -10,7 +11,6 @@ import java.util.Optional;
  * credential service
  *
  * @author liuyunfei
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
 public interface CredentialService {
@@ -52,6 +52,15 @@ public interface CredentialService {
     Mono<List<Credential>> selectCredentialMonoByCredentialAndTypes(String credential, List<String> credentialTypes);
 
     /**
+     * select info mono by credential and types
+     *
+     * @param credential
+     * @param credentialTypes
+     * @return
+     */
+    Mono<List<CredentialInfo>> selectCredentialInfoMonoByCredentialAndTypes(String credential, List<String> credentialTypes);
+
+    /**
      * get by member id and type
      *
      * @param memberId
@@ -86,6 +95,15 @@ public interface CredentialService {
      * @return
      */
     Mono<List<Credential>> selectCredentialMonoByMemberIdAndTypes(Long memberId, List<String> credentialTypes);
+
+    /**
+     * select info mono by member id and types
+     *
+     * @param memberId
+     * @param credentialTypes
+     * @return
+     */
+    Mono<List<CredentialInfo>> selectCredentialInfoMonoByMemberIdAndTypes(Long memberId, List<String> credentialTypes);
 
     /**
      * insert credential batch

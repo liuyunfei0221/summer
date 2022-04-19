@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * rpc role provider
+ * rpc resource interface
  *
  * @author liuyunfei
  */

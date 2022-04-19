@@ -23,8 +23,6 @@ import static reactor.core.publisher.Mono.zip;
  * relation manager handler
  *
  * @author liuyunfei
- * @date 2021/11/9
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 @Component

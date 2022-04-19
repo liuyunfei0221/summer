@@ -23,7 +23,6 @@ import static reactor.util.Loggers.getLogger;
  * auto register member service impl
  *
  * @author liuyunfei
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc"})
 @Service

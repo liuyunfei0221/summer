@@ -30,8 +30,6 @@ import static reactor.util.Loggers.getLogger;
  * value marker
  *
  * @author liuyunfei
- * @date 2021/9/6
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class BlueValueMarker {

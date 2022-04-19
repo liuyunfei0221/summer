@@ -31,8 +31,6 @@ import static reactor.util.Loggers.getLogger;
  * refresh auth processor
  *
  * @author liuyunfei
- * @date 2021/8/19
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "AlibabaAvoidManuallyCreateThread", "AliControlFlowStatementWithoutBraces"})
 public final class AccessBatchExpireProcessor {

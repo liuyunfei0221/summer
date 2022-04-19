@@ -5,9 +5,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-
-import static reactor.util.Loggers.getLogger;
 
 
 /**
@@ -18,8 +15,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc", "Duplicates"})
 @Component
 public final class FileApiHandler {
-
-    private static final Logger LOGGER = getLogger(FileApiHandler.class);
 
     private final ByteOperateService byteOperateService;
 

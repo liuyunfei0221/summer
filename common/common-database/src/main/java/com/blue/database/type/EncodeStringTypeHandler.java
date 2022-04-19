@@ -16,8 +16,6 @@ import static java.util.Optional.ofNullable;
  * encode string type handler
  *
  * @author liuyunfei
- * @date 2021/10/12
- * @apiNote
  */
 public final class EncodeStringTypeHandler extends BaseTypeHandler<String> {
 

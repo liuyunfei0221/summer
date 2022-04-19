@@ -3,6 +3,7 @@ package com.blue.auth.component.login.ioc;
 import com.blue.auth.component.login.inter.LoginHandler;
 import com.blue.base.component.common.BlueBeanDefinitionScanner;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -18,17 +19,16 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  * login processor registrar
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 @Import(BlueLoginProcessorBeanDefinitionRegistrar.class)
 @Configuration
 @Order(HIGHEST_PRECEDENCE)
-public class BlueLoginProcessorBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
+public class BlueLoginProcessorBeanDefinitionRegistrar implements ResourceLoaderAware, ImportBeanDefinitionRegistrar {
 
-    private final ResourceLoader resourceLoader;
+    private ResourceLoader resourceLoader;
 
-    public BlueLoginProcessorBeanDefinitionRegistrar(ResourceLoader resourceLoader) {
+    @Override
+    public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 

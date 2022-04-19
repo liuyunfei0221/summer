@@ -52,7 +52,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "PlaceholderCountMatchesArgumentCount", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection", "DuplicatedCode"})
+@SuppressWarnings({"JavaDoc", "PlaceholderCountMatchesArgumentCount", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection", "DuplicatedCode", "unused"})
 public final class BlueDataAccessGenerator {
 
     private static final Logger LOGGER = getLogger(BlueDataAccessGenerator.class);

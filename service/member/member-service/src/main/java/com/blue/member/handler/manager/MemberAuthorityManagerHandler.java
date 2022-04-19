@@ -20,8 +20,6 @@ import static reactor.core.publisher.Mono.error;
  * member authority manager handler
  *
  * @author liuyunfei
- * @date 2021/8/31
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 @Component

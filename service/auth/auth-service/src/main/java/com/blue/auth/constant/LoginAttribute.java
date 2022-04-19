@@ -4,8 +4,6 @@ package com.blue.auth.constant;
  * login attr keys
  *
  * @author liuyunfei
- * @date 2021/10/21
- * @apiNote
  */
 public enum LoginAttribute {
 

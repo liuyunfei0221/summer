@@ -9,8 +9,6 @@ import reactor.core.publisher.Mono;
  * statistics service
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 public interface StatisticsService {

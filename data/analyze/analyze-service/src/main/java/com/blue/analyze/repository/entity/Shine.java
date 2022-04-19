@@ -9,8 +9,6 @@ import java.io.Serializable;
  * shine info
  *
  * @author liuyunfei
- * @date 2021/9/16
- * @apiNote
  */
 @SuppressWarnings("unused")
 public class Shine implements Serializable {

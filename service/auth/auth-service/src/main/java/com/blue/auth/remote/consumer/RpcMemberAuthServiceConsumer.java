@@ -23,10 +23,12 @@ public class RpcMemberAuthServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcMemberAuthServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-member"}, methods = {
-            @Method(name = "autoRegisterMemberBasic", async = false),
-            @Method(name = "updateMemberCredentialAttr", async = false)
-    })
+    @DubboReference(version = "1.0",
+            providedBy = {"summer-member"},
+            methods = {
+                    @Method(name = "autoRegisterMemberBasic", async = false),
+                    @Method(name = "updateMemberCredentialAttr", async = false)
+            })
     private RpcMemberAuthService rpcMemberAuthService;
 
     /**

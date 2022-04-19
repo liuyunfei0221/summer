@@ -15,7 +15,7 @@ import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * rpc auth reference
+ * rpc resource reference
  *
  * @author liuyunfei
  */

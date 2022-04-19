@@ -17,14 +17,16 @@ import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * rpc role provider
+ * rpc resource provider
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
-@DubboService(interfaceClass = RpcResourceService.class, version = "1.0", methods = {
-        @Method(name = "selectResourceInfo", async = true)
-})
+@DubboService(interfaceClass = RpcResourceService.class,
+        version = "1.0",
+        methods = {
+                @Method(name = "selectResourceInfo", async = true)
+        })
 public class RpcResourceServiceProvider implements RpcResourceService {
 
     private static final Logger LOGGER = getLogger(RpcResourceServiceProvider.class);

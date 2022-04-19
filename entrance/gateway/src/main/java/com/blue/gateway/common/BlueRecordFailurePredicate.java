@@ -14,8 +14,6 @@ import static java.util.stream.Stream.of;
  * RecordFailurePredicate for resilience4j
  *
  * @author liuyunfei
- * @date 2021/9/28
- * @apiNote
  */
 @SuppressWarnings("unused")
 public class BlueRecordFailurePredicate implements Predicate<Throwable> {

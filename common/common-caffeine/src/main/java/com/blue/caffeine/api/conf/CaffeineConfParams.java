@@ -9,8 +9,6 @@ import java.util.concurrent.ExecutorService;
  * caffeine conf params
  *
  * @author liuyunfei
- * @date 2021/9/11
- * @apiNote
  */
 @SuppressWarnings("unused")
 public class CaffeineConfParams implements CaffeineConf {

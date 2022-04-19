@@ -4,8 +4,6 @@ package com.blue.database.api.conf;
  * sharding database attributes
  *
  * @author liuyunfei
- * @date 2021/10/19
- * @apiNote
  */
 public class ShardingTableAttr {
 

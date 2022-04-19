@@ -20,10 +20,12 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
-@DubboService(interfaceClass = RpcVerifyHandleService.class, version = "1.0", methods = {
-        @Method(name = "generate", async = true),
-        @Method(name = "validate", async = true)
-})
+@DubboService(interfaceClass = RpcVerifyHandleService.class,
+        version = "1.0",
+        methods = {
+                @Method(name = "generate", async = true),
+                @Method(name = "validate", async = true)
+        })
 public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
 
     private static final Logger LOGGER = getLogger(RpcVerifyHandleServiceProvider.class);

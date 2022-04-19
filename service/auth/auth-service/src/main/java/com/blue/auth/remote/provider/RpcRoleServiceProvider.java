@@ -31,11 +31,13 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
-@DubboService(interfaceClass = RpcRoleService.class, version = "1.0", methods = {
-        @Method(name = "selectRoleInfo", async = true),
-        @Method(name = "selectRoleInfoByMemberId", async = true),
-        @Method(name = "selectRoleInfoByMemberIds", async = true)
-})
+@DubboService(interfaceClass = RpcRoleService.class,
+        version = "1.0",
+        methods = {
+                @Method(name = "selectRoleInfo", async = true),
+                @Method(name = "selectRoleInfoByMemberId", async = true),
+                @Method(name = "selectRoleInfoByMemberIds", async = true)
+        })
 public class RpcRoleServiceProvider implements RpcRoleService {
 
     private static final Logger LOGGER = getLogger(RpcRoleServiceProvider.class);

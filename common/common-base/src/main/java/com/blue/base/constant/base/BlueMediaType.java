@@ -6,8 +6,6 @@ import org.springframework.http.MediaType;
  * media type
  *
  * @author liuyunfei
- * @date 2021/9/5
- * @apiNote
  */
 @SuppressWarnings({"AlibabaEnumConstantsMustHaveComment", "deprecation"})
 public enum BlueMediaType {

@@ -6,8 +6,6 @@ import org.springframework.http.MediaType;
  * file suffix with media type mapping
  *
  * @author liuyunfei
- * @date 2021/9/5
- * @apiNote
  */
 @SuppressWarnings({"AlibabaEnumConstantsMustHaveComment"})
 public enum BlueFileType {

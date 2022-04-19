@@ -8,10 +8,8 @@ import java.util.List;
  * reactive rest conf param
  *
  * @author liuyunfei
- * @date 2021/9/9
- * @apiNote
  */
-@SuppressWarnings({"SpellCheckingInspection", "unused"})
+@SuppressWarnings({"unused"})
 public class ReactRestConfParams implements ReactRestConf {
 
     protected Integer maxConnections;

@@ -13,7 +13,6 @@ import reactor.core.publisher.Mono;
  * config role,resource,relation
  *
  * @author liuyunfei
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
 public interface ControlService {

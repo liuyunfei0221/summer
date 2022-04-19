@@ -23,19 +23,21 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
-@DubboService(interfaceClass = RpcAreaService.class, version = "1.0", methods = {
-        @Method(name = "getAreaInfoOptById", async = false),
-        @Method(name = "getAreaInfoById", async = false),
-        @Method(name = "getAreaInfoMonoById", async = true),
-        @Method(name = "selectAreaInfoByCityId", async = false),
-        @Method(name = "selectAreaInfoMonoByCityId", async = true),
-        @Method(name = "selectAreaInfoByIds", async = false),
-        @Method(name = "selectAreaInfoMonoByIds", async = true),
-        @Method(name = "getAreaRegionById", async = false),
-        @Method(name = "getAreaRegionMonoById", async = true),
-        @Method(name = "selectAreaRegionByIds", async = false),
-        @Method(name = "selectAreaRegionMonoByIds", async = true)
-})
+@DubboService(interfaceClass = RpcAreaService.class,
+        version = "1.0",
+        methods = {
+                @Method(name = "getAreaInfoOptById", async = false),
+                @Method(name = "getAreaInfoById", async = false),
+                @Method(name = "getAreaInfoMonoById", async = true),
+                @Method(name = "selectAreaInfoByCityId", async = false),
+                @Method(name = "selectAreaInfoMonoByCityId", async = true),
+                @Method(name = "selectAreaInfoByIds", async = false),
+                @Method(name = "selectAreaInfoMonoByIds", async = true),
+                @Method(name = "getAreaRegionById", async = false),
+                @Method(name = "getAreaRegionMonoById", async = true),
+                @Method(name = "selectAreaRegionByIds", async = false),
+                @Method(name = "selectAreaRegionMonoByIds", async = true)
+        })
 public class RpcAreaServiceProvider implements RpcAreaService {
 
     private static final Logger LOGGER = getLogger(RpcAreaServiceProvider.class);

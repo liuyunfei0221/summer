@@ -172,7 +172,6 @@ public class ImageVerifyHandler implements VerifyHandler {
                         allowed ?
                                 this.handle(businessType, generateRandom(KEY_RANDOM_TYPE, KEY_LEN))
                                         .flatMap(verify -> {
-
                                             LOGGER.info("Mono<ServerResponse> handle(String destination), key = {}, verify = {}", key, verify);
 
                                             return using(FastByteArrayOutputStream::new,

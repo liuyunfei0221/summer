@@ -8,8 +8,6 @@ import java.util.function.Function;
  * jwt conf
  *
  * @author liuyunfei
- * @date 2021/9/10
- * @apiNote
  */
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface JwtConf<T> {

@@ -2,14 +2,10 @@ package com.blue.base.constant.base;
 
 import org.springframework.http.HttpMethod;
 
-import java.io.Serializable;
-
 /**
  * http methods
  *
  * @author liuyunfei
- * @date 2021/11/4
- * @apiNote
  */
 public enum BlueHttpMethod {
 

@@ -12,8 +12,6 @@ import static com.blue.base.component.reactrest.api.generator.BlueReactRestGener
  * reactive rest configuration
  *
  * @author liuyunfei
- * @date 2021/9/9
- * @apiNote
  */
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ConditionalOnBean(value = {ReactRestConf.class})

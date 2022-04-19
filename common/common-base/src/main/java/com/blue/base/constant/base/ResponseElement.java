@@ -44,6 +44,7 @@ public enum ResponseElement {
     DATA_HAS_NOT_CHANGED(HttpStatus.BAD_REQUEST.value(), 400000016, "Data has not changed"),
     VERIFY_IS_INVALID(HttpStatus.BAD_REQUEST.value(), 400000017, "Verify is invalid"),
     TIME_FORMAT_IS_INVALID(HttpStatus.BAD_REQUEST.value(), 400000018, "Time format is invalid"),
+    UNSUPPORTED_OPERATE(HttpStatus.BAD_REQUEST.value(), 400000019, "Operate is not support"),
     //</editor-fold>
 
 

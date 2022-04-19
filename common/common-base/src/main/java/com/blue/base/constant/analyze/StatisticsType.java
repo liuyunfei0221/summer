@@ -4,8 +4,6 @@ package com.blue.base.constant.analyze;
  * statistics type
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 public enum StatisticsType {
 

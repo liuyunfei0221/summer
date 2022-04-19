@@ -12,8 +12,6 @@ import static com.blue.base.component.syncrest.api.generator.BlueSyncRestGenerat
  * rest configuration
  *
  * @author liuyunfei
- * @date 2021/9/9
- * @apiNote
  */
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ConditionalOnBean(value = {SyncRestConf.class})

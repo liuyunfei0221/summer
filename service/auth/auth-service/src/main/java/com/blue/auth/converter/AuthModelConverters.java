@@ -1,12 +1,14 @@
 package com.blue.auth.converter;
 
-import com.blue.auth.repository.entity.Resource;
-import com.blue.auth.repository.entity.Role;
-import com.blue.base.model.exps.BlueException;
+import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.api.model.ResourceInfo;
 import com.blue.auth.api.model.RoleInfo;
 import com.blue.auth.model.ResourceInsertParam;
 import com.blue.auth.model.RoleInsertParam;
+import com.blue.auth.repository.entity.Credential;
+import com.blue.auth.repository.entity.Resource;
+import com.blue.auth.repository.entity.Role;
+import com.blue.base.model.exps.BlueException;
 
 import java.util.function.Function;
 
@@ -155,6 +157,16 @@ public final class AuthModelConverters {
                 resource.getAuthenticate(), resource.getRequestUnDecryption(), resource.getResponseUnEncryption(),
                 resource.getExistenceRequestBody(), resource.getExistenceResponseBody(), getResourceTypeByIdentity(resource.getType()).disc.intern(),
                 resource.getName(), resource.getDescription());
+    };
+
+    /**
+     * credential -> credential info
+     */
+    public static final Function<Credential, CredentialInfo> CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER = credential -> {
+        if (isNull(credential))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new CredentialInfo(credential.getCredential(), credential.getType(), "", credential.getStatus(), credential.getExtra());
     };
 
 }

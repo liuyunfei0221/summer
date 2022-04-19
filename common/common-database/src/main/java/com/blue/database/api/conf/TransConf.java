@@ -9,8 +9,6 @@ import java.util.List;
  * transaction conf base on expression
  *
  * @author liuyunfei
- * @date 2021/9/10
- * @apiNote
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
 public interface TransConf {

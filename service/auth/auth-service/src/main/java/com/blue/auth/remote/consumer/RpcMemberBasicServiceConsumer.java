@@ -25,12 +25,14 @@ public class RpcMemberBasicServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcMemberBasicServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-member"}, methods = {
-            @Method(name = "selectMemberBasicInfoMonoByPrimaryKey", async = true),
-            @Method(name = "selectMemberBasicInfoMonoByIds", async = true),
-            @Method(name = "selectMemberBasicInfoByPhone", async = true),
-            @Method(name = "selectMemberBasicInfoByEmail", async = true)
-    })
+    @DubboReference(version = "1.0",
+            providedBy = {"summer-member"},
+            methods = {
+                    @Method(name = "selectMemberBasicInfoMonoByPrimaryKey", async = true),
+                    @Method(name = "selectMemberBasicInfoMonoByIds", async = true),
+                    @Method(name = "selectMemberBasicInfoByPhone", async = true),
+                    @Method(name = "selectMemberBasicInfoByEmail", async = true)
+            })
     private RpcMemberBasicService rpcMemberBasicService;
 
     private final Scheduler scheduler;

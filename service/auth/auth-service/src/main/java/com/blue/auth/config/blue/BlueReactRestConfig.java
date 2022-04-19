@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpellCheckingInspection")
 @Component
 @ConfigurationProperties(prefix = "reactrest")
 public class BlueReactRestConfig extends ReactRestConfParams {

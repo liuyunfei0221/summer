@@ -8,10 +8,8 @@ import java.util.List;
  * reactive rest conf
  *
  * @author liuyunfei
- * @date 2021/9/9
- * @apiNote
  */
-@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "SpellCheckingInspection"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface ReactRestConf {
 
     Integer getMaxConnections();

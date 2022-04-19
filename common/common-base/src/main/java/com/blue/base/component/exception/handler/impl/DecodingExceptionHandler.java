@@ -23,8 +23,6 @@ import static reactor.util.Loggers.getLogger;
  * decoding exp handler
  *
  * @author liuyunfei
- * @date 2021/9/5
- * @apiNote
  */
 @SuppressWarnings({"unused", "AlibabaUndefineMagicConstant"})
 public class DecodingExceptionHandler implements ExceptionHandler {

@@ -8,8 +8,6 @@ import org.springframework.context.annotation.Import;
  * statistics starter
  *
  * @author liuyunfei
- * @date 2021/9/10
- * @apiNote
  */
 @Configuration
 @Import(StatisticsProcessor.class)

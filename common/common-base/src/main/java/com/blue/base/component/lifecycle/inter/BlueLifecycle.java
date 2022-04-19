@@ -7,8 +7,6 @@ package com.blue.base.component.lifecycle.inter;
  * Generally used for elegant online and offline processing during smooth publishing
  *
  * @author liuyunfei
- * @date 2021/8/13
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 public interface BlueLifecycle {

@@ -9,8 +9,6 @@ import java.io.Serializable;
  * member authority info
  *
  * @author liuyunfei
- * @date 2021/10/19
- * @apiNote
  */
 @SuppressWarnings("unused")
 public final class MemberAuthorityInfo implements Serializable {

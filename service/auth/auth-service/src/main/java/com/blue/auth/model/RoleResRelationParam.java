@@ -14,8 +14,6 @@ import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
  * role-resource-relation param
  *
  * @author liuyunfei
- * @date 2021/11/9
- * @apiNote
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public final class RoleResRelationParam implements Serializable, Asserter {

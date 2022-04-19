@@ -8,8 +8,6 @@ import java.util.function.Function;
  * jwt params
  *
  * @author liuyunfei
- * @date 2021/8/12
- * @apiNote
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public abstract class BaseJwtConfParams<T> implements JwtConf<T> {

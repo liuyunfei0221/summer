@@ -10,6 +10,7 @@ import static org.springframework.boot.SpringApplication.run;
  *
  * @author liuyunfei
  */
+@SuppressWarnings("resource")
 @SpringBootApplication
 @EnableEurekaServer
 public class RegistryApplication {

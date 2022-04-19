@@ -20,8 +20,6 @@ import static reactor.util.Loggers.getLogger;
  * executor generator
  *
  * @author liuyunfei
- * @date 2021/9/11
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 public final class BlueExecutorGenerator {

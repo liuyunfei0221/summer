@@ -14,15 +14,15 @@ public class EncryptTest {
 
     @SuppressWarnings({"AlibabaRemoveCommentedCode", "CommentedOutCode"})
     public static void main(String[] args) {
-//        debugging();
-        testDev();
+        debugging();
+//        testDev();
     }
 
     /**
      * debug
      */
     private static void debugging() {
-        String priKey = "MIIBVgIBADANBgkqhkiG9w0BAQEFAASCAUAwggE8AgEAAkEArBBcmiCRQEJ7/4wlMJ81El2GV8YPCjm9H6ynuEIFZA/+yisnk7v+Ic8dDzRPE8fgyx1ZWfbszmNuLtgXkMKgeQIDAQABAkEAooPhswHHr3YcQEZSahY1vl7voL/FPNdENkKRN4vEI7kbQtuCQI8IhTVZ0eYpsXIyATyPiPO4KFgI+nxWsIDEcQIhANfdyaUcsoLKKv3RR8MQfwRyNO4KyYxlZweRTg/Puqu3AiEAzA3JMgRbYXwksmBy7QWAdqC+Ie+HoSzJLcfIuQG7dU8CIQC11NiaAEZN7UWxb6vnH+oeMKVtLiD/5hqXQUpj/zLamQIgYzEoZqn7ie4BIL0F4PZVtlT5WCHKOq08toZxqo2PBL0CIQC4+IcjHpOfyQXHUcwh29tuLgl7LGyL4Ec3jM/XHTYwug==";
+        String priKey = "MIIBVQIBADANBgkqhkiG9w0BAQEFAASCAT8wggE7AgEAAkEAqytONVqHyq0iFefK1iBD8NEjXuf5PbF2Z99dHwlzBtCLuJD7gUouR+4DCGh6MsAS1DR0n/sd6WY9DLeQHfomQQIDAQABAkEAn309ZTdSecXykail9figdZ3ZMFBDi3l0k3qroQTD+h8HErzwCPabH6HpAjnl3768n2EQxs8OoRC9rumw/VXfMQIhANhGLaReMiLhxbQ+Kdj52GxkmjjrORodApPXJZ+ZcmQVAiEAypwp79HEBNDzZy0AgRxx/0cYEkunkXmg4r2zCr6MKH0CIDYe2a0YJVO1S9Qe+jnhy9bUFgPIWTG/sLVuUWvu6kFBAiEAhLwwQTwElj8p5yM1XGB9UoeJ/ppvyj+LpmAvBs/01KUCIC83FyciN0PRA3syUzWBxCMY4nDJwfv0VGEl85MuaNe3";
         String original = "{\"original\":\"{\\\"amount\\\":400000,\\\"bankCardId\\\":8888888888,\\\"remark\\\":\\\"提现到钱包中\\\"}\",\"timeStamp\":" + Instant.now().getEpochSecond() + "}";
 
         String encrypt = generateTestParam(original, priKey);

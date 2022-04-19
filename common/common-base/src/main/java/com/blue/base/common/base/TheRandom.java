@@ -600,7 +600,7 @@ public class TheRandom extends Random {
 
     private static final long serialVersionUID = -5851777807851030925L;
 
-    private static final ObjectStreamField[] serialPersistentFields = {
+    private static final ObjectStreamField[] SERIAL_PERSISTENT_FIELDS = {
             new ObjectStreamField("rnd", long.class),
             new ObjectStreamField("initialized", boolean.class),
     };

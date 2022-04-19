@@ -3,6 +3,7 @@ package com.blue.analyze.component.statistics.ioc;
 import com.blue.analyze.component.statistics.inter.StatisticsCommand;
 import com.blue.base.component.common.BlueBeanDefinitionScanner;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -18,18 +19,16 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  * statistics registrar
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 @Import(BlueStatisticsProcessorBeanDefinitionRegistrar.class)
 @Configuration
 @Order(HIGHEST_PRECEDENCE)
-public class BlueStatisticsProcessorBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
+public class BlueStatisticsProcessorBeanDefinitionRegistrar implements ResourceLoaderAware, ImportBeanDefinitionRegistrar {
 
-    private final ResourceLoader resourceLoader;
+    private ResourceLoader resourceLoader;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public BlueStatisticsProcessorBeanDefinitionRegistrar(ResourceLoader resourceLoader) {
+    @Override
+    public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 

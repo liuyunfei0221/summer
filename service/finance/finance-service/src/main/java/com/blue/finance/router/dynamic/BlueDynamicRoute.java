@@ -29,8 +29,6 @@ import static reactor.util.Loggers.getLogger;
  * dynamic routers
  *
  * @author liuyunfei
- * @date 2021/9/13
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "NullableProblems"})
 @Configuration

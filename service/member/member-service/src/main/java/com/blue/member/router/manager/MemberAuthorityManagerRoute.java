@@ -17,8 +17,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
  * member manager router
  *
  * @author liuyunfei
- * @date 2021/8/31
- * @apiNote
  */
 @Configuration
 public class MemberAuthorityManagerRoute {

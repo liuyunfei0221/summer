@@ -10,8 +10,6 @@ import static com.blue.base.constant.auth.CredentialType.NOT_LOGGED_IN;
  * special access info
  *
  * @author liuyunfei
- * @date 2021/9/2
- * @apiNote
  */
 public enum SpecialAccess {
 

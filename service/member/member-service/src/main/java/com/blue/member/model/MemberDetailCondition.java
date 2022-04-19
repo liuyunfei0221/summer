@@ -6,8 +6,6 @@ import java.io.Serializable;
  * member detail condition for select
  *
  * @author liuyunfei
- * @date 2021/8/31
- * @apiNote
  */
 @SuppressWarnings("unused")
 public final class MemberDetailCondition implements Serializable {

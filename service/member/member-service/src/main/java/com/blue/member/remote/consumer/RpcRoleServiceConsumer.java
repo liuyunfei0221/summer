@@ -19,10 +19,7 @@ import static reactor.util.Loggers.getLogger;
  * rpc role consumer
  *
  * @author liuyunfei
- * @date 2021/11/1
- * @apiNote
  */
-
 @SuppressWarnings({"JavaDoc", "unused"})
 @Component
 public class RpcRoleServiceConsumer {

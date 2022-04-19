@@ -61,8 +61,6 @@ import static reactor.util.Loggers.getLogger;
  * config role,resource,relation
  *
  * @author liuyunfei
- * @date 2021/11/1
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service

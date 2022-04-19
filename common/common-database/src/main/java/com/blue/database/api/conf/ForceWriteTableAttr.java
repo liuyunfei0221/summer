@@ -4,8 +4,6 @@ package com.blue.database.api.conf;
  * force write table
  *
  * @author liuyunfei
- * @date 2021/10/19
- * @apiNote
  */
 public final class ForceWriteTableAttr extends ShardingTableAttr {
 

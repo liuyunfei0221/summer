@@ -13,8 +13,6 @@ import static org.springframework.data.redis.core.script.DigestUtils.sha1DigestA
  * redis script
  *
  * @author liuyunfei
- * @date 2021/8/18
- * @apiNote
  */
 @SuppressWarnings({"FieldCanBeLocal", "AliControlFlowStatementWithoutBraces"})
 public final class BlueRedisScript<T> implements RedisScript<T> {
@@ -24,8 +22,8 @@ public final class BlueRedisScript<T> implements RedisScript<T> {
     private final Class<T> TYPE;
 
     public BlueRedisScript(String script, Class<T> type) {
-        if (isBlank(script))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "script can't be blank");
+        if (isBlank(script) || isNull(type))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "script can't be blank, type can't be null");
 
         this.SCRIPT = script;
         this.SHA1 = sha1DigestAsHex(script);

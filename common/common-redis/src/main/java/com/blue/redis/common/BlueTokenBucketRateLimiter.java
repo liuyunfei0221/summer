@@ -26,7 +26,7 @@ import static reactor.core.scheduler.Schedulers.boundedElastic;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
 public final class BlueTokenBucketRateLimiter {
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;

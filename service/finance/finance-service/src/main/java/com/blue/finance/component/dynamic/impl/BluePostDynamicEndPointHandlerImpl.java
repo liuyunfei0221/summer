@@ -12,8 +12,6 @@ import static reactor.core.publisher.Mono.just;
  * dynamic endpoint handler impl for post
  *
  * @author liuyunfei
- * @date 2021/9/14
- * @apiNote
  */
 public class BluePostDynamicEndPointHandlerImpl implements DynamicEndPointHandler {
 

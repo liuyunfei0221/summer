@@ -28,19 +28,21 @@ public class RpcStateServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcStateServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-base"}, methods = {
-            @Method(name = "getStateInfoOptById", async = false),
-            @Method(name = "getStateInfoById", async = false),
-            @Method(name = "getStateInfoMonoById", async = true),
-            @Method(name = "selectStateInfoByCountryId", async = false),
-            @Method(name = "selectStateInfoMonoByCountryId", async = true),
-            @Method(name = "selectStateInfoByIds", async = false),
-            @Method(name = "selectStateInfoMonoByIds", async = true),
-            @Method(name = "getStateRegionById", async = true),
-            @Method(name = "getStateRegionMonoById", async = true),
-            @Method(name = "selectStateRegionByIds", async = true),
-            @Method(name = "selectStateRegionMonoByIds", async = true)
-    })
+    @DubboReference(version = "1.0",
+            providedBy = {"summer-base"},
+            methods = {
+                    @Method(name = "getStateInfoOptById", async = false),
+                    @Method(name = "getStateInfoById", async = false),
+                    @Method(name = "getStateInfoMonoById", async = true),
+                    @Method(name = "selectStateInfoByCountryId", async = false),
+                    @Method(name = "selectStateInfoMonoByCountryId", async = true),
+                    @Method(name = "selectStateInfoByIds", async = false),
+                    @Method(name = "selectStateInfoMonoByIds", async = true),
+                    @Method(name = "getStateRegionById", async = true),
+                    @Method(name = "getStateRegionMonoById", async = true),
+                    @Method(name = "selectStateRegionByIds", async = true),
+                    @Method(name = "selectStateRegionMonoByIds", async = true)
+            })
     private RpcStateService rpcStateService;
 
     private final Scheduler scheduler;

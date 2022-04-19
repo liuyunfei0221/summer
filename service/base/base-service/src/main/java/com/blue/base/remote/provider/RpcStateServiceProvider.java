@@ -23,19 +23,21 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
-@DubboService(interfaceClass = RpcStateService.class, version = "1.0", methods = {
-        @Method(name = "getStateInfoOptById", async = false),
-        @Method(name = "getStateInfoById", async = false),
-        @Method(name = "getStateInfoMonoById", async = true),
-        @Method(name = "selectStateInfoByCountryId", async = false),
-        @Method(name = "selectStateInfoMonoByCountryId", async = true),
-        @Method(name = "selectStateInfoByIds", async = false),
-        @Method(name = "selectStateInfoMonoByIds", async = true),
-        @Method(name = "getStateRegionById", async = false),
-        @Method(name = "getStateRegionMonoById", async = true),
-        @Method(name = "selectStateRegionByIds", async = false),
-        @Method(name = "selectStateRegionMonoByIds", async = true)
-})
+@DubboService(interfaceClass = RpcStateService.class,
+        version = "1.0",
+        methods = {
+                @Method(name = "getStateInfoOptById", async = false),
+                @Method(name = "getStateInfoById", async = false),
+                @Method(name = "getStateInfoMonoById", async = true),
+                @Method(name = "selectStateInfoByCountryId", async = false),
+                @Method(name = "selectStateInfoMonoByCountryId", async = true),
+                @Method(name = "selectStateInfoByIds", async = false),
+                @Method(name = "selectStateInfoMonoByIds", async = true),
+                @Method(name = "getStateRegionById", async = false),
+                @Method(name = "getStateRegionMonoById", async = true),
+                @Method(name = "selectStateRegionByIds", async = false),
+                @Method(name = "selectStateRegionMonoByIds", async = true)
+        })
 public class RpcStateServiceProvider implements RpcStateService {
 
     private static final Logger LOGGER = getLogger(RpcStateServiceProvider.class);

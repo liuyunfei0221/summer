@@ -18,8 +18,6 @@ import static reactor.util.Loggers.getLogger;
  * statistics chain processor
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 @Component

@@ -28,19 +28,21 @@ public class RpcCityServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcCityServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-base"}, methods = {
-            @Method(name = "getCityInfoOptById", async = false),
-            @Method(name = "getCityInfoById", async = false),
-            @Method(name = "getCityInfoMonoById", async = true),
-            @Method(name = "selectCityInfoByStateId", async = false),
-            @Method(name = "selectCityInfoMonoByStateId", async = true),
-            @Method(name = "selectCityInfoByIds", async = false),
-            @Method(name = "selectCityInfoMonoByIds", async = true),
-            @Method(name = "getCityRegionById", async = true),
-            @Method(name = "getCityRegionMonoById", async = true),
-            @Method(name = "selectCityRegionByIds", async = true),
-            @Method(name = "selectCityRegionMonoByIds", async = true)
-    })
+    @DubboReference(version = "1.0",
+            providedBy = {"summer-base"},
+            methods = {
+                    @Method(name = "getCityInfoOptById", async = false),
+                    @Method(name = "getCityInfoById", async = false),
+                    @Method(name = "getCityInfoMonoById", async = true),
+                    @Method(name = "selectCityInfoByStateId", async = false),
+                    @Method(name = "selectCityInfoMonoByStateId", async = true),
+                    @Method(name = "selectCityInfoByIds", async = false),
+                    @Method(name = "selectCityInfoMonoByIds", async = true),
+                    @Method(name = "getCityRegionById", async = true),
+                    @Method(name = "getCityRegionMonoById", async = true),
+                    @Method(name = "selectCityRegionByIds", async = true),
+                    @Method(name = "selectCityRegionMonoByIds", async = true)
+            })
     private RpcCityService rpcCityService;
 
     private final Scheduler scheduler;

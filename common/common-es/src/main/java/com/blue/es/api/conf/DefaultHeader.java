@@ -4,8 +4,6 @@ package com.blue.es.api.conf;
  * default header
  *
  * @author liuyunfei
- * @date 2021/9/20
- * @apiNote
  */
 @SuppressWarnings("unused")
 public final class DefaultHeader {

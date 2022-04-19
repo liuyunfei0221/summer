@@ -4,8 +4,6 @@ package com.blue.base.component.syncrest.api.conf;
  * rest conf param
  *
  * @author liuyunfei
- * @date 2021/9/10
- * @apiNote
  */
 @SuppressWarnings("unused")
 public class SyncRestConfParams implements SyncRestConf {

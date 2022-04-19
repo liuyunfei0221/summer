@@ -8,8 +8,6 @@ import java.util.Set;
  * es node
  *
  * @author liuyunfei
- * @date 2021/9/20
- * @apiNote
  */
 @SuppressWarnings("unused")
 public final class EsNode {

@@ -9,7 +9,6 @@ import java.util.List;
  * auto register member service
  *
  * @author liuyunfei
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
 public interface AutoRegisterService {

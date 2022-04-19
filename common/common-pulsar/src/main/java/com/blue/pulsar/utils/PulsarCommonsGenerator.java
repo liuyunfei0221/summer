@@ -159,8 +159,6 @@ public final class PulsarCommonsGenerator {
                     .ifPresent(builder::maxPendingMessages);
             ofNullable(conf.getMaxPendingMessages())
                     .ifPresent(builder::maxPendingMessages);
-            ofNullable(conf.getMaxPendingMessagesAcrossPartitions())
-                    .ifPresent(builder::maxPendingMessagesAcrossPartitions);
             ofNullable(conf.getBlockIfQueueFull())
                     .ifPresent(builder::blockIfQueueFull);
             ofNullable(conf.getEnableBatching())

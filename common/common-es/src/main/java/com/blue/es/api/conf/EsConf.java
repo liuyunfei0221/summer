@@ -10,8 +10,6 @@ import java.util.List;
  * es conf
  *
  * @author liuyunfei
- * @date 2021/9/17
- * @apiNote
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface EsConf {

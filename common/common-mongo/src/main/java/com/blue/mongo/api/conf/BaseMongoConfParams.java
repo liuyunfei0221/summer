@@ -10,8 +10,6 @@ import java.util.List;
  * mongo params
  *
  * @author liuyunfei
- * @date 2021/9/16
- * @apiNote
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public abstract class BaseMongoConfParams implements MongoConf {

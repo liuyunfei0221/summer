@@ -29,8 +29,6 @@ import static reactor.util.Loggers.getLogger;
  * reactive rest generator
  *
  * @author liuyunfei
- * @date 2021/9/11
- * @apiNote
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class BlueReactRestGenerator {
@@ -62,7 +60,7 @@ public final class BlueReactRestGenerator {
                         .option(CONNECT_TIMEOUT_MILLIS, reactRestConf.getConnectTimeoutMillis())
                         .option(TCP_NODELAY, reactRestConf.getUseTcpNodelay())
                         .protocol(reactRestConf.getProtocols().toArray(HttpProtocol[]::new))
-                        .responseTimeout(Duration.of(reactRestConf.getReadTimeoutMillis(), MILLIS))
+                        .responseTimeout(Duration.of(reactRestConf.getResponseTimeoutMillis(), MILLIS))
                         .doOnConnected(
                                 connection -> connection
                                         .addHandlerFirst(new ReadTimeoutHandler(reactRestConf.getReadTimeoutMillis(), MILLISECONDS))

@@ -9,8 +9,6 @@ import static com.blue.base.constant.base.ResponseElement.*;
  * params for update a exist role
  *
  * @author liuyunfei
- * @date 2021/11/3
- * @apiNote
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public class RoleUpdateParam extends RoleInsertParam {

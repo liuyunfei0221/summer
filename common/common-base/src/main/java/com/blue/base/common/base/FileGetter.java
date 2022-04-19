@@ -18,7 +18,6 @@ import static reactor.util.Loggers.getLogger;
  * file getter
  *
  * @author liuyunfei
- * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 public final class FileGetter {

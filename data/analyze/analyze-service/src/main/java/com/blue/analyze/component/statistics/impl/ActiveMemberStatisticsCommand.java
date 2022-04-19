@@ -20,8 +20,6 @@ import static reactor.util.Loggers.getLogger;
  * active member statistics command impl
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 @SuppressWarnings("unused")
 public class ActiveMemberStatisticsCommand implements StatisticsCommand {

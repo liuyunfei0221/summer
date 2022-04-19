@@ -3,6 +3,7 @@ package com.blue.risk.component.risk.ioc;
 import com.blue.base.component.common.BlueBeanDefinitionScanner;
 import com.blue.risk.component.risk.inter.RiskHandler;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -18,18 +19,16 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  * risk handler registrar
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 @Import(BlueRiskHandlerProcessorBeanDefinitionRegistrar.class)
 @Configuration
 @Order(HIGHEST_PRECEDENCE)
-public class BlueRiskHandlerProcessorBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
+public class BlueRiskHandlerProcessorBeanDefinitionRegistrar implements ResourceLoaderAware, ImportBeanDefinitionRegistrar {
 
-    private final ResourceLoader resourceLoader;
+    private ResourceLoader resourceLoader;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public BlueRiskHandlerProcessorBeanDefinitionRegistrar(ResourceLoader resourceLoader) {
+    @Override
+    public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 

@@ -11,8 +11,6 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 
 /**
  * @author liuyunfei
- * @date 2021/8/13
- * @apiNote
  */
 @SuppressWarnings("SameParameterValue")
 public class SecKeyHelper {

@@ -4,8 +4,6 @@ package com.blue.mongo.api.conf;
  * mongo server conf
  *
  * @author liuyunfei
- * @date 2021/9/15
- * @apiNote
  */
 @SuppressWarnings("unused")
 public final class AddressAttr {

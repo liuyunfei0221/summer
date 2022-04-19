@@ -24,12 +24,14 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
-@DubboService(interfaceClass = RpcMemberBasicService.class, version = "1.0", methods = {
-        @Method(name = "selectMemberBasicInfoMonoByPrimaryKey", async = true),
-        @Method(name = "selectMemberBasicInfoMonoByIds", async = true),
-        @Method(name = "selectMemberBasicInfoByPhone", async = true),
-        @Method(name = "selectMemberBasicInfoByEmail", async = true)
-})
+@DubboService(interfaceClass = RpcMemberBasicService.class,
+        version = "1.0",
+        methods = {
+                @Method(name = "selectMemberBasicInfoMonoByPrimaryKey", async = true),
+                @Method(name = "selectMemberBasicInfoMonoByIds", async = true),
+                @Method(name = "selectMemberBasicInfoByPhone", async = true),
+                @Method(name = "selectMemberBasicInfoByEmail", async = true)
+        })
 public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
 
     private static final Logger LOGGER = getLogger(RpcMemberBasicServiceProvider.class);

@@ -16,8 +16,6 @@ import static reactor.core.publisher.Mono.just;
  * get data from uri placeholder
  *
  * @author liuyunfei
- * @date 2021/11/9
- * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "unused"})
 public class PathVariableGetter {

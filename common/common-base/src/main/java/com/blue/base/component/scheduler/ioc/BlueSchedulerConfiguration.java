@@ -12,8 +12,6 @@ import static com.blue.base.component.scheduler.api.generator.SchedulerGenerator
  * rest configuration
  *
  * @author liuyunfei
- * @date 2021/9/9
- * @apiNote
  */
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ConditionalOnBean(value = {SchedulerConf.class})

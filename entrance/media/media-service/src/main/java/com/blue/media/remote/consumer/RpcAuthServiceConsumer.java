@@ -24,9 +24,11 @@ public class RpcAuthServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcAuthServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-auth"}, methods = {
-            @Method(name = "assertAccess", async = true)
-    })
+    @DubboReference(version = "1.0",
+            providedBy = {"summer-auth"},
+            methods = {
+                    @Method(name = "assertAccess", async = true)
+            })
     private RpcAuthService rpcAuthService;
 
     private final Scheduler scheduler;

@@ -4,8 +4,6 @@ package com.blue.auth.constant;
  * role sort columns
  *
  * @author liuyunfei
- * @date 2021/10/21
- * @apiNote
  */
 public enum RoleSortAttribute {
 

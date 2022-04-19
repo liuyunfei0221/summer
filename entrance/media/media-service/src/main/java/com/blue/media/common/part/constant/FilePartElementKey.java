@@ -4,8 +4,6 @@ package com.blue.media.common.part.constant;
  * media part element attr
  *
  * @author liuyunfei
- * @date 2021/9/1
- * @apiNote
  */
 public enum FilePartElementKey {
 

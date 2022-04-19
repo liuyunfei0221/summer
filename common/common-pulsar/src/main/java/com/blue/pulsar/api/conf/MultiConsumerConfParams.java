@@ -6,8 +6,6 @@ import java.util.Map;
  * multi consumer params
  *
  * @author liuyunfei
- * @date 2021/9/10
- * @apiNote
  */
 @SuppressWarnings("unused")
 public class MultiConsumerConfParams {

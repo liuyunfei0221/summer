@@ -9,8 +9,6 @@ import java.util.function.BiConsumer;
  * excel elements params
  *
  * @author liuyunfei
- * @date 2021/9/11
- * @apiNote
  */
 @SuppressWarnings({"unused", "JavaDoc"})
 public class WorkBookElementConfParams<T> implements WorkBookElementConf<T> {

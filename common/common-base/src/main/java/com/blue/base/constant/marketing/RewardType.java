@@ -4,8 +4,6 @@ package com.blue.base.constant.marketing;
  * reward type
  *
  * @author liuyunfei
- * @date 2021/10/11
- * @apiNote
  */
 public enum RewardType {
 

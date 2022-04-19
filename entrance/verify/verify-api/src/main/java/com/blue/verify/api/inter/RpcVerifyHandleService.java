@@ -9,8 +9,6 @@ import java.util.concurrent.CompletableFuture;
  * rpc verify handler interface
  *
  * @author liuyunfei
- * @date 2021/8/12
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 public interface RpcVerifyHandleService {

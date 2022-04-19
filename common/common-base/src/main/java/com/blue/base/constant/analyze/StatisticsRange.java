@@ -9,8 +9,6 @@ import static java.time.LocalDate.now;
  * statistics range
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 public enum StatisticsRange {
 

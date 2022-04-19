@@ -10,8 +10,6 @@ import java.util.List;
  * redisson params
  *
  * @author liuyunfei
- * @date 2021/9/9
- * @apiNote
  */
 @SuppressWarnings({"unused", "AlibabaCommentsMustBeJavadocFormat"})
 public abstract class BaseRedissonConfParams implements RedissonConf {

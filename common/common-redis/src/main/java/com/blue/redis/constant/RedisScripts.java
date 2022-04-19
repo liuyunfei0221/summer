@@ -4,8 +4,6 @@ package com.blue.redis.constant;
  * redis script str
  *
  * @author liuyunfei
- * @date 2021/8/25
- * @apiNote
  */
 @SuppressWarnings("SpellCheckingInspection")
 public enum RedisScripts {

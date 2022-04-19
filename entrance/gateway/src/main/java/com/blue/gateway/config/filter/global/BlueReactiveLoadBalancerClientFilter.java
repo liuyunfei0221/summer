@@ -31,8 +31,6 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.*
  * loadbalancer
  *
  * @author liuyunfei
- * @date 2021/9/28
- * @apiNote
  */
 @SuppressWarnings({"rawtypes", "ConstantConditions", "AlibabaAvoidComplexCondition"})
 @Component

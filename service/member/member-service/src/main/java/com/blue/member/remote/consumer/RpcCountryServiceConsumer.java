@@ -27,15 +27,17 @@ public class RpcCountryServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcCountryServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-base"}, methods = {
-            @Method(name = "getCountryInfoOptById", async = false),
-            @Method(name = "getCountryInfoById", async = false),
-            @Method(name = "getCountryInfoMonoById", async = true),
-            @Method(name = "selectCountryInfo", async = false),
-            @Method(name = "selectCountryInfoMono", async = true),
-            @Method(name = "selectCountryInfoByIds", async = false),
-            @Method(name = "selectCountryInfoMonoByIds", async = true)
-    })
+    @DubboReference(version = "1.0",
+            providedBy = {"summer-base"},
+            methods = {
+                    @Method(name = "getCountryInfoOptById", async = false),
+                    @Method(name = "getCountryInfoById", async = false),
+                    @Method(name = "getCountryInfoMonoById", async = true),
+                    @Method(name = "selectCountryInfo", async = false),
+                    @Method(name = "selectCountryInfoMono", async = true),
+                    @Method(name = "selectCountryInfoByIds", async = false),
+                    @Method(name = "selectCountryInfoMonoByIds", async = true)
+            })
     private RpcCountryService rpcCountryService;
 
     private final Scheduler scheduler;

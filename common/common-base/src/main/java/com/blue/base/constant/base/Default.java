@@ -4,8 +4,6 @@ package com.blue.base.constant.base;
  * is default?
  *
  * @author liuyunfei
- * @date 2021/11/1
- * @apiNote
  */
 public enum Default {
 

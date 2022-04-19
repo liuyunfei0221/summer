@@ -26,8 +26,6 @@ import static reactor.util.Loggers.getLogger;
  * mongo components generator
  *
  * @author liuyunfei
- * @date 2021/9/15
- * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "AlibabaAvoidComplexCondition"})
 public final class BlueMongoGenerator {

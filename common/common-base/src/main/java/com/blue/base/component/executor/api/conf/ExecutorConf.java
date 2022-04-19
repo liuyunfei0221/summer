@@ -6,8 +6,6 @@ import java.util.concurrent.RejectedExecutionHandler;
  * global executor conf
  *
  * @author liuyunfei
- * @date 2021/9/9
- * @apiNote
  */
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface ExecutorConf {

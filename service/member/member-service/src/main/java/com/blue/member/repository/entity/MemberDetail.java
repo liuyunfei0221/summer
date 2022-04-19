@@ -9,7 +9,7 @@ import static com.blue.base.common.base.BlueChecker.isNull;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "DuplicatedCode"})
 public final class MemberDetail implements Serializable {
 
     private static final long serialVersionUID = -4175508880435642889L;

@@ -28,7 +28,6 @@ public class VerifyApiRoute {
         RequestPredicate pathPredicate = path("/blue-verify/verify");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("/generate", accept(APPLICATION_JSON), verifyApiHandler::generate)
                 .POST("/generate", accept(APPLICATION_JSON), verifyApiHandler::generate)
                 .build();
 

@@ -11,8 +11,6 @@ import java.util.List;
  * dynamic handler service impl
  *
  * @author liuyunfei
- * @date 2021/9/14
- * @apiNote
  */
 @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "JavaDoc"})
 @Service

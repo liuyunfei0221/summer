@@ -33,8 +33,6 @@ import static reactor.util.Loggers.getLogger;
  * member active statistics service impl
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 @Service

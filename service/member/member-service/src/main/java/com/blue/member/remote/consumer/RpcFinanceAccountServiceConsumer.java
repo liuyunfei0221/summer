@@ -22,9 +22,11 @@ public class RpcFinanceAccountServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcFinanceAccountServiceConsumer.class);
 
-    @DubboReference(version = "1.0", providedBy = {"summer-finance"}, methods = {
-            @Method(name = "initMemberFinanceInfo", async = false)
-    })
+    @DubboReference(version = "1.0",
+            providedBy = {"summer-finance"},
+            methods = {
+                    @Method(name = "initMemberFinanceInfo", async = false)
+            })
     private RpcFinanceAccountService rpcFinanceAccountService;
 
     private final ExecutorService executorService;

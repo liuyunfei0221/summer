@@ -9,8 +9,6 @@ import static com.blue.base.constant.base.ResponseElement.*;
  * params for update a resource
  *
  * @author liuyunfei
- * @date 2021/11/1
- * @apiNote
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public final class ResourceUpdateParam extends ResourceInsertParam {

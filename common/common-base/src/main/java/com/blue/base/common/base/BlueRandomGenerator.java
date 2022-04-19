@@ -18,8 +18,6 @@ import static java.util.Optional.ofNullable;
  * random util base on commons-lang
  *
  * @author liuyunfei
- * @date 2021/8/18
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class BlueRandomGenerator {

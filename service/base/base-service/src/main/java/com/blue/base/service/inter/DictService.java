@@ -12,8 +12,6 @@ import java.util.List;
  * dict service
  *
  * @author liuyunfei
- * @date 2021/9/27
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface DictService {

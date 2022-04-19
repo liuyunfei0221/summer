@@ -17,9 +17,11 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "FieldCanBeLocal", "DefaultAnnotationParam"})
-@DubboService(interfaceClass = RpcFinanceAccountService.class, version = "1.0", methods = {
-        @Method(name = "initMemberFinanceInfo", async = false)
-})
+@DubboService(interfaceClass = RpcFinanceAccountService.class,
+        version = "1.0",
+        methods = {
+                @Method(name = "initMemberFinanceInfo", async = false)
+        })
 public class RpcFinanceAccountServiceProvider implements RpcFinanceAccountService {
 
     private static final Logger LOGGER = getLogger(RpcFinanceAccountServiceProvider.class);

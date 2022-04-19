@@ -35,8 +35,6 @@ import static org.springframework.util.StringUtils.hasText;
  * mybatis mapper scanner registrar
  *
  * @author liuyunfei
- * @date 2021/8/15
- * @apiNote
  */
 @SuppressWarnings({"NullableProblems", "AliControlFlowStatementWithoutBraces"})
 @Order(HIGHEST_PRECEDENCE)

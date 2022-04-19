@@ -6,8 +6,6 @@ import java.io.Serializable;
  * params for insert a new role
  *
  * @author liuyunfei
- * @date 2021/11/1
- * @apiNote
  */
 @SuppressWarnings("unused")
 public class RoleInsertParam implements Serializable {

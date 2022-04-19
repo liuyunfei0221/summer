@@ -29,8 +29,6 @@ import static reactor.util.Loggers.getLogger;
  * member authority service impl
  *
  * @author liuyunfei
- * @date 2021/10/19
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc"})
 @Service

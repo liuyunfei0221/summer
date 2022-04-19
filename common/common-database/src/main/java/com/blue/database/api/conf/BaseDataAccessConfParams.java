@@ -10,8 +10,6 @@ import java.util.Map;
  * data access params
  *
  * @author liuyunfei
- * @date 2021/9/10
- * @apiNote
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused", "SpellCheckingInspection"})
 public abstract class BaseDataAccessConfParams implements DataAccessConf {

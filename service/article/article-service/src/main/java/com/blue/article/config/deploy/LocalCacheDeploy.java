@@ -10,7 +10,6 @@ import java.time.temporal.ChronoUnit;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpellCheckingInspection")
 @Component
 @ConfigurationProperties(prefix = "localcache")
 public class LocalCacheDeploy {

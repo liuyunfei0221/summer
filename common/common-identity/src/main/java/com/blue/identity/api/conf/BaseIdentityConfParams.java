@@ -7,8 +7,6 @@ import java.util.function.Supplier;
  * identity params
  *
  * @author liuyunfei
- * @date 2021/9/9
- * @apiNote
  */
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public abstract class BaseIdentityConfParams implements IdentityConf {

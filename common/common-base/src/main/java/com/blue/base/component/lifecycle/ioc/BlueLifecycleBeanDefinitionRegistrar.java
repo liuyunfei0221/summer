@@ -26,8 +26,6 @@ import static reactor.util.Loggers.getLogger;
  * Registrar for BlueLifecycle obj
  *
  * @author liuyunfei
- * @date 2021/8/15
- * @apiNote
  */
 @SuppressWarnings({"AlibabaCommentsMustBeJavadocFormat"})
 @Order(HIGHEST_PRECEDENCE)

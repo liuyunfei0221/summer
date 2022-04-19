@@ -4,8 +4,6 @@ package com.blue.member.constant;
  * member address sort columns
  *
  * @author liuyunfei
- * @date 2021/10/21
- * @apiNote
  */
 public enum MemberAddressSortAttribute {
 

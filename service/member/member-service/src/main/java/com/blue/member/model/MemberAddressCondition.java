@@ -9,8 +9,6 @@ import java.io.Serializable;
  * member address condition for select
  *
  * @author liuyunfei
- * @date 2021/8/31
- * @apiNote
  */
 @SuppressWarnings("unused")
 public final class MemberAddressCondition extends SortCondition implements Serializable {

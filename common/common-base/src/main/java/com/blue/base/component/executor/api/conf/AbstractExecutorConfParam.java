@@ -6,11 +6,9 @@ import java.util.concurrent.RejectedExecutionHandler;
  * global executor conf param
  *
  * @author liuyunfei
- * @date 2021/9/9
- * @apiNote
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
-public abstract class ExecutorConfParam implements ExecutorConf {
+public abstract class AbstractExecutorConfParam implements ExecutorConf {
 
     protected Integer corePoolSize;
 
@@ -22,11 +20,11 @@ public abstract class ExecutorConfParam implements ExecutorConf {
 
     protected String threadNamePre;
 
-    public ExecutorConfParam() {
+    public AbstractExecutorConfParam() {
     }
 
-    public ExecutorConfParam(Integer corePoolSize, Integer maximumPoolSize, Long keepAliveSeconds,
-                             Integer blockingQueueCapacity, String threadNamePre) {
+    public AbstractExecutorConfParam(Integer corePoolSize, Integer maximumPoolSize, Long keepAliveSeconds,
+                                     Integer blockingQueueCapacity, String threadNamePre) {
         this.corePoolSize = corePoolSize;
         this.maximumPoolSize = maximumPoolSize;
         this.keepAliveSeconds = keepAliveSeconds;

@@ -19,8 +19,6 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  * Registrar for dynamic handler
  *
  * @author liuyunfei
- * @date 2021/8/15
- * @apiNote
  */
 @Import(BlueDynamicHandlerBeanDefinitionRegistrar.class)
 @Configuration

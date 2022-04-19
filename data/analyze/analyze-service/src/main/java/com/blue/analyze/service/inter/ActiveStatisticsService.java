@@ -10,8 +10,6 @@ import java.util.List;
  * member active statistics service
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
 public interface ActiveStatisticsService {

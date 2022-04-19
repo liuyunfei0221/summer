@@ -6,8 +6,6 @@ import java.util.Map;
  * statistics command interface
  *
  * @author liuyunfei
- * @date 2021/9/3
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 public interface StatisticsCommand {

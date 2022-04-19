@@ -4,8 +4,6 @@ package com.blue.excel.constant;
  * workbook processor default conf
  *
  * @author liuyunfei
- * @date 2021/8/20
- * @apiNote
  */
 public final class WorkBookConf {
 

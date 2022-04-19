@@ -22,15 +22,17 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
-@DubboService(interfaceClass = RpcCountryService.class, version = "1.0", methods = {
-        @Method(name = "getCountryInfoOptById", async = false),
-        @Method(name = "getCountryInfoById", async = false),
-        @Method(name = "getCountryInfoMonoById", async = true),
-        @Method(name = "selectCountryInfo", async = false),
-        @Method(name = "selectCountryInfoMono", async = true),
-        @Method(name = "selectCountryInfoByIds", async = false),
-        @Method(name = "selectCountryInfoMonoByIds", async = true)
-})
+@DubboService(interfaceClass = RpcCountryService.class,
+        version = "1.0",
+        methods = {
+                @Method(name = "getCountryInfoOptById", async = false),
+                @Method(name = "getCountryInfoById", async = false),
+                @Method(name = "getCountryInfoMonoById", async = true),
+                @Method(name = "selectCountryInfo", async = false),
+                @Method(name = "selectCountryInfoMono", async = true),
+                @Method(name = "selectCountryInfoByIds", async = false),
+                @Method(name = "selectCountryInfoMonoByIds", async = true)
+        })
 public class RpcCountryServiceProvider implements RpcCountryService {
 
     private static final Logger LOGGER = getLogger(RpcCountryServiceProvider.class);

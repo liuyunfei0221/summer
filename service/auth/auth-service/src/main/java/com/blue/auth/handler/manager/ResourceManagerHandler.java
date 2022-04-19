@@ -29,8 +29,6 @@ import static reactor.core.publisher.Mono.zip;
  * role manager handler
  *
  * @author liuyunfei
- * @date 2021/8/31
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 @Component

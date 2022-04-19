@@ -42,8 +42,6 @@ import static reactor.util.Loggers.getLogger;
  * dict service
  *
  * @author liuyunfei
- * @date 2021/9/27
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc"})
 @Service

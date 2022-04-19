@@ -23,19 +23,21 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
-@DubboService(interfaceClass = RpcCityService.class, version = "1.0", methods = {
-        @Method(name = "getCityInfoOptById", async = false),
-        @Method(name = "getCityInfoById", async = false),
-        @Method(name = "getCityInfoMonoById", async = true),
-        @Method(name = "selectCityInfoByStateId", async = false),
-        @Method(name = "selectCityInfoMonoByStateId", async = true),
-        @Method(name = "selectCityInfoByIds", async = false),
-        @Method(name = "selectCityInfoMonoByIds", async = true),
-        @Method(name = "getCityRegionById", async = false),
-        @Method(name = "getCityRegionMonoById", async = true),
-        @Method(name = "selectCityRegionByIds", async = false),
-        @Method(name = "selectCityRegionMonoByIds", async = true)
-})
+@DubboService(interfaceClass = RpcCityService.class,
+        version = "1.0",
+        methods = {
+                @Method(name = "getCityInfoOptById", async = false),
+                @Method(name = "getCityInfoById", async = false),
+                @Method(name = "getCityInfoMonoById", async = true),
+                @Method(name = "selectCityInfoByStateId", async = false),
+                @Method(name = "selectCityInfoMonoByStateId", async = true),
+                @Method(name = "selectCityInfoByIds", async = false),
+                @Method(name = "selectCityInfoMonoByIds", async = true),
+                @Method(name = "getCityRegionById", async = false),
+                @Method(name = "getCityRegionMonoById", async = true),
+                @Method(name = "selectCityRegionByIds", async = false),
+                @Method(name = "selectCityRegionMonoByIds", async = true)
+        })
 public class RpcCityServiceProvider implements RpcCityService {
 
     private static final Logger LOGGER = getLogger(RpcCityServiceProvider.class);

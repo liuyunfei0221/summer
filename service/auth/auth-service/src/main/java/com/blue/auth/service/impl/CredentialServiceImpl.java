@@ -1,5 +1,6 @@
 package com.blue.auth.service.impl;
 
+import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.repository.mapper.CredentialMapper;
 import com.blue.auth.service.inter.CredentialService;
@@ -15,6 +16,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import static com.blue.auth.common.AccessEncoder.encryptAccess;
+import static com.blue.auth.converter.AuthModelConverters.CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -32,7 +34,6 @@ import static reactor.util.Loggers.getLogger;
  * credential service
  *
  * @author liuyunfei
- * @apiNote
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
@@ -131,6 +132,19 @@ public class CredentialServiceImpl implements CredentialService {
     }
 
     /**
+     * select info mono by credential and types
+     *
+     * @param credential
+     * @param credentialTypes
+     * @return
+     */
+    @Override
+    public Mono<List<CredentialInfo>> selectCredentialInfoMonoByCredentialAndTypes(String credential, List<String> credentialTypes) {
+        return this.selectCredentialMonoByCredentialAndTypes(credential, credentialTypes)
+                .map(cis -> cis.stream().map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER).collect(toList()));
+    }
+
+    /**
      * get by member id and type
      *
      * @param memberId
@@ -147,6 +161,7 @@ public class CredentialServiceImpl implements CredentialService {
 
         return ofNullable(credentialMapper.getByMemberIdAndType(memberId, credentialType));
     }
+
 
     /**
      * get mono by member id and type
@@ -185,6 +200,19 @@ public class CredentialServiceImpl implements CredentialService {
     @Override
     public Mono<List<Credential>> selectCredentialMonoByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
         return just(this.selectCredentialByMemberIdAndTypes(memberId, credentialTypes));
+    }
+
+    /**
+     * select info mono by member id and types
+     *
+     * @param memberId
+     * @param credentialTypes
+     * @return
+     */
+    @Override
+    public Mono<List<CredentialInfo>> selectCredentialInfoMonoByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
+        return this.selectCredentialMonoByMemberIdAndTypes(memberId, credentialTypes)
+                .map(cs -> cs.stream().map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER).collect(toList()));
     }
 
     /**

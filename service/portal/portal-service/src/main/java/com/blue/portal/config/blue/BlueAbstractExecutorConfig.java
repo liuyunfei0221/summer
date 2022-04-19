@@ -1,6 +1,6 @@
-package com.blue.risk.config.blue;
+package com.blue.portal.config.blue;
 
-import com.blue.base.component.executor.api.conf.ExecutorConfParam;
+import com.blue.base.component.executor.api.conf.AbstractExecutorConfParam;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
@@ -16,9 +16,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @Component
 @ConfigurationProperties(prefix = "executor")
-public class BlueExecutorConfig extends ExecutorConfParam {
+public class BlueAbstractExecutorConfig extends AbstractExecutorConfParam {
 
-    private static final Logger LOGGER = getLogger(BlueExecutorConfig.class);
+    private static final Logger LOGGER = getLogger(BlueAbstractExecutorConfig.class);
 
     @Override
     public RejectedExecutionHandler getRejectedExecutionHandler() {

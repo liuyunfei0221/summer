@@ -6,8 +6,6 @@ import java.io.Serializable;
  * params for insert a new resource
  *
  * @author liuyunfei
- * @date 2021/10/25
- * @apiNote
  */
 @SuppressWarnings("unused")
 public class ResourceInsertParam implements Serializable {

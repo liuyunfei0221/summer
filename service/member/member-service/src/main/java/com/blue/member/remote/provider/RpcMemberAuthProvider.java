@@ -18,10 +18,12 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
-@DubboService(interfaceClass = RpcMemberAuthService.class, version = "1.0", methods = {
-        @Method(name = "autoRegisterMemberBasic", async = false),
-        @Method(name = "updateMemberCredentialAttr", async = false)
-})
+@DubboService(interfaceClass = RpcMemberAuthService.class,
+        version = "1.0",
+        methods = {
+                @Method(name = "autoRegisterMemberBasic", async = false),
+                @Method(name = "updateMemberCredentialAttr", async = false)
+        })
 public class RpcMemberAuthProvider implements RpcMemberAuthService {
 
     private static final Logger LOGGER = getLogger(RpcMemberAuthProvider.class);

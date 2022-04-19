@@ -4,8 +4,6 @@ package com.blue.base.constant.base;
  * valid resources
  *
  * @author liuyunfei
- * @date 2021/8/22
- * @apiNote
  */
 public enum ValidResourceFormatters {
 

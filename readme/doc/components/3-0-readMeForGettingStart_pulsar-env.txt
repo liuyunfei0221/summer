@@ -51,7 +51,6 @@ producers:
       accessMode: Shared
       sendTimeoutMillis: 30000
       maxPendingMessages: 1000
-      maxPendingMessagesAcrossPartitions: 5000
       blockIfQueueFull: false
       messageRoutingMode: RoundRobinPartition
       compressionType: NONE

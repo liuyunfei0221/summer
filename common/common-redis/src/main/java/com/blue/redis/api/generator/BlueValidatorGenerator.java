@@ -11,7 +11,7 @@ import static reactor.core.scheduler.Schedulers.boundedElastic;
  *
  * @author blue
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public final class BlueValidatorGenerator {
 
     /**

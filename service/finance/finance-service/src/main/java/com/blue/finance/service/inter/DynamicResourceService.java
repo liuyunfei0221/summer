@@ -8,8 +8,6 @@ import java.util.List;
  * dynamic resource service
  *
  * @author liuyunfei
- * @date 2021/9/13
- * @apiNote
  */
 @SuppressWarnings("JavaDoc")
 public interface DynamicResourceService {

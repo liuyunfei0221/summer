@@ -10,8 +10,6 @@ import java.util.List;
  * es params
  *
  * @author liuyunfei
- * @date 2021/9/17
- * @apiNote
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public abstract class BaseEsConfParams implements EsConf {
