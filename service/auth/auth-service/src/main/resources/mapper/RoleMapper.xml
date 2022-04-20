@@ -173,7 +173,7 @@
                     AND
                     id = #{roleCondition.id,jdbcType=BIGINT}
                 </if>
-                <if test="roleCondition.name != null and resourceCondition.sortAttribute != ''">
+                <if test="roleCondition.name != null and roleCondition.name != ''">
                     AND
                     name LIKE #{roleCondition.name,jdbcType=VARCHAR}
                 </if>

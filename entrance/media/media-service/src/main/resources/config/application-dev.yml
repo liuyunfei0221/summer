@@ -88,8 +88,6 @@ data:
     - tableName: attachment
       shardingColumn: id
 
-    - tableName: download_history
-      shardingColumn: id
   shardingTableSizePerDataBase: 2
   dataCenterToDatabaseMappings:
     - id: 0

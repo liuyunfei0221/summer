@@ -95,7 +95,7 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public List<DictType> selectDictType() {
-        return dictTypeRepository.findAll(Sort.by("name")).collectList().toFuture().join();
+        return dictTypeRepository.findAll(Sort.by(Sort.Order.asc("name"))).collectList().toFuture().join();
     }
 
     /**
@@ -105,7 +105,7 @@ public class DictServiceImpl implements DictService {
      */
     @Override
     public List<Dict> selectDict() {
-        return dictRepository.findAll(Sort.by("name")).collectList().toFuture().join();
+        return dictRepository.findAll(Sort.by(Sort.Order.asc("name"))).collectList().toFuture().join();
     }
 
     /**
@@ -118,19 +118,18 @@ public class DictServiceImpl implements DictService {
     public List<Dict> selectDictByTypeCode(String code) {
         LOGGER.info("Mono<List<Dict>> selectDictByTypeCode(String code), code = {}", code);
 
-
         return ofNullable(code)
                 .filter(BlueChecker::isNotBlank)
                 .map(c -> {
-                    DictType dictType = new DictType();
-                    dictType.setCode(c);
-                    return dictTypeRepository.findOne(Example.of(dictType)).toFuture().join();
+                    DictType probe = new DictType();
+                    probe.setCode(c);
+                    return dictTypeRepository.findOne(Example.of(probe)).toFuture().join();
                 })
                 .map(DictType::getId)
                 .map(tid -> {
-                    Dict dict = new Dict();
-                    dict.setDictTypeId(tid);
-                    return dictRepository.findAll(Example.of(dict), Sort.by("name")).collectList().toFuture().join();
+                    Dict probe = new Dict();
+                    probe.setDictTypeId(tid);
+                    return dictRepository.findAll(Example.of(probe), Sort.by(Sort.Order.asc("name"))).collectList().toFuture().join();
                 })
                 .orElseThrow(() -> new BlueException(BAD_REQUEST));
     }

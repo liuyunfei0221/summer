@@ -262,6 +262,9 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         LOGGER.info("Mono<PageModelResponse<MemberAddressInfo>> selectMemberAddressInfoPageMonoByPageAndCondition(PageModelRequest<MemberAddressCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
 
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
         MemberAddressCondition memberAddressCondition = MEMBER_ADDRESS_CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
         return zip(selectMemberAddressMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberAddressCondition), countMemberAddressMonoByCondition(memberAddressCondition))

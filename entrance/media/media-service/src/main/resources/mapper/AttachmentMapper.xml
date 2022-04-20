@@ -156,18 +156,93 @@
         </if>
     </insert>
 
+    <select id="selectByIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        attachment
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <sql id="Attachment_Conditions">
+        <if test="attachmentCondition != null">
+            <where>
+                <if test="attachmentCondition.id != null">
+                    AND
+                    id = #{attachmentCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="attachmentCondition.link != null and attachmentCondition.link != ''">
+                    AND
+                    link = #{attachmentCondition.link,jdbcType=VARCHAR}
+                </if>
+                <if test="attachmentCondition.name != null and attachmentCondition.name != ''">
+                    AND
+                    name LIKE #{attachmentCondition.name,jdbcType=VARCHAR}
+                </if>
+                <if test="attachmentCondition.fileType != null and attachmentCondition.fileType != ''">
+                    AND
+                    file_type = #{attachmentCondition.fileType,jdbcType=VARCHAR}
+                </if>
+                <if test="attachmentCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{attachmentCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="attachmentCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{attachmentCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="attachmentCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{attachmentCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="attachmentCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{attachmentCondition.updateTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
+            parameterType="com.blue.media.model.AttachmentCondition">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        attachment
+        <include refid="Attachment_Conditions"/>
+        <if test="attachmentCondition != null and attachmentCondition.sortAttribute != null and attachmentCondition.sortAttribute != '' and attachmentCondition.sortType != null and attachmentCondition.sortType != ''">
+            ORDER BY
+            ${attachmentCondition.sortAttribute,jdbcType=VARCHAR} ${attachmentCondition.sortType,jdbcType=VARCHAR}
+        </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long"
+            parameterType="com.blue.media.model.AttachmentCondition">
+        SELECT COUNT(*)
+        FROM
+        attachment
+        <include refid="Attachment_Conditions"/>
+    </select>
+
     <select id="selectByLimitAndMemberId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
-        FROM attachment
-        WHERE creator = #{memberId,jdbcType=BIGINT}
+        FROM
+        attachment FORCE INDEX(idx_creator)
+        WHERE
+        creator = #{memberId,jdbcType=BIGINT}
         ORDER BY id DESC
         LIMIT #{limit,jdbcType=BIGINT}, #{rows,jdbcType=BIGINT}
     </select>
 
     <select id="countByMemberId" resultType="java.lang.Long">
         SELECT COUNT(*)
-        FROM attachment
+        FROM attachment FORCE INDEX(idx_creator)
         WHERE creator = #{memberId,jdbcType=BIGINT}
     </select>
 

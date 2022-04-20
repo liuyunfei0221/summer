@@ -1,5 +1,6 @@
 package com.blue.media.repository.mapper;
 
+import com.blue.media.model.AttachmentCondition;
 import com.blue.media.repository.entity.Attachment;
 import org.apache.ibatis.annotations.Param;
 
@@ -26,6 +27,12 @@ public interface AttachmentMapper {
     Attachment selectByPrimaryKey(Long id);
 
     int insertBatch(@Param("list") List<Attachment> list);
+
+    List<Attachment> selectByIds(@Param("ids") List<Long> ids);
+
+    List<Attachment> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("attachmentCondition") AttachmentCondition attachmentCondition);
+
+    Long countByCondition(@Param("attachmentCondition") AttachmentCondition attachmentCondition);
 
     List<Attachment> selectByLimitAndMemberId(@Param("memberId") Long memberId, @Param("limit") long limit, @Param("rows") long rows);
 

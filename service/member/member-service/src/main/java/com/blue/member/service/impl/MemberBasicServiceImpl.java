@@ -317,6 +317,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         LOGGER.info("Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
 
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
         MemberBasicCondition memberBasicCondition = MEMBER_CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
         return zip(selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), countMemberBasicMonoByCondition(memberBasicCondition))

@@ -142,9 +142,8 @@ public class StateServiceImpl implements StateService {
                             int size = stateInfos.size();
                             List<Long> countryIds = new ArrayList<>(size);
 
-                            for (StateInfo si : stateInfos) {
+                            for (StateInfo si : stateInfos)
                                 countryIds.add(si.getCountryId());
-                            }
 
                             return
                                     countryService.selectCountryInfoMonoByIds(countryIds)
@@ -180,10 +179,10 @@ public class StateServiceImpl implements StateService {
         if (isInvalidIdentity(countryId))
             throw new BlueException(INVALID_IDENTITY);
 
-        State state = new State();
-        state.setCountryId(countryId);
+        State probe = new State();
+        probe.setCountryId(countryId);
 
-        return stateRepository.findAll(Example.of(state), Sort.by("name"))
+        return stateRepository.findAll(Example.of(probe), Sort.by(Sort.Order.asc("name")))
                 .collectList().toFuture().join();
     }
 

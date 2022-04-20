@@ -446,6 +446,9 @@ public class ResourceServiceImpl implements ResourceService {
         LOGGER.info("Mono<PageModelResponse<ResourceInfo>> selectResourceInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
 
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
         ResourceCondition resourceCondition = pageModelRequest.getParam();
         CONDITION_REPACKAGER.accept(resourceCondition);
 

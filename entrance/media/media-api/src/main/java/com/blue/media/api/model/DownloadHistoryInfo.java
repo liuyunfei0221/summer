@@ -3,22 +3,20 @@ package com.blue.media.api.model;
 import java.io.Serializable;
 
 /**
- * attachment info
+ * download history info
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class AttachmentInfo implements Serializable {
+public final class DownloadHistoryInfo implements Serializable {
 
-    private static final long serialVersionUID = -2972330057905370045L;
+    private static final long serialVersionUID = -4800094825903540939L;
 
     private final Long id;
 
-    private final String name;
+    private final Long attachmentId;
 
-    private final Long size;
-
-    private final Integer status;
+    private final String attachmentName;
 
     private final Long createTime;
 
@@ -26,11 +24,10 @@ public final class AttachmentInfo implements Serializable {
 
     private final String creatorName;
 
-    public AttachmentInfo(Long id, String name, Long size, Integer status, Long createTime, Long creator, String creatorName) {
+    public DownloadHistoryInfo(Long id, Long attachmentId, String attachmentName, Long createTime, Long creator, String creatorName) {
         this.id = id;
-        this.name = name;
-        this.size = size;
-        this.status = status;
+        this.attachmentId = attachmentId;
+        this.attachmentName = attachmentName;
         this.createTime = createTime;
         this.creator = creator;
         this.creatorName = creatorName;
@@ -40,16 +37,12 @@ public final class AttachmentInfo implements Serializable {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public Long getAttachmentId() {
+        return attachmentId;
     }
 
-    public Long getSize() {
-        return size;
-    }
-
-    public Integer getStatus() {
-        return status;
+    public String getAttachmentName() {
+        return attachmentName;
     }
 
     public Long getCreateTime() {
@@ -66,11 +59,10 @@ public final class AttachmentInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "AttachmentInfo{" +
+        return "DownloadHistoryInfo{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", size=" + size +
-                ", status=" + status +
+                ", attachmentId=" + attachmentId +
+                ", attachmentName='" + attachmentName + '\'' +
                 ", createTime=" + createTime +
                 ", creator=" + creator +
                 ", creatorName='" + creatorName + '\'' +

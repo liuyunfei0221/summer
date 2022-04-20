@@ -191,10 +191,10 @@ public class CityServiceImpl implements CityService {
         if (isInvalidIdentity(stateId))
             throw new BlueException(INVALID_IDENTITY);
 
-        City city = new City();
-        city.setStateId(stateId);
+        City probe = new City();
+        probe.setStateId(stateId);
 
-        return cityRepository.findAll(Example.of(city), Sort.by("name"))
+        return cityRepository.findAll(Example.of(probe), Sort.by(Sort.Order.asc("name")))
                 .collectList().toFuture().join();
     }
 

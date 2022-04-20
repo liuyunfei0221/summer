@@ -123,7 +123,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public List<Country> selectCountry() {
-        return countryRepository.findAll(Sort.by("name"))
+        return countryRepository.findAll(Sort.by(Sort.Order.asc("name")))
                 .collectList().toFuture().join();
     }
 

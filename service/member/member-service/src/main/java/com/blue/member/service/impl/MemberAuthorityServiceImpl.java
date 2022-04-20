@@ -4,6 +4,7 @@ import com.blue.auth.api.model.MemberRoleRelationInfo;
 import com.blue.auth.api.model.RoleInfo;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.exps.BlueException;
 import com.blue.member.model.MemberAuthorityInfo;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
@@ -17,6 +18,8 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Map;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -30,7 +33,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class MemberAuthorityServiceImpl implements MemberAuthorityService {
 
@@ -55,6 +58,9 @@ public class MemberAuthorityServiceImpl implements MemberAuthorityService {
     public Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
+
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
 
         MemberBasicCondition memberBasicCondition = pageModelRequest.getParam();
 

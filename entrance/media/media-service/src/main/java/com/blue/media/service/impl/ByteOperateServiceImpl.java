@@ -170,7 +170,8 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         downloadHistory.setCreator(memberId);
         downloadHistory.setCreateTime(TIME_STAMP_GETTER.get());
 
-        downloadHistoryService.insert(downloadHistory);
+        downloadHistoryService.insert(downloadHistory).subscribe(dh ->
+                LOGGER.info("DOWNLOAD_RECORDER -> insert(downloadHistory), dh = {}", dh));
     };
 
     /**
@@ -209,8 +210,9 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> {
                     Long attachmentId = tuple2.getT1().getId();
-                    return attachmentService.getAttachment(attachmentId)
-                            .switchIfEmpty(error(() -> new BlueException(DATA_NOT_EXIST)))
+                    return attachmentService.getAttachmentMono(attachmentId)
+                            .flatMap(attOpt ->
+                                    just(attOpt.orElseThrow(() -> new BlueException(DATA_NOT_EXIST))))
                             .flatMap(attachment -> {
                                 String link = attachment.getLink();
                                 MediaType mediaType = MEDIA_GETTER.apply(FILE_TYPE_GETTER.apply(link));

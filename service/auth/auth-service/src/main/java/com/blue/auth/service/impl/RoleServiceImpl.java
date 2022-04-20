@@ -510,13 +510,16 @@ public class RoleServiceImpl implements RoleService {
         LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
 
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
         RoleCondition roleCondition = pageModelRequest.getParam();
         CONDITION_REPACKAGER.accept(roleCondition);
 
         return zip(selectRoleMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), roleCondition), countRoleMonoByCondition(roleCondition))
                 .flatMap(tuple2 -> {
                     List<Role> roles = tuple2.getT1();
-                    Mono<List<RoleInfo>> roleInfosMono = roles.size() > 0 ?
+                    Mono<List<RoleInfo>> roleInfosMono = isNotEmpty(roles) ?
                             just(roles.stream().map(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER).collect(toList()))
                             :
                             just(emptyList());

@@ -458,9 +458,9 @@ public class AuthServiceImpl implements AuthService {
                             .flatMap(ig -> {
                                 RefreshInfo refreshInfo = new RefreshInfo(keyId, gamma, id, credentialType, deviceType, loginTime);
                                 try {
-                                    return refreshInfoRepository.save(refreshInfo);
+                                    return refreshInfoRepository.insert(refreshInfo);
                                 } catch (Exception e) {
-                                    LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoRepository.save(refreshInfo) failed, e = {}", e);
+                                    LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoRepository.insert(refreshInfo) failed, e = {}", e);
                                     return just(refreshInfo);
                                 }
                             })

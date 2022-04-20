@@ -200,10 +200,10 @@ public class AreaServiceImpl implements AreaService {
         if (isInvalidIdentity(cityId))
             throw new BlueException(INVALID_IDENTITY);
 
-        Area area = new Area();
-        area.setCityId(cityId);
+        Area probe = new Area();
+        probe.setCityId(cityId);
 
-        return areaRepository.findAll(Example.of(area), Sort.by("name"))
+        return areaRepository.findAll(Example.of(probe), Sort.by(Sort.Order.asc("name")))
                 .collectList().toFuture().join();
     }
 
