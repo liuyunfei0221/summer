@@ -69,23 +69,24 @@ public class ResourceServiceImpl implements ResourceService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Consumer<ResourceCondition> CONDITION_REPACKAGER = condition -> {
-        if (isNotNull(condition)) {
-            ofNullable(condition.getSortAttribute())
-                    .filter(StringUtils::hasText)
-                    .map(SORT_ATTRIBUTE_MAPPING::get)
-                    .ifPresent(condition::setSortAttribute);
+        if (isNull(condition))
+            return;
 
-            assertSortType(condition.getSortType(), true);
+        ofNullable(condition.getSortAttribute())
+                .filter(StringUtils::hasText)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .ifPresent(condition::setSortAttribute);
 
-            ofNullable(condition.getRequestMethod())
-                    .filter(rm -> !isBlank(rm)).map(String::toUpperCase).ifPresent(condition::setRequestMethod);
-            ofNullable(condition.getModule())
-                    .filter(m -> !isBlank(m)).map(String::toLowerCase).ifPresent(m -> condition.setModule("%" + m + "%"));
-            ofNullable(condition.getUri())
-                    .filter(uri -> !isBlank(uri)).map(String::toLowerCase).ifPresent(uri -> condition.setUri("%" + uri + "%"));
-            ofNullable(condition.getName())
-                    .filter(n -> !isBlank(n)).ifPresent(n -> condition.setName("%" + n + "%"));
-        }
+        assertSortType(condition.getSortType(), true);
+
+        ofNullable(condition.getRequestMethod())
+                .filter(rm -> !isBlank(rm)).map(String::toUpperCase).ifPresent(condition::setRequestMethod);
+        ofNullable(condition.getModule())
+                .filter(m -> !isBlank(m)).map(String::toLowerCase).ifPresent(m -> condition.setModule("%" + m + "%"));
+        ofNullable(condition.getUri())
+                .filter(uri -> !isBlank(uri)).map(String::toLowerCase).ifPresent(uri -> condition.setUri("%" + uri + "%"));
+        ofNullable(condition.getName())
+                .filter(n -> !isBlank(n)).ifPresent(n -> condition.setName("%" + n + "%"));
     };
 
     /**
@@ -185,6 +186,9 @@ public class ResourceServiceImpl implements ResourceService {
      * for resource
      */
     public static final BiFunction<ResourceUpdateParam, Resource, Boolean> RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER = (p, t) -> {
+        if (isNull(p) || isNull(t))
+            throw new BlueException(BAD_REQUEST);
+
         if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);
 
@@ -328,12 +332,11 @@ public class ResourceServiceImpl implements ResourceService {
             throw new BlueException(INVALID_IDENTITY);
 
         Resource resource = resourceMapper.selectByPrimaryKey(id);
-        if (resource != null) {
-            resourceMapper.deleteByPrimaryKey(id);
-            return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
-        }
+        if (isNull(resource))
+            throw new BlueException(DATA_NOT_EXIST);
 
-        throw new BlueException(DATA_NOT_EXIST);
+        resourceMapper.deleteByPrimaryKey(id);
+        return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
     }
 
     /**

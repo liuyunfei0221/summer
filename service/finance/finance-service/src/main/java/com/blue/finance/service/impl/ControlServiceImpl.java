@@ -48,9 +48,7 @@ public class ControlServiceImpl implements ControlService {
 
         FinanceAccount financeAccount = new FinanceAccount();
 
-        long id = blueIdentityProcessor.generate(FinanceAccount.class);
-        financeAccount.setId(id);
-
+        financeAccount.setId(blueIdentityProcessor.generate(FinanceAccount.class));
         financeAccount.setMemberId(memberId);
         financeAccount.setBalance(0L);
         financeAccount.setFrozen(0L);
@@ -74,7 +72,6 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo) {
         LOGGER.info("void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo), memberFinanceInfo = {}", memberFinanceInfo);
-
         if (isNull(memberFinanceInfo))
             throw new BlueException(EMPTY_PARAM);
 

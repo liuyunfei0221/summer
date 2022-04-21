@@ -1,8 +1,7 @@
 package com.blue.marketing.service.inter;
 
-import com.blue.marketing.api.model.EventHandleResult;
 import com.blue.marketing.api.model.MarketingEvent;
-import reactor.core.publisher.Mono;
+import com.blue.marketing.repository.entity.EventRecord;
 
 /**
  * marketing event handle service
@@ -18,6 +17,6 @@ public interface MarketingEventHandleService {
      * @param marketingEvent
      * @return
      */
-    Mono<EventHandleResult> handleEvent(MarketingEvent marketingEvent);
+    EventRecord handleEvent(MarketingEvent marketingEvent);
 
 }

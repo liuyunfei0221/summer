@@ -14,6 +14,7 @@ import com.blue.media.repository.entity.DownloadHistory;
 import com.blue.media.service.inter.AttachmentService;
 import com.blue.media.service.inter.ByteOperateService;
 import com.blue.media.service.inter.DownloadHistoryService;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
@@ -49,6 +51,7 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static org.apache.commons.lang3.StringUtils.substring;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static org.springframework.web.reactive.function.BodyInserters.fromDataBuffers;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -139,6 +142,12 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                 .collectList();
     };
 
+    private final Function<String, Flux<DataBuffer>> ATTACHMENTS_DOWNLOADER = link -> {
+        LOGGER.info("ATTACHMENTS_DOWNLOADER, link = {}", link);
+
+        return byteProcessor.read(new File(link).toPath());
+    };
+
     private final BiConsumer<List<FileUploadResult>, Long> ATTACHMENTS_RECORDER = (rls, memberId) -> {
         LOGGER.info("ATTACHMENTS_RECORDER, rls = {}, memberId = {}", rls, memberId);
 
@@ -154,7 +163,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
 
     public static final UnaryOperator<String> FILE_TYPE_GETTER = CommonFunctions.FILE_TYPE_GETTER;
 
-    private static final MediaType DEFAULT_MEDIA_TYPE = MediaType.APPLICATION_OCTET_STREAM;
+    private static final MediaType DEFAULT_MEDIA_TYPE = APPLICATION_OCTET_STREAM;
     private static final Map<String, MediaType> FILE_MEDIA_MAPPING = Stream.of(BlueFileType.values())
             .collect(Collectors.toMap(bft -> bft.identity, bft -> bft.mediaType, (a, b) -> a));
 
@@ -215,12 +224,11 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                                     just(attOpt.orElseThrow(() -> new BlueException(DATA_NOT_EXIST))))
                             .flatMap(attachment -> {
                                 String link = attachment.getLink();
-                                MediaType mediaType = MEDIA_GETTER.apply(FILE_TYPE_GETTER.apply(link));
 
-                                return ok().contentType(mediaType)
+                                return ok().contentType(MEDIA_GETTER.apply(FILE_TYPE_GETTER.apply(link)))
                                         .header(CONTENT_DISPOSITION.name,
                                                 "attachment; filename=" + URLEncoder.encode(attachment.getName(), UTF_8))
-                                        .body(fromDataBuffers(byteProcessor.read(new File(link).toPath())))
+                                        .body(fromDataBuffers(ATTACHMENTS_DOWNLOADER.apply(link)))
                                         .doOnSuccess(res -> DOWNLOAD_RECORDER.accept(attachmentId, tuple2.getT2().getId()));
                             });
                 });

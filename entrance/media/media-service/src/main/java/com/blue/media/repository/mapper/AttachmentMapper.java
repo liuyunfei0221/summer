@@ -34,7 +34,7 @@ public interface AttachmentMapper {
 
     Long countByCondition(@Param("attachmentCondition") AttachmentCondition attachmentCondition);
 
-    List<Attachment> selectByLimitAndMemberId(@Param("memberId") Long memberId, @Param("limit") long limit, @Param("rows") long rows);
+    List<Attachment> selectByLimitAndMemberId(@Param("limit") Long limit, @Param("rows") Long rows, @Param("memberId") Long memberId);
 
     Long countByMemberId(@Param("memberId") Long memberId);
 

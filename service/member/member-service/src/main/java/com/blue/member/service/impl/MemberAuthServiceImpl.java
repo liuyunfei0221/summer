@@ -118,7 +118,6 @@ public class MemberAuthServiceImpl implements MemberAuthService {
             rollbackFor = Exception.class, timeout = 60)
     public MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("MemberInfo simpleRegisterMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
-
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
 
@@ -153,6 +152,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 60)
     public MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId) {
+        LOGGER.info("MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId), credentialTypes = {}, credential = {}, memberId = {}",
+                credentialTypes, credential, memberId);
 
         Optional<MemberBasic> memberBasicOpt = memberBasicService.getMemberBasicByPrimaryKey(memberId);
         if (memberBasicOpt.isEmpty())

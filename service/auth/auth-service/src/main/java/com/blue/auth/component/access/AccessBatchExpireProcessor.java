@@ -131,21 +131,22 @@ public final class AccessBatchExpireProcessor {
      */
     private void handleExpireTask() {
         KeyExpireParam firstData = NULLABLE_ELEMENT_GETTER.get();
-        if (isNotNull(firstData)) {
-            stringRedisTemplate.executePipelined((RedisCallback<Boolean>) connection -> {
-                DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(firstData, connection);
+        if (isNull(firstData))
+            return;
 
-                int size = 1;
-                KeyExpireParam data;
-                while (size <= BATCH_EXPIRE_MAX_PER_HANDLE && isNotNull(data = NULLABLE_ELEMENT_GETTER.get())) {
-                    DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(data, connection);
-                    size++;
-                }
+        stringRedisTemplate.executePipelined((RedisCallback<Boolean>) connection -> {
+            DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(firstData, connection);
 
-                LOGGER.info("refreshed size: {}", size);
-                return null;
-            });
-        }
+            int size = 1;
+            KeyExpireParam data;
+            while (size <= BATCH_EXPIRE_MAX_PER_HANDLE && isNotNull(data = NULLABLE_ELEMENT_GETTER.get())) {
+                DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(data, connection);
+                size++;
+            }
+
+            LOGGER.info("refreshed size: {}", size);
+            return null;
+        });
     }
 
     /**

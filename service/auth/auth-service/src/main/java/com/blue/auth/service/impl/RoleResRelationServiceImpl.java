@@ -404,9 +404,8 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         LOGGER.info("void updateDefaultRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
 
         RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        lock.lock();
-
         try {
+            lock.lock();
             roleService.updateDefaultRole(id, operatorId);
         } catch (Exception e) {
             LOGGER.error("void updateDefaultRole(Long id) failed, id = {}, e = {}", id, e);
@@ -493,7 +492,6 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
         try {
             lock.lock();
-
             if (this.countRelationByRoleId(id) > 0L)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role-res-relations count > 0");
 
@@ -584,7 +582,6 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
         try {
             lock.lock();
-
             if (this.countRelationByResId(id) > 0L)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role-res-relations count > 0");
 
@@ -671,9 +668,8 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
             throw new BlueException(INVALID_IDENTITY);
 
         RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        lock.lock();
-
         try {
+            lock.lock();
             int count = roleResRelationMapper.deleteByResId(resId);
             LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
             return count;
@@ -743,9 +739,8 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId");
 
         RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        lock.lock();
-
         try {
+            lock.lock();
             Optional<Role> roleOpt = roleService.getRoleById(roleId);
             if (roleOpt.isEmpty())
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is not exist");

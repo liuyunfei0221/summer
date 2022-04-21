@@ -63,18 +63,19 @@ public class AttachmentServiceImpl implements AttachmentService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Consumer<AttachmentCondition> CONDITION_REPACKAGER = condition -> {
-        if (condition != null) {
-            ofNullable(condition.getSortAttribute())
-                    .filter(StringUtils::hasText)
-                    .map(SORT_ATTRIBUTE_MAPPING::get)
-                    .filter(StringUtils::hasText)
-                    .ifPresent(condition::setSortAttribute);
+        if (isNull(condition))
+            return;
 
-            assertSortType(condition.getSortType(), true);
+        ofNullable(condition.getSortAttribute())
+                .filter(StringUtils::hasText)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(StringUtils::hasText)
+                .ifPresent(condition::setSortAttribute);
 
-            ofNullable(condition.getName())
-                    .filter(BlueChecker::isNotBlank).ifPresent(n -> condition.setName("%" + n + "%"));
-        }
+        assertSortType(condition.getSortType(), true);
+
+        ofNullable(condition.getName())
+                .filter(BlueChecker::isNotBlank).ifPresent(n -> condition.setName("%" + n + "%"));
     };
 
     /**
@@ -161,66 +162,6 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     /**
-     * select attachment by page and condition
-     *
-     * @param limit
-     * @param rows
-     * @param attachmentCondition
-     * @return
-     */
-    @Override
-    public Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, AttachmentCondition attachmentCondition) {
-        LOGGER.info("Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, AttachmentCondition attachmentCondition), " +
-                "limit = {}, rows = {}, attachmentCondition = {}", limit, rows, attachmentCondition);
-        return just(attachmentMapper.selectByLimitAndCondition(limit, rows, attachmentCondition));
-    }
-
-    /**
-     * count attachment by condition
-     *
-     * @param attachmentCondition
-     * @return
-     */
-    @Override
-    public Mono<Long> countAttachmentMonoByCondition(AttachmentCondition attachmentCondition) {
-        LOGGER.info("Mono<Long> countAttachmentMonoByCondition(AttachmentCondition attachmentCondition), attachmentCondition = {}", attachmentCondition);
-        return just(ofNullable(attachmentMapper.countByCondition(attachmentCondition)).orElse(0L));
-    }
-
-    /**
-     * select attachment info page by condition
-     *
-     * @param pageModelRequest
-     * @return
-     */
-    @Override
-    public Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectAttachmentInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
-        if (isNull(pageModelRequest))
-            throw new BlueException(EMPTY_PARAM);
-
-        AttachmentCondition attachmentCondition = pageModelRequest.getParam();
-        CONDITION_REPACKAGER.accept(attachmentCondition);
-
-        return zip(selectAttachmentMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), attachmentCondition), countAttachmentMonoByCondition(attachmentCondition))
-                .flatMap(tuple2 -> {
-                    List<Attachment> attachments = tuple2.getT1();
-                    return isNotEmpty(attachments) ?
-                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(attachments.parallelStream().map(Attachment::getCreator).collect(toList()))
-                                    .flatMap(memberBasicInfos -> {
-                                        Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
-                                        return just(attachments.stream().map(a ->
-                                                        ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER.apply(a, ofNullable(idAndNameMapping.get(a.getCreator())).orElse("")))
-                                                .collect(toList()));
-                                    }).flatMap(attachmentInfos ->
-                                            just(new PageModelResponse<>(attachmentInfos, tuple2.getT2())))
-                            :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
-                });
-    }
-
-    /**
      * select attachment by page and memberId
      *
      * @param limit
@@ -278,6 +219,66 @@ public class AttachmentServiceImpl implements AttachmentService {
                     :
                     just(new PageModelResponse<>(emptyList(), tuple3.getT2()));
         });
+    }
+
+    /**
+     * select attachment by page and condition
+     *
+     * @param limit
+     * @param rows
+     * @param attachmentCondition
+     * @return
+     */
+    @Override
+    public Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, AttachmentCondition attachmentCondition) {
+        LOGGER.info("Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, AttachmentCondition attachmentCondition), " +
+                "limit = {}, rows = {}, attachmentCondition = {}", limit, rows, attachmentCondition);
+        return just(attachmentMapper.selectByLimitAndCondition(limit, rows, attachmentCondition));
+    }
+
+    /**
+     * count attachment by condition
+     *
+     * @param attachmentCondition
+     * @return
+     */
+    @Override
+    public Mono<Long> countAttachmentMonoByCondition(AttachmentCondition attachmentCondition) {
+        LOGGER.info("Mono<Long> countAttachmentMonoByCondition(AttachmentCondition attachmentCondition), attachmentCondition = {}", attachmentCondition);
+        return just(ofNullable(attachmentMapper.countByCondition(attachmentCondition)).orElse(0L));
+    }
+
+    /**
+     * select attachment info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    @Override
+    public Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest) {
+        LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectAttachmentInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest), " +
+                "pageModelRequest = {}", pageModelRequest);
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        AttachmentCondition attachmentCondition = pageModelRequest.getParam();
+        CONDITION_REPACKAGER.accept(attachmentCondition);
+
+        return zip(selectAttachmentMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), attachmentCondition), countAttachmentMonoByCondition(attachmentCondition))
+                .flatMap(tuple2 -> {
+                    List<Attachment> attachments = tuple2.getT1();
+                    return isNotEmpty(attachments) ?
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(attachments.parallelStream().map(Attachment::getCreator).collect(toList()))
+                                    .flatMap(memberBasicInfos -> {
+                                        Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+                                        return just(attachments.stream().map(a ->
+                                                        ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER.apply(a, ofNullable(idAndNameMapping.get(a.getCreator())).orElse("")))
+                                                .collect(toList()));
+                                    }).flatMap(attachmentInfos ->
+                                            just(new PageModelResponse<>(attachmentInfos, tuple2.getT2())))
+                            :
+                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                });
     }
 
 }

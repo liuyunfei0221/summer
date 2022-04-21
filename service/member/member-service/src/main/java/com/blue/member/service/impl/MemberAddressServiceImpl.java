@@ -80,20 +80,19 @@ public class MemberAddressServiceImpl implements MemberAddressService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<MemberAddressCondition> MEMBER_ADDRESS_CONDITION_PROCESSOR = condition -> {
-        if (isNotNull(condition)) {
-            condition.setSortAttribute(
-                    ofNullable(condition.getSortAttribute())
-                            .filter(BlueChecker::isNotBlank)
-                            .map(SORT_ATTRIBUTE_MAPPING::get)
-                            .filter(BlueChecker::isNotBlank)
-                            .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+        if (isNull(condition))
+            return new MemberAddressCondition();
 
-            condition.setSortType(getSortTypeByIdentity(condition.getSortType()).identity);
+        condition.setSortAttribute(
+                ofNullable(condition.getSortAttribute())
+                        .filter(BlueChecker::isNotBlank)
+                        .map(SORT_ATTRIBUTE_MAPPING::get)
+                        .filter(BlueChecker::isNotBlank)
+                        .orElseThrow(() -> new BlueException(INVALID_PARAM)));
 
-            return condition;
-        }
+        condition.setSortType(getSortTypeByIdentity(condition.getSortType()).identity);
 
-        return new MemberAddressCondition();
+        return condition;
     };
 
     /**
@@ -105,9 +104,10 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     @Override
     public Optional<MemberAddress> selectMemberAddressByPrimaryKey(Long id) {
         LOGGER.info("Optional<MemberAddress> selectMemberAddressByPrimaryKey(Long id), id = {}", id);
-        if (isValidIdentity(id))
-            return ofNullable(memberAddressMapper.selectByPrimaryKey(id));
-        throw new BlueException(INVALID_IDENTITY);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return ofNullable(memberAddressMapper.selectByPrimaryKey(id));
     }
 
     /**
@@ -119,9 +119,10 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     @Override
     public Mono<Optional<MemberAddress>> selectMemberAddressMonoByPrimaryKey(Long id) {
         LOGGER.info("Mono<Optional<MemberAddress>> selectMemberAddressMonoByPrimaryKey(Long id), id = {}", id);
-        if (isValidIdentity(id))
-            return just(ofNullable(memberAddressMapper.selectByPrimaryKey(id)));
-        throw new BlueException(INVALID_IDENTITY);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return just(ofNullable(memberAddressMapper.selectByPrimaryKey(id)));
     }
 
     /**
@@ -133,9 +134,10 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     @Override
     public List<MemberAddress> selectMemberAddressByMemberId(Long memberId) {
         LOGGER.info("List<MemberAddress> selectMemberAddressByMemberId(Long memberId), memberId = {}", memberId);
-        if (isValidIdentity(memberId))
-            return memberAddressMapper.selectByMemberId(memberId);
-        throw new BlueException(BAD_REQUEST);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+
+        return memberAddressMapper.selectByMemberId(memberId);
     }
 
     /**
@@ -147,9 +149,10 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     @Override
     public Mono<List<MemberAddress>> selectMemberAddressMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<List<MemberAddress>> selectMemberAddressMonoByMemberId(Long memberId), memberId = {}", memberId);
-        if (isValidIdentity(memberId))
-            return just(memberAddressMapper.selectByMemberId(memberId));
-        throw new BlueException(BAD_REQUEST);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+
+        return just(memberAddressMapper.selectByMemberId(memberId));
     }
 
     /**
@@ -161,23 +164,23 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     @Override
     public Mono<MemberAddressInfo> selectMemberAddressInfoMonoByPrimaryKeyWithAssert(Long id) {
         LOGGER.info("Mono<MemberAddressInfo> selectMemberAddressInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
-        if (isValidIdentity(id))
-            return just(id)
-                    .flatMap(this::selectMemberAddressMonoByPrimaryKey)
-                    .flatMap(maOpt ->
-                            maOpt.map(Mono::just)
-                                    .orElseGet(() ->
-                                            error(() -> new BlueException(DATA_NOT_EXIST)))
-                    ).flatMap(ma -> {
-                        if (isInvalidStatus(ma.getStatus()))
-                            return error(() -> new BlueException(DATA_NOT_EXIST));
-                        LOGGER.info("ma = {}", ma);
-                        return just(ma);
-                    }).flatMap(mb ->
-                            just(MEMBER_ADDRESS_2_MEMBER_ADDRESS_INFO.apply(mb))
-                    );
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
 
-        throw new BlueException(INVALID_IDENTITY);
+        return just(id)
+                .flatMap(this::selectMemberAddressMonoByPrimaryKey)
+                .flatMap(maOpt ->
+                        maOpt.map(Mono::just)
+                                .orElseGet(() ->
+                                        error(() -> new BlueException(DATA_NOT_EXIST)))
+                ).flatMap(ma -> {
+                    if (isInvalidStatus(ma.getStatus()))
+                        return error(() -> new BlueException(DATA_NOT_EXIST));
+                    LOGGER.info("ma = {}", ma);
+                    return just(ma);
+                }).flatMap(mb ->
+                        just(MEMBER_ADDRESS_2_MEMBER_ADDRESS_INFO.apply(mb))
+                );
     }
 
     /**
@@ -232,11 +235,10 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     public Mono<List<MemberAddress>> selectMemberAddressMonoByLimitAndCondition(Long limit, Long rows, MemberAddressCondition memberAddressCondition) {
         LOGGER.info("Mono<List<MemberAddress>> selectMemberAddressMonoByLimitAndCondition(Long limit, Long rows, MemberAddressCondition memberAddressCondition), " +
                 "limit = {}, rows = {}, memberAddressCondition = {}", limit, rows, memberAddressCondition);
+        if (isNull(limit) || limit < 0 || isNull(rows) || rows < 1)
+            throw new BlueException(INVALID_PARAM);
 
-        if (isNotNull(limit) && limit >= 0 && isNotNull(rows) && rows >= 1)
-            return just(memberAddressMapper.selectByLimitAndCondition(limit, rows, memberAddressCondition));
-
-        throw new BlueException(INVALID_PARAM);
+        return just(memberAddressMapper.selectByLimitAndCondition(limit, rows, memberAddressCondition));
     }
 
     /**
@@ -261,7 +263,6 @@ public class MemberAddressServiceImpl implements MemberAddressService {
     public Mono<PageModelResponse<MemberAddressInfo>> selectMemberAddressInfoPageMonoByPageAndCondition(PageModelRequest<MemberAddressCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<MemberAddressInfo>> selectMemberAddressInfoPageMonoByPageAndCondition(PageModelRequest<MemberAddressCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
-
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

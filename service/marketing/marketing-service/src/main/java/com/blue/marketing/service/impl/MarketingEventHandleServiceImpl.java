@@ -1,17 +1,25 @@
 package com.blue.marketing.service.impl;
 
-import com.blue.marketing.api.model.EventHandleResult;
+import com.blue.base.constant.marketing.HandleStatus;
+import com.blue.base.constant.marketing.MarketingEventType;
+import com.blue.base.model.exps.BlueException;
+import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.component.marketing.MarketingEventProcessor;
+import com.blue.marketing.repository.entity.EventRecord;
+import com.blue.marketing.service.inter.EventRecordService;
 import com.blue.marketing.service.inter.MarketingEventHandleService;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
-import java.util.concurrent.ExecutorService;
+import java.util.function.Function;
 
-import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static reactor.core.publisher.Mono.fromFuture;
+import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static java.util.Optional.ofNullable;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -19,7 +27,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class MarketingEventHandleServiceImpl implements MarketingEventHandleService {
 
@@ -27,23 +35,57 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
 
     private final MarketingEventProcessor marketingEventProcessor;
 
-    private final ExecutorService executorService;
+    private BlueIdentityProcessor blueIdentityProcessor;
 
-    public MarketingEventHandleServiceImpl(MarketingEventProcessor marketingEventProcessor, ExecutorService executorService) {
+    private final EventRecordService eventRecordService;
+
+    public MarketingEventHandleServiceImpl(MarketingEventProcessor marketingEventProcessor, BlueIdentityProcessor blueIdentityProcessor, EventRecordService eventRecordService) {
         this.marketingEventProcessor = marketingEventProcessor;
-        this.executorService = executorService;
+        this.blueIdentityProcessor = blueIdentityProcessor;
+        this.eventRecordService = eventRecordService;
     }
+
+    private final Function<MarketingEvent, EventRecord> EVENT_ENTITY_GEN = marketingEvent -> {
+        if (isNull(marketingEvent))
+            throw new BlueException(INVALID_IDENTITY);
+
+        EventRecord eventRecord = new EventRecord();
+
+        eventRecord.setId(blueIdentityProcessor.generate(EventRecord.class));
+        eventRecord.setType(ofNullable(marketingEvent.getEventType()).map(type -> type.identity).orElse(MarketingEventType.UNKNOWN.identity));
+        eventRecord.setData(marketingEvent.getEvent());
+        eventRecord.setCreateTime(marketingEvent.getEventTime());
+        eventRecord.setCreator(marketingEvent.getMemberId());
+
+        return eventRecord;
+    };
 
     /**
      * handle marketing event
      *
      * @param marketingEvent
+     * @return
      */
     @Override
-    public Mono<EventHandleResult> handleEvent(MarketingEvent marketingEvent) {
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public EventRecord handleEvent(MarketingEvent marketingEvent) {
         LOGGER.info("Mono<EventHandleResult> handleEvent(MarketingEvent marketingEvent), marketingEvent = {}", marketingEvent);
 
-        return fromFuture(supplyAsync(() -> marketingEventProcessor.handleEvent(marketingEvent), executorService));
+        EventRecord eventRecord = EVENT_ENTITY_GEN.apply(marketingEvent);
+
+        try {
+            marketingEventProcessor.handleEvent(marketingEvent);
+            eventRecord.setStatus(HandleStatus.HANDLED.status);
+            LOGGER.info("handleEvent(MarketingEvent marketingEvent) success, marketingEvent = {}", marketingEvent);
+        } catch (Exception exception) {
+            eventRecord.setStatus(HandleStatus.BROKEN.status);
+            LOGGER.error("handleEvent(MarketingEvent marketingEvent) failed, marketingEvent = {}, e = {}", marketingEvent, exception);
+        } finally {
+            eventRecord = eventRecordService.insertEvent(eventRecord);
+            LOGGER.info("eventMapper.insert(event) success, eventRecord = {}", eventRecord);
+        }
+
+        return eventRecord;
     }
 
 }

@@ -120,12 +120,13 @@ public class PortalServiceImpl implements PortalService {
      * set bulletin info to redis
      */
     private final BiConsumer<BulletinType, List<BulletinInfo>> REDIS_PORTAL_SETTER = (type, list) -> {
-        if (!isEmpty(list)) {
-            String key = BULLETIN_CACHE_KEY_GENERATOR.apply(type);
-            stringRedisTemplate.opsForList().rightPushAll(key, list.stream().map(GSON::toJson).collect(toList()));
-            stringRedisTemplate.expire(key, redisExpire, EXPIRE_UNIT);
-            LOGGER.info("REDIS_CACHE_PORTAL_SETTER, key = {},list = {}", key, list);
-        }
+        if (isEmpty(list))
+            return;
+
+        String key = BULLETIN_CACHE_KEY_GENERATOR.apply(type);
+        stringRedisTemplate.opsForList().rightPushAll(key, list.stream().map(GSON::toJson).collect(toList()));
+        stringRedisTemplate.expire(key, redisExpire, EXPIRE_UNIT);
+        LOGGER.info("REDIS_CACHE_PORTAL_SETTER, key = {},list = {}", key, list);
     };
 
     /**

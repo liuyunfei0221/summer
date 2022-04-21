@@ -770,31 +770,31 @@ DATABASE marketing_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 marketing_0;
 
-CREATE TABLE `event_0`
+CREATE TABLE `event_record_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `type`        tinyint      NOT NULL COMMENT 'event type',
-    `data`        varchar(512) NOT NULL COMMENT 'event data/json',
+    `type`        tinyint      NOT NULL COMMENT 'event record type',
+    `data`        varchar(512) NOT NULL COMMENT 'event record data/json',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-handled 0-un handled',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     PRIMARY KEY (`id`),
     KEY           `idx_create_time`(`create_time`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event 0';
+    KEY           `idx_creator_type_create_time`(`creator`,`type`,`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event record 0';
 
-CREATE TABLE `event_1`
+CREATE TABLE `event_record_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `type`        tinyint      NOT NULL COMMENT 'event type',
-    `data`        varchar(512) NOT NULL COMMENT 'event data/json',
+    `type`        tinyint      NOT NULL COMMENT 'event record type',
+    `data`        varchar(512) NOT NULL COMMENT 'event record data/json',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-handled 0-un handled',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     PRIMARY KEY (`id`),
     KEY           `idx_create_time`(`create_time`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event 1';
+    KEY           `idx_creator_type_create_time`(`creator`,`type`,`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event record 1';
 
 -- seata undo log
 
@@ -818,31 +818,31 @@ DATABASE marketing_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 marketing_1;
 
-CREATE TABLE `event_0`
+CREATE TABLE `event_record_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `type`        tinyint      NOT NULL COMMENT 'event type 1-签到奖励, 2-活动奖励',
-    `data`        varchar(512) NOT NULL COMMENT 'event data/json',
+    `type`        tinyint      NOT NULL COMMENT 'event record type',
+    `data`        varchar(512) NOT NULL COMMENT 'event record data/json',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-handled 0-un handled',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     PRIMARY KEY (`id`),
     KEY           `idx_create_time`(`create_time`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event 0';
+    KEY           `idx_creator_type_create_time`(`creator`,`type`,`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event record 0';
 
-CREATE TABLE `event_1`
+CREATE TABLE `event_record_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `type`        tinyint      NOT NULL COMMENT 'event type 1-签到奖励, 2-活动奖励',
-    `data`        varchar(512) NOT NULL COMMENT 'event data/json',
+    `type`        tinyint      NOT NULL COMMENT 'event record type',
+    `data`        varchar(512) NOT NULL COMMENT 'event record data/json',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-handled 0-un handled',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     PRIMARY KEY (`id`),
     KEY           `idx_create_time`(`create_time`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event 1';
+    KEY           `idx_creator_type_create_time`(`creator`,`type`,`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event record 1';
 
 -- seata undo log
 

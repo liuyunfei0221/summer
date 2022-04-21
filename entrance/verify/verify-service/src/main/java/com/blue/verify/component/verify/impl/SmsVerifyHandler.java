@@ -20,7 +20,7 @@ import java.time.Duration;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IP_SYNC_KEY_GETTER;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
@@ -86,14 +86,14 @@ public class SmsVerifyHandler implements VerifyHandler {
     }
 
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
-        if (isNull(key))
+        if (isBlank(key))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
 
         return SMS_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
     private static final BiFunction<BusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
-        if (isNull(type) || isNull(key))
+        if (isNull(type) || isBlank(key))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
 
         return type.identity + PAR_CONCATENATION.identity + key;
@@ -101,6 +101,9 @@ public class SmsVerifyHandler implements VerifyHandler {
 
     @Override
     public Mono<String> handle(BusinessType businessType, String destination) {
+        if (isNull(businessType) || isBlank(destination))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "businessType or destination can't be null");
+
         //TODO verify destination/phone
 
         return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(destination), ALLOW, SEND_INTERVAL_MILLIS)

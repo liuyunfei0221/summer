@@ -246,7 +246,6 @@ public class CredentialServiceImpl implements CredentialService {
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public void insertCredential(Credential credential) {
         LOGGER.info("void insertCredential(Credential credential, Long operatorId), credential = {}", credential);
-
         Long memberId;
         if (isNull(credential) || isInvalidIdentity(memberId = credential.getMemberId()))
             throw new BlueException(EMPTY_PARAM);
@@ -273,10 +272,8 @@ public class CredentialServiceImpl implements CredentialService {
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public void updateCredentialByIds(String credential, List<Long> ids) {
         LOGGER.info("void updateCredentialByIds(String credential, List<Long> ids), credential = {}, ids = {}", credential, ids);
-
         if (isBlank(credential) || isEmpty(ids))
             throw new BlueException(EMPTY_PARAM);
-
         if (isNotEmpty(credentialMapper.selectByCredentials(singletonList(credential))))
             throw new BlueException(DATA_ALREADY_EXIST);
 
@@ -294,7 +291,6 @@ public class CredentialServiceImpl implements CredentialService {
         LOGGER.info("void updateCredential(Credential credential), credential = {}", credential);
         if (isNull(credential))
             throw new BlueException(EMPTY_PARAM);
-
         if (isInvalidIdentity(credential.getId()))
             throw new BlueException(INVALID_IDENTITY);
 

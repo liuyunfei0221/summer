@@ -70,9 +70,10 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
     @Override
     public Optional<MemberRealName> selectMemberRealNameByPrimaryKey(Long id) {
         LOGGER.info("Optional<MemberRealName> selectMemberRealNameByPrimaryKey(Long id), id = {}", id);
-        if (isValidIdentity(id))
-            return ofNullable(memberRealNameMapper.selectByPrimaryKey(id));
-        throw new BlueException(INVALID_IDENTITY);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return ofNullable(memberRealNameMapper.selectByPrimaryKey(id));
     }
 
     /**
@@ -84,9 +85,10 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
     @Override
     public Mono<Optional<MemberRealName>> selectMemberRealNameMonoByPrimaryKey(Long id) {
         LOGGER.info("Mono<Optional<MemberRealName>> selectMemberRealNameMonoByPrimaryKey(Long id), id = {}", id);
-        if (isValidIdentity(id))
-            return just(ofNullable(memberRealNameMapper.selectByPrimaryKey(id)));
-        throw new BlueException(INVALID_IDENTITY);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return just(ofNullable(memberRealNameMapper.selectByPrimaryKey(id)));
     }
 
     /**
@@ -98,9 +100,10 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
     @Override
     public Optional<MemberRealName> selectMemberRealNameByMemberId(Long memberId) {
         LOGGER.info("Optional<MemberRealName> selectMemberRealNameByMemberId(Long memberId), memberId = {}", memberId);
-        if (isValidIdentity(memberId))
-            return ofNullable(memberRealNameMapper.selectByMemberId(memberId));
-        throw new BlueException(BAD_REQUEST);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+
+        return ofNullable(memberRealNameMapper.selectByMemberId(memberId));
     }
 
     /**
@@ -112,9 +115,10 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
     @Override
     public Mono<Optional<MemberRealName>> selectMemberRealNameMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Optional<MemberRealName>> selectMemberRealNameMonoByMemberId(Long memberId), memberId = {}", memberId);
-        if (isValidIdentity(memberId))
-            return just(ofNullable(memberRealNameMapper.selectByMemberId(memberId)));
-        throw new BlueException(BAD_REQUEST);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+
+        return just(ofNullable(memberRealNameMapper.selectByMemberId(memberId)));
     }
 
     /**
@@ -127,23 +131,23 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
     public Mono<MemberRealNameInfo> selectMemberRealNameInfoMonoByPrimaryKeyWithAssert(Long id) {
         LOGGER.info("Mono<MemberRealNameInfo> selectMemberRealNameInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         //noinspection DuplicatedCode
-        if (isValidIdentity(id))
-            return just(id)
-                    .flatMap(this::selectMemberRealNameMonoByPrimaryKey)
-                    .flatMap(mrnOpt ->
-                            mrnOpt.map(Mono::just)
-                                    .orElseGet(() ->
-                                            error(() -> new BlueException(DATA_NOT_EXIST)))
-                    ).flatMap(mrn -> {
-                        if (isInvalidStatus(mrn.getStatus()))
-                            return error(() -> new BlueException(DATA_NOT_EXIST));
-                        LOGGER.info("mrn = {}", mrn);
-                        return just(mrn);
-                    }).flatMap(mrn ->
-                            just(MEMBER_REAL_NAME_2_MEMBER_REAL_NAME_INFO.apply(mrn))
-                    );
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
 
-        throw new BlueException(INVALID_IDENTITY);
+        return just(id)
+                .flatMap(this::selectMemberRealNameMonoByPrimaryKey)
+                .flatMap(mrnOpt ->
+                        mrnOpt.map(Mono::just)
+                                .orElseGet(() ->
+                                        error(() -> new BlueException(DATA_NOT_EXIST)))
+                ).flatMap(mrn -> {
+                    if (isInvalidStatus(mrn.getStatus()))
+                        return error(() -> new BlueException(DATA_NOT_EXIST));
+                    LOGGER.info("mrn = {}", mrn);
+                    return just(mrn);
+                }).flatMap(mrn ->
+                        just(MEMBER_REAL_NAME_2_MEMBER_REAL_NAME_INFO.apply(mrn))
+                );
     }
 
     /**
@@ -156,23 +160,23 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
     public Mono<MemberRealNameInfo> selectMemberRealNameInfoMonoByMemberIdWithAssert(Long memberId) {
         LOGGER.info("Mono<MemberRealNameInfo> selectMemberRealNameInfoMonoByMemberIdWithAssert(Long memberId), memberId = {}", memberId);
         //noinspection DuplicatedCode
-        if (isValidIdentity(memberId))
-            return just(memberId)
-                    .flatMap(this::selectMemberRealNameMonoByMemberId)
-                    .flatMap(mrnOpt ->
-                            mrnOpt.map(Mono::just)
-                                    .orElseGet(() ->
-                                            error(() -> new BlueException(DATA_NOT_EXIST)))
-                    ).flatMap(mrn -> {
-                        if (isInvalidStatus(mrn.getStatus()))
-                            return error(() -> new BlueException(DATA_NOT_EXIST));
-                        LOGGER.info("mrn = {}", mrn);
-                        return just(mrn);
-                    }).flatMap(mrn ->
-                            just(MEMBER_REAL_NAME_2_MEMBER_REAL_NAME_INFO.apply(mrn))
-                    );
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
 
-        throw new BlueException(INVALID_IDENTITY);
+        return just(memberId)
+                .flatMap(this::selectMemberRealNameMonoByMemberId)
+                .flatMap(mrnOpt ->
+                        mrnOpt.map(Mono::just)
+                                .orElseGet(() ->
+                                        error(() -> new BlueException(DATA_NOT_EXIST)))
+                ).flatMap(mrn -> {
+                    if (isInvalidStatus(mrn.getStatus()))
+                        return error(() -> new BlueException(DATA_NOT_EXIST));
+                    LOGGER.info("mrn = {}", mrn);
+                    return just(mrn);
+                }).flatMap(mrn ->
+                        just(MEMBER_REAL_NAME_2_MEMBER_REAL_NAME_INFO.apply(mrn))
+                );
     }
 
     /**

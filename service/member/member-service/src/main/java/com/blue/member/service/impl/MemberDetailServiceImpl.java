@@ -70,9 +70,10 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     @Override
     public Optional<MemberDetail> selectMemberDetailByPrimaryKey(Long id) {
         LOGGER.info("Optional<MemberDetail> selectMemberDetailByPrimaryKey(Long id), id = {}", id);
-        if (isValidIdentity(id))
-            return ofNullable(memberDetailMapper.selectByPrimaryKey(id));
-        throw new BlueException(INVALID_IDENTITY);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return ofNullable(memberDetailMapper.selectByPrimaryKey(id));
     }
 
     /**
@@ -84,9 +85,10 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     @Override
     public Mono<Optional<MemberDetail>> selectMemberDetailMonoByPrimaryKey(Long id) {
         LOGGER.info("Mono<Optional<MemberDetail>> selectMemberDetailMonoByPrimaryKey(Long id), id = {}", id);
-        if (isValidIdentity(id))
-            return just(ofNullable(memberDetailMapper.selectByPrimaryKey(id)));
-        throw new BlueException(INVALID_IDENTITY);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return just(ofNullable(memberDetailMapper.selectByPrimaryKey(id)));
     }
 
     /**
@@ -98,9 +100,10 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     @Override
     public Optional<MemberDetail> selectMemberDetailByMemberId(Long memberId) {
         LOGGER.info("Optional<MemberDetail>l selectMemberDetailByMemberId(Long memberId), memberId = {}", memberId);
-        if (isValidIdentity(memberId))
-            return ofNullable(memberDetailMapper.selectByMemberId(memberId));
-        throw new BlueException(BAD_REQUEST);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+
+        return ofNullable(memberDetailMapper.selectByMemberId(memberId));
     }
 
     /**
@@ -112,9 +115,10 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     @Override
     public Mono<Optional<MemberDetail>> selectMemberDetailMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Optional<MemberBusiness>> selectMemberAddressMonoByMemberId(Long memberId), memberId = {}", memberId);
-        if (isValidIdentity(memberId))
-            return just(ofNullable(memberDetailMapper.selectByMemberId(memberId)));
-        throw new BlueException(BAD_REQUEST);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+
+        return just(ofNullable(memberDetailMapper.selectByMemberId(memberId)));
     }
 
     /**
@@ -127,23 +131,23 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     public Mono<MemberDetailInfo> selectMemberDetailInfoMonoByPrimaryKeyWithAssert(Long id) {
         LOGGER.info("Mono<MemberDetailInfo> selectMemberDetailInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         //noinspection DuplicatedCode
-        if (isValidIdentity(id))
-            return just(id)
-                    .flatMap(this::selectMemberDetailMonoByPrimaryKey)
-                    .flatMap(mdOpt ->
-                            mdOpt.map(Mono::just)
-                                    .orElseGet(() ->
-                                            error(() -> new BlueException(DATA_NOT_EXIST)))
-                    ).flatMap(md -> {
-                        if (isInvalidStatus(md.getStatus()))
-                            return error(() -> new BlueException(DATA_NOT_EXIST));
-                        LOGGER.info("md = {}", md);
-                        return just(md);
-                    }).flatMap(mb ->
-                            just(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO.apply(mb))
-                    );
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
 
-        throw new BlueException(INVALID_IDENTITY);
+        return just(id)
+                .flatMap(this::selectMemberDetailMonoByPrimaryKey)
+                .flatMap(mdOpt ->
+                        mdOpt.map(Mono::just)
+                                .orElseGet(() ->
+                                        error(() -> new BlueException(DATA_NOT_EXIST)))
+                ).flatMap(md -> {
+                    if (isInvalidStatus(md.getStatus()))
+                        return error(() -> new BlueException(DATA_NOT_EXIST));
+                    LOGGER.info("md = {}", md);
+                    return just(md);
+                }).flatMap(mb ->
+                        just(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO.apply(mb))
+                );
     }
 
     /**
@@ -156,23 +160,23 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     public Mono<MemberDetailInfo> selectMemberDetailInfoMonoByMemberIdWithAssert(Long memberId) {
         LOGGER.info("Mono<MemberDetailInfo> selectMemberDetailInfoMonoByMemberIdWithAssert(Long memberId), memberId = {}", memberId);
         //noinspection DuplicatedCode
-        if (isValidIdentity(memberId))
-            return just(memberId)
-                    .flatMap(this::selectMemberDetailMonoByMemberId)
-                    .flatMap(mdOpt ->
-                            mdOpt.map(Mono::just)
-                                    .orElseGet(() ->
-                                            error(() -> new BlueException(DATA_NOT_EXIST)))
-                    ).flatMap(md -> {
-                        if (isInvalidStatus(md.getStatus()))
-                            return error(() -> new BlueException(DATA_NOT_EXIST));
-                        LOGGER.info("md = {}", md);
-                        return just(md);
-                    }).flatMap(md ->
-                            just(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO.apply(md))
-                    );
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
 
-        throw new BlueException(INVALID_IDENTITY);
+        return just(memberId)
+                .flatMap(this::selectMemberDetailMonoByMemberId)
+                .flatMap(mdOpt ->
+                        mdOpt.map(Mono::just)
+                                .orElseGet(() ->
+                                        error(() -> new BlueException(DATA_NOT_EXIST)))
+                ).flatMap(md -> {
+                    if (isInvalidStatus(md.getStatus()))
+                        return error(() -> new BlueException(DATA_NOT_EXIST));
+                    LOGGER.info("md = {}", md);
+                    return just(md);
+                }).flatMap(md ->
+                        just(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO.apply(md))
+                );
     }
 
     /**

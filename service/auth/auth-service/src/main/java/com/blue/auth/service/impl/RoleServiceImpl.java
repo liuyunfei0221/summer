@@ -170,18 +170,19 @@ public class RoleServiceImpl implements RoleService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Consumer<RoleCondition> CONDITION_REPACKAGER = condition -> {
-        if (condition != null) {
-            ofNullable(condition.getSortAttribute())
-                    .filter(StringUtils::hasText)
-                    .map(SORT_ATTRIBUTE_MAPPING::get)
-                    .filter(StringUtils::hasText)
-                    .ifPresent(condition::setSortAttribute);
+        if (isNull(condition))
+            return;
 
-            assertSortType(condition.getSortType(), true);
+        ofNullable(condition.getSortAttribute())
+                .filter(StringUtils::hasText)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(StringUtils::hasText)
+                .ifPresent(condition::setSortAttribute);
 
-            ofNullable(condition.getName())
-                    .filter(n -> !isBlank(n)).map(String::toLowerCase).ifPresent(n -> condition.setName("%" + n + "%"));
-        }
+        assertSortType(condition.getSortType(), true);
+
+        ofNullable(condition.getName())
+                .filter(n -> !isBlank(n)).map(String::toLowerCase).ifPresent(n -> condition.setName("%" + n + "%"));
     };
 
     /**

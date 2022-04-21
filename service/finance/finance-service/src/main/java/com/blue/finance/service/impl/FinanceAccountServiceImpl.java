@@ -4,13 +4,15 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.finance.repository.entity.FinanceAccount;
 import com.blue.finance.repository.mapper.FinanceAccountMapper;
 import com.blue.finance.service.inter.FinanceAccountService;
+import com.blue.identity.common.BlueIdentityProcessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
 import java.util.Optional;
 
-import static com.blue.base.common.base.BlueChecker.isValidIdentity;
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -28,10 +30,13 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
 
     private static final Logger LOGGER = getLogger(FinanceAccountServiceImpl.class);
 
+    private final BlueIdentityProcessor blueIdentityProcessor;
+
     private final FinanceAccountMapper financeAccountMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public FinanceAccountServiceImpl(FinanceAccountMapper financeAccountMapper) {
+    public FinanceAccountServiceImpl(BlueIdentityProcessor blueIdentityProcessor, FinanceAccountMapper financeAccountMapper) {
+        this.blueIdentityProcessor = blueIdentityProcessor;
         this.financeAccountMapper = financeAccountMapper;
     }
 
@@ -44,6 +49,11 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
     public int insertFinanceAccount(FinanceAccount financeAccount) {
         LOGGER.info("int insertFinanceAccount(FinanceAccount financeAccount), financeAccount = {}", financeAccount);
+        if (isNull(financeAccount))
+            throw new BlueException(INVALID_IDENTITY);
+        if (isInvalidIdentity(financeAccount.getId()))
+            financeAccount.setId(blueIdentityProcessor.generate(FinanceAccount.class));
+
         return financeAccountMapper.insert(financeAccount);
     }
 
@@ -56,11 +66,10 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
     @Override
     public Optional<FinanceAccount> getFinanceAccountByMemberId(Long memberId) {
         LOGGER.info("Optional<FinanceAccount> getFinanceAccountByMemberId(Long memberId), memberId = {}", memberId);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
 
-        if (isValidIdentity(memberId))
-            return ofNullable(financeAccountMapper.getByMemberId(memberId));
-
-        throw new BlueException(INVALID_IDENTITY);
+        return ofNullable(financeAccountMapper.getByMemberId(memberId));
     }
 
 }

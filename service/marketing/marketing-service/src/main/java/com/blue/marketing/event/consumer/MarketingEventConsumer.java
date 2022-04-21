@@ -3,6 +3,7 @@ package com.blue.marketing.event.consumer;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.config.blue.BlueConsumerConfig;
+import com.blue.marketing.repository.entity.EventRecord;
 import com.blue.marketing.service.inter.MarketingEventHandleService;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import reactor.util.Logger;
@@ -23,9 +24,9 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class MarketingConsumer implements BlueLifecycle {
+public final class MarketingEventConsumer implements BlueLifecycle {
 
-    private static final Logger LOGGER = getLogger(MarketingConsumer.class);
+    private static final Logger LOGGER = getLogger(MarketingEventConsumer.class);
 
     private final MarketingEventHandleService marketingEventHandleService;
 
@@ -33,7 +34,7 @@ public final class MarketingConsumer implements BlueLifecycle {
 
     private BluePulsarConsumer<MarketingEvent> marketingConsumer;
 
-    public MarketingConsumer(MarketingEventHandleService marketingEventHandleService, BlueConsumerConfig blueConsumerConfig) {
+    public MarketingEventConsumer(MarketingEventHandleService marketingEventHandleService, BlueConsumerConfig blueConsumerConfig) {
         this.marketingEventHandleService = marketingEventHandleService;
         this.blueConsumerConfig = blueConsumerConfig;
     }
@@ -42,11 +43,10 @@ public final class MarketingConsumer implements BlueLifecycle {
     private void init() {
         Consumer<MarketingEvent> marketingDataConsumer = marketingEvent ->
                 ofNullable(marketingEvent)
-                        .ifPresent(me ->
-                                marketingEventHandleService.handleEvent(me)
-                                        .subscribe(eventHandleResult ->
-                                                LOGGER.info("marketingEventHandleService.handleEvent(marketingEvent), me = {}. eventHandleResult = {}", me, eventHandleResult))
-                        );
+                        .ifPresent(me -> {
+                            EventRecord eventRecord = marketingEventHandleService.handleEvent(me);
+                            LOGGER.info("marketingEventHandleService.handleEvent(marketingEvent), me = {}. eventRecord = {}", me, eventRecord);
+                        });
 
         this.marketingConsumer = generateConsumer(blueConsumerConfig.getByKey(MARKETING.name), marketingDataConsumer);
     }

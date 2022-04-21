@@ -453,7 +453,6 @@ public class ControlServiceImpl implements ControlService {
     public MemberBasicInfo credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access) {
         LOGGER.info("MemberBasicInfo credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access), credentialSettingUpParam = {}, access = {}",
                 credentialSettingUpParam, access);
-
         if (isNull(credentialSettingUpParam))
             throw new BlueException(EMPTY_PARAM);
         if (isNull(access))
@@ -496,7 +495,6 @@ public class ControlServiceImpl implements ControlService {
     public MemberBasicInfo credentialModify(CredentialModifyParam credentialModifyParam, Access access) {
         LOGGER.info("MemberBasicInfo credentialModify(CredentialModifyParam credentialModifyParam, Access access), credentialModifyParam = {}, access = {}",
                 credentialModifyParam, access);
-
         if (isNull(credentialModifyParam))
             throw new BlueException(EMPTY_PARAM);
         if (isNull(access))
@@ -572,11 +570,9 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<Boolean> updateAccessByAccess(AccessUpdateParam accessUpdateParam, Access access) {
         LOGGER.info("Mono<Boolean> updateAccessByAccess(AccessUpdateParam accessUpdateParam, Access access), accessUpdateParam = {}, access = {}", accessUpdateParam, access);
-
         long memberId = access.getId();
         if (isInvalidIdentity(memberId))
             return error(() -> new BlueException(UNAUTHORIZED));
-
         if (isNull(accessUpdateParam))
             return error(() -> new BlueException(EMPTY_PARAM));
         accessUpdateParam.asserts();
@@ -608,13 +604,11 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<Boolean> resetAccessByAccess(AccessResetParam accessResetParam) {
         LOGGER.info("Mono<Boolean> resetAccessByAccess(AccessResetParam accessResetParam), accessResetParam = {}", accessResetParam);
-
         if (isNull(accessResetParam))
             return error(() -> new BlueException(EMPTY_PARAM));
         accessResetParam.asserts();
 
         String credential = accessResetParam.getCredential();
-
         VerifyType verifyType = getVerifyTypeByIdentity(accessResetParam.getVerifyType());
         return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(credential), ALLOW, SEND_INTERVAL_MILLIS)
                 .flatMap(allowed ->
@@ -802,7 +796,6 @@ public class ControlServiceImpl implements ControlService {
         roleResRelationParam.asserts();
 
         Long roleId = roleResRelationParam.getRoleId();
-
         assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return just(roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), operatorId))
@@ -824,7 +817,6 @@ public class ControlServiceImpl implements ControlService {
         LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId), memberRoleRelationParam = {}, operatorId = {}", memberRoleRelationParam, operatorId);
         if (isNull(memberRoleRelationParam))
             throw new BlueException(EMPTY_PARAM);
-
         memberRoleRelationParam.asserts();
 
         Long memberId = memberRoleRelationParam.getMemberId();

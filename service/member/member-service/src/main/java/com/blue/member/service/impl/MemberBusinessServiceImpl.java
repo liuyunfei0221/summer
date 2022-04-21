@@ -70,9 +70,10 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
     @Override
     public Optional<MemberBusiness> selectMemberBusinessByPrimaryKey(Long id) {
         LOGGER.info("Optional<MemberBusiness> selectMemberBusinessByPrimaryKey(Long id), id = {}", id);
-        if (isValidIdentity(id))
-            return ofNullable(memberBusinessMapper.selectByPrimaryKey(id));
-        throw new BlueException(INVALID_IDENTITY);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return ofNullable(memberBusinessMapper.selectByPrimaryKey(id));
     }
 
     /**
@@ -84,9 +85,10 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
     @Override
     public Mono<Optional<MemberBusiness>> selectMemberBusinessMonoByPrimaryKey(Long id) {
         LOGGER.info("Mono<Optional<MemberBusiness>> selectMemberBusinessMonoByPrimaryKey(Long id), id = {}", id);
-        if (isValidIdentity(id))
-            return just(ofNullable(memberBusinessMapper.selectByPrimaryKey(id)));
-        throw new BlueException(INVALID_IDENTITY);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return just(ofNullable(memberBusinessMapper.selectByPrimaryKey(id)));
     }
 
     /**
@@ -98,9 +100,10 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
     @Override
     public Optional<MemberBusiness> selectMemberBusinessByMemberId(Long memberId) {
         LOGGER.info("Optional<MemberBusiness> selectMemberBusinessByMemberId(Long memberId), memberId = {}", memberId);
-        if (isValidIdentity(memberId))
-            return ofNullable(memberBusinessMapper.selectByMemberId(memberId));
-        throw new BlueException(BAD_REQUEST);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+
+        return ofNullable(memberBusinessMapper.selectByMemberId(memberId));
     }
 
     /**
@@ -112,9 +115,10 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
     @Override
     public Mono<Optional<MemberBusiness>> selectMemberBusinessMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Optional<MemberBusiness>> selectMemberAddressMonoByMemberId(Long memberId), memberId = {}", memberId);
-        if (isValidIdentity(memberId))
-            return just(ofNullable(memberBusinessMapper.selectByMemberId(memberId)));
-        throw new BlueException(BAD_REQUEST);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+
+        return just(ofNullable(memberBusinessMapper.selectByMemberId(memberId)));
     }
 
     /**
@@ -127,23 +131,23 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
     public Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByPrimaryKeyWithAssert(Long id) {
         LOGGER.info("Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         //noinspection DuplicatedCode
-        if (isValidIdentity(id))
-            return just(id)
-                    .flatMap(this::selectMemberBusinessMonoByPrimaryKey)
-                    .flatMap(mbOpt ->
-                            mbOpt.map(Mono::just)
-                                    .orElseGet(() ->
-                                            error(() -> new BlueException(DATA_NOT_EXIST)))
-                    ).flatMap(mb -> {
-                        if (isInvalidStatus(mb.getStatus()))
-                            return error(() -> new BlueException(DATA_NOT_EXIST));
-                        LOGGER.info("mb = {}", mb);
-                        return just(mb);
-                    }).flatMap(mb ->
-                            just(MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO.apply(mb))
-                    );
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
 
-        throw new BlueException(INVALID_IDENTITY);
+        return just(id)
+                .flatMap(this::selectMemberBusinessMonoByPrimaryKey)
+                .flatMap(mbOpt ->
+                        mbOpt.map(Mono::just)
+                                .orElseGet(() ->
+                                        error(() -> new BlueException(DATA_NOT_EXIST)))
+                ).flatMap(mb -> {
+                    if (isInvalidStatus(mb.getStatus()))
+                        return error(() -> new BlueException(DATA_NOT_EXIST));
+                    LOGGER.info("mb = {}", mb);
+                    return just(mb);
+                }).flatMap(mb ->
+                        just(MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO.apply(mb))
+                );
     }
 
     /**
@@ -156,23 +160,23 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
     public Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByMemberIdWithAssert(Long memberId) {
         LOGGER.info("Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByMemberIdWithAssert(Long memberId), memberId = {}", memberId);
         //noinspection DuplicatedCode
-        if (isValidIdentity(memberId))
-            return just(memberId)
-                    .flatMap(this::selectMemberBusinessMonoByMemberId)
-                    .flatMap(mbOpt ->
-                            mbOpt.map(Mono::just)
-                                    .orElseGet(() ->
-                                            error(() -> new BlueException(DATA_NOT_EXIST)))
-                    ).flatMap(mb -> {
-                        if (isInvalidStatus(mb.getStatus()))
-                            return error(() -> new BlueException(DATA_NOT_EXIST));
-                        LOGGER.info("mb = {}", mb);
-                        return just(mb);
-                    }).flatMap(mb ->
-                            just(MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO.apply(mb))
-                    );
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
 
-        throw new BlueException(INVALID_IDENTITY);
+        return just(memberId)
+                .flatMap(this::selectMemberBusinessMonoByMemberId)
+                .flatMap(mbOpt ->
+                        mbOpt.map(Mono::just)
+                                .orElseGet(() ->
+                                        error(() -> new BlueException(DATA_NOT_EXIST)))
+                ).flatMap(mb -> {
+                    if (isInvalidStatus(mb.getStatus()))
+                        return error(() -> new BlueException(DATA_NOT_EXIST));
+                    LOGGER.info("mb = {}", mb);
+                    return just(mb);
+                }).flatMap(mb ->
+                        just(MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO.apply(mb))
+                );
     }
 
     /**

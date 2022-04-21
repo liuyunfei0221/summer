@@ -58,7 +58,6 @@ public class MemberAuthorityServiceImpl implements MemberAuthorityService {
     public Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
-
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

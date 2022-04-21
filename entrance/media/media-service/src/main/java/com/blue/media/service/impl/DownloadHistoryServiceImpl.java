@@ -134,79 +134,6 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     }
 
     /**
-     * select download history by page and condition
-     *
-     * @param limit
-     * @param rows
-     * @param downloadHistoryCondition
-     * @return
-     */
-    @Override
-    public Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndCondition(Long limit, Long rows, DownloadHistoryCondition downloadHistoryCondition) {
-        LOGGER.info("Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndCondition(Long limit, Long rows, DownloadHistoryCondition downloadHistoryCondition), " +
-                "limit = {}, rows = {}, downloadHistoryCondition = {}", limit, rows, downloadHistoryCondition);
-
-        Query query = QUERY_CONVERTER.apply(downloadHistoryCondition);
-        query.with(SORTER_CONVERTER.apply(downloadHistoryCondition));
-        return reactiveMongoTemplate.find(query, DownloadHistory.class).collectList();
-    }
-
-    /**
-     * count download history by condition
-     *
-     * @param downloadHistoryCondition
-     * @return
-     */
-    @Override
-    public Mono<Long> countDownloadHistoryMonoByCondition(DownloadHistoryCondition downloadHistoryCondition) {
-        LOGGER.info("Mono<Long> countDownloadHistoryMonoByCondition(DownloadHistoryCondition downloadHistoryCondition), downloadHistoryCondition = {}", downloadHistoryCondition);
-        return reactiveMongoTemplate.count(QUERY_CONVERTER.apply(downloadHistoryCondition), DownloadHistory.class);
-    }
-
-    /**
-     * select download history info page by condition
-     *
-     * @param pageModelRequest
-     * @return
-     */
-    @Override
-    public Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageMonoByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageMonoByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
-        if (isNull(pageModelRequest))
-            throw new BlueException(EMPTY_PARAM);
-
-        DownloadHistoryCondition condition = pageModelRequest.getParam();
-
-        return zip(
-                selectDownloadHistoryMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), condition),
-                countDownloadHistoryMonoByCondition(condition)
-        ).flatMap(tuple2 -> {
-            List<DownloadHistory> downloadHistories = tuple2.getT1();
-
-            return isNotEmpty(downloadHistories) ?
-                    zip(attachmentService.selectAttachmentMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
-                                    .map(attachments -> attachments.parallelStream().collect(toMap(Attachment::getId, Attachment::getName, (a, b) -> a)))
-                            ,
-                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getCreator).collect(toList()))
-                                    .map(memberBasicInfos -> memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a)))
-                    ).flatMap(t2 -> {
-                        Map<Long, String> attachmentIdAndNameMapping = t2.getT1();
-                        Map<Long, String> memberIdAndNameMapping = t2.getT2();
-
-                        return just(downloadHistories.stream().map(dh ->
-                                        downloadHistoryToDownloadHistoryInfo(dh, ofNullable(attachmentIdAndNameMapping.get(dh.getAttachmentId())).orElse(""),
-                                                ofNullable(memberIdAndNameMapping.get(dh.getCreator())).orElse("")))
-                                .collect(toList()))
-                                .flatMap(downloadHistoryInfo ->
-                                        just(new PageModelResponse<>(downloadHistoryInfo, tuple2.getT2())));
-                    })
-                    :
-                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
-        });
-    }
-
-    /**
      * select download history by page and memberId
      *
      * @param limit
@@ -280,6 +207,79 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                                     just(new PageModelResponse<>(downloadHistoryInfo, tuple3.getT2())))
                     :
                     just(new PageModelResponse<>(emptyList(), tuple3.getT2()));
+        });
+    }
+
+    /**
+     * select download history by page and condition
+     *
+     * @param limit
+     * @param rows
+     * @param downloadHistoryCondition
+     * @return
+     */
+    @Override
+    public Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndCondition(Long limit, Long rows, DownloadHistoryCondition downloadHistoryCondition) {
+        LOGGER.info("Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndCondition(Long limit, Long rows, DownloadHistoryCondition downloadHistoryCondition), " +
+                "limit = {}, rows = {}, downloadHistoryCondition = {}", limit, rows, downloadHistoryCondition);
+
+        Query query = QUERY_CONVERTER.apply(downloadHistoryCondition);
+        query.with(SORTER_CONVERTER.apply(downloadHistoryCondition));
+        return reactiveMongoTemplate.find(query, DownloadHistory.class).collectList();
+    }
+
+    /**
+     * count download history by condition
+     *
+     * @param downloadHistoryCondition
+     * @return
+     */
+    @Override
+    public Mono<Long> countDownloadHistoryMonoByCondition(DownloadHistoryCondition downloadHistoryCondition) {
+        LOGGER.info("Mono<Long> countDownloadHistoryMonoByCondition(DownloadHistoryCondition downloadHistoryCondition), downloadHistoryCondition = {}", downloadHistoryCondition);
+        return reactiveMongoTemplate.count(QUERY_CONVERTER.apply(downloadHistoryCondition), DownloadHistory.class);
+    }
+
+    /**
+     * select download history info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    @Override
+    public Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageMonoByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest) {
+        LOGGER.info("Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageMonoByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest), " +
+                "pageModelRequest = {}", pageModelRequest);
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        DownloadHistoryCondition condition = pageModelRequest.getParam();
+
+        return zip(
+                selectDownloadHistoryMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), condition),
+                countDownloadHistoryMonoByCondition(condition)
+        ).flatMap(tuple2 -> {
+            List<DownloadHistory> downloadHistories = tuple2.getT1();
+
+            return isNotEmpty(downloadHistories) ?
+                    zip(attachmentService.selectAttachmentMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
+                                    .map(attachments -> attachments.parallelStream().collect(toMap(Attachment::getId, Attachment::getName, (a, b) -> a)))
+                            ,
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getCreator).collect(toList()))
+                                    .map(memberBasicInfos -> memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a)))
+                    ).flatMap(t2 -> {
+                        Map<Long, String> attachmentIdAndNameMapping = t2.getT1();
+                        Map<Long, String> memberIdAndNameMapping = t2.getT2();
+
+                        return just(downloadHistories.stream().map(dh ->
+                                        downloadHistoryToDownloadHistoryInfo(dh, ofNullable(attachmentIdAndNameMapping.get(dh.getAttachmentId())).orElse(""),
+                                                ofNullable(memberIdAndNameMapping.get(dh.getCreator())).orElse("")))
+                                .collect(toList()))
+                                .flatMap(downloadHistoryInfo ->
+                                        just(new PageModelResponse<>(downloadHistoryInfo, tuple2.getT2())));
+                    })
+                    :
+                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
         });
     }
 

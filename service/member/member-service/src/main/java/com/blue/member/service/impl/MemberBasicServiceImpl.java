@@ -88,20 +88,19 @@ public class MemberBasicServiceImpl implements MemberBasicService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<MemberBasicCondition> MEMBER_CONDITION_PROCESSOR = condition -> {
-        if (condition != null) {
-            condition.setSortAttribute(
-                    ofNullable(condition.getSortAttribute())
-                            .filter(BlueChecker::isNotBlank)
-                            .map(SORT_ATTRIBUTE_MAPPING::get)
-                            .filter(BlueChecker::isNotBlank)
-                            .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+        if (isNull(condition))
+            return new MemberBasicCondition();
 
-            condition.setSortType(getSortTypeByIdentity(condition.getSortType()).identity);
+        condition.setSortAttribute(
+                ofNullable(condition.getSortAttribute())
+                        .filter(BlueChecker::isNotBlank)
+                        .map(SORT_ATTRIBUTE_MAPPING::get)
+                        .filter(BlueChecker::isNotBlank)
+                        .orElseThrow(() -> new BlueException(INVALID_PARAM)));
 
-            return condition;
-        }
+        condition.setSortType(getSortTypeByIdentity(condition.getSortType()).identity);
 
-        return new MemberBasicCondition();
+        return condition;
     };
 
     /**
@@ -113,9 +112,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Optional<MemberBasic> getMemberBasicByPrimaryKey(Long id) {
         LOGGER.info("Optional<MemberBasic> getMemberBasicByPrimaryKey(Long id), id = {}", id);
-        if (isValidIdentity(id))
-            return ofNullable(memberBasicMapper.selectByPrimaryKey(id));
-        throw new BlueException(INVALID_IDENTITY);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return ofNullable(memberBasicMapper.selectByPrimaryKey(id));
     }
 
     /**
@@ -139,9 +139,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Optional<MemberBasic> selectMemberBasicByPhone(String phone) {
         LOGGER.info("Optional<MemberBasic> getMemberBasicByPhone(String phone), phone = {}", phone);
-        if (isNotBlank(phone))
-            return ofNullable(memberBasicMapper.selectByPhone(phone));
-        throw new BlueException(BAD_REQUEST);
+        if (isBlank(phone))
+            throw new BlueException(BAD_REQUEST);
+
+        return ofNullable(memberBasicMapper.selectByPhone(phone));
     }
 
     /**
@@ -153,9 +154,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Optional<MemberBasic> selectMemberBasicByEmail(String email) {
         LOGGER.info("Optional<MemberBasic> getMemberBasicByEmail(String email), email = {}", email);
-        if (isNotBlank(email))
-            return ofNullable(memberBasicMapper.selectByEmail(email));
-        throw new BlueException(BAD_REQUEST);
+        if (isBlank(email))
+            throw new BlueException(BAD_REQUEST);
+
+        return ofNullable(memberBasicMapper.selectByEmail(email));
     }
 
     /**
@@ -167,9 +169,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<Optional<MemberBasic>> selectMemberBasicMonoByPhone(String phone) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone), phone = {}", phone);
-        if (isNotBlank(phone))
-            return just(ofNullable(memberBasicMapper.selectByPhone(phone)));
-        throw new BlueException(BAD_REQUEST);
+        if (isBlank(phone))
+            throw new BlueException(BAD_REQUEST);
+
+        return just(ofNullable(memberBasicMapper.selectByPhone(phone)));
     }
 
     /**
@@ -181,9 +184,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<Optional<MemberBasic>> selectMemberBasicMonoByEmail(String email) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email), email = {}", email);
-        if (isNotBlank(email))
-            return just(ofNullable(memberBasicMapper.selectByEmail(email)));
-        throw new BlueException(BAD_REQUEST);
+        if (isBlank(email))
+            throw new BlueException(BAD_REQUEST);
+
+        return just(ofNullable(memberBasicMapper.selectByEmail(email)));
     }
 
     /**
@@ -195,24 +199,24 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<MemberBasicInfo> selectMemberInfoMonoByPrimaryKeyWithAssert(Long id) {
         LOGGER.info("Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
-        if (isValidIdentity(id))
-            //noinspection DuplicatedCode
-            return just(id)
-                    .flatMap(this::getMemberBasicMonoByPrimaryKey)
-                    .flatMap(mbOpt ->
-                            mbOpt.map(Mono::just)
-                                    .orElseGet(() ->
-                                            error(() -> new BlueException(UNAUTHORIZED)))
-                    ).flatMap(mb -> {
-                        if (isInvalidStatus(mb.getStatus()))
-                            return error(() -> new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
-                        LOGGER.info("mb = {}", mb);
-                        return just(mb);
-                    }).flatMap(mb ->
-                            just(MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(mb))
-                    );
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
 
-        throw new BlueException(INVALID_IDENTITY);
+        //noinspection DuplicatedCode
+        return just(id)
+                .flatMap(this::getMemberBasicMonoByPrimaryKey)
+                .flatMap(mbOpt ->
+                        mbOpt.map(Mono::just)
+                                .orElseGet(() ->
+                                        error(() -> new BlueException(UNAUTHORIZED)))
+                ).flatMap(mb -> {
+                    if (isInvalidStatus(mb.getStatus()))
+                        return error(() -> new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
+                    LOGGER.info("mb = {}", mb);
+                    return just(mb);
+                }).flatMap(mb ->
+                        just(MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(mb))
+                );
     }
 
     /**
@@ -287,11 +291,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     public Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberBasicCondition memberBasicCondition) {
         LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition), " +
                 "limit = {}, rows = {}, memberCondition = {}", limit, rows, memberBasicCondition);
+        if (isNull(limit) || limit < 0 || isNull(rows) || rows < 1)
+            throw new BlueException(INVALID_PARAM);
 
-        if (limit != null && limit >= 0 && rows != null && rows >= 1)
-            return just(memberBasicMapper.selectByLimitAndCondition(limit, rows, memberBasicCondition));
-
-        throw new BlueException(INVALID_PARAM);
+        return just(memberBasicMapper.selectByLimitAndCondition(limit, rows, memberBasicCondition));
     }
 
     /**
@@ -316,7 +319,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     public Mono<PageModelResponse<MemberBasicInfo>> selectMemberBasicInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
-
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

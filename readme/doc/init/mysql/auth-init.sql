@@ -153,18 +153,25 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'media upload of api', 'media upload of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (220002, 'POST', 'blue-media', '/file/download', b'1', b'1', b'1', b'1', b'0', 1,
         'file download of api', 'file download of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220003, 'POST', 'blue-media', '/attachment/list', b'1', b'1', b'1', b'1', b'1', 1,
+       (220003, 'POST', 'blue-media', '/attachments', b'1', b'1', b'1', b'1', b'1', 1,
         'attachment list of api', 'attachment list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
-       (220004, 'POST', 'blue-media', '/attachment/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
-        'withdraw/test encrypt in media', 'withdraw/test encrypt in media', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220005, 'GET', 'blue-media', '/mail/send', b'0', b'1', b'1', b'0', b'1', 2,
+       (220004, 'POST', 'blue-media', '/downloadHistories', b'1', b'1', b'1', b'1', b'1', 1,
+        'download history list of api', 'download history list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (220005, 'POST', 'blue-media', '/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
+        'withdraw test encrypt in media', 'withdraw test encrypt in media', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (220006, 'GET', 'blue-media', '/mail/send', b'0', b'1', b'1', b'0', b'1', 2,
         'test send', 'test send', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220006, 'GET', 'blue-media', '/mail/read', b'0', b'1', b'1', b'0', b'1', 2,
+       (220007, 'GET', 'blue-media', '/mail/read', b'0', b'1', b'1', b'0', b'1', 2,
         'test read', 'test read', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- media manage
+
+       (230006, 'GET', 'blue-media', '/manager/attachments', b'0', b'1', b'1', b'0', b'1', 2,
+        'attachment list of manager', 'attachment list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (230007, 'GET', 'blue-media', '/manager/downloadHistories', b'0', b'1', b'1', b'0', b'1', 2,
+        'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1),
 
 
 -- portal api
@@ -205,7 +212,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 -- data manage
 
        (320001, 'POST', 'blue-lake', '/events', b'0', b'1', b'1', b'1', b'1', 2,
-        'test lake event', 'test lake event', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'test lake eventRecord', 'test lake eventRecord', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (320002, 'POST', 'blue-analyze', '/statistics/active/simple', b'0', b'1', b'1', b'1', b'1', 2,
         'statistics active simple', 'statistics active simple', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (320003, 'POST', 'blue-analyze', '/statistics/active/merge', b'0', b'1', b'1', b'1', b'1', 2,

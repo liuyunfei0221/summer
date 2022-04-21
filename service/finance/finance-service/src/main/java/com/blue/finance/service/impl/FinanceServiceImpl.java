@@ -11,8 +11,7 @@ import reactor.util.Logger;
 
 import java.util.Optional;
 
-import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
-import static com.blue.base.common.base.BlueChecker.isValidIdentity;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
@@ -44,26 +43,25 @@ public class FinanceServiceImpl implements FinanceService {
     @Override
     public Mono<FinanceInfo> getBalanceByMemberId(Long memberId) {
         LOGGER.info("Mono<FinanceInfo> getBalanceByMemberId(Long memberId), memberId = {}", memberId);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
 
-        if (isValidIdentity(memberId))
-            return just(memberId)
-                    .flatMap(mi -> {
-                        Optional<FinanceAccount> faOpt = financeAccountService.getFinanceAccountByMemberId(mi);
-                        if (faOpt.isEmpty()) {
-                            LOGGER.error("A member did not allocate finance account, please repair data, memberId = {}", memberId);
-                            return error(() -> new BlueException(DATA_NOT_EXIST));
-                        }
+        return just(memberId)
+                .flatMap(mi -> {
+                    Optional<FinanceAccount> faOpt = financeAccountService.getFinanceAccountByMemberId(mi);
+                    if (faOpt.isEmpty()) {
+                        LOGGER.error("A member did not allocate finance account, please repair data, memberId = {}", memberId);
+                        return error(() -> new BlueException(DATA_NOT_EXIST));
+                    }
 
-                        FinanceAccount financeAccount = faOpt.get();
-                        if (isInvalidStatus(financeAccount.getStatus()))
-                            return error(() -> new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
+                    FinanceAccount financeAccount = faOpt.get();
+                    if (isInvalidStatus(financeAccount.getStatus()))
+                        return error(() -> new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
 
-                        return just(financeAccount);
-                    })
-                    .flatMap(fa ->
-                            just(new FinanceInfo(fa.getBalance())));
-
-        throw new BlueException(INVALID_IDENTITY);
+                    return just(financeAccount);
+                })
+                .flatMap(fa ->
+                        just(new FinanceInfo(fa.getBalance())));
     }
 
 }

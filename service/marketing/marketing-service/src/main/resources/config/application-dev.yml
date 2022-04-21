@@ -71,7 +71,7 @@ data:
       readOnly: false
       autoCommit: false
   shardingTables:
-    - tableName: event
+    - tableName: event_record
       shardingColumn: id
 
   shardingTableSizePerDataBase: 2

@@ -36,7 +36,7 @@ public final class AttachmentApiHandler {
     }
 
     /**
-     * select attachment by page
+     * select attachment by page and current member
      *
      * @param serverRequest
      * @return
@@ -53,7 +53,6 @@ public final class AttachmentApiHandler {
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));
     }
-
 
     /**
      * test encrypt in media project
@@ -76,6 +75,5 @@ public final class AttachmentApiHandler {
                                 ok().contentType(APPLICATION_JSON)
                                         .body(generate(OK.code, rs, serverRequest), BlueResponse.class));
     }
-
 
 }

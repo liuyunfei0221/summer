@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.*;
 
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
@@ -82,7 +83,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
 
         FilePart filePart = (FilePart) part;
         String fileName = filePart.filename();
-        if ("".equals(fileName))
+        if (isBlank(fileName))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "media name can't be blank");
 
         int nameLength = fileName.length();

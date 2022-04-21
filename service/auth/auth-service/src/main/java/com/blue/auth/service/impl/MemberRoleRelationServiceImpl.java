@@ -153,9 +153,8 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
 
         RLock lock = redissonClient.getLock(SYNC_KEY_WRAPPER.apply(memberId));
-        lock.lock();
-
         try {
+            lock.lock();
             MemberRoleRelation existRelation = memberRoleRelationMapper.getByMemberId(memberId);
             if (isNotNull(existRelation))
                 throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE.status);

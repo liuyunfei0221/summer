@@ -175,8 +175,7 @@ public final class AccessInfoCache {
     public Mono<Boolean> invalidAccessInfo(String keyId) {
         LOGGER.info("invalidAuthInfo(), keyId = {}", keyId);
         return
-                isNotBlank(keyId)
-                        ?
+                isNotBlank(keyId) ?
                         reactiveStringRedisTemplate.delete(keyId)
                                 .flatMap(l -> {
                                     CACHE.invalidate(keyId);
@@ -196,6 +195,7 @@ public final class AccessInfoCache {
         try {
             if (isNotBlank(keyId))
                 CACHE.invalidate(keyId);
+
             return just(true).subscribeOn(scheduler);
         } catch (Exception e) {
             return just(false).subscribeOn(scheduler);

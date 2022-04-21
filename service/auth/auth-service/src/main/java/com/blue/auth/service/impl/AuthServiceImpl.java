@@ -317,10 +317,10 @@ public class AuthServiceImpl implements AuthService {
      */
     private static String genSessionKey(Long id, String credentialTypeIdentity, String deviceTypeIdentity) {
         LOGGER.info("String genSessionKey(Long id, String credentialTypeIdentity, String deviceTypeIdentity), id = {}, credentialTypeIdentity = {}, deviceTypeIdentity = {}", id, credentialTypeIdentity, deviceTypeIdentity);
-        if (isNotNull(id) && id >= 0L && isNotNull(deviceTypeIdentity) && !"".equals(deviceTypeIdentity))
-            return SESSION_KEY_PRE + id + PAR_CONCATENATION + CREDENTIAL_TYPE_2_NATURE_CONVERTER.apply(credentialTypeIdentity).intern() + PAR_CONCATENATION + deviceTypeIdentity;
+        if (isInvalidIdentity(id) || isBlank(deviceTypeIdentity))
+            throw new BlueException(BAD_REQUEST);
 
-        throw new BlueException(BAD_REQUEST);
+        return SESSION_KEY_PRE + id + PAR_CONCATENATION + CREDENTIAL_TYPE_2_NATURE_CONVERTER.apply(credentialTypeIdentity).intern() + PAR_CONCATENATION + deviceTypeIdentity;
     }
 
     /**
@@ -338,10 +338,10 @@ public class AuthServiceImpl implements AuthService {
      */
     private static String genAccessInfoRefreshLockKey(String snKey, AccessInfoRefreshElementType elementType, String elementValue) {
         LOGGER.info("String genAccessInfoRefreshLockKey(String snKey, AuthInfoRefreshElementType elementType, String elementValue), snKey = {}, elementType = {}, elementValue = {}", snKey, elementType, elementValue);
-        if (isNotBlank(snKey) && isNotNull(elementType) && isNotBlank(elementValue))
-            return ACCESS_REFRESH_KEY_GENS.get(elementType).apply(snKey, elementValue);
+        if (isBlank(snKey) || isNull(elementType) || isBlank(elementValue))
+            throw new BlueException(BAD_REQUEST);
 
-        throw new BlueException(BAD_REQUEST);
+        return ACCESS_REFRESH_KEY_GENS.get(elementType).apply(snKey, elementValue);
     }
 
     /**
@@ -355,7 +355,6 @@ public class AuthServiceImpl implements AuthService {
     private Mono<Boolean> deleteExistRefreshTokenByAuthElements(String memberId, String credentialType, String deviceType) {
         LOGGER.info("Mono<Boolean> deleteExistRefreshTokenByAuthElements(String memberId, String credentialType, String deviceType), memberId = {}, credentialType = {}, deviceType = {}",
                 memberId, credentialType, deviceType);
-
         if (isBlank(memberId) || !isDigits(memberId))
             return error(() -> new BlueException(BAD_REQUEST));
 
@@ -399,7 +398,6 @@ public class AuthServiceImpl implements AuthService {
      */
     private Mono<MemberPayload> genMemberPayloadMono(Long memberId, String credentialType, String deviceType) {
         LOGGER.info("Mono<MemberPayload> genMemberPayloadMono(Long memberId, String credentialType, String deviceType), memberId = {}, credentialType = {}, deviceType = {}", memberId, credentialType, deviceType);
-
         if (isInvalidIdentity(memberId))
             return error(() -> new BlueException(BAD_REQUEST));
 
@@ -419,24 +417,22 @@ public class AuthServiceImpl implements AuthService {
      */
     private final BiFunction<MemberPayload, Long, Mono<MemberAccess>> ACCESS_GENERATOR = (memberPayload, roleId) -> {
         LOGGER.info("BiFunction<MemberPayload, Long, Mono<MemberAccess>> ACCESS_GENERATOR, memberPayload = {}, roleId = {}", memberPayload, roleId);
+        if (isNull(memberPayload) || isInvalidIdentity(roleId))
+            return error(() -> new BlueException(BAD_REQUEST));
 
-        if (memberPayload != null && isValidIdentity(roleId)) {
-            String jwt = jwtProcessor.create(memberPayload);
-            KeyPair keyPair = initKeyPair();
-            String authInfoJson = GSON.toJson(new AccessInfo(jwt, roleId, keyPair.getPubKey()));
+        String jwt = jwtProcessor.create(memberPayload);
+        KeyPair keyPair = initKeyPair();
+        String authInfoJson = GSON.toJson(new AccessInfo(jwt, roleId, keyPair.getPubKey()));
 
-            return accessInfoCache.setAccessInfo(memberPayload.getKeyId(), authInfoJson)
-                    .flatMap(b -> {
-                        LOGGER.info("authInfoJson = {}, keyPair = {}", authInfoJson, keyPair);
-                        if (b)
-                            return just(new MemberAccess(jwt, keyPair.getPriKey()));
+        return accessInfoCache.setAccessInfo(memberPayload.getKeyId(), authInfoJson)
+                .flatMap(b -> {
+                    LOGGER.info("authInfoJson = {}, keyPair = {}", authInfoJson, keyPair);
+                    if (b)
+                        return just(new MemberAccess(jwt, keyPair.getPriKey()));
 
-                        LOGGER.error("authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson), failed, memberPayload = {}, roleId = {}, keyPair = {}, authInfoJson = {}", memberPayload, roleId, keyPair, authInfoJson);
-                        return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
-                    });
-        }
-
-        return error(() -> new BlueException(BAD_REQUEST));
+                    LOGGER.error("authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson), failed, memberPayload = {}, roleId = {}, keyPair = {}, authInfoJson = {}", memberPayload, roleId, keyPair, authInfoJson);
+                    return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
+                });
     };
 
     /**
@@ -501,8 +497,8 @@ public class AuthServiceImpl implements AuthService {
         String originalAuthInfoJson = ofNullable(stringRedisTemplate.opsForValue().get(keyId))
                 .orElse("");
 
-        if ("".equals(originalAuthInfoJson)) {
-            LOGGER.info("member's authInfo is empty, can't refresh");
+        if (isBlank(originalAuthInfoJson)) {
+            LOGGER.info("member's authInfo is blank, can't refresh");
             return;
         }
 
@@ -890,18 +886,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<Boolean> invalidateAuthByAccess(Access access) {
         LOGGER.info("Mono<Boolean> invalidateAuthByAccess(Access access), access = {}", access);
-        if (access != null) {
-            long memberId = access.getId();
-            String credentialType = access.getCredentialType().intern();
-            String deviceType = access.getDeviceType().intern();
-            String keyId = genSessionKey(memberId, credentialType, deviceType);
-            return zip(
-                    deleteExistRefreshTokenByAuthElements(String.valueOf(memberId), credentialType, deviceType),
-                    accessInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
-            ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
-        }
+        if (isNull(access))
+            return error(() -> new BlueException(UNAUTHORIZED));
 
-        return error(() -> new BlueException(UNAUTHORIZED));
+        long memberId = access.getId();
+        String credentialType = access.getCredentialType().intern();
+        String deviceType = access.getDeviceType().intern();
+        String keyId = genSessionKey(memberId, credentialType, deviceType);
+        return zip(
+                deleteExistRefreshTokenByAuthElements(String.valueOf(memberId), credentialType, deviceType),
+                accessInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
+        ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
     }
 
     /**
@@ -935,10 +930,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<Boolean> invalidateAuthByMemberId(Long memberId) {
         LOGGER.info("Mono<Boolean> invalidAuthByMemberId(Long memberId), memberId = {}", memberId);
-        if (isValidIdentity(memberId))
-            return fromFuture(supplyAsync(() -> INVALID_AUTH_BY_MEMBER_ID_SYNC_TASK.apply(memberId), executorService));
+        if (isInvalidIdentity(memberId))
+            return error(() -> new BlueException(INVALID_IDENTITY));
 
-        return error(() -> new BlueException(INVALID_IDENTITY));
+        return fromFuture(supplyAsync(() -> INVALID_AUTH_BY_MEMBER_ID_SYNC_TASK.apply(memberId), executorService));
     }
 
     /**
@@ -979,7 +974,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<String> updateSecKeyByAccess(Access access) {
         LOGGER.info("Mono<String> updateSecKeyByAccess(Access access), access = {}", access);
-        return access != null ?
+        return isNotNull(access) ?
                 just(initKeyPair())
                         .flatMap(keyPair -> {
                             refreshAccessInfoElementByKeyId(
@@ -1000,7 +995,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<AuthorityBaseOnRole> getAuthorityMonoByAccess(Access access) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityMonoByAccess(Access access), access = {}", access);
-        return access != null ?
+        return isNotNull(access) ?
                 AUTHORITY_MONO_BY_ROLE_ID_GETTER.apply(access.getRoleId())
                 :
                 error(() -> new BlueException(UNAUTHORIZED));
@@ -1015,7 +1010,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Authority> getAuthorityMonoByMemberId(Long memberId), memberId = {}", memberId);
-        return memberId != null ?
+        return isValidIdentity(memberId) ?
                 memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
                         .flatMap(roleIdOpt ->
                                 roleIdOpt.map(AUTHORITY_MONO_BY_ROLE_ID_GETTER)

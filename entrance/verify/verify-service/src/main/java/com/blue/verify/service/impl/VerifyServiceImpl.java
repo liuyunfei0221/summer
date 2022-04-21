@@ -164,16 +164,15 @@ public class VerifyServiceImpl implements VerifyService {
     public Mono<String> generate(VerifyType type, String key, Integer length, Duration expire) {
         LOGGER.info("Mono<VerifyPair> generate(VerifyType type, String key, Integer length,  Duration expire) , type = {}, key = {}, length = {}, expire = {}", type, key, length, expire);
 
-        if (isNotNull(type)) {
-            String v = generateRandom(type.randomType, isNotNull(length) && length >= MIN_LEN && length <= MAX_LEN ? length : VERIFY_LEN);
+        if (isNull(type))
+            return error(() -> new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type can't be null"));
 
-            LOGGER.info("Mono<VerifyPair> generate(RandomType type, int length, Duration expire), key = {}, v = {}", key, v);
 
-            return blueValidator.setKeyValueWithExpire(KEY_WRAPPER.apply(type, isNotBlank(key) ? key : generateRandom(RANDOM_TYPE, KEY_LEN)), v, isNotNull(expire) ? expire : DEFAULT_DURATION)
-                    .flatMap(ignore -> just(v));
-        }
+        String v = generateRandom(type.randomType, isNotNull(length) && length >= MIN_LEN && length <= MAX_LEN ? length : VERIFY_LEN);
+        LOGGER.info("Mono<VerifyPair> generate(RandomType type, int length, Duration expire), key = {}, v = {}", key, v);
 
-        return error(() -> new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type can't be null"));
+        return blueValidator.setKeyValueWithExpire(KEY_WRAPPER.apply(type, isNotBlank(key) ? key : generateRandom(RANDOM_TYPE, KEY_LEN)), v, isNotNull(expire) ? expire : DEFAULT_DURATION)
+                .flatMap(ignore -> just(v));
     }
 
     /**

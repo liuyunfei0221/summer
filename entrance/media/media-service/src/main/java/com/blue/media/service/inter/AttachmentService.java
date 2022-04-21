@@ -67,32 +67,6 @@ public interface AttachmentService {
     Mono<List<Attachment>> selectAttachmentMonoByIds(List<Long> ids);
 
     /**
-     * select attachment by page and condition
-     *
-     * @param limit
-     * @param rows
-     * @param attachmentCondition
-     * @return
-     */
-    Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, AttachmentCondition attachmentCondition);
-
-    /**
-     * count attachment by condition
-     *
-     * @param attachmentCondition
-     * @return
-     */
-    Mono<Long> countAttachmentMonoByCondition(AttachmentCondition attachmentCondition);
-
-    /**
-     * select attachment info page by condition
-     *
-     * @param pageModelRequest
-     * @return
-     */
-    Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest);
-
-    /**
      * select attachment by page and memberId
      *
      * @param limit
@@ -118,5 +92,31 @@ public interface AttachmentService {
      * @return
      */
     Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId);
+
+    /**
+     * select attachment by page and condition
+     *
+     * @param limit
+     * @param rows
+     * @param attachmentCondition
+     * @return
+     */
+    Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, AttachmentCondition attachmentCondition);
+
+    /**
+     * count attachment by condition
+     *
+     * @param attachmentCondition
+     * @return
+     */
+    Mono<Long> countAttachmentMonoByCondition(AttachmentCondition attachmentCondition);
+
+    /**
+     * select attachment info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest);
 
 }

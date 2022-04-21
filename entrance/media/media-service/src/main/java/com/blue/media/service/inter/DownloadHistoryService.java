@@ -43,32 +43,6 @@ public interface DownloadHistoryService {
     Mono<Optional<DownloadHistory>> getDownloadHistoryMono(Long id);
 
     /**
-     * select download history by page and condition
-     *
-     * @param limit
-     * @param rows
-     * @param downloadHistoryCondition
-     * @return
-     */
-    Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndCondition(Long limit, Long rows, DownloadHistoryCondition downloadHistoryCondition);
-
-    /**
-     * count download history by condition
-     *
-     * @param downloadHistoryCondition
-     * @return
-     */
-    Mono<Long> countDownloadHistoryMonoByCondition(DownloadHistoryCondition downloadHistoryCondition);
-
-    /**
-     * select download history info page by condition
-     *
-     * @param pageModelRequest
-     * @return
-     */
-    Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageMonoByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest);
-
-    /**
      * select download history by page and memberId
      *
      * @param limit
@@ -94,5 +68,31 @@ public interface DownloadHistoryService {
      * @return
      */
     Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId);
+
+    /**
+     * select download history by page and condition
+     *
+     * @param limit
+     * @param rows
+     * @param downloadHistoryCondition
+     * @return
+     */
+    Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndCondition(Long limit, Long rows, DownloadHistoryCondition downloadHistoryCondition);
+
+    /**
+     * count download history by condition
+     *
+     * @param downloadHistoryCondition
+     * @return
+     */
+    Mono<Long> countDownloadHistoryMonoByCondition(DownloadHistoryCondition downloadHistoryCondition);
+
+    /**
+     * select download history info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageMonoByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest);
 
 }

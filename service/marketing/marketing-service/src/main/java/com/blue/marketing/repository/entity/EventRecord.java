@@ -1,7 +1,5 @@
 package com.blue.marketing.repository.entity;
 
-import org.springframework.data.annotation.Id;
-
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
@@ -12,11 +10,10 @@ import static com.blue.base.common.base.BlueChecker.isNull;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class Event implements Serializable {
+public final class EventRecord implements Serializable {
 
     private static final long serialVersionUID = 4304981563007771288L;
 
-    @Id
     private Long id;
 
     /**

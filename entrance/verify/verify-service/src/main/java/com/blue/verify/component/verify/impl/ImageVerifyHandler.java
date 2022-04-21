@@ -116,14 +116,14 @@ public class ImageVerifyHandler implements VerifyHandler {
     }
 
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
-        if (isNull(key))
+        if (isBlank(key))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
 
         return IMAGE_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
     private static final BiFunction<BusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
-        if (isNull(type) || isNull(key))
+        if (isNull(type) || isBlank(key))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
 
         return type.identity + PAR_CONCATENATION.identity + key;
@@ -156,8 +156,8 @@ public class ImageVerifyHandler implements VerifyHandler {
 
     @Override
     public Mono<String> handle(BusinessType businessType, String destination) {
-        if (isNull(businessType) && isNotBlank(destination))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "verifyBusinessType can't be null");
+        if (isNull(businessType) || isBlank(destination))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "businessType or destination can't be null");
 
         return verifyService.generate(IMAGE, BUSINESS_KEY_WRAPPER.apply(businessType, destination), VERIFY_LEN, DEFAULT_DURATION);
     }

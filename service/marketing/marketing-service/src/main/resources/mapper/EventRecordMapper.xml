@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
-<mapper namespace="com.blue.marketing.repository.mapper.EventMapper">
-    <resultMap id="BaseResultMap" type="com.blue.marketing.repository.entity.Event">
+<mapper namespace="com.blue.marketing.repository.mapper.EventRecordMapper">
+    <resultMap id="BaseResultMap" type="com.blue.marketing.repository.entity.EventRecord">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="type" jdbcType="TINYINT" property="type"/>
         <result column="data" jdbcType="VARCHAR" property="data"/>
@@ -16,15 +16,15 @@
         , type, data, status, create_time, creator
     </sql>
 
-    <insert id="insert" parameterType="com.blue.marketing.repository.entity.Event">
-        insert into event (id, type, data,
-                           status, create_time, creator)
+    <insert id="insert" parameterType="com.blue.marketing.repository.entity.EventRecord">
+        insert into event_record (id, type, data,
+                                  status, create_time, creator)
         values (#{id,jdbcType=BIGINT}, #{type,jdbcType=TINYINT}, #{data,jdbcType=VARCHAR},
                 #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT})
     </insert>
 
-    <insert id="insertSelective" parameterType="com.blue.marketing.repository.entity.Event">
-        insert into event
+    <insert id="insertSelective" parameterType="com.blue.marketing.repository.entity.EventRecord">
+        insert into event_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -67,8 +67,8 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.marketing.repository.entity.Event">
-        update event
+    <update id="updateByPrimaryKey" parameterType="com.blue.marketing.repository.entity.EventRecord">
+        update event_record
         set type        = #{type,jdbcType=TINYINT},
             data        = #{data,jdbcType=VARCHAR},
             status      = #{status,jdbcType=TINYINT},
@@ -77,8 +77,8 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKeySelective" parameterType="com.blue.marketing.repository.entity.Event">
-        update event
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.marketing.repository.entity.EventRecord">
+        update event_record
         <set>
             <if test="type != null">
                 type = #{type,jdbcType=TINYINT},
@@ -101,14 +101,14 @@
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
-        from event
+        from event_record
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from event
+        from event_record
         where id = #{id,jdbcType=BIGINT}
     </select>
 

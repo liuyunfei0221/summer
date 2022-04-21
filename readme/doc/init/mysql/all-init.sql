@@ -387,18 +387,25 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'media upload of api', 'media upload of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (220002, 'POST', 'blue-media', '/file/download', b'1', b'1', b'1', b'1', b'0', 1,
         'file download of api', 'file download of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220003, 'POST', 'blue-media', '/attachment/list', b'1', b'1', b'1', b'1', b'1', 1,
+       (220003, 'POST', 'blue-media', '/attachments', b'1', b'1', b'1', b'1', b'1', 1,
         'attachment list of api', 'attachment list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
-       (220004, 'POST', 'blue-media', '/attachment/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
-        'withdraw/test encrypt in media', 'withdraw/test encrypt in media', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220005, 'GET', 'blue-media', '/mail/send', b'0', b'1', b'1', b'0', b'1', 2,
+       (220004, 'POST', 'blue-media', '/downloadHistories', b'1', b'1', b'1', b'1', b'1', 1,
+        'download history list of api', 'download history list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (220005, 'POST', 'blue-media', '/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
+        'withdraw test encrypt in media', 'withdraw test encrypt in media', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (220006, 'GET', 'blue-media', '/mail/send', b'0', b'1', b'1', b'0', b'1', 2,
         'test send', 'test send', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220006, 'GET', 'blue-media', '/mail/read', b'0', b'1', b'1', b'0', b'1', 2,
+       (220007, 'GET', 'blue-media', '/mail/read', b'0', b'1', b'1', b'0', b'1', 2,
         'test read', 'test read', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- media manage
+
+       (230006, 'GET', 'blue-media', '/manager/attachments', b'0', b'1', b'1', b'0', b'1', 2,
+        'attachment list of manager', 'attachment list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (230007, 'GET', 'blue-media', '/manager/downloadHistories', b'0', b'1', b'1', b'0', b'1', 2,
+        'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1),
 
 
 -- portal api
@@ -439,7 +446,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 -- data manage
 
        (320001, 'POST', 'blue-lake', '/events', b'0', b'1', b'1', b'1', b'1', 2,
-        'test lake event', 'test lake event', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'test lake eventRecord', 'test lake eventRecord', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (320002, 'POST', 'blue-analyze', '/statistics/active/simple', b'0', b'1', b'1', b'1', b'1', 2,
         'statistics active simple', 'statistics active simple', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (320003, 'POST', 'blue-analyze', '/statistics/active/merge', b'0', b'1', b'1', b'1', b'1', 2,
@@ -1038,31 +1045,31 @@ DATABASE marketing_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 marketing_0;
 
-CREATE TABLE `event_0`
+CREATE TABLE `event_record_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `type`        tinyint      NOT NULL COMMENT 'event type',
-    `data`        varchar(512) NOT NULL COMMENT 'event data/json',
+    `type`        tinyint      NOT NULL COMMENT 'event record type',
+    `data`        varchar(512) NOT NULL COMMENT 'event record data/json',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-handled 0-un handled',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     PRIMARY KEY (`id`),
     KEY           `idx_create_time`(`create_time`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event 0';
+    KEY           `idx_creator_type_create_time`(`creator`,`type`,`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event record 0';
 
-CREATE TABLE `event_1`
+CREATE TABLE `event_record_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `type`        tinyint      NOT NULL COMMENT 'event type',
-    `data`        varchar(512) NOT NULL COMMENT 'event data/json',
+    `type`        tinyint      NOT NULL COMMENT 'event record type',
+    `data`        varchar(512) NOT NULL COMMENT 'event record data/json',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-handled 0-un handled',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     PRIMARY KEY (`id`),
     KEY           `idx_create_time`(`create_time`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event 1';
+    KEY           `idx_creator_type_create_time`(`creator`,`type`,`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event record 1';
 
 -- seata undo log
 
@@ -1087,31 +1094,31 @@ DATABASE marketing_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 marketing_1;
 
-CREATE TABLE `event_0`
+CREATE TABLE `event_record_0`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `type`        tinyint      NOT NULL COMMENT 'event type 1-签到奖励, 2-活动奖励',
-    `data`        varchar(512) NOT NULL COMMENT 'event data/json',
+    `type`        tinyint      NOT NULL COMMENT 'event record type',
+    `data`        varchar(512) NOT NULL COMMENT 'event record data/json',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-handled 0-un handled',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     PRIMARY KEY (`id`),
     KEY           `idx_create_time`(`create_time`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event 0';
+    KEY           `idx_creator_type_create_time`(`creator`,`type`,`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event record 0';
 
-CREATE TABLE `event_1`
+CREATE TABLE `event_record_1`
 (
     `id`          bigint       NOT NULL COMMENT 'id',
-    `type`        tinyint      NOT NULL COMMENT 'event type 1-签到奖励, 2-活动奖励',
-    `data`        varchar(512) NOT NULL COMMENT 'event data/json',
+    `type`        tinyint      NOT NULL COMMENT 'event record type',
+    `data`        varchar(512) NOT NULL COMMENT 'event record data/json',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-handled 0-un handled',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     PRIMARY KEY (`id`),
     KEY           `idx_create_time`(`create_time`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event 1';
+    KEY           `idx_creator_type_create_time`(`creator`,`type`,`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event record 1';
 
 -- seata undo log
 
