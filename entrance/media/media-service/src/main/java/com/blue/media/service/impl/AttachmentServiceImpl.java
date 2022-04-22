@@ -86,7 +86,7 @@ public class AttachmentServiceImpl implements AttachmentService {
      */
     @Override
     public int insert(Attachment attachment) {
-        LOGGER.info("insert(Attachment attachment), attachment = {}", attachment);
+        LOGGER.info("int insert(Attachment attachment), attachment = {}", attachment);
         return ofNullable(attachment)
                 .map(attachmentMapper::insert)
                 .orElse(0);
@@ -100,7 +100,7 @@ public class AttachmentServiceImpl implements AttachmentService {
      */
     @Override
     public int insertBatch(List<Attachment> attachments) {
-        LOGGER.info("insertBatch(List<Attachment> attachments), attachments = {}", attachments);
+        LOGGER.info("int insertBatch(List<Attachment> attachments), attachments = {}", attachments);
         return ofNullable(attachments)
                 .filter(as -> as.size() > 0)
                 .map(attachmentMapper::insertBatch)
@@ -197,7 +197,7 @@ public class AttachmentServiceImpl implements AttachmentService {
      */
     @Override
     public Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId) {
-        LOGGER.info("Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId), pageModelDTO = {}, memberId = {}",
+        LOGGER.info("Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId), pageModelRequest = {}, memberId = {}",
                 pageModelRequest, memberId);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);

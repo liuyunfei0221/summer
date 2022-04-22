@@ -195,8 +195,14 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'sign in', 'sign in', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (270002, 'GET', 'blue-marketing', '/signIn', b'1', b'1', b'1', b'0', b'1', 1,
         'query sign in record by month', 'query sign in record by month', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (270003, 'POST', 'blue-marketing', '/eventRecords', b'1', b'1', b'1', b'0', b'1', 1,
+        'event record list of api', 'event record list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- marketing manage
+
+       (280001, 'POST', 'blue-marketing', '/manager/eventRecords', b'0', b'1', b'1', b'0', b'1', 2,
+        'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1),
 
 
 -- shine api

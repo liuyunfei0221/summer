@@ -112,4 +112,112 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
+    <insert id="insertBatch" parameterType="java.util.List">
+        <if test="list != null and list.size > 0">
+            INSERT INTO event_record (
+            <include refid="Base_Column_List"/>
+            ) values
+            <foreach collection="list" index="index" item="item" separator=",">
+                (
+                #{item.id,jdbcType=BIGINT},
+                #{item.type,jdbcType=TINYINT},
+                #{item.data,jdbcType=VARCHAR},
+                #{item.status,jdbcType=TINYINT},
+                #{item.createTime,jdbcType=BIGINT},
+                #{item.creator,jdbcType=BIGINT}
+                )
+            </foreach>
+        </if>
+    </insert>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        event_record
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <sql id="EventRecord_Conditions">
+        <if test="eventRecordCondition != null">
+            <where>
+                <if test="eventRecordCondition.id != null">
+                    AND
+                    id = #{eventRecordCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="eventRecordCondition.type != null">
+                    AND
+                    type = #{eventRecordCondition.type,jdbcType=TINYINT}
+                </if>
+                <if test="eventRecordCondition.status != null">
+                    AND
+                    status = #{eventRecordCondition.status,jdbcType=TINYINT}
+                </if>
+                <if test="eventRecordCondition.creator != null">
+                    AND
+                    creator = #{eventRecordCondition.creator,jdbcType=BIGINT}
+                </if>
+                <if test="eventRecordCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{attachmentCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="eventRecordCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{attachmentCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="eventRecordCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{attachmentCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="eventRecordCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{attachmentCondition.updateTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
+            parameterType="com.blue.marketing.model.EventRecordCondition">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        event_record
+        <include refid="EventRecord_Conditions"/>
+        <if test="eventRecordCondition != null and eventRecordCondition.sortAttribute != null and eventRecordCondition.sortAttribute != '' and eventRecordCondition.sortType != null and eventRecordCondition.sortType != ''">
+            ORDER BY
+            ${eventRecordCondition.sortAttribute,jdbcType=VARCHAR} ${eventRecordCondition.sortType,jdbcType=VARCHAR}
+        </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long"
+            parameterType="com.blue.marketing.model.EventRecordCondition">
+        SELECT COUNT(*)
+        FROM
+        event_record
+        <include refid="EventRecord_Conditions"/>
+    </select>
+
+    <select id="selectByLimitAndCreator" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        event_record FORCE INDEX(idx_creator_type_create_time)
+        WHERE
+        creator = #{creator,jdbcType=BIGINT}
+        ORDER BY id DESC
+        LIMIT #{limit,jdbcType=BIGINT}, #{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCreator" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM event_record FORCE INDEX(idx_creator_type_create_time)
+        WHERE creator = #{creator,jdbcType=BIGINT}
+    </select>
+
 </mapper>
