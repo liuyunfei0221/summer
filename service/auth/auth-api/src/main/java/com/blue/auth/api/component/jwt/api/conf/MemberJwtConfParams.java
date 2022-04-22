@@ -14,14 +14,17 @@ public final class MemberJwtConfParams implements MemberJwtConf {
 
     private transient Long globalMinExpireMillis;
 
+    private transient Long globalRefreshExpireMillis;
+
     private transient String signKey;
 
     private transient List<String> gammaSecrets;
 
-    public MemberJwtConfParams(Long globalMaxExpireMillis, Long globalMinExpireMillis,
+    public MemberJwtConfParams(Long globalMaxExpireMillis, Long globalMinExpireMillis, Long globalRefreshExpireMillis,
                                String signKey, List<String> gammaSecrets) {
         this.globalMaxExpireMillis = globalMaxExpireMillis;
         this.globalMinExpireMillis = globalMinExpireMillis;
+        this.globalRefreshExpireMillis = globalRefreshExpireMillis;
         this.signKey = signKey;
         this.gammaSecrets = gammaSecrets;
     }
@@ -45,6 +48,15 @@ public final class MemberJwtConfParams implements MemberJwtConf {
     }
 
     @Override
+    public Long getGlobalRefreshExpireMillis() {
+        return globalRefreshExpireMillis;
+    }
+
+    public void setGlobalRefreshExpireMillis(Long globalRefreshExpireMillis) {
+        this.globalRefreshExpireMillis = globalRefreshExpireMillis;
+    }
+
+    @Override
     public String getSignKey() {
         return signKey;
     }
@@ -64,9 +76,10 @@ public final class MemberJwtConfParams implements MemberJwtConf {
 
     @Override
     public String toString() {
-        return "MemberJwtProcessorParam{" +
+        return "MemberJwtConfParams{" +
                 "globalMaxExpireMillis=" + globalMaxExpireMillis +
                 ", globalMinExpireMillis=" + globalMinExpireMillis +
+                ", globalRefreshExpireMillis=" + globalRefreshExpireMillis +
                 ", signKey='" + signKey + '\'' +
                 ", gammaSecrets=" + gammaSecrets +
                 '}';

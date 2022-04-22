@@ -18,6 +18,8 @@ public class JwtDeploy {
 
     private transient Long globalMinExpireMillis;
 
+    private transient Long globalRefreshExpireMillis;
+
     private Integer localCacheCapacity;
 
     private Long localExpireMillis;
@@ -51,6 +53,14 @@ public class JwtDeploy {
 
     public void setGlobalMinExpireMillis(Long globalMinExpireMillis) {
         this.globalMinExpireMillis = globalMinExpireMillis;
+    }
+
+    public Long getGlobalRefreshExpireMillis() {
+        return globalRefreshExpireMillis;
+    }
+
+    public void setGlobalRefreshExpireMillis(Long globalRefreshExpireMillis) {
+        this.globalRefreshExpireMillis = globalRefreshExpireMillis;
     }
 
     public Integer getLocalCacheCapacity() {
@@ -122,14 +132,15 @@ public class JwtDeploy {
         return "JwtDeploy{" +
                 "globalMaxExpireMillis=" + globalMaxExpireMillis +
                 ", globalMinExpireMillis=" + globalMinExpireMillis +
+                ", globalRefreshExpireMillis=" + globalRefreshExpireMillis +
                 ", localCacheCapacity=" + localCacheCapacity +
                 ", localExpireMillis=" + localExpireMillis +
                 ", refresherCorePoolSize=" + refresherCorePoolSize +
                 ", refresherMaximumPoolSize=" + refresherMaximumPoolSize +
                 ", refresherKeepAliveTime=" + refresherKeepAliveTime +
                 ", refresherBlockingQueueCapacity=" + refresherBlockingQueueCapacity +
-                ", signKey='" + signKey + '\'' +
-                ", gammaSecrets=" + gammaSecrets +
+                ", signKey='" + "" + '\'' +
+                ", gammaSecrets=" + "" +
                 '}';
     }
 

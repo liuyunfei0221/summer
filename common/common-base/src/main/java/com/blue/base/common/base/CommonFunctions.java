@@ -165,6 +165,11 @@ public class CommonFunctions {
     public static final Supplier<Long> TIME_STAMP_GETTER = () -> now(CLOCK).getEpochSecond();
 
     /**
+     * stamp getter/millis
+     */
+    public static final Supplier<Long> MILLIS_STAMP_SUP = () -> now(CLOCK).toEpochMilli();
+
+    /**
      * resource key generator for request
      */
     public static final BinaryOperator<String> REQ_RES_KEY_GENERATOR = (method, uri) ->

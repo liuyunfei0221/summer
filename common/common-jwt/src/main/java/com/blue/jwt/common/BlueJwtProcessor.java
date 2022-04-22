@@ -81,6 +81,11 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     private final transient long MIN_EXPIRE_MILLIS;
 
     /**
+     * refresh token expiration time after the last operation
+     */
+    private final transient long REFRESH_EXPIRE_MILLIS;
+
+    /**
      * encrypt algorithm
      */
     private final transient Algorithm ALGORITHM;
@@ -124,7 +129,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     /**
      * timestamp generator
      */
-    private static final Supplier<Long> TIME_STAMP_SUP = System::currentTimeMillis;
+    private static final Supplier<Long> MILLIS_STAMP_SUP = System::currentTimeMillis;
 
     /**
      * hash discrete processor
@@ -177,6 +182,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
 
         this.MAX_EXPIRE_MILLIS = jwtConf.getMaxExpireMillis();
         this.MIN_EXPIRE_MILLIS = jwtConf.getMinExpireMillis();
+        this.REFRESH_EXPIRE_MILLIS = jwtConf.getRefreshExpireMillis();
 
         this.ALGORITHM = HMAC512(jwtConf.getSignKey());
         this.VERIFIER = require(ALGORITHM).build();
@@ -201,7 +207,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
             throw new AuthenticationException(INTERNAL_SERVER_ERROR);
         }
 
-        long currentStamp = TIME_STAMP_SUP.get();
+        long currentStamp = MILLIS_STAMP_SUP.get();
         long expiresAtStamp = currentStamp + MAX_EXPIRE_MILLIS;
         try {
             JWTCreator.Builder builder = JWT.create().withHeader(JWT_HEADER);
@@ -265,6 +271,16 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     @Override
     public long getMinExpireMillis() {
         return MIN_EXPIRE_MILLIS;
+    }
+
+    /**
+     * get expire millis of the expiration time of refresh token
+     *
+     * @return
+     */
+    @Override
+    public long getRefreshExpireMillis() {
+        return REFRESH_EXPIRE_MILLIS;
     }
 
     /**

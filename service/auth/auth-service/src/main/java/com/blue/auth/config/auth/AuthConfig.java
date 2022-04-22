@@ -38,7 +38,7 @@ public class AuthConfig {
     @Bean
     MemberJwtConf memberJwtConf() {
         LOGGER.info("memberJwtConf = {}", authDeploy);
-        return new MemberJwtConfParams(authDeploy.getGlobalMaxExpireMillis(), authDeploy.getGlobalMinExpireMillis(),
+        return new MemberJwtConfParams(authDeploy.getGlobalMaxExpireMillis(), authDeploy.getGlobalMinExpireMillis(), authDeploy.getGlobalRefreshExpireMillis(),
                 authDeploy.getSignKey(), authDeploy.getGammaSecrets());
     }
 

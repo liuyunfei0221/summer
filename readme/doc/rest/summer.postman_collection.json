@@ -1320,15 +1320,15 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-portal/bulletin/1",
+							"raw": "localhost:10000/blue-portal/bulletins/2",
 							"host": [
 								"localhost"
 							],
 							"port": "10000",
 							"path": [
 								"blue-portal",
-								"bulletin",
-								"1"
+								"bulletins",
+								"2"
 							]
 						}
 					},
@@ -1454,7 +1454,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYWE3NGRmNjE0MjA4YjBiOGE1NjIwYmVmODI2MzM1YmYwZTE2NGJjOGZjOTY3NWY3NDNmM2VjNDYwMWFiMzU3ZGNkZWI0YTk5MGZlYTllNjVhNWU3OTBiMzAxNGE2ZjA4MzE2NTNjYWZhMTZmZmEyOTRjOGYyYjA4MWNjMDIyNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDM3MTIyNCIsIm5iZiI6MTY1MDM3MTIyNCwidCI6InZsU3JTYndlZGgzIiwiZyI6Ik0iLCJoIjoiQl9TTjozMzgxNTQ1MjE5NDk2MzQ1N19DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MzA0OTYyNDMyMywiaSI6IjMzODE1NDUyMTk0OTYzNDU3IiwiZXhwIjoxNjUzMDQ5NjI0LCJpYXQiOjE2NTAzNzEyMjQsImp0aSI6Ik9oZFBUYUtoc01mc2FkY1NwYTVuWElack91S1Y5YUs1IiwibiI6IlBWQVIifQ.cC0JdKQIik2vE_ljbvCWDhb9YbpFbj1iq_nnS9Y_r0cCEDiDnCXjt42gsp-aw_KjAP7vL1IwNJY9UiJdaox0lw",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjY5ODgyZmNiMmU3ZjkzMTEzN2I5Njc3NmYyZGNjNzEyZjJmNzkyZGMwODc1ODdmZjM2YmJkZTMyMTFjNDNmYTU5NmNmZTFiNjI3NDk0MDFkZjcyZjIwMzY2MTA0OTQxNTkzNzNkYjI5Nzg5MThkNjlkY2QzNzMyODBmMjhiMDkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDU0NTI2MSIsIm5iZiI6MTY1MDU0NTI2MSwidCI6InNmZGxIcTAyM21zIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDA5NjI4NTA3NDA2MzM2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MzIyMzY2MTUzMiwiaSI6IjM0MDk2Mjg1MDc0MDYzMzYxIiwiZXhwIjoxNjUzMjIzNjYxLCJpYXQiOjE2NTA1NDUyNjEsImp0aSI6ImJad204Nkp4SXQwSllzMmdjd3RUMHBCYWFtMFdURG9GIiwibiI6IlBWQVIifQ.MP54ZHLxpqJ7EYglrWtESyTfFL5E_JSWlexH3y4kQC0p7_9atdl7oEGQBZeSkSZBwQTz4kZdxOy-9kH_y6nYfQ",
 								"type": "text"
 							}
 						],
@@ -1464,20 +1464,7 @@
 								{
 									"key": "attachments",
 									"type": "file",
-									"src": [
-										"/E:/tempFile/source/walls/ana_beatriz_barros-wallpaper-1920x1080.jpg",
-										"/E:/tempFile/source/walls/angel_18-wallpaper-1920x1080.jpg",
-										"/E:/tempFile/source/walls/anievas_cantabria_spain-wallpaper-2560x1440.jpg",
-										"/E:/tempFile/source/walls/animal_4-wallpaper-1920x1080.jpg",
-										"/E:/tempFile/source/walls/anime_girl_14-wallpaper-2560x1440 - 副本.jpg",
-										"/E:/tempFile/source/walls/anime_girl_14-wallpaper-2560x1440.jpg",
-										"/E:/tempFile/source/walls/anne_hathaway_2-wallpaper-1920x1080 - 副本.jpg",
-										"/E:/tempFile/source/walls/anne_hathaway_2-wallpaper-1920x1080.jpg",
-										"/E:/tempFile/source/walls/annual_migration-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/anoitecer-wallpaper-2560x1440.jpg",
-										"/E:/tempFile/source/walls/antelope_island_utah-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/appalachian_mountains_usa-wallpaper-2560x1440.jpg"
-									]
+									"src": "/E:/tempFile/source/walls/barbara_palvin_victorias_secret_holiday-wallpaper-1920x1080.jpg"
 								}
 							]
 						},
@@ -1537,7 +1524,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYWE3NGRmNjE0MjA4YjBiOGE1NjIwYmVmODI2MzM1YmYwZTE2NGJjOGZjOTY3NWY3NDNmM2VjNDYwMWFiMzU3ZGNkZWI0YTk5MGZlYTllNjVhNWU3OTBiMzAxNGE2ZjA4MzE2NTNjYWZhMTZmZmEyOTRjOGYyYjA4MWNjMDIyNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDM3MTIyNCIsIm5iZiI6MTY1MDM3MTIyNCwidCI6InZsU3JTYndlZGgzIiwiZyI6Ik0iLCJoIjoiQl9TTjozMzgxNTQ1MjE5NDk2MzQ1N19DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MzA0OTYyNDMyMywiaSI6IjMzODE1NDUyMTk0OTYzNDU3IiwiZXhwIjoxNjUzMDQ5NjI0LCJpYXQiOjE2NTAzNzEyMjQsImp0aSI6Ik9oZFBUYUtoc01mc2FkY1NwYTVuWElack91S1Y5YUs1IiwibiI6IlBWQVIifQ.cC0JdKQIik2vE_ljbvCWDhb9YbpFbj1iq_nnS9Y_r0cCEDiDnCXjt42gsp-aw_KjAP7vL1IwNJY9UiJdaox0lw",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjY5ODgyZmNiMmU3ZjkzMTEzN2I5Njc3NmYyZGNjNzEyZjJmNzkyZGMwODc1ODdmZjM2YmJkZTMyMTFjNDNmYTU5NmNmZTFiNjI3NDk0MDFkZjcyZjIwMzY2MTA0OTQxNTkzNzNkYjI5Nzg5MThkNjlkY2QzNzMyODBmMjhiMDkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDU0NTI2MSIsIm5iZiI6MTY1MDU0NTI2MSwidCI6InNmZGxIcTAyM21zIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDA5NjI4NTA3NDA2MzM2MV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MzIyMzY2MTUzMiwiaSI6IjM0MDk2Mjg1MDc0MDYzMzYxIiwiZXhwIjoxNjUzMjIzNjYxLCJpYXQiOjE2NTA1NDUyNjEsImp0aSI6ImJad204Nkp4SXQwSllzMmdjd3RUMHBCYWFtMFdURG9GIiwibiI6IlBWQVIifQ.MP54ZHLxpqJ7EYglrWtESyTfFL5E_JSWlexH3y4kQC0p7_9atdl7oEGQBZeSkSZBwQTz4kZdxOy-9kH_y6nYfQ",
 								"type": "text"
 							},
 							{
@@ -1548,7 +1535,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":33908930010677254\r\n}",
+							"raw": "{\r\n    \"id\":34096536329650178\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

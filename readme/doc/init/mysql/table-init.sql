@@ -1389,17 +1389,20 @@ CREATE TABLE `bulletin`
     `id`          bigint       NOT NULL COMMENT 'id',
     `title`       varchar(128) NOT NULL COMMENT 'bulletin title',
     `content`     varchar(256) DEFAULT '' COMMENT 'bulletin content',
-    `link`        varchar(256) NOT NULL COMMENT 'bulletin link',
+    `link`        varchar(256) DEFAULT '' COMMENT 'bulletin link',
     `type`        tinyint      NOT NULL COMMENT 'bulletin type: 1-popular 2-newest 3-recommend',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `priority`    int          NOT NULL COMMENT 'bulletin priority',
+    `active_time` bigint       NOT NULL COMMENT 'data active time',
+    `expire_time` bigint       NOT NULL COMMENT 'data expire time',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     `updater`     bigint       NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_title`(`title`) USING BTREE,
-    KEY           `idx_stat_pri`(`status`,`priority`) USING BTREE
+    KEY           `idx_active_expire_type_stat_pri`(`active_time`,`expire_time`,`type`,`status`,`priority`) USING BTREE,
+    KEY           `idx_pri_stat`(`priority`,`status`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of bulletin';
 
 -- seata undo log
@@ -1446,7 +1449,12 @@ CREATE TABLE `undo_log`
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
--- business0
+-- article
+
+CREATE
+DATABASE article CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- article0
 
 CREATE
 DATABASE article_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -1507,6 +1515,7 @@ CREATE TABLE `article_1`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of article 1';
 
 
+
 CREATE TABLE `link_0`
 (
     `id`            bigint        NOT NULL COMMENT 'id',
@@ -1561,6 +1570,7 @@ CREATE TABLE `link_1`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of link 1';
 
 
+
 CREATE TABLE `comment_0`
 (
     `id`            bigint     NOT NULL COMMENT 'id',
@@ -1608,6 +1618,7 @@ CREATE TABLE `comment_1`
     KEY             `idx_boring`(`boring`) USING BTREE,
     KEY             `idx_create`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reply 1';
+
 
 
 CREATE TABLE `reply_0`
@@ -1666,7 +1677,8 @@ CREATE TABLE `reply_1`
     KEY             `idx_create`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reply 1';
 
--- business1
+
+-- article1
 
 CREATE
 DATABASE article_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

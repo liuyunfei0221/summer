@@ -401,16 +401,16 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- media manage
 
-       (230006, 'GET', 'blue-media', '/manager/attachments', b'0', b'1', b'1', b'0', b'1', 2,
+       (230006, 'POST', 'blue-media', '/manager/attachments', b'0', b'1', b'1', b'0', b'1', 2,
         'attachment list of manager', 'attachment list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (230007, 'GET', 'blue-media', '/manager/downloadHistories', b'0', b'1', b'1', b'0', b'1', 2,
+       (230007, 'POST', 'blue-media', '/manager/downloadHistories', b'0', b'1', b'1', b'0', b'1', 2,
         'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
 
 
 -- portal api
 
-       (250001, 'GET', 'blue-portal', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
+       (250001, 'GET', 'blue-portal', '/bulletins/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'bulletin list of api', 'bulletin list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (250002, 'GET', 'blue-portal', '/formatter/{formatter}.html', b'1', b'1', b'1', b'0', b'1', 1,
         'formatter test', 'formatter test', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -422,6 +422,8 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- portal manage
 
+       (260001, 'GET', 'blue-portal', '/manager/bulletins', b'0', b'1', b'1', b'0', b'1', 2,
+        'bulletin list of manager', 'bulletin list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- marketing api
 
@@ -435,7 +437,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 -- marketing manage
 
        (280001, 'POST', 'blue-marketing', '/manager/eventRecords', b'0', b'1', b'1', b'0', b'1', 2,
-        'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        'event record list of manager', 'event record list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
 
 
@@ -1807,17 +1809,20 @@ CREATE TABLE `bulletin`
     `id`          bigint       NOT NULL COMMENT 'id',
     `title`       varchar(128) NOT NULL COMMENT 'bulletin title',
     `content`     varchar(256) DEFAULT '' COMMENT 'bulletin content',
-    `link`        varchar(256) NOT NULL COMMENT 'bulletin link',
+    `link`        varchar(256) DEFAULT '' COMMENT 'bulletin link',
     `type`        tinyint      NOT NULL COMMENT 'bulletin type: 1-popular 2-newest 3-recommend',
     `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `priority`    int          NOT NULL COMMENT 'bulletin priority',
+    `active_time` bigint       NOT NULL COMMENT 'data active time',
+    `expire_time` bigint       NOT NULL COMMENT 'data expire time',
     `create_time` bigint       NOT NULL COMMENT 'data create time',
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     `updater`     bigint       NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_title`(`title`) USING BTREE,
-    KEY           `idx_stat_pri`(`status`,`priority`) USING BTREE
+    KEY           `idx_active_expire_type_stat_pri`(`active_time`,`expire_time`,`type`,`status`,`priority`) USING BTREE,
+    KEY           `idx_pri_stat`(`priority`,`status`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of bulletin';
 
 
@@ -1868,23 +1873,27 @@ CREATE TABLE `undo_log`
 
 
 
-INSERT INTO `portal`.`bulletin`(`id`, `title`, `content`, `link`, `type`, `status`, `priority`, `create_time`,
-                                `update_time`, `creator`, `updater`)
-VALUES (1, 'popular bulletin 2', 'test data', 'www.baidu.com', 1, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (2, 'popular bulletin 1', 'test data', 'cn.bing.com', 1, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
-        1),
-       (3, 'newest bulletin 2', 'test data', 'www.baidu.com', 2, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
-        1),
-       (4, 'newest bulletin 1', 'test data', 'cn.bing.com', 2, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
-        1),
-       (5, 'recommend bulletin 2', 'test data', 'www.baidu.com', 3, 1, 2, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1),
-       (6, 'recommend bulletin 1', 'test data', 'cn.bing.com', 3, 1, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-        1, 1);
+INSERT INTO `portal`.`bulletin`(`id`, `title`, `content`, `link`, `type`, `status`, `priority`,
+                                `active_time`, `expire_time`, `create_time`, `update_time`, `creator`, `updater`)
+VALUES (1, 'popular bulletin 2', 'test data', 'www.baidu.com', 1, 1, 2, UNIX_TIMESTAMP() - 86400,
+        UNIX_TIMESTAMP() + 86400, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (2, 'popular bulletin 1', 'test data', 'cn.bing.com', 1, 1, 1, UNIX_TIMESTAMP() - 86400,
+        UNIX_TIMESTAMP() + 86400, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (3, 'newest bulletin 2', 'test data', 'www.baidu.com', 2, 1, 2, UNIX_TIMESTAMP() - 86400,
+        UNIX_TIMESTAMP() + 86400, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (4, 'newest bulletin 1', 'test data', 'cn.bing.com', 2, 1, 1, UNIX_TIMESTAMP() - 86400,
+        UNIX_TIMESTAMP() + 86400, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (5, 'recommend bulletin 2', 'test data', 'www.baidu.com', 3, 1, 2, UNIX_TIMESTAMP() - 86400,
+        UNIX_TIMESTAMP() + 86400, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (6, 'recommend bulletin 1', 'test data', 'cn.bing.com', 3, 1, 1, UNIX_TIMESTAMP() - 86400,
+        UNIX_TIMESTAMP() + 86400, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
+-- article
 
--- business0
+CREATE
+DATABASE article CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- article0
 
 CREATE
 DATABASE article_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -2108,7 +2117,7 @@ CREATE TABLE `reply_1`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reply 1';
 
 
--- business1
+-- article1
 
 CREATE
 DATABASE article_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

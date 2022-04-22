@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 
 /**
- * test entity
+ * bulletin api info
  *
  * @author liuyunfei
  */
@@ -23,15 +23,24 @@ public final class BulletinInfo implements Serializable {
 
     private Integer type;
 
+    private Integer priority;
+
+    private Long activeTime;
+
+    private Long expireTime;
+
     public BulletinInfo() {
     }
 
-    public BulletinInfo(Long id, String title, String content, String link, Integer type) {
+    public BulletinInfo(Long id, String title, String content, String link, Integer type, Integer priority, Long activeTime, Long expireTime) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.link = link;
         this.type = type;
+        this.priority = priority;
+        this.activeTime = activeTime;
+        this.expireTime = expireTime;
     }
 
     public Long getId() {
@@ -74,14 +83,41 @@ public final class BulletinInfo implements Serializable {
         this.type = type;
     }
 
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    public Long getActiveTime() {
+        return activeTime;
+    }
+
+    public void setActiveTime(Long activeTime) {
+        this.activeTime = activeTime;
+    }
+
+    public Long getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(Long expireTime) {
+        this.expireTime = expireTime;
+    }
+
     @Override
     public String toString() {
-        return "BulletinVO{" +
+        return "BulletinInfo{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", link='" + link + '\'' +
                 ", type=" + type +
+                ", priority=" + priority +
+                ", activeTime=" + activeTime +
+                ", expireTime=" + expireTime +
                 '}';
     }
 

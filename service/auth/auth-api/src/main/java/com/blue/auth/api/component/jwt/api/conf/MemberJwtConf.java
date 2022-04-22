@@ -14,6 +14,8 @@ public interface MemberJwtConf {
 
     Long getGlobalMinExpireMillis();
 
+    Long getGlobalRefreshExpireMillis();
+
     String getSignKey();
 
     List<String> getGammaSecrets();

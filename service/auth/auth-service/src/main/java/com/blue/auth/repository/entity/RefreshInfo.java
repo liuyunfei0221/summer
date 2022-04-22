@@ -4,8 +4,10 @@ import com.blue.base.model.exps.BlueException;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
@@ -49,10 +51,15 @@ public class RefreshInfo implements Serializable {
      */
     private String loginTime;
 
+    /**
+     * ttl
+     */
+    private Date expireAt;
+
     public RefreshInfo() {
     }
 
-    public RefreshInfo(String id, String gamma, String memberId, String credentialType, String deviceType, String loginTime) {
+    public RefreshInfo(String id, String gamma, String memberId, String credentialType, String deviceType, String loginTime, Date expireAt) {
         if (isBlank(id))
             throw new BlueException(BAD_REQUEST);
         if (isBlank(gamma))
@@ -65,6 +72,8 @@ public class RefreshInfo implements Serializable {
             throw new BlueException(BAD_REQUEST);
         if (isBlank(loginTime))
             throw new BlueException(BAD_REQUEST);
+        if (isNull(expireAt))
+            throw new BlueException(BAD_REQUEST);
 
         this.id = id;
         this.gamma = gamma;
@@ -72,6 +81,7 @@ public class RefreshInfo implements Serializable {
         this.credentialType = credentialType;
         this.deviceType = deviceType;
         this.loginTime = loginTime;
+        this.expireAt = expireAt;
     }
 
     public String getId() {
@@ -122,6 +132,14 @@ public class RefreshInfo implements Serializable {
         this.loginTime = loginTime;
     }
 
+    public Date getExpireAt() {
+        return expireAt;
+    }
+
+    public void setExpireAt(Date expireAt) {
+        this.expireAt = expireAt;
+    }
+
     @Override
     public String toString() {
         return "RefreshInfo{" +
@@ -131,6 +149,7 @@ public class RefreshInfo implements Serializable {
                 ", credentialType='" + credentialType + '\'' +
                 ", deviceType='" + deviceType + '\'' +
                 ", loginTime='" + loginTime + '\'' +
+                ", expireAt=" + expireAt +
                 '}';
     }
 

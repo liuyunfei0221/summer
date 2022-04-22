@@ -1,18 +1,17 @@
-package com.blue.portal.repository.entity;
+package com.blue.portal.api.model;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
 
 /**
- * bulletin entity
+ * bulletin manager info
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class Bulletin implements Serializable {
+public final class BulletinManagerInfo implements Serializable {
 
-    private static final long serialVersionUID = -2824111999296702124L;
+    private static final long serialVersionUID = -3619238330427816610L;
 
     private Long id;
 
@@ -44,7 +43,30 @@ public final class Bulletin implements Serializable {
 
     private Long creator;
 
+    private String creatorName;
+
     private Long updater;
+
+    private String updaterName;
+
+    public BulletinManagerInfo(Long id, String title, String content, String link, Integer type, Integer status, Integer priority, Long activeTime,
+                               Long expireTime, Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.link = link;
+        this.type = type;
+        this.status = status;
+        this.priority = priority;
+        this.activeTime = activeTime;
+        this.expireTime = expireTime;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.creator = creator;
+        this.creatorName = creatorName;
+        this.updater = updater;
+        this.updaterName = updaterName;
+    }
 
     public Long getId() {
         return id;
@@ -59,7 +81,7 @@ public final class Bulletin implements Serializable {
     }
 
     public void setTitle(String title) {
-        this.title = isNull(title) ? null : title.trim();
+        this.title = title;
     }
 
     public String getContent() {
@@ -67,7 +89,7 @@ public final class Bulletin implements Serializable {
     }
 
     public void setContent(String content) {
-        this.content = isNull(content) ? null : content.trim();
+        this.content = content;
     }
 
     public String getLink() {
@@ -75,7 +97,7 @@ public final class Bulletin implements Serializable {
     }
 
     public void setLink(String link) {
-        this.link = isNull(link) ? null : link.trim();
+        this.link = link;
     }
 
     public Integer getType() {
@@ -98,8 +120,8 @@ public final class Bulletin implements Serializable {
         return priority;
     }
 
-    public void setPriority(Integer order) {
-        this.priority = order;
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     public Long getActiveTime() {
@@ -142,6 +164,14 @@ public final class Bulletin implements Serializable {
         this.creator = creator;
     }
 
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
     public Long getUpdater() {
         return updater;
     }
@@ -150,9 +180,17 @@ public final class Bulletin implements Serializable {
         this.updater = updater;
     }
 
+    public String getUpdaterName() {
+        return updaterName;
+    }
+
+    public void setUpdaterName(String updaterName) {
+        this.updaterName = updaterName;
+    }
+
     @Override
     public String toString() {
-        return "Bulletin{" +
+        return "BulletinManagerInfo{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
@@ -165,7 +203,9 @@ public final class Bulletin implements Serializable {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", creator=" + creator +
+                ", creatorName='" + creatorName + '\'' +
                 ", updater=" + updater +
+                ", updaterName='" + updaterName + '\'' +
                 '}';
     }
 

@@ -1,5 +1,6 @@
 package com.blue.portal.repository.mapper;
 
+import com.blue.portal.model.BulletinCondition;
 import com.blue.portal.repository.entity.Bulletin;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,6 +30,10 @@ public interface BulletinMapper {
 
     List<Bulletin> selectByIds(@Param("ids") List<Long> ids);
 
-    List<Bulletin> selectByRowsAndCondition(@Param("type") Integer type, @Param("status") Integer status, @Param("rows") Long rows);
+    List<Bulletin> selectAllPortalBulletinByCondition(@Param("currentStamp") Long currentStamp, @Param("type") Integer type, @Param("status") Integer status);
+
+    List<Bulletin> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("bulletinCondition") BulletinCondition bulletinCondition);
+
+    Long countByCondition(@Param("bulletinCondition") BulletinCondition bulletinCondition);
 
 }

@@ -9,6 +9,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.util.Map;
+
+import static com.blue.base.common.reactive.MetadataGetterForReactive.getMetadata;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -41,6 +44,9 @@ public final class ShineApiHandler {
     public Mono<ServerResponse> getShineInfo(ServerRequest serverRequest) {
         String ip = ReactiveCommonFunctions.getIp(serverRequest);
         LOGGER.warn("client ip = {}", ip);
+        Map<String, String> metadata = getMetadata(serverRequest);
+        LOGGER.warn("metadata = {}", metadata);
+
         return shineService.selectShineInfo(ip)
                 .flatMap(shineInfo ->
                         ok()

@@ -29,9 +29,9 @@ public enum DeviceType {
     OTHER("O", "other devices"),
 
     /**
-     * devices identity for not login
+     * unknown device
      */
-    UNKNOWN("U", "devices identity for not login");
+    UNKNOWN("U", "unknown device");
 
     /**
      * identity

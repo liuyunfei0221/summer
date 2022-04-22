@@ -14,6 +14,7 @@ public abstract class BaseJwtConfParams<T> implements JwtConf<T> {
 
     protected transient Long maxExpireMillis;
     protected transient Long minExpireMillis;
+    protected transient Long refreshExpireMillis;
 
     protected transient String signKey;
     protected transient List<String> gammaSecrets;
@@ -21,9 +22,10 @@ public abstract class BaseJwtConfParams<T> implements JwtConf<T> {
     public BaseJwtConfParams() {
     }
 
-    public BaseJwtConfParams(Long maxExpireMillis, Long minExpireMillis, String signKey, List<String> gammaSecrets) {
+    public BaseJwtConfParams(Long maxExpireMillis, Long minExpireMillis, Long refreshExpireMillis, String signKey, List<String> gammaSecrets) {
         this.maxExpireMillis = maxExpireMillis;
         this.minExpireMillis = minExpireMillis;
+        this.refreshExpireMillis = refreshExpireMillis;
         this.signKey = signKey;
         this.gammaSecrets = gammaSecrets;
     }
@@ -36,6 +38,11 @@ public abstract class BaseJwtConfParams<T> implements JwtConf<T> {
     @Override
     public Long getMinExpireMillis() {
         return minExpireMillis;
+    }
+
+    @Override
+    public Long getRefreshExpireMillis() {
+        return refreshExpireMillis;
     }
 
     @Override

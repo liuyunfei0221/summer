@@ -10,6 +10,8 @@
         <result column="type" jdbcType="TINYINT" property="type"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
         <result column="priority" jdbcType="INTEGER" property="priority"/>
+        <result column="active_time" jdbcType="BIGINT" property="activeTime"/>
+        <result column="expire_time" jdbcType="BIGINT" property="expireTime"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
         <result column="creator" jdbcType="BIGINT" property="creator"/>
@@ -18,19 +20,19 @@
 
     <sql id="Base_Column_List">
         id
-        , title, content, link, type, status, priority, create_time, update_time, creator,
+        , title, content, link, type, status, priority, active_time, expire_time, create_time, update_time, creator,
         updater
     </sql>
 
     <insert id="insert" parameterType="com.blue.portal.repository.entity.Bulletin">
-        insert into bulletin (id, title, content,
-                              link, type, status,
-                              priority, create_time, update_time,
-                              creator, updater)
+        insert into bulletin (id, title, content, link, type, status, priority,
+                              active_time, expire_time, create_time,
+                              update_time, creator, updater)
         values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
                 #{link,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
-                #{priority,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
-                #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
+                #{priority,jdbcType=INTEGER}, #{activeTime,jdbcType=BIGINT}, #{expireTime,jdbcType=BIGINT},
+                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT},
+                #{updater,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertSelective" parameterType="com.blue.portal.repository.entity.Bulletin">
@@ -56,6 +58,12 @@
             </if>
             <if test="priority != null">
                 priority,
+            </if>
+            <if test="activeTime != null">
+                active_time,
+            </if>
+            <if test="expireTime != null">
+                expire_time,
             </if>
             <if test="createTime != null">
                 create_time,
@@ -92,6 +100,12 @@
             <if test="priority != null">
                 #{priority,jdbcType=INTEGER},
             </if>
+            <if test="activeTime != null">
+                #{activeTime,jdbcType=BIGINT},
+            </if>
+            <if test="expireTime != null">
+                #{expireTime,jdbcType=BIGINT},
+            </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=BIGINT},
             </if>
@@ -115,6 +129,8 @@
             type        = #{type,jdbcType=TINYINT},
             status      = #{status,jdbcType=TINYINT},
             priority    = #{priority,jdbcType=INTEGER},
+            active_time = #{activeTime,jdbcType=BIGINT},
+            expire_time = #{expireTime,jdbcType=BIGINT},
             create_time = #{createTime,jdbcType=BIGINT},
             update_time = #{updateTime,jdbcType=BIGINT},
             creator     = #{creator,jdbcType=BIGINT},
@@ -142,6 +158,12 @@
             </if>
             <if test="priority != null">
                 priority = #{priority,jdbcType=INTEGER},
+            </if>
+            <if test="activeTime != null">
+                active_time = #{activeTime,jdbcType=BIGINT},
+            </if>
+            <if test="expireTime != null">
+                expire_time = #{expireTime,jdbcType=BIGINT},
             </if>
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=BIGINT},
@@ -191,13 +213,18 @@
         </foreach>
     </select>
 
-    <select id="selectByRowsAndCondition" resultMap="BaseResultMap">
+    <select id="selectAllPortalBulletinByCondition" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        bulletin FORCE INDEX(idx_stat_pri)
-
+        bulletin FORCE INDEX(idx_active_expire_type_stat_pri)
         <where>
+            <if test="currentStamp != null">
+                AND
+                active_time &lt;= #{currentStamp,jdbcType=BIGINT}
+                AND
+                expire_time &gt;= #{currentStamp,jdbcType=BIGINT}
+            </if>
             <if test="type != null">
                 AND
                 type = #{type,jdbcType=TINYINT}
@@ -207,10 +234,81 @@
                 status = #{status,jdbcType=TINYINT}
             </if>
         </where>
-
         ORDER BY
         priority DESC
-        LIMIT 0,#{rows,jdbcType=BIGINT}
+    </select>
+
+    <sql id="Bulletin_Conditions">
+        <if test="bulletinCondition != null">
+            <where>
+                <if test="bulletinCondition.id != null">
+                    AND
+                    id = #{bulletinCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="bulletinCondition.title != null and bulletinCondition.title != ''">
+                    AND
+                    title LIKE #{bulletinCondition.title,jdbcType=VARCHAR}
+                </if>
+                <if test="bulletinCondition.link != null and bulletinCondition.link != ''">
+                    AND
+                    link LIKE #{bulletinCondition.link,jdbcType=VARCHAR}
+                </if>
+                <if test="bulletinCondition.type != null">
+                    AND
+                    type = #{bulletinCondition.type,jdbcType=TINYINT}
+                </if>
+                <if test="bulletinCondition.status != null">
+                    AND
+                    status = #{bulletinCondition.status,jdbcType=TINYINT}
+                </if>
+                <if test="bulletinCondition.activeTimeBegin != null">
+                    AND
+                    active_time &gt;= #{bulletinCondition.activeTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="bulletinCondition.activeTimeEnd != null">
+                    AND
+                    active_time &lt;= #{bulletinCondition.activeTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="bulletinCondition.expireTimeBegin != null">
+                    AND
+                    expire_time &gt;= #{bulletinCondition.activeTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="bulletinCondition.expireTimeEnd != null">
+                    AND
+                    expire_time &lt;= #{bulletinCondition.activeTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="bulletinCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{attachmentCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="bulletinCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{attachmentCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
+            parameterType="com.blue.portal.model.BulletinCondition">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        attachment
+        <include refid="Bulletin_Conditions"/>
+        <if test="bulletinCondition != null and bulletinCondition.sortAttribute != null and bulletinCondition.sortAttribute != '' and bulletinCondition.sortType != null and bulletinCondition.sortType != ''">
+            ORDER BY
+            ${attachmentCondition.sortAttribute,jdbcType=VARCHAR} ${attachmentCondition.sortType,jdbcType=VARCHAR}
+        </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long"
+            parameterType="com.blue.portal.model.BulletinCondition">
+        SELECT COUNT(*)
+        FROM
+        attachment
+        <include refid="Bulletin_Conditions"/>
     </select>
 
 </mapper>

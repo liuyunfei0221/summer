@@ -16,6 +16,8 @@ public interface JwtConf<T> {
 
     Long getMinExpireMillis();
 
+    Long getRefreshExpireMillis();
+
     String getSignKey();
 
     List<String> getGammaSecrets();

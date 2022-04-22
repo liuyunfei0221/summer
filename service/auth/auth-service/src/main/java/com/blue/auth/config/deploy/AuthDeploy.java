@@ -18,6 +18,8 @@ public class AuthDeploy {
 
     private transient Long globalMinExpireMillis;
 
+    private transient Long globalRefreshExpireMillis;
+
     private Integer localCacheCapacity;
 
     private Long localExpireMillis;
@@ -61,6 +63,14 @@ public class AuthDeploy {
 
     public void setGlobalMinExpireMillis(Long globalMinExpireMillis) {
         this.globalMinExpireMillis = globalMinExpireMillis;
+    }
+
+    public Long getGlobalRefreshExpireMillis() {
+        return globalRefreshExpireMillis;
+    }
+
+    public void setGlobalRefreshExpireMillis(Long globalRefreshExpireMillis) {
+        this.globalRefreshExpireMillis = globalRefreshExpireMillis;
     }
 
     public Integer getLocalCacheCapacity() {
@@ -172,6 +182,7 @@ public class AuthDeploy {
         return "AuthDeploy{" +
                 "globalMaxExpireMillis=" + globalMaxExpireMillis +
                 ", globalMinExpireMillis=" + globalMinExpireMillis +
+                ", globalRefreshExpireMillis=" + globalRefreshExpireMillis +
                 ", localCacheCapacity=" + localCacheCapacity +
                 ", localExpireMillis=" + localExpireMillis +
                 ", refresherCorePoolSize=" + refresherCorePoolSize +

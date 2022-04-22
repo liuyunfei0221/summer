@@ -39,4 +39,11 @@ public interface JwtProcessor<T> {
      */
     long getMinExpireMillis();
 
+    /**
+     * get expire millis of the expiration time of refresh token
+     *
+     * @return
+     */
+    long getRefreshExpireMillis();
+
 }

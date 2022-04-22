@@ -208,7 +208,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                 .flatMap(mbOpt ->
                         mbOpt.map(Mono::just)
                                 .orElseGet(() ->
-                                        error(() -> new BlueException(UNAUTHORIZED)))
+                                        error(() -> new BlueException(DATA_NOT_EXIST)))
                 ).flatMap(mb -> {
                     if (isInvalidStatus(mb.getStatus()))
                         return error(() -> new BlueException(ACCOUNT_HAS_BEEN_FROZEN));

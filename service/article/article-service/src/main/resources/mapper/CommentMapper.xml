@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.article.repository.mapper.CommentMapper">
+
+    <resultMap id="BaseResultMap" type="com.blue.article.repository.entity.Comment">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="sub_id" jdbcType="BIGINT" property="subId"/>
+        <result column="sub_type" jdbcType="TINYINT" property="subType"/>
+        <result column="sub_author_id" jdbcType="BIGINT" property="subAuthorId"/>
+        <result column="from_id" jdbcType="BIGINT" property="fromId"/>
+        <result column="favorites" jdbcType="BIGINT" property="favorites"/>
+        <result column="replies" jdbcType="BIGINT" property="replies"/>
+        <result column="likes" jdbcType="BIGINT" property="likes"/>
+        <result column="boring" jdbcType="BIGINT" property="boring"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+    </resultMap>
+
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.blue.article.repository.entity.Comment">
+        <result column="content" jdbcType="LONGVARCHAR" property="content"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , sub_id, sub_type, sub_author_id, from_id, favorites, replies, likes, boring,
+    status, create_time
+    </sql>
+
+    <sql id="Blob_Column_List">
+        content
+    </sql>
+
+    <insert id="insert" parameterType="com.blue.article.repository.entity.Comment">
+        insert into comment (id, sub_id, sub_type,
+                             sub_author_id, from_id, favorites,
+                             replies, likes, boring,
+                             status, create_time, content)
+        values (#{id,jdbcType=BIGINT}, #{subId,jdbcType=BIGINT}, #{subType,jdbcType=TINYINT},
+                #{subAuthorId,jdbcType=BIGINT}, #{fromId,jdbcType=BIGINT}, #{favorites,jdbcType=BIGINT},
+                #{replies,jdbcType=BIGINT}, #{likes,jdbcType=BIGINT}, #{boring,jdbcType=BIGINT},
+                #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{content,jdbcType=LONGVARCHAR})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.article.repository.entity.Comment">
+        insert into comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="subId != null">
+                sub_id,
+            </if>
+            <if test="subType != null">
+                sub_type,
+            </if>
+            <if test="subAuthorId != null">
+                sub_author_id,
+            </if>
+            <if test="fromId != null">
+                from_id,
+            </if>
+            <if test="favorites != null">
+                favorites,
+            </if>
+            <if test="replies != null">
+                replies,
+            </if>
+            <if test="likes != null">
+                likes,
+            </if>
+            <if test="boring != null">
+                boring,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="subId != null">
+                #{subId,jdbcType=BIGINT},
+            </if>
+            <if test="subType != null">
+                #{subType,jdbcType=TINYINT},
+            </if>
+            <if test="subAuthorId != null">
+                #{subAuthorId,jdbcType=BIGINT},
+            </if>
+            <if test="fromId != null">
+                #{fromId,jdbcType=BIGINT},
+            </if>
+            <if test="favorites != null">
+                #{favorites,jdbcType=BIGINT},
+            </if>
+            <if test="replies != null">
+                #{replies,jdbcType=BIGINT},
+            </if>
+            <if test="likes != null">
+                #{likes,jdbcType=BIGINT},
+            </if>
+            <if test="boring != null">
+                #{boring,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.article.repository.entity.Comment">
+        update comment
+        set sub_id        = #{subId,jdbcType=BIGINT},
+            sub_type      = #{subType,jdbcType=TINYINT},
+            sub_author_id = #{subAuthorId,jdbcType=BIGINT},
+            from_id       = #{fromId,jdbcType=BIGINT},
+            favorites     = #{favorites,jdbcType=BIGINT},
+            replies       = #{replies,jdbcType=BIGINT},
+            likes         = #{likes,jdbcType=BIGINT},
+            boring        = #{boring,jdbcType=BIGINT},
+            status        = #{status,jdbcType=TINYINT},
+            create_time   = #{createTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.article.repository.entity.Comment">
+        update comment
+        <set>
+            <if test="subId != null">
+                sub_id = #{subId,jdbcType=BIGINT},
+            </if>
+            <if test="subType != null">
+                sub_type = #{subType,jdbcType=TINYINT},
+            </if>
+            <if test="subAuthorId != null">
+                sub_author_id = #{subAuthorId,jdbcType=BIGINT},
+            </if>
+            <if test="fromId != null">
+                from_id = #{fromId,jdbcType=BIGINT},
+            </if>
+            <if test="favorites != null">
+                favorites = #{favorites,jdbcType=BIGINT},
+            </if>
+            <if test="replies != null">
+                replies = #{replies,jdbcType=BIGINT},
+            </if>
+            <if test="likes != null">
+                likes = #{likes,jdbcType=BIGINT},
+            </if>
+            <if test="boring != null">
+                boring = #{boring,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.blue.article.repository.entity.Comment">
+        update comment
+        set sub_id        = #{subId,jdbcType=BIGINT},
+            sub_type      = #{subType,jdbcType=TINYINT},
+            sub_author_id = #{subAuthorId,jdbcType=BIGINT},
+            from_id       = #{fromId,jdbcType=BIGINT},
+            favorites     = #{favorites,jdbcType=BIGINT},
+            replies       = #{replies,jdbcType=BIGINT},
+            likes         = #{likes,jdbcType=BIGINT},
+            boring        = #{boring,jdbcType=BIGINT},
+            status        = #{status,jdbcType=TINYINT},
+            create_time   = #{createTime,jdbcType=BIGINT},
+            content       = #{content,jdbcType=LONGVARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from comment
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from comment
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+</mapper>

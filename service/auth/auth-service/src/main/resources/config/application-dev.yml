@@ -304,13 +304,14 @@ scheduler:
 
 
 auth:
-  globalMaxExpireMillis: 2678400000
+  globalMaxExpireMillis: 267840000
   globalMinExpireMillis: 18000000
+  globalRefreshExpireMillis: 2678400000
   localCacheCapacity: 16384
   localExpireMillis: 10000
   refresherCorePoolSize: 2
   refresherMaximumPoolSize: 4
-  refresherkeepAliveSeconds: 64
+  refresherKeepAliveSeconds: 64
   refresherBlockingQueueCapacity: 8192
   batchExpireMaxPerHandle: 256
   batchExpireScheduledCorePoolSize: 1

@@ -49,8 +49,8 @@ import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.common.base.RsaProcessor.initKeyPair;
 import static com.blue.base.constant.auth.AccessInfoRefreshElementType.PUB_KEY;
 import static com.blue.base.constant.auth.AccessInfoRefreshElementType.ROLE;
-import static com.blue.base.constant.auth.DeviceType.UNKNOWN;
 import static com.blue.base.constant.auth.CredentialType.NOT_LOGGED_IN;
+import static com.blue.base.constant.auth.DeviceType.UNKNOWN;
 import static com.blue.base.constant.base.BlueNumericalValue.*;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
@@ -122,14 +122,17 @@ public class AuthServiceImpl implements AuthService {
 
         this.randomIdLen = sessionKeyDeploy.getRanLen();
         this.maxWaitingMillisForRefresh = blockingDeploy.getBlockingMillis();
-        this.maxExpireMillis = this.jwtProcessor.getMaxExpireMillis();
+        this.refreshExpireMillis = this.jwtProcessor.getRefreshExpireMillis();
     }
 
     private int randomIdLen;
 
     private long maxWaitingMillisForRefresh;
 
-    private long maxExpireMillis;
+    private long refreshExpireMillis;
+
+    private final Supplier<Date> REFRESH_EXPIRE_AT_GETTER = () ->
+            new Date(MILLIS_STAMP_SUP.get() + refreshExpireMillis);
 
     public static final String
             SESSION_KEY_PRE = BlueCacheKey.SESSION_KEY_PRE.key,
@@ -452,12 +455,11 @@ public class AuthServiceImpl implements AuthService {
 
                     return deleteExistRefreshTokenByAuthElements(id, credentialType, deviceType)
                             .flatMap(ig -> {
-                                RefreshInfo refreshInfo = new RefreshInfo(keyId, gamma, id, credentialType, deviceType, loginTime);
                                 try {
-                                    return refreshInfoRepository.insert(refreshInfo);
+                                    return refreshInfoRepository.insert(new RefreshInfo(keyId, gamma, id, credentialType, deviceType, loginTime, REFRESH_EXPIRE_AT_GETTER.get())).then(just(true));
                                 } catch (Exception e) {
                                     LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoRepository.insert(refreshInfo) failed, e = {}", e);
-                                    return just(refreshInfo);
+                                    return just(true);
                                 }
                             })
                             .flatMap(ig -> just(jwtProcessor.create(new MemberPayload(gamma, keyId, id, credentialType, deviceType, loginTime))))
@@ -470,13 +472,19 @@ public class AuthServiceImpl implements AuthService {
      */
     private final BiConsumer<MemberPayload, RefreshInfo> AUTH_ASSERTER = (memberPayload, refreshInfo) -> {
         try {
-            if (memberPayload != null && refreshInfo != null
-                    && memberPayload.getGamma().equals(refreshInfo.getGamma())
+            if (memberPayload == null || refreshInfo == null)
+                throw new BlueException(UNAUTHORIZED);
+
+            if (parseLong(refreshInfo.getLoginTime()) + refreshExpireMillis >= TIME_STAMP_GETTER.get()) {
+                refreshInfoRepository.deleteById(refreshInfo.getId()).subscribe();
+                throw new BlueException(UNAUTHORIZED);
+            }
+
+            if (memberPayload.getGamma().equals(refreshInfo.getGamma())
                     && memberPayload.getKeyId().equals(refreshInfo.getId())
                     && memberPayload.getId().equals(refreshInfo.getMemberId())
                     && memberPayload.getCredentialType().equals(refreshInfo.getCredentialType())
-                    && memberPayload.getLoginTime().equals(refreshInfo.getLoginTime())
-                    && parseLong(refreshInfo.getLoginTime()) + maxExpireMillis >= TIME_STAMP_GETTER.get())
+                    && memberPayload.getLoginTime().equals(refreshInfo.getLoginTime()))
                 return;
         } catch (Exception e) {
             throw new BlueException(UNAUTHORIZED);

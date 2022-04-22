@@ -167,16 +167,16 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- media manage
 
-       (230006, 'GET', 'blue-media', '/manager/attachments', b'0', b'1', b'1', b'0', b'1', 2,
+       (230006, 'POST', 'blue-media', '/manager/attachments', b'0', b'1', b'1', b'0', b'1', 2,
         'attachment list of manager', 'attachment list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (230007, 'GET', 'blue-media', '/manager/downloadHistories', b'0', b'1', b'1', b'0', b'1', 2,
+       (230007, 'POST', 'blue-media', '/manager/downloadHistories', b'0', b'1', b'1', b'0', b'1', 2,
         'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
 
 
 -- portal api
 
-       (250001, 'GET', 'blue-portal', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
+       (250001, 'GET', 'blue-portal', '/bulletins/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'bulletin list of api', 'bulletin list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (250002, 'GET', 'blue-portal', '/formatter/{formatter}.html', b'1', b'1', b'1', b'0', b'1', 1,
         'formatter test', 'formatter test', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -188,6 +188,8 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- portal manage
 
+       (260001, 'GET', 'blue-portal', '/manager/bulletins', b'0', b'1', b'1', b'0', b'1', 2,
+        'bulletin list of manager', 'bulletin list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- marketing api
 
@@ -201,7 +203,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 -- marketing manage
 
        (280001, 'POST', 'blue-marketing', '/manager/eventRecords', b'0', b'1', b'1', b'0', b'1', 2,
-        'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        'event record list of manager', 'event record list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
 
 

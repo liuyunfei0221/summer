@@ -230,11 +230,10 @@ public final class BlueRedisGenerator {
         confAsserter(redisConf);
 
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisConfiguration, lettuceClientConfiguration);
-
         ofNullable(redisConf.getShareNativeConnection())
                 .ifPresent(lettuceConnectionFactory::setShareNativeConnection);
 
-        return new LettuceConnectionFactory(redisConfiguration, lettuceClientConfiguration);
+        return lettuceConnectionFactory;
     }
 
     /**
@@ -246,6 +245,7 @@ public final class BlueRedisGenerator {
     public static RedisTemplate<Object, Object> generateRedisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
         RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(lettuceConnectionFactory);
+
         return redisTemplate;
     }
 
@@ -325,13 +325,12 @@ public final class BlueRedisGenerator {
 
         RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration();
         try {
-            List<String> nodes = redisConf.getNodes();
-            for (String node : nodes) {
+            redisConf.getNodes().stream().map(node -> {
                 String[] hostAndPort = node.split(KEY_VALUE_SEPARATOR);
-                redisClusterConfiguration.addClusterNode(new RedisNode(hostAndPort[0], parseInt(hostAndPort[1])));
-            }
+                return new RedisNode(hostAndPort[0], parseInt(hostAndPort[1]));
+            }).forEach(redisClusterConfiguration::addClusterNode);
         } catch (Exception e) {
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redis init error,check args, e = " + e);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redis init error, check args, e = " + e);
         }
 
         ofNullable(redisConf.getMaxRedirects())

@@ -34,7 +34,7 @@ public final class BlueMemberJwtProcessorGenerator {
         LOGGER.info("JwtProcessor<MemberPayload> create(MemberJwtConf memberJwtConf), memberJwtConf = {}", memberJwtConf);
 
         BaseJwtConfParams<MemberPayload> baseJwtConfParams = new BaseJwtConfParams<>(memberJwtConf.getGlobalMaxExpireMillis(),
-                memberJwtConf.getGlobalMinExpireMillis(), memberJwtConf.getSignKey(), memberJwtConf.getGammaSecrets()) {
+                memberJwtConf.getGlobalMinExpireMillis(), memberJwtConf.getGlobalRefreshExpireMillis(), memberJwtConf.getSignKey(), memberJwtConf.getGammaSecrets()) {
 
             @Override
             public Function<MemberPayload, Map<String, String>> getDataToClaimProcessor() {
