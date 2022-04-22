@@ -193,7 +193,7 @@ public class PortalServiceImpl implements PortalService {
      * @return
      */
     @Override
-    public Mono<List<BulletinInfo>> selectBulletinInfo(Integer bulletinType) {
+    public Mono<List<BulletinInfo>> selectBulletin(Integer bulletinType) {
         LOGGER.info("listBulletin(BulletinType bulletinType), bulletinType = {}", bulletinType);
         assertBulletinType(bulletinType, false);
         return LOCAL_CACHE_PORTAL_FUNC.apply(bulletinType);

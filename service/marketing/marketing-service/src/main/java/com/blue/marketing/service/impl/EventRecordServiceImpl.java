@@ -221,7 +221,7 @@ public class EventRecordServiceImpl implements EventRecordService {
             String creatorName = tuple3.getT3().getName();
 
             return isNotEmpty(eventRecords) ?
-                    just(eventRecords.stream().map(a -> EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER.apply(a, creatorName)).collect(toList()))
+                    just(eventRecords.stream().map(e -> EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER.apply(e, creatorName)).collect(toList()))
                             .flatMap(eventRecordInfos ->
                                     just(new PageModelResponse<>(eventRecordInfos, tuple3.getT2())))
                     :
@@ -279,8 +279,8 @@ public class EventRecordServiceImpl implements EventRecordService {
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(eventRecords.parallelStream().map(EventRecord::getCreator).collect(toList()))
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
-                                        return just(eventRecords.stream().map(a ->
-                                                        EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER.apply(a, ofNullable(idAndNameMapping.get(a.getCreator())).orElse("")))
+                                        return just(eventRecords.stream().map(e ->
+                                                        EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER.apply(e, ofNullable(idAndNameMapping.get(e.getCreator())).orElse("")))
                                                 .collect(toList()));
                                     }).flatMap(eventRecordInfos ->
                                             just(new PageModelResponse<>(eventRecordInfos, tuple2.getT2())))

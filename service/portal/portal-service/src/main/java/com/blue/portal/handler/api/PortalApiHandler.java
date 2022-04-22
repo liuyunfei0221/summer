@@ -40,7 +40,7 @@ public final class PortalApiHandler {
      * @return
      */
     public Mono<ServerResponse> selectBulletin(ServerRequest serverRequest) {
-        return portalService.selectBulletinInfo(getIntegerVariable(serverRequest, TYPE.key))
+        return portalService.selectBulletin(getIntegerVariable(serverRequest, TYPE.key))
                 .flatMap(bl -> ok()
                         .contentType(APPLICATION_JSON)
                         .body(generate(OK.code, bl, serverRequest), BlueResponse.class)
