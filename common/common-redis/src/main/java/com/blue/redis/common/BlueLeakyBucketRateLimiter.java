@@ -12,12 +12,14 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.LEAKY_BUCKET_RATE_LIMITER;
 import static java.util.Arrays.asList;
+import static reactor.core.publisher.Mono.error;
+import static reactor.core.publisher.Mono.just;
 import static reactor.core.scheduler.Schedulers.boundedElastic;
 
 /**
@@ -25,7 +27,7 @@ import static reactor.core.scheduler.Schedulers.boundedElastic;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
 public final class BlueLeakyBucketRateLimiter {
 
     private final ReactiveStringRedisTemplate reactiveStringRedisTemplate;
@@ -89,6 +91,19 @@ public final class BlueLeakyBucketRateLimiter {
      */
     public Boolean isAllowedBySync(String limitKey, Integer allow, Long expireMillis) {
         return isAllowed(limitKey, allow, expireMillis).toFuture().join();
+    }
+
+    /**
+     * delete key
+     *
+     * @param key
+     * @return
+     */
+    public Mono<Boolean> delete(String key) {
+        return isNotBlank(key) ?
+                reactiveStringRedisTemplate.delete(key).flatMap(r -> just(r > 0))
+                :
+                error(() -> new BlueException(BAD_REQUEST));
     }
 
     /**

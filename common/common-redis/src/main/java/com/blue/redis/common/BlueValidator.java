@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.REPEATABLE_UNTIL_SUCCESS_OR_TIMEOUT_VALIDATION;
 import static com.blue.redis.constant.RedisScripts.UNREPEATABLE_VALIDATION;
+import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.scheduler.Schedulers.boundedElastic;
 
@@ -131,6 +132,19 @@ public final class BlueValidator {
         return reactiveStringRedisTemplate.opsForValue().get(KEY_WRAPPER.apply(key))
                 .flatMap(v -> just(value.equals(v)))
                 .subscribeOn(scheduler);
+    }
+
+    /**
+     * delete key
+     *
+     * @param key
+     * @return
+     */
+    public Mono<Boolean> delete(String key) {
+        return isNotBlank(key) ?
+                reactiveStringRedisTemplate.delete(key).flatMap(r -> just(r > 0))
+                :
+                error(() -> new BlueException(BAD_REQUEST));
     }
 
     /**
