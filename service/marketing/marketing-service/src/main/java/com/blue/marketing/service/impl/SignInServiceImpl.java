@@ -71,6 +71,8 @@ public class SignInServiceImpl implements SignInService {
         DAY_REWARD_INITIALIZER.accept(now.getYear(), now.getMonthValue());
     }
 
+    private static final int CURRENT_MONTH_RECORD_IDX = 0;
+
     /**
      * sign in redis key expire/day
      */
@@ -255,8 +257,9 @@ public class SignInServiceImpl implements SignInService {
         int lengthOfMonth = now.lengthOfMonth();
 
         return blueBitMarker.getBitsLimitValue(generateSignKey(memberId, now.getYear(), now.getMonthValue()), lengthOfMonth)
-                .flatMap(record -> {
-                            MonthSignInRewardRecord monthSignInRewardRecord = MONTH_REWARD_RECORD_GENERATOR.apply(record, lengthOfMonth);
+                .flatMap(records -> {
+                            MonthSignInRewardRecord monthSignInRewardRecord =
+                                    MONTH_REWARD_RECORD_GENERATOR.apply(records.get(CURRENT_MONTH_RECORD_IDX), lengthOfMonth);
                             LOGGER.info("memberId = {}, monthRecordDTO = {}", memberId, monthSignInRewardRecord);
                             return just(monthSignInRewardRecord);
                         }
