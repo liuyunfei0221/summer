@@ -41,10 +41,11 @@ public final class BlueBitMarker {
     private static final int
             BIT_TRUE = 1, BIT_FALSE = 0,
             MIN_OFFSET = 0, MIN_LIMIT = 1,
-            FLUX_ELEMENT_INDEX = 0, LIST_ELEMENT_INDEX = 0;
+            FLUX_ELEMENT_INDEX = 0;
     private static final long MARK_BIT = 1L;
 
     private static final Map<Boolean, Integer> BIT_VALUE_MAPPING = new HashMap<>(4, 1.0f);
+
     static {
         BIT_VALUE_MAPPING.put(true, BIT_TRUE);
         BIT_VALUE_MAPPING.put(false, BIT_FALSE);
@@ -57,17 +58,18 @@ public final class BlueBitMarker {
     private final BiFunction<String, Integer, Mono<Boolean>> BITMAP_BIT_GETTER = (key, offset) ->
             reactiveStringRedisTemplate.opsForValue().getBit(key, (long) offset);
 
-    private static final BiFunction<Long, Integer, boolean[]> BITS_PARSER = (record, limit) -> {
+    private static final BiFunction<List<Long>, Integer, boolean[]> BITS_PARSER = (records, limit) -> {
         if (limit < MIN_LIMIT)
             throw new BlueException(INVALID_PARAM);
 
         boolean[] bits = new boolean[limit];
 
-        long bit = 1L;
-
-        for (int d = limit; d >= MIN_LIMIT; d--) {
-            bits[d - 1] = (record & bit) != 0L;
-            bit <<= 1;
+        long trueBit = 1L;
+        for (long record : records) {
+            for (int offset = limit; offset >= MIN_LIMIT; offset--) {
+                bits[offset - 1] = (record & trueBit) != 0L;
+                trueBit <<= 1;
+            }
         }
 
         return bits;
@@ -77,7 +79,7 @@ public final class BlueBitMarker {
         return asList(String.valueOf(offset), String.valueOf(BIT_VALUE_MAPPING.get(bit)), String.valueOf(expireSeconds));
     }
 
-    private Mono<Long> getLimits(String key, int offset, int limit) {
+    private Mono<List<Long>> getLimits(String key, int offset, int limit) {
         if (isBlank(key) || offset < MIN_OFFSET || limit < MIN_LIMIT)
             throw new BlueException(INVALID_PARAM);
 
@@ -87,8 +89,7 @@ public final class BlueBitMarker {
                                         BitFieldSubCommands.create()
                                                 .get(BitFieldSubCommands.BitFieldType.signed(limit))
                                                 .valueAt(MARK_BIT)))
-                .elementAt(offset)
-                .flatMap(l -> just(l.get(LIST_ELEMENT_INDEX)));
+                .elementAt(offset);
     }
 
     /**
@@ -109,7 +110,7 @@ public final class BlueBitMarker {
      * @param limit
      * @return
      */
-    public Mono<Long> getBitsLimitValue(String key, int offset, int limit) {
+    public Mono<List<Long>> getBitsLimitValue(String key, int offset, int limit) {
         return getLimits(key, offset, limit);
     }
 
@@ -132,7 +133,7 @@ public final class BlueBitMarker {
      * @param limit
      * @return
      */
-    public Mono<Long> getBitsLimitValue(String key, int limit) {
+    public Mono<List<Long>> getBitsLimitValue(String key, int limit) {
         return getLimits(key, MIN_OFFSET, limit);
     }
 
