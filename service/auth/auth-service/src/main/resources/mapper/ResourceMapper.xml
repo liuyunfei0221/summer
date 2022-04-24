@@ -317,8 +317,7 @@
         </if>
     </sql>
 
-    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
-            parameterType="com.blue.auth.model.ResourceCondition">
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -326,13 +325,12 @@
         <include refid="Resource_Conditions"/>
         <if test="resourceCondition != null and resourceCondition.sortAttribute != null and resourceCondition.sortAttribute != '' and resourceCondition.sortType != null and resourceCondition.sortType != ''">
             ORDER BY
-            ${resourceCondition.sortAttribute,jdbcType=VARCHAR} ${resourceCondition.sortType,jdbcType=VARCHAR}
+            ${resourceCondition.sortAttribute} ${resourceCondition.sortType}
         </if>
         LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>
 
-    <select id="countByCondition" resultType="java.lang.Long"
-            parameterType="com.blue.auth.model.ResourceCondition">
+    <select id="countByCondition" resultType="java.lang.Long">
         SELECT COUNT(*)
         FROM
         resource

@@ -190,7 +190,7 @@
         <include refid="EventRecord_Conditions"/>
         <if test="eventRecordCondition != null and eventRecordCondition.sortAttribute != null and eventRecordCondition.sortAttribute != '' and eventRecordCondition.sortType != null and eventRecordCondition.sortType != ''">
             ORDER BY
-            ${eventRecordCondition.sortAttribute,jdbcType=VARCHAR} ${eventRecordCondition.sortType,jdbcType=VARCHAR}
+            ${eventRecordCondition.sortAttribute} ${eventRecordCondition.sortType}
         </if>
         LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>

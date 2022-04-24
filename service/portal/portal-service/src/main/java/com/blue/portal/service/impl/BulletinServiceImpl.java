@@ -20,8 +20,8 @@ import reactor.util.Logger;
 import reactor.util.Loggers;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
@@ -62,9 +62,9 @@ public class BulletinServiceImpl implements BulletinService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(BulletinSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Consumer<BulletinCondition> CONDITION_REPACKAGER = condition -> {
+    private static final UnaryOperator<BulletinCondition> CONDITION_PROCESSOR = condition -> {
         if (isNull(condition))
-            return;
+            return new BulletinCondition();
 
         ofNullable(condition.getSortAttribute())
                 .filter(StringUtils::hasText)
@@ -78,6 +78,8 @@ public class BulletinServiceImpl implements BulletinService {
                 .filter(BlueChecker::isNotBlank).ifPresent(n -> condition.setTitle("%" + n + "%"));
         ofNullable(condition.getLink())
                 .filter(BlueChecker::isNotBlank).ifPresent(n -> condition.setLink("%" + n + "%"));
+
+        return condition;
     };
 
     private static final Function<List<Bulletin>, List<Long>> OPERATORS_GETTER = bulletins -> {
@@ -199,8 +201,7 @@ public class BulletinServiceImpl implements BulletinService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        BulletinCondition bulletinCondition = pageModelRequest.getParam();
-        CONDITION_REPACKAGER.accept(bulletinCondition);
+        BulletinCondition bulletinCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
         return zip(selectBulletinMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), bulletinCondition),
                 countBulletinMonoByCondition(bulletinCondition))

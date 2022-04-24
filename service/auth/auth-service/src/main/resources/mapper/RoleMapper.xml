@@ -197,8 +197,7 @@
         </if>
     </sql>
 
-    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
-            parameterType="com.blue.auth.model.RoleCondition">
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -206,13 +205,12 @@
         <include refid="Role_Conditions"/>
         <if test="roleCondition != null and roleCondition.sortAttribute != null and roleCondition.sortAttribute != '' and roleCondition.sortType != null and roleCondition.sortType != ''">
             ORDER BY
-            ${roleCondition.sortAttribute,jdbcType=VARCHAR} ${roleCondition.sortType,jdbcType=VARCHAR}
+            ${roleCondition.sortAttribute} ${roleCondition.sortType}
         </if>
         LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>
 
-    <select id="countByCondition" resultType="java.lang.Long"
-            parameterType="com.blue.auth.model.RoleCondition">
+    <select id="countByCondition" resultType="java.lang.Long">
         SELECT COUNT(*)
         FROM
         role

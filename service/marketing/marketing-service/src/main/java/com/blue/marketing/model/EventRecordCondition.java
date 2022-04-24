@@ -1,5 +1,9 @@
 package com.blue.marketing.model;
 
+import com.blue.base.constant.base.SortType;
+import com.blue.base.model.base.SortCondition;
+import com.blue.marketing.constant.EventRecordSortAttribute;
+
 import java.io.Serializable;
 
 /**
@@ -8,7 +12,7 @@ import java.io.Serializable;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class EventRecordCondition implements Serializable {
+public final class EventRecordCondition extends SortCondition implements Serializable {
 
     private static final long serialVersionUID = -8708899408485179098L;
 
@@ -37,22 +41,22 @@ public final class EventRecordCondition implements Serializable {
 
     private Long createTimeEnd;
 
-    private String sortAttribute;
-
-    private String sortType;
-
     public EventRecordCondition() {
+        super(EventRecordSortAttribute.ID.attribute, SortType.DESC.identity);
     }
 
-    public EventRecordCondition(Long id, Integer type, Integer status, Long creator, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
+    public EventRecordCondition(String sortAttribute, String sortType) {
+        super(sortAttribute, sortType);
+    }
+
+    public EventRecordCondition(String sortAttribute, String sortType, Long id, Integer type, Integer status, Long creator, Long createTimeBegin, Long createTimeEnd) {
+        super(sortAttribute, sortType);
         this.id = id;
         this.type = type;
         this.status = status;
         this.creator = creator;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
-        this.sortAttribute = sortAttribute;
-        this.sortType = sortType;
     }
 
     public Long getId() {
@@ -103,22 +107,6 @@ public final class EventRecordCondition implements Serializable {
         this.createTimeEnd = createTimeEnd;
     }
 
-    public String getSortAttribute() {
-        return sortAttribute;
-    }
-
-    public void setSortAttribute(String sortAttribute) {
-        this.sortAttribute = sortAttribute;
-    }
-
-    public String getSortType() {
-        return sortType;
-    }
-
-    public void setSortType(String sortType) {
-        this.sortType = sortType;
-    }
-
     @Override
     public String toString() {
         return "EventRecordCondition{" +
@@ -128,8 +116,6 @@ public final class EventRecordCondition implements Serializable {
                 ", creator=" + creator +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
-                ", sortAttribute='" + sortAttribute + '\'' +
-                ", sortType='" + sortType + '\'' +
                 '}';
     }
 
