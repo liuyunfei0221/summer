@@ -1,6 +1,6 @@
-package com.blue.base.component.reactrest.api.generator;
+package com.blue.base.component.rest.api.generator;
 
-import com.blue.base.component.reactrest.api.conf.ReactRestConf;
+import com.blue.base.component.rest.api.conf.RestConf;
 import com.blue.base.model.exps.BlueException;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -23,6 +23,7 @@ import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
 import static io.netty.channel.ChannelOption.TCP_NODELAY;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.springframework.web.reactive.function.client.WebClient.builder;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -31,9 +32,9 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
-public final class BlueReactRestGenerator {
+public final class BlueRestGenerator {
 
-    private static final Logger LOGGER = getLogger(BlueReactRestGenerator.class);
+    private static final Logger LOGGER = getLogger(BlueRestGenerator.class);
 
     private static final String PROVIDER_NAME = "httpClient";
 
@@ -41,30 +42,30 @@ public final class BlueReactRestGenerator {
 
     private static final boolean DAEMON = true;
 
-    public static WebClient generateWebClient(ReactRestConf reactRestConf) {
-        if (isNull(reactRestConf))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactRestConf can't be null");
+    public static WebClient generateWebClient(RestConf restConf) {
+        if (isNull(restConf))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "restConf can't be null");
 
-        LOGGER.info("WebClient createWebClient(ReactRestConf reactRestConf), reactRestConf = {}", reactRestConf);
+        LOGGER.info("WebClient generateWebClient(RestConf restConf), restConf = {}", restConf);
 
-        ConnectionProvider connectionProvider = ConnectionProvider.create(PROVIDER_NAME, reactRestConf.getMaxConnections());
-        LoopResources loopResources = LoopResources.create(RESOURCE_NAME_PREFIX, reactRestConf.getWorkerCount(), DAEMON);
+        ConnectionProvider connectionProvider = ConnectionProvider.create(PROVIDER_NAME, restConf.getMaxConnections());
+        LoopResources loopResources = LoopResources.create(RESOURCE_NAME_PREFIX, restConf.getWorkerCount(), DAEMON);
 
         ReactorResourceFactory reactorResourceFactory = new ReactorResourceFactory();
-        reactorResourceFactory.setUseGlobalResources(reactRestConf.getUseGlobalResources());
+        reactorResourceFactory.setUseGlobalResources(restConf.getUseGlobalResources());
         reactorResourceFactory.setConnectionProvider(connectionProvider);
         reactorResourceFactory.setLoopResources(loopResources);
 
         Function<HttpClient, HttpClient> mapper = httpClient ->
                 httpClient
-                        .option(CONNECT_TIMEOUT_MILLIS, reactRestConf.getConnectTimeoutMillis())
-                        .option(TCP_NODELAY, reactRestConf.getUseTcpNodelay())
-                        .protocol(reactRestConf.getProtocols().toArray(HttpProtocol[]::new))
-                        .responseTimeout(Duration.of(reactRestConf.getResponseTimeoutMillis(), MILLIS))
+                        .option(CONNECT_TIMEOUT_MILLIS, restConf.getConnectTimeoutMillis())
+                        .option(TCP_NODELAY, restConf.getUseTcpNodelay())
+                        .protocol(restConf.getProtocols().toArray(HttpProtocol[]::new))
+                        .responseTimeout(Duration.of(restConf.getResponseTimeoutMillis(), MILLIS))
                         .doOnConnected(
                                 connection -> connection
-                                        .addHandlerFirst(new ReadTimeoutHandler(reactRestConf.getReadTimeoutMillis(), MILLISECONDS))
-                                        .addHandlerFirst(new WriteTimeoutHandler(reactRestConf.getWriteTimeoutMillis(), MILLISECONDS)));
+                                        .addHandlerFirst(new ReadTimeoutHandler(restConf.getReadTimeoutMillis(), MILLISECONDS))
+                                        .addHandlerFirst(new WriteTimeoutHandler(restConf.getWriteTimeoutMillis(), MILLISECONDS)));
 
         ReactorClientHttpConnector reactorClientHttpConnector = new ReactorClientHttpConnector(reactorResourceFactory, mapper);
 
@@ -72,10 +73,10 @@ public final class BlueReactRestGenerator {
                 .codecs(clientCodecConfigurer ->
                         clientCodecConfigurer
                                 .defaultCodecs()
-                                .maxInMemorySize(reactRestConf.getMaxByteInMemorySize())
+                                .maxInMemorySize(restConf.getMaxByteInMemorySize())
                 ).build();
 
-        return WebClient.builder()
+        return builder()
                 .clientConnector(reactorClientHttpConnector)
                 .exchangeStrategies(exchangeStrategies)
                 .build();

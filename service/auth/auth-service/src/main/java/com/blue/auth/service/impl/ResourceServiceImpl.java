@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
@@ -68,9 +69,9 @@ public class ResourceServiceImpl implements ResourceService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Consumer<ResourceCondition> CONDITION_REPACKAGER = condition -> {
+    private static final UnaryOperator<ResourceCondition> CONDITION_PROCESSOR = condition -> {
         if (isNull(condition))
-            return;
+            return new ResourceCondition();
 
         ofNullable(condition.getSortAttribute())
                 .filter(StringUtils::hasText)
@@ -87,6 +88,8 @@ public class ResourceServiceImpl implements ResourceService {
                 .filter(uri -> !isBlank(uri)).map(String::toLowerCase).ifPresent(uri -> condition.setUri("%" + uri + "%"));
         ofNullable(condition.getName())
                 .filter(n -> !isBlank(n)).ifPresent(n -> condition.setName("%" + n + "%"));
+
+        return condition;
     };
 
     /**
@@ -452,8 +455,7 @@ public class ResourceServiceImpl implements ResourceService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        ResourceCondition resourceCondition = pageModelRequest.getParam();
-        CONDITION_REPACKAGER.accept(resourceCondition);
+        ResourceCondition resourceCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
         return zip(selectResourceMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), resourceCondition), countResourceMonoByCondition(resourceCondition))
                 .flatMap(tuple2 -> {

@@ -1,5 +1,9 @@
 package com.blue.member.model;
 
+import com.blue.base.constant.base.SortType;
+import com.blue.base.model.base.SortCondition;
+import com.blue.member.constant.MemberBusinessSortAttribute;
+
 import java.io.Serializable;
 
 /**
@@ -8,7 +12,7 @@ import java.io.Serializable;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class MemberBusinessCondition implements Serializable {
+public final class MemberBusinessCondition extends SortCondition implements Serializable {
 
     private static final long serialVersionUID = -5961680212338876121L;
 
@@ -40,15 +44,17 @@ public final class MemberBusinessCondition implements Serializable {
 
     private Long updateTimeEnd;
 
-    private String sortAttribute;
-
-    private String sortType;
-
     public MemberBusinessCondition() {
+        super(MemberBusinessSortAttribute.ID.attribute, SortType.DESC.identity);
     }
 
-    public MemberBusinessCondition(Long id, String phone, String email, String name, String icon, Integer gender,
-                                   Integer status, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+    public MemberBusinessCondition(String sortAttribute, String sortType) {
+        super(sortAttribute, sortType);
+    }
+
+    public MemberBusinessCondition(String sortAttribute, String sortType, Long id, String phone, String email, String name, String icon, Integer gender, Integer status,
+                                   Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute1, String sortType1) {
+        super(sortAttribute, sortType);
         this.id = id;
         this.phone = phone;
         this.email = email;
@@ -60,8 +66,8 @@ public final class MemberBusinessCondition implements Serializable {
         this.createTimeEnd = createTimeEnd;
         this.updateTimeBegin = updateTimeBegin;
         this.updateTimeEnd = updateTimeEnd;
-        this.sortAttribute = sortAttribute;
-        this.sortType = sortType;
+        this.sortAttribute = sortAttribute1;
+        this.sortType = sortType1;
     }
 
     public Long getId() {
@@ -152,25 +158,9 @@ public final class MemberBusinessCondition implements Serializable {
         this.updateTimeEnd = updateTimeEnd;
     }
 
-    public String getSortAttribute() {
-        return sortAttribute;
-    }
-
-    public void setSortAttribute(String sortAttribute) {
-        this.sortAttribute = sortAttribute;
-    }
-
-    public String getSortType() {
-        return sortType;
-    }
-
-    public void setSortType(String sortType) {
-        this.sortType = sortType;
-    }
-
     @Override
     public String toString() {
-        return "MemberCondition{" +
+        return "MemberBusinessCondition{" +
                 "id=" + id +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
@@ -182,8 +172,6 @@ public final class MemberBusinessCondition implements Serializable {
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +
                 ", updateTimeEnd=" + updateTimeEnd +
-                ", sortAttribute='" + sortAttribute + '\'' +
-                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

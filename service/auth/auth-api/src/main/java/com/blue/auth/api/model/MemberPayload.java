@@ -20,7 +20,7 @@ public final class MemberPayload implements Serializable {
     /**
      * random gamma
      */
-    private final String gamma;
+    private String gamma;
 
     /**
      * auth keyId used for redis
@@ -71,6 +71,12 @@ public final class MemberPayload implements Serializable {
 
     public String getGamma() {
         return gamma;
+    }
+
+    public void setGamma(String gamma) {
+        if (isBlank(gamma))
+            throw new BlueException(BAD_REQUEST);
+        this.gamma = gamma;
     }
 
     public String getKeyId() {

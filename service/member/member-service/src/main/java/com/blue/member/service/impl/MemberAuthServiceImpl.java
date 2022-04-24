@@ -6,12 +6,13 @@ import com.blue.finance.api.model.MemberFinanceInfo;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.component.credential.CredentialCollectProcessor;
 import com.blue.member.remote.consumer.RpcControlServiceConsumer;
 import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
 import com.blue.member.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
-import com.blue.member.service.inter.MemberBasicService;
 import com.blue.member.service.inter.MemberAuthService;
+import com.blue.member.service.inter.MemberBasicService;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +27,6 @@ import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.verify.BusinessType.REGISTER;
 import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static com.blue.base.constant.verify.VerifyType.SMS;
-import static com.blue.member.component.credential.CredentialCollectProcessor.collect;
-import static com.blue.member.component.credential.CredentialCollectProcessor.packageCredentialAttr;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static reactor.util.Loggers.getLogger;
@@ -47,16 +46,20 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
+    private final CredentialCollectProcessor credentialCollectProcessor;
+
     private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
 
     private final RpcControlServiceConsumer rpcControlServiceConsumer;
 
     private final RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer;
 
-    public MemberAuthServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
+    public MemberAuthServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor,
+                                 CredentialCollectProcessor credentialCollectProcessor, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
                                  RpcControlServiceConsumer rpcControlServiceConsumer, RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer) {
         this.memberBasicService = memberBasicService;
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.credentialCollectProcessor = credentialCollectProcessor;
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcControlServiceConsumer = rpcControlServiceConsumer;
         this.rpcFinanceAccountServiceConsumer = rpcFinanceAccountServiceConsumer;
@@ -93,7 +96,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         memberBasic.setId(id);
 
         //init auth info
-        rpcControlServiceConsumer.initMemberAuthInfo(new MemberCredentialInfo(id, collect(memberBasic, memberRegistryParam.getAccess())));
+        rpcControlServiceConsumer.initMemberAuthInfo(new MemberCredentialInfo(id, credentialCollectProcessor.collect(memberBasic, memberRegistryParam.getAccess())));
 
         //init finance account
         rpcFinanceAccountServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));
@@ -113,6 +116,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
      * @param memberRegistryParam
      * @return
      */
+    @SuppressWarnings("CommentedOutCode")
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 60)
@@ -123,7 +127,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
         MemberBasic memberBasic = MEMBER_REGISTRY_INFO_2_MEMBER_BASIC.apply(memberRegistryParam);
 
-        if (isEmpty(collect(memberBasic, memberRegistryParam.getAccess())))
+        if (isEmpty(credentialCollectProcessor.collect(memberBasic, memberRegistryParam.getAccess())))
             throw new BlueException(BAD_REQUEST);
 
         long id = blueIdentityProcessor.generate(MemberBasic.class);
@@ -161,7 +165,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
         MemberBasic memberBasic = memberBasicOpt.get();
 
-        packageCredentialAttr(credentialTypes, credential, memberBasic);
+        credentialCollectProcessor.packageCredentialAttr(credentialTypes, credential, memberBasic);
 
         return memberBasicService.updateMemberBasic(memberBasic);
     }

@@ -78,8 +78,11 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
                 if (currentRedisKey.equals(holdingRedisKey)) {
                     CURRENT_KEY_VALUE_HOLDER.put(holdingKey, currentRedisKey);
                     executorService.execute(() -> blueValueMarker.delete(holdingRedisKey).subscribe(b -> {
-                        if (b)
+                        if (b) {
                             LOGGER.info("delete key, key = {}", holdingRedisKey);
+                        } else {
+                            LOGGER.error("delete key failed, key = {}", holdingRedisKey);
+                        }
                     }));
                 }
             }

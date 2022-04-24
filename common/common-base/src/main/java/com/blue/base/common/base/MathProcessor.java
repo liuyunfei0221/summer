@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static java.lang.Long.parseLong;
@@ -43,11 +44,11 @@ public final class MathProcessor {
                 return false;
             }
 
-            if (isNull(previous)) {
-                previous = i;
-            } else {
+            if (isNotNull(previous)) {
                 if ((i - previous) != 1)
                     return false;
+            } else {
+                previous = i;
             }
         }
 

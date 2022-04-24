@@ -25,9 +25,8 @@ import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
-import static com.blue.base.constant.auth.CredentialType.EMAIL_PWD;
 import static com.blue.base.constant.auth.CredentialType.PHONE_PWD;
+import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.base.constant.base.BlueHeader.*;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
@@ -92,7 +91,7 @@ public class PhoneAndPwdLoginHandler implements LoginHandler {
                 ).flatMap(rpcMemberBasicServiceConsumer::selectMemberBasicInfoMonoByPrimaryKey)
                 .flatMap(mbi -> {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
-                    return authService.generateAuthMono(mbi.getId(), EMAIL_PWD.identity, loginParam.getDeviceType().intern());
+                    return authService.generateAuthMono(mbi.getId(), PHONE_PWD.identity, loginParam.getDeviceType().intern());
                 })
                 .flatMap(ma -> ok().contentType(APPLICATION_JSON)
                         .header(AUTHORIZATION.name, ma.getAuth())

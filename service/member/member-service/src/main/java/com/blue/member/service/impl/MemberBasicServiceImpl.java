@@ -87,7 +87,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<MemberBasicCondition> MEMBER_CONDITION_PROCESSOR = condition -> {
+    private static final UnaryOperator<MemberBasicCondition> CONDITION_PROCESSOR = condition -> {
         if (isNull(condition))
             return new MemberBasicCondition();
 
@@ -322,7 +322,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        MemberBasicCondition memberBasicCondition = MEMBER_CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        MemberBasicCondition memberBasicCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
         return zip(selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), countMemberBasicMonoByCondition(memberBasicCondition))
                 .flatMap(tuple2 -> {

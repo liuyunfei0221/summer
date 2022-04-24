@@ -45,9 +45,8 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
                 ofNullable(invalidLocalAuthParam)
                         .map(InvalidLocalAuthParam::getKeyId)
                         .ifPresent(keyId -> accessInfoCache.invalidLocalAccessInfo(keyId)
-                                .subscribe(b ->
-                                        LOGGER.info("authService.invalidLocalAuthByKeyId(keyId), b = {}, keyId = {}", b, keyId)
-                                ));
+                                .doOnError(throwable -> LOGGER.info("authService.invalidLocalAuthByKeyId(keyId) failed, keyId = {}, throwable = {}", keyId, throwable))
+                                .subscribe(b -> LOGGER.info("authService.invalidLocalAuthByKeyId(keyId), b = {}, keyId = {}", b, keyId)));
 
         this.invalidClusterLocalAuthConsumer = generateConsumer(blueConsumerConfig.getByKey(INVALID_LOCAL_ACCESS.name), invalidClusterLocalAuthDataConsumer);
     }

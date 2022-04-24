@@ -14,6 +14,8 @@ import static com.blue.base.constant.analyze.StatisticsRange.M;
 import static com.blue.base.constant.analyze.StatisticsType.MA;
 import static com.blue.base.constant.base.BlueDataAttrKey.MEMBER_ID;
 import static java.util.Optional.ofNullable;
+import static reactor.core.publisher.Mono.empty;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -47,8 +49,16 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
                     .map(Access::getId)
                     .filter(id -> id >= 1L)
                     .ifPresent(mid -> {
-                        activeStatisticsService.markActive(mid, MA, D).subscribe();
-                        activeStatisticsService.markActive(mid, MA, M).subscribe();
+                        activeStatisticsService.markActive(mid, MA, D)
+                                .onErrorResume(throwable -> {
+                                    LOGGER.error("activeStatisticsService.markActive(mid, MA, D) failed, throwable = {}", throwable);
+                                    return just(false);
+                                }).toFuture().join();
+                        activeStatisticsService.markActive(mid, MA, M)
+                                .onErrorResume(throwable -> {
+                                    LOGGER.error("activeStatisticsService.markActive(mid, MA, M) failed, throwable = {}", throwable);
+                                    return just(false);
+                                }).toFuture().join();
                         data.put(MEMBER_ID_KEY, String.valueOf(mid));
                     });
         } catch (Exception e) {
@@ -61,8 +71,16 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
         ofNullable(data)
                 .map(d -> d.get(MEMBER_ID_KEY))
                 .ifPresent(memberId -> {
-                            LOGGER.info("dayActiveCount = " + activeStatisticsService.selectActiveSimple(MA, D).subscribe());
-                            LOGGER.info("monthActiveCount = " + activeStatisticsService.selectActiveSimple(MA, M).subscribe());
+                            LOGGER.info("dayActiveCount = " + activeStatisticsService.selectActiveSimple(MA, D)
+                                    .onErrorResume(throwable -> {
+                                        LOGGER.error("activeStatisticsService.selectActiveSimple(MA, D) failed, throwable = {}", throwable);
+                                        return empty();
+                                    }).toFuture().join());
+                            LOGGER.info("monthActiveCount = " + activeStatisticsService.selectActiveSimple(MA, M)
+                                    .onErrorResume(throwable -> {
+                                        LOGGER.error("activeStatisticsService.selectActiveSimple(MA, M) failed, throwable = {}", throwable);
+                                        return empty();
+                                    }).toFuture().join());
                         }
                 );
     }

@@ -1,19 +1,19 @@
 package com.blue.auth.handler.manager;
 
+import com.blue.auth.model.ResourceInsertParam;
+import com.blue.auth.model.ResourceUpdateParam;
 import com.blue.auth.service.inter.ControlService;
 import com.blue.auth.service.inter.ResourceService;
 import com.blue.auth.service.inter.RoleResRelationService;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.base.IdentityParam;
-import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.exps.BlueException;
-import com.blue.auth.model.ResourceInsertParam;
-import com.blue.auth.model.ResourceUpdateParam;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import static com.blue.auth.constant.AuthTypeReference.PAGE_MODEL_FOR_RESOURCE_CONDITION_TYPE;
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.PathVariableGetter.getLongVariableReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
@@ -99,7 +99,7 @@ public final class ResourceManagerHandler {
      * @return
      */
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(PageModelRequest.class)
+        return serverRequest.bodyToMono(PAGE_MODEL_FOR_RESOURCE_CONDITION_TYPE)
                 .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
                 .flatMap(resourceService::selectResourceInfoPageMonoByPageAndCondition)
                 .flatMap(pmr ->

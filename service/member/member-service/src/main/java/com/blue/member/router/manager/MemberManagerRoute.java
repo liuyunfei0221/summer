@@ -24,10 +24,10 @@ public class MemberManagerRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> memberManagerRouter(MemberManagerHandler memberManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-member/manager/member");
+        RequestPredicate pathPredicate = path("/blue-member/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/list", accept(APPLICATION_JSON), memberManagerHandler::select)
+                .POST("/members", accept(APPLICATION_JSON), memberManagerHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

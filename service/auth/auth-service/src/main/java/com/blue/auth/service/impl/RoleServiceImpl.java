@@ -28,10 +28,7 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
@@ -169,9 +166,9 @@ public class RoleServiceImpl implements RoleService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Consumer<RoleCondition> CONDITION_REPACKAGER = condition -> {
+    private static final UnaryOperator<RoleCondition> CONDITION_PROCESSOR = condition -> {
         if (isNull(condition))
-            return;
+            return new RoleCondition();
 
         ofNullable(condition.getSortAttribute())
                 .filter(StringUtils::hasText)
@@ -183,6 +180,8 @@ public class RoleServiceImpl implements RoleService {
 
         ofNullable(condition.getName())
                 .filter(n -> !isBlank(n)).map(String::toLowerCase).ifPresent(n -> condition.setName("%" + n + "%"));
+
+        return condition;
     };
 
     /**
@@ -514,8 +513,7 @@ public class RoleServiceImpl implements RoleService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        RoleCondition roleCondition = pageModelRequest.getParam();
-        CONDITION_REPACKAGER.accept(roleCondition);
+        RoleCondition roleCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
         return zip(selectRoleMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), roleCondition), countRoleMonoByCondition(roleCondition))
                 .flatMap(tuple2 -> {

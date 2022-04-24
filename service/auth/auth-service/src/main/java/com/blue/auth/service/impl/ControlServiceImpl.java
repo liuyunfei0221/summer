@@ -55,6 +55,7 @@ import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.*;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -527,6 +528,7 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(DATA_NOT_EXIST);
 
         credentialService.updateCredentialByIds(destinationCredential, destinationCredentials.stream().map(Credential::getId).collect(toList()));
+        authService.invalidateAuthByMemberId(memberId).doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable)).subscribe();
         return rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(destinationCredentialTypes, destinationCredential, memberId);
     }
 
@@ -589,6 +591,7 @@ public class ControlServiceImpl implements ControlService {
                                                         .flatMap(validate ->
                                                                 validate ?
                                                                         just(credentialService.updateAccess(memberId, ALLOW_ACCESS_LTS, accessUpdateParam.getAccess()))
+                                                                                .flatMap(b -> b ? authService.invalidateAuthByMemberId(memberId) : just(false))
                                                                         :
                                                                         error(() -> new BlueException(VERIFY_IS_INVALID))))
                                 :
@@ -621,6 +624,7 @@ public class ControlServiceImpl implements ControlService {
                                                         .flatMap(validate ->
                                                                 validate ?
                                                                         just(credentialService.updateAccess(cre.getMemberId(), ALLOW_ACCESS_LTS, accessResetParam.getAccess()))
+                                                                                .flatMap(b -> b ? authService.invalidateAuthByMemberId(cre.getMemberId()) : just(false))
                                                                         :
                                                                         error(() -> new BlueException(VERIFY_IS_INVALID))))
                                 :

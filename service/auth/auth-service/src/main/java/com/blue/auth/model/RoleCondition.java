@@ -1,14 +1,18 @@
 package com.blue.auth.model;
 
+import com.blue.auth.constant.ResourceSortAttribute;
+import com.blue.base.constant.base.SortType;
+import com.blue.base.model.base.SortCondition;
+
 import java.io.Serializable;
 
 /**
- * member condition for select
+ * role condition for select
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class RoleCondition implements Serializable {
+public final class RoleCondition extends SortCondition implements Serializable {
 
     private static final long serialVersionUID = -2623160339413516868L;
 
@@ -24,22 +28,22 @@ public final class RoleCondition implements Serializable {
 
     private Long updateTimeEnd;
 
-    private String sortAttribute;
-
-    private String sortType;
-
     public RoleCondition() {
+        super(ResourceSortAttribute.ID.attribute, SortType.DESC.identity);
     }
 
-    public RoleCondition(Long id, String name, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+    public RoleCondition(String sortAttribute, String sortType) {
+        super(sortAttribute, sortType);
+    }
+
+    public RoleCondition(String sortAttribute, String sortType, Long id, String name, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd) {
+        super(sortAttribute, sortType);
         this.id = id;
         this.name = name;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
         this.updateTimeBegin = updateTimeBegin;
         this.updateTimeEnd = updateTimeEnd;
-        this.sortAttribute = sortAttribute;
-        this.sortType = sortType;
     }
 
     public Long getId() {
@@ -90,22 +94,6 @@ public final class RoleCondition implements Serializable {
         this.updateTimeEnd = updateTimeEnd;
     }
 
-    public String getSortAttribute() {
-        return sortAttribute;
-    }
-
-    public void setSortAttribute(String sortAttribute) {
-        this.sortAttribute = sortAttribute;
-    }
-
-    public String getSortType() {
-        return sortType;
-    }
-
-    public void setSortType(String sortType) {
-        this.sortType = sortType;
-    }
-
     @Override
     public String toString() {
         return "RoleCondition{" +
@@ -115,8 +103,6 @@ public final class RoleCondition implements Serializable {
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +
                 ", updateTimeEnd=" + updateTimeEnd +
-                ", sortAttribute='" + sortAttribute + '\'' +
-                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

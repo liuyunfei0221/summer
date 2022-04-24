@@ -1,5 +1,5 @@
 server:
-  #  address: 172.30.128.25
+  # address: 127.0.0.1
   port: 26000
   netty:
     connection-timeout: 6s
@@ -43,7 +43,7 @@ eureka:
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://172.16.201.160:3306/member_0
+    - url: jdbc:mysql://172.16.203.216:3306/member_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -57,7 +57,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://172.16.201.160:3306/member_1
+    - url: jdbc:mysql://172.16.203.216:3306/member_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -95,7 +95,7 @@ data:
   forceWriteTables:
   broadcastTables: [ ]
   singleDatabasesWithTables:
-    - url: jdbc:mysql://172.16.201.160:3306/member
+    - url: jdbc:mysql://172.16.203.216:3306/member
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -186,7 +186,7 @@ seata:
     vgroup-mapping:
       summer_group: default
     grouplist:
-      default: 172.16.201.160:8091
+      default: 172.16.203.216:8091
     enable-degrade: false
     disable-global-transaction: false
   transport:
@@ -211,7 +211,7 @@ seata:
   config:
     type: zk
     zk:
-      server-addr: 172.16.201.160:2181
+      server-addr: 172.16.203.216:2181
       session-timeout: 60000
       connect-timeout: 60000
       username:
@@ -223,7 +223,7 @@ seata:
     type: zk
     zk:
       cluster: default
-      server-addr: 172.16.201.160:2181
+      server-addr: 172.16.203.216:2181
       session-timeout: 60000
       connect-timeout: 60000
       username:
@@ -239,7 +239,7 @@ cache:
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
   maxRedirects: 4
-  host: 172.16.201.160
+  host: 172.16.203.216
   port: 6379
   minIdle: 4
   maxIdle: 64
@@ -281,7 +281,7 @@ redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password:
-  host: 172.16.201.160
+  host: 172.16.203.216
   port: 6379
   scanInterval: 8000
   checkSlotsCoverage: false
@@ -314,7 +314,7 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://172.16.201.160:2181
+    address: zookeeper://172.16.203.216:2181
     group: summer
     file: D:/locallogs/dubbo/member/registry.properties
     check: false
@@ -343,7 +343,7 @@ dubbo:
     check: false
 
 
-reactrest:
+rest:
   maxConnections: 64
   workerCount: 64
   useGlobalResources: false
@@ -354,18 +354,6 @@ reactrest:
   readTimeoutMillis: 3000
   writeTimeoutMillis: 3000
   maxByteInMemorySize: 1048576
-
-
-syncrest:
-  maxPerRoute: 64
-  maxTotal: 256
-  soTimeout: 2000
-  connectTimeout: 2000
-  RequestTimeout: 2000
-  maxRedirects: 2
-  retryTimes: 1
-  userAgent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:63.0) Gecko/20100101 Firefox/63.0
-  radicalizationTry: false
 
 
 qr:

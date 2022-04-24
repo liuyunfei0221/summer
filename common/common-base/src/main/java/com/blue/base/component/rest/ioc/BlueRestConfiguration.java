@@ -1,12 +1,12 @@
-package com.blue.base.component.reactrest.ioc;
+package com.blue.base.component.rest.ioc;
 
-import com.blue.base.component.reactrest.api.conf.ReactRestConf;
+import com.blue.base.component.rest.api.conf.RestConf;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static com.blue.base.component.reactrest.api.generator.BlueReactRestGenerator.generateWebClient;
+import static com.blue.base.component.rest.api.generator.BlueRestGenerator.generateWebClient;
 
 /**
  * reactive rest configuration
@@ -14,13 +14,13 @@ import static com.blue.base.component.reactrest.api.generator.BlueReactRestGener
  * @author liuyunfei
  */
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-@ConditionalOnBean(value = {ReactRestConf.class})
+@ConditionalOnBean(value = {RestConf.class})
 @Configuration
-public class BlueReactRestConfiguration {
+public class BlueRestConfiguration {
 
     @Bean
-    WebClient webClient(ReactRestConf reactRestConf) {
-        return generateWebClient(reactRestConf);
+    WebClient webClient(RestConf restConf) {
+        return generateWebClient(restConf);
     }
 
 }

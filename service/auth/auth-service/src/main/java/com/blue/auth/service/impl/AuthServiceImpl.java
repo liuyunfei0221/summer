@@ -66,7 +66,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
-import static org.apache.commons.lang3.math.NumberUtils.isDigits;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
@@ -348,47 +347,33 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * delete exist refresh token in mongo by auth elements
-     *
-     * @param memberId
-     * @param credentialType
-     * @param deviceType
-     * @return
+     * delete all refresh token infos by key id
      */
-    private Mono<Boolean> deleteExistRefreshTokenByAuthElements(String memberId, String credentialType, String deviceType) {
-        LOGGER.info("Mono<Boolean> deleteExistRefreshTokenByAuthElements(String memberId, String credentialType, String deviceType), memberId = {}, credentialType = {}, deviceType = {}",
-                memberId, credentialType, deviceType);
-        if (isBlank(memberId) || !isDigits(memberId))
-            return error(() -> new BlueException(BAD_REQUEST));
+    private final Function<String, Mono<Boolean>> REFRESH_INFOS_BY_ID_DELETER = id ->
+            refreshInfoRepository.deleteById(id)
+                    .onErrorResume(throwable -> {
+                        LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoRepository.insert(refreshInfo) failed, throwable = {}", throwable);
+                        return empty();
+                    })
+                    .then(just(true));
 
-        RefreshInfo condition = new RefreshInfo();
-        condition.setMemberId(memberId);
-        condition.setCredentialType(credentialType);
-        condition.setDeviceType(deviceType);
-
-        try {
-            return refreshInfoRepository.findAll(Example.of(condition))
-                    .collectList().flatMap(refreshInfoRepository::deleteAll).then(just(true));
-        } catch (Exception e) {
-            LOGGER.warn("Mono<Boolean> deleteExistRefreshTokenByAuthElements(String memberId, String credentialType, String deviceType), failed, e = {}", e);
-            return just(false);
-        }
-    }
 
     /**
      * delete all refresh token infos by member id
      */
-    private final Consumer<Long> REFRESH_INFOS_DELETER = memberId -> {
+    private final Function<Long, Mono<Boolean>> REFRESH_INFOS_BY_MEMBER_ID_DELETER = memberId -> {
         RefreshInfo condition = new RefreshInfo();
         condition.setMemberId(ofNullable(memberId).filter(BlueChecker::isValidIdentity)
                 .map(String::valueOf).orElseThrow(() -> new BlueException(BAD_REQUEST)));
 
-        try {
-            refreshInfoRepository.findAll(Example.of(condition))
-                    .collectList().subscribe(refreshInfoRepository::deleteAll);
-        } catch (Exception e) {
-            LOGGER.warn("Consumer<Long> REFRESH_INFOS_DELETER, failed, e = {}", e);
-        }
+        return refreshInfoRepository.findAll(Example.of(condition))
+                .collectList()
+                .flatMap(refreshInfoRepository::deleteAll)
+                .onErrorResume(throwable -> {
+                    LOGGER.warn("Function<Long, Mono<Boolean>> REFRESH_INFOS_BY_MEMBER_ID_DELETER failed, throwable = {}", throwable);
+                    return empty();
+                })
+                .then(just(true));
     };
 
     /**
@@ -446,23 +431,15 @@ public class AuthServiceImpl implements AuthService {
 
         return ACCESS_GENERATOR.apply(memberPayload, roleId)
                 .flatMap(access -> {
-                    String gamma = randomAlphanumeric(randomIdLen);
-                    String keyId = randomAlphanumeric(randomIdLen);
-                    String id = memberPayload.getId();
-                    String credentialType = memberPayload.getCredentialType().intern();
-                    String deviceType = memberPayload.getDeviceType().intern();
-                    String loginTime = memberPayload.getLoginTime();
+                    memberPayload.setGamma(randomAlphanumeric(randomIdLen));
 
-                    return deleteExistRefreshTokenByAuthElements(id, credentialType, deviceType)
-                            .flatMap(ig -> {
-                                try {
-                                    return refreshInfoRepository.insert(new RefreshInfo(keyId, gamma, id, credentialType, deviceType, loginTime, REFRESH_EXPIRE_AT_GETTER.get())).then(just(true));
-                                } catch (Exception e) {
-                                    LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoRepository.insert(refreshInfo) failed, e = {}", e);
-                                    return just(true);
-                                }
+                    return refreshInfoRepository.save(new RefreshInfo(memberPayload.getKeyId(), memberPayload.getGamma(), memberPayload.getId(),
+                                    memberPayload.getCredentialType().intern(), memberPayload.getDeviceType().intern(), memberPayload.getLoginTime(), REFRESH_EXPIRE_AT_GETTER.get()))
+                            .onErrorResume(throwable -> {
+                                LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoRepository.insert(refreshInfo) failed, throwable = {}", throwable);
+                                return just(new RefreshInfo());
                             })
-                            .flatMap(ig -> just(jwtProcessor.create(new MemberPayload(gamma, keyId, id, credentialType, deviceType, loginTime))))
+                            .flatMap(ig -> just(jwtProcessor.create(memberPayload)))
                             .flatMap(jwt -> just(new MemberAuth(access.getAuth(), access.getSecKey(), jwt)));
                 });
     };
@@ -475,8 +452,10 @@ public class AuthServiceImpl implements AuthService {
             if (memberPayload == null || refreshInfo == null)
                 throw new BlueException(UNAUTHORIZED);
 
-            if (parseLong(refreshInfo.getLoginTime()) + refreshExpireMillis >= TIME_STAMP_GETTER.get()) {
-                refreshInfoRepository.deleteById(refreshInfo.getId()).subscribe();
+            if (parseLong(refreshInfo.getLoginTime()) + refreshExpireMillis <= TIME_STAMP_GETTER.get()) {
+                refreshInfoRepository.deleteById(refreshInfo.getId())
+                        .doOnError(throwable -> LOGGER.error("AUTH_ASSERTER -> refreshInfoRepository.deleteById failed, throwable = {}", throwable))
+                        .subscribe();
                 throw new BlueException(UNAUTHORIZED);
             }
 
@@ -549,7 +528,8 @@ public class AuthServiceImpl implements AuthService {
                     LOGGER.error("authRefreshLock, authRefreshLock.unlock() failed, e = {}", e);
                 }
                 try {
-                    this.invalidateLocalAccessByKeyId(keyId).subscribe();
+                    Boolean localAddressInvalid = this.invalidateLocalAccessByKeyId(keyId).toFuture().join();
+                    LOGGER.info("refreshAccessInfoElementByKeyId(String keyId, AccessInfoRefreshElementType elementType, String elementValue), localAddressInvalid = {}", localAddressInvalid);
                 } catch (Exception e) {
                     LOGGER.error("invalidLocalAuthProducer send failed, keyId = {}, e = {}", keyId, e);
                 }
@@ -614,22 +594,25 @@ public class AuthServiceImpl implements AuthService {
     /**
      * auth infos invalid task
      */
-    private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_TASK = memberId -> {
-        String keyId;
-        try {
-            REFRESH_INFOS_DELETER.accept(memberId);
-            for (CredentialType credentialType : VALID_CREDENTIAL_TYPES)
-                for (DeviceType deviceType : VALID_DEVICE_TYPES) {
-                    keyId = genSessionKey(memberId, credentialType.identity, deviceType.identity);
-                    accessInfoCache.invalidAccessInfo(keyId).subscribe();
-                    this.invalidateLocalAccessByKeyId(keyId).subscribe();
-                }
-        } catch (Exception e) {
-            return false;
-        }
+    private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_TASK = memberId ->
+            REFRESH_INFOS_BY_MEMBER_ID_DELETER.apply(memberId)
+                    .flatMap(b -> {
+                        if (!b)
+                            LOGGER.error("REFRESH_INFOS_BY_MEMBER_ID_DELETER.apply(memberId), result is false");
 
-        return true;
-    };
+                        String keyId;
+                        for (CredentialType credentialType : VALID_CREDENTIAL_TYPES)
+                            for (DeviceType deviceType : VALID_DEVICE_TYPES) {
+                                keyId = genSessionKey(memberId, credentialType.identity, deviceType.identity);
+                                accessInfoCache.invalidAccessInfo(keyId).toFuture().join();
+                                this.invalidateLocalAccessByKeyId(keyId).toFuture().join();
+                            }
+
+                        return just(true);
+                    }).onErrorResume(throwable -> {
+                        LOGGER.error("REFRESH_INFOS_BY_MEMBER_ID_DELETER failed, throwable = {}", throwable);
+                        return just(false);
+                    }).toFuture().join();
 
     /**
      * auth delete task
@@ -897,12 +880,9 @@ public class AuthServiceImpl implements AuthService {
         if (isNull(access))
             return error(() -> new BlueException(UNAUTHORIZED));
 
-        long memberId = access.getId();
-        String credentialType = access.getCredentialType().intern();
-        String deviceType = access.getDeviceType().intern();
-        String keyId = genSessionKey(memberId, credentialType, deviceType);
+        String keyId = genSessionKey(access.getId(), access.getCredentialType().intern(), access.getDeviceType().intern());
         return zip(
-                deleteExistRefreshTokenByAuthElements(String.valueOf(memberId), credentialType, deviceType),
+                REFRESH_INFOS_BY_ID_DELETER.apply(keyId),
                 accessInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
         ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
     }
@@ -920,9 +900,13 @@ public class AuthServiceImpl implements AuthService {
             MemberPayload memberPayload = jwtProcessor.parse(jwt);
             String keyId = memberPayload.getKeyId();
             return zip(
-                    deleteExistRefreshTokenByAuthElements(memberPayload.getId(), memberPayload.getCredentialType(), memberPayload.getDeviceType()),
+                    REFRESH_INFOS_BY_ID_DELETER.apply(memberPayload.getKeyId()),
                     accessInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
-            ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()));
+            ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()))
+                    .onErrorResume(throwable -> {
+                        LOGGER.warn("invalidateAuthByJwt(String jwt) failed, throwable = {}", throwable);
+                        return just(false);
+                    });
         } catch (Exception e) {
             LOGGER.error("Mono<Boolean> invalidAuthByJwt(String jwt) failed, jwt = {}, e = {}", jwt, e);
             return just(false);

@@ -1,4 +1,4 @@
-package com.blue.base.component.reactrest.api.conf;
+package com.blue.base.component.rest.api.conf;
 
 import reactor.netty.http.HttpProtocol;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
-public interface ReactRestConf {
+public interface RestConf {
 
     Integer getMaxConnections();
 

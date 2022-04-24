@@ -1,6 +1,6 @@
 package com.blue.portal.config.blue;
 
-import com.blue.base.component.reactrest.api.conf.ReactRestConfParams;
+import com.blue.base.component.rest.api.conf.RestConfParams;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "reactrest")
-public class BlueReactRestConfig extends ReactRestConfParams {
+@ConfigurationProperties(prefix = "rest")
+public class BlueRestConfig extends RestConfParams {
 }

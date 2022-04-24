@@ -1,5 +1,9 @@
 package com.blue.portal.model;
 
+import com.blue.base.constant.base.SortType;
+import com.blue.base.model.base.SortCondition;
+import com.blue.portal.constant.BulletinSortAttribute;
+
 import java.io.Serializable;
 
 /**
@@ -8,7 +12,7 @@ import java.io.Serializable;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class BulletinCondition implements Serializable {
+public final class BulletinCondition extends SortCondition implements Serializable {
 
     private static final long serialVersionUID = 5306796587389624727L;
 
@@ -42,15 +46,17 @@ public final class BulletinCondition implements Serializable {
 
     private Long creator;
 
-    private String sortAttribute;
-
-    private String sortType;
-
     public BulletinCondition() {
+        super(BulletinSortAttribute.ID.attribute, SortType.DESC.identity);
     }
 
-    public BulletinCondition(Long id, String title, String link, Integer type, Integer status, Long activeTimeBegin, Long activeTimeEnd,
-                             Long expireTimeBegin, Long expireTimeEnd, Long createTimeBegin, Long createTimeEnd, Long creator, String sortAttribute, String sortType) {
+    public BulletinCondition(String sortAttribute, String sortType) {
+        super(sortAttribute, sortType);
+    }
+
+    public BulletinCondition(String sortAttribute, String sortType, Long id, String title, String link, Integer type, Integer status,
+                             Long activeTimeBegin, Long activeTimeEnd, Long expireTimeBegin, Long expireTimeEnd, Long createTimeBegin, Long createTimeEnd, Long creator) {
+        super(sortAttribute, sortType);
         this.id = id;
         this.title = title;
         this.link = link;
@@ -63,8 +69,6 @@ public final class BulletinCondition implements Serializable {
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
         this.creator = creator;
-        this.sortAttribute = sortAttribute;
-        this.sortType = sortType;
     }
 
     public Long getId() {
@@ -163,22 +167,6 @@ public final class BulletinCondition implements Serializable {
         this.creator = creator;
     }
 
-    public String getSortAttribute() {
-        return sortAttribute;
-    }
-
-    public void setSortAttribute(String sortAttribute) {
-        this.sortAttribute = sortAttribute;
-    }
-
-    public String getSortType() {
-        return sortType;
-    }
-
-    public void setSortType(String sortType) {
-        this.sortType = sortType;
-    }
-
     @Override
     public String toString() {
         return "BulletinCondition{" +
@@ -194,8 +182,6 @@ public final class BulletinCondition implements Serializable {
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
                 ", creator=" + creator +
-                ", sortAttribute='" + sortAttribute + '\'' +
-                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

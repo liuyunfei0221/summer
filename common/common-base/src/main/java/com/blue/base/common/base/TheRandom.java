@@ -396,7 +396,7 @@ public class TheRandom extends Random {
                                 double randomNumberBound) {
         if (streamSize < 0L)
             throw new IllegalArgumentException(BAD_SIZE);
-        if (!(randomNumberOrigin < randomNumberBound))
+        if (randomNumberOrigin >= randomNumberBound)
             throw new IllegalArgumentException(BAD_RANGE);
         return StreamSupport.doubleStream
                 (new RandomDoublesSpliterator
@@ -406,7 +406,7 @@ public class TheRandom extends Random {
 
     @Override
     public DoubleStream doubles(double randomNumberOrigin, double randomNumberBound) {
-        if (!(randomNumberOrigin < randomNumberBound))
+        if (randomNumberOrigin >= randomNumberBound)
             throw new IllegalArgumentException(BAD_RANGE);
         return StreamSupport.doubleStream
                 (new RandomDoublesSpliterator

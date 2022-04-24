@@ -298,7 +298,7 @@
         <include refid="Bulletin_Conditions"/>
         <if test="bulletinCondition != null and bulletinCondition.sortAttribute != null and bulletinCondition.sortAttribute != '' and bulletinCondition.sortType != null and bulletinCondition.sortType != ''">
             ORDER BY
-            ${attachmentCondition.sortAttribute,jdbcType=VARCHAR} ${attachmentCondition.sortType,jdbcType=VARCHAR}
+            ${attachmentCondition.sortAttribute} ${attachmentCondition.sortType}
         </if>
         LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>

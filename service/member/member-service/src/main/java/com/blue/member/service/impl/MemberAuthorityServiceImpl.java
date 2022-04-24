@@ -2,9 +2,11 @@ package com.blue.member.service.impl;
 
 import com.blue.auth.api.model.MemberRoleRelationInfo;
 import com.blue.auth.api.model.RoleInfo;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
+import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.model.MemberAuthorityInfo;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
@@ -17,11 +19,16 @@ import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.INVALID_PARAM;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static reactor.core.publisher.Mono.just;
@@ -48,6 +55,25 @@ public class MemberAuthorityServiceImpl implements MemberAuthorityService {
         this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
     }
 
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())
+            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
+
+    private static final UnaryOperator<MemberBasicCondition> CONDITION_PROCESSOR = condition -> {
+        if (isNull(condition))
+            return new MemberBasicCondition();
+
+        condition.setSortAttribute(
+                ofNullable(condition.getSortAttribute())
+                        .filter(BlueChecker::isNotBlank)
+                        .map(SORT_ATTRIBUTE_MAPPING::get)
+                        .filter(BlueChecker::isNotBlank)
+                        .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+
+        condition.setSortType(getSortTypeByIdentity(condition.getSortType()).identity);
+
+        return condition;
+    };
+
     /**
      * select member's authority info by page and condition
      *
@@ -61,7 +87,7 @@ public class MemberAuthorityServiceImpl implements MemberAuthorityService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        MemberBasicCondition memberBasicCondition = pageModelRequest.getParam();
+        MemberBasicCondition memberBasicCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
         return zip(memberBasicService.selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), memberBasicService.countMemberBasicMonoByCondition(memberBasicCondition))
                 .flatMap(tuple2 -> {

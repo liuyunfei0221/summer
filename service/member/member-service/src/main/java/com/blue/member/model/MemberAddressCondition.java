@@ -1,6 +1,7 @@
 package com.blue.member.model;
 
 import com.blue.base.constant.base.SortType;
+import com.blue.base.model.base.SortCondition;
 import com.blue.member.constant.MemberAddressSortAttribute;
 
 import java.io.Serializable;
@@ -214,22 +215,6 @@ public final class MemberAddressCondition extends SortCondition implements Seria
         this.updateTimeEnd = updateTimeEnd;
     }
 
-    public String getSortAttribute() {
-        return sortAttribute;
-    }
-
-    public void setSortAttribute(String sortAttribute) {
-        this.sortAttribute = sortAttribute;
-    }
-
-    public String getSortType() {
-        return sortType;
-    }
-
-    public void setSortType(String sortType) {
-        this.sortType = sortType;
-    }
-
     @Override
     public String toString() {
         return "MemberAddressCondition{" +
@@ -249,8 +234,6 @@ public final class MemberAddressCondition extends SortCondition implements Seria
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +
                 ", updateTimeEnd=" + updateTimeEnd +
-                ", sortAttribute='" + sortAttribute + '\'' +
-                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

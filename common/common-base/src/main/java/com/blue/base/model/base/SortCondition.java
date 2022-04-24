@@ -1,4 +1,4 @@
-package com.blue.member.model;
+package com.blue.base.model.base;
 
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-class SortCondition implements Serializable {
+public class SortCondition implements Serializable {
 
     private static final long serialVersionUID = 5408452099489469143L;
 
@@ -18,6 +18,22 @@ class SortCondition implements Serializable {
 
     public SortCondition(String sortAttribute, String sortType) {
         this.sortAttribute = sortAttribute;
+        this.sortType = sortType;
+    }
+
+    public String getSortAttribute() {
+        return sortAttribute;
+    }
+
+    public void setSortAttribute(String sortAttribute) {
+        this.sortAttribute = sortAttribute;
+    }
+
+    public String getSortType() {
+        return sortType;
+    }
+
+    public void setSortType(String sortType) {
         this.sortType = sortType;
     }
 

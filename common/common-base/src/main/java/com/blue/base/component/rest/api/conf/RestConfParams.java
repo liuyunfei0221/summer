@@ -1,4 +1,4 @@
-package com.blue.base.component.reactrest.api.conf;
+package com.blue.base.component.rest.api.conf;
 
 import reactor.netty.http.HttpProtocol;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused"})
-public class ReactRestConfParams implements ReactRestConf {
+public class RestConfParams implements RestConf {
 
     protected Integer maxConnections;
 
@@ -32,13 +32,13 @@ public class ReactRestConfParams implements ReactRestConf {
 
     protected Integer maxByteInMemorySize;
 
-    public ReactRestConfParams() {
+    public RestConfParams() {
     }
 
-    public ReactRestConfParams(Integer maxConnections, Integer workerCount, Boolean useGlobalResources,
-                               Integer connectTimeoutMillis, Boolean useTcpNodelay, List<HttpProtocol> protocols,
-                               Integer responseTimeoutMillis, Integer readTimeoutMillis, Integer writeTimeoutMillis,
-                               Integer maxByteInMemorySize) {
+    public RestConfParams(Integer maxConnections, Integer workerCount, Boolean useGlobalResources,
+                          Integer connectTimeoutMillis, Boolean useTcpNodelay, List<HttpProtocol> protocols,
+                          Integer responseTimeoutMillis, Integer readTimeoutMillis, Integer writeTimeoutMillis,
+                          Integer maxByteInMemorySize) {
         this.maxConnections = maxConnections;
         this.workerCount = workerCount;
         this.useGlobalResources = useGlobalResources;
@@ -143,7 +143,7 @@ public class ReactRestConfParams implements ReactRestConf {
 
     @Override
     public String toString() {
-        return "ReactRestConfParams{" +
+        return "RestConfParams{" +
                 "maxConnections=" + maxConnections +
                 ", workerCount=" + workerCount +
                 ", useGlobalResources=" + useGlobalResources +

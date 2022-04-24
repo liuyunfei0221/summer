@@ -179,8 +179,9 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         downloadHistory.setCreator(memberId);
         downloadHistory.setCreateTime(TIME_STAMP_GETTER.get());
 
-        downloadHistoryService.insert(downloadHistory).subscribe(dh ->
-                LOGGER.info("DOWNLOAD_RECORDER -> insert(downloadHistory), dh = {}", dh));
+        downloadHistoryService.insert(downloadHistory)
+                .doOnError(throwable -> LOGGER.info("downloadHistoryService.insert(downloadHistory) failed, downloadHistory = {}, throwable = {}", downloadHistory, throwable))
+                .subscribe(dh -> LOGGER.info("DOWNLOAD_RECORDER -> insert(downloadHistory), dh = {}", dh));
     };
 
     /**

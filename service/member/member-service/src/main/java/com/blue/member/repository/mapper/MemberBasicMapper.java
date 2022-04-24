@@ -66,7 +66,7 @@ public interface MemberBasicMapper {
      * @param memberBasicCondition
      * @return
      */
-    List<MemberBasic> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("memberCondition") MemberBasicCondition memberBasicCondition);
+    List<MemberBasic> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("memberBasicCondition") MemberBasicCondition memberBasicCondition);
 
     /**
      * count by condition
@@ -74,6 +74,6 @@ public interface MemberBasicMapper {
      * @param memberBasicCondition
      * @return
      */
-    Long countByCondition(@Param("memberCondition") MemberBasicCondition memberBasicCondition);
+    Long countByCondition(@Param("memberBasicCondition") MemberBasicCondition memberBasicCondition);
 
 }

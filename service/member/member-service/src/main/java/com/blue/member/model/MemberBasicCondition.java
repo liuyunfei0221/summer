@@ -1,6 +1,7 @@
 package com.blue.member.model;
 
 import com.blue.base.constant.base.SortType;
+import com.blue.base.model.base.SortCondition;
 import com.blue.member.constant.MemberBasicSortAttribute;
 
 import java.io.Serializable;
@@ -40,10 +41,6 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
     private Long updateTimeBegin;
 
     private Long updateTimeEnd;
-
-    private String sortAttribute;
-
-    private String sortType;
 
     public MemberBasicCondition() {
         super(MemberBasicSortAttribute.ID.attribute, SortType.DESC.identity);
@@ -148,22 +145,6 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
         this.updateTimeEnd = updateTimeEnd;
     }
 
-    public String getSortAttribute() {
-        return sortAttribute;
-    }
-
-    public void setSortAttribute(String sortAttribute) {
-        this.sortAttribute = sortAttribute;
-    }
-
-    public String getSortType() {
-        return sortType;
-    }
-
-    public void setSortType(String sortType) {
-        this.sortType = sortType;
-    }
-
     @Override
     public String toString() {
         return "MemberCondition{" +
@@ -177,8 +158,6 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +
                 ", updateTimeEnd=" + updateTimeEnd +
-                ", sortAttribute='" + sortAttribute + '\'' +
-                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

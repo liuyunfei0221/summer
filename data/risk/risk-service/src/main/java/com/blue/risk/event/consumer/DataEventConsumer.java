@@ -15,6 +15,7 @@ import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generate
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -44,9 +45,13 @@ public final class DataEventConsumer implements BlueLifecycle {
                 ofNullable(dataEvent)
                         .ifPresent(de -> {
                             LOGGER.info("dataEventDataConsumer received");
-                            riskService.analyzeEvent(de).subscribe(b ->
-                                    LOGGER.info("Mono<Void> analyzeEvent(DataEvent dataEvent), de = {}", de)
-                            );
+                            riskService.analyzeEvent(de)
+                                    .onErrorResume(throwable -> {
+                                        LOGGER.error("riskService.analyzeEvent(de) failed, de = {}, throwable = {}", de, throwable);
+                                        return just(true);
+                                    }).toFuture().join();
+
+                            LOGGER.info("Mono<Void> analyzeEvent(DataEvent dataEvent), de = {}", de);
                         });
 
         this.dataEventConsumer = generateConsumer(blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataEventDataConsumer);

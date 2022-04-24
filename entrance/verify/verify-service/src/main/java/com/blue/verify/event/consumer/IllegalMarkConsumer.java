@@ -48,8 +48,7 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
                         .subscribeOn(scheduler)
                         .flatMap(illegalAsserter::handleIllegalMarkEvent)
                         .doOnError(t -> LOGGER.error("mark jwt or ip -> FAILED,illegalMarkEvent = {}, t = {}", illegalMarkEvent, t))
-                        .subscribe(b ->
-                                LOGGER.warn("mark jwt or ip -> SUCCESS, illegalMarkEvent = {}, b = {}", illegalMarkEvent, b));
+                        .subscribe(b -> LOGGER.warn("mark jwt or ip -> SUCCESS, illegalMarkEvent = {}, b = {}", illegalMarkEvent, b));
 
         this.illegalMarkEventConsumer = generateConsumer(blueConsumerConfig.getByKey(ILLEGAL_MARK.name), illegalMarkEventDataConsumer);
     }

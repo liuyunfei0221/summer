@@ -244,8 +244,7 @@
         </if>
     </sql>
 
-    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
-            parameterType="com.blue.member.model.MemberBasicCondition">
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -253,13 +252,12 @@
         <include refid="Member_Conditions"/>
         <if test="memberBasicCondition != null and memberBasicCondition.sortAttribute != null and memberBasicCondition.sortAttribute != '' and memberBasicCondition.sortType != null and memberBasicCondition.sortType != ''">
             ORDER BY
-            ${memberBasicCondition.sortAttribute,jdbcType=VARCHAR} ${memberBasicCondition.sortType,jdbcType=VARCHAR}
+            ${memberBasicCondition.sortAttribute} ${memberBasicCondition.sortType}
         </if>
         LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>
 
-    <select id="countByCondition" resultType="java.lang.Long"
-            parameterType="com.blue.member.model.MemberBasicCondition">
+    <select id="countByCondition" resultType="java.lang.Long">
         SELECT COUNT(*)
         FROM
         member_basic
