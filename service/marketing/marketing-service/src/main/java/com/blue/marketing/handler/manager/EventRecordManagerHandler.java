@@ -1,9 +1,7 @@
 package com.blue.marketing.handler.manager;
 
 import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.marketing.api.model.EventRecordInfo;
 import com.blue.marketing.service.inter.EventRecordService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -39,13 +37,10 @@ public final class EventRecordManagerHandler {
      * @param serverRequest
      * @return
      */
-    @SuppressWarnings("unchecked")
     public Mono<ServerResponse> listEventRecord(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_EVENT_RECORD_CONDITION_TYPE)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
-                .flatMap(pageModelRequest ->
-                        (Mono<PageModelResponse<EventRecordInfo>>) eventRecordService.selectEventRecordInfoPageMonoByPageAndCondition(pageModelRequest)
-                )
+                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                .flatMap(eventRecordService::selectEventRecordInfoPageMonoByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));

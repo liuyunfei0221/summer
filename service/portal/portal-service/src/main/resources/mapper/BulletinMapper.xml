@@ -245,13 +245,13 @@
                     AND
                     id = #{bulletinCondition.id,jdbcType=BIGINT}
                 </if>
-                <if test="bulletinCondition.title != null and bulletinCondition.title != ''">
+                <if test="bulletinCondition.titleLike != null and bulletinCondition.titleLike != ''">
                     AND
-                    title LIKE #{bulletinCondition.title,jdbcType=VARCHAR}
+                    title LIKE #{bulletinCondition.titleLike,jdbcType=VARCHAR}
                 </if>
-                <if test="bulletinCondition.link != null and bulletinCondition.link != ''">
+                <if test="bulletinCondition.linkLike != null and bulletinCondition.linkLike != ''">
                     AND
-                    link LIKE #{bulletinCondition.link,jdbcType=VARCHAR}
+                    link LIKE #{bulletinCondition.linkLike,jdbcType=VARCHAR}
                 </if>
                 <if test="bulletinCondition.type != null">
                     AND

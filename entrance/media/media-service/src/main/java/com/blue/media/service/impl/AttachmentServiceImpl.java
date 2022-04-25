@@ -20,12 +20,12 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.ConstantProcessor.assertSortType;
+import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
@@ -62,9 +62,9 @@ public class AttachmentServiceImpl implements AttachmentService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(AttachmentSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Consumer<AttachmentCondition> CONDITION_REPACKAGER = condition -> {
+    private static final UnaryOperator<AttachmentCondition> CONDITION_PROCESSOR = condition -> {
         if (isNull(condition))
-            return;
+            return new AttachmentCondition();
 
         ofNullable(condition.getSortAttribute())
                 .filter(StringUtils::hasText)
@@ -72,10 +72,20 @@ public class AttachmentServiceImpl implements AttachmentService {
                 .filter(StringUtils::hasText)
                 .ifPresent(condition::setSortAttribute);
 
-        assertSortType(condition.getSortType(), true);
+        ofNullable(condition.getSortType())
+                .filter(StringUtils::hasText)
+                .map(st -> getSortTypeByIdentity(st).identity)
+                .ifPresent(condition::setSortType);
 
-        ofNullable(condition.getName())
-                .filter(BlueChecker::isNotBlank).ifPresent(n -> condition.setName("%" + n + "%"));
+        ofNullable(condition.getLinkLike())
+                .filter(BlueChecker::isNotBlank)
+                        .ifPresent(linkLike-> condition.setLinkLike("%" + linkLike + "%"));
+
+        ofNullable(condition.getNameLike())
+                .filter(BlueChecker::isNotBlank)
+                .ifPresent(nameLike-> condition.setNameLike("%" + nameLike + "%"));
+
+        return condition;
     };
 
     /**
@@ -261,8 +271,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        AttachmentCondition attachmentCondition = pageModelRequest.getParam();
-        CONDITION_REPACKAGER.accept(attachmentCondition);
+        AttachmentCondition attachmentCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
         return zip(selectAttachmentMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), attachmentCondition), countAttachmentMonoByCondition(attachmentCondition))
                 .flatMap(tuple2 -> {

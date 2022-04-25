@@ -5,6 +5,7 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.media.api.model.DownloadHistoryInfo;
 import com.blue.media.model.DownloadHistoryCondition;
 import com.blue.media.repository.entity.DownloadHistory;
+import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -74,18 +75,18 @@ public interface DownloadHistoryService {
      *
      * @param limit
      * @param rows
-     * @param downloadHistoryCondition
+     * @param query
      * @return
      */
-    Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndCondition(Long limit, Long rows, DownloadHistoryCondition downloadHistoryCondition);
+    Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndCondition(Long limit, Long rows, Query query);
 
     /**
      * count download history by condition
      *
-     * @param downloadHistoryCondition
+     * @param query
      * @return
      */
-    Mono<Long> countDownloadHistoryMonoByCondition(DownloadHistoryCondition downloadHistoryCondition);
+    Mono<Long> countDownloadHistoryMonoByCondition(Query query);
 
     /**
      * select download history info page by condition

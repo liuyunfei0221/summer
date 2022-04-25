@@ -1,10 +1,11 @@
 package com.blue.portal.model;
 
-import com.blue.base.constant.base.SortType;
 import com.blue.base.model.base.SortCondition;
 import com.blue.portal.constant.BulletinSortAttribute;
 
 import java.io.Serializable;
+
+import static com.blue.base.constant.base.SortType.DESC;
 
 /**
  * bulletin condition for select
@@ -18,9 +19,9 @@ public final class BulletinCondition extends SortCondition implements Serializab
 
     private Long id;
 
-    private String title;
+    private String titleLike;
 
-    private String link;
+    private String linkLike;
 
     /**
      * @see com.blue.base.constant.portal.BulletinType
@@ -47,19 +48,19 @@ public final class BulletinCondition extends SortCondition implements Serializab
     private Long creator;
 
     public BulletinCondition() {
-        super(BulletinSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(BulletinSortAttribute.ID.attribute, DESC.identity);
     }
 
     public BulletinCondition(String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
     }
 
-    public BulletinCondition(String sortAttribute, String sortType, Long id, String title, String link, Integer type, Integer status,
-                             Long activeTimeBegin, Long activeTimeEnd, Long expireTimeBegin, Long expireTimeEnd, Long createTimeBegin, Long createTimeEnd, Long creator) {
+    public BulletinCondition(Long id, String titleLike, String linkLike, Integer type, Integer status, Long activeTimeBegin, Long activeTimeEnd, Long expireTimeBegin, Long expireTimeEnd, Long createTimeBegin, Long createTimeEnd,
+                             Long creator, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
-        this.title = title;
-        this.link = link;
+        this.titleLike = titleLike;
+        this.linkLike = linkLike;
         this.type = type;
         this.status = status;
         this.activeTimeBegin = activeTimeBegin;
@@ -79,20 +80,20 @@ public final class BulletinCondition extends SortCondition implements Serializab
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getTitleLike() {
+        return titleLike;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitleLike(String titleLike) {
+        this.titleLike = titleLike;
     }
 
-    public String getLink() {
-        return link;
+    public String getLinkLike() {
+        return linkLike;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setLinkLike(String linkLike) {
+        this.linkLike = linkLike;
     }
 
     public Integer getType() {
@@ -171,8 +172,8 @@ public final class BulletinCondition extends SortCondition implements Serializab
     public String toString() {
         return "BulletinCondition{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
-                ", link='" + link + '\'' +
+                ", titleLike='" + titleLike + '\'' +
+                ", linkLike='" + linkLike + '\'' +
                 ", type=" + type +
                 ", status=" + status +
                 ", activeTimeBegin=" + activeTimeBegin +
@@ -182,6 +183,8 @@ public final class BulletinCondition extends SortCondition implements Serializab
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
                 ", creator=" + creator +
+                ", sortAttribute='" + sortAttribute + '\'' +
+                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

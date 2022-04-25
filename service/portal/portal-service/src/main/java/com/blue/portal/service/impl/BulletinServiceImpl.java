@@ -1,6 +1,5 @@
 package com.blue.portal.service.impl;
 
-import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.base.Status;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
@@ -27,7 +26,7 @@ import java.util.stream.Stream;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertBulletinType;
-import static com.blue.base.common.base.ConstantProcessor.assertSortType;
+import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.portal.converter.PortalModelConverters.bulletinToBulletinManagerInfo;
@@ -72,12 +71,15 @@ public class BulletinServiceImpl implements BulletinService {
                 .filter(StringUtils::hasText)
                 .ifPresent(condition::setSortAttribute);
 
-        assertSortType(condition.getSortType(), true);
+        ofNullable(condition.getSortType())
+                .filter(StringUtils::hasText)
+                .map(st -> getSortTypeByIdentity(st).identity)
+                .ifPresent(condition::setSortType);
 
-        ofNullable(condition.getTitle())
-                .filter(BlueChecker::isNotBlank).ifPresent(n -> condition.setTitle("%" + n + "%"));
-        ofNullable(condition.getLink())
-                .filter(BlueChecker::isNotBlank).ifPresent(n -> condition.setLink("%" + n + "%"));
+        ofNullable(condition.getTitleLike())
+                .filter(StringUtils::hasText).ifPresent(titleLike -> condition.setTitleLike("%" + titleLike + "%"));
+        ofNullable(condition.getLinkLike())
+                .filter(StringUtils::hasText).ifPresent(linkLike -> condition.setLinkLike("%" + linkLike + "%"));
 
         return condition;
     };

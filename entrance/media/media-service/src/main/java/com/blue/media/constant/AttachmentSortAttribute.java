@@ -13,6 +13,11 @@ public enum AttachmentSortAttribute {
     ID("id", "id"),
 
     /**
+     * size
+     */
+    SIZE("size", "size"),
+
+    /**
      * createTime
      */
     CREATE_TIME("createTime", "create_time");

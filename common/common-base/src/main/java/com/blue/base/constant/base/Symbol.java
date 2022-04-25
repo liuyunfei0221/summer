@@ -64,6 +64,11 @@ public enum Symbol {
     SCHEME_SEPARATOR("."),
 
     /**
+     * url parameter separator
+     */
+    URL_PAR_SEPARATOR("?"),
+
+    /**
      * key-value separator
      */
     KEY_VALUE_SEPARATOR(":"),

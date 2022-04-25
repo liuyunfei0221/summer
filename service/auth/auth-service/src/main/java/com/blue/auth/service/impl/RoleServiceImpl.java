@@ -35,7 +35,7 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.common.base.ConstantProcessor.assertSortType;
+import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.Default.DEFAULT;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
@@ -176,10 +176,13 @@ public class RoleServiceImpl implements RoleService {
                 .filter(StringUtils::hasText)
                 .ifPresent(condition::setSortAttribute);
 
-        assertSortType(condition.getSortType(), true);
+        ofNullable(condition.getSortType())
+                .filter(StringUtils::hasText)
+                .map(st -> getSortTypeByIdentity(st).identity)
+                .ifPresent(condition::setSortType);
 
-        ofNullable(condition.getName())
-                .filter(n -> !isBlank(n)).map(String::toLowerCase).ifPresent(n -> condition.setName("%" + n + "%"));
+        ofNullable(condition.getNameLike())
+                .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike("%" + nameLike + "%"));
 
         return condition;
     };

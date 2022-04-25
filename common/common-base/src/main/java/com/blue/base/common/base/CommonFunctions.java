@@ -53,6 +53,7 @@ public class CommonFunctions {
             WILDCARD = Symbol.WILDCARD.identity,
             PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity,
             SCHEME_SEPARATOR = Symbol.SCHEME_SEPARATOR.identity,
+            URL_PAR_SEPARATOR = Symbol.URL_PAR_SEPARATOR.identity,
             UNKNOWN = Symbol.UNKNOWN.identity;
 
     public static final String DEFAULT_LANGUAGE = lowerCase(LANGUAGE.replace(PAR_CONCATENATION, PAR_CONCATENATION_DATABASE_URL.identity));
@@ -76,8 +77,7 @@ public class CommonFunctions {
     /**
      * index of non element
      */
-    public static final int NON_EXIST_INDEX = -1,
-            START_IDX = 0;
+    public static final int NON_EXIST_INDEX = -1, START_IDX = 0;
 
     /**
      * clock
@@ -102,12 +102,16 @@ public class CommonFunctions {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid uri, not contains / -> " + uri);
 
         String maybePathVariable = substring(uri, lastPartIdx + 1);
+        int upSeparatorIdx = indexOf(maybePathVariable, URL_PAR_SEPARATOR);
+        if (upSeparatorIdx != -1)
+            maybePathVariable = substring(maybePathVariable, 0, upSeparatorIdx);
+
         if (isDigits(maybePathVariable))
             return (substring(uri, 0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD).intern();
 
-        int schemaIdx = lastIndexOf(maybePathVariable, SCHEME_SEPARATOR);
+        int scSeparatorIdx = lastIndexOf(maybePathVariable, SCHEME_SEPARATOR);
         String schema;
-        if (schemaIdx != -1 && VALID_TAILS.contains(schema = substring(maybePathVariable, schemaIdx)))
+        if (scSeparatorIdx != -1 && VALID_TAILS.contains(schema = substring(maybePathVariable, scSeparatorIdx)))
             return (substring(uri, 0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD + schema.intern()).intern();
 
         return uri.intern();
@@ -285,7 +289,7 @@ public class CommonFunctions {
         if (lastIndex < 0 || lastIndex == fileName.length() - 1)
             throw new BlueException(INVALID_PARAM);
 
-        return StringUtils.substring(fileName, lastIndex + 1);
+        return substring(fileName, lastIndex + 1);
     };
 
     /**

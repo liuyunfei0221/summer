@@ -263,11 +263,11 @@
                 </if>
                 <if test="resourceCondition.module != null and resourceCondition.module != ''">
                     AND
-                    module LIKE #{resourceCondition.module,jdbcType=VARCHAR}
+                    module = #{resourceCondition.module,jdbcType=VARCHAR}
                 </if>
-                <if test="resourceCondition.uri != null and resourceCondition.uri != ''">
+                <if test="resourceCondition.uriLike != null and resourceCondition.uriLike != ''">
                     AND
-                    uri LIKE #{resourceCondition.uri,jdbcType=VARCHAR}
+                    uriLike LIKE #{resourceCondition.uriLike,jdbcType=VARCHAR}
                 </if>
                 <if test="resourceCondition.authenticate != null">
                     AND
@@ -293,9 +293,9 @@
                     AND
                     type = #{resourceCondition.type,jdbcType=TINYINT}
                 </if>
-                <if test="resourceCondition.name != null and resourceCondition.name != ''">
+                <if test="resourceCondition.nameLike != null and resourceCondition.nameLike != ''">
                     AND
-                    name LIKE #{resourceCondition.name,jdbcType=VARCHAR}
+                    name LIKE #{resourceCondition.nameLike,jdbcType=VARCHAR}
                 </if>
                 <if test="resourceCondition.createTimeBegin != null">
                     AND

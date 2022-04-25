@@ -175,13 +175,13 @@
                     AND
                     id = #{attachmentCondition.id,jdbcType=BIGINT}
                 </if>
-                <if test="attachmentCondition.link != null and attachmentCondition.link != ''">
+                <if test="attachmentCondition.linkLike != null and attachmentCondition.linkLike != ''">
                     AND
-                    link = #{attachmentCondition.link,jdbcType=VARCHAR}
+                    link LIKE #{attachmentCondition.linkLike,jdbcType=VARCHAR}
                 </if>
-                <if test="attachmentCondition.name != null and attachmentCondition.name != ''">
+                <if test="attachmentCondition.nameLike != null and attachmentCondition.nameLike != ''">
                     AND
-                    name LIKE #{attachmentCondition.name,jdbcType=VARCHAR}
+                    name LIKE #{attachmentCondition.nameLike,jdbcType=VARCHAR}
                 </if>
                 <if test="attachmentCondition.fileType != null and attachmentCondition.fileType != ''">
                     AND
@@ -207,8 +207,7 @@
         </if>
     </sql>
 
-    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
-            parameterType="com.blue.media.model.AttachmentCondition">
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -216,13 +215,12 @@
         <include refid="Attachment_Conditions"/>
         <if test="attachmentCondition != null and attachmentCondition.sortAttribute != null and attachmentCondition.sortAttribute != '' and attachmentCondition.sortType != null and attachmentCondition.sortType != ''">
             ORDER BY
-            ${attachmentCondition.sortAttribute,jdbcType=VARCHAR} ${attachmentCondition.sortType,jdbcType=VARCHAR}
+            ${attachmentCondition.sortAttribute} ${attachmentCondition.sortType}
         </if>
         LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>
 
-    <select id="countByCondition" resultType="java.lang.Long"
-            parameterType="com.blue.media.model.AttachmentCondition">
+    <select id="countByCondition" resultType="java.lang.Long">
         SELECT COUNT(*)
         FROM
         attachment

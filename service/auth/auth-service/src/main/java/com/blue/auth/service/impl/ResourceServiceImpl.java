@@ -76,18 +76,23 @@ public class ResourceServiceImpl implements ResourceService {
         ofNullable(condition.getSortAttribute())
                 .filter(StringUtils::hasText)
                 .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(StringUtils::hasText)
                 .ifPresent(condition::setSortAttribute);
 
-        assertSortType(condition.getSortType(), true);
+        ofNullable(condition.getSortType())
+                .filter(StringUtils::hasText)
+                .map(st -> getSortTypeByIdentity(st).identity)
+                .ifPresent(condition::setSortType);
 
         ofNullable(condition.getRequestMethod())
-                .filter(rm -> !isBlank(rm)).map(String::toUpperCase).ifPresent(condition::setRequestMethod);
+                .filter(StringUtils::hasText).map(String::toUpperCase).ifPresent(condition::setRequestMethod);
         ofNullable(condition.getModule())
-                .filter(m -> !isBlank(m)).map(String::toLowerCase).ifPresent(m -> condition.setModule("%" + m + "%"));
-        ofNullable(condition.getUri())
-                .filter(uri -> !isBlank(uri)).map(String::toLowerCase).ifPresent(uri -> condition.setUri("%" + uri + "%"));
-        ofNullable(condition.getName())
-                .filter(n -> !isBlank(n)).ifPresent(n -> condition.setName("%" + n + "%"));
+                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(condition::setModule);
+
+        ofNullable(condition.getUriLike())
+                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(uriLike -> condition.setUriLike("%" + uriLike + "%"));
+        ofNullable(condition.getNameLike())
+                .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike("%" + nameLike + "%"));
 
         return condition;
     };

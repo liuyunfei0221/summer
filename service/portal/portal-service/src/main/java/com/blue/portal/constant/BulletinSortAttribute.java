@@ -13,9 +13,29 @@ public enum BulletinSortAttribute {
     ID("id", "id"),
 
     /**
+     * priority
+     */
+    PRIORITY("priority", "priority"),
+
+    /**
+     * activeTime
+     */
+    ACTIVE_TIME("activeTime", "active_time"),
+
+    /**
+     * expireTime
+     */
+    EXPIRE_TIME("expireTime", "expire_time"),
+
+    /**
      * createTime
      */
-    CREATE_TIME("createTime", "create_time");
+    CREATE_TIME("createTime", "create_time"),
+
+    /**
+     * updateTime
+     */
+    UPDATE_TIME("updateTime", "update_time");
 
     public final String attribute;
 

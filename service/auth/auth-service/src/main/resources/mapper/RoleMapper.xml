@@ -173,9 +173,9 @@
                     AND
                     id = #{roleCondition.id,jdbcType=BIGINT}
                 </if>
-                <if test="roleCondition.name != null and roleCondition.name != ''">
+                <if test="roleCondition.nameLike != null and roleCondition.nameLike != ''">
                     AND
-                    name LIKE #{roleCondition.name,jdbcType=VARCHAR}
+                    name LIKE #{roleCondition.nameLike,jdbcType=VARCHAR}
                 </if>
                 <if test="roleCondition.createTimeBegin != null">
                     AND

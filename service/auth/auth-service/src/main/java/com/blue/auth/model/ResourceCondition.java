@@ -1,10 +1,11 @@
 package com.blue.auth.model;
 
 import com.blue.auth.constant.ResourceSortAttribute;
-import com.blue.base.constant.base.SortType;
 import com.blue.base.model.base.SortCondition;
 
 import java.io.Serializable;
+
+import static com.blue.base.constant.base.SortType.DESC;
 
 /**
  * resource condition for select
@@ -22,7 +23,7 @@ public final class ResourceCondition extends SortCondition implements Serializab
 
     private String module;
 
-    private String uri;
+    private String uriLike;
 
     private Boolean authenticate;
 
@@ -36,7 +37,7 @@ public final class ResourceCondition extends SortCondition implements Serializab
 
     private Integer type;
 
-    private String name;
+    private String nameLike;
 
     private Long createTimeBegin;
 
@@ -47,27 +48,27 @@ public final class ResourceCondition extends SortCondition implements Serializab
     private Long updateTimeEnd;
 
     public ResourceCondition() {
-        super(ResourceSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(ResourceSortAttribute.ID.attribute, DESC.identity);
     }
 
     public ResourceCondition(String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
     }
 
-    public ResourceCondition(String sortAttribute, String sortType, Long id, String requestMethod, String module, String uri, Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody,
-                             Integer type, String name, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd) {
+    public ResourceCondition(Long id, String requestMethod, String module, String uriLike, Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody,
+                             Integer type, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.requestMethod = requestMethod;
         this.module = module;
-        this.uri = uri;
+        this.uriLike = uriLike;
         this.authenticate = authenticate;
         this.requestUnDecryption = requestUnDecryption;
         this.responseUnEncryption = responseUnEncryption;
         this.existenceRequestBody = existenceRequestBody;
         this.existenceResponseBody = existenceResponseBody;
         this.type = type;
-        this.name = name;
+        this.nameLike = nameLike;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
         this.updateTimeBegin = updateTimeBegin;
@@ -98,12 +99,12 @@ public final class ResourceCondition extends SortCondition implements Serializab
         this.module = module;
     }
 
-    public String getUri() {
-        return uri;
+    public String getUriLike() {
+        return uriLike;
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
+    public void setUriLike(String uriLike) {
+        this.uriLike = uriLike;
     }
 
     public Boolean getAuthenticate() {
@@ -154,12 +155,12 @@ public final class ResourceCondition extends SortCondition implements Serializab
         this.type = type;
     }
 
-    public String getName() {
-        return name;
+    public String getNameLike() {
+        return nameLike;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNameLike(String nameLike) {
+        this.nameLike = nameLike;
     }
 
     public Long getCreateTimeBegin() {
@@ -200,18 +201,20 @@ public final class ResourceCondition extends SortCondition implements Serializab
                 "id=" + id +
                 ", requestMethod='" + requestMethod + '\'' +
                 ", module='" + module + '\'' +
-                ", uri='" + uri + '\'' +
+                ", uriLike='" + uriLike + '\'' +
                 ", authenticate=" + authenticate +
                 ", requestUnDecryption=" + requestUnDecryption +
                 ", responseUnEncryption=" + responseUnEncryption +
                 ", existenceRequestBody=" + existenceRequestBody +
                 ", existenceResponseBody=" + existenceResponseBody +
                 ", type=" + type +
-                ", name='" + name + '\'' +
+                ", nameLike='" + nameLike + '\'' +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +
                 ", updateTimeEnd=" + updateTimeEnd +
+                ", sortAttribute='" + sortAttribute + '\'' +
+                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

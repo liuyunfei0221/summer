@@ -1,10 +1,11 @@
 package com.blue.auth.model;
 
 import com.blue.auth.constant.ResourceSortAttribute;
-import com.blue.base.constant.base.SortType;
 import com.blue.base.model.base.SortCondition;
 
 import java.io.Serializable;
+
+import static com.blue.base.constant.base.SortType.DESC;
 
 /**
  * role condition for select
@@ -18,7 +19,7 @@ public final class RoleCondition extends SortCondition implements Serializable {
 
     private Long id;
 
-    private String name;
+    private String nameLike;
 
     private Long createTimeBegin;
 
@@ -29,17 +30,17 @@ public final class RoleCondition extends SortCondition implements Serializable {
     private Long updateTimeEnd;
 
     public RoleCondition() {
-        super(ResourceSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(ResourceSortAttribute.ID.attribute, DESC.identity);
     }
 
     public RoleCondition(String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
     }
 
-    public RoleCondition(String sortAttribute, String sortType, Long id, String name, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd) {
+    public RoleCondition(Long id, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
-        this.name = name;
+        this.nameLike = nameLike;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
         this.updateTimeBegin = updateTimeBegin;
@@ -54,12 +55,12 @@ public final class RoleCondition extends SortCondition implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNameLike() {
+        return nameLike;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNameLike(String nameLike) {
+        this.nameLike = nameLike;
     }
 
     public Long getCreateTimeBegin() {
@@ -98,11 +99,13 @@ public final class RoleCondition extends SortCondition implements Serializable {
     public String toString() {
         return "RoleCondition{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", nameLike='" + nameLike + '\'' +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +
                 ", updateTimeEnd=" + updateTimeEnd +
+                ", sortAttribute='" + sortAttribute + '\'' +
+                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

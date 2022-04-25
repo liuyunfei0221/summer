@@ -34,7 +34,7 @@ public final class DownloadHistoryCondition extends SortCondition implements Ser
         super(sortAttribute, sortType);
     }
 
-    public DownloadHistoryCondition(String sortAttribute, String sortType, Long id, Long attachmentId, Long creator, Long createTimeBegin, Long createTimeEnd) {
+    public DownloadHistoryCondition(Long id, Long attachmentId, Long creator, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.attachmentId = attachmentId;
@@ -91,6 +91,8 @@ public final class DownloadHistoryCondition extends SortCondition implements Ser
                 ", creator=" + creator +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
+                ", sortAttribute='" + sortAttribute + '\'' +
+                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

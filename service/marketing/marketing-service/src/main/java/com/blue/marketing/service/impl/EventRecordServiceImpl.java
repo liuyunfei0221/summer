@@ -1,6 +1,5 @@
 package com.blue.marketing.service.impl;
 
-import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -15,6 +14,7 @@ import com.blue.marketing.service.inter.EventRecordService;
 import com.blue.member.api.model.MemberBasicInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
@@ -28,7 +28,8 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.marketing.converter.MarketingModelConverters.EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -71,14 +72,16 @@ public class EventRecordServiceImpl implements EventRecordService {
         if (isNull(condition))
             return new EventRecordCondition();
 
-        condition.setSortAttribute(
-                ofNullable(condition.getSortAttribute())
-                        .filter(BlueChecker::isNotBlank)
-                        .map(SORT_ATTRIBUTE_MAPPING::get)
-                        .filter(BlueChecker::isNotBlank)
-                        .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+        ofNullable(condition.getSortAttribute())
+                .filter(StringUtils::hasText)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(StringUtils::hasText)
+                .ifPresent(condition::setSortAttribute);
 
-        condition.setSortType(getSortTypeByIdentity(condition.getSortType()).identity);
+        ofNullable(condition.getSortType())
+                .filter(StringUtils::hasText)
+                .map(st -> getSortTypeByIdentity(st).identity)
+                .ifPresent(condition::setSortType);
 
         return condition;
     };

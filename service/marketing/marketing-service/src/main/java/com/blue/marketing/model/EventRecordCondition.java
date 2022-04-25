@@ -1,10 +1,11 @@
 package com.blue.marketing.model;
 
-import com.blue.base.constant.base.SortType;
 import com.blue.base.model.base.SortCondition;
 import com.blue.marketing.constant.EventRecordSortAttribute;
 
 import java.io.Serializable;
+
+import static com.blue.base.constant.base.SortType.DESC;
 
 /**
  * event record condition for select
@@ -42,14 +43,14 @@ public final class EventRecordCondition extends SortCondition implements Seriali
     private Long createTimeEnd;
 
     public EventRecordCondition() {
-        super(EventRecordSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(EventRecordSortAttribute.ID.attribute, DESC.identity);
     }
 
     public EventRecordCondition(String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
     }
 
-    public EventRecordCondition(String sortAttribute, String sortType, Long id, Integer type, Integer status, Long creator, Long createTimeBegin, Long createTimeEnd) {
+    public EventRecordCondition(Long id, Integer type, Integer status, Long creator, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.type = type;
@@ -116,6 +117,8 @@ public final class EventRecordCondition extends SortCondition implements Seriali
                 ", creator=" + creator +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
+                ", sortAttribute='" + sortAttribute + '\'' +
+                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

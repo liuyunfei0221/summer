@@ -13,6 +13,7 @@ import com.blue.member.repository.mapper.MemberBasicMapper;
 import com.blue.member.service.inter.MemberBasicService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
@@ -91,14 +92,16 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         if (isNull(condition))
             return new MemberBasicCondition();
 
-        condition.setSortAttribute(
-                ofNullable(condition.getSortAttribute())
-                        .filter(BlueChecker::isNotBlank)
-                        .map(SORT_ATTRIBUTE_MAPPING::get)
-                        .filter(BlueChecker::isNotBlank)
-                        .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+        ofNullable(condition.getSortAttribute())
+                .filter(StringUtils::hasText)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(StringUtils::hasText)
+                .ifPresent(condition::setSortAttribute);
 
-        condition.setSortType(getSortTypeByIdentity(condition.getSortType()).identity);
+        ofNullable(condition.getSortType())
+                .filter(StringUtils::hasText)
+                .map(st -> getSortTypeByIdentity(st).identity)
+                .ifPresent(condition::setSortType);
 
         return condition;
     };

@@ -1,6 +1,11 @@
 package com.blue.media.model;
 
+import com.blue.base.model.base.SortCondition;
+import com.blue.media.constant.AttachmentSortAttribute;
+
 import java.io.Serializable;
+
+import static com.blue.base.constant.base.SortType.DESC;
 
 /**
  * attachment condition for select
@@ -8,15 +13,15 @@ import java.io.Serializable;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class AttachmentCondition implements Serializable {
+public final class AttachmentCondition extends SortCondition implements Serializable {
 
     private static final long serialVersionUID = 1899006299426322890L;
 
     private Long id;
 
-    private String link;
+    private String linkLike;
 
-    private String name;
+    private String nameLike;
 
     private String fileType;
 
@@ -24,22 +29,22 @@ public final class AttachmentCondition implements Serializable {
 
     private Long createTimeEnd;
 
-    private String sortAttribute;
-
-    private String sortType;
-
     public AttachmentCondition() {
+        super(AttachmentSortAttribute.ID.attribute, DESC.identity);
     }
 
-    public AttachmentCondition(Long id, String link, String name, String fileType, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
+    public AttachmentCondition(String sortAttribute, String sortType) {
+        super(sortAttribute, sortType);
+    }
+
+    public AttachmentCondition(Long id, String linkLike, String nameLike, String fileType, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
+        super(sortAttribute, sortType);
         this.id = id;
-        this.link = link;
-        this.name = name;
+        this.linkLike = linkLike;
+        this.nameLike = nameLike;
         this.fileType = fileType;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
-        this.sortAttribute = sortAttribute;
-        this.sortType = sortType;
     }
 
     public Long getId() {
@@ -50,20 +55,20 @@ public final class AttachmentCondition implements Serializable {
         this.id = id;
     }
 
-    public String getLink() {
-        return link;
+    public String getLinkLike() {
+        return linkLike;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setLinkLike(String linkLike) {
+        this.linkLike = linkLike;
     }
 
-    public String getName() {
-        return name;
+    public String getNameLike() {
+        return nameLike;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNameLike(String nameLike) {
+        this.nameLike = nameLike;
     }
 
     public String getFileType() {
@@ -90,28 +95,12 @@ public final class AttachmentCondition implements Serializable {
         this.createTimeEnd = createTimeEnd;
     }
 
-    public String getSortAttribute() {
-        return sortAttribute;
-    }
-
-    public void setSortAttribute(String sortAttribute) {
-        this.sortAttribute = sortAttribute;
-    }
-
-    public String getSortType() {
-        return sortType;
-    }
-
-    public void setSortType(String sortType) {
-        this.sortType = sortType;
-    }
-
     @Override
     public String toString() {
         return "AttachmentCondition{" +
                 "id=" + id +
-                ", link='" + link + '\'' +
-                ", name='" + name + '\'' +
+                ", linkLike='" + linkLike + '\'' +
+                ", nameLike='" + nameLike + '\'' +
                 ", fileType='" + fileType + '\'' +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
