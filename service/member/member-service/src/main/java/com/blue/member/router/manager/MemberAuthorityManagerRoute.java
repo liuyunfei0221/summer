@@ -25,10 +25,10 @@ public class MemberAuthorityManagerRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> memberAuthorityManagerRouter(MemberAuthorityManagerHandler memberAuthorityManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-member/manager/authority");
+        RequestPredicate pathPredicate = path("/blue-member/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/list", accept(APPLICATION_JSON), memberAuthorityManagerHandler::selectAuthority)
+                .POST("/authorities", accept(APPLICATION_JSON), memberAuthorityManagerHandler::selectAuthority)
                 .build();
 
         return nest(pathPredicate, routerFunction);

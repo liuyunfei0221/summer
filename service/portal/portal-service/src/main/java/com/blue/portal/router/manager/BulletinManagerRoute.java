@@ -25,7 +25,7 @@ public class BulletinManagerRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> bulletinManagerRouter(BulletinManagerHandler bulletinManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-media/manager");
+        RequestPredicate pathPredicate = path("/blue-portal/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/bulletins", accept(APPLICATION_JSON), bulletinManagerHandler::listBulletin)

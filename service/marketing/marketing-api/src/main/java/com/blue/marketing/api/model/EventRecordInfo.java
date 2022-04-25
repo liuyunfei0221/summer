@@ -13,38 +13,38 @@ public final class EventRecordInfo implements Serializable {
 
     private static final long serialVersionUID = 6569268133204313196L;
 
-    private final Long id;
+    private Long id;
 
     /**
      * event type
      *
      * @see com.blue.base.constant.marketing.MarketingEventType
      */
-    private final Integer type;
+    private Integer type;
 
     /**
      * event json
      */
-    private final String data;
+    private String data;
 
     /**
      * handling status
      *
      * @see com.blue.base.constant.marketing.HandleStatus
      */
-    private final Integer status;
+    private Integer status;
 
     /**
      * event time
      */
-    private final Long createTime;
+    private Long createTime;
 
     /**
      * creator
      */
-    private final Long creator;
+    private Long creator;
 
-    private final String creatorName;
+    private String creatorName;
 
     public EventRecordInfo(Long id, Integer type, String data, Integer status, Long createTime, Long creator, String creatorName) {
         this.id = id;
@@ -60,28 +60,56 @@ public final class EventRecordInfo implements Serializable {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Integer getType() {
         return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getData() {
         return data;
     }
 
+    public void setData(String data) {
+        this.data = data;
+    }
+
     public Integer getStatus() {
         return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Long getCreateTime() {
         return createTime;
     }
 
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
+    }
+
     public Long getCreator() {
         return creator;
     }
 
+    public void setCreator(Long creator) {
+        this.creator = creator;
+    }
+
     public String getCreatorName() {
         return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 
     @Override

@@ -6,6 +6,8 @@ import com.blue.member.constant.MemberBasicSortAttribute;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.isNotBlank;
+
 /**
  * member condition for select
  *
@@ -44,19 +46,25 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
 
     public MemberBasicCondition() {
         super(MemberBasicSortAttribute.ID.attribute, SortType.DESC.identity);
+        this.phone = null;
+        this.email = null;
+        this.name = null;
     }
 
     public MemberBasicCondition(String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
+        this.phone = null;
+        this.email = null;
+        this.name = null;
     }
 
     public MemberBasicCondition(Long id, String phone, String email, String name, Integer gender, Integer status,
                                 Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
-        this.phone = phone;
-        this.email = email;
-        this.name = name;
+        this.phone = isNotBlank(phone) ? phone : null;
+        this.email = isNotBlank(email) ? email : null;
+        this.name = isNotBlank(name) ? name : null;
         this.gender = gender;
         this.status = status;
         this.createTimeBegin = createTimeBegin;
@@ -78,7 +86,7 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        this.phone = isNotBlank(phone) ? phone : null;
     }
 
     public String getEmail() {
@@ -86,7 +94,7 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = isNotBlank(email) ? email : null;
     }
 
     public String getName() {
@@ -94,7 +102,7 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = isNotBlank(name) ? name : null;
     }
 
     public Integer getGender() {

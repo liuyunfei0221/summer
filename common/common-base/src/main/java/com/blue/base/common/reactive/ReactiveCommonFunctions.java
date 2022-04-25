@@ -227,7 +227,6 @@ public class ReactiveCommonFunctions extends CommonFunctions {
                 .map(InetAddress::getHostAddress).orElse(UNKNOWN);
     }
 
-
     /**
      * get request ip
      *
@@ -282,6 +281,26 @@ public class ReactiveCommonFunctions extends CommonFunctions {
         } catch (Exception e) {
             return DEFAULT_LANGUAGES;
         }
+    }
+
+    /**
+     * get request ip react
+     *
+     * @param serverRequest
+     * @return
+     */
+    public static Mono<String> getIpReact(ServerRequest serverRequest) {
+        return just(getIp(serverRequest));
+    }
+
+    /**
+     * get request ip react
+     *
+     * @param serverHttpRequest
+     * @return
+     */
+    public static Mono<String> getIpReact(ServerHttpRequest serverHttpRequest) {
+        return just(getIp(serverHttpRequest));
     }
 
     /**

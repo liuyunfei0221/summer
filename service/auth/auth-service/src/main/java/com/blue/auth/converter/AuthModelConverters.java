@@ -1,8 +1,6 @@
 package com.blue.auth.converter;
 
-import com.blue.auth.api.model.CredentialInfo;
-import com.blue.auth.api.model.ResourceInfo;
-import com.blue.auth.api.model.RoleInfo;
+import com.blue.auth.api.model.*;
 import com.blue.auth.model.ResourceInsertParam;
 import com.blue.auth.model.RoleInsertParam;
 import com.blue.auth.repository.entity.Credential;
@@ -12,8 +10,7 @@ import com.blue.base.model.exps.BlueException;
 
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
@@ -26,7 +23,7 @@ import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavadocDeclaration"})
 public final class AuthModelConverters {
 
     /**
@@ -71,6 +68,23 @@ public final class AuthModelConverters {
 
         return new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault());
     };
+
+    /**
+     * role -> role manager indo
+     *
+     * @param role
+     * @param creatorName
+     * @param updaterName
+     * @return
+     */
+    public static RoleManagerInfo roleToRoleManagerInfo(Role role, String creatorName, String updaterName) {
+        if (isNull(role))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new RoleManagerInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault(),
+                role.getCreateTime(), role.getUpdateTime(), role.getCreator(), isNotBlank(creatorName) ? creatorName : "",
+                role.getUpdater(), isNotBlank(updaterName) ? updaterName : "");
+    }
 
     /**
      * resource insert param -> resource
@@ -142,7 +156,6 @@ public final class AuthModelConverters {
         return resource;
     };
 
-
     /**
      * resource -> resource info
      */
@@ -160,6 +173,27 @@ public final class AuthModelConverters {
     };
 
     /**
+     * resource -> resource manager indo
+     *
+     * @param resource
+     * @param creatorName
+     * @param updaterName
+     * @return
+     */
+    public static ResourceManagerInfo resourceToResourceManagerInfo(Resource resource, String creatorName, String updaterName) {
+        if (isNull(resource))
+            throw new BlueException(EMPTY_PARAM);
+
+        String module = resource.getModule().intern();
+        String relativeUri = resource.getUri().intern();
+
+        return new ResourceManagerInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(), resource.getAuthenticate(),
+                resource.getRequestUnDecryption(), resource.getResponseUnEncryption(), resource.getExistenceRequestBody(), resource.getExistenceResponseBody(), getResourceTypeByIdentity(resource.getType()).disc.intern(),
+                resource.getName(), resource.getDescription(), resource.getCreateTime(), resource.getUpdateTime(), resource.getCreator(), isNotBlank(creatorName) ? creatorName : "",
+                resource.getUpdater(), isNotBlank(updaterName) ? updaterName : "");
+    }
+
+    /**
      * credential -> credential info
      */
     public static final Function<Credential, CredentialInfo> CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER = credential -> {
@@ -168,5 +202,6 @@ public final class AuthModelConverters {
 
         return new CredentialInfo(credential.getCredential(), credential.getType(), "", credential.getStatus(), credential.getExtra());
     };
+
 
 }

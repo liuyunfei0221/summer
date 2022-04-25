@@ -2,6 +2,7 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.*;
 import com.blue.auth.common.AccessEncoder;
+import com.blue.auth.config.deploy.ControlDeploy;
 import com.blue.auth.event.producer.SystemAuthorityInfosRefreshProducer;
 import com.blue.auth.model.*;
 import com.blue.auth.remote.consumer.RpcMemberAuthServiceConsumer;
@@ -18,6 +19,7 @@ import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.base.Access;
 import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.exps.BlueException;
+import com.blue.jwt.common.JwtProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.redis.common.BlueLeakyBucketRateLimiter;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -41,6 +43,7 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.base.common.base.ConstantProcessor.getVerifyTypeByIdentity;
+import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIpReact;
 import static com.blue.base.constant.base.RateLimitKeyPrefix.ACCESS_UPDATE_RATE_LIMIT_KEY_PRE;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.INVALID;
@@ -55,7 +58,6 @@ import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.*;
-import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -72,6 +74,8 @@ public class ControlServiceImpl implements ControlService {
     private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
 
     private final RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer;
+
+    private final JwtProcessor<MemberPayload> jwtProcessor;
 
     private final LoginService loginService;
 
@@ -92,11 +96,12 @@ public class ControlServiceImpl implements ControlService {
     private final BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer, LoginService loginService, AuthService authService, RoleService roleService, CredentialService credentialService,
-                              RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService, SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService,
-                              ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
+    public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer, JwtProcessor<MemberPayload> jwtProcessor, LoginService loginService,
+                              AuthService authService, RoleService roleService, CredentialService credentialService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
+                              SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService, ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, ControlDeploy controlDeploy) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
+        this.jwtProcessor = jwtProcessor;
         this.loginService = loginService;
         this.authService = authService;
         this.roleService = roleService;
@@ -106,7 +111,12 @@ public class ControlServiceImpl implements ControlService {
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
         this.executorService = executorService;
         this.blueLeakyBucketRateLimiter = generateLeakyBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
+        ALLOW = controlDeploy.getAllow();
+        SEND_INTERVAL_MILLIS = controlDeploy.getIntervalMillis();
     }
+
+    private final int ALLOW;
+    private final long SEND_INTERVAL_MILLIS;
 
     private final BiFunction<Long, Long, MemberRoleRelation> MEMBER_ROLE_RELATION_GEN = (memberId, roleId) -> {
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId))
@@ -218,9 +228,6 @@ public class ControlServiceImpl implements ControlService {
         return ACCESS_UPDATE_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
-    private final int ALLOW = 1;
-    private final long SEND_INTERVAL_MILLIS = 5000;
-
     private void packageExistAccess(List<Credential> credentials, Long memberId) {
         credentialService.selectCredentialByMemberIdAndTypes(memberId, ALLOW_ACCESS_LTS).stream().findAny()
                 .ifPresent(ac ->
@@ -258,7 +265,16 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Mono<ServerResponse> login(ServerRequest serverRequest) {
-        return loginService.login(serverRequest);
+        return getIpReact(serverRequest)
+                .flatMap(ip -> {
+                    LOGGER.info("Mono<ServerResponse> login(ServerRequest serverRequest), ip = {}", ip);
+                    return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(ip), ALLOW, SEND_INTERVAL_MILLIS);
+                })
+                .flatMap(allowed ->
+                        allowed ?
+                                loginService.login(serverRequest)
+                                :
+                                error(() -> new BlueException(TOO_MANY_REQUESTS)));
     }
 
     /**
@@ -269,7 +285,16 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Mono<MemberAccess> refreshAccess(String refresh) {
-        return authService.refreshAccess(refresh);
+        LOGGER.info("Mono<MemberAccess> refreshAccess(String refresh), refresh = {}", refresh);
+        return just(jwtProcessor.parse(refresh))
+                .switchIfEmpty(error(() -> new BlueException(UNAUTHORIZED)))
+                .flatMap(memberPayload ->
+                        blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(memberPayload.getKeyId()), ALLOW, SEND_INTERVAL_MILLIS)
+                                .flatMap(allowed ->
+                                        allowed ?
+                                                authService.refreshAccessByMemberPayload(memberPayload)
+                                                :
+                                                error(() -> new BlueException(TOO_MANY_REQUESTS))));
     }
 
     /**
@@ -335,10 +360,6 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId), roleId = {}", roleId);
-        if (isInvalidIdentity(roleId))
-            throw new BlueException(INVALID_IDENTITY);
-
         return roleResRelationService.selectAuthorityMonoByRoleId(roleId);
     }
 
@@ -350,10 +371,6 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Mono<AuthorityBaseOnResource> selectAuthorityMonoByResId(Long resId) {
-        LOGGER.info("Mono<AuthorityBaseOnResource> getAuthorityMonoByResId(Long resId), resId = {}", resId);
-        if (isInvalidIdentity(resId))
-            throw new BlueException(INVALID_IDENTITY);
-
         return roleResRelationService.selectAuthorityMonoByResId(resId);
     }
 
@@ -364,8 +381,6 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Mono<Void> refreshSystemAuthorityInfos() {
-        LOGGER.info("Mono<Void> refreshSystemAuthorityInfos()");
-
         return fromRunnable(authService::refreshSystemAuthorityInfos).then();
     }
 
@@ -542,8 +557,6 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
-        LOGGER.info("void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
-
         authService.refreshMemberRoleById(memberId, roleId, operatorId);
     }
 
@@ -555,11 +568,13 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public Mono<Boolean> updateDefaultRole(Long id, Long operatorId) {
-        LOGGER.info("void updateDefaultRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
-        assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
+    public Mono<RoleManagerInfo> updateDefaultRole(Long id, Long operatorId) {
+        LOGGER.info("Mono<RoleManagerInfo> updateDefaultRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
+        if (isInvalidIdentity(id) || isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
 
-        return fromRunnable(() -> roleResRelationService.updateDefaultRole(id, operatorId)).then(just(true));
+        assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
+        return just(roleResRelationService.updateDefaultRole(id, operatorId));
     }
 
     /**
@@ -639,7 +654,16 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Mono<String> updateSecKeyByAccess(Access access) {
-        return authService.updateSecKeyByAccess(access);
+        LOGGER.info("Mono<String> updateSecKeyByAccess(Access access), access = {}", access);
+        return isNotNull(access) ?
+                blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(access)), ALLOW, SEND_INTERVAL_MILLIS)
+                        .flatMap(allowed ->
+                                allowed ?
+                                        authService.updateSecKeyByAccess(access)
+                                        :
+                                        error(() -> new BlueException(TOO_MANY_REQUESTS)))
+                :
+                error(() -> new BlueException(UNAUTHORIZED));
     }
 
     /**
@@ -798,9 +822,7 @@ public class ControlServiceImpl implements ControlService {
         if (isNull(roleResRelationParam))
             throw new BlueException(EMPTY_PARAM);
         roleResRelationParam.asserts();
-
-        Long roleId = roleResRelationParam.getRoleId();
-        assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), getRoleByMemberId(operatorId).getLevel());
+        assertRoleLevelForOperate(getRoleByRoleId(roleResRelationParam.getRoleId()).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return just(roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), operatorId))
                 .doOnSuccess(auth -> {
@@ -836,7 +858,7 @@ public class ControlServiceImpl implements ControlService {
                     if (i > 0)
                         authService.refreshMemberRoleById(memberId, roleId, operatorId);
                 })
-                .flatMap(i -> this.selectAuthorityMonoByRoleId(roleId));
+                .flatMap(ig -> this.selectAuthorityMonoByRoleId(roleId));
     }
 
     /**
@@ -853,9 +875,9 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(EMPTY_PARAM);
 
         Long memberId = identityParam.getId();
-
-        Integer operatorRoleLevel = getRoleByMemberId(operatorId).getLevel();
-        assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), operatorRoleLevel);
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
+        assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return authService.invalidateAuthByMemberId(memberId);
     }

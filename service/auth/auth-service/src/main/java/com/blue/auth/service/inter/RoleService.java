@@ -1,12 +1,13 @@
 package com.blue.auth.service.inter;
 
-import com.blue.auth.repository.entity.Role;
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
 import com.blue.auth.api.model.RoleInfo;
+import com.blue.auth.api.model.RoleManagerInfo;
 import com.blue.auth.model.RoleCondition;
 import com.blue.auth.model.RoleInsertParam;
 import com.blue.auth.model.RoleUpdateParam;
+import com.blue.auth.repository.entity.Role;
+import com.blue.base.model.base.PageModelRequest;
+import com.blue.base.model.base.PageModelResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -65,8 +66,9 @@ public interface RoleService {
      *
      * @param id
      * @param operatorId
+     * @return
      */
-    void updateDefaultRole(Long id, Long operatorId);
+    RoleManagerInfo updateDefaultRole(Long id, Long operatorId);
 
     /**
      * get role by role id
@@ -123,6 +125,6 @@ public interface RoleService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<RoleInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest);
+    Mono<PageModelResponse<RoleManagerInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest);
 
 }

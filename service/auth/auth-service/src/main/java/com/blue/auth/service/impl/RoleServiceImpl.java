@@ -1,12 +1,14 @@
 package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.RoleInfo;
+import com.blue.auth.api.model.RoleManagerInfo;
 import com.blue.auth.config.deploy.BlockingDeploy;
 import com.blue.auth.constant.RoleSortAttribute;
 import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.model.RoleCondition;
 import com.blue.auth.model.RoleInsertParam;
 import com.blue.auth.model.RoleUpdateParam;
+import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.repository.mapper.RoleMapper;
 import com.blue.auth.service.inter.RoleService;
@@ -15,6 +17,7 @@ import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.member.api.model.MemberBasicInfo;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,12 +28,11 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
 
+import static com.blue.auth.converter.AuthModelConverters.roleToRoleManagerInfo;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
@@ -42,7 +44,7 @@ import static com.blue.base.constant.base.Default.NOT_DEFAULT;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -63,6 +65,8 @@ public class RoleServiceImpl implements RoleService {
 
     private static final Logger LOGGER = getLogger(RoleServiceImpl.class);
 
+    private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
+
     private final BlueIdentityProcessor blueIdentityProcessor;
 
     private RoleMapper roleMapper;
@@ -72,9 +76,10 @@ public class RoleServiceImpl implements RoleService {
     private final RedissonClient redissonClient;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public RoleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RoleMapper roleMapper, StringRedisTemplate stringRedisTemplate,
-                           RedissonClient redissonClient, BlockingDeploy blockingDeploy) {
+    public RoleServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, RoleMapper roleMapper,
+                           StringRedisTemplate stringRedisTemplate, RedissonClient redissonClient, BlockingDeploy blockingDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.roleMapper = roleMapper;
         this.stringRedisTemplate = stringRedisTemplate;
         this.redissonClient = redissonClient;
@@ -132,7 +137,7 @@ public class RoleServiceImpl implements RoleService {
      *
      * @return
      */
-    private Role getDefaultRoleFromCache() {
+    private Role getDefaultRoleWithCache() {
         return REDIS_DEFAULT_ROLE_GETTER.get()
                 .orElseGet(() -> {
                     RLock lock = redissonClient.getLock(DEFAULT_ROLE_REFRESH_KEY);
@@ -185,6 +190,17 @@ public class RoleServiceImpl implements RoleService {
                 .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike("%" + nameLike + "%"));
 
         return condition;
+    };
+
+    private static final Function<List<Role>, List<Long>> OPERATORS_GETTER = roles -> {
+        Set<Long> operatorIds = new HashSet<>(roles.size());
+
+        for (Role r : roles) {
+            operatorIds.add(r.getCreator());
+            operatorIds.add(r.getUpdater());
+        }
+
+        return new ArrayList<>(operatorIds);
     };
 
     /**
@@ -371,7 +387,7 @@ public class RoleServiceImpl implements RoleService {
     public Role getDefaultRole() {
         LOGGER.info("Role getDefaultRole()");
 
-        Role defaultRole = getDefaultRoleFromCache();
+        Role defaultRole = getDefaultRoleWithCache();
 
         LOGGER.info("defaultRole = {}", defaultRole);
         if (isNull(defaultRole)) {
@@ -387,10 +403,11 @@ public class RoleServiceImpl implements RoleService {
      *
      * @param id
      * @param operatorId
+     * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
-    public void updateDefaultRole(Long id, Long operatorId) {
+    public RoleManagerInfo updateDefaultRole(Long id, Long operatorId) {
         LOGGER.info("void updateDefaultRole(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -414,7 +431,19 @@ public class RoleServiceImpl implements RoleService {
         deleteDefaultRoleFromCache();
         roleMapper.updateByPrimaryKey(role);
         roleMapper.updateByPrimaryKey(defaultRole);
+
+        Map<Long, String> idAndNameMapping;
+        try {
+            idAndNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(role))).toFuture().join()
+                    .parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+        } catch (Exception e) {
+            LOGGER.error("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), generate idAndNameMapping failed, e = {}", e);
+            idAndNameMapping = emptyMap();
+        }
+
         deleteDefaultRoleFromCache();
+        return roleToRoleManagerInfo(role, ofNullable(idAndNameMapping.get(role.getCreator())).orElse(""),
+                ofNullable(idAndNameMapping.get(role.getUpdater())).orElse(""));
     }
 
     /**
@@ -509,7 +538,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<RoleInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest) {
+    public Mono<PageModelResponse<RoleManagerInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
 
@@ -521,14 +550,18 @@ public class RoleServiceImpl implements RoleService {
         return zip(selectRoleMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), roleCondition), countRoleMonoByCondition(roleCondition))
                 .flatMap(tuple2 -> {
                     List<Role> roles = tuple2.getT1();
-                    Mono<List<RoleInfo>> roleInfosMono = isNotEmpty(roles) ?
-                            just(roles.stream().map(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER).collect(toList()))
-                            :
-                            just(emptyList());
 
-                    return roleInfosMono
-                            .flatMap(roleInfos ->
-                                    just(new PageModelResponse<>(roleInfos, tuple2.getT2())));
+                    return isNotEmpty(roles) ?
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(roles))
+                                    .flatMap(memberBasicInfos -> {
+                                        Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+                                        return just(roles.stream().map(r ->
+                                                roleToRoleManagerInfo(r, ofNullable(idAndNameMapping.get(r.getCreator())).orElse(""),
+                                                        ofNullable(idAndNameMapping.get(r.getUpdater())).orElse(""))).collect(toList()));
+                                    }).flatMap(resourceManagerInfos ->
+                                            just(new PageModelResponse<>(resourceManagerInfos, tuple2.getT2())))
+                            :
+                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
                 });
     }
 

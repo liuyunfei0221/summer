@@ -33,6 +33,7 @@ public class RoleManagerRoute {
                 .POST("/role", accept(APPLICATION_JSON), roleManagerHandler::insert)
                 .PUT("/role", accept(APPLICATION_JSON), roleManagerHandler::update)
                 .DELETE("/role/{" + ID.key + "}", roleManagerHandler::delete)
+                .PUT("/role/default", roleManagerHandler::updateDefault)
                 .POST("/roles", accept(APPLICATION_JSON), roleManagerHandler::select)
                 .POST("/role/auth", accept(APPLICATION_JSON), roleManagerHandler::selectAuthority)
                 .build();

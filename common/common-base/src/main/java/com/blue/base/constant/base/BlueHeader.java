@@ -47,7 +47,12 @@ public enum BlueHeader {
     /**
      * content
      */
-    CONTENT_DISPOSITION("Content-disposition"),
+    CONTENT_DISPOSITION(HttpHeaders.CONTENT_DISPOSITION),
+
+    /**
+     * host
+     */
+    HOST(HttpHeaders.HOST),
 
     /**
      * EXTRA

@@ -248,7 +248,7 @@
         </foreach>
     </select>
 
-    <select id="selectExistByResIdAndRoleId" resultMap="BaseResultMap">
+    <select id="selectExistByRoleIdAndResId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM

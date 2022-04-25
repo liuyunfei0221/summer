@@ -93,6 +93,22 @@ public final class RoleManagerHandler {
     }
 
     /**
+     * update default role
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> updateDefault(ServerRequest serverRequest) {
+        return zip(serverRequest.bodyToMono(IdentityParam.class)
+                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                , getAccessReact(serverRequest))
+                .flatMap(tuple2 -> controlService.updateDefaultRole(tuple2.getT1().getId(), tuple2.getT2().getId()))
+                .flatMap(ri ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
+    }
+
+    /**
      * select roles
      *
      * @param serverRequest

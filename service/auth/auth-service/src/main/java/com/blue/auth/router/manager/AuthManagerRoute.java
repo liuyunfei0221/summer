@@ -25,10 +25,10 @@ public class AuthManagerRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> authManagerRouter(AuthManagerHandler authManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-auth/manager/auth");
+        RequestPredicate pathPredicate = path("/blue-auth/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .DELETE("/member", accept(APPLICATION_JSON), authManagerHandler::invalidateAuthByMember)
+                .DELETE("/auth", accept(APPLICATION_JSON), authManagerHandler::invalidateAuthByMember)
                 .build();
 
         return nest(pathPredicate, routerFunction);

@@ -93,6 +93,11 @@ public enum BlueDataAttrKey {
     CLIENT_IP("clientIp"),
 
     /**
+     * host
+     */
+    HOST("host"),
+
+    /**
      * request user agent
      */
     USER_AGENT("userAgent"),

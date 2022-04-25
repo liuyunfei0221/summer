@@ -47,6 +47,8 @@ public final class BulletinCondition extends SortCondition implements Serializab
 
     private Long creator;
 
+    private Long updater;
+
     public BulletinCondition() {
         super(BulletinSortAttribute.ID.attribute, DESC.identity);
     }
@@ -55,8 +57,9 @@ public final class BulletinCondition extends SortCondition implements Serializab
         super(sortAttribute, sortType);
     }
 
-    public BulletinCondition(Long id, String titleLike, String linkLike, Integer type, Integer status, Long activeTimeBegin, Long activeTimeEnd, Long expireTimeBegin, Long expireTimeEnd, Long createTimeBegin, Long createTimeEnd,
-                             Long creator, String sortAttribute, String sortType) {
+    public BulletinCondition(Long id, String titleLike, String linkLike, Integer type, Integer status,
+                             Long activeTimeBegin, Long activeTimeEnd, Long expireTimeBegin, Long expireTimeEnd, Long createTimeBegin, Long createTimeEnd,
+                             Long creator, Long updater, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.titleLike = titleLike;
@@ -70,6 +73,7 @@ public final class BulletinCondition extends SortCondition implements Serializab
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
         this.creator = creator;
+        this.updater = updater;
     }
 
     public Long getId() {
@@ -168,6 +172,14 @@ public final class BulletinCondition extends SortCondition implements Serializab
         this.creator = creator;
     }
 
+    public Long getUpdater() {
+        return updater;
+    }
+
+    public void setUpdater(Long updater) {
+        this.updater = updater;
+    }
+
     @Override
     public String toString() {
         return "BulletinCondition{" +
@@ -183,8 +195,7 @@ public final class BulletinCondition extends SortCondition implements Serializab
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
                 ", creator=" + creator +
-                ", sortAttribute='" + sortAttribute + '\'' +
-                ", sortType='" + sortType + '\'' +
+                ", updater=" + updater +
                 '}';
     }
 

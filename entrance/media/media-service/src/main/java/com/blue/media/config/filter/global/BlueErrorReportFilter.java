@@ -124,6 +124,8 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
                 .ifPresent(metadata -> attributes.put(METADATA.key, metadata));
         ofNullable(request.getHeaders().getFirst(AUTHORIZATION))
                 .ifPresent(jwt -> attributes.put(JWT.key, jwt));
+        ofNullable(request.getHeaders().getFirst(BlueHeader.HOST.name))
+                .ifPresent(host -> attributes.put(HOST.key, host));
         ofNullable(request.getHeaders().getFirst(BlueHeader.USER_AGENT.name))
                 .ifPresent(userAgent -> attributes.put(USER_AGENT.key, userAgent));
     }

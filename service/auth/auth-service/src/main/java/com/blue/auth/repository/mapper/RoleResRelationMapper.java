@@ -53,6 +53,6 @@ public interface RoleResRelationMapper {
 
     List<RoleResRelation> selectByResIds(@Param("resIds") List<Long> resIds);
 
-    RoleResRelation selectExistByResIdAndRoleId(@Param("resId") Long resId, @Param("roleId") Long roleId);
+    RoleResRelation selectExistByRoleIdAndResId(@Param("roleId") Long roleId, @Param("resId") Long resId);
 
 }

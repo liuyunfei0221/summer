@@ -846,26 +846,39 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
+     * refresh jwt by member payload
+     *
+     * @param memberPayload
+     * @return
+     */
+    @Override
+    public Mono<MemberAccess> refreshAccessByMemberPayload(MemberPayload memberPayload) {
+        LOGGER.info("Mono<MemberAccess> refreshAccessByMemberPayload(MemberPayload memberPayload), memberPayload = {}", memberPayload);
+        if (isNull(memberPayload))
+            return error(() -> new BlueException(UNAUTHORIZED));
+
+        return refreshInfoRepository.findById(memberPayload.getKeyId())
+                .onErrorResume(t -> {
+                    LOGGER.warn("Mono<MemberAccess> refreshAccess(String refresh), refreshInfoRepository.findById(memberPayload.getKeyId()) failed, t = {}", t);
+                    return error(() -> new BlueException(UNAUTHORIZED));
+                })
+                .switchIfEmpty(error(() -> new BlueException(UNAUTHORIZED)))
+                .flatMap(refreshInfo -> {
+                    AUTH_ASSERTER.accept(memberPayload, refreshInfo);
+                    return this.generateAccessMono(parseLong(refreshInfo.getMemberId()), refreshInfo.getCredentialType(), refreshInfo.getDeviceType());
+                });
+    }
+
+    /**
      * refresh jwt by refresh token
      *
      * @param refresh
      * @return
      */
     @Override
-    public Mono<MemberAccess> refreshAccess(String refresh) {
-        LOGGER.info("Mono<MemberAccess> refreshAccess(String refresh), refresh = {}", refresh);
-        return just(jwtProcessor.parse(refresh))
-                .flatMap(memberPayload ->
-                        refreshInfoRepository.findById(memberPayload.getKeyId())
-                                .onErrorResume(t -> {
-                                    LOGGER.warn("Mono<MemberAccess> refreshAccess(String refresh), refreshInfoRepository.findById(memberPayload.getKeyId()) failed, t = {}", t);
-                                    return error(() -> new BlueException(UNAUTHORIZED));
-                                })
-                                .switchIfEmpty(error(() -> new BlueException(UNAUTHORIZED)))
-                                .flatMap(refreshInfo -> {
-                                    AUTH_ASSERTER.accept(memberPayload, refreshInfo);
-                                    return this.generateAccessMono(parseLong(refreshInfo.getMemberId()), refreshInfo.getCredentialType(), refreshInfo.getDeviceType());
-                                }));
+    public Mono<MemberAccess> refreshAccessByRefresh(String refresh) {
+        LOGGER.info("Mono<MemberAccess> refreshAccessByRefresh(String refresh), refresh = {}", refresh);
+        return just(jwtProcessor.parse(refresh)).flatMap(this::refreshAccessByMemberPayload);
     }
 
     /**
@@ -951,6 +964,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
+
         AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId,
                 VALID_CREDENTIAL_TYPES, VALID_DEVICE_TYPES, ROLE, valueOf(roleId).intern());
         executorService.execute(() ->

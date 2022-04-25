@@ -1,7 +1,13 @@
 package com.blue.auth.service.impl;
 
+import com.blue.auth.api.model.ResourceInfo;
+import com.blue.auth.api.model.ResourceManagerInfo;
 import com.blue.auth.constant.RoleSortAttribute;
 import com.blue.auth.converter.AuthModelConverters;
+import com.blue.auth.model.ResourceCondition;
+import com.blue.auth.model.ResourceInsertParam;
+import com.blue.auth.model.ResourceUpdateParam;
+import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.mapper.ResourceMapper;
 import com.blue.auth.service.inter.ResourceService;
@@ -10,25 +16,21 @@ import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
-import com.blue.auth.api.model.ResourceInfo;
-import com.blue.auth.model.ResourceCondition;
-import com.blue.auth.model.ResourceInsertParam;
-import com.blue.auth.model.ResourceUpdateParam;
+import com.blue.member.api.model.MemberBasicInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
+import static com.blue.auth.converter.AuthModelConverters.resourceToResourceManagerInfo;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.REST_URI_ASSERTER;
@@ -56,12 +58,15 @@ public class ResourceServiceImpl implements ResourceService {
 
     private static final Logger LOGGER = getLogger(ResourceServiceImpl.class);
 
+    private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
+
     private final BlueIdentityProcessor blueIdentityProcessor;
 
     private ResourceMapper resourceMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ResourceServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ResourceMapper resourceMapper) {
+    public ResourceServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, ResourceMapper resourceMapper) {
+        this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.resourceMapper = resourceMapper;
     }
@@ -95,6 +100,17 @@ public class ResourceServiceImpl implements ResourceService {
                 .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike("%" + nameLike + "%"));
 
         return condition;
+    };
+
+    private static final Function<List<Resource>, List<Long>> OPERATORS_GETTER = resources -> {
+        Set<Long> operatorIds = new HashSet<>(resources.size());
+
+        for (Resource r : resources) {
+            operatorIds.add(r.getCreator());
+            operatorIds.add(r.getUpdater());
+        }
+
+        return new ArrayList<>(operatorIds);
     };
 
     /**
@@ -453,10 +469,9 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<ResourceInfo>> selectResourceInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest) {
+    public Mono<PageModelResponse<ResourceManagerInfo>> selectResourceInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<ResourceInfo>> selectResourceInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
-
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
@@ -465,14 +480,17 @@ public class ResourceServiceImpl implements ResourceService {
         return zip(selectResourceMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), resourceCondition), countResourceMonoByCondition(resourceCondition))
                 .flatMap(tuple2 -> {
                     List<Resource> resources = tuple2.getT1();
-                    Mono<List<ResourceInfo>> resourceInfosMono = resources.size() > 0 ?
-                            just(resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList()))
+                    return isNotEmpty(resources) ?
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(resources))
+                                    .flatMap(memberBasicInfos -> {
+                                        Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+                                        return just(resources.stream().map(r ->
+                                                resourceToResourceManagerInfo(r, ofNullable(idAndNameMapping.get(r.getCreator())).orElse(""),
+                                                        ofNullable(idAndNameMapping.get(r.getUpdater())).orElse(""))).collect(toList()));
+                                    }).flatMap(resourceManagerInfos ->
+                                            just(new PageModelResponse<>(resourceManagerInfos, tuple2.getT2())))
                             :
-                            just(emptyList());
-
-                    return resourceInfosMono
-                            .flatMap(roleInfos ->
-                                    just(new PageModelResponse<>(roleInfos, tuple2.getT2())));
+                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
                 });
     }
 }

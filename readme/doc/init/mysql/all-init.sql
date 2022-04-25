@@ -307,7 +307,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- auth manage
 
-       (170001, 'DELETE', 'blue-auth', '/blue-auth/manager/auth', b'1', b'1', b'1', b'0', b'1', 2,
+       (170001, 'DELETE', 'blue-auth', '/manager/auth', b'1', b'1', b'1', b'0', b'1', 2,
         'invalidate member auth', 'invalidate member auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (170002, 'POST', 'blue-auth', '/manager/resources', b'1', b'1', b'1', b'1', b'1', 2,
@@ -316,7 +316,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'insert resource', 'insert resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (170004, 'PUT', 'blue-auth', '/manager/resource', b'1', b'1', b'1', b'1', b'1', 2,
         'update resource', 'update resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (170005, 'DELETE', 'blue-auth', '/manager/resource/{id}', b'1', b'1', b'1', b'0', b'1', 2,
+       (170005, 'DELETE', 'blue-auth', '/manager/resource/{id}', b'1', b'1', b'1', b'1', b'1', 2,
         'delete resource', 'delete resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (170006, 'POST', 'blue-auth', '/manager/resource/auth', b'1', b'1', b'1', b'1', b'1', 2,
         'resource auth', 'resource auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -327,14 +327,16 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'insert role', 'insert role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (170009, 'PUT', 'blue-auth', '/manager/role', b'1', b'1', b'1', b'1', b'1', 2,
         'update role', 'update role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (170010, 'DELETE', 'blue-auth', '/manager/role/{id}', b'1', b'1', b'1', b'0', b'1', 2,
+       (170010, 'DELETE', 'blue-auth', '/manager/role/{id}', b'1', b'1', b'1', b'1', b'1', 2,
         'delete role', 'delete role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (170011, 'POST', 'blue-auth', '/manager/role/auth', b'1', b'1', b'1', b'1', b'1', 2,
+       (170011, 'PUT', 'blue-auth', '/manager/role/default', b'1', b'1', b'1', b'1', b'1', 2,
+        'update default role', 'update default role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (170012, 'POST', 'blue-auth', '/manager/role/auth', b'1', b'1', b'1', b'1', b'1', 2,
         'role auth', 'role auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
-       (170012, 'PUT', 'blue-auth', '/manager/relation/role-res', b'1', b'1', b'1', b'1', b'1', 2,
+       (170013, 'PUT', 'blue-auth', '/manager/relation/role-res', b'1', b'1', b'1', b'1', b'1', 2,
         'update role-resources-relation', 'update role-resources-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (170013, 'PUT', 'blue-auth', '/manager/relation/mem-role', b'1', b'1', b'1', b'1', b'1', 2,
+       (170014, 'PUT', 'blue-auth', '/manager/relation/mem-role', b'1', b'1', b'1', b'1', b'1', 2,
         'update member-role-relation', 'update member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
@@ -422,7 +424,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- portal manage
 
-       (260001, 'GET', 'blue-portal', '/manager/bulletins', b'0', b'1', b'1', b'0', b'1', 2,
+       (260001, 'POST', 'blue-portal', '/manager/bulletins', b'0', b'1', b'1', b'0', b'1', 2,
         'bulletin list of manager', 'bulletin list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- marketing api
@@ -436,7 +438,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- marketing manage
 
-       (280001, 'POST', 'blue-marketing', '/manager/eventRecords', b'0', b'1', b'1', b'0', b'1', 2,
+       (280001, 'POST', 'blue-marketing', '/manager/eventRecords', b'1', b'1', b'1', b'0', b'1', 2,
         'event record list of manager', 'event record list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
 
@@ -453,13 +455,13 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- data manage
 
-       (320001, 'POST', 'blue-lake', '/events', b'0', b'1', b'1', b'1', b'1', 2,
+       (320001, 'POST', 'blue-lake', '/events', b'1', b'1', b'1', b'1', b'1', 2,
         'test lake eventRecord', 'test lake eventRecord', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (320002, 'POST', 'blue-analyze', '/statistics/active/simple', b'0', b'1', b'1', b'1', b'1', 2,
+       (320002, 'POST', 'blue-analyze', '/statistics/active/simple', b'1', b'1', b'1', b'1', b'1', 2,
         'statistics active simple', 'statistics active simple', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (320003, 'POST', 'blue-analyze', '/statistics/active/merge', b'0', b'1', b'1', b'1', b'1', 2,
+       (320003, 'POST', 'blue-analyze', '/statistics/active/merge', b'1', b'1', b'1', b'1', b'1', 2,
         'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (320004, 'POST', 'blue-analyze', '/statistics/active/summary', b'0', b'1', b'1', b'0', b'1', 2,
+       (320004, 'POST', 'blue-analyze', '/statistics/active/summary', b'1', b'1', b'1', b'0', b'1', 2,
         'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 
@@ -468,10 +470,14 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 INSERT INTO `auth`.`role`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`, `creator`,
                           `updater`)
 VALUES (1, 'blue', 'blue', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (2, 'normal', 'normal', 999999999, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+       (2, 'admin', 'admin', 1, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (3, 'manager', 'manager', 2, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (4, 'tester', 'tester', 3, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (5, 'customer', 'customer', 4, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (6, 'member', 'member', 5, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 
--- super admin res
+-- blue admin res
 INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                        `updater`)
 SELECT id + 1000000,
@@ -484,11 +490,67 @@ SELECT id + 1000000,
 FROM `auth`.`resource`;
 
 
--- normal res
+-- admin res
 INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                        `updater`)
-SELECT id,
+SELECT id + 2000000,
        2,
+       id,
+       UNIX_TIMESTAMP(),
+       UNIX_TIMESTAMP(),
+       1,
+       1
+FROM `auth`.`resource`
+WHERE `type` = 2;
+
+
+-- manager res
+INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                       `updater`)
+SELECT id + 3000000,
+       3,
+       id,
+       UNIX_TIMESTAMP(),
+       UNIX_TIMESTAMP(),
+       1,
+       1
+FROM `auth`.`resource`
+WHERE `type` = 2;
+
+
+-- tester res
+INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                       `updater`)
+SELECT id + 4000000,
+       4,
+       id,
+       UNIX_TIMESTAMP(),
+       UNIX_TIMESTAMP(),
+       1,
+       1
+FROM `auth`.`resource`
+WHERE `type` = 2;
+
+
+-- customer res
+INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                       `updater`)
+SELECT id + 5000000,
+       5,
+       id,
+       UNIX_TIMESTAMP(),
+       UNIX_TIMESTAMP(),
+       1,
+       1
+FROM `auth`.`resource`
+WHERE `type` = 2;
+
+
+-- member res
+INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
+                                       `updater`)
+SELECT id + 6000000,
+       6,
        id,
        UNIX_TIMESTAMP(),
        UNIX_TIMESTAMP(),

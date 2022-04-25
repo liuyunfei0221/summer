@@ -3,6 +3,7 @@ package com.blue.auth.service.inter;
 import com.blue.auth.api.model.AccessAssert;
 import com.blue.auth.api.model.AccessAsserted;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
+import com.blue.auth.api.model.MemberPayload;
 import com.blue.auth.model.MemberAccess;
 import com.blue.auth.model.MemberAuth;
 import com.blue.base.model.base.Access;
@@ -63,12 +64,20 @@ public interface AuthService {
     Mono<MemberAccess> generateAccessMono(Long memberId, String credentialType, String deviceType);
 
     /**
+     * refresh jwt by member payload
+     *
+     * @param memberPayload
+     * @return
+     */
+    Mono<MemberAccess> refreshAccessByMemberPayload(MemberPayload memberPayload);
+
+    /**
      * refresh jwt by refresh token
      *
      * @param refresh
      * @return
      */
-    Mono<MemberAccess> refreshAccess(String refresh);
+    Mono<MemberAccess> refreshAccessByRefresh(String refresh);
 
     /**
      * invalid auth by access

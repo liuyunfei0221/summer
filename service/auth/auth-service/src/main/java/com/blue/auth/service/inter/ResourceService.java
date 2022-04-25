@@ -1,5 +1,6 @@
 package com.blue.auth.service.inter;
 
+import com.blue.auth.api.model.ResourceManagerInfo;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
@@ -109,6 +110,6 @@ public interface ResourceService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<ResourceInfo>> selectResourceInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest);
+    Mono<PageModelResponse<ResourceManagerInfo>> selectResourceInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest);
 
 }

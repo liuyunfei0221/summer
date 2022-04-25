@@ -156,7 +156,7 @@ public interface ControlService {
      * @param operatorId
      * @return
      */
-    Mono<Boolean> updateDefaultRole(Long id, Long operatorId);
+    Mono<RoleManagerInfo> updateDefaultRole(Long id, Long operatorId);
 
     /**
      * update member access/password by access

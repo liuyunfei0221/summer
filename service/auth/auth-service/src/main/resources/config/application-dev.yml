@@ -336,6 +336,11 @@ blocking:
   blockingMillis: 5000
 
 
+control:
+  allow: 2
+  intervalMillis: 5000
+
+
 producers:
   configs:
     accessExpire:

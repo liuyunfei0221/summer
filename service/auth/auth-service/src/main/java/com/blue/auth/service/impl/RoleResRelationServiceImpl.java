@@ -1,5 +1,6 @@
 package com.blue.auth.service.impl;
 
+import com.blue.auth.api.model.*;
 import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.entity.Role;
@@ -10,10 +11,6 @@ import com.blue.auth.service.inter.RoleResRelationService;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
-import com.blue.auth.api.model.AuthorityBaseOnResource;
-import com.blue.auth.api.model.AuthorityBaseOnRole;
-import com.blue.auth.api.model.ResourceInfo;
-import com.blue.auth.api.model.RoleInfo;
 import com.blue.auth.model.ResourceInsertParam;
 import com.blue.auth.model.ResourceUpdateParam;
 import com.blue.auth.model.RoleInsertParam;
@@ -84,8 +81,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isNull(relation))
             throw new BlueException(EMPTY_PARAM);
 
-        Long id = relation.getId();
-        if (isInvalidIdentity(id))
+        if (isInvalidIdentity(relation.getId()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "id is invalid");
 
         Long roleId = relation.getRoleId();
@@ -96,17 +92,13 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidIdentity(resId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "resId is invalid");
 
-        Long createTime = relation.getCreateTime();
-        Long updateTime = relation.getUpdateTime();
-        if (isNull(createTime) || isNull(updateTime))
+        if (isNull(relation.getCreateTime()) || isNull(relation.getUpdateTime()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "createTime or updateTime is invalid");
 
-        Long creator = relation.getCreator();
-        Long updater = relation.getUpdater();
-        if (isInvalidIdentity(creator) || isInvalidIdentity(updater))
+        if (isInvalidIdentity(relation.getCreator()) || isInvalidIdentity(relation.getUpdater()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "creator or updater is invalid");
 
-        if (isNotNull(roleResRelationMapper.selectExistByResIdAndRoleId(resId, roleId)))
+        if (isNotNull(roleResRelationMapper.selectExistByRoleIdAndResId(roleId, resId)))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The data base res and role already exists");
     };
 
@@ -398,15 +390,16 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      *
      * @param id
      * @param operatorId
+     * @return
      */
     @Override
-    public void updateDefaultRole(Long id, Long operatorId) {
+    public RoleManagerInfo updateDefaultRole(Long id, Long operatorId) {
         LOGGER.info("void updateDefaultRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
 
         RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
         try {
             lock.lock();
-            roleService.updateDefaultRole(id, operatorId);
+            return roleService.updateDefaultRole(id, operatorId);
         } catch (Exception e) {
             LOGGER.error("void updateDefaultRole(Long id) failed, id = {}, e = {}", id, e);
             throw e;

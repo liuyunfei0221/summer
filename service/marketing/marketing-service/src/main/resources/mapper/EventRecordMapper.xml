@@ -169,14 +169,6 @@
                     AND
                     create_time &lt;= #{attachmentCondition.createTimeEnd,jdbcType=BIGINT}
                 </if>
-                <if test="eventRecordCondition.updateTimeBegin != null">
-                    AND
-                    update_time &gt;= #{attachmentCondition.updateTimeBegin,jdbcType=BIGINT}
-                </if>
-                <if test="eventRecordCondition.updateTimeEnd != null">
-                    AND
-                    update_time &lt;= #{attachmentCondition.updateTimeEnd,jdbcType=BIGINT}
-                </if>
             </where>
         </if>
     </sql>

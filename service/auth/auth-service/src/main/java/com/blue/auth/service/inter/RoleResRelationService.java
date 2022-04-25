@@ -1,12 +1,9 @@
 package com.blue.auth.service.inter;
 
+import com.blue.auth.api.model.*;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.repository.entity.RoleResRelation;
-import com.blue.auth.api.model.AuthorityBaseOnResource;
-import com.blue.auth.api.model.AuthorityBaseOnRole;
-import com.blue.auth.api.model.ResourceInfo;
-import com.blue.auth.api.model.RoleInfo;
 import com.blue.auth.model.ResourceInsertParam;
 import com.blue.auth.model.ResourceUpdateParam;
 import com.blue.auth.model.RoleInsertParam;
@@ -20,7 +17,7 @@ import java.util.List;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "UnusedReturnValue"})
+@SuppressWarnings({"JavaDoc", "UnusedReturnValue", "unused"})
 public interface RoleResRelationService {
 
     /**
@@ -158,8 +155,9 @@ public interface RoleResRelationService {
      *
      * @param id
      * @param operatorId
+     * @return
      */
-    void updateDefaultRole(Long id, Long operatorId);
+    RoleManagerInfo updateDefaultRole(Long id, Long operatorId);
 
     /**
      * insert a new role

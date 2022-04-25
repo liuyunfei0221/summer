@@ -267,7 +267,7 @@
                 </if>
                 <if test="resourceCondition.uriLike != null and resourceCondition.uriLike != ''">
                     AND
-                    uriLike LIKE #{resourceCondition.uriLike,jdbcType=VARCHAR}
+                    uri LIKE #{resourceCondition.uriLike,jdbcType=VARCHAR}
                 </if>
                 <if test="resourceCondition.authenticate != null">
                     AND
