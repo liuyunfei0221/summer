@@ -1,5 +1,9 @@
 package com.blue.media.model;
 
+import com.blue.base.constant.base.SortType;
+import com.blue.base.model.base.SortCondition;
+import com.blue.media.constant.DownloadHistorySortAttribute;
+
 import java.io.Serializable;
 
 /**
@@ -8,7 +12,7 @@ import java.io.Serializable;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class DownloadHistoryCondition implements Serializable {
+public final class DownloadHistoryCondition extends SortCondition implements Serializable {
 
     private static final long serialVersionUID = 5402945303876982613L;
 
@@ -22,21 +26,21 @@ public final class DownloadHistoryCondition implements Serializable {
 
     private Long createTimeEnd;
 
-    private String sortAttribute;
-
-    private String sortType;
-
     public DownloadHistoryCondition() {
+        super(DownloadHistorySortAttribute.ID.attribute, SortType.DESC.identity);
     }
 
-    public DownloadHistoryCondition(Long id, Long attachmentId, Long creator, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
+    public DownloadHistoryCondition(String sortAttribute, String sortType) {
+        super(sortAttribute, sortType);
+    }
+
+    public DownloadHistoryCondition(String sortAttribute, String sortType, Long id, Long attachmentId, Long creator, Long createTimeBegin, Long createTimeEnd) {
+        super(sortAttribute, sortType);
         this.id = id;
         this.attachmentId = attachmentId;
         this.creator = creator;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
-        this.sortAttribute = sortAttribute;
-        this.sortType = sortType;
     }
 
     public Long getId() {
@@ -79,22 +83,6 @@ public final class DownloadHistoryCondition implements Serializable {
         this.createTimeEnd = createTimeEnd;
     }
 
-    public String getSortAttribute() {
-        return sortAttribute;
-    }
-
-    public void setSortAttribute(String sortAttribute) {
-        this.sortAttribute = sortAttribute;
-    }
-
-    public String getSortType() {
-        return sortType;
-    }
-
-    public void setSortType(String sortType) {
-        this.sortType = sortType;
-    }
-
     @Override
     public String toString() {
         return "DownloadHistoryCondition{" +
@@ -103,8 +91,6 @@ public final class DownloadHistoryCondition implements Serializable {
                 ", creator=" + creator +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
-                ", sortAttribute='" + sortAttribute + '\'' +
-                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

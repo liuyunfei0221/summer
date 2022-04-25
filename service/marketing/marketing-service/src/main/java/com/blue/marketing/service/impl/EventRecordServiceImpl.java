@@ -1,5 +1,6 @@
 package com.blue.marketing.service.impl;
 
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -14,22 +15,20 @@ import com.blue.marketing.service.inter.EventRecordService;
 import com.blue.member.api.model.MemberBasicInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.ConstantProcessor.assertSortType;
+import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.marketing.converter.MarketingModelConverters.EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -68,17 +67,20 @@ public class EventRecordServiceImpl implements EventRecordService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(EventRecordSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Consumer<EventRecordCondition> CONDITION_REPACKAGER = condition -> {
+    private static final UnaryOperator<EventRecordCondition> CONDITION_PROCESSOR = condition -> {
         if (isNull(condition))
-            return;
+            return new EventRecordCondition();
 
-        ofNullable(condition.getSortAttribute())
-                .filter(StringUtils::hasText)
-                .map(SORT_ATTRIBUTE_MAPPING::get)
-                .filter(StringUtils::hasText)
-                .ifPresent(condition::setSortAttribute);
+        condition.setSortAttribute(
+                ofNullable(condition.getSortAttribute())
+                        .filter(BlueChecker::isNotBlank)
+                        .map(SORT_ATTRIBUTE_MAPPING::get)
+                        .filter(BlueChecker::isNotBlank)
+                        .orElseThrow(() -> new BlueException(INVALID_PARAM)));
 
-        assertSortType(condition.getSortType(), true);
+        condition.setSortType(getSortTypeByIdentity(condition.getSortType()).identity);
+
+        return condition;
     };
 
     /**
@@ -269,8 +271,7 @@ public class EventRecordServiceImpl implements EventRecordService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        EventRecordCondition eventRecordCondition = pageModelRequest.getParam();
-        CONDITION_REPACKAGER.accept(eventRecordCondition);
+        EventRecordCondition eventRecordCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
         return zip(selectEventRecordMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), eventRecordCondition), countEventRecordMonoByCondition(eventRecordCondition))
                 .flatMap(tuple2 -> {

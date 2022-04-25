@@ -1,10 +1,7 @@
 package com.blue.media.handler.manager;
 
 import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.media.api.model.DownloadHistoryInfo;
 import com.blue.media.service.inter.DownloadHistoryService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -14,6 +11,7 @@ import reactor.core.publisher.Mono;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;
+import static com.blue.media.constant.MediaTypeReference.PAGE_MODEL_FOR_DOWNLOAD_HISTORY_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
@@ -39,12 +37,10 @@ public final class DownloadHistoryManagerHandler {
      * @param serverRequest
      * @return
      */
-    @SuppressWarnings("unchecked")
     public Mono<ServerResponse> listDownloadHistory(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(PageModelRequest.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
-                .flatMap(pageModelRequest ->
-                        (Mono<PageModelResponse<DownloadHistoryInfo>>) downloadHistoryService.selectDownloadHistoryInfoPageMonoByPageAndCondition(pageModelRequest)
+        return serverRequest.bodyToMono(PAGE_MODEL_FOR_DOWNLOAD_HISTORY_CONDITION_TYPE)
+                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                .flatMap(downloadHistoryService::selectDownloadHistoryInfoPageMonoByPageAndCondition
                 )
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)

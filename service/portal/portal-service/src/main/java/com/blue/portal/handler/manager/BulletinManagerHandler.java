@@ -1,9 +1,7 @@
 package com.blue.portal.handler.manager;
 
 import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.portal.api.model.BulletinManagerInfo;
 import com.blue.portal.service.inter.BulletinService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -39,13 +37,10 @@ public final class BulletinManagerHandler {
      * @param serverRequest
      * @return
      */
-    @SuppressWarnings("unchecked")
     public Mono<ServerResponse> listBulletin(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_BULLETIN_CONDITION_TYPE)
                 .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
-                .flatMap(pageModelRequest ->
-                        (Mono<PageModelResponse<BulletinManagerInfo>>) bulletinService.selectBulletinInfoPageMonoByPageAndCondition(pageModelRequest)
-                )
+                .flatMap(bulletinService::selectBulletinInfoPageMonoByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));

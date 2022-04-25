@@ -181,8 +181,7 @@
         </if>
     </sql>
 
-    <select id="selectByLimitAndCondition" resultMap="BaseResultMap"
-            parameterType="com.blue.marketing.model.EventRecordCondition">
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -195,8 +194,7 @@
         LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
     </select>
 
-    <select id="countByCondition" resultType="java.lang.Long"
-            parameterType="com.blue.marketing.model.EventRecordCondition">
+    <select id="countByCondition" resultType="java.lang.Long">
         SELECT COUNT(*)
         FROM
         event_record
