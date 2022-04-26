@@ -64,10 +64,16 @@ public final class BlueBitMarker {
 
         boolean[] bits = new boolean[limit];
 
-        long trueBit = 1L;
+        int currentLimit = limit;
+        int offset;
+        long trueBit;
+
         for (long record : records) {
-            for (int offset = limit; offset >= MIN_LIMIT; offset--) {
-                bits[offset - 1] = (record & trueBit) != 0L;
+            offset = 64;
+            trueBit = 1L;
+
+            for (; currentLimit >= MIN_LIMIT && offset >= 0; currentLimit--, offset--) {
+                bits[currentLimit - 1] = (record & trueBit) != 0L;
                 trueBit <<= 1;
             }
         }
