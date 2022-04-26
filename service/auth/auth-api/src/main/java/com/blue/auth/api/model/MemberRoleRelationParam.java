@@ -1,4 +1,4 @@
-package com.blue.auth.model;
+package com.blue.auth.api.model;
 
 import com.blue.base.inter.Asserter;
 import com.blue.base.model.exps.BlueException;

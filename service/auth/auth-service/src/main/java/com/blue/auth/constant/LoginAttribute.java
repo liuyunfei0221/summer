@@ -9,7 +9,12 @@ public enum LoginAttribute {
 
     //common
     /**
-     * verify code if trigger risk control
+     * verify key
+     */
+    VERIFICATION_KEY("verificationKey"),
+
+    /**
+     * verify code
      */
     VERIFICATION_CODE("verificationCode"),
 

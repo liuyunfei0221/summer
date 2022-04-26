@@ -155,7 +155,7 @@ public enum BlueNumericalValue {
     /**
      * system default id
      */
-    BLUE_ID(1L);
+    BLUE_ID(0L);
 
 
     /**

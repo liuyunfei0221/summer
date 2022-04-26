@@ -2,7 +2,7 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.ResourceInfo;
 import com.blue.auth.api.model.ResourceManagerInfo;
-import com.blue.auth.constant.RoleSortAttribute;
+import com.blue.auth.constant.ResourceSortAttribute;
 import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.model.ResourceCondition;
 import com.blue.auth.model.ResourceInsertParam;
@@ -34,7 +34,9 @@ import static com.blue.auth.converter.AuthModelConverters.resourceToResourceMana
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.REST_URI_ASSERTER;
-import static com.blue.base.common.base.ConstantProcessor.*;
+import static com.blue.base.common.base.ConditionSortProcessor.process;
+import static com.blue.base.common.base.ConstantProcessor.assertHttpMethod;
+import static com.blue.base.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Collections.emptyList;
@@ -71,23 +73,14 @@ public class ResourceServiceImpl implements ResourceService {
         this.resourceMapper = resourceMapper;
     }
 
-    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(ResourceSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<ResourceCondition> CONDITION_PROCESSOR = condition -> {
         if (isNull(condition))
             return new ResourceCondition();
 
-        ofNullable(condition.getSortAttribute())
-                .filter(StringUtils::hasText)
-                .map(SORT_ATTRIBUTE_MAPPING::get)
-                .filter(StringUtils::hasText)
-                .ifPresent(condition::setSortAttribute);
-
-        ofNullable(condition.getSortType())
-                .filter(StringUtils::hasText)
-                .map(st -> getSortTypeByIdentity(st).identity)
-                .ifPresent(condition::setSortType);
+        process(condition, SORT_ATTRIBUTE_MAPPING, ResourceSortAttribute.ID.column);
 
         ofNullable(condition.getRequestMethod())
                 .filter(StringUtils::hasText).map(String::toUpperCase).ifPresent(condition::setRequestMethod);
@@ -296,7 +289,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @param operatorId
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
         LOGGER.info("ResourceInfo insertResource(ResourceInsertParam resourceInsertParam), resourceInsertParam = {}", resourceInsertParam);
         if (isNull(resourceInsertParam))
@@ -325,7 +318,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId) {
         LOGGER.info("ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}", resourceUpdateParam);
         if (isNull(resourceUpdateParam))
@@ -349,7 +342,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ResourceInfo deleteResourceById(Long id) {
         LOGGER.info("ResourceInfo deleteResourceById(Long id), id = {}", id);
         if (isInvalidIdentity(id))

@@ -73,7 +73,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- auth manage
 
-       (170001, 'DELETE', 'blue-auth', '/manager/auth', b'1', b'1', b'1', b'0', b'1', 2,
+       (170001, 'DELETE', 'blue-auth', '/manager/auth/{mid}', b'1', b'1', b'1', b'0', b'1', 2,
         'invalidate member auth', 'invalidate member auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (170002, 'POST', 'blue-auth', '/manager/resources', b'1', b'1', b'1', b'1', b'1', 2,
@@ -190,7 +190,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- portal manage
 
-       (260001, 'POST', 'blue-portal', '/manager/bulletins', b'0', b'1', b'1', b'0', b'1', 2,
+       (260001, 'POST', 'blue-portal', '/manager/bulletins', b'1', b'1', b'1', b'0', b'1', 2,
         'bulletin list of manager', 'bulletin list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- marketing api

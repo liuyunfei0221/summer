@@ -139,7 +139,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      * @param memberRoleRelation
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     @GlobalLock
     public int insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) {
         LOGGER.info("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation), memberRoleRelation = {}", memberRoleRelation);
@@ -157,7 +157,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
             lock.lock();
             MemberRoleRelation existRelation = memberRoleRelationMapper.getByMemberId(memberId);
             if (isNotNull(existRelation))
-                throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE.status);
+                throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
 
             return memberRoleRelationMapper.insertSelective(memberRoleRelation);
         } catch (Exception e) {
@@ -181,7 +181,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     @GlobalLock
     public int insertMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("int insertMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
@@ -207,7 +207,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         try {
             MemberRoleRelation existRelation = memberRoleRelationMapper.getByMemberId(memberId);
             if (isNotNull(existRelation))
-                throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE.status);
+                throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
 
             return memberRoleRelationMapper.insertSelective(memberRoleRelation);
         } catch (Exception e) {
@@ -230,7 +230,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      * @param operatorId
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
@@ -242,7 +242,10 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         try {
             MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getByMemberId(memberId);
             if (isNull(memberRoleRelation))
-                throw new BlueException(MEMBER_NOT_HAS_A_ROLE.status);
+                throw new BlueException(MEMBER_NOT_HAS_A_ROLE);
+
+            if (memberRoleRelation.getRoleId().equals(roleId))
+                throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
 
             memberRoleRelation.setRoleId(roleId);
             memberRoleRelation.setUpdateTime(TIME_STAMP_GETTER.get());

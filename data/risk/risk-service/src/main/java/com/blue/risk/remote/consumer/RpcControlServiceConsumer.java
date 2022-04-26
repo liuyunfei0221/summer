@@ -1,9 +1,8 @@
 package com.blue.risk.remote.consumer;
 
-import com.blue.base.model.base.Access;
 import com.blue.auth.api.inter.RpcControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
-import com.blue.auth.api.model.MemberCredentialInfo;
+import com.blue.base.model.base.Access;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -19,30 +18,19 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam", "FieldCanBeLocal"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "FieldCanBeLocal"})
 @Component
 public class RpcControlServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcControlServiceConsumer.class);
 
     @DubboReference(version = "1.0",
-            providedBy = {"summer-member"},
+            providedBy = {"summer-auth"},
             methods = {
-                    @Method(name = "initMemberAuthInfo", async = false),
                     @Method(name = "getAuthorityByAccess", async = true),
                     @Method(name = "getAuthorityByMemberId", async = true)
             })
     private RpcControlService rpcControlService;
-
-    /**
-     * init auth infos for a new member
-     *
-     * @param memberCredentialInfo
-     */
-    public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo) {
-        LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
-        rpcControlService.initMemberAuthInfo(memberCredentialInfo);
-    }
 
     /**
      * query authority by access

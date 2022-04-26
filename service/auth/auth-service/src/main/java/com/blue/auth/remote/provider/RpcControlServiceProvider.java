@@ -3,6 +3,7 @@ package com.blue.auth.remote.provider;
 import com.blue.auth.api.inter.RpcControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.api.model.MemberCredentialInfo;
+import com.blue.auth.api.model.MemberRoleRelationParam;
 import com.blue.auth.service.inter.ControlService;
 import com.blue.base.model.base.Access;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -26,7 +27,8 @@ import static reactor.util.Loggers.getLogger;
         version = "1.0",
         methods = {
                 @Method(name = "initMemberAuthInfo", async = false, timeout = 60000, retries = 0),
-                @Method(name = "updateMemberRoleById", async = false),
+                @Method(name = "updateAuthorityByMemberSync", async = false, timeout = 60000, retries = 1),
+                @Method(name = "refreshMemberRoleById", async = false),
                 @Method(name = "getAuthorityByAccess", async = true),
                 @Method(name = "getAuthorityByMemberId", async = true)
         })
@@ -55,6 +57,17 @@ public class RpcControlServiceProvider implements RpcControlService {
     }
 
     /**
+     * update authority base on member / update member-role-relations sync with trans / not support for manager
+     *
+     * @param memberRoleRelationParam
+     */
+    @Override
+    public void updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
+        LOGGER.info("void updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam), memberRoleRelationParam = {}", memberRoleRelationParam);
+        controlService.updateAuthorityByMemberSync(memberRoleRelationParam);
+    }
+
+    /**
      * update member's auth by member id
      *
      * @param memberId
@@ -63,9 +76,9 @@ public class RpcControlServiceProvider implements RpcControlService {
      * @return
      */
     @Override
-    public void updateMemberRoleById(Long memberId, Long roleId, Long operatorId) {
-        LOGGER.info("void updateMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
-        controlService.refreshMemberRoleById(memberId, roleId, operatorId);
+    public CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
+        LOGGER.info("CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
+        return controlService.refreshMemberRoleById(memberId, roleId, operatorId).subscribeOn(scheduler).toFuture();
     }
 
     /**

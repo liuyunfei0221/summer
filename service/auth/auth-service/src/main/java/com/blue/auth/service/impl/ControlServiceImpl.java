@@ -17,7 +17,6 @@ import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.auth.VerifyTypeAndCredentialTypesRelation;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.base.Access;
-import com.blue.base.model.base.IdentityParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.jwt.common.JwtProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
@@ -44,6 +43,7 @@ import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.base.common.base.ConstantProcessor.getVerifyTypeByIdentity;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIpReact;
+import static com.blue.base.constant.base.BlueNumericalValue.BLUE_ID;
 import static com.blue.base.constant.base.RateLimitKeyPrefix.ACCESS_UPDATE_RATE_LIMIT_KEY_PRE;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.INVALID;
@@ -393,16 +393,17 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public int updateMemberRoleById(Long memberId, Long roleId, Long operatorId) {
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public boolean updateMemberRoleById(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void updateMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
         assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), getRoleByMemberId(operatorId).getLevel());
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
-        int i = memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
-        if (i > 0)
-            authService.refreshMemberRoleById(memberId, roleId, operatorId);
+        boolean updated = memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId) > 0;
+        if (updated)
+            authService.refreshMemberRoleById(memberId, roleId, operatorId).toFuture().join();
 
-        return i;
+        return updated;
     }
 
     /**
@@ -556,8 +557,8 @@ public class ControlServiceImpl implements ControlService {
      * @return
      */
     @Override
-    public void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
-        authService.refreshMemberRoleById(memberId, roleId, operatorId);
+    public Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
+        return authService.refreshMemberRoleById(memberId, roleId, operatorId);
     }
 
     /**
@@ -854,27 +855,63 @@ public class ControlServiceImpl implements ControlService {
 
         return fromFuture(supplyAsync(() ->
                 memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId), executorService))
-                .doOnSuccess(i -> {
-                    if (i > 0)
-                        authService.refreshMemberRoleById(memberId, roleId, operatorId);
-                })
+                .flatMap(ig -> authService.refreshMemberRoleById(memberId, roleId, operatorId))
                 .flatMap(ig -> this.selectAuthorityMonoByRoleId(roleId));
+    }
+
+    /**
+     * update authority base on role / generate role-resource-relations sync with trans / not support for manager
+     *
+     * @param roleResRelationParam
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public AuthorityBaseOnRole updateAuthorityByRoleSync(RoleResRelationParam roleResRelationParam) {
+        LOGGER.info("AuthorityBaseOnRole updateAuthorityByRoleSync(RoleResRelationParam roleResRelationParam), roleResRelationParam = {}", roleResRelationParam);
+
+        if (isNull(roleResRelationParam))
+            throw new BlueException(EMPTY_PARAM);
+        roleResRelationParam.asserts();
+
+        AuthorityBaseOnRole authorityBaseOnRole = roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), BLUE_ID.value);
+        systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
+
+        return authorityBaseOnRole;
+    }
+
+    /**
+     * update authority base on member / update member-role-relations sync with trans / not support for manager
+     *
+     * @param memberRoleRelationParam
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public void updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
+        LOGGER.info("AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam), memberRoleRelationParam = {}", memberRoleRelationParam);
+        if (isNull(memberRoleRelationParam))
+            throw new BlueException(EMPTY_PARAM);
+        memberRoleRelationParam.asserts();
+
+        Long memberId = memberRoleRelationParam.getMemberId();
+        Long roleId = memberRoleRelationParam.getRoleId();
+
+        if (memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, BLUE_ID.value) < 1)
+            throw new BlueException(DATA_NOT_EXIST);
+
+        authService.refreshMemberRoleById(memberId, roleId, BLUE_ID.value).toFuture().join();
     }
 
     /**
      * invalid member auth by member id
      *
-     * @param identityParam
+     * @param memberId
      * @param operatorId
      * @return
      */
     @Override
-    public Mono<Boolean> invalidateAuthByMember(IdentityParam identityParam, Long operatorId) {
-        LOGGER.info("Mono<Boolean> invalidateAuthByMembers(IdentitiesParam identitiesParam, Long operatorId), identityParam = {}, operatorId = {}", identityParam, operatorId);
-        if (isNull(identityParam))
-            throw new BlueException(EMPTY_PARAM);
-
-        Long memberId = identityParam.getId();
+    public Mono<Boolean> invalidateAuthByMember(Long memberId, Long operatorId) {
+        LOGGER.info("Mono<Boolean> invalidateAuthByMember(Long memberId, Long operatorId), memberId = {}, operatorId = {}", memberId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), getRoleByMemberId(operatorId).getLevel());

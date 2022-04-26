@@ -962,15 +962,15 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
+    public Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
         AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId,
                 VALID_CREDENTIAL_TYPES, VALID_DEVICE_TYPES, ROLE, valueOf(roleId).intern());
-        executorService.execute(() ->
-                refreshAuthElementByMultiTypes(authInfoRefreshElement));
+        return fromRunnable(() -> executorService.execute(() ->
+                refreshAuthElementByMultiTypes(authInfoRefreshElement))).then(just(true));
     }
 
     /**

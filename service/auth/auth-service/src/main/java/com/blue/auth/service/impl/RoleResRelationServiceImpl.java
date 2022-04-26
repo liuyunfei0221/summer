@@ -474,7 +474,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleInfo deleteRole(Long id, Long operatorId) {
         LOGGER.info("RoleInfo deleteRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
         if (isInvalidIdentity(id))
@@ -564,7 +564,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ResourceInfo deleteResource(Long id, Long operatorId) {
         LOGGER.info("ResourceInfo deleteResource(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
         if (isInvalidIdentity(id))
@@ -602,7 +602,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int insertRelation(RoleResRelation roleResRelation) {
         LOGGER.info("void insertRelation(RoleResRelation roleResRelation), roleResRelation = {}", roleResRelation);
         if (isNull(roleResRelation))
@@ -619,7 +619,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int insertRelationBatch(List<RoleResRelation> roleResRelations) {
         LOGGER.info("void insertRelationBatch(List<RoleResRelation> roleResRelations), roleResRelations = {}", roleResRelations);
         if (isEmpty(roleResRelations))
@@ -636,7 +636,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int deleteRelationByRoleId(Long roleId) {
         LOGGER.info("void deleteRelationByRoleId(Long roleId), roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
@@ -654,7 +654,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int deleteRelationByResId(Long resId) {
         LOGGER.info("void deleteRelationByResId(Long resId), resId = {}", resId);
         if (isInvalidIdentity(resId))
@@ -721,7 +721,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public AuthorityBaseOnRole updateAuthorityByRole(Long roleId, List<Long> resIds, Long operatorId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityBaseOnRole(Long roleId, List<Long> resIds, Long operatorId), roleId = {}, resIds = {}, operatorId = {}", roleId, resIds, operatorId);
         if (isInvalidIdentity(roleId))

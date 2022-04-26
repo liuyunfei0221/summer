@@ -3,7 +3,6 @@ package com.blue.auth.service.inter;
 import com.blue.auth.api.model.*;
 import com.blue.auth.model.*;
 import com.blue.base.model.base.Access;
-import com.blue.base.model.base.IdentityParam;
 import com.blue.member.api.model.MemberBasicInfo;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -104,7 +103,7 @@ public interface ControlService {
      * @param operatorId
      * @return
      */
-    int updateMemberRoleById(Long memberId, Long roleId, Long operatorId);
+    boolean updateMemberRoleById(Long memberId, Long roleId, Long operatorId);
 
     /**
      * init auth infos for a new member
@@ -147,7 +146,7 @@ public interface ControlService {
      * @param operatorId
      * @return
      */
-    void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId);
+    Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId);
 
     /**
      * update default role by role id
@@ -272,12 +271,27 @@ public interface ControlService {
     Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId);
 
     /**
+     * update authority base on role / generate role-resource-relations sync with trans / not support for manager
+     *
+     * @param roleResRelationParam
+     * @return
+     */
+    AuthorityBaseOnRole updateAuthorityByRoleSync(RoleResRelationParam roleResRelationParam);
+
+    /**
+     * update authority base on member / update member-role-relations sync with trans / not support for manager
+     *
+     * @param memberRoleRelationParam
+     */
+    void updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam);
+
+    /**
      * invalid member auth by member id
      *
-     * @param identityParam
+     * @param memberId
      * @param operatorId
      * @return
      */
-    Mono<Boolean> invalidateAuthByMember(IdentityParam identityParam, Long operatorId);
+    Mono<Boolean> invalidateAuthByMember(Long memberId, Long operatorId);
 
 }

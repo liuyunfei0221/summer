@@ -119,7 +119,7 @@ public interface AuthService {
      * @param operatorId
      * @return
      */
-    void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId);
+    Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId);
 
     /**
      * update member sec key by access

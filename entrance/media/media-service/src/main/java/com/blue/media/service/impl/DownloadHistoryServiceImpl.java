@@ -4,6 +4,7 @@ import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.DownloadHistoryInfo;
+import com.blue.media.constant.DownloadHistorySortAttribute;
 import com.blue.media.model.DownloadHistoryCondition;
 import com.blue.media.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.media.repository.entity.Attachment;
@@ -25,10 +26,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.media.converter.MediaModelConverters.downloadHistoryToDownloadHistoryInfo;
 import static com.blue.mongo.common.SortConverter.convert;
 import static java.util.Collections.emptyList;
@@ -69,11 +70,24 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         this.downloadHistoryRepository = downloadHistoryRepository;
     }
 
-    private static final Function<DownloadHistoryCondition, Sort> SORTER_CONVERTER = condition ->
-            condition != null ?
-                    convert(condition.getSortType(), singletonList(condition.getSortAttribute()))
-                    :
-                    unsorted();
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(DownloadHistorySortAttribute.values())
+            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
+
+    private static final Function<DownloadHistoryCondition, Sort> SORTER_CONVERTER = condition -> {
+        if (isNull(condition))
+            return unsorted();
+
+        String sortAttribute = condition.getSortAttribute();
+        if (isBlank(sortAttribute)) {
+            condition.setSortAttribute(DownloadHistorySortAttribute.ID.column);
+        } else {
+            if (!SORT_ATTRIBUTE_MAPPING.containsValue(sortAttribute))
+                throw new BlueException(INVALID_PARAM);
+        }
+
+        return convert(condition.getSortType(), singletonList(condition.getSortAttribute()));
+    };
+
 
     private static final Function<DownloadHistoryCondition, Query> CONDITION_PROCESSOR = condition -> {
         if (condition == null)

@@ -33,7 +33,7 @@ public class WithdrawServiceImpl implements WithdrawService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public Boolean withdraw(WithdrawInfo withdrawInfo, Access access) {
         LOGGER.info("Boolean withdraw(WithdrawInfo withdrawInfo, Access access), withdrawInfo = {}, access = {}", withdrawInfo, access);
         if (isNull(withdrawInfo) || isNull(access))

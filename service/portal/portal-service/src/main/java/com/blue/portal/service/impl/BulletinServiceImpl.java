@@ -25,8 +25,8 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertBulletinType;
-import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.portal.converter.PortalModelConverters.bulletinToBulletinManagerInfo;
@@ -65,16 +65,7 @@ public class BulletinServiceImpl implements BulletinService {
         if (isNull(condition))
             return new BulletinCondition();
 
-        ofNullable(condition.getSortAttribute())
-                .filter(StringUtils::hasText)
-                .map(SORT_ATTRIBUTE_MAPPING::get)
-                .filter(StringUtils::hasText)
-                .ifPresent(condition::setSortAttribute);
-
-        ofNullable(condition.getSortType())
-                .filter(StringUtils::hasText)
-                .map(st -> getSortTypeByIdentity(st).identity)
-                .ifPresent(condition::setSortType);
+        process(condition, SORT_ATTRIBUTE_MAPPING, BulletinSortAttribute.ID.column);
 
         ofNullable(condition.getTitleLike())
                 .filter(StringUtils::hasText).ifPresent(titleLike -> condition.setTitleLike("%" + titleLike + "%"));

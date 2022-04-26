@@ -1,8 +1,9 @@
 package com.blue.auth.api.inter;
 
-import com.blue.auth.api.model.MemberCredentialInfo;
-import com.blue.base.model.base.Access;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
+import com.blue.auth.api.model.MemberCredentialInfo;
+import com.blue.auth.api.model.MemberRoleRelationParam;
+import com.blue.base.model.base.Access;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -22,6 +23,13 @@ public interface RpcControlService {
     void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo);
 
     /**
+     * update authority base on member / update member-role-relations sync with trans / not support for manager
+     *
+     * @param memberRoleRelationParam
+     */
+    void updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam);
+
+    /**
      * update member's auth by member id
      *
      * @param memberId
@@ -29,7 +37,7 @@ public interface RpcControlService {
      * @param operatorId
      * @return
      */
-    void updateMemberRoleById(Long memberId, Long roleId, Long operatorId);
+    CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId);
 
     /**
      * query authority by access

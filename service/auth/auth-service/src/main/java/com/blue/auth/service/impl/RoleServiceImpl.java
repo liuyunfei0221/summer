@@ -37,7 +37,7 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
+import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.Default.DEFAULT;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
@@ -175,16 +175,7 @@ public class RoleServiceImpl implements RoleService {
         if (isNull(condition))
             return new RoleCondition();
 
-        ofNullable(condition.getSortAttribute())
-                .filter(StringUtils::hasText)
-                .map(SORT_ATTRIBUTE_MAPPING::get)
-                .filter(StringUtils::hasText)
-                .ifPresent(condition::setSortAttribute);
-
-        ofNullable(condition.getSortType())
-                .filter(StringUtils::hasText)
-                .map(st -> getSortTypeByIdentity(st).identity)
-                .ifPresent(condition::setSortType);
+        process(condition, SORT_ATTRIBUTE_MAPPING, RoleSortAttribute.ID.column);
 
         ofNullable(condition.getNameLike())
                 .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike("%" + nameLike + "%"));
@@ -300,7 +291,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
         LOGGER.info("RoleInfo insertRole(RoleInsertParam roleInsertParam), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
         if (isNull(roleInsertParam))
@@ -328,7 +319,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId) {
         LOGGER.info("RoleInfo updateRole(RoleInsertParam roleInsertParam), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
         if (isNull(roleUpdateParam))
@@ -352,7 +343,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleInfo deleteRoleById(Long id) {
         LOGGER.info("RoleInfo deleteRoleById(Long id, Long operatorId), id = {}", id);
         if (isInvalidIdentity(id))
@@ -406,7 +397,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleManagerInfo updateDefaultRole(Long id, Long operatorId) {
         LOGGER.info("void updateDefaultRole(Long id), id = {}", id);
         if (isInvalidIdentity(id))

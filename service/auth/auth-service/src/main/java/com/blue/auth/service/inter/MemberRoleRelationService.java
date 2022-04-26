@@ -12,7 +12,7 @@ import java.util.Optional;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "UnusedReturnValue"})
+@SuppressWarnings({"JavaDoc", "UnusedReturnValue", "unused"})
 public interface MemberRoleRelationService {
 
     /**

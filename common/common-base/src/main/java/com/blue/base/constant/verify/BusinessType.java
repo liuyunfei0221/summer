@@ -2,8 +2,7 @@ package com.blue.base.constant.verify;
 
 import java.util.Set;
 
-import static com.blue.base.constant.verify.VerifyType.MAIL;
-import static com.blue.base.constant.verify.VerifyType.SMS;
+import static com.blue.base.constant.verify.VerifyType.*;
 
 /**
  * verify business type
@@ -16,6 +15,11 @@ public enum BusinessType {
      * register
      */
     REGISTER("REG", Set.of(SMS, MAIL)),
+
+    /**
+     * login by credential and access
+     */
+    CREDENTIAL_ACCESS_LOGIN("CAL", Set.of(IMAGE)),
 
     /**
      * sms verify login with auto register

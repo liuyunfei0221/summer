@@ -13,7 +13,6 @@ import com.blue.member.repository.mapper.MemberBasicMapper;
 import com.blue.member.service.inter.MemberBasicService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
@@ -26,7 +25,7 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
+import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
@@ -92,16 +91,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         if (isNull(condition))
             return new MemberBasicCondition();
 
-        ofNullable(condition.getSortAttribute())
-                .filter(StringUtils::hasText)
-                .map(SORT_ATTRIBUTE_MAPPING::get)
-                .filter(StringUtils::hasText)
-                .ifPresent(condition::setSortAttribute);
-
-        ofNullable(condition.getSortType())
-                .filter(StringUtils::hasText)
-                .map(st -> getSortTypeByIdentity(st).identity)
-                .ifPresent(condition::setSortType);
+        process(condition, SORT_ATTRIBUTE_MAPPING, MemberBasicSortAttribute.ID.column);
 
         return condition;
     };

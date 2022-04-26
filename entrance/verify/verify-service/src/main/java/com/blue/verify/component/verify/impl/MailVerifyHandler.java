@@ -101,6 +101,7 @@ public class MailVerifyHandler implements VerifyHandler {
 
     @Override
     public Mono<String> handle(BusinessType businessType, String destination) {
+        LOGGER.info("MailVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", businessType, destination);
         if (isNull(businessType) || isBlank(destination))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "businessType or destination can't be null");
 

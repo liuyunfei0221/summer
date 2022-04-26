@@ -1,9 +1,9 @@
 package com.blue.member.remote.consumer;
 
-import com.blue.base.model.base.Access;
 import com.blue.auth.api.inter.RpcControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.api.model.MemberCredentialInfo;
+import com.blue.base.model.base.Access;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -30,6 +30,7 @@ public class RpcControlServiceConsumer {
             providedBy = {"summer-auth"},
             methods = {
                     @Method(name = "initMemberAuthInfo", async = false, timeout = 60000, retries = 0),
+                    @Method(name = "refreshMemberRoleById", async = true),
                     @Method(name = "getAuthorityByAccess", async = true),
                     @Method(name = "getAuthorityByMemberId", async = true)
             })
@@ -49,6 +50,19 @@ public class RpcControlServiceConsumer {
     public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo) {
         LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
         rpcControlService.initMemberAuthInfo(memberCredentialInfo);
+    }
+
+    /**
+     * update member's auth by member id
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     * @return
+     */
+    Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
+        LOGGER.info("Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
+        return fromFuture(rpcControlService.refreshMemberRoleById(memberId, roleId, operatorId)).subscribeOn(scheduler).subscribeOn(scheduler);
     }
 
     /**

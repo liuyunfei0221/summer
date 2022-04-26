@@ -25,7 +25,7 @@ public class RpcControlServiceConsumer {
     private static final Logger LOGGER = getLogger(RpcControlServiceConsumer.class);
 
     @DubboReference(version = "1.0",
-            providedBy = {"summer-member"},
+            providedBy = {"summer-auth"},
             methods = {
                     @Method(name = "getAuthorityByAccess", async = true),
                     @Method(name = "getAuthorityByMemberId", async = true)

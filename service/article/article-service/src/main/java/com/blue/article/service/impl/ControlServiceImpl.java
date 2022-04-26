@@ -118,7 +118,7 @@ public class ControlServiceImpl implements ControlService {
      * @param memberId
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void insertArticle(ArticleInsertParam articleInsertParam, Long memberId) {
         Article article = BusinessModelConverters.ARTICLE_INSERT_PARAM_2_ARTICLE.apply(articleInsertParam);
 

@@ -156,6 +156,7 @@ public class ImageVerifyHandler implements VerifyHandler {
 
     @Override
     public Mono<String> handle(BusinessType businessType, String destination) {
+        LOGGER.info("ImageVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", businessType, destination);
         if (isNull(businessType) || isBlank(destination))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "businessType or destination can't be null");
 
@@ -164,15 +165,15 @@ public class ImageVerifyHandler implements VerifyHandler {
 
     @Override
     public Mono<ServerResponse> handle(BusinessType businessType, String destination, ServerRequest serverRequest) {
-        String key = isNotBlank(destination) ? destination : generateRandom(KEY_RANDOM_TYPE, KEY_LEN);
+        String verifyKey = isNotBlank(destination) ? destination : generateRandom(KEY_RANDOM_TYPE, KEY_LEN);
 
         return SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER.apply(serverRequest)
                 .flatMap(identity -> blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(identity), ALLOW, SEND_INTERVAL_MILLIS))
                 .flatMap(allowed ->
                         allowed ?
-                                this.handle(businessType, generateRandom(KEY_RANDOM_TYPE, KEY_LEN))
+                                this.handle(businessType, verifyKey)
                                         .flatMap(verify -> {
-                                            LOGGER.info("Mono<ServerResponse> handle(String destination), key = {}, verify = {}", key, verify);
+                                            LOGGER.info("Mono<ServerResponse> handle(String destination), verifyKey = {}, verify = {}", verifyKey, verify);
 
                                             return using(FastByteArrayOutputStream::new,
                                                     outputStream -> IMAGE_WRITER.apply(verify, outputStream)
@@ -181,7 +182,7 @@ public class ImageVerifyHandler implements VerifyHandler {
                                                     .flatMap(resource ->
                                                             ok().contentType(IMAGE_PNG)
                                                                     .header(CACHE_CONTROL, CACHE_CONTROL_VALUE)
-                                                                    .header(VERIFY_KEY.name, key)
+                                                                    .header(VERIFY_KEY.name, verifyKey)
                                                                     .body(fromResource(resource))
                                                     );
                                         })

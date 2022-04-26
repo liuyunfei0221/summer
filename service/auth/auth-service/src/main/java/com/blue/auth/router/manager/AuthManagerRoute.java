@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.server.RequestPredicate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static com.blue.base.constant.base.PathVariable.MID;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
@@ -28,7 +29,7 @@ public class AuthManagerRoute {
         RequestPredicate pathPredicate = path("/blue-auth/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .DELETE("/auth", accept(APPLICATION_JSON), authManagerHandler::invalidateAuthByMember)
+                .DELETE("/auth/{" + MID.key + "}", accept(APPLICATION_JSON), authManagerHandler::invalidateAuthByMember)
                 .build();
 
         return nest(pathPredicate, routerFunction);

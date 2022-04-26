@@ -13,7 +13,6 @@ import com.blue.media.repository.mapper.AttachmentMapper;
 import com.blue.media.service.inter.AttachmentService;
 import com.blue.member.api.model.MemberBasicInfo;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
@@ -25,7 +24,7 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
+import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
@@ -66,16 +65,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         if (isNull(condition))
             return new AttachmentCondition();
 
-        ofNullable(condition.getSortAttribute())
-                .filter(StringUtils::hasText)
-                .map(SORT_ATTRIBUTE_MAPPING::get)
-                .filter(StringUtils::hasText)
-                .ifPresent(condition::setSortAttribute);
-
-        ofNullable(condition.getSortType())
-                .filter(StringUtils::hasText)
-                .map(st -> getSortTypeByIdentity(st).identity)
-                .ifPresent(condition::setSortType);
+        process(condition, SORT_ATTRIBUTE_MAPPING, AttachmentSortAttribute.ID.column);
 
         ofNullable(condition.getLinkLike())
                 .filter(BlueChecker::isNotBlank)

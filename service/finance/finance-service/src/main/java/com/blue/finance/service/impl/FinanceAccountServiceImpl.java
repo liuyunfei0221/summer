@@ -46,7 +46,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
      * @param financeAccount
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 15)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int insertFinanceAccount(FinanceAccount financeAccount) {
         LOGGER.info("int insertFinanceAccount(FinanceAccount financeAccount), financeAccount = {}", financeAccount);
         if (isNull(financeAccount))
