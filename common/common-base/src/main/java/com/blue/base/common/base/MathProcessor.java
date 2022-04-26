@@ -47,9 +47,9 @@ public final class MathProcessor {
             if (isNotNull(previous)) {
                 if ((i - previous) != 1)
                     return false;
-            } else {
-                previous = i;
             }
+
+            previous = i;
         }
 
         return true;
