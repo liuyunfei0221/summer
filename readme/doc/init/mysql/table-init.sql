@@ -144,6 +144,28 @@ CREATE TABLE `credential_1`
     UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 1';
 
+CREATE TABLE `security_question_0`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `question`    varchar(512) NOT NULL COMMENT 'question',
+    `answer`      varchar(512) NOT NULL COMMENT 'answer',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_question`(`member_id`,`question`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='security question 0';
+
+CREATE TABLE `security_question_1`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `question`    varchar(512) NOT NULL COMMENT 'question',
+    `answer`      varchar(512) NOT NULL COMMENT 'answer',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_question`(`member_id`,`question`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='security question 1';
+
 CREATE TABLE `undo_log`
 (
     `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
@@ -225,6 +247,28 @@ CREATE TABLE `credential_1`
     UNIQUE KEY `idx_credential_type`(`credential`,`type`) USING BTREE,
     UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 1';
+
+CREATE TABLE `security_question_0`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `question`    varchar(512) NOT NULL COMMENT 'question',
+    `answer`      varchar(512) NOT NULL COMMENT 'answer',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_question`(`member_id`,`question`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='security question 0';
+
+CREATE TABLE `security_question_1`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `question`    varchar(512) NOT NULL COMMENT 'question',
+    `answer`      varchar(512) NOT NULL COMMENT 'answer',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_question`(`member_id`,`question`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='security question 1';
 
 -- seata undo log
 

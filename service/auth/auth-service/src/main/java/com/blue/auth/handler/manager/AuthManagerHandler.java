@@ -44,4 +44,19 @@ public final class AuthManagerHandler {
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
     }
 
+    /**
+     * select security questions
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> selectSecurityQuestions(ServerRequest serverRequest) {
+        return zip(getLongVariableReact(serverRequest, MID.key),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 -> controlService.selectSecurityQuestionInfoMonoByMemberId(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(res ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, res, serverRequest), BlueResponse.class));
+    }
+
 }

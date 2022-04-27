@@ -34,7 +34,7 @@ public enum ResponseElement {
     TOO_LARGE_HEADER(HttpStatus.BAD_REQUEST.value(), 400000006, "Too large headers"),
     TOO_LARGE_BODY(HttpStatus.BAD_REQUEST.value(), 400000007, "Too large body"),
     TOO_LARGE_URI(HttpStatus.BAD_REQUEST.value(), 400000008, "Uri is too long"),
-    INVALID_METADATA_PARAM(HttpStatus.BAD_REQUEST.value(), 400000009, "metadata can't be null"),
+    INVALID_METADATA_PARAM(HttpStatus.BAD_REQUEST.value(), 400000009, "Metadata can't be null"),
     DECRYPTION_FAILED(HttpStatus.BAD_REQUEST.value(), 400000010, "Encryption/decryption or signature/verification failed"),
     INVALID_REQUEST_METHOD(HttpStatus.BAD_REQUEST.value(), 400000011, "Invalid request method"),
     INVALID_IDENTITY(HttpStatus.BAD_REQUEST.value(), 400000012, "Invalid or empty identity"),

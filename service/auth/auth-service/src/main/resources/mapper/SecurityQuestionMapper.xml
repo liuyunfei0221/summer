@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.auth.repository.mapper.SecurityQuestionMapper">
+    <resultMap id="BaseResultMap" type="com.blue.auth.repository.entity.SecurityQuestion">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="question" jdbcType="VARCHAR" property="question"
+                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+        <result column="answer" jdbcType="VARCHAR" property="answer"
+                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , member_id, question, answer, create_time
+    </sql>
+
+    <insert id="insert" parameterType="com.blue.auth.repository.entity.SecurityQuestion">
+        insert into security_question (id, member_id, question,
+                                       answer, create_time)
+        values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
+                #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{createTime,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.auth.repository.entity.SecurityQuestion">
+        insert into security_question
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="memberId != null">
+                member_id,
+            </if>
+            <if test="question != null">
+                question,
+            </if>
+            <if test="answer != null">
+                answer,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="memberId != null">
+                #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="question != null">
+                #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            </if>
+            <if test="answer != null">
+                #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.auth.repository.entity.SecurityQuestion">
+        update security_question
+        set member_id   = #{memberId,jdbcType=BIGINT},
+            question    = #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            answer      = #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            create_time = #{createTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.auth.repository.entity.SecurityQuestion">
+        update security_question
+        <set>
+            <if test="memberId != null">
+                member_id = #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="question != null">
+                question = #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            </if>
+            <if test="answer != null">
+                answer = #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from security_question
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from security_question
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        <if test="list != null and list.size > 0">
+            INSERT INTO security_question (
+            <include refid="Base_Column_List"/>
+            ) values
+            <foreach collection="list" index="index" item="item" separator=",">
+                (
+                #{item.id,jdbcType=BIGINT},
+                #{item.memberId,jdbcType=BIGINT},
+                #{item.question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{item.answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{item.createTime,jdbcType=BIGINT}
+                )
+            </foreach>
+        </if>
+    </insert>
+
+    <select id="selectByMemberId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        security_question FORCE INDEX(idx_member_question)
+        WHERE
+        member_id = #{memberId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByMemberIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        security_question FORCE INDEX(idx_member_question)
+        WHERE
+        member_id IN
+        <foreach collection="memberIds" open="(" close=")" separator="," item="memberId" index="index">
+            #{memberId,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <select id="countByMemberId" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM security_question FORCE INDEX(idx_member_question)
+        WHERE member_id = #{memberId,jdbcType=BIGINT}
+    </select>
+
+</mapper>

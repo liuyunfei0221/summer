@@ -8,6 +8,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 /**
  * config role,resource,relation
  *
@@ -183,6 +185,24 @@ public interface ControlService {
     Mono<String> updateSecKeyByAccess(Access access);
 
     /**
+     * insert security question
+     *
+     * @param securityQuestionInsertParam
+     * @param memberId
+     * @return
+     */
+    Mono<Boolean> insertSecurityQuestion(SecurityQuestionInsertParam securityQuestionInsertParam, Long memberId);
+
+    /**
+     * insert security question batch
+     *
+     * @param securityQuestionInsertParams
+     * @param memberId
+     * @return
+     */
+    Mono<Boolean> insertSecurityQuestions(List<SecurityQuestionInsertParam> securityQuestionInsertParams, Long memberId);
+
+    /**
      * get member's authority by access
      *
      * @param access
@@ -293,5 +313,14 @@ public interface ControlService {
      * @return
      */
     Mono<Boolean> invalidateAuthByMember(Long memberId, Long operatorId);
+
+    /**
+     * select security question info mono by member id
+     *
+     * @param memberId
+     * @param operatorId
+     * @return
+     */
+    Mono<MemberSecurityQuestionsInfo> selectSecurityQuestionInfoMonoByMemberId(Long memberId, Long operatorId);
 
 }

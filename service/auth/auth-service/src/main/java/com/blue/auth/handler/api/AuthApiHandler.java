@@ -1,9 +1,6 @@
 package com.blue.auth.handler.api;
 
-import com.blue.auth.model.AccessResetParam;
-import com.blue.auth.model.AccessUpdateParam;
-import com.blue.auth.model.CredentialModifyParam;
-import com.blue.auth.model.CredentialSettingUpParam;
+import com.blue.auth.model.*;
 import com.blue.auth.service.inter.ControlService;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.exps.BlueException;
@@ -12,6 +9,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import static com.blue.auth.constant.AuthTypeReference.LIST_PARAM_FOR_QUESTION_INSERT_PARAM_TYPE;
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAuthorizationReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
@@ -65,6 +63,24 @@ public final class AuthApiHandler {
                                         , BlueResponse.class));
     }
 
+
+    /**
+     * update member's private key(client) and member's public key(server->redis)
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> updateSecret(ServerRequest serverRequest) {
+        return getAccessReact(serverRequest)
+                .flatMap(acc ->
+                        controlService.updateSecKeyByAccess(acc)
+                                .flatMap(secKey ->
+                                        ok().contentType(APPLICATION_JSON)
+                                                .header(SECRET.name, secKey)
+                                                .body(generate(OK.code, serverRequest)
+                                                        , BlueResponse.class)));
+    }
+
     /**
      * logout
      *
@@ -111,9 +127,9 @@ public final class AuthApiHandler {
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         controlService.updateAccessByAccess(tuple2.getT1(), tuple2.getT2()))
-                .flatMap(r ->
+                .flatMap(ig ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, r, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -126,9 +142,9 @@ public final class AuthApiHandler {
         return serverRequest.bodyToMono(AccessResetParam.class)
                 .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
                 .flatMap(controlService::resetAccessByAccess)
-                .flatMap(r ->
+                .flatMap(ig ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, r, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -166,20 +182,35 @@ public final class AuthApiHandler {
     }
 
     /**
-     * update member's private key(client) and member's public key(server->redis)
+     * insert security question
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> updateSecret(ServerRequest serverRequest) {
-        return getAccessReact(serverRequest)
-                .flatMap(acc ->
-                        controlService.updateSecKeyByAccess(acc)
-                                .flatMap(secKey ->
-                                        ok().contentType(APPLICATION_JSON)
-                                                .header(SECRET.name, secKey)
-                                                .body(generate(OK.code, serverRequest)
-                                                        , BlueResponse.class)));
+    public Mono<ServerResponse> insertSecurityQuestion(ServerRequest serverRequest) {
+        return zip(serverRequest.bodyToMono(SecurityQuestionInsertParam.class)
+                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 -> controlService.insertSecurityQuestion(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(ig ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, serverRequest), BlueResponse.class));
+    }
+
+    /**
+     * insert security questions
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> insertSecurityQuestions(ServerRequest serverRequest) {
+        return zip(serverRequest.bodyToMono(LIST_PARAM_FOR_QUESTION_INSERT_PARAM_TYPE)
+                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 -> controlService.insertSecurityQuestions(tuple2.getT1().getData(), tuple2.getT2().getId()))
+                .flatMap(ig ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, serverRequest), BlueResponse.class));
     }
 
     /**

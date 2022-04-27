@@ -13,17 +13,17 @@ import java.util.List;
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface CredentialMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(Credential record);
 
     int insertSelective(Credential record);
 
-    Credential selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(Credential record);
 
     int updateByPrimaryKeySelective(Credential record);
 
-    int updateByPrimaryKey(Credential record);
+    int deleteByPrimaryKey(Long id);
+
+    Credential selectByPrimaryKey(Long id);
 
     Credential getByCredentialAndType(@Param("credential") String credential, @Param("type") String type);
 

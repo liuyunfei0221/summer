@@ -1,4 +1,4 @@
-package com.blue.member.config.deploy;
+package com.blue.auth.config.deploy;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "address")
-public class AddressDeploy {
+@ConfigurationProperties(prefix = "question")
+public class QuestionDeploy {
 
     private Long max;
 
-    public AddressDeploy() {
+    public QuestionDeploy() {
     }
 
     public Long getMax() {
@@ -27,7 +27,7 @@ public class AddressDeploy {
 
     @Override
     public String toString() {
-        return "AddressDeploy{" +
+        return "QuestionDeploy{" +
                 "max=" + max +
                 '}';
     }

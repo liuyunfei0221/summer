@@ -117,7 +117,7 @@ public final class ResourceManagerHandler {
         return serverRequest.bodyToMono(IdentityParam.class)
                 .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
                 .flatMap(ip ->
-                        roleResRelationService.selectAuthorityMonoByResId(ip.getId()))
+                        controlService.selectAuthorityMonoByResId(ip.getId()))
                 .flatMap(auth ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, auth, serverRequest), BlueResponse.class));

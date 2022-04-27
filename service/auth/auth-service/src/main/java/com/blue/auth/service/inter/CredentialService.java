@@ -153,6 +153,6 @@ public interface CredentialService {
      * @param access
      * @return
      */
-    Boolean updateAccess(Long memberId, List<String> credentialTypes, String access);
+    boolean updateAccess(Long memberId, List<String> credentialTypes, String access);
 
 }

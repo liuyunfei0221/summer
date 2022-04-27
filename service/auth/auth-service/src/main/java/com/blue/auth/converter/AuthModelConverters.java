@@ -3,9 +3,12 @@ package com.blue.auth.converter;
 import com.blue.auth.api.model.*;
 import com.blue.auth.model.ResourceInsertParam;
 import com.blue.auth.model.RoleInsertParam;
+import com.blue.auth.model.SecurityQuestionInfo;
+import com.blue.auth.model.SecurityQuestionInsertParam;
 import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.entity.Role;
+import com.blue.auth.repository.entity.SecurityQuestion;
 import com.blue.base.model.exps.BlueException;
 
 import java.util.function.Function;
@@ -203,5 +206,40 @@ public final class AuthModelConverters {
         return new CredentialInfo(credential.getCredential(), credential.getType(), "", credential.getStatus(), credential.getExtra());
     };
 
+    /**
+     * security question insert param -> security question
+     */
+    public static final Function<SecurityQuestionInsertParam, SecurityQuestion> SECURITY_QUESTION_INSERT_PARAM_2_SECURITY_QUESTION_CONVERTER = param -> {
+        if (isNull(param))
+            throw new BlueException(EMPTY_PARAM);
+
+        String question = param.getQuestion();
+        if (isBlank(question))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "question can't be blank");
+
+        String answer = param.getAnswer();
+        if (isBlank(answer))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "answer can't be blank");
+
+        Long stamp = TIME_STAMP_GETTER.get();
+
+        SecurityQuestion securityQuestion = new SecurityQuestion();
+
+        securityQuestion.setQuestion(question);
+        securityQuestion.setAnswer(answer);
+        securityQuestion.setCreateTime(stamp);
+
+        return securityQuestion;
+    };
+
+    /**
+     * security question -> security question info
+     */
+    public static final Function<SecurityQuestion, SecurityQuestionInfo> SECURITY_QUESTION_2_SECURITY_QUESTION_INFO_CONVERTER = securityQuestion -> {
+        if (isNull(securityQuestion))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new SecurityQuestionInfo(securityQuestion.getQuestion(), securityQuestion.getAnswer());
+    };
 
 }

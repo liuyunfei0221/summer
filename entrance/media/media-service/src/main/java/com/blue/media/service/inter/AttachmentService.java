@@ -67,7 +67,7 @@ public interface AttachmentService {
     Mono<List<Attachment>> selectAttachmentMonoByIds(List<Long> ids);
 
     /**
-     * select attachment by page and memberId
+     * select attachment by limit and member id
      *
      * @param limit
      * @param rows
@@ -77,7 +77,7 @@ public interface AttachmentService {
     Mono<List<Attachment>> selectAttachmentMonoByLimitAndMemberId(Long limit, Long rows, Long memberId);
 
     /**
-     * count attachment by memberId
+     * count attachment by member id
      *
      * @param memberId
      * @return

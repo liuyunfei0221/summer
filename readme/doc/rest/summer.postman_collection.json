@@ -351,7 +351,7 @@
 				{
 					"name": "使用refresh token刷新access token",
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -365,7 +365,7 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/access/refresh",
+							"raw": "localhost:10000/blue-auth/auth/access",
 							"host": [
 								"localhost"
 							],
@@ -373,8 +373,7 @@
 							"path": [
 								"blue-auth",
 								"auth",
-								"access",
-								"refresh"
+								"access"
 							]
 						}
 					},
@@ -383,7 +382,7 @@
 				{
 					"name": "刷新密钥",
 					"request": {
-						"method": "PUT",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -441,6 +440,111 @@
 								"blue-auth",
 								"auth",
 								"credential"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改认证方式",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjQ3ODViZTQ3YzIzZjFkM2YzZTUxOWRiN2Q2YTM5NjkwOTQ2ZDlhNzdjODczZGM3Y2JmMzY5M2M1ODJkNmE5NzljMGY5ZDk4ZTYyMGUzYjRiNDdhNzllZTg4NjgxNDAxOWRkNzFjZDhlZDc4MmFmYTg3Mzc3YmFiMWI1YjcyNTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDI4NDA3NiIsIm5iZiI6MTY1MDI4NDA3NiwidCI6ImNld0p6amtEbUZWIiwiZyI6Ik0iLCJoIjoiQl9TTjozMzgxNTQ1MjE5NDk2MzQ1N19DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1Mjk2MjQ3NjU0NiwiaSI6IjMzODE1NDUyMTk0OTYzNDU3IiwiZXhwIjoxNjUyOTYyNDc2LCJpYXQiOjE2NTAyODQwNzYsImp0aSI6Ilk5UWdDRjMwZ0Zoakw1WnVPdzVFZEV1MkZwdWo4MkFzIiwibiI6IkVQIn0.5SVTliXY22ja_UThC1GzWTCTzvHB2rtLxTmO-WvXT_Bv0de3JBviTeAeFPgZ-ddHot_1VZzLak-GXUFYzocQ0g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currentVerifyType\":\"SMS\",\r\n    \"currentVerificationCode\":\"1443590\",\r\n    \"destinationVerifyType\":\"MAIL\",\r\n    \"destinationCredential\":\"liuyunfei19890221@gmail.com\",\r\n    \"destinationVerificationCode\":\"1267784\"\r\n    \r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/auth/credential",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"credential"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "添加安全问题",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYTcwZTdkMzJlNGY4MzNjMjRhZGZkODlmNjAwYzkxYjAyZjFlNDIwYzU1YTU0MjMyOWYwNjEwYmRjNTQ1YjdkN2QwNjQ1MTYxYjc1YjgxZWI2YzY4NmE4NDRlMWRhODk2NWJmNWNjNmYxMGNlNTc0NjA4Yjc3NTVjNGJiNzNjZDgiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MTA2NTgxNiIsIm5iZiI6MTY1MTA2NTgxNiwidCI6InNyTnNicmFJdWZMIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDYzNjMxNzA4MTk5MzIxN19DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1ODg0MTgxNjUzMSwiaSI6IjM0NjM2MzE3MDgxOTkzMjE3IiwiZXhwIjoxNjU4ODQxODE2LCJpYXQiOjE2NTEwNjU4MTYsImp0aSI6IkJETkpFbWhBNmJCbVhFRUxRSlAyUWhWUFQxTVdLbkYzIiwibiI6IlBWQVIifQ.il5xvsmMx862Ddzo2JfxNT06T7SDbghOa6tRxATRbi_AafcLrSBDwsnpv2-gZRAcwES2fMR37TcunT61A3CUHQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"question\":\"11111111\",\r\n    \"answer\":\"12345678\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/auth/question",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"question"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "批量添加安全问题",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiM2VhOTcyZTMzY2VjZjE2M2NmYjg3MzM4YzA2NjYyM2M1NGVlY2QyOTkzNzEwNWE5NzBiNTFlMDQyOGM2NDEwN2NlMDViYWRmNDBhMzY5ZTA3Nzg3MWVmOGFlYzA4YTI5M2UwMjM5ZTY0YTJmYmUxNjUxNmUzNDhlMTc4NGJmNGQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MTA2ODkwOSIsIm5iZiI6MTY1MTA2ODkwOSwidCI6Im1DcjRvV2JtMnJzIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDYzNjMxNzA4MTk5MzIxOV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1ODg0NDkwOTc0NSwiaSI6IjM0NjM2MzE3MDgxOTkzMjE5IiwiZXhwIjoxNjU4ODQ0OTA5LCJpYXQiOjE2NTEwNjg5MDksImp0aSI6IlVwYjlBZ1haVjZTN0NkNkhIdmVLbmxYWHhRaDViVkdTIiwibiI6IlBWQVIifQ.O0N7hv7x91loskPhjGT4PVtuOwMByvutjh61lT6WEyVVE5XU0T4QOt3Rn__s7dVSNs_iOJk_OmQvA8PdJKtHEQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"data\":[\r\n        {\r\n            \"question\":\"11111111\",\r\n            \"answer\":\"12345678\"\r\n        },\r\n        {\r\n            \"question\":\"33333333\",\r\n            \"answer\":\"12345678\"\r\n        },\r\n        {\r\n            \"question\":\"55555555\",\r\n            \"answer\":\"12345678\"\r\n        },\r\n        {\r\n            \"question\":\"66666666\",\r\n            \"answer\":\"12345678\"\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/auth/questions",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"questions"
 							]
 						}
 					},
@@ -986,6 +1090,46 @@
 								"manager",
 								"role",
 								"default"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台查询用户的安全问题",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiN2RhNzlkYzM0NzgyOTM0Njg1M2Y4ODdlYzJkZjg0MjY0Y2VhYmY3ZDViNmU5MzllMDllMGY3M2FmODAyYjNlM2ZmNTMyOWRmOGNlNTgzZGY1MTkyNzIxZGY2YzYzNmM2ZGRmODc3YzM4MTZkZTdmMmFhMWExYjc0MzgwMWQ1NTQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MTA2ODk5NyIsIm5iZiI6MTY1MTA2ODk5NywidCI6ImhJeTVJNFpXbGZWIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDYzNjMxNzA4MTk5MzIxOF9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1ODg0NDk5NzA5NywiaSI6IjM0NjM2MzE3MDgxOTkzMjE4IiwiZXhwIjoxNjU4ODQ0OTk3LCJpYXQiOjE2NTEwNjg5OTcsImp0aSI6ImliSHNsbEltVjFRak1GU2txZXNsd0hlcE9FYURLOEVOIiwibiI6IlBWQVIifQ.RoY7mwZE4upRiRIjMvlAisBqDYFq9SCw0X3kbtCi6bo8yCBdDvLovcE9CWGE6SB9RzO12xOGNByHHxbqmMsxZA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:10000/blue-auth/manager/auth/questions/34636317081993219",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"auth",
+								"questions",
+								"34636317081993219"
 							]
 						}
 					},
@@ -2006,7 +2150,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"5879528\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"1186797\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:10000/blue-auth/auth/login",
@@ -2035,7 +2179,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZThmNjA4YzA3MjZhZDdiNmZiMjZiYzkxYmQwY2E2Y2Y4NDAxZDU4ZGI2ZTMxYWYxMDgzYWM4NDM5YWNjNTEyODI1ODRhM2Y4NmU0MmUxMjJjYmE5YWIzNzM4MDBkZGQ0NmJjYTU4NDAzZDgxMDYyNzJhYTZiOTE0ZDFiM2Q4YmMiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDk0NTUwNiIsIm5iZiI6MTY1MDk0NTUwNiwidCI6InhoR0tIcEwzYUYyIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDQzODU3NDY0MDIwMTcyOV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1ODcyMTUwNjU1NywiaSI6IjM0NDM4NTc0NjQwMjAxNzI5IiwiZXhwIjoxNjU4NzIxNTA2LCJpYXQiOjE2NTA5NDU1MDYsImp0aSI6ImV4eHBVUVdMMTZzOVdSVXJXUVhjVjZoeVAzQVBQdUtkIiwibiI6IlBWQVIifQ.DTXrHr_ugtO6DvXc2J29mu9Pw1mpnJ1KxNmnhoDUhzdz2KHRdq5IT6tYCq8BkTMIIP3ZnkeW08MlaJeWaAAVwA",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiN2RhNzlkYzM0NzgyOTM0Njg1M2Y4ODdlYzJkZjg0MjY0Y2VhYmY3ZDViNmU5MzllMDllMGY3M2FmODAyYjNlM2ZmNTMyOWRmOGNlNTgzZGY1MTkyNzIxZGY2YzYzNmM2ZGRmODc3YzM4MTZkZTdmMmFhMWExYjc0MzgwMWQ1NTQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MTA2ODk5NyIsIm5iZiI6MTY1MTA2ODk5NywidCI6ImhJeTVJNFpXbGZWIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDYzNjMxNzA4MTk5MzIxOF9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1ODg0NDk5NzA5NywiaSI6IjM0NjM2MzE3MDgxOTkzMjE4IiwiZXhwIjoxNjU4ODQ0OTk3LCJpYXQiOjE2NTEwNjg5OTcsImp0aSI6ImliSHNsbEltVjFRak1GU2txZXNsd0hlcE9FYURLOEVOIiwibiI6IlBWQVIifQ.RoY7mwZE4upRiRIjMvlAisBqDYFq9SCw0X3kbtCi6bo8yCBdDvLovcE9CWGE6SB9RzO12xOGNByHHxbqmMsxZA",
 								"type": "text"
 							}
 						],

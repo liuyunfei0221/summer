@@ -256,7 +256,7 @@ public class SignInServiceImpl implements SignInService {
         LocalDate now = LocalDate.now();
         int lengthOfMonth = now.lengthOfMonth();
 
-        return blueBitMarker.getBitsLimitValue(generateSignKey(memberId, now.getYear(), now.getMonthValue()), lengthOfMonth)
+        return blueBitMarker.getBitsValueByLimitUpTo64(generateSignKey(memberId, now.getYear(), now.getMonthValue()), lengthOfMonth)
                 .flatMap(records -> {
                             MonthSignInRewardRecord monthSignInRewardRecord =
                                     MONTH_REWARD_RECORD_GENERATOR.apply(records.get(CURRENT_MONTH_RECORD_IDX), lengthOfMonth);

@@ -52,9 +52,9 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
        (160001, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         'login', 'login', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160002, 'PUT', 'blue-auth', '/auth/access/refresh', b'0', b'1', b'1', b'1', b'1', 1,
+       (160002, 'POST', 'blue-auth', '/auth/access/refresh', b'0', b'1', b'1', b'1', b'1', 1,
         'refresh access', 'refresh access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160003, 'PUT', 'blue-auth', '/auth/secret', b'1', b'1', b'1', b'0', b'1', 1,
+       (160003, 'POST', 'blue-auth', '/auth/secret', b'1', b'1', b'1', b'0', b'1', 1,
         'refresh private key', 'refresh private key', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (160004, 'POST', 'blue-auth', '/auth/credential', b'1', b'1', b'1', b'0', b'1', 1,
         'credential setting up', 'credential setting up', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -68,7 +68,11 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'logout', 'logout', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (160009, 'DELETE', 'blue-auth', '/auth/logout', b'1', b'1', b'1', b'0', b'1', 1,
         'logout everywhere', 'logout everywhere', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160010, 'GET', 'blue-auth', '/auth/authority', b'1', b'1', b'1', b'0', b'1', 1,
+       (160010, 'POST', 'blue-auth', '/auth/question', b'1', b'1', b'1', b'0', b'1', 1,
+        'insert security question', 'insert security question', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (160011, 'POST', 'blue-auth', '/auth/questions', b'1', b'1', b'1', b'0', b'1', 1,
+        'insert security questions', 'insert security questions', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (160012, 'GET', 'blue-auth', '/auth/authority', b'1', b'1', b'1', b'0', b'1', 1,
         'query authority', 'query authority', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- auth manage
@@ -104,6 +108,10 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'update role-resources-relation', 'update role-resources-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (170014, 'PUT', 'blue-auth', '/manager/relation/mem-role', b'1', b'1', b'1', b'1', b'1', 2,
         'update member-role-relation', 'update member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
+       (170015, 'GET', 'blue-auth', '/manager/auth/questions/{mid}', b'1', b'1', b'1', b'0', b'1', 2,
+        'select members security questions', 'select members security questions', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1),
 
 
 -- member api

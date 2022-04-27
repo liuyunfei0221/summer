@@ -21,7 +21,12 @@ public enum SyncKeyPrefix {
     /**
      * invalid member auth key pre
      */
-    AUTH_INVALID_BY_MEMBER_ID_PRE("AUTH_INVALID_BY_MEMBER_ID_PRE:");
+    AUTH_INVALID_BY_MEMBER_ID_PRE("AUTH_INVALID_BY_MEMBER_ID_PRE:"),
+
+    /**
+     * question insert key pre
+     */
+    QUESTION_INSERT_PRE("QUESTION_INSERT_PRE:");
 
     public final String prefix;
 

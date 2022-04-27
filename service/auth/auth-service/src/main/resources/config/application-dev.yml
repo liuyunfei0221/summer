@@ -75,6 +75,8 @@ data:
       shardingColumn: id
     - tableName: credential
       shardingColumn: id
+    - tableName: security_question
+      shardingColumn: id
   shardingTableSizePerDataBase: 2
   dataCenterToDatabaseMappings:
     - id: 0
@@ -339,6 +341,10 @@ blocking:
 control:
   allow: 2
   intervalMillis: 5000
+
+
+question:
+  max: 5
 
 
 producers:

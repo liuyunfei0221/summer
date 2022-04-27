@@ -6,6 +6,7 @@ import com.blue.auth.config.deploy.ControlDeploy;
 import com.blue.auth.event.producer.SystemAuthorityInfosRefreshProducer;
 import com.blue.auth.model.*;
 import com.blue.auth.remote.consumer.RpcMemberAuthServiceConsumer;
+import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.repository.entity.MemberRoleRelation;
@@ -52,6 +53,7 @@ import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
 import static com.blue.base.constant.verify.BusinessType.*;
 import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateLeakyBucketRateLimiter;
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -75,6 +77,8 @@ public class ControlServiceImpl implements ControlService {
 
     private final RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer;
 
+    private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
+
     private final JwtProcessor<MemberPayload> jwtProcessor;
 
     private final LoginService loginService;
@@ -84,6 +88,8 @@ public class ControlServiceImpl implements ControlService {
     private final RoleService roleService;
 
     private final CredentialService credentialService;
+
+    private final SecurityQuestionService securityQuestionService;
 
     private RoleResRelationService roleResRelationService;
 
@@ -96,21 +102,24 @@ public class ControlServiceImpl implements ControlService {
     private final BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer, JwtProcessor<MemberPayload> jwtProcessor, LoginService loginService,
-                              AuthService authService, RoleService roleService, CredentialService credentialService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
+    public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, JwtProcessor<MemberPayload> jwtProcessor,
+                              LoginService loginService, AuthService authService, RoleService roleService, CredentialService credentialService, SecurityQuestionService securityQuestionService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
                               SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService, ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, ControlDeploy controlDeploy) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
+        this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.jwtProcessor = jwtProcessor;
         this.loginService = loginService;
         this.authService = authService;
         this.roleService = roleService;
         this.credentialService = credentialService;
+        this.securityQuestionService = securityQuestionService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
         this.executorService = executorService;
         this.blueLeakyBucketRateLimiter = generateLeakyBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
+
         ALLOW = controlDeploy.getAllow();
         SEND_INTERVAL_MILLIS = controlDeploy.getIntervalMillis();
     }
@@ -668,6 +677,32 @@ public class ControlServiceImpl implements ControlService {
     }
 
     /**
+     * insert security question
+     *
+     * @param securityQuestionInsertParam
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<Boolean> insertSecurityQuestion(SecurityQuestionInsertParam securityQuestionInsertParam, Long memberId) {
+        return fromFuture(runAsync(() -> securityQuestionService.insertSecurityQuestion(securityQuestionInsertParam, memberId), executorService))
+                .then(just(true));
+    }
+
+    /**
+     * insert security question batch
+     *
+     * @param securityQuestionInsertParams
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<Boolean> insertSecurityQuestions(List<SecurityQuestionInsertParam> securityQuestionInsertParams, Long memberId) {
+        return fromFuture(runAsync(() -> securityQuestionService.insertSecurityQuestions(securityQuestionInsertParams, memberId), executorService))
+                .then(just(true));
+    }
+
+    /**
      * get member's authority by access
      *
      * @param access
@@ -917,6 +952,25 @@ public class ControlServiceImpl implements ControlService {
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return authService.invalidateAuthByMemberId(memberId);
+    }
+
+    /**
+     * select security question info mono by member id
+     *
+     * @param memberId
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public Mono<MemberSecurityQuestionsInfo> selectSecurityQuestionInfoMonoByMemberId(Long memberId, Long operatorId) {
+        LOGGER.info("Mono<List<SecurityQuestionInfo>> selectSecurityQuestionInfoMonoByMemberId(Long memberId, Long operatorId), memberId = {}, operatorId = {}", memberId, operatorId);
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
+        assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), getRoleByMemberId(operatorId).getLevel());
+
+        return zip(rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(memberId),
+                securityQuestionService.selectSecurityQuestionInfoMonoByMemberId(memberId)
+        ).flatMap(tuple2 -> just(new MemberSecurityQuestionsInfo(memberId, tuple2.getT1().getName(), tuple2.getT2())));
     }
 
 }

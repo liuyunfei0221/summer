@@ -322,7 +322,7 @@ public class CredentialServiceImpl implements CredentialService {
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
-    public Boolean updateAccess(Long memberId, List<String> credentialTypes, String access) {
+    public boolean updateAccess(Long memberId, List<String> credentialTypes, String access) {
         LOGGER.info("Boolean updateAccess(Long memberId, VerifyType verifyType, String access), memberId = {}, credentialTypes = {}, access = {}", memberId, credentialTypes, ":)");
 
         if (isBlank(access))
@@ -338,7 +338,7 @@ public class CredentialServiceImpl implements CredentialService {
 
         LOGGER.info("updates = {}", updates);
 
-        return true;
+        return updates > 0;
     }
 
 }

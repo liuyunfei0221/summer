@@ -63,7 +63,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
         this.rpcAreaServiceConsumer = rpcAreaServiceConsumer;
         this.memberAddressMapper = memberAddressMapper;
 
-        maxAddress = addressDeploy.getMax();
+        this.maxAddress = addressDeploy.getMax();
     }
 
     private long maxAddress;
@@ -72,7 +72,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
      * is a number's address too many?
      */
     private final Consumer<MemberAddress> ADDRESS_TOO_MANY_VALIDATOR = md -> {
-        if (memberAddressMapper.countByMemberId(md.getMemberId()) > maxAddress)
+        if (memberAddressMapper.countByMemberId(md.getMemberId()) >= maxAddress)
             throw new BlueException(DATA_ALREADY_EXIST);
     };
 
@@ -190,7 +190,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
      * @return
      */
     @Override
-    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public MemberAddressInfo insertMemberAddress(MemberAddress memberAddress) {
         LOGGER.info("MemberAddressInfo insertMemberAddress(MemberAddress memberAddress), memberAddress = {}", memberAddress);
         if (isNull(memberAddress))

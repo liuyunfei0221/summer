@@ -144,6 +144,28 @@ CREATE TABLE `credential_1`
     UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 1';
 
+CREATE TABLE `security_question_0`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `question`    varchar(512) NOT NULL COMMENT 'question',
+    `answer`      varchar(512) NOT NULL COMMENT 'answer',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_question`(`member_id`,`question`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='security question 0';
+
+CREATE TABLE `security_question_1`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `question`    varchar(512) NOT NULL COMMENT 'question',
+    `answer`      varchar(512) NOT NULL COMMENT 'answer',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_question`(`member_id`,`question`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='security question 1';
+
 CREATE TABLE `undo_log`
 (
     `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
@@ -228,6 +250,28 @@ CREATE TABLE `credential_1`
     UNIQUE KEY `idx_member_type`(`member_id`,`type` ) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='credential 1';
 
+CREATE TABLE `security_question_0`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `question`    varchar(512) NOT NULL COMMENT 'question',
+    `answer`      varchar(512) NOT NULL COMMENT 'answer',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_question`(`member_id`,`question`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='security question 0';
+
+CREATE TABLE `security_question_1`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `member_id`   bigint       NOT NULL COMMENT 'member id',
+    `question`    varchar(512) NOT NULL COMMENT 'question',
+    `answer`      varchar(512) NOT NULL COMMENT 'answer',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_question`(`member_id`,`question`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='security question 1';
+
 -- seata undo log
 
 CREATE TABLE `undo_log`
@@ -286,9 +330,9 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
        (160001, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         'login', 'login', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160002, 'PUT', 'blue-auth', '/auth/access/refresh', b'0', b'1', b'1', b'1', b'1', 1,
+       (160002, 'POST', 'blue-auth', '/auth/access/refresh', b'0', b'1', b'1', b'1', b'1', 1,
         'refresh access', 'refresh access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160003, 'PUT', 'blue-auth', '/auth/secret', b'1', b'1', b'1', b'0', b'1', 1,
+       (160003, 'POST', 'blue-auth', '/auth/secret', b'1', b'1', b'1', b'0', b'1', 1,
         'refresh private key', 'refresh private key', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (160004, 'POST', 'blue-auth', '/auth/credential', b'1', b'1', b'1', b'0', b'1', 1,
         'credential setting up', 'credential setting up', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -302,7 +346,11 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'logout', 'logout', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (160009, 'DELETE', 'blue-auth', '/auth/logout', b'1', b'1', b'1', b'0', b'1', 1,
         'logout everywhere', 'logout everywhere', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160010, 'GET', 'blue-auth', '/auth/authority', b'1', b'1', b'1', b'0', b'1', 1,
+       (160010, 'POST', 'blue-auth', '/auth/question', b'1', b'1', b'1', b'0', b'1', 1,
+        'insert security question', 'insert security question', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (160011, 'POST', 'blue-auth', '/auth/questions', b'1', b'1', b'1', b'0', b'1', 1,
+        'insert security questions', 'insert security questions', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (160012, 'GET', 'blue-auth', '/auth/authority', b'1', b'1', b'1', b'0', b'1', 1,
         'query authority', 'query authority', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- auth manage
@@ -339,6 +387,9 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
        (170014, 'PUT', 'blue-auth', '/manager/relation/mem-role', b'1', b'1', b'1', b'1', b'1', 2,
         'update member-role-relation', 'update member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
+       (170015, 'GET', 'blue-auth', '/manager/auth/questions/{mid}', b'1', b'1', b'1', b'0', b'1', 2,
+        'select members security questions', 'select members security questions', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1),
 
 -- member api
 

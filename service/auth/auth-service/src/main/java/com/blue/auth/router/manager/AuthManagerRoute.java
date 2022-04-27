@@ -30,6 +30,7 @@ public class AuthManagerRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .DELETE("/auth/{" + MID.key + "}", accept(APPLICATION_JSON), authManagerHandler::invalidateAuthByMember)
+                .GET("/auth/questions/{" + MID.key + "}", accept(APPLICATION_JSON), authManagerHandler::selectSecurityQuestions)
                 .build();
 
         return nest(pathPredicate, routerFunction);
