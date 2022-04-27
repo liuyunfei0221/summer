@@ -108,6 +108,26 @@ public enum BlueNumericalValue {
     VFC_LEN_MAX(256L),
 
     /**
+     * security question minimum
+     */
+    SEC_QUESTION_LEN_MIN(8L),
+
+    /**
+     * security question maximum
+     */
+    SEC_QUESTION_LEN_MAX(256L),
+
+    /**
+     * security answer minimum
+     */
+    SEC_ANSWER_LEN_MIN(8L),
+
+    /**
+     * security answer maximum
+     */
+    SEC_ANSWER_LEN_MAX(256L),
+
+    /**
      * member id for not login
      */
     NOT_LOGGED_IN_MEMBER_ID(0L),

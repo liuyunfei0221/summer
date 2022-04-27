@@ -21,6 +21,9 @@ db.refreshInfo.createIndex({"id":1});
 db.refreshInfo.createIndex({"memberId":1,"credentialType":1,"deviceType":1});
 db.refreshInfo.createIndex({"expireAt":1},{expireAfterSeconds:0});
 
+db.credentialHistory.createIndex({"memberId":1});
+db.credentialHistory.createIndex({"credential":1});
+
 
 
 

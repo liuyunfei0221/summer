@@ -5,10 +5,7 @@ import com.blue.auth.model.ResourceInsertParam;
 import com.blue.auth.model.RoleInsertParam;
 import com.blue.auth.model.SecurityQuestionInfo;
 import com.blue.auth.model.SecurityQuestionInsertParam;
-import com.blue.auth.repository.entity.Credential;
-import com.blue.auth.repository.entity.Resource;
-import com.blue.auth.repository.entity.Role;
-import com.blue.auth.repository.entity.SecurityQuestion;
+import com.blue.auth.repository.entity.*;
 import com.blue.base.model.exps.BlueException;
 
 import java.util.function.Function;
@@ -207,27 +204,29 @@ public final class AuthModelConverters {
     };
 
     /**
+     * credential -> credential history
+     */
+    public static final Function<Credential, CredentialHistory> CREDENTIAL_2_CREDENTIAL_HISTORY_CONVERTER = credential -> {
+        if (isNull(credential))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new CredentialHistory(credential.getId(), credential.getMemberId(), credential.getCredential(), credential.getType(),
+                credential.getExtra(), credential.getCreateTime());
+    };
+
+    /**
      * security question insert param -> security question
      */
     public static final Function<SecurityQuestionInsertParam, SecurityQuestion> SECURITY_QUESTION_INSERT_PARAM_2_SECURITY_QUESTION_CONVERTER = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
-
-        String question = param.getQuestion();
-        if (isBlank(question))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "question can't be blank");
-
-        String answer = param.getAnswer();
-        if (isBlank(answer))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "answer can't be blank");
-
-        Long stamp = TIME_STAMP_GETTER.get();
+        param.asserts();
 
         SecurityQuestion securityQuestion = new SecurityQuestion();
 
-        securityQuestion.setQuestion(question);
-        securityQuestion.setAnswer(answer);
-        securityQuestion.setCreateTime(stamp);
+        securityQuestion.setQuestion(param.getQuestion());
+        securityQuestion.setAnswer(param.getAnswer());
+        securityQuestion.setCreateTime(TIME_STAMP_GETTER.get());
 
         return securityQuestion;
     };

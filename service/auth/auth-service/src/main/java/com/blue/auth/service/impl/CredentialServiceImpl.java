@@ -3,8 +3,8 @@ package com.blue.auth.service.impl;
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.repository.mapper.CredentialMapper;
+import com.blue.auth.repository.template.CredentialHistoryRepository;
 import com.blue.auth.service.inter.CredentialService;
-import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import org.springframework.stereotype.Service;
@@ -19,6 +19,8 @@ import static com.blue.auth.common.AccessEncoder.encryptAccess;
 import static com.blue.auth.converter.AuthModelConverters.CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
+import static com.blue.base.constant.base.BlueNumericalValue.ACS_LEN_MAX;
+import static com.blue.base.constant.base.BlueNumericalValue.ACS_LEN_MIN;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Collections.emptyList;
@@ -45,10 +47,14 @@ public class CredentialServiceImpl implements CredentialService {
 
     private CredentialMapper credentialMapper;
 
+    private final CredentialHistoryRepository credentialHistoryRepository;
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public CredentialServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CredentialMapper credentialMapper) {
+    public CredentialServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CredentialMapper credentialMapper,
+                                 CredentialHistoryRepository credentialHistoryRepository) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.credentialMapper = credentialMapper;
+        this.credentialHistoryRepository = credentialHistoryRepository;
     }
 
     private final Consumer<List<Credential>> CREDENTIALS_ASSERTER = credentials -> {
@@ -327,9 +333,9 @@ public class CredentialServiceImpl implements CredentialService {
 
         if (isBlank(access))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
-        if (access.length() > BlueNumericalValue.ACS_LEN_MAX.value)
+        if (access.length() > ACS_LEN_MAX.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too long");
-        if (access.length() < BlueNumericalValue.ACS_LEN_MIN.value)
+        if (access.length() < ACS_LEN_MIN.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
         if (isEmpty(credentialTypes))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "credentialTypes is empty");

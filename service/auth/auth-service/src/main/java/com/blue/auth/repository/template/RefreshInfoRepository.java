@@ -4,7 +4,7 @@ import com.blue.auth.repository.entity.RefreshInfo;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 /**
- * area repository
+ * refresh info repository
  *
  * @author liuyunfei
  */
