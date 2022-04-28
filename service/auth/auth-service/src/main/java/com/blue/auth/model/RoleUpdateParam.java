@@ -22,10 +22,14 @@ public class RoleUpdateParam extends RoleInsertParam {
 
     public RoleUpdateParam(Long id, String name, String description, Integer level) {
         super(name, description, level);
+        this.id = id;
+    }
+
+    @Override
+    public void asserts() {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
-
-        this.id = id;
+        super.asserts();
     }
 
     public Long getId() {

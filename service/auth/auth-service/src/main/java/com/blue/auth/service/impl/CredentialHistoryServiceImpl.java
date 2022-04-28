@@ -136,9 +136,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
         executorService.submit(() -> {
             try {
                 List<CredentialHistory> credentialHistories = this.insertCredentialHistories(credentials.stream().map(Credential::getCredential).distinct().filter(BlueChecker::isNotBlank)
-                                .map(cre -> new CredentialHistory(blueIdentityProcessor.generate(CredentialHistory.class), memberId, cre, TIME_STAMP_GETTER.get()))
-                                .collect(toList()))
-                        .toFuture().join();
+                        .map(cre -> new CredentialHistory(blueIdentityProcessor.generate(CredentialHistory.class), memberId, cre, TIME_STAMP_GETTER.get())).collect(toList())).toFuture().join();
                 LOGGER.info("executorService.submit(), insertCredentialHistories success, credentialHistories = {}", credentialHistories);
             } catch (Exception e) {
                 LOGGER.error("executorService.submit(), insertCredentialHistories failed, credentials = {}, memberId = {}", credentials, memberId);

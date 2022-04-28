@@ -1,14 +1,23 @@
 package com.blue.auth.model;
 
+import com.blue.base.inter.Asserter;
+import com.blue.base.model.exps.BlueException;
+
 import java.io.Serializable;
+
+import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.ConstantProcessor.assertHttpMethod;
+import static com.blue.base.common.base.ConstantProcessor.assertResourceType;
+import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
  * params for insert a new resource
  *
  * @author liuyunfei
  */
-@SuppressWarnings("unused")
-public class ResourceInsertParam implements Serializable {
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+public class ResourceInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -5770146088678172629L;
 
@@ -85,6 +94,30 @@ public class ResourceInsertParam implements Serializable {
         this.type = type;
         this.name = name;
         this.description = description;
+    }
+
+    @Override
+    public void asserts() {
+        assertHttpMethod(this.requestMethod, false);
+        if (isBlank(this.module))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "module can't be blank");
+        if (isBlank(this.uri))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be blank");
+        if (isNull(this.authenticate))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "authenticate can't be null");
+        if (isNull(this.requestUnDecryption))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestUnDecryption can't be null");
+        if (isNull(this.responseUnEncryption))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "responseUnEncryption can't be null");
+        if (isNull(this.existenceRequestBody))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceRequestBody can't be null");
+        if (isNull(this.existenceResponseBody))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceResponseBody can't be null");
+        assertResourceType(this.type, false);
+        if (isBlank(this.name))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
+        if (isBlank(this.description))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
     }
 
     public String getRequestMethod() {

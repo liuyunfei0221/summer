@@ -7,11 +7,11 @@ import com.blue.base.model.exps.BlueException;
 
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.common.base.ConstantProcessor.*;
+import static com.blue.base.common.base.ConstantProcessor.getResourceTypeByIdentity;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
 
@@ -29,26 +29,15 @@ public final class AuthModelConverters {
     public static final Function<RoleInsertParam, Role> ROLE_INSERT_PARAM_2_ROLE_CONVERTER = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
-
-        String name = param.getName();
-        if (isBlank(name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
-
-        String description = param.getDescription();
-        if (isBlank(description))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
-
-        Integer level = param.getLevel();
-        if (isNull(level) || level < 1)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "level can't be null or less than 1");
+        param.asserts();
 
         Long stamp = TIME_STAMP_GETTER.get();
 
         Role role = new Role();
 
-        role.setName(name);
-        role.setDescription(description);
-        role.setLevel(level);
+        role.setName(param.getName());
+        role.setDescription(param.getDescription());
+        role.setLevel(param.getLevel());
         role.setIsDefault(NOT_DEFAULT.status);
         role.setCreateTime(stamp);
         role.setUpdateTime(stamp);
@@ -89,64 +78,23 @@ public final class AuthModelConverters {
     public static final Function<ResourceInsertParam, Resource> RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
-
-        String requestMethod = param.getRequestMethod();
-        assertHttpMethod(requestMethod, false);
-
-        String module = param.getModule();
-        if (isBlank(module))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "module can't be blank");
-
-        String uri = param.getUri();
-        if (isBlank(uri))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be blank");
-
-        Boolean authenticate = param.getAuthenticate();
-        if (isNull(authenticate))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "authenticate can't be null");
-
-        Boolean requestUnDecryption = param.getRequestUnDecryption();
-        if (isNull(requestUnDecryption))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestUnDecryption can't be null");
-
-        Boolean responseUnEncryption = param.getResponseUnEncryption();
-        if (isNull(responseUnEncryption))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "responseUnEncryption can't be null");
-
-        Boolean existenceRequestBody = param.getExistenceRequestBody();
-        if (isNull(existenceRequestBody))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceRequestBody can't be null");
-
-        Boolean existenceResponseBody = param.getExistenceResponseBody();
-        if (isNull(existenceResponseBody))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceResponseBody can't be null");
-
-        Integer type = param.getType();
-        assertResourceType(type, false);
-
-        String name = param.getName();
-        if (isBlank(name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
-
-        String description = param.getDescription();
-        if (isBlank(description))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
+        param.asserts();
 
         Long stamp = TIME_STAMP_GETTER.get();
 
         Resource resource = new Resource();
 
-        resource.setRequestMethod(requestMethod.toUpperCase());
-        resource.setModule(module.toLowerCase());
-        resource.setUri(uri.toLowerCase());
-        resource.setAuthenticate(authenticate);
-        resource.setRequestUnDecryption(requestUnDecryption);
-        resource.setResponseUnEncryption(responseUnEncryption);
-        resource.setExistenceRequestBody(existenceRequestBody);
-        resource.setExistenceResponseBody(existenceResponseBody);
-        resource.setType(type);
-        resource.setName(name);
-        resource.setDescription(description);
+        resource.setRequestMethod(param.getRequestMethod().toUpperCase());
+        resource.setModule(param.getModule().toLowerCase());
+        resource.setUri(param.getUri().toLowerCase());
+        resource.setAuthenticate(param.getAuthenticate());
+        resource.setRequestUnDecryption(param.getRequestUnDecryption());
+        resource.setResponseUnEncryption(param.getResponseUnEncryption());
+        resource.setExistenceRequestBody(param.getExistenceRequestBody());
+        resource.setExistenceResponseBody(param.getExistenceResponseBody());
+        resource.setType(param.getType());
+        resource.setName(param.getName().toLowerCase());
+        resource.setDescription(param.getDescription().toLowerCase());
         resource.setCreateTime(stamp);
         resource.setUpdateTime(stamp);
 
@@ -198,16 +146,6 @@ public final class AuthModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new CredentialInfo(credential.getCredential(), credential.getType(), "", credential.getStatus(), credential.getExtra());
-    };
-
-    /**
-     * credential -> credential history
-     */
-    public static final Function<Credential, CredentialHistory> CREDENTIAL_2_CREDENTIAL_HISTORY_CONVERTER = credential -> {
-        if (isNull(credential))
-            throw new BlueException(EMPTY_PARAM);
-
-        return new CredentialHistory(credential.getId(), credential.getMemberId(), credential.getCredential(), credential.getCreateTime());
     };
 
     /**

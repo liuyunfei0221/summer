@@ -1,13 +1,14 @@
 package com.blue.auth.model;
 
 import com.blue.base.constant.auth.CredentialType;
+import com.blue.base.inter.Asserter;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.blue.base.common.base.ConstantProcessor.assertDeviceType;
 import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
+import static com.blue.base.common.base.ConstantProcessor.assertDeviceType;
 
 /**
  * login infos
@@ -15,7 +16,7 @@ import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused"})
-public final class LoginParam implements Serializable {
+public final class LoginParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 1819262766642404008L;
 
@@ -46,12 +47,14 @@ public final class LoginParam implements Serializable {
 
     public LoginParam(String credentialType, String deviceType, Map<String, String> account) {
         this.credentialType = credentialType;
-        assertCredentialType(credentialType, false);
-
         this.deviceType = deviceType;
-        assertDeviceType(deviceType, false);
-
         this.account = account;
+    }
+
+    @Override
+    public void asserts() {
+        assertCredentialType(this.credentialType, false);
+        assertDeviceType(this.deviceType, false);
     }
 
     public String getCredentialType() {
@@ -59,7 +62,6 @@ public final class LoginParam implements Serializable {
     }
 
     public void setCredentialType(String credentialType) {
-        assertCredentialType(credentialType, false);
         this.credentialType = credentialType;
     }
 
@@ -68,7 +70,6 @@ public final class LoginParam implements Serializable {
     }
 
     public void setDeviceType(String deviceType) {
-        assertDeviceType(deviceType, false);
         this.deviceType = deviceType;
     }
 

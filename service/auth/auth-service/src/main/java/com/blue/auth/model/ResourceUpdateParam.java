@@ -20,18 +20,19 @@ public final class ResourceUpdateParam extends ResourceInsertParam {
     public ResourceUpdateParam() {
     }
 
-    public ResourceUpdateParam(String requestMethod, String module, String uri, Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody, Integer type, String name, String description, Long id) {
+    public ResourceUpdateParam(Long id, String requestMethod, String module, String uri, Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody, Integer type, String name, String description) {
         super(requestMethod, module, uri, authenticate, requestUnDecryption, responseUnEncryption, existenceRequestBody, existenceResponseBody, type, name, description);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
         this.id = id;
     }
 
-    public Long getId() {
+    @Override
+    public void asserts() {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
+        super.asserts();
+    }
 
+    public Long getId() {
         return id;
     }
 
