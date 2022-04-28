@@ -347,6 +347,10 @@ question:
   max: 5
 
 
+history:
+  limit: 300
+
+
 producers:
   configs:
     accessExpire:

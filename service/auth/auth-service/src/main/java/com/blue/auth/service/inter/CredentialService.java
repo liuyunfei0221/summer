@@ -12,7 +12,7 @@ import java.util.Optional;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface CredentialService {
 
     /**

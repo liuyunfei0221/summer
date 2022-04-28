@@ -315,12 +315,12 @@ public interface ControlService {
     Mono<Boolean> invalidateAuthByMember(Long memberId, Long operatorId);
 
     /**
-     * select security question info mono by member id
+     * select security question mono by member id
      *
      * @param memberId
      * @param operatorId
      * @return
      */
-    Mono<MemberSecurityQuestionsInfo> selectSecurityQuestionInfoMonoByMemberId(Long memberId, Long operatorId);
+    Mono<MemberSecurityInfo> selectSecurityInfoMonoByMemberId(Long memberId, Long operatorId);
 
 }

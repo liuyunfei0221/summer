@@ -3,7 +3,6 @@ package com.blue.auth.service.impl;
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.repository.mapper.CredentialMapper;
-import com.blue.auth.repository.template.CredentialHistoryRepository;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
@@ -47,14 +46,10 @@ public class CredentialServiceImpl implements CredentialService {
 
     private CredentialMapper credentialMapper;
 
-    private final CredentialHistoryRepository credentialHistoryRepository;
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public CredentialServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CredentialMapper credentialMapper,
-                                 CredentialHistoryRepository credentialHistoryRepository) {
+    public CredentialServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CredentialMapper credentialMapper) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.credentialMapper = credentialMapper;
-        this.credentialHistoryRepository = credentialHistoryRepository;
     }
 
     private final Consumer<List<Credential>> CREDENTIALS_ASSERTER = credentials -> {
@@ -228,7 +223,7 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void insertCredentials(List<Credential> credentials) {
         LOGGER.info("void insertCredentials(List<Credential> credentials), credential = {}", credentials);
         if (isEmpty(credentials))
@@ -240,6 +235,7 @@ public class CredentialServiceImpl implements CredentialService {
                 .forEach(c -> c.setId(blueIdentityProcessor.generate(Credential.class)));
 
         credentialMapper.insertBatch(credentials);
+        LOGGER.info("insert batch credentials = {}", credentials);
     }
 
     /**
@@ -249,7 +245,7 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void insertCredential(Credential credential) {
         LOGGER.info("void insertCredential(Credential credential, Long operatorId), credential = {}", credential);
         Long memberId;
@@ -266,6 +262,7 @@ public class CredentialServiceImpl implements CredentialService {
         credential.setId(blueIdentityProcessor.generate(Credential.class));
 
         credentialMapper.insert(credential);
+        LOGGER.info("insert credential = {}", credential);
     }
 
     /**
@@ -275,7 +272,7 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void updateCredentialByIds(String credential, List<Long> ids) {
         LOGGER.info("void updateCredentialByIds(String credential, List<Long> ids), credential = {}, ids = {}", credential, ids);
         if (isBlank(credential) || isEmpty(ids))
@@ -284,6 +281,7 @@ public class CredentialServiceImpl implements CredentialService {
             throw new BlueException(DATA_ALREADY_EXIST);
 
         credentialMapper.updateCredentialByIds(credential, ids);
+        LOGGER.info("update batch credential = {}", credential);
     }
 
     /**
@@ -327,7 +325,7 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public boolean updateAccess(Long memberId, List<String> credentialTypes, String access) {
         LOGGER.info("Boolean updateAccess(Long memberId, VerifyType verifyType, String access), memberId = {}, credentialTypes = {}, access = {}", memberId, credentialTypes, ":)");
 

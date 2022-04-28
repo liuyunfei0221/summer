@@ -1,6 +1,5 @@
 package com.blue.auth.repository.entity;
 
-import com.blue.base.constant.auth.CredentialType;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
@@ -28,30 +27,15 @@ public final class CredentialHistory implements Serializable {
      */
     private String credential;
 
-    /**
-     * credential type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN
-     *
-     * @see CredentialType
-     */
-    private String type;
-
-    /**
-     * extra infos
-     */
-    private String extra;
-
     private Long createTime;
 
     public CredentialHistory() {
     }
 
-    public CredentialHistory(Long id, Long memberId, String credential, String type,
-                             String extra, Long createTime) {
+    public CredentialHistory(Long id, Long memberId, String credential, Long createTime) {
         this.id = id;
         this.memberId = memberId;
         this.credential = credential;
-        this.type = type;
-        this.extra = extra;
         this.createTime = createTime;
     }
 
@@ -79,22 +63,6 @@ public final class CredentialHistory implements Serializable {
         this.credential = credential;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getExtra() {
-        return extra;
-    }
-
-    public void setExtra(String extra) {
-        this.extra = extra;
-    }
-
     public Long getCreateTime() {
         return createTime;
     }
@@ -109,8 +77,6 @@ public final class CredentialHistory implements Serializable {
                 "id=" + id +
                 ", memberId=" + memberId +
                 ", credential='" + credential + '\'' +
-                ", type='" + type + '\'' +
-                ", extra='" + extra + '\'' +
                 ", createTime=" + createTime +
                 '}';
     }

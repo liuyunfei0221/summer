@@ -1,10 +1,7 @@
 package com.blue.auth.converter;
 
 import com.blue.auth.api.model.*;
-import com.blue.auth.model.ResourceInsertParam;
-import com.blue.auth.model.RoleInsertParam;
-import com.blue.auth.model.SecurityQuestionInfo;
-import com.blue.auth.model.SecurityQuestionInsertParam;
+import com.blue.auth.model.*;
 import com.blue.auth.repository.entity.*;
 import com.blue.base.model.exps.BlueException;
 
@@ -17,6 +14,7 @@ import static com.blue.base.constant.base.Default.NOT_DEFAULT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
+import static com.blue.database.type.StringColumnEncoder.decryptString;
 
 /**
  * model converters in auth project
@@ -210,8 +208,17 @@ public final class AuthModelConverters {
         if (isNull(credential))
             throw new BlueException(EMPTY_PARAM);
 
-        return new CredentialHistory(credential.getId(), credential.getMemberId(), credential.getCredential(), credential.getType(),
-                credential.getExtra(), credential.getCreateTime());
+        return new CredentialHistory(credential.getId(), credential.getMemberId(), credential.getCredential(), credential.getCreateTime());
+    };
+
+    /**
+     * credential history -> credential history info
+     */
+    public static final Function<CredentialHistory, CredentialHistoryInfo> CREDENTIAL_HISTORY_2_CREDENTIAL_HISTORY_INFO_CONVERTER = credentialHistory -> {
+        if (isNull(credentialHistory))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new CredentialHistoryInfo(decryptString(credentialHistory.getCredential()), credentialHistory.getCreateTime());
     };
 
     /**

@@ -36,7 +36,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DefaultAnnotationParam"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class MemberAuthServiceImpl implements MemberAuthService {
 
@@ -74,9 +74,9 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     @SuppressWarnings("CommentedOutCode")
     @Override
     @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
-            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 60000)
+            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 60)
+            rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("MemberInfo registerMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
         if (isNull(memberRegistryParam))
@@ -119,7 +119,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     @SuppressWarnings("CommentedOutCode")
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 60)
+            rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
         LOGGER.info("MemberInfo simpleRegisterMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
         if (isNull(memberRegistryParam))
@@ -154,7 +154,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
      */
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 60)
+            rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId) {
         LOGGER.info("MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId), credentialTypes = {}, credential = {}, memberId = {}",
                 credentialTypes, credential, memberId);

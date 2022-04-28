@@ -14,7 +14,6 @@ import com.blue.auth.repository.entity.RefreshInfo;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.repository.entity.RoleResRelation;
-import com.blue.auth.repository.template.RefreshInfoRepository;
 import com.blue.auth.service.inter.*;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.auth.AccessInfoRefreshElementType;
@@ -29,7 +28,6 @@ import com.blue.jwt.common.JwtProcessor;
 import com.google.gson.JsonSyntaxException;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.data.domain.Example;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -81,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
 
     private static final Logger LOGGER = getLogger(AuthServiceImpl.class);
 
-    private RefreshInfoRepository refreshInfoRepository;
+    private RefreshInfoService refreshInfoService;
 
     private JwtProcessor<MemberPayload> jwtProcessor;
 
@@ -104,10 +102,10 @@ public class AuthServiceImpl implements AuthService {
     private RedissonClient redissonClient;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public AuthServiceImpl(RefreshInfoRepository refreshInfoRepository, JwtProcessor<MemberPayload> jwtProcessor, AccessInfoCache accessInfoCache, StringRedisTemplate stringRedisTemplate,
+    public AuthServiceImpl(RefreshInfoService refreshInfoService, JwtProcessor<MemberPayload> jwtProcessor, AccessInfoCache accessInfoCache, StringRedisTemplate stringRedisTemplate,
                            RoleService roleService, ResourceService resourceService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
                            InvalidLocalAccessProducer invalidLocalAccessProducer, ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
-        this.refreshInfoRepository = refreshInfoRepository;
+        this.refreshInfoService = refreshInfoService;
         this.jwtProcessor = jwtProcessor;
         this.accessInfoCache = accessInfoCache;
         this.stringRedisTemplate = stringRedisTemplate;
@@ -350,9 +348,9 @@ public class AuthServiceImpl implements AuthService {
      * delete all refresh token infos by key id
      */
     private final Function<String, Mono<Boolean>> REFRESH_INFOS_BY_ID_DELETER = id ->
-            refreshInfoRepository.deleteById(id)
+            refreshInfoService.deleteRefreshInfoById(id)
                     .onErrorResume(throwable -> {
-                        LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoRepository.insert(refreshInfo) failed, throwable = {}", throwable);
+                        LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR,  refreshInfoService.deleteRefreshInfoById(id) failed, id = {}, throwable = {}", id, throwable);
                         return empty();
                     })
                     .then(just(true));
@@ -362,15 +360,14 @@ public class AuthServiceImpl implements AuthService {
      * delete all refresh token infos by member id
      */
     private final Function<Long, Mono<Boolean>> REFRESH_INFOS_BY_MEMBER_ID_DELETER = memberId -> {
-        RefreshInfo condition = new RefreshInfo();
-        condition.setMemberId(ofNullable(memberId).filter(BlueChecker::isValidIdentity)
+        RefreshInfo probe = new RefreshInfo();
+        probe.setMemberId(ofNullable(memberId).filter(BlueChecker::isValidIdentity)
                 .map(String::valueOf).orElseThrow(() -> new BlueException(BAD_REQUEST)));
 
-        return refreshInfoRepository.findAll(Example.of(condition))
-                .collectList()
-                .flatMap(refreshInfoRepository::deleteAll)
+        return refreshInfoService.selectRefreshInfoMonoByProbe(probe)
+                .flatMap(refreshInfoService::deleteRefreshInfos)
                 .onErrorResume(throwable -> {
-                    LOGGER.warn("Function<Long, Mono<Boolean>> REFRESH_INFOS_BY_MEMBER_ID_DELETER failed, throwable = {}", throwable);
+                    LOGGER.warn("Function<Long, Mono<Boolean>> REFRESH_INFOS_BY_MEMBER_ID_DELETER failed, memberId = {}, throwable = {}", memberId, throwable);
                     return empty();
                 })
                 .then(just(true));
@@ -433,10 +430,11 @@ public class AuthServiceImpl implements AuthService {
                 .flatMap(access -> {
                     memberPayload.setGamma(randomAlphanumeric(randomIdLen));
 
-                    return refreshInfoRepository.save(new RefreshInfo(memberPayload.getKeyId(), memberPayload.getGamma(), memberPayload.getId(),
+                    return refreshInfoService.insertRefreshInfo(new RefreshInfo(memberPayload.getKeyId(), memberPayload.getGamma(), memberPayload.getId(),
                                     memberPayload.getCredentialType().intern(), memberPayload.getDeviceType().intern(), memberPayload.getLoginTime(), REFRESH_EXPIRE_AT_GETTER.get()))
                             .onErrorResume(throwable -> {
-                                LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoRepository.insert(refreshInfo) failed, throwable = {}", throwable);
+                                LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoService.insertRefreshInfo(refreshInfo) failed, memberPayload = {}, roleId = {}, throwable = {}",
+                                        memberPayload, roleId, throwable);
                                 return just(new RefreshInfo());
                             })
                             .flatMap(ig -> just(jwtProcessor.create(memberPayload)))
@@ -453,8 +451,8 @@ public class AuthServiceImpl implements AuthService {
                 throw new BlueException(UNAUTHORIZED);
 
             if (parseLong(refreshInfo.getLoginTime()) + refreshExpireMillis <= TIME_STAMP_GETTER.get()) {
-                refreshInfoRepository.deleteById(refreshInfo.getId())
-                        .doOnError(throwable -> LOGGER.error("AUTH_ASSERTER -> refreshInfoRepository.deleteById failed, throwable = {}", throwable))
+                refreshInfoService.deleteRefreshInfoById(refreshInfo.getId())
+                        .doOnError(throwable -> LOGGER.error("AUTH_ASSERTER ->  refreshInfoService.deleteRefreshInfoById() failed, refreshInfo = {}, throwable = {}", refreshInfo, throwable))
                         .subscribe();
                 throw new BlueException(UNAUTHORIZED);
             }
@@ -857,9 +855,9 @@ public class AuthServiceImpl implements AuthService {
         if (isNull(memberPayload))
             return error(() -> new BlueException(UNAUTHORIZED));
 
-        return refreshInfoRepository.findById(memberPayload.getKeyId())
+        return refreshInfoService.getRefreshInfoById(memberPayload.getKeyId())
                 .onErrorResume(t -> {
-                    LOGGER.warn("Mono<MemberAccess> refreshAccess(String refresh), refreshInfoRepository.findById(memberPayload.getKeyId()) failed, t = {}", t);
+                    LOGGER.warn("Mono<MemberAccess> refreshAccess(String refresh), refreshInfoService.getRefreshInfoById(memberPayload.getKeyId()) failed, memberPayload = {}, t = {}", memberPayload, t);
                     return error(() -> new BlueException(UNAUTHORIZED));
                 })
                 .switchIfEmpty(error(() -> new BlueException(UNAUTHORIZED)))

@@ -89,6 +89,8 @@ public class ControlServiceImpl implements ControlService {
 
     private final CredentialService credentialService;
 
+    private final CredentialHistoryService credentialHistoryService;
+
     private final SecurityQuestionService securityQuestionService;
 
     private RoleResRelationService roleResRelationService;
@@ -103,7 +105,7 @@ public class ControlServiceImpl implements ControlService {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, JwtProcessor<MemberPayload> jwtProcessor,
-                              LoginService loginService, AuthService authService, RoleService roleService, CredentialService credentialService, SecurityQuestionService securityQuestionService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
+                              LoginService loginService, AuthService authService, RoleService roleService, CredentialService credentialService, CredentialHistoryService credentialHistoryService, SecurityQuestionService securityQuestionService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
                               SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService, ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, ControlDeploy controlDeploy) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
@@ -113,6 +115,7 @@ public class ControlServiceImpl implements ControlService {
         this.authService = authService;
         this.roleService = roleService;
         this.credentialService = credentialService;
+        this.credentialHistoryService = credentialHistoryService;
         this.securityQuestionService = securityQuestionService;
         this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
@@ -421,7 +424,7 @@ public class ControlServiceImpl implements ControlService {
      * @param memberCredentialInfo
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo) {
         LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
         if (isNull(memberCredentialInfo))
@@ -446,15 +449,16 @@ public class ControlServiceImpl implements ControlService {
      * @param roleId
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo, Long roleId) {
         LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo, Long roleId), memberCredentialInfo = {}, roleId = {}", memberCredentialInfo, roleId);
         if (isNull(memberCredentialInfo) || isInvalidIdentity(roleId))
             throw new BlueException(EMPTY_PARAM);
         memberCredentialInfo.asserts();
+        List<CredentialInfo> credentialInfos = memberCredentialInfo.getCredentials();
 
         Long memberId = memberCredentialInfo.getMemberId();
-        List<Credential> credentials = memberCredentialInfo.getCredentials().stream()
+        List<Credential> credentials = credentialInfos.stream()
                 .map(c -> CREDENTIAL_INFO_AND_MEMBER_ID_2_CREDENTIAL_CONVERTER.apply(c, memberId))
                 .collect(toList());
 
@@ -462,6 +466,8 @@ public class ControlServiceImpl implements ControlService {
 
         memberRoleRelationService.insertMemberRoleRelation(MEMBER_ROLE_RELATION_GEN.apply(memberId, roleId));
         credentialService.insertCredentials(credentials);
+
+        credentialHistoryService.insertCredentialHistoriesByCredentialsAndMemberIdAsync(credentials, memberId);
     }
 
     /**
@@ -475,7 +481,7 @@ public class ControlServiceImpl implements ControlService {
     @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
             rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 60)
+            rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access) {
         LOGGER.info("MemberBasicInfo credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access), credentialSettingUpParam = {}, access = {}",
                 credentialSettingUpParam, access);
@@ -502,8 +508,11 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(DATA_ALREADY_EXIST);
 
         credentialService.insertCredentials(generateCredentialsByElements(types, credential, memberId));
+        MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(types, credential, memberId);
 
-        return rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(types, credential, memberId);
+        credentialHistoryService.insertCredentialHistoryByCredentialAndMemberIdAsync(credential, memberId);
+
+        return memberBasicInfo;
     }
 
     /**
@@ -515,9 +524,9 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
-            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 60000)
+            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 60)
+            rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo credentialModify(CredentialModifyParam credentialModifyParam, Access access) {
         LOGGER.info("MemberBasicInfo credentialModify(CredentialModifyParam credentialModifyParam, Access access), credentialModifyParam = {}, access = {}",
                 credentialModifyParam, access);
@@ -554,8 +563,13 @@ public class ControlServiceImpl implements ControlService {
 
         credentialService.updateCredentialByIds(destinationCredential, destinationCredentials.stream().map(Credential::getId).collect(toList()));
         authService.invalidateAuthByMemberId(memberId).doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable)).subscribe();
-        return rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(destinationCredentialTypes, destinationCredential, memberId);
+        MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(destinationCredentialTypes, destinationCredential, memberId);
+
+        credentialHistoryService.insertCredentialHistoryByCredentialAndMemberIdAsync(destinationCredential, memberId);
+
+        return memberBasicInfo;
     }
+
 
     /**
      * update member role info by member id
@@ -955,22 +969,23 @@ public class ControlServiceImpl implements ControlService {
     }
 
     /**
-     * select security question info mono by member id
+     * select security info mono by member id
      *
      * @param memberId
      * @param operatorId
      * @return
      */
     @Override
-    public Mono<MemberSecurityQuestionsInfo> selectSecurityQuestionInfoMonoByMemberId(Long memberId, Long operatorId) {
+    public Mono<MemberSecurityInfo> selectSecurityInfoMonoByMemberId(Long memberId, Long operatorId) {
         LOGGER.info("Mono<List<SecurityQuestionInfo>> selectSecurityQuestionInfoMonoByMemberId(Long memberId, Long operatorId), memberId = {}, operatorId = {}", memberId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return zip(rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(memberId),
+                credentialHistoryService.selectCredentialHistoryInfoMonoByMemberIdWithLimit(memberId),
                 securityQuestionService.selectSecurityQuestionInfoMonoByMemberId(memberId)
-        ).flatMap(tuple2 -> just(new MemberSecurityQuestionsInfo(memberId, tuple2.getT1().getName(), tuple2.getT2())));
+        ).flatMap(tuple3 -> just(new MemberSecurityInfo(memberId, tuple3.getT1().getName(), tuple3.getT2(), tuple3.getT3())));
     }
 
 }

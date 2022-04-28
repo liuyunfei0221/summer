@@ -1,4 +1,3 @@
-# suppress inspection "SpellCheckingInspection"
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.blue.base.component.exception.ioc.ReactiveBlueExceptionHandler,\
 com.blue.base.component.executor.ioc.BlueExecutorConfiguration,\

@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static com.blue.database.type.TypeEncoder.encryptString;
+import static com.blue.database.type.StringColumnEncoder.encryptString;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -28,7 +28,7 @@ public final class EncodeStringTypeHandler extends BaseTypeHandler<String> {
     public String getNullableResult(ResultSet resultSet, String columnName) throws SQLException {
         return ofNullable(resultSet.getString(columnName))
                 .filter(StringUtils::hasText)
-                .map(TypeEncoder::decryptString)
+                .map(StringColumnEncoder::decryptString)
                 .orElse("");
     }
 
@@ -36,7 +36,7 @@ public final class EncodeStringTypeHandler extends BaseTypeHandler<String> {
     public String getNullableResult(ResultSet resultSet, int columnIndex) throws SQLException {
         return ofNullable(resultSet.getString(columnIndex))
                 .filter(StringUtils::hasText)
-                .map(TypeEncoder::decryptString)
+                .map(StringColumnEncoder::decryptString)
                 .orElse("");
     }
 
@@ -44,7 +44,7 @@ public final class EncodeStringTypeHandler extends BaseTypeHandler<String> {
     public String getNullableResult(CallableStatement callableStatement, int columnIndex) throws SQLException {
         return ofNullable(callableStatement.getString(columnIndex))
                 .filter(StringUtils::hasText)
-                .map(TypeEncoder::decryptString)
+                .map(StringColumnEncoder::decryptString)
                 .orElse("");
     }
 

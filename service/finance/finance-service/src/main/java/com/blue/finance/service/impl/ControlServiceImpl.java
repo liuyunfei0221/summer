@@ -68,7 +68,7 @@ public class ControlServiceImpl implements ControlService {
      *
      * @param memberFinanceInfo
      */
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     @Override
     public void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo) {
         LOGGER.info("void initMemberFinanceInfo(MemberFinanceInfo memberFinanceInfo), memberFinanceInfo = {}", memberFinanceInfo);

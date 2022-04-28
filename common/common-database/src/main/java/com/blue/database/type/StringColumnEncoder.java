@@ -1,6 +1,7 @@
 package com.blue.database.type;
 
 import com.blue.base.common.base.AesProcessor;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.util.List;
@@ -10,9 +11,17 @@ import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.loadProp;
+import static org.slf4j.LoggerFactory.getLogger;
 
+/**
+ * string column encoder
+ *
+ * @author liuyunfei
+ */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
-final class TypeEncoder {
+public final class StringColumnEncoder {
+
+    private static final Logger LOGGER = getLogger(StringColumnEncoder.class);
 
     private static final AesProcessor AES_PROCESSOR;
 
@@ -39,6 +48,8 @@ final class TypeEncoder {
             throw new RuntimeException("salt can't be blank");
 
         AES_PROCESSOR = new AesProcessor(salt);
+
+        LOGGER.warn("TypeEncoder init.");
     }
 
     /**

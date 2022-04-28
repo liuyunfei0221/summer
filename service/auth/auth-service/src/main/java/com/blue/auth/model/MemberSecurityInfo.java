@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * member and security question info
+ * member and security info
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class MemberSecurityQuestionsInfo implements Serializable {
+public final class MemberSecurityInfo implements Serializable {
 
     private static final long serialVersionUID = -8705792063313129820L;
 
@@ -17,14 +17,17 @@ public final class MemberSecurityQuestionsInfo implements Serializable {
 
     private String memberName;
 
+    private List<CredentialHistoryInfo> credentialHistoryInfos;
+
     private List<SecurityQuestionInfo> securityQuestionInfos;
 
-    public MemberSecurityQuestionsInfo() {
+    public MemberSecurityInfo() {
     }
 
-    public MemberSecurityQuestionsInfo(Long memberId, String memberName, List<SecurityQuestionInfo> securityQuestionInfos) {
+    public MemberSecurityInfo(Long memberId, String memberName, List<CredentialHistoryInfo> credentialHistoryInfos, List<SecurityQuestionInfo> securityQuestionInfos) {
         this.memberId = memberId;
         this.memberName = memberName;
+        this.credentialHistoryInfos = credentialHistoryInfos;
         this.securityQuestionInfos = securityQuestionInfos;
     }
 
@@ -44,6 +47,14 @@ public final class MemberSecurityQuestionsInfo implements Serializable {
         this.memberName = memberName;
     }
 
+    public List<CredentialHistoryInfo> getCredentialHistoryInfos() {
+        return credentialHistoryInfos;
+    }
+
+    public void setCredentialHistoryInfos(List<CredentialHistoryInfo> credentialHistoryInfos) {
+        this.credentialHistoryInfos = credentialHistoryInfos;
+    }
+
     public List<SecurityQuestionInfo> getSecurityQuestionInfos() {
         return securityQuestionInfos;
     }
@@ -54,9 +65,10 @@ public final class MemberSecurityQuestionsInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "MemberSecurityQuestionsInfo{" +
+        return "MemberSecurityInfo{" +
                 "memberId=" + memberId +
                 ", memberName='" + memberName + '\'' +
+                ", credentialHistoryInfos=" + credentialHistoryInfos +
                 ", securityQuestionInfos=" + securityQuestionInfos +
                 '}';
     }
