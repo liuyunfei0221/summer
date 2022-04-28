@@ -23,6 +23,8 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.database.type.StringColumnEncoder.decryptString;
+import static com.blue.database.type.StringColumnEncoder.encryptString;
 import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
@@ -54,7 +56,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
     }
 
     private final int HISTORY_SELECT_LIMIT;
-    private final String ORDER_COLUMN = "";
+    private final String ORDER_COLUMN = "createTime";
 
     /**
      * insert credential history
@@ -68,6 +70,10 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
         if (isNull(credentialHistory))
             throw new BlueException(EMPTY_PARAM);
 
+        if (isInvalidIdentity(credentialHistory.getId()))
+            credentialHistory.setId(blueIdentityProcessor.generate(CredentialHistory.class));
+
+        credentialHistory.setCredential(encryptString(credentialHistory.getCredential()));
         return credentialHistoryRepository.insert(credentialHistory);
     }
 
@@ -83,7 +89,12 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
         if (isEmpty(credentialHistories))
             throw new BlueException(EMPTY_PARAM);
 
-        return credentialHistoryRepository.insert(credentialHistories).collectList();
+        return credentialHistoryRepository.insert(
+                credentialHistories.stream().peek(credentialHistory -> {
+                    credentialHistory.setCredential(encryptString(credentialHistory.getCredential()));
+                    if (isInvalidIdentity(credentialHistory.getId()))
+                        credentialHistory.setId(blueIdentityProcessor.generate(CredentialHistory.class));
+                }).collect(toList())).collectList();
     }
 
     /**
@@ -153,7 +164,12 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
         CredentialHistory probe = new CredentialHistory();
         probe.setMemberId(memberId);
 
-        return credentialHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ORDER_COLUMN))).take(tarLimit).collectList();
+        return credentialHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ORDER_COLUMN))).take(tarLimit)
+                .flatMap(credentialHistory -> {
+                    credentialHistory.setCredential(decryptString(credentialHistory.getCredential()));
+                    return just(credentialHistory);
+                })
+                .collectList();
     }
 
     /**
@@ -172,7 +188,10 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
         probe.setMemberId(memberId);
 
         return credentialHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ORDER_COLUMN))).take(HISTORY_SELECT_LIMIT)
-                .flatMap(credentialHistory -> just(CREDENTIAL_HISTORY_2_CREDENTIAL_HISTORY_INFO_CONVERTER.apply(credentialHistory)))
+                .flatMap(credentialHistory -> {
+                    credentialHistory.setCredential(decryptString(credentialHistory.getCredential()));
+                    return just(CREDENTIAL_HISTORY_2_CREDENTIAL_HISTORY_INFO_CONVERTER.apply(credentialHistory));
+                })
                 .collectList();
     }
 

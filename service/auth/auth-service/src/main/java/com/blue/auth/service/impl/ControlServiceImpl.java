@@ -206,7 +206,7 @@ public class ControlServiceImpl implements ControlService {
     private Role getRoleByMemberId(Long memberId) {
         return memberRoleRelationService.getRoleIdByMemberId(memberId)
                 .map(roleService::getRoleById).filter(Optional::isPresent).map(Optional::get)
-                .orElseThrow(() -> new BlueException(MEMBER_NOT_HAS_A_ROLE));
+                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     }
 
     private void assertRoleLevelForOperate(int tarLevel, int operatorLevel) {

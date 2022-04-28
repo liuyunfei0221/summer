@@ -195,7 +195,7 @@ public class AuthDeploy {
                 ", batchExpireScheduledDelayMillis=" + batchExpireScheduledDelayMillis +
                 ", batchExpireQueueCapacity=" + batchExpireQueueCapacity +
                 ", signKey='" + signKey + '\'' +
-                ", gammaSecrets=" + gammaSecrets +
+                ", gammaSecrets=" + ":)" +
                 '}';
     }
 

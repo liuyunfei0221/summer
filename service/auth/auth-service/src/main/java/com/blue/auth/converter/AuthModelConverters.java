@@ -14,7 +14,6 @@ import static com.blue.base.constant.base.Default.NOT_DEFAULT;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
-import static com.blue.database.type.StringColumnEncoder.decryptString;
 
 /**
  * model converters in auth project
@@ -218,7 +217,7 @@ public final class AuthModelConverters {
         if (isNull(credentialHistory))
             throw new BlueException(EMPTY_PARAM);
 
-        return new CredentialHistoryInfo(decryptString(credentialHistory.getCredential()), credentialHistory.getCreateTime());
+        return new CredentialHistoryInfo(credentialHistory.getCredential(), credentialHistory.getCreateTime());
     };
 
     /**
