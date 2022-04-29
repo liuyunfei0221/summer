@@ -88,6 +88,10 @@ limit:
   burstCapacity: 3
 
 
+turing:
+
+
+
 circuit:
   failureRateThreshold: 50
   slowCallRateThreshold: 80
