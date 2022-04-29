@@ -1,12 +1,12 @@
 package com.blue.base.common.reactive;
 
-import com.blue.base.constant.base.BlueHeader;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
 import static com.blue.base.common.metadata.MetadataProcessor.jsonToMetadata;
+import static com.blue.base.constant.base.BlueHeader.METADATA;
 import static reactor.core.publisher.Mono.just;
 
 /**
@@ -17,8 +17,6 @@ import static reactor.core.publisher.Mono.just;
 @SuppressWarnings({"JavaDoc", "unused"})
 public class MetadataGetterForReactive {
 
-    private static final String METADATA = BlueHeader.METADATA.name;
-
     /**
      * get metadata from request
      *
@@ -26,7 +24,7 @@ public class MetadataGetterForReactive {
      * @return
      */
     public static Map<String, String> getMetadata(ServerRequest serverRequest) {
-        return jsonToMetadata(serverRequest.headers().firstHeader(METADATA));
+        return jsonToMetadata(serverRequest.headers().firstHeader(METADATA.name));
     }
 
     /**
@@ -36,7 +34,7 @@ public class MetadataGetterForReactive {
      * @return
      */
     public static Mono<Map<String, String>> getMetadataReact(ServerRequest serverRequest) {
-        return just(jsonToMetadata(serverRequest.headers().firstHeader(METADATA)));
+        return just(jsonToMetadata(serverRequest.headers().firstHeader(METADATA.name)));
     }
 
 

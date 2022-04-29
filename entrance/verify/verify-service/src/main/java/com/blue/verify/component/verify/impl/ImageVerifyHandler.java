@@ -177,8 +177,7 @@ public class ImageVerifyHandler implements VerifyHandler {
 
                                             return using(FastByteArrayOutputStream::new,
                                                     outputStream -> IMAGE_WRITER.apply(verify, outputStream)
-                                                    , STREAM_CLOSER,
-                                                    true)
+                                                    , STREAM_CLOSER, true)
                                                     .flatMap(resource ->
                                                             ok().contentType(IMAGE_PNG)
                                                                     .header(CACHE_CONTROL, CACHE_CONTROL_VALUE)

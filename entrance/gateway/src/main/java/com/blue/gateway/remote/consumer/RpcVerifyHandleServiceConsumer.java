@@ -1,4 +1,4 @@
-package com.blue.media.remote.consumer;
+package com.blue.gateway.remote.consumer;
 
 import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;

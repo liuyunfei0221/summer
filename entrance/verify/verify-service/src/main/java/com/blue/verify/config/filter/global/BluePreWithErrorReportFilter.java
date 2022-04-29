@@ -1,17 +1,17 @@
-package com.blue.gateway.config.filter.global;
+package com.blue.verify.config.filter.global;
 
 import com.blue.base.constant.base.BlueHeader;
 import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.base.ExceptionResponse;
-import com.blue.gateway.component.event.RequestEventReporter;
-import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
+import com.blue.verify.component.event.RequestEventReporter;
 import org.springframework.core.Ordered;
 import org.springframework.http.codec.HttpMessageReader;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
@@ -24,7 +24,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLan
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
-import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_ERROR_REPORT;
+import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.error;
@@ -36,11 +36,11 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@Component
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "UnusedAssignment"})
-public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
+@Component
+public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
 
-    private static final Logger LOGGER = getLogger(BlueErrorReportFilter.class);
+    private static final Logger LOGGER = getLogger(BluePreWithErrorReportFilter.class);
 
     private final List<HttpMessageReader<?>> httpMessageReaders;
 
@@ -48,7 +48,7 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
 
     private final RequestEventReporter requestEventReporter;
 
-    public BlueErrorReportFilter(List<HttpMessageReader<?>> httpMessageReaders, ExecutorService executorService, RequestEventReporter requestEventReporter) {
+    public BluePreWithErrorReportFilter(List<HttpMessageReader<?>> httpMessageReaders, ExecutorService executorService, RequestEventReporter requestEventReporter) {
         this.httpMessageReaders = httpMessageReaders;
         this.executorService = executorService;
         this.requestEventReporter = requestEventReporter;
@@ -96,8 +96,9 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
                 .ifPresent(userAgent -> attributes.put(USER_AGENT.key, userAgent));
     }
 
+    @SuppressWarnings({"NullableProblems", "DuplicatedCode"})
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
         Map<String, Object> attributes = exchange.getAttributes();
@@ -108,7 +109,8 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
                 .onErrorResume(throwable ->
                         ServerRequest.create(exchange, httpMessageReaders)
                                 .bodyToMono(String.class)
-                                .switchIfEmpty(just(""))
+                                .switchIfEmpty(
+                                        just(""))
                                 .flatMap(requestBody -> {
                                     DataEvent dataEvent = new DataEvent();
 
@@ -125,7 +127,7 @@ public final class BlueErrorReportFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return BLUE_ERROR_REPORT.order;
+        return BLUE_PRE_WITH_ERROR_REPORT.order;
     }
 
 }

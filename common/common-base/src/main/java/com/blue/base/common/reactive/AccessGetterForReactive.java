@@ -5,7 +5,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
-import static com.blue.base.common.auth.AuthProcessor.jsonToAccess;
+import static com.blue.base.common.access.AccessProcessor.jsonToAccess;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
@@ -97,6 +97,5 @@ public final class AccessGetterForReactive {
     public static Mono<String> getAuthorizationReact(ServerHttpRequest serverHttpRequest) {
         return just(ofNullable(serverHttpRequest.getHeaders().getFirst(AUTHORIZATION.name)).orElse(""));
     }
-
 
 }

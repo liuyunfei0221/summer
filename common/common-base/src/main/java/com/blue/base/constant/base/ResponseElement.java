@@ -45,6 +45,7 @@ public enum ResponseElement {
     VERIFY_IS_INVALID(HttpStatus.BAD_REQUEST.value(), 400000017, "Verify is invalid"),
     TIME_FORMAT_IS_INVALID(HttpStatus.BAD_REQUEST.value(), 400000018, "Time format is invalid"),
     UNSUPPORTED_OPERATE(HttpStatus.BAD_REQUEST.value(), 400000019, "Operate is not support"),
+    NEED_TURING_TEST(HttpStatus.BAD_REQUEST.value(), 400000020, "Need to pass the Turing test"),
     //</editor-fold>
 
 

@@ -34,5 +34,13 @@ public interface RpcVerifyHandleService {
      * @return
      */
     CompletableFuture<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable);
-
+    
+    /**
+     * validate by turing test
+     *
+     * @param key
+     * @param verify
+     * @return
+     */
+    CompletableFuture<Boolean> turingValidate(String key, String verify);
 }

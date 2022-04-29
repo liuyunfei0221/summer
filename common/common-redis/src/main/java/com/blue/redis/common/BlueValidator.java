@@ -95,7 +95,7 @@ public final class BlueValidator {
      * @param value
      * @return
      */
-    public Mono<Boolean> unrepeatableValidate(String key, String value) {
+    public Mono<Boolean> unRepeatableValidate(String key, String value) {
         return reactiveStringRedisTemplate.execute(UNREPEATABLE_VALIDATION_SCRIPT,
                         SCRIPT_KEYS_WRAPPER.apply(key), SCRIPT_ARGS_WRAPPER.apply(value))
                 .onErrorResume(FALL_BACKER)

@@ -25,9 +25,14 @@ public enum BlueHeader {
     REFRESH("Refresh"),
 
     /**
-     * USER_AGENT
+     * user agent
      */
     USER_AGENT(HttpHeaders.USER_AGENT),
+
+    /**
+     * turing data
+     */
+    TURING_DATA("Turing-Data"),
 
     /**
      * metadata
@@ -43,6 +48,11 @@ public enum BlueHeader {
      * verify value
      */
     VERIFY_VALUE("Verify-Value"),
+
+    /**
+     * need to pass turing test
+     */
+    NEED_TURING_TEST("Need-Turing-Test"),
 
     /**
      * content

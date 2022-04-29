@@ -1,4 +1,4 @@
-package com.blue.base.common.auth;
+package com.blue.base.common.access;
 
 import com.blue.base.model.base.Access;
 import com.blue.base.model.exps.BlueException;
@@ -15,7 +15,7 @@ import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
-public final class AuthProcessor {
+public final class AccessProcessor {
 
     /**
      * access -> json

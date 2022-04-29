@@ -96,7 +96,7 @@ public class VerifyServiceImpl implements VerifyService {
 
     private final BiFunction<String, String, Mono<Boolean>> UN_REPEATABLE_VALIDATOR = (k, v) ->
             isNotBlank(k) && isNotBlank(v) ?
-                    blueValidator.unrepeatableValidate(k, v)
+                    blueValidator.unRepeatableValidate(k, v)
                     :
                     just(false);
 

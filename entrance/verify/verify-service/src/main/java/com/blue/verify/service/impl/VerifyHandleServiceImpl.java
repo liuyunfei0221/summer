@@ -29,7 +29,7 @@ public class VerifyHandleServiceImpl implements VerifyHandleService {
      *
      * @param verifyType
      * @param businessType
-     * @return destination
+     * @return destination / key
      */
     @Override
     public Mono<String> generate(VerifyType verifyType, BusinessType businessType, String destination) {
@@ -60,6 +60,18 @@ public class VerifyHandleServiceImpl implements VerifyHandleService {
     @Override
     public Mono<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
         return verifyProcessor.validate(verifyType, businessType, key, verify, repeatable);
+    }
+
+    /**
+     * validate by turing test
+     *
+     * @param key
+     * @param verify
+     * @return
+     */
+    @Override
+    public Mono<Boolean> turingValidate(String key, String verify) {
+        return verifyProcessor.validate(VerifyType.IMAGE, BusinessType.TURING_TEST, key, verify, false);
     }
 
 }

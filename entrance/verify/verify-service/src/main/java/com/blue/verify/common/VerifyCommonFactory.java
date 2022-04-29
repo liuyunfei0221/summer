@@ -80,11 +80,12 @@ public final class VerifyCommonFactory extends ReactiveCommonFunctions {
                                                         int rows = BUFFER_ALLOCATE;
                                                         int last;
 
+                                                        DataBuffer dataBuffer;
                                                         while (limit < len) {
                                                             if ((last = len - limit) < rows)
                                                                 rows = last;
 
-                                                            DataBuffer dataBuffer = DATA_BUFFER_FACTORY.allocateBuffer(rows);
+                                                            dataBuffer = DATA_BUFFER_FACTORY.allocateBuffer(rows);
                                                             dataBuffer.write(bytes, limit, rows);
                                                             fluxSink.next(dataBuffer);
 

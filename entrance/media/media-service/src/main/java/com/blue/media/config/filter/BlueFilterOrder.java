@@ -9,9 +9,9 @@ package com.blue.media.config.filter;
 public enum BlueFilterOrder {
 
     /**
-     * error report
+     * pre with error report
      */
-    BLUE_ERROR_REPORT(-1005),
+    BLUE_PRE_WITH_ERROR_REPORT(-1005),
 
     /**
      * risk intercept
@@ -34,9 +34,14 @@ public enum BlueFilterOrder {
     BLUE_AUTH(-1001),
 
     /**
+     * turing test
+     */
+    BLUE_TURING_TEST(-1001),
+
+    /**
      * data report
      */
-    BLUE_BODY_PROCESS_AND_DATA_REPORT(-1000);
+    BLUE_POST_WITH_DATA_REPORT(-1000);
 
     public final int order;
 

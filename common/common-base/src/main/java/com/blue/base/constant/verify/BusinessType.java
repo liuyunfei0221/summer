@@ -12,6 +12,11 @@ import static com.blue.base.constant.verify.VerifyType.*;
 public enum BusinessType {
 
     /**
+     * turing test
+     */
+    TURING_TEST("TT", Set.of(IMAGE)),
+
+    /**
      * register
      */
     REGISTER("REG", Set.of(SMS, MAIL)),

@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import static com.blue.base.common.auth.AuthProcessor.accessToJson;
+import static com.blue.base.common.access.AccessProcessor.accessToJson;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.HEADER_VALUE_GETTER;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
@@ -47,7 +47,7 @@ public final class BlueAuthFilter implements GlobalFilter, Ordered {
         if (isNull(accessAsserted) || isNull(attributes))
             throw new BlueException(UNAUTHORIZED);
 
-        String accStr = accessToJson(ofNullable(accessAsserted.getAccessInfo()).orElse(VISITOR.access));
+        String accStr = accessToJson(ofNullable(accessAsserted.getAccess()).orElse(VISITOR.access));
         if (accessAsserted.getCertificate())
             AUTHENTICATION_REPACKAGER.accept(request, accStr);
 
@@ -57,6 +57,7 @@ public final class BlueAuthFilter implements GlobalFilter, Ordered {
         attributes.put(RESPONSE_UN_ENCRYPTION.key, accessAsserted.getResponseUnEncryption());
         attributes.put(EXISTENCE_REQUEST_BODY.key, accessAsserted.getExistenceRequestBody());
         attributes.put(EXISTENCE_RESPONSE_BODY.key, accessAsserted.getExistenceResponseBody());
+        attributes.put(WITHOUT_TURING_TEST.key, accessAsserted.getWithoutTuringTest());
     }
 
     @Override

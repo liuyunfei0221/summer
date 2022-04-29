@@ -73,4 +73,18 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
         return just(true).subscribeOn(scheduler).flatMap(v -> verifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).toFuture();
     }
 
+    /**
+     * validate by turing test
+     *
+     * @param key
+     * @param verify
+     * @return
+     */
+    @Override
+    public CompletableFuture<Boolean> turingValidate(String key, String verify) {
+        LOGGER.info("CompletableFuture<Boolean> turingValidate(String key, String verify), key = {}, verify = {}", key, verify);
+
+        return just(true).subscribeOn(scheduler).flatMap(v -> verifyHandleService.turingValidate(key, verify)).toFuture();
+    }
+
 }

@@ -32,7 +32,7 @@ import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.gateway.common.GatewayCommonFunctions.*;
-import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_BODY_PROCESS_AND_DATA_REPORT;
+import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_POST_WITH_DATA_REPORT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonList;
@@ -50,7 +50,7 @@ import static reactor.core.publisher.Mono.just;
  * @author liuyunfei
  */
 @Component
-public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, Ordered {
+public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered {
 
     private final List<HttpMessageReader<?>> httpMessageReaders;
 
@@ -58,7 +58,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
 
     private final RequestEventReporter requestEventReporter;
 
-    public BlueBodyProcessAndDataReportFilter(List<HttpMessageReader<?>> httpMessageReaders, RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter, EncryptDeploy encryptDeploy) {
+    public BluePostWithDataReportFilter(List<HttpMessageReader<?>> httpMessageReaders, RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter, EncryptDeploy encryptDeploy) {
         this.httpMessageReaders = httpMessageReaders;
         this.requestBodyProcessor = requestBodyProcessor;
         this.requestEventReporter = requestEventReporter;
@@ -96,13 +96,11 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
         EVENT_PACKAGER.accept(attributes, dataEvent);
     }
 
-    private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
+    private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, HttpStatus responseHttpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
-        HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
 
         return ClientResponse
-                .create(httpStatus, httpMessageReaders)
+                .create(responseHttpStatus, httpMessageReaders)
                 .headers(hs ->
                         hs.putAll(response.getHeaders()))
                 .body(from(body)).build()
@@ -121,6 +119,10 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
 
     private ServerHttpResponse getResponseAndReport(ServerWebExchange exchange, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
+
+        HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
+        dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
+
         if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
                 .map(b -> (boolean) b).orElse(true)) {
             //noinspection NullableProblems
@@ -129,7 +131,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
                 public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                     CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(
                             exchange, exchange.getResponse().getHeaders());
-                    return fromPublisher(getResponseBodyAndReport(exchange, body, dataEvent), String.class)
+                    return fromPublisher(getResponseBodyAndReport(exchange, httpStatus, body, dataEvent), String.class)
                             .insert(outputMessage, new BodyInserterContext())
                             .then(defer(() ->
                                     getDelegate().writeWith(outputMessage.getBody())))
@@ -206,7 +208,7 @@ public final class BlueBodyProcessAndDataReportFilter implements GlobalFilter, O
 
     @Override
     public int getOrder() {
-        return BLUE_BODY_PROCESS_AND_DATA_REPORT.order;
+        return BLUE_POST_WITH_DATA_REPORT.order;
     }
 
 }

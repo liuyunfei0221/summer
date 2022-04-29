@@ -251,7 +251,7 @@ public class AuthServiceImpl implements AuthService {
     private final Function<Resource, Mono<AccessAsserted>> NO_AUTH_REQUIRED_RES_GEN = resource ->
             just(new AccessAsserted(
                     false, true, true,
-                    resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
+                    resource.getExistenceRequestBody(), resource.getExistenceResponseBody(), false,
                     NOT_LOGGED_IN_SEC_KEY.value, NO_AUTH_ACCESS, NO_AUTH_REQUIRED_RESOURCE.message));
 
     /**
@@ -774,7 +774,7 @@ public class AuthServiceImpl implements AuthService {
                                 boolean resUnEncryption = resource.getResponseUnEncryption();
 
                                 return just(new AccessAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
-                                        reqUnDecryption && resUnEncryption ? "" : accessInfo.getPubKey(),
+                                        resource.getWithoutTuringTest(), reqUnDecryption && resUnEncryption ? "" : accessInfo.getPubKey(),
                                         new Access(parseLong(memberPayload.getId()), accessInfo.getRoleId(), memberPayload.getCredentialType().intern(),
                                                 memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), OK.message));
                             });

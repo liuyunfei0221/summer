@@ -1,6 +1,6 @@
 package com.blue.lake.converter;
 
-import com.blue.base.common.auth.AuthProcessor;
+import com.blue.base.common.access.AccessProcessor;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.DataEvent;
 import com.blue.base.model.exps.BlueException;
@@ -96,7 +96,7 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
         optEvent.setJwt(ofNullable(entries.get(JWT.key)).orElse(""));
 
         ofNullable(entries.get(ACCESS.key)).filter(BlueChecker::isNotBlank)
-                .map(AuthProcessor::jsonToAccess)
+                .map(AccessProcessor::jsonToAccess)
                 .ifPresent(access -> {
                     optEvent.setMemberId(access.getId());
                     optEvent.setRoleId(access.getRoleId());

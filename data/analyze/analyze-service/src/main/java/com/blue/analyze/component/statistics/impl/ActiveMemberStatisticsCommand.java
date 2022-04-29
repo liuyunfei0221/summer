@@ -2,7 +2,7 @@ package com.blue.analyze.component.statistics.impl;
 
 import com.blue.analyze.component.statistics.inter.StatisticsCommand;
 import com.blue.analyze.service.inter.ActiveStatisticsService;
-import com.blue.base.common.auth.AuthProcessor;
+import com.blue.base.common.access.AccessProcessor;
 import com.blue.base.constant.base.BlueDataAttrKey;
 import com.blue.base.model.base.Access;
 import reactor.util.Logger;
@@ -45,7 +45,7 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
     public void analyzeAndPackage(Map<String, String> data) {
         try {
             ofNullable(data.get(BlueDataAttrKey.ACCESS.key))
-                    .map(AuthProcessor::jsonToAccess)
+                    .map(AccessProcessor::jsonToAccess)
                     .map(Access::getId)
                     .filter(id -> id >= 1L)
                     .ifPresent(mid -> {

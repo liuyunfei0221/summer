@@ -22,6 +22,7 @@ CREATE TABLE `resource`
     `response_un_encryption`  bit          NOT NULL COMMENT 'do not encrypt response body? 1-not 0-yes',
     `existence_request_body`  bit          NOT NULL COMMENT 'has request body? 1-yes 0-no',
     `existence_response_body` bit          NOT NULL COMMENT 'has response body? 1-yes 0-no',
+    `without_turing_test`     bit          NOT NULL COMMENT 'with out turing test? 1-not 0-yes',
     `type`                    tinyint      NOT NULL COMMENT 'resource type, 1-api 2-manage api 3-open api',
     `name`                    varchar(128) NOT NULL COMMENT 'resource name',
     `description`             varchar(256) DEFAULT '' COMMENT 'resource disc',

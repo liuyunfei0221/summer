@@ -7,38 +7,42 @@ import static org.springframework.cloud.gateway.filter.WebClientWriteResponseFil
  *
  * @author liuyunfei
  */
-
 public enum BlueFilterOrder {
 
     /**
-     * error report
+     * pre with error report
      */
-    BLUE_ERROR_REPORT(WRITE_RESPONSE_FILTER_ORDER - 6),
+    BLUE_PRE_WITH_ERROR_REPORT(WRITE_RESPONSE_FILTER_ORDER - 7),
 
     /**
      * risk intercept
      */
-    BLUE_ILLEGAL_ASSERT(WRITE_RESPONSE_FILTER_ORDER - 5),
+    BLUE_ILLEGAL_ASSERT(WRITE_RESPONSE_FILTER_ORDER - 6),
 
     /**
      * rate limit
      */
-    BLUE_RATE_LIMIT(WRITE_RESPONSE_FILTER_ORDER - 4),
+    BLUE_RATE_LIMIT(WRITE_RESPONSE_FILTER_ORDER - 5),
 
     /**
      * request attr
      */
-    BLUE_REQUEST_ATTR(WRITE_RESPONSE_FILTER_ORDER - 3),
+    BLUE_REQUEST_ATTR(WRITE_RESPONSE_FILTER_ORDER - 4),
 
     /**
      * auth
      */
-    BLUE_AUTH(WRITE_RESPONSE_FILTER_ORDER - 2),
+    BLUE_AUTH(WRITE_RESPONSE_FILTER_ORDER - 3),
+
+    /**
+     * turing test
+     */
+    BLUE_TURING_TEST(WRITE_RESPONSE_FILTER_ORDER - 2),
 
     /**
      * data report
      */
-    BLUE_BODY_PROCESS_AND_DATA_REPORT(WRITE_RESPONSE_FILTER_ORDER - 1),
+    BLUE_POST_WITH_DATA_REPORT(WRITE_RESPONSE_FILTER_ORDER - 1),
 
     /**
      * loadbalancer

@@ -68,4 +68,17 @@ public class RpcVerifyHandleServiceConsumer {
         return fromFuture(rpcVerifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).subscribeOn(scheduler);
     }
 
+    /**
+     * validate by turing test
+     *
+     * @param key
+     * @param verify
+     * @return
+     */
+    public Mono<Boolean> turingValidate(String key, String verify) {
+        LOGGER.info("Mono<Boolean> turingValidate(String key, String verify), key = {}, verify = {}", key, verify);
+
+        return fromFuture(rpcVerifyHandleService.turingValidate( key, verify)).subscribeOn(scheduler);
+    }
+
 }

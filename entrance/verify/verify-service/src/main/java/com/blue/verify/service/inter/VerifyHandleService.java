@@ -44,4 +44,13 @@ public interface VerifyHandleService {
      */
     Mono<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable);
 
+    /**
+     * validate by turing test
+     *
+     * @param key
+     * @param verify
+     * @return
+     */
+    Mono<Boolean> turingValidate(String key, String verify);
+
 }

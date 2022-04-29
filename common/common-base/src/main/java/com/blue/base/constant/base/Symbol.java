@@ -11,7 +11,7 @@ public enum Symbol {
     /**
      * request identity prefix
      */
-    RATE_LIMIT_KEY_PRE("RI:"),
+    RATE_LIMIT_KEY_PRE("RL:"),
 
     /**
      * unknown identity

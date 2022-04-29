@@ -31,7 +31,7 @@ import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
 import static com.blue.media.common.MediaCommonFunctions.extractValuesToBind;
-import static com.blue.media.config.filter.BlueFilterOrder.BLUE_ERROR_REPORT;
+import static com.blue.media.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -47,9 +47,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "UnusedAssignment"})
 @Component
-public final class BlueErrorReportFilter implements WebFilter, Ordered {
+public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
 
-    private static final Logger LOGGER = getLogger(BlueErrorReportFilter.class);
+    private static final Logger LOGGER = getLogger(BluePreWithErrorReportFilter.class);
 
     private final List<HttpMessageReader<?>> httpMessageReaders;
 
@@ -57,7 +57,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
 
     private final RequestEventReporter requestEventReporter;
 
-    public BlueErrorReportFilter(List<HttpMessageReader<?>> httpMessageReaders, ExecutorService executorService, RequestEventReporter requestEventReporter, ErrorReportDeploy errorReportDeploy) {
+    public BluePreWithErrorReportFilter(List<HttpMessageReader<?>> httpMessageReaders, ExecutorService executorService, RequestEventReporter requestEventReporter, ErrorReportDeploy errorReportDeploy) {
         this.httpMessageReaders = httpMessageReaders;
         this.executorService = executorService;
         this.requestEventReporter = requestEventReporter;
@@ -165,7 +165,7 @@ public final class BlueErrorReportFilter implements WebFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return BLUE_ERROR_REPORT.order;
+        return BLUE_PRE_WITH_ERROR_REPORT.order;
     }
 
 

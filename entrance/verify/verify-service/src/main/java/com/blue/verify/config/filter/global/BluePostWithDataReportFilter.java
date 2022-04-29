@@ -33,7 +33,7 @@ import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.verify.common.VerifyCommonFactory.*;
-import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_BODY_PROCESS_AND_DATA_REPORT;
+import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_POST_WITH_DATA_REPORT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonList;
@@ -49,7 +49,7 @@ import static reactor.core.publisher.Mono.just;
  */
 @SuppressWarnings({"NullableProblems"})
 @Component
-public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Ordered {
+public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
 
     private final List<HttpMessageReader<?>> httpMessageReaders;
 
@@ -57,7 +57,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
     private final RequestEventReporter requestEventReporter;
 
-    public BlueBodyProcessAndDataReportFilter(List<HttpMessageReader<?>> httpMessageReaders, RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter, ResponseDeploy responseDeploy) {
+    public BluePostWithDataReportFilter(List<HttpMessageReader<?>> httpMessageReaders, RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter, ResponseDeploy responseDeploy) {
         this.httpMessageReaders = httpMessageReaders;
         this.requestBodyProcessor = requestBodyProcessor;
         this.requestEventReporter = requestEventReporter;
@@ -85,9 +85,9 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
         EVENT_PACKAGER.accept(attributes, dataEvent);
     }
 
-    private Mono<String> getResponseBodyAndReport(ServerHttpResponse response, HttpStatus httpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
+    private Mono<String> getResponseBodyAndReport(ServerHttpResponse response, HttpStatus responseHttpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         return ClientResponse
-                .create(httpStatus, httpMessageReaders)
+                .create(responseHttpStatus, httpMessageReaders)
                 .headers(hs ->
                         hs.putAll(response.getHeaders()))
                 .body(Flux.from(body)).build()
@@ -104,6 +104,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
     private ServerHttpResponse getResponseAndReport(ServerWebExchange exchange, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
+
         HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
         dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
 
@@ -181,7 +182,7 @@ public final class BlueBodyProcessAndDataReportFilter implements WebFilter, Orde
 
     @Override
     public int getOrder() {
-        return BLUE_BODY_PROCESS_AND_DATA_REPORT.order;
+        return BLUE_POST_WITH_DATA_REPORT.order;
     }
 
 }

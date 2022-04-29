@@ -57,6 +57,11 @@ public final class Resource implements Serializable {
     private Boolean existenceResponseBody;
 
     /**
+     * do not need turing test?
+     */
+    private Boolean withoutTuringTest;
+
+    /**
      * @see com.blue.base.constant.auth.ResourceType
      */
     private Integer type;
@@ -148,6 +153,14 @@ public final class Resource implements Serializable {
         this.existenceResponseBody = existenceResponseBody;
     }
 
+    public Boolean getWithoutTuringTest() {
+        return withoutTuringTest;
+    }
+
+    public void setWithoutTuringTest(Boolean withoutTuringTest) {
+        this.withoutTuringTest = withoutTuringTest;
+    }
+
     public Integer getType() {
         return type;
     }
@@ -216,6 +229,7 @@ public final class Resource implements Serializable {
                 ", responseUnEncryption=" + responseUnEncryption +
                 ", existenceRequestBody=" + existenceRequestBody +
                 ", existenceResponseBody=" + existenceResponseBody +
+                ", withoutTuringTest=" + withoutTuringTest +
                 ", type=" + type +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

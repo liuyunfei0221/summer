@@ -120,7 +120,12 @@ public enum BlueDataAttrKey {
     /**
      * Whether it is a resource containing the response body
      */
-    EXISTENCE_RESPONSE_BODY("existenceResponseBody");
+    EXISTENCE_RESPONSE_BODY("existenceResponseBody"),
+
+    /**
+     * do not need turing test?
+     */
+    WITHOUT_TURING_TEST("withoutTuringTest");
 
     /**
      * key
