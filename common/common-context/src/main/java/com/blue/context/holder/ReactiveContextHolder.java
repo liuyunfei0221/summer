@@ -14,7 +14,7 @@ import static reactor.core.publisher.Mono.just;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("JavadocDeclaration")
+@SuppressWarnings({"JavadocDeclaration", "unused"})
 public final class ReactiveContextHolder {
 
     /**

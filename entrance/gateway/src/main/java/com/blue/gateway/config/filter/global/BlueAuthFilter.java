@@ -57,7 +57,6 @@ public final class BlueAuthFilter implements GlobalFilter, Ordered {
         attributes.put(RESPONSE_UN_ENCRYPTION.key, accessAsserted.getResponseUnEncryption());
         attributes.put(EXISTENCE_REQUEST_BODY.key, accessAsserted.getExistenceRequestBody());
         attributes.put(EXISTENCE_RESPONSE_BODY.key, accessAsserted.getExistenceResponseBody());
-        attributes.put(WITHOUT_TURING_TEST.key, accessAsserted.getWithoutTuringTest());
     }
 
     @Override

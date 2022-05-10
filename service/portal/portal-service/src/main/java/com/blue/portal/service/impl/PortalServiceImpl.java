@@ -28,11 +28,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import static com.blue.base.common.base.BlueChecker.isNotEmpty;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.ConstantProcessor.assertBulletinType;
-import static com.blue.base.constant.base.BlueCacheKey.PORTALS_PRE;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_WAIT_MILLIS_FOR_REDISSON_SYNC;
+import static com.blue.base.constant.base.CacheKeyPrefix.PORTALS_PRE;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.SyncKeyPrefix.PORTALS_REFRESH_PRE;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
@@ -88,7 +89,7 @@ public class PortalServiceImpl implements PortalService {
 
     private static Cache<Integer, List<BulletinInfo>> LOCAL_CACHE;
 
-    private static final Function<Integer, String> BULLETIN_CACHE_KEY_GENERATOR = type -> PORTALS_PRE.key + type;
+    private static final Function<Integer, String> BULLETIN_CACHE_KEY_GENERATOR = type -> PORTALS_PRE.prefix + type;
 
     private static final Function<Integer, String> PORTAL_LOAD_SYNC_KEY_GEN = type -> PORTALS_REFRESH_PRE.prefix + type;
 
@@ -107,7 +108,7 @@ public class PortalServiceImpl implements PortalService {
     private final Function<Integer, List<BulletinInfo>> REDIS_PORTAL_GETTER = type -> {
         List<String> bulletins = ofNullable(stringRedisTemplate.opsForList().range(ofNullable(type)
                 .map(BULLETIN_CACHE_KEY_GENERATOR)
-                .orElseGet(() -> PORTALS_PRE.key + POPULAR.identity), 0, -1))
+                .orElseGet(() -> PORTALS_PRE.prefix + POPULAR.identity), 0, -1))
                 .orElseGet(Collections::emptyList);
         LOGGER.info("REDIS_PORTAL_GETTER, type = {}, bulletins = {}", type, bulletins);
         return bulletins
@@ -132,25 +133,29 @@ public class PortalServiceImpl implements PortalService {
      */
     private final Function<Integer, List<BulletinInfo>> REDIS_PORTAL_GETTER_WITH_CACHE = type ->
             ofNullable(REDIS_PORTAL_GETTER.apply(type))
-                    .filter(bvs -> bvs.size() > 0)
                     .orElseGet(() -> {
                         RLock lock = redissonClient.getLock(PORTAL_LOAD_SYNC_KEY_GEN.apply(type));
                         boolean tryLock = true;
                         try {
+                            List<BulletinInfo> res = emptyList();
                             tryLock = lock.tryLock();
+
                             if (tryLock) {
-                                List<BulletinInfo> vos = DB_PORTAL_GETTER.apply(type);
-                                REDIS_PORTAL_SETTER.accept(type, vos);
-                                return vos;
+                                res = DB_PORTAL_GETTER.apply(type);
+                                if (isNotEmpty(res))
+                                    REDIS_PORTAL_SETTER.accept(type, res);
+
+                                return res;
                             }
 
                             long start = currentTimeMillis();
                             while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= MAX_WAIT_MILLIS_FOR_REDISSON_SYNC.value)
                                 onSpinWait();
 
-                            return tryLock ? REDIS_PORTAL_GETTER.apply(type) : emptyList();
+                            return res;
                         } catch (Exception e) {
-                            return emptyList();
+                            LOGGER.error("REDIS_PORTAL_GETTER_WITH_CACHE, e = {}", e);
+                            return DB_PORTAL_GETTER.apply(type);
                         } finally {
                             if (tryLock)
                                 try {

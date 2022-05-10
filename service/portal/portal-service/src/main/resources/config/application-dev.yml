@@ -49,7 +49,7 @@ data:
   workerToTableMappings:
   broadcastTables: [ ]
   singleDatabasesWithTables:
-    - url: jdbc:mysql://172.16.203.216:3306/portal
+    - url: jdbc:mysql://192.168.182.132:3306/portal
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -106,7 +106,7 @@ cache:
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
   maxRedirects: 4
-  host: 172.16.203.216
+  host: 192.168.182.132
   port: 6379
   minIdle: 4
   maxIdle: 64
@@ -153,7 +153,7 @@ redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
-  host: 172.16.203.216
+  host: 192.168.182.132
   port: 6379
   scanInterval: 8000
   checkSlotsCoverage: false
@@ -199,7 +199,7 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://172.16.203.216:2181
+    address: zookeeper://192.168.182.132:2181
     group: summer
     file: D:/locallogs/dubbo/portal/registry.properties
     check: false

@@ -44,11 +44,6 @@ public final class AccessAsserted implements Serializable {
     private boolean existenceResponseBody;
 
     /**
-     * do not need turing test?
-     */
-    private boolean withoutTuringTest;
-
-    /**
      * sec key / private key
      */
     private String secKey;
@@ -71,8 +66,7 @@ public final class AccessAsserted implements Serializable {
     public AccessAsserted() {
     }
 
-    public AccessAsserted(boolean certificate, boolean requestUnDecryption, boolean responseUnEncryption, boolean existenceRequestBody, boolean existenceResponseBody,
-                          boolean withoutTuringTest, String secKey, Access access, String message) {
+    public AccessAsserted(boolean certificate, boolean requestUnDecryption, boolean responseUnEncryption, boolean existenceRequestBody, boolean existenceResponseBody, String secKey, Access access, String message) {
         if (isNull(secKey) || isNull(access))
             throw new BlueException(BAD_REQUEST);
 
@@ -81,7 +75,6 @@ public final class AccessAsserted implements Serializable {
         this.responseUnEncryption = responseUnEncryption;
         this.existenceRequestBody = existenceRequestBody;
         this.existenceResponseBody = existenceResponseBody;
-        this.withoutTuringTest = withoutTuringTest;
         this.secKey = secKey;
         this.access = access;
         this.message = message;
@@ -127,14 +120,6 @@ public final class AccessAsserted implements Serializable {
         this.existenceResponseBody = existenceResponseBody;
     }
 
-    public boolean getWithoutTuringTest() {
-        return withoutTuringTest;
-    }
-
-    public void setWithoutTuringTest(boolean withoutTuringTest) {
-        this.withoutTuringTest = withoutTuringTest;
-    }
-
     public String getSecKey() {
         return secKey;
     }
@@ -161,13 +146,12 @@ public final class AccessAsserted implements Serializable {
 
     @Override
     public String toString() {
-        return "AccessAsserted{" +
+        return "AuthAsserted{" +
                 "certificate=" + certificate +
                 ", requestUnDecryption=" + requestUnDecryption +
                 ", responseUnEncryption=" + responseUnEncryption +
                 ", existenceRequestBody=" + existenceRequestBody +
                 ", existenceResponseBody=" + existenceResponseBody +
-                ", withoutTuringTest=" + withoutTuringTest +
                 ", secKey='" + secKey + '\'' +
                 ", access=" + access +
                 ", message='" + message + '\'' +

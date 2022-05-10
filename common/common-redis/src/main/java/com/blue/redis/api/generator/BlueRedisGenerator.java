@@ -6,6 +6,10 @@ import com.blue.redis.constant.ServerMode;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.SocketOptions;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.springframework.cache.CacheManager;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.*;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -20,6 +24,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.io.Serializable;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +33,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.constant.base.CacheKeyPrefix.CACHE_MANAGER_PRE;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redis.constant.ServerMode.CLUSTER;
 import static com.blue.redis.constant.ServerMode.SINGLE;
@@ -259,6 +265,8 @@ public final class BlueRedisGenerator {
         return new StringRedisTemplate(lettuceConnectionFactory);
     }
 
+    private static final StringRedisSerializer STRING_REDIS_SERIALIZER = new StringRedisSerializer(UTF_8);
+
     /**
      * generate template
      *
@@ -268,15 +276,12 @@ public final class BlueRedisGenerator {
     public static ReactiveStringRedisTemplate generateReactiveStringRedisTemplate(RedisConf redisConf, LettuceConnectionFactory lettuceConnectionFactory) {
         confAsserter(redisConf);
 
-        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer(UTF_8);
         RedisSerializationContext.RedisSerializationContextBuilder<String, String> contextBuilder =
                 RedisSerializationContext.newSerializationContext();
 
         RedisSerializationContext<String, String> redisSerializationContext = contextBuilder
-                .key(stringRedisSerializer)
-                .value(stringRedisSerializer)
-                .hashKey(stringRedisSerializer)
-                .hashValue(stringRedisSerializer)
+                .key(STRING_REDIS_SERIALIZER).value(STRING_REDIS_SERIALIZER)
+                .hashKey(STRING_REDIS_SERIALIZER).hashValue(STRING_REDIS_SERIALIZER)
                 .build();
 
         return new ReactiveStringRedisTemplate(lettuceConnectionFactory, redisSerializationContext,
@@ -297,21 +302,30 @@ public final class BlueRedisGenerator {
         if (Stream.of(clz.getInterfaces()).noneMatch(inter -> Serializable.class.getName().equals(inter.getName())))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz must be a implemented of serializable");
 
-        RedisSerializationContext.RedisSerializationContextBuilder<String, T> contextBuilder =
-                RedisSerializationContext.newSerializationContext();
-        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer(UTF_8);
+        RedisSerializationContext<String, T> objectRedisSerializationContext = generateObjectRedisSerializationContext();
 
-        @SuppressWarnings("unchecked")
-        RedisSerializer<T> jdkSerializationRedisSerializer = (RedisSerializer<T>) new JdkSerializationRedisSerializer();
-        RedisSerializationContext<String, T> redisSerializationContext = contextBuilder
-                .key(stringRedisSerializer)
-                .value(jdkSerializationRedisSerializer)
-                .hashKey(stringRedisSerializer)
-                .hashValue(jdkSerializationRedisSerializer)
-                .build();
-
-        return new ReactiveRedisTemplate<>(reactiveRedisConnectionFactory, redisSerializationContext,
+        return new ReactiveRedisTemplate<>(reactiveRedisConnectionFactory, objectRedisSerializationContext,
                 ofNullable(redisConf.getExposeConnection()).orElse(false));
+    }
+
+    /**
+     * generate template
+     *
+     * @param lettuceConnectionFactory
+     * @return
+     */
+    public static <T> CacheManager generateCacheManager(RedisConf redisConf, LettuceConnectionFactory lettuceConnectionFactory) {
+        confAsserter(redisConf);
+
+        RedisSerializationContext<String, T> objectRedisSerializationContext = generateObjectRedisSerializationContext();
+
+        return RedisCacheManager.builder(RedisCacheWriter.nonLockingRedisCacheWriter(lettuceConnectionFactory))
+                .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig()
+                        .prefixCacheNameWith(CACHE_MANAGER_PRE.prefix)
+                        .entryTtl(Duration.of(redisConf.getEntryTtl(), SECONDS))
+                        .serializeKeysWith(objectRedisSerializationContext.getStringSerializationPair())
+                        .serializeValuesWith(objectRedisSerializationContext.getValueSerializationPair())
+                ).build();
     }
 
     /**
@@ -358,6 +372,25 @@ public final class BlueRedisGenerator {
                 .ifPresent(redisStandaloneConfiguration::setPort);
 
         return redisStandaloneConfiguration;
+    }
+
+    /**
+     * generate object redis serialization context
+     *
+     * @param <T>
+     * @return
+     */
+    private static <T> RedisSerializationContext<String, T> generateObjectRedisSerializationContext() {
+        @SuppressWarnings("unchecked")
+        RedisSerializer<T> jdkSerializationRedisSerializer = (RedisSerializer<T>) new JdkSerializationRedisSerializer();
+
+        RedisSerializationContext.RedisSerializationContextBuilder<String, T> contextBuilder =
+                RedisSerializationContext.newSerializationContext();
+
+        return contextBuilder
+                .key(STRING_REDIS_SERIALIZER).value(jdkSerializationRedisSerializer)
+                .hashKey(STRING_REDIS_SERIALIZER).hashValue(jdkSerializationRedisSerializer)
+                .build();
     }
 
 }

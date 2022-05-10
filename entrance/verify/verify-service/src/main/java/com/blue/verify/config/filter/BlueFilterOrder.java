@@ -10,32 +10,27 @@ public enum BlueFilterOrder {
     /**
      * pre with error report
      */
-    BLUE_PRE_WITH_ERROR_REPORT(-1006),
+    BLUE_PRE_WITH_ERROR_REPORT(-1005),
 
     /**
      * risk intercept
      */
-    BLUE_ILLEGAL_ASSERT(-1005),
+    BLUE_ILLEGAL_ASSERT(-1004),
 
     /**
      * rate limit
      */
-    BLUE_RATE_LIMIT(-1004),
+    BLUE_RATE_LIMIT(-1003),
 
     /**
      * request attr
      */
-    BLUE_REQUEST_ATTR(-1003),
+    BLUE_REQUEST_ATTR(-1002),
 
     /**
      * auth
      */
-    BLUE_AUTH(-1002),
-
-    /**
-     * turing test
-     */
-    BLUE_TURING_TEST(-1001),
+    BLUE_AUTH(-1001),
 
     /**
      * data report

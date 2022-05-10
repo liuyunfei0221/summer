@@ -34,11 +34,6 @@ public enum BlueFilterOrder {
     BLUE_AUTH(-1001),
 
     /**
-     * turing test
-     */
-    BLUE_TURING_TEST(-1001),
-
-    /**
      * data report
      */
     BLUE_POST_WITH_DATA_REPORT(-1000);

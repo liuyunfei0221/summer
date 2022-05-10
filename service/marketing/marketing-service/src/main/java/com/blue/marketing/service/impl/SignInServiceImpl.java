@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.base.BlueCacheKey.SIGN_IN_KEY_PRE;
+import static com.blue.base.constant.base.CacheKeyPrefix.SIGN_IN_PRE;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
@@ -166,7 +166,7 @@ public class SignInServiceImpl implements SignInService {
      * @return
      */
     private static String generateSignKey(long memberId, int year, int month) {
-        return SIGN_IN_KEY_PRE.key + memberId + PAR_CONCATENATION.identity + year + PAR_CONCATENATION.identity + month;
+        return SIGN_IN_PRE.prefix + memberId + PAR_CONCATENATION.identity + year + PAR_CONCATENATION.identity + month;
     }
 
     private static final int MIN_OFFSET = 1;

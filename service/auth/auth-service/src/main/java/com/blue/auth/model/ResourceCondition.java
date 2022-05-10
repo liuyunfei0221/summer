@@ -35,8 +35,6 @@ public final class ResourceCondition extends SortCondition implements Serializab
 
     private Boolean existenceResponseBody;
 
-    private Boolean withoutTuringTest;
-
     private Integer type;
 
     private String nameLike;
@@ -58,7 +56,7 @@ public final class ResourceCondition extends SortCondition implements Serializab
     }
 
     public ResourceCondition(Long id, String requestMethod, String module, String uriLike, Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody,
-                             Boolean withoutTuringTest, Integer type, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+                             Integer type, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.requestMethod = requestMethod;
@@ -69,7 +67,6 @@ public final class ResourceCondition extends SortCondition implements Serializab
         this.responseUnEncryption = responseUnEncryption;
         this.existenceRequestBody = existenceRequestBody;
         this.existenceResponseBody = existenceResponseBody;
-        this.withoutTuringTest = withoutTuringTest;
         this.type = type;
         this.nameLike = nameLike;
         this.createTimeBegin = createTimeBegin;
@@ -146,14 +143,6 @@ public final class ResourceCondition extends SortCondition implements Serializab
         return existenceResponseBody;
     }
 
-    public Boolean getWithoutTuringTest() {
-        return withoutTuringTest;
-    }
-
-    public void setWithoutTuringTest(Boolean withoutTuringTest) {
-        this.withoutTuringTest = withoutTuringTest;
-    }
-
     public void setExistenceResponseBody(Boolean existenceResponseBody) {
         this.existenceResponseBody = existenceResponseBody;
     }
@@ -218,7 +207,6 @@ public final class ResourceCondition extends SortCondition implements Serializab
                 ", responseUnEncryption=" + responseUnEncryption +
                 ", existenceRequestBody=" + existenceRequestBody +
                 ", existenceResponseBody=" + existenceResponseBody +
-                ", withoutTuringTest=" + withoutTuringTest +
                 ", type=" + type +
                 ", nameLike='" + nameLike + '\'' +
                 ", createTimeBegin=" + createTimeBegin +

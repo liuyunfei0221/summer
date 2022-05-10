@@ -19,8 +19,8 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
-import static com.blue.base.constant.base.BlueCacheKey.ILLEGAL_IP_PRE;
-import static com.blue.base.constant.base.BlueCacheKey.ILLEGAL_JWT_PRE;
+import static com.blue.base.constant.base.CacheKeyPrefix.ILLEGAL_IP_PRE;
+import static com.blue.base.constant.base.CacheKeyPrefix.ILLEGAL_JWT_PRE;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.WILDCARD;
@@ -55,8 +55,8 @@ public final class IllegalAsserter {
 
     private static final String
             ALL_RESOURCE = WILDCARD.identity,
-            ILLEGAL_IP_PREFIX = ILLEGAL_IP_PRE.key,
-            ILLEGAL_JWT_PREFIX = ILLEGAL_JWT_PRE.key;
+            ILLEGAL_IP_PREFIX = ILLEGAL_IP_PRE.prefix,
+            ILLEGAL_JWT_PREFIX = ILLEGAL_JWT_PRE.prefix;
 
     private final Duration defaultIllegalExpireDuration;
 

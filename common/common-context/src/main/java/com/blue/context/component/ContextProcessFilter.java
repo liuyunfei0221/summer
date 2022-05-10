@@ -13,7 +13,7 @@ import static com.blue.context.constant.BlueContextKey.SERVER_WEB_EXCHANGE;
  *
  * @author liuyunfei
  */
-public final class ContextHolderFilter implements WebFilter {
+public final class ContextProcessFilter implements WebFilter {
 
     @Override
     @NonNull

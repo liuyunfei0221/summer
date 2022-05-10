@@ -60,11 +60,6 @@ public final class ResourceInfo implements Serializable {
     private Boolean existenceResponseBody;
 
     /**
-     * do not need turing test?
-     */
-    private Boolean withoutTuringTest;
-
-    /**
      * resource type: 1.client api 2.manager api 3.open api
      */
     private String type;
@@ -82,8 +77,9 @@ public final class ResourceInfo implements Serializable {
     public ResourceInfo() {
     }
 
-    public ResourceInfo(Long id, String requestMethod, String module, String relativeUri, String absoluteUri, Boolean authenticate,
-                        Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody, Boolean withoutTuringTest, String type, String name, String description) {
+    public ResourceInfo(Long id, String requestMethod, String module, String relativeUri, String absoluteUri,
+                        Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody,
+                        Boolean existenceResponseBody, String type, String name, String description) {
         this.id = id;
         this.requestMethod = requestMethod;
         this.module = module;
@@ -94,7 +90,6 @@ public final class ResourceInfo implements Serializable {
         this.responseUnEncryption = responseUnEncryption;
         this.existenceRequestBody = existenceRequestBody;
         this.existenceResponseBody = existenceResponseBody;
-        this.withoutTuringTest = withoutTuringTest;
         this.type = type;
         this.name = name;
         this.description = description;
@@ -180,14 +175,6 @@ public final class ResourceInfo implements Serializable {
         this.existenceResponseBody = existenceResponseBody;
     }
 
-    public Boolean getWithoutTuringTest() {
-        return withoutTuringTest;
-    }
-
-    public void setWithoutTuringTest(Boolean withoutTuringTest) {
-        this.withoutTuringTest = withoutTuringTest;
-    }
-
     public String getType() {
         return type;
     }
@@ -225,7 +212,6 @@ public final class ResourceInfo implements Serializable {
                 ", responseUnEncryption=" + responseUnEncryption +
                 ", existenceRequestBody=" + existenceRequestBody +
                 ", existenceResponseBody=" + existenceResponseBody +
-                ", withoutTuringTest=" + withoutTuringTest +
                 ", type='" + type + '\'' +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

@@ -12,7 +12,6 @@
         <result column="response_un_encryption" jdbcType="BIT" property="responseUnEncryption"/>
         <result column="existence_request_body" jdbcType="BIT" property="existenceRequestBody"/>
         <result column="existence_response_body" jdbcType="BIT" property="existenceResponseBody"/>
-        <result column="without_turing_test" jdbcType="BIT" property="withoutTuringTest"/>
         <result column="type" jdbcType="TINYINT" property="type"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="description" jdbcType="VARCHAR" property="description"/>
@@ -24,23 +23,19 @@
 
     <sql id="Base_Column_List">
         `id`
-        , `request_method`,`module`, `uri`, `authenticate`, `request_un_decryption`, `response_un_encryption`, `existence_request_body`, `existence_response_body`, `without_turing_test`, `type`, `name`, `description`, `create_time`, `update_time`, `creator`, `updater`
+        , `request_method`,`module`, `uri`, `authenticate`, `request_un_decryption`, `response_un_encryption`, `existence_request_body`, `existence_response_body`, `type`, `name`, `description`, `create_time`, `update_time`, `creator`, `updater`
     </sql>
 
     <insert id="insert" parameterType="com.blue.auth.repository.entity.Resource">
-        insert into resource (id, request_method, module,
-                              uri, authenticate, request_un_decryption,
+        insert into resource (id, request_method, module, uri, authenticate, request_un_decryption,
                               response_un_encryption, existence_request_body, existence_response_body,
-                              without_turing_test, type, name, description,
-                              create_time, update_time, creator,
-                              updater)
+                              type, name, description, create_time, update_time, creator, updater)
         values (#{id,jdbcType=BIGINT}, #{requestMethod,jdbcType=VARCHAR}, #{module,jdbcType=VARCHAR},
                 #{uri,jdbcType=VARCHAR}, #{authenticate,jdbcType=BIT}, #{requestUnDecryption,jdbcType=BIT},
                 #{responseUnEncryption,jdbcType=BIT}, #{existenceRequestBody,jdbcType=BIT},
-                #{existenceResponseBody,jdbcType=BIT}, #{withoutTuringTest,jdbcType=BIT},
-                #{type,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
-                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT},
-                #{updater,jdbcType=BIGINT})
+                #{existenceResponseBody,jdbcType=BIT}, #{type,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
+                #{description,jdbcType=VARCHAR}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
+                #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertSelective" parameterType="com.blue.auth.repository.entity.Resource">
@@ -72,9 +67,6 @@
             </if>
             <if test="existenceResponseBody != null">
                 existence_response_body,
-            </if>
-            <if test="withoutTuringTest != null">
-                without_turing_test,
             </if>
             <if test="type != null">
                 type,
@@ -126,9 +118,6 @@
             <if test="existenceResponseBody != null">
                 #{existenceResponseBody,jdbcType=BIT},
             </if>
-            <if test="withoutTuringTest != null">
-                #{withoutTuringTest,jdbcType=BIT},
-            </if>
             <if test="type != null">
                 #{type,jdbcType=TINYINT},
             </if>
@@ -163,7 +152,6 @@
             response_un_encryption  = #{responseUnEncryption,jdbcType=BIT},
             existence_request_body  = #{existenceRequestBody,jdbcType=BIT},
             existence_response_body = #{existenceResponseBody,jdbcType=BIT},
-            without_turing_test     = #{withoutTuringTest,jdbcType=BIT},
             type                    = #{type,jdbcType=TINYINT},
             name                    = #{name,jdbcType=VARCHAR},
             description             = #{description,jdbcType=VARCHAR},
@@ -200,9 +188,6 @@
             </if>
             <if test="existenceResponseBody != null">
                 existence_response_body = #{existenceResponseBody,jdbcType=BIT},
-            </if>
-            <if test="withoutTuringTest != null">
-                without_turing_test = #{withoutTuringTest,jdbcType=BIT},
             </if>
             <if test="type != null">
                 type = #{type,jdbcType=TINYINT},
@@ -299,10 +284,6 @@
                 <if test="resourceCondition.existenceResponseBody != null">
                     AND
                     existence_response_body = #{resourceCondition.existenceResponseBody,jdbcType=BIT}
-                </if>
-                <if test="resourceCondition.withoutTuringTest != null">
-                    AND
-                    without_turing_test = #{resourceCondition.withoutTuringTest,jdbcType=BIT}
                 </if>
                 <if test="resourceCondition.type != null">
                     AND

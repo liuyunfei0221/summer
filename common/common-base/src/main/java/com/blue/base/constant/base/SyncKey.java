@@ -9,6 +9,11 @@ package com.blue.base.constant.base;
 public enum SyncKey {
 
     /**
+     * resource cache sync key
+     */
+    RESOURCES_REFRESH_SYNC("RESOURCES_REFRESH_SYNC"),
+
+    /**
      * AUTHORITY_UPDATE_SYNC
      */
     AUTHORITY_UPDATE_SYNC("AUTHORITY_UPDATE_SYNC");

@@ -19,7 +19,7 @@ import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.auth.AccessInfoRefreshElementType;
 import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.auth.DeviceType;
-import com.blue.base.constant.base.BlueCacheKey;
+import com.blue.base.constant.base.CacheKeyPrefix;
 import com.blue.base.constant.base.Symbol;
 import com.blue.base.model.base.Access;
 import com.blue.base.model.base.KeyPair;
@@ -132,8 +132,8 @@ public class AuthServiceImpl implements AuthService {
             new Date(MILLIS_STAMP_SUP.get() + refreshExpireMillis);
 
     public static final String
-            SESSION_KEY_PRE = BlueCacheKey.SESSION_KEY_PRE.key,
-            ACCESS_REFRESH_KEY_PRE = BlueCacheKey.ACCESS_REFRESH_KEY_PRE.key,
+            SESSION_KEY_PRE = CacheKeyPrefix.SESSION_PRE.prefix,
+            ACCESS_REFRESH_KEY_PRE = CacheKeyPrefix.ACCESS_REFRESH_PRE.prefix,
             PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity,
             PATH_SEPARATOR = Symbol.PATH_SEPARATOR.identity;
 
@@ -249,9 +249,8 @@ public class AuthServiceImpl implements AuthService {
      * Resources do not require authentication access
      */
     private final Function<Resource, Mono<AccessAsserted>> NO_AUTH_REQUIRED_RES_GEN = resource ->
-            just(new AccessAsserted(
-                    false, true, true,
-                    resource.getExistenceRequestBody(), resource.getExistenceResponseBody(), false,
+            just(new AccessAsserted(false, true, true,
+                    resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                     NOT_LOGGED_IN_SEC_KEY.value, NO_AUTH_ACCESS, NO_AUTH_REQUIRED_RESOURCE.message));
 
     /**
@@ -774,7 +773,7 @@ public class AuthServiceImpl implements AuthService {
                                 boolean resUnEncryption = resource.getResponseUnEncryption();
 
                                 return just(new AccessAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
-                                        resource.getWithoutTuringTest(), reqUnDecryption && resUnEncryption ? "" : accessInfo.getPubKey(),
+                                        reqUnDecryption && resUnEncryption ? "" : accessInfo.getPubKey(),
                                         new Access(parseLong(memberPayload.getId()), accessInfo.getRoleId(), memberPayload.getCredentialType().intern(),
                                                 memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), OK.message));
                             });
