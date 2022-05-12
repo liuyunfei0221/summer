@@ -188,7 +188,7 @@ public class PortalServiceImpl implements PortalService {
         if (isNull(type))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null");
 
-        return justOrEmpty(LOCAL_CACHE.get(type, REDIS_CACHE_PORTAL_GETTER_WITH_CACHE)).switchIfEmpty(just(emptyList()));
+        return justOrEmpty(LOCAL_CACHE.get(type, REDIS_CACHE_PORTAL_GETTER_WITH_CACHE)).switchIfEmpty(defer(() -> just(emptyList())));
     };
 
 

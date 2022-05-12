@@ -52,8 +52,12 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 public final class BlueRedisGenerator {
+
+    private static final StringRedisSerializer STRING_REDIS_SERIALIZER = new StringRedisSerializer(UTF_8);
+
+    private static final RedisSerializer<Object> JDK_REDIS_SERIALIZER = new JdkSerializationRedisSerializer();
 
     private static final String KEY_VALUE_SEPARATOR = ":";
 
@@ -211,6 +215,10 @@ public final class BlueRedisGenerator {
      */
     public static LettuceClientConfiguration generateLettuceClientConfiguration(RedisConf redisConf, GenericObjectPoolConfig<ReactiveRedisConnection> genericObjectPoolConfig, ClientOptions clientOptions) {
         confAsserter(redisConf);
+        if (isNull(genericObjectPoolConfig))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "genericObjectPoolConfig can't be null");
+        if (isNull(clientOptions))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clientOptions can't be null");
 
         LettucePoolingClientConfiguration.LettucePoolingClientConfigurationBuilder builder = LettucePoolingClientConfiguration.builder()
                 .poolConfig(genericObjectPoolConfig).clientOptions(clientOptions);
@@ -234,6 +242,10 @@ public final class BlueRedisGenerator {
      */
     public static LettuceConnectionFactory generateConnectionFactory(RedisConf redisConf, RedisConfiguration redisConfiguration, LettuceClientConfiguration lettuceClientConfiguration) {
         confAsserter(redisConf);
+        if (isNull(redisConfiguration))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redisConfiguration can't be null");
+        if (isNull(lettuceClientConfiguration))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "lettuceClientConfiguration can't be null");
 
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisConfiguration, lettuceClientConfiguration);
         ofNullable(redisConf.getShareNativeConnection())
@@ -245,36 +257,26 @@ public final class BlueRedisGenerator {
     /**
      * generate template
      *
-     * @param lettuceConnectionFactory
+     * @param redisConnectionFactory
      * @return
      */
-    public static RedisTemplate<Object, Object> generateRedisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
-        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(lettuceConnectionFactory);
+    public static StringRedisTemplate generateStringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        if (isNull(redisConnectionFactory))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redisConnectionFactory can't be null");
 
-        return redisTemplate;
+        return new StringRedisTemplate(redisConnectionFactory);
     }
 
     /**
      * generate template
      *
-     * @param lettuceConnectionFactory
+     * @param reactiveRedisConnectionFactory
      * @return
      */
-    public static StringRedisTemplate generateStringRedisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
-        return new StringRedisTemplate(lettuceConnectionFactory);
-    }
-
-    private static final StringRedisSerializer STRING_REDIS_SERIALIZER = new StringRedisSerializer(UTF_8);
-
-    /**
-     * generate template
-     *
-     * @param lettuceConnectionFactory
-     * @return
-     */
-    public static ReactiveStringRedisTemplate generateReactiveStringRedisTemplate(RedisConf redisConf, LettuceConnectionFactory lettuceConnectionFactory) {
+    public static ReactiveStringRedisTemplate generateReactiveStringRedisTemplate(RedisConf redisConf, ReactiveRedisConnectionFactory reactiveRedisConnectionFactory) {
         confAsserter(redisConf);
+        if (isNull(reactiveRedisConnectionFactory))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveRedisConnectionFactory can't be null");
 
         RedisSerializationContext.RedisSerializationContextBuilder<String, String> contextBuilder =
                 RedisSerializationContext.newSerializationContext();
@@ -284,8 +286,65 @@ public final class BlueRedisGenerator {
                 .hashKey(STRING_REDIS_SERIALIZER).hashValue(STRING_REDIS_SERIALIZER)
                 .build();
 
-        return new ReactiveStringRedisTemplate(lettuceConnectionFactory, redisSerializationContext,
+        return new ReactiveStringRedisTemplate(reactiveRedisConnectionFactory, redisSerializationContext,
                 ofNullable(redisConf.getExposeConnection()).orElse(false));
+    }
+
+    /**
+     * generate template
+     *
+     * @param redisConnectionFactory
+     * @return
+     */
+    public static RedisTemplate<Object, Object> generateObjectRedisTemplate(RedisConf redisConf, RedisConnectionFactory redisConnectionFactory) {
+        confAsserter(redisConf);
+        if (isNull(redisConnectionFactory))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redisConnectionFactory can't be null");
+
+        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+
+        redisTemplate.setKeySerializer(JDK_REDIS_SERIALIZER);
+        redisTemplate.setValueSerializer(JDK_REDIS_SERIALIZER);
+        redisTemplate.setHashKeySerializer(JDK_REDIS_SERIALIZER);
+        redisTemplate.setHashValueSerializer(JDK_REDIS_SERIALIZER);
+        redisTemplate.setDefaultSerializer(JDK_REDIS_SERIALIZER);
+
+        redisTemplate.setExposeConnection(ofNullable(redisConf.getExposeConnection()).orElse(false));
+
+        return redisTemplate;
+    }
+
+    /**
+     * generate template
+     *
+     * @param redisConf
+     * @param clz
+     * @param <T>
+     * @return
+     */
+    public static <T> RedisTemplate<String, T> generateGenericsRedisTemplate(RedisConf redisConf, RedisConnectionFactory redisConnectionFactory, Class<T> clz) {
+        confAsserter(redisConf);
+        if (isNull(redisConnectionFactory))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redisConnectionFactory can't be null");
+        if (isNull(clz))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz can't be null");
+
+        if (Stream.of(clz.getInterfaces()).noneMatch(inter -> Serializable.class.getName().equals(inter.getName())))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz must be a implemented of serializable");
+
+        RedisTemplate<String, T> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+
+        redisTemplate.setKeySerializer(STRING_REDIS_SERIALIZER);
+        redisTemplate.setValueSerializer(JDK_REDIS_SERIALIZER);
+        redisTemplate.setHashKeySerializer(STRING_REDIS_SERIALIZER);
+        redisTemplate.setHashValueSerializer(JDK_REDIS_SERIALIZER);
+        redisTemplate.setDefaultSerializer(JDK_REDIS_SERIALIZER);
+
+        redisTemplate.setExposeConnection(ofNullable(redisConf.getExposeConnection()).orElse(false));
+
+        return redisTemplate;
     }
 
     /**
@@ -298,6 +357,10 @@ public final class BlueRedisGenerator {
      */
     public static <T> ReactiveRedisTemplate<String, T> generateReactiveRedisTemplate(RedisConf redisConf, ReactiveRedisConnectionFactory reactiveRedisConnectionFactory, Class<T> clz) {
         confAsserter(redisConf);
+        if (isNull(reactiveRedisConnectionFactory))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveRedisConnectionFactory can't be null");
+        if (isNull(clz))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz can't be null");
 
         if (Stream.of(clz.getInterfaces()).noneMatch(inter -> Serializable.class.getName().equals(inter.getName())))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz must be a implemented of serializable");
@@ -311,15 +374,17 @@ public final class BlueRedisGenerator {
     /**
      * generate template
      *
-     * @param lettuceConnectionFactory
+     * @param redisConnectionFactory
      * @return
      */
-    public static <T> CacheManager generateCacheManager(RedisConf redisConf, LettuceConnectionFactory lettuceConnectionFactory) {
+    public static <T> CacheManager generateCacheManager(RedisConf redisConf, RedisConnectionFactory redisConnectionFactory) {
         confAsserter(redisConf);
+        if (isNull(redisConnectionFactory))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redisConnectionFactory can't be null");
 
         RedisSerializationContext<String, T> objectRedisSerializationContext = generateObjectRedisSerializationContext();
 
-        return RedisCacheManager.builder(RedisCacheWriter.nonLockingRedisCacheWriter(lettuceConnectionFactory))
+        return RedisCacheManager.builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
                 .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig()
                         .prefixCacheNameWith(CACHE_MANAGER_PRE.prefix)
                         .entryTtl(Duration.of(redisConf.getEntryTtl(), SECONDS))

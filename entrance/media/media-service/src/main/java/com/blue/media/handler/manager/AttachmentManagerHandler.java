@@ -14,6 +14,7 @@ import static com.blue.base.constant.base.ResponseElement.OK;
 import static com.blue.media.constant.MediaTypeReference.PAGE_MODEL_FOR_ATTACHMENT_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.error;
 
 /**
@@ -39,7 +40,7 @@ public final class AttachmentManagerHandler {
      */
     public Mono<ServerResponse> listAttachment(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_ATTACHMENT_CONDITION_TYPE)
-                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(attachmentService::selectAttachmentInfoPageMonoByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)

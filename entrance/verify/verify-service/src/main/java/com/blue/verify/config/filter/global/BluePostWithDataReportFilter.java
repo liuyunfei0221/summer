@@ -40,6 +40,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
 import static org.springframework.http.HttpStatus.OK;
+import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.just;
 
 /**
@@ -149,8 +150,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
 
         return ServerRequest.create(exchange, httpMessageReaders)
                 .bodyToMono(String.class)
-                .switchIfEmpty(
-                        just(""))
+                .switchIfEmpty(defer(() -> just("")))
                 .flatMap(requestBody -> {
                     dataEvent.addData(REQUEST_BODY.key, requestBody);
                     return just(REQUEST_DECORATOR_GENERATOR.apply(request, just(requestBodyProcessor.handleRequestBody(requestBody))));

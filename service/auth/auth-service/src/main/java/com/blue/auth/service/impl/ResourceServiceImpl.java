@@ -2,6 +2,7 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.ResourceInfo;
 import com.blue.auth.api.model.ResourceManagerInfo;
+import com.blue.auth.component.sync.AuthorityUpdateSyncProcessor;
 import com.blue.auth.constant.ResourceSortAttribute;
 import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.model.ResourceCondition;
@@ -10,6 +11,7 @@ import com.blue.auth.model.ResourceUpdateParam;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.mapper.ResourceMapper;
+import com.blue.auth.repository.mapper.RoleResRelationMapper;
 import com.blue.auth.service.inter.ResourceService;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.PageModelRequest;
@@ -17,9 +19,7 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -39,12 +39,9 @@ import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertHttpMethod;
 import static com.blue.base.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.BlueNumericalValue.MAX_WAIT_MILLIS_FOR_REDISSON_SYNC;
 import static com.blue.base.constant.base.CacheKey.RESOURCES;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.SyncKey.AUTHORITY_UPDATE_SYNC;
-import static java.lang.System.currentTimeMillis;
-import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -72,18 +69,21 @@ public class ResourceServiceImpl implements ResourceService {
 
     private ResourceMapper resourceMapper;
 
-    private RedisTemplate<Object, Object> redisTemplate;
+    private final RoleResRelationMapper roleResRelationMapper;
 
-    private RedissonClient redissonClient;
+    private StringRedisTemplate stringRedisTemplate;
+
+    private AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ResourceServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
-                               ResourceMapper resourceMapper, RedisTemplate<Object, Object> redisTemplate, RedissonClient redissonClient) {
+    public ResourceServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, ResourceMapper resourceMapper,
+                               RoleResRelationMapper roleResRelationMapper, StringRedisTemplate stringRedisTemplate, AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.resourceMapper = resourceMapper;
-        this.redisTemplate = redisTemplate;
-        this.redissonClient = redissonClient;
+        this.roleResRelationMapper = roleResRelationMapper;
+        this.stringRedisTemplate = stringRedisTemplate;
+        this.authorityUpdateSyncProcessor = authorityUpdateSyncProcessor;
     }
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(ResourceSortAttribute.values())
@@ -295,76 +295,24 @@ public class ResourceServiceImpl implements ResourceService {
         return alteration;
     };
 
-    private final Supplier<List<Resource>> RESOURCES_LIST_DB_SUP = () ->
+    private final Consumer<String> CACHE_DELETER = key ->
+            stringRedisTemplate.delete(key);
+
+    private final Supplier<List<Resource>> RESOURCES_DB_SUP = () ->
             resourceMapper.select();
 
-    private final Supplier<List<Resource>> RESOURCES_LIST_REDIS_SUP = () ->
-            redisTemplate.opsForHash().values(RESOURCES.key)
-                    .stream().map(v -> (Resource) v)
-                    .collect(toList());
-
-    private void deleteResourcesFromCache() {
-        redisTemplate.delete(RESOURCES.key);
-    }
+    private final Supplier<List<Resource>> RESOURCES_REDIS_SUP = () ->
+            ofNullable(stringRedisTemplate.opsForList().range(RESOURCES.key, 0, -1))
+                    .orElseGet(Collections::emptyList).stream().map(s -> GSON.fromJson(s, Resource.class)).collect(toList());
 
     private final Consumer<List<Resource>> RESOURCES_REDIS_SETTER = resources -> {
-        deleteResourcesFromCache();
-        redisTemplate.opsForHash().putAll(RESOURCES.key, ofNullable(resources)
-                .orElseGet(Collections::emptyList)
-                .stream()
-                .collect(toMap(Resource::getId, r -> r, (a, b) -> a)));
+        CACHE_DELETER.accept(RESOURCES.key);
+        stringRedisTemplate.opsForList().rightPushAll(RESOURCES.key,
+                resources.stream().map(GSON::toJson).collect(toList()));
     };
 
     private final Supplier<List<Resource>> RESOURCES_WITH_CACHE_SUP = () ->
-            ofNullable(RESOURCES_LIST_REDIS_SUP.get())
-                    .filter(BlueChecker::isNotEmpty)
-                    .orElseGet(() -> {
-                        RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-                        boolean tryLock = true;
-                        try {
-                            List<Resource> res = emptyList();
-                            tryLock = lock.tryLock();
-
-                            if (tryLock) {
-                                res = RESOURCES_LIST_DB_SUP.get();
-                                if (isNotEmpty(res))
-                                    RESOURCES_REDIS_SETTER.accept(res);
-
-                                return res;
-                            }
-
-                            long start = currentTimeMillis();
-                            while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= MAX_WAIT_MILLIS_FOR_REDISSON_SYNC.value)
-                                onSpinWait();
-
-                            return res;
-                        } catch (Exception e) {
-                            LOGGER.error("RESOURCES_WITH_CACHE_SUP, e = {}", e);
-                            return RESOURCES_LIST_DB_SUP.get();
-                        } finally {
-                            if (tryLock)
-                                try {
-                                    lock.unlock();
-                                } catch (Exception e) {
-                                    LOGGER.warn("RESOURCES_WITH_CACHE_SUP, lock.unlock() failed, e = {}", e);
-                                }
-                        }
-                    });
-
-    private final Function<Long, Optional<Resource>> RESOURCE_OPT_REDIS_GETTER = id ->
-            ofNullable(redisTemplate.opsForHash().get(RESOURCES.key, id))
-                    .map(v -> (Resource) v);
-
-    private final Function<List<Long>, List<Resource>> RESOURCES_REDIS_GETTER = ids ->
-            redisTemplate.opsForHash()
-                    .multiGet(RESOURCES.key,
-                            ofNullable(ids)
-                                    .map(l -> l.stream().map(id -> (Object) id).collect(toList()))
-                                    .orElseGet(Collections::emptyList))
-                    .stream()
-                    .map(String::valueOf)
-                    .map(str -> GSON.fromJson(str, Resource.class))
-                    .collect(toList());
+            authorityUpdateSyncProcessor.selectGenericsWithCache(RESOURCES_REDIS_SUP, BlueChecker::isNotEmpty, RESOURCES_DB_SUP, RESOURCES_REDIS_SETTER);
 
     /**
      * insert resource
@@ -381,17 +329,19 @@ public class ResourceServiceImpl implements ResourceService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        INSERT_RESOURCE_VALIDATOR.accept(resourceInsertParam);
-        Resource resource = AuthModelConverters.RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER.apply(resourceInsertParam);
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
+            INSERT_RESOURCE_VALIDATOR.accept(resourceInsertParam);
+            Resource resource = AuthModelConverters.RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER.apply(resourceInsertParam);
 
-        long id = blueIdentityProcessor.generate(Resource.class);
-        resource.setId(id);
-        resource.setCreator(operatorId);
-        resource.setUpdater(operatorId);
+            long id = blueIdentityProcessor.generate(Resource.class);
+            resource.setId(id);
+            resource.setCreator(operatorId);
+            resource.setUpdater(operatorId);
 
-        resourceMapper.insert(resource);
+            resourceMapper.insert(resource);
 
-        return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
+            return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
+        });
     }
 
     /**
@@ -410,13 +360,16 @@ public class ResourceServiceImpl implements ResourceService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        Resource resource = UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER.apply(resourceUpdateParam);
-        if (RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(resourceUpdateParam, resource)) {
-            resourceMapper.updateByPrimaryKeySelective(resource);
-            return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
-        }
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
+            Resource resource = UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER.apply(resourceUpdateParam);
+            if (RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(resourceUpdateParam, resource)) {
+                resourceMapper.updateByPrimaryKeySelective(resource);
 
-        throw new BlueException(DATA_HAS_NOT_CHANGED);
+                return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
+            }
+
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        });
     }
 
     /**
@@ -432,12 +385,17 @@ public class ResourceServiceImpl implements ResourceService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        Resource resource = resourceMapper.selectByPrimaryKey(id);
-        if (isNull(resource))
-            throw new BlueException(DATA_NOT_EXIST);
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
+            Resource resource = resourceMapper.selectByPrimaryKey(id);
+            if (isNull(resource))
+                throw new BlueException(DATA_NOT_EXIST);
 
-        resourceMapper.deleteByPrimaryKey(id);
-        return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
+            int count = roleResRelationMapper.deleteByResId(id);
+            LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
+            resourceMapper.deleteByPrimaryKey(id);
+
+            return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
+        });
     }
 
     /**
@@ -452,7 +410,7 @@ public class ResourceServiceImpl implements ResourceService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return RESOURCE_OPT_REDIS_GETTER.apply(id).or(() -> ofNullable(resourceMapper.selectByPrimaryKey(id)));
+        return ofNullable(resourceMapper.selectByPrimaryKey(id));
     }
 
     /**
@@ -492,13 +450,10 @@ public class ResourceServiceImpl implements ResourceService {
         LOGGER.info("List<Resource> selectResourceByIds(List<Long> ids), ids = {}", ids);
 
         return isValidIdentities(ids) ?
-                ofNullable(RESOURCES_REDIS_GETTER.apply(ids))
-                        .filter(BlueChecker::isNotEmpty)
-                        .orElseGet(() ->
-                                allotByMax(ids, (int) DB_SELECT.value, false)
-                                        .stream().map(resourceMapper::selectByIds)
-                                        .flatMap(List::stream)
-                                        .collect(toList()))
+                allotByMax(ids, (int) DB_SELECT.value, false)
+                        .stream().map(resourceMapper::selectByIds)
+                        .flatMap(List::stream)
+                        .collect(toList())
                 :
                 emptyList();
     }

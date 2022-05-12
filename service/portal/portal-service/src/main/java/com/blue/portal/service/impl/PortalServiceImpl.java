@@ -47,8 +47,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.of;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.justOrEmpty;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * portal service impl
@@ -174,7 +173,8 @@ public class PortalServiceImpl implements PortalService {
         if (isNull(type))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null");
 
-        return justOrEmpty(LOCAL_CACHE.get(type, REDIS_PORTAL_GETTER_WITH_CACHE)).switchIfEmpty(just(emptyList()));
+        return justOrEmpty(LOCAL_CACHE.get(type, REDIS_PORTAL_GETTER_WITH_CACHE))
+                .switchIfEmpty(defer(() -> just(emptyList())));
     };
 
     /**

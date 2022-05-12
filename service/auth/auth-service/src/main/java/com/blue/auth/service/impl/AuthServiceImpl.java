@@ -743,7 +743,7 @@ public class AuthServiceImpl implements AuthService {
     public Mono<AccessAsserted> assertAccessMono(AccessAssert accessAssert) {
         LOGGER.info("Mono<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", accessAssert);
         return just(accessAssert)
-                .switchIfEmpty(error(() -> new BlueException(UNAUTHORIZED)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
                 .flatMap(aa -> {
                     String resourceKey = REQ_RES_KEY_GENERATOR.apply(
                             aa.getMethod().intern(), aa.getUri());
@@ -759,6 +759,7 @@ public class AuthServiceImpl implements AuthService {
                     MemberPayload memberPayload = jwtProcessor.parse(jwt);
 
                     return accessInfoCache.getAccessInfo(memberPayload.getKeyId())
+                            .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
                             .flatMap(v -> {
                                 if (isBlank(v))
                                     return error(() -> new BlueException(UNAUTHORIZED));
@@ -859,7 +860,7 @@ public class AuthServiceImpl implements AuthService {
                     LOGGER.warn("Mono<MemberAccess> refreshAccess(String refresh), refreshInfoService.getRefreshInfoById(memberPayload.getKeyId()) failed, memberPayload = {}, t = {}", memberPayload, t);
                     return error(() -> new BlueException(UNAUTHORIZED));
                 })
-                .switchIfEmpty(error(() -> new BlueException(UNAUTHORIZED)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
                 .flatMap(refreshInfo -> {
                     AUTH_ASSERTER.accept(memberPayload, refreshInfo);
                     return this.generateAccessMono(parseLong(refreshInfo.getMemberId()), refreshInfo.getCredentialType(), refreshInfo.getDeviceType());

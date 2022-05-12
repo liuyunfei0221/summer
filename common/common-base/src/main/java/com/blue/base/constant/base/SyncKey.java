@@ -16,7 +16,12 @@ public enum SyncKey {
     /**
      * AUTHORITY_UPDATE_SYNC
      */
-    AUTHORITY_UPDATE_SYNC("AUTHORITY_UPDATE_SYNC");
+    AUTHORITY_UPDATE_SYNC("AUTHORITY_UPDATE_SYNC"),
+
+    /**
+     * DEFAULT_ROLE_UPDATE_SYNC
+     */
+    DEFAULT_ROLE_UPDATE_SYNC("DEFAULT_ROLE_UPDATE_SYNC");
 
     public final String key;
 

@@ -194,7 +194,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
     public Mono<ServerResponse> upload(ServerRequest serverRequest) {
         CONTENT_LENGTH_ASSERTER.accept(serverRequest);
         return zip(serverRequest.multipartData()
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         zip(ATTACHMENTS_UPLOADER.apply(tuple2.getT1()), just(tuple2.getT2().getId())))
@@ -216,7 +216,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
     @Override
     public Mono<ServerResponse> download(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(IdentityParam.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> {
                     Long attachmentId = tuple2.getT1().getId();

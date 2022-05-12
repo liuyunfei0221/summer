@@ -16,8 +16,7 @@ import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * relation manager handler
@@ -42,7 +41,7 @@ public class RelationManagerHandler {
      */
     public Mono<ServerResponse> updateAuthorityByRole(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(RoleResRelationParam.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.updateAuthorityByRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
@@ -58,7 +57,7 @@ public class RelationManagerHandler {
      */
     public Mono<ServerResponse> updateAuthorityByMember(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(MemberRoleRelationParam.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.updateAuthorityByMember(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->

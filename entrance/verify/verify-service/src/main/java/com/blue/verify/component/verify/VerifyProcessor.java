@@ -24,6 +24,7 @@ import static com.blue.base.common.base.ConstantProcessor.getBusinessTypeByIdent
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
+import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.error;
 
 /**
@@ -91,8 +92,7 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
      */
     public Mono<ServerResponse> handle(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(VerifyParam.class)
-                .switchIfEmpty(
-                        error(() -> new BlueException(EMPTY_PARAM)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(vp -> {
                     String verifyType = vp.getVerifyType();
                     String businessType = vp.getBusinessType();

@@ -143,7 +143,7 @@ public class DictServiceImpl implements DictService {
     public Mono<List<DictTypeInfo>> selectDictTypeInfo() {
         LOGGER.info("Mono<List<DictTypeInfo>> selectDictTypeInfo()");
 
-        return justOrEmpty(ALL_TYPES_CACHE.get(ALL_TYPES_CACHE_KEY, DB_TYPE_GETTER)).switchIfEmpty(just(emptyList()));
+        return justOrEmpty(ALL_TYPES_CACHE.get(ALL_TYPES_CACHE_KEY, DB_TYPE_GETTER)).switchIfEmpty(defer(() -> just(emptyList())));
     }
 
     /**
@@ -157,7 +157,7 @@ public class DictServiceImpl implements DictService {
 
         return isNotBlank(code)
                 ?
-                justOrEmpty(TYPE_CODE_DICT_CACHE.get(code, DB_DICT_GETTER)).switchIfEmpty(just(emptyList()))
+                justOrEmpty(TYPE_CODE_DICT_CACHE.get(code, DB_DICT_GETTER)).switchIfEmpty(defer(() -> just(emptyList())))
                 :
                 error(() -> new BlueException(INVALID_IDENTITY));
     }

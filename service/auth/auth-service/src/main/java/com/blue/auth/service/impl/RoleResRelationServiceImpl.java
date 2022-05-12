@@ -1,6 +1,8 @@
 package com.blue.auth.service.impl;
 
-import com.blue.auth.api.model.*;
+import com.blue.auth.api.model.AuthorityBaseOnResource;
+import com.blue.auth.api.model.AuthorityBaseOnRole;
+import com.blue.auth.component.sync.AuthorityUpdateSyncProcessor;
 import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.entity.Role;
@@ -9,32 +11,30 @@ import com.blue.auth.repository.mapper.RoleResRelationMapper;
 import com.blue.auth.service.inter.ResourceService;
 import com.blue.auth.service.inter.RoleResRelationService;
 import com.blue.auth.service.inter.RoleService;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
-import com.blue.auth.model.ResourceInsertParam;
-import com.blue.auth.model.ResourceUpdateParam;
-import com.blue.auth.model.RoleInsertParam;
-import com.blue.auth.model.RoleUpdateParam;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.base.CacheKey.ROLE_RES_RELS;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.SyncKey.AUTHORITY_UPDATE_SYNC;
 import static java.util.Collections.emptyList;
+import static java.util.Comparator.comparing;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -63,15 +63,19 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
 
     private final ResourceService resourceService;
 
-    private final RedissonClient redissonClient;
+    private StringRedisTemplate stringRedisTemplate;
+
+    private AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public RoleResRelationServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RoleResRelationMapper roleResRelationMapper, RoleService roleService, ResourceService resourceService, RedissonClient redissonClient) {
+    public RoleResRelationServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RoleResRelationMapper roleResRelationMapper, RoleService roleService, ResourceService resourceService,
+                                      StringRedisTemplate stringRedisTemplate, AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.roleResRelationMapper = roleResRelationMapper;
         this.roleService = roleService;
         this.resourceService = resourceService;
-        this.redissonClient = redissonClient;
+        this.stringRedisTemplate = stringRedisTemplate;
+        this.authorityUpdateSyncProcessor = authorityUpdateSyncProcessor;
     }
 
     /**
@@ -101,6 +105,223 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isNotNull(roleResRelationMapper.selectExistByRoleIdAndResId(roleId, resId)))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The data base res and role already exists");
     };
+
+    private final Consumer<String> CACHE_DELETER = key ->
+            stringRedisTemplate.delete(key);
+
+    private final Supplier<List<RoleResRelation>> RELATIONS_DB_SUP = () ->
+            roleResRelationMapper.select();
+
+    private final Supplier<List<RoleResRelation>> RELATIONS_REDIS_SUP = () ->
+            ofNullable(stringRedisTemplate.opsForList().range(ROLE_RES_RELS.key, 0, -1))
+                    .orElseGet(Collections::emptyList).stream().map(s -> GSON.fromJson(s, RoleResRelation.class)).collect(toList());
+
+    private final Consumer<List<RoleResRelation>> RELATIONS_REDIS_SETTER = roles -> {
+        CACHE_DELETER.accept(ROLE_RES_RELS.key);
+        stringRedisTemplate.opsForList().rightPushAll(ROLE_RES_RELS.key,
+                roles.stream().map(GSON::toJson).collect(toList()));
+    };
+
+    private final Supplier<List<RoleResRelation>> RELATIONS_WITH_CACHE_SUP = () ->
+            authorityUpdateSyncProcessor.selectGenericsWithCache(RELATIONS_REDIS_SUP, BlueChecker::isNotEmpty, RELATIONS_DB_SUP, RELATIONS_REDIS_SETTER);
+
+    /**
+     * generate role-res-relations
+     *
+     * @param roleId
+     * @param resIds
+     * @param operatorId
+     * @return
+     */
+    private List<RoleResRelation> generateRoleResRelations(Long roleId, List<Long> resIds, Long operatorId) {
+        if (isInvalidIdentity(roleId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId");
+        if (isEmpty(resIds))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId");
+
+        long epochSecond = TIME_STAMP_GETTER.get();
+
+        return resIds.stream()
+                .map(resId -> {
+                    RoleResRelation relation = new RoleResRelation();
+
+                    relation.setId(blueIdentityProcessor.generate(RoleResRelation.class));
+                    relation.setRoleId(roleId);
+                    relation.setResId(resId);
+                    relation.setCreateTime(epochSecond);
+                    relation.setUpdateTime(epochSecond);
+                    relation.setCreator(operatorId);
+                    relation.setUpdater(operatorId);
+
+                    return relation;
+                }).collect(toList());
+    }
+
+    /**
+     * insert relation
+     *
+     * @param roleResRelation
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public int insertRelation(RoleResRelation roleResRelation) {
+        LOGGER.info("void insertRelation(RoleResRelation roleResRelation), roleResRelation = {}", roleResRelation);
+        if (isNull(roleResRelation))
+            throw new BlueException(EMPTY_PARAM);
+
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
+            INSERT_RELATION_VALIDATOR.accept(roleResRelation);
+
+            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+            int inserted = roleResRelationMapper.insert(roleResRelation);
+            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+
+            return inserted;
+        });
+    }
+
+    /**
+     * insert relations
+     *
+     * @param roleResRelations
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public int insertRelationBatch(List<RoleResRelation> roleResRelations) {
+        LOGGER.info("insertRelationBatch(List<RoleResRelation> roleResRelations), roleResRelations = {}", roleResRelations);
+        if (isEmpty(roleResRelations))
+            throw new BlueException(EMPTY_PARAM);
+
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
+            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+            int inserted = roleResRelationMapper.insertBatch(roleResRelations.stream().filter(Objects::nonNull)
+                    .peek(INSERT_RELATION_VALIDATOR).collect(toList()));
+            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+
+            return inserted;
+        });
+    }
+
+    /**
+     * delete relation by role id
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public int deleteRelationByRoleId(Long roleId) {
+        LOGGER.info("int deleteRelationByRoleId(Long roleId), roleId = {}", roleId);
+        if (isInvalidIdentity(roleId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
+            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+            int count = roleResRelationMapper.deleteByRoleId(roleId);
+            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+
+            LOGGER.info("int deleteRelationByRoleId(Long roleId), count = {}", count);
+            return count;
+        });
+    }
+
+    /**
+     * delete relation by resource id
+     *
+     * @param resId
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public int deleteRelationByResId(Long resId) {
+        LOGGER.info("void deleteRelationByResId(Long resId), resId = {}", resId);
+        if (isInvalidIdentity(resId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
+            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+            int count = roleResRelationMapper.deleteByResId(resId);
+            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+
+            LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
+            return count;
+        });
+    }
+
+    /**
+     * update authority base on role / generate role-resource-relations
+     *
+     * @param roleId
+     * @param resIds
+     * @param operatorId
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public AuthorityBaseOnRole updateAuthorityByRole(Long roleId, List<Long> resIds, Long operatorId) {
+        LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityBaseOnRole(Long roleId, List<Long> resIds, Long operatorId), roleId = {}, resIds = {}, operatorId = {}", roleId, resIds, operatorId);
+        if (isInvalidIdentity(roleId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId");
+        if (isEmpty(resIds))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId");
+
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
+            Optional<Role> roleOpt = roleService.getRoleById(roleId);
+            if (roleOpt.isEmpty())
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is not exist");
+
+            List<Long> resourceIds = resIds.stream().filter(Objects::nonNull).distinct()
+                    .collect(toList());
+
+            if (isEmpty(resourceIds))
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+            List<Resource> resources = resourceService.selectResourceByIds(resourceIds);
+            if (isEmpty(resources))
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+
+            if (resources.size() < resourceIds.size()) {
+                Set<Long> resIdSet = resources.stream().map(Resource::getId).collect(toSet());
+                for (long rid : resourceIds)
+                    if (!resIdSet.contains(rid))
+                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resId in resIds, resId = " + rid);
+            }
+
+            List<RoleResRelation> roleResRelations = generateRoleResRelations(roleId, resourceIds, operatorId);
+
+            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+            this.deleteRelationByRoleId(roleId);
+            this.insertRelationBatch(roleResRelations);
+            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+
+            return new AuthorityBaseOnRole(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(roleOpt.get()),
+                    resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList()));
+        });
+    }
+
+    /**
+     * get the highest lever role by resource id
+     *
+     * @param resId
+     * @return
+     */
+    @Override
+    public Optional<Role> getHighestLevelRoleByResourceId(Long resId) {
+        LOGGER.info("Optional<Role> getHighestLevelRoleByResourceId(Long resId), resId = {}", resId);
+        if (isInvalidIdentity(resId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        List<Role> roles = roleService.selectRoleByIds(
+                roleResRelationMapper.selectByResId(resId)
+                        .stream().map(RoleResRelation::getRoleId).collect(toList()));
+
+        return roles.stream().max(comparing(Role::getLevel));
+    }
 
     /**
      * get authority base on role by role id
@@ -166,7 +387,8 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     @Override
     public Mono<List<RoleResRelation>> selectRelation() {
         LOGGER.info("Mono<List<RoleResRelation>> selectRelation()");
-        return just(roleResRelationMapper.select());
+
+        return just(RELATIONS_WITH_CACHE_SUP.get());
     }
 
     /**
@@ -372,404 +594,6 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
                 .collect(toList()))
                 :
                 just(emptyList());
-    }
-
-    /**
-     * get default role
-     *
-     * @return
-     */
-    @Override
-    public Role getDefaultRole() {
-        LOGGER.info("Role getDefaultRole()");
-        return roleService.getDefaultRole();
-    }
-
-    /**
-     * update default role by role id
-     *
-     * @param id
-     * @param operatorId
-     * @return
-     */
-    @Override
-    public RoleManagerInfo updateDefaultRole(Long id, Long operatorId) {
-        LOGGER.info("void updateDefaultRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
-
-        RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        try {
-            lock.lock();
-            return roleService.updateDefaultRole(id, operatorId);
-        } catch (Exception e) {
-            LOGGER.error("void updateDefaultRole(Long id) failed, id = {}, e = {}", id, e);
-            throw e;
-        } finally {
-            try {
-                lock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("lock.unlock() fail, e = {0}", e);
-            }
-        }
-    }
-
-    /**
-     * insert a new role
-     *
-     * @param roleInsertParam
-     * @param operatorId
-     * @return
-     */
-    @Override
-    public RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
-        LOGGER.info("RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
-
-        RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        try {
-            lock.lock();
-            return roleService.insertRole(roleInsertParam, operatorId);
-        } catch (Exception e) {
-            LOGGER.error("lock on insertRole failed, e = {0}", e);
-            throw e;
-        } finally {
-            try {
-                lock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("lock.unlock() failed, e = {}", e);
-            }
-        }
-    }
-
-    /**
-     * update a exist role
-     *
-     * @param roleUpdateParam
-     * @param operatorId
-     * @return
-     */
-    @Override
-    public RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId) {
-        LOGGER.info("RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
-
-        RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        try {
-            lock.lock();
-            return roleService.updateRole(roleUpdateParam, operatorId);
-        } catch (Exception e) {
-            LOGGER.error("lock on updateRole failed, e = {0}", e);
-            throw e;
-        } finally {
-            try {
-                lock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("lock.unlock() failed, e = {}", e);
-            }
-        }
-    }
-
-    /**
-     * delete a exist role
-     *
-     * @param id
-     * @param operatorId
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public RoleInfo deleteRole(Long id, Long operatorId) {
-        LOGGER.info("RoleInfo deleteRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-        if (isInvalidIdentity(operatorId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        try {
-            lock.lock();
-            if (this.countRelationByRoleId(id) > 0L)
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role-res-relations count > 0");
-
-            this.deleteRelationByRoleId(id);
-            return roleService.deleteRoleById(id);
-        } catch (Exception e) {
-            LOGGER.error("lock on deleteRole failed, e = {0}", e);
-            throw e;
-        } finally {
-            try {
-                lock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("lock.unlock() failed, e = {}", e);
-            }
-        }
-    }
-
-    /**
-     * insert resource
-     *
-     * @param resourceInsertParam
-     * @param operatorId
-     * @return
-     */
-    @Override
-    public ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
-        LOGGER.info("ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId), resourceInsertParam = {}, operatorId = {}", resourceInsertParam, operatorId);
-
-        RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        try {
-            lock.lock();
-            return resourceService.insertResource(resourceInsertParam, operatorId);
-        } catch (Exception e) {
-            LOGGER.error("lock on insertResource failed, e = {0}", e);
-            throw e;
-        } finally {
-            try {
-                lock.unlock();
-            } catch (Exception e) {
-                LOGGER.warn("insertResource, lock.unlock() failed, e = {}", e);
-            }
-        }
-    }
-
-    /**
-     * update a exist resource
-     *
-     * @param resourceUpdateParam
-     * @param operatorId
-     * @return
-     */
-    @Override
-    public ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId) {
-        LOGGER.info("ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}, operatorId = {}", resourceUpdateParam, operatorId);
-
-        RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        try {
-            lock.lock();
-            return resourceService.updateResource(resourceUpdateParam, operatorId);
-        } catch (Exception e) {
-            LOGGER.error("lock on updateResource failed, e = {}", e);
-            throw e;
-        } finally {
-            try {
-                lock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("lock.unlock() failed, e = {}", e);
-            }
-        }
-    }
-
-    /**
-     * delete a exist resource
-     *
-     * @param id
-     * @param operatorId
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public ResourceInfo deleteResource(Long id, Long operatorId) {
-        LOGGER.info("ResourceInfo deleteResource(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-        if (isInvalidIdentity(operatorId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        try {
-            lock.lock();
-            if (this.countRelationByResId(id) > 0L)
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role-res-relations count > 0");
-
-            this.deleteRelationByResId(id);
-            ResourceInfo resourceInfo = resourceService.deleteResourceById(id);
-
-            LOGGER.info("ResourceInfo deleteResource(IdentityParam identityParam, Long operatorId), resourceInfo = {}", resourceInfo);
-            return resourceInfo;
-        } catch (Exception e) {
-            LOGGER.error("lock on deleteResource failed, e = {0}", e);
-            throw e;
-        } finally {
-            try {
-                lock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("lock.unlock() failed, e = {}", e);
-            }
-        }
-    }
-
-    /**
-     * insert relation
-     *
-     * @param roleResRelation
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public int insertRelation(RoleResRelation roleResRelation) {
-        LOGGER.info("void insertRelation(RoleResRelation roleResRelation), roleResRelation = {}", roleResRelation);
-        if (isNull(roleResRelation))
-            throw new BlueException(EMPTY_PARAM);
-
-        INSERT_RELATION_VALIDATOR.accept(roleResRelation);
-        return roleResRelationMapper.insert(roleResRelation);
-    }
-
-    /**
-     * insert relations
-     *
-     * @param roleResRelations
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public int insertRelationBatch(List<RoleResRelation> roleResRelations) {
-        LOGGER.info("void insertRelationBatch(List<RoleResRelation> roleResRelations), roleResRelations = {}", roleResRelations);
-        if (isEmpty(roleResRelations))
-            throw new BlueException(EMPTY_PARAM);
-
-        return roleResRelationMapper.insertBatch(roleResRelations.stream().filter(Objects::nonNull)
-                .peek(INSERT_RELATION_VALIDATOR).collect(toList()));
-    }
-
-    /**
-     * delete relation by role id
-     *
-     * @param roleId
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public int deleteRelationByRoleId(Long roleId) {
-        LOGGER.info("void deleteRelationByRoleId(Long roleId), roleId = {}", roleId);
-        if (isInvalidIdentity(roleId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        int count = roleResRelationMapper.deleteByRoleId(roleId);
-        LOGGER.info("void deleteRelationByRoleId(Long roleId), count = {}", count);
-        return count;
-    }
-
-    /**
-     * delete relation by resource id
-     *
-     * @param resId
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public int deleteRelationByResId(Long resId) {
-        LOGGER.info("void deleteRelationByResId(Long resId), resId = {}", resId);
-        if (isInvalidIdentity(resId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        try {
-            lock.lock();
-            int count = roleResRelationMapper.deleteByResId(resId);
-            LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
-            return count;
-        } catch (Exception e) {
-            LOGGER.error("void deleteRelationByResId(Long resId) failed, resId = {}, e = {}", resId, e);
-            throw e;
-        } finally {
-            try {
-                lock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("lock.unlock() fail, e = {0}", e);
-            }
-        }
-    }
-
-    /**
-     * generate role-res-relations
-     *
-     * @param roleId
-     * @param resIds
-     * @param operatorId
-     * @return
-     */
-    private List<RoleResRelation> generateRoleResRelations(Long roleId, List<Long> resIds, Long operatorId) {
-        if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId");
-        if (isEmpty(resIds))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
-        if (isInvalidIdentity(operatorId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId");
-
-        long epochSecond = TIME_STAMP_GETTER.get();
-
-        return resIds.stream()
-                .map(resId -> {
-                    RoleResRelation relation = new RoleResRelation();
-
-                    relation.setId(blueIdentityProcessor.generate(RoleResRelation.class));
-                    relation.setRoleId(roleId);
-                    relation.setResId(resId);
-                    relation.setCreateTime(epochSecond);
-                    relation.setUpdateTime(epochSecond);
-                    relation.setCreator(operatorId);
-                    relation.setUpdater(operatorId);
-
-                    return relation;
-                }).collect(toList());
-    }
-
-    /**
-     * update authority base on role / generate role-resource-relations
-     *
-     * @param roleId
-     * @param resIds
-     * @param operatorId
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public AuthorityBaseOnRole updateAuthorityByRole(Long roleId, List<Long> resIds, Long operatorId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityBaseOnRole(Long roleId, List<Long> resIds, Long operatorId), roleId = {}, resIds = {}, operatorId = {}", roleId, resIds, operatorId);
-        if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId");
-        if (isEmpty(resIds))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
-        if (isInvalidIdentity(operatorId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId");
-
-        RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-        try {
-            lock.lock();
-            Optional<Role> roleOpt = roleService.getRoleById(roleId);
-            if (roleOpt.isEmpty())
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is not exist");
-
-            List<Long> resourceIds = resIds.stream().filter(Objects::nonNull).distinct()
-                    .collect(toList());
-
-            if (isEmpty(resourceIds))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
-            List<Resource> resources = resourceService.selectResourceByIds(resourceIds);
-            if (isEmpty(resources))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
-
-            if (resources.size() < resourceIds.size()) {
-                Set<Long> resIdSet = resources.stream().map(Resource::getId).collect(toSet());
-                for (long rid : resourceIds)
-                    if (!resIdSet.contains(rid))
-                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resId in resIds, resId = " + rid);
-            }
-
-            List<RoleResRelation> roleResRelations = generateRoleResRelations(roleId, resourceIds, operatorId);
-
-            this.deleteRelationByRoleId(roleId);
-            this.insertRelationBatch(roleResRelations);
-
-            return new AuthorityBaseOnRole(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(roleOpt.get()), resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList()));
-        } catch (Exception e) {
-            LOGGER.error("Mono<AuthorityBaseOnRole> updateAuthorityBaseOnRole(Long roleId, List<Long> resIds, Long operatorId) failed, roleId = {}, resIds = {}, operatorId = {}, e = {}", roleId, resIds, operatorId, e);
-            throw e;
-        } finally {
-            try {
-                lock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("lock.unlock() fail, e = {0}", e);
-            }
-        }
     }
 
 }

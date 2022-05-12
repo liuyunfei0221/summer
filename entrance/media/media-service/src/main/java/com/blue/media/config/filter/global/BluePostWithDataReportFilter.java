@@ -49,6 +49,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.just;
 
 /**
@@ -265,8 +266,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
         public Mono<Void> processor(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
             return ServerRequest.create(exchange, httpMessageReaders)
                     .bodyToMono(String.class)
-                    .switchIfEmpty(
-                            just(""))
+                    .switchIfEmpty(defer(() -> just("")))
                     .flatMap(requestBody -> {
                         String tarBody = REQUEST_BODY_PROCESSOR.apply(requestBody, exchange.getAttributes());
                         dataEvent.addData(REQUEST_BODY.key, tarBody);

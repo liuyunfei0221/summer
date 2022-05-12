@@ -14,6 +14,7 @@ import static com.blue.base.constant.base.ResponseElement.OK;
 import static com.blue.portal.constant.PortalTypeReference.PAGE_MODEL_FOR_BULLETIN_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.error;
 
 /**
@@ -39,7 +40,7 @@ public final class BulletinManagerHandler {
      */
     public Mono<ServerResponse> listBulletin(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_BULLETIN_CONDITION_TYPE)
-                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(bulletinService::selectBulletinInfoPageMonoByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)

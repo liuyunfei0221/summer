@@ -35,6 +35,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.just;
 
 /**
@@ -256,7 +257,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId) {
-        return just(STATES_BY_COUNTRY_ID_GETTER.apply(countryId)).switchIfEmpty(just(emptyList()));
+        return just(STATES_BY_COUNTRY_ID_GETTER.apply(countryId)).switchIfEmpty(defer(() -> just(emptyList())));
     }
 
     /**

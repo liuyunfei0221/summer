@@ -15,7 +15,7 @@ import reactor.util.Logger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.*;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
@@ -68,7 +68,7 @@ public final class AccessInfoCache {
     /**
      * local cache
      */
-    private final Cache<String, String> CACHE;
+    private Cache<String, String> cache;
 
     private static final String THREAD_NAME_PRE = "AccessInfoCache-thread- ";
     private static final int RANDOM_LEN = 4;
@@ -101,20 +101,20 @@ public final class AccessInfoCache {
         CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpireMillis, MILLIS),
                 AFTER_WRITE, executorService);
 
-        this.CACHE = generateCache(caffeineConf);
+        this.cache = generateCache(caffeineConf);
     }
 
     /**
      * redis accessInfo refresher
      */
-    private final BiConsumer<String, String> REDIS_ACCESS_REFRESHER = (keyId, accessInfo) -> {
+    private final Consumer<String> REDIS_ACCESS_REFRESHER = keyId -> {
         try {
             this.executorService.execute(() -> {
-                if (hasText(keyId) && hasText(accessInfo)) {
+                if (hasText(keyId)) {
                     accessExpireProducer.send(new KeyExpireParam(keyId, globalExpireMillis, UNIT));
                     LOGGER.warn("REDIS_ACCESS_REFRESHER -> SUCCESS, keyId = {}", keyId);
                 } else {
-                    LOGGER.error("keyId or accessInfo is empty, keyId = {}, accessInfo = {}", keyId, accessInfo);
+                    LOGGER.error("keyId or accessInfo is empty, keyId = {}", keyId);
                 }
             });
         } catch (Exception e) {
@@ -125,16 +125,27 @@ public final class AccessInfoCache {
     /**
      * redis accessInfo getter
      */
-    private final Function<String, Mono<String>> REDIS_ACCESS_GETTER = keyId -> {
-        LOGGER.warn("REDIS_ACCESS_GETTER, get accessInfo from redis, keyId = {}", keyId);
+    private final Function<String, Mono<String>> REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER = keyId -> {
+        LOGGER.warn("REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER, get accessInfo from redis, keyId = {}", keyId);
 
         return reactiveStringRedisTemplate.opsForValue().get(keyId)
-                .switchIfEmpty(just(""))
                 .flatMap(accessInfo -> {
-                    if (!"".equals(accessInfo))
-                        REDIS_ACCESS_REFRESHER.accept(keyId, accessInfo);
+                    if (!"".equals(accessInfo)) {
+                        cache.put(keyId, accessInfo);
+                        REDIS_ACCESS_REFRESHER.accept(keyId);
+                    }
                     return just(accessInfo);
                 }).subscribeOn(scheduler);
+    };
+
+    /**
+     * cache accessInfo getter
+     */
+    private final Function<String, Mono<String>> ACCESS_GETTER_WITH_CACHE = keyId -> {
+        LOGGER.warn("ACCESS_GETTER_WITH_CACHE, get accessInfo from redis, keyId = {}", keyId);
+
+        return justOrEmpty(cache.getIfPresent(keyId))
+                .switchIfEmpty(defer(() -> REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER.apply(keyId)));
     };
 
     /**
@@ -145,7 +156,7 @@ public final class AccessInfoCache {
      */
     public Mono<String> getAccessInfo(String keyId) {
         return isNotBlank(keyId) ?
-                justOrEmpty(CACHE.getIfPresent(keyId)).switchIfEmpty(REDIS_ACCESS_GETTER.apply(keyId)).subscribeOn(scheduler)
+                ACCESS_GETTER_WITH_CACHE.apply(keyId).subscribeOn(scheduler)
                 :
                 error(() -> new BlueException(UNAUTHORIZED));
     }
@@ -178,7 +189,7 @@ public final class AccessInfoCache {
                 isNotBlank(keyId) ?
                         reactiveStringRedisTemplate.delete(keyId)
                                 .flatMap(l -> {
-                                    CACHE.invalidate(keyId);
+                                    cache.invalidate(keyId);
                                     return just(l > 0L);
                                 }).subscribeOn(scheduler)
                         :
@@ -194,7 +205,7 @@ public final class AccessInfoCache {
         LOGGER.info("invalidLocalAuthInfo(), keyId = {}", keyId);
         try {
             if (isNotBlank(keyId))
-                CACHE.invalidate(keyId);
+                cache.invalidate(keyId);
 
             return just(true).subscribeOn(scheduler);
         } catch (Exception e) {

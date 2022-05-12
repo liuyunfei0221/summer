@@ -17,8 +17,7 @@ import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * event record api handler
@@ -44,7 +43,7 @@ public final class EventRecordApiHandler {
     @SuppressWarnings("unchecked")
     public Mono<ServerResponse> listEventRecord(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(PageModelRequest.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         (Mono<PageModelResponse<EventRecordInfo>>) eventRecordService.selectEventRecordInfoByPageAndCreator(tuple2.getT1(), tuple2.getT2().getId())

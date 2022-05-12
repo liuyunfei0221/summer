@@ -36,8 +36,7 @@ import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -220,7 +219,7 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
         public Mono<String> processor(ServerWebExchange exchange) {
             return ServerRequest.create(exchange, httpMessageReaders)
                     .bodyToMono(String.class)
-                    .switchIfEmpty(just(""));
+                    .switchIfEmpty(defer(() -> just("")));
         }
     }
 

@@ -19,9 +19,14 @@ public enum CacheKey {
     ROLES("ROLES_A"),
 
     /**
+     * default role
+     */
+    DEFAULT_ROLE("SUMMER_DEFAULT_ROLE"),
+
+    /**
      * all relations key
      */
-    RES_ROLE_RELS("RES_ROLE_RELS_A");
+    ROLE_RES_RELS("ROLE_RES_RELS");
 
     public final String key;
 

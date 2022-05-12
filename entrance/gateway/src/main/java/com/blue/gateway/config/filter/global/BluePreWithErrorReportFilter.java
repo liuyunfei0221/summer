@@ -27,8 +27,7 @@ import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -108,7 +107,7 @@ public final class BluePreWithErrorReportFilter implements GlobalFilter, Ordered
                 .onErrorResume(throwable ->
                         ServerRequest.create(exchange, httpMessageReaders)
                                 .bodyToMono(String.class)
-                                .switchIfEmpty(just(""))
+                                .switchIfEmpty(defer(() -> just("")))
                                 .flatMap(requestBody -> {
                                     DataEvent dataEvent = new DataEvent();
 

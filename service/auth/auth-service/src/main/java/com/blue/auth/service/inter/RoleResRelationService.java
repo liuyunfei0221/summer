@@ -1,16 +1,14 @@
 package com.blue.auth.service.inter;
 
-import com.blue.auth.api.model.*;
+import com.blue.auth.api.model.AuthorityBaseOnResource;
+import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.repository.entity.RoleResRelation;
-import com.blue.auth.model.ResourceInsertParam;
-import com.blue.auth.model.ResourceUpdateParam;
-import com.blue.auth.model.RoleInsertParam;
-import com.blue.auth.model.RoleUpdateParam;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * role resource relation service
@@ -19,6 +17,56 @@ import java.util.List;
  */
 @SuppressWarnings({"JavaDoc", "UnusedReturnValue", "unused"})
 public interface RoleResRelationService {
+
+    /**
+     * insert relation
+     *
+     * @param roleResRelation
+     * @return
+     */
+    int insertRelation(RoleResRelation roleResRelation);
+
+    /**
+     * insert relations
+     *
+     * @param roleResRelations
+     * @return
+     */
+    int insertRelationBatch(List<RoleResRelation> roleResRelations);
+
+    /**
+     * delete relation by role id
+     *
+     * @param roleId
+     * @return
+     */
+    int deleteRelationByRoleId(Long roleId);
+
+    /**
+     * delete relation by resource id
+     *
+     * @param resId
+     * @return
+     */
+    int deleteRelationByResId(Long resId);
+
+    /**
+     * update authority base on role / generate role-resource-relations
+     *
+     * @param roleId
+     * @param resIds
+     * @param operatorId
+     * @return
+     */
+    AuthorityBaseOnRole updateAuthorityByRole(Long roleId, List<Long> resIds, Long operatorId);
+
+    /**
+     * get the highest lever role by resource id
+     *
+     * @param resId
+     * @return
+     */
+    Optional<Role> getHighestLevelRoleByResourceId(Long resId);
 
     /**
      * get authority base on role by role id
@@ -142,117 +190,5 @@ public interface RoleResRelationService {
      * @return
      */
     Mono<List<RoleResRelation>> selectRelationByResIds(List<Long> resIds);
-
-    /**
-     * get default role
-     *
-     * @return
-     */
-    Role getDefaultRole();
-
-    /**
-     * update default role by role id
-     *
-     * @param id
-     * @param operatorId
-     * @return
-     */
-    RoleManagerInfo updateDefaultRole(Long id, Long operatorId);
-
-    /**
-     * insert a new role
-     *
-     * @param roleInsertParam
-     * @param operatorId
-     * @return
-     */
-    RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId);
-
-    /**
-     * update a exist role
-     *
-     * @param roleUpdateParam
-     * @param operatorId
-     * @return
-     */
-    RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId);
-
-    /**
-     * delete a exist role
-     *
-     * @param id
-     * @param operatorId
-     * @return
-     */
-    RoleInfo deleteRole(Long id, Long operatorId);
-
-    /**
-     * insert resource
-     *
-     * @param resourceInsertParam
-     * @param operatorId
-     * @return
-     */
-    ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId);
-
-    /**
-     * update a exist resource
-     *
-     * @param resourceUpdateParam
-     * @param operatorId
-     * @return
-     */
-    ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId);
-
-    /**
-     * delete a exist resource
-     *
-     * @param id
-     * @param operatorId
-     * @return
-     */
-    ResourceInfo deleteResource(Long id, Long operatorId);
-
-    /**
-     * insert relation
-     *
-     * @param roleResRelation
-     * @return
-     */
-    int insertRelation(RoleResRelation roleResRelation);
-
-    /**
-     * insert relations
-     *
-     * @param roleResRelations
-     * @return
-     */
-    int insertRelationBatch(List<RoleResRelation> roleResRelations);
-
-    /**
-     * delete relation by role id
-     *
-     * @param roleId
-     * @return
-     */
-    int deleteRelationByRoleId(Long roleId);
-
-    /**
-     * delete relation by resource id
-     *
-     * @param resId
-     * @return
-     */
-    int deleteRelationByResId(Long resId);
-
-    /**
-     * update authority base on role / generate role-resource-relations
-     *
-     * @param roleId
-     * @param resIds
-     * @param operatorId
-     * @return
-     */
-    AuthorityBaseOnRole updateAuthorityByRole(Long roleId, List<Long> resIds, Long operatorId);
 
 }

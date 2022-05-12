@@ -58,82 +58,6 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     private static final Function<Long, String> SYNC_KEY_WRAPPER = key -> MEMBER_ROLE_REL_UPDATE_PRE.prefix + key;
 
     /**
-     * get role id by member id
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Optional<Long> getRoleIdByMemberId(Long memberId) {
-        LOGGER.info("Optional<Long> getRoleIdByMemberId(Long memberId), memberId = {}", memberId);
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return ofNullable(memberRoleRelationMapper.getRoleIdByMemberId(memberId));
-    }
-
-    /**
-     * get role id mono by member id
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId) {
-        LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}", memberId);
-
-        return just(getRoleIdByMemberId(memberId));
-    }
-
-    /**
-     * select member-role-relation by member ids
-     *
-     * @param memberIds
-     * @return
-     */
-    @Override
-    public Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds) {
-        LOGGER.info("Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
-
-        return isValidIdentities(memberIds) ? just(allotByMax(memberIds, (int) DB_SELECT.value, false)
-                .stream().map(memberRoleRelationMapper::selectByMemberIds)
-                .flatMap(List::stream)
-                .collect(toList()))
-                :
-                just(emptyList());
-    }
-
-    /**
-     * count relation by member id
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public long countRelationByMemberId(Long memberId) {
-        LOGGER.info("long countRelationByMemberId(Long memberId), memberId = {}", memberId);
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return memberRoleRelationMapper.countByMemberId(memberId);
-    }
-
-    /**
-     * count relation by role id
-     *
-     * @param roleId
-     * @return
-     */
-    @Override
-    public long countRelationByRoleId(Long roleId) {
-        LOGGER.info("long countRelationByRoleId(Long roleId), roleId = {}", roleId);
-        if (isInvalidIdentity(roleId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return memberRoleRelationMapper.countByRoleId(roleId);
-    }
-
-    /**
      * insert member role relation
      *
      * @param memberRoleRelation
@@ -262,6 +186,82 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
                 LOGGER.error("lock.unlock() fail, e = {0}", e);
             }
         }
+    }
+
+    /**
+     * get role id by member id
+     *
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Optional<Long> getRoleIdByMemberId(Long memberId) {
+        LOGGER.info("Optional<Long> getRoleIdByMemberId(Long memberId), memberId = {}", memberId);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return ofNullable(memberRoleRelationMapper.getRoleIdByMemberId(memberId));
+    }
+
+    /**
+     * get role id mono by member id
+     *
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId) {
+        LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}", memberId);
+
+        return just(getRoleIdByMemberId(memberId));
+    }
+
+    /**
+     * select member-role-relation by member ids
+     *
+     * @param memberIds
+     * @return
+     */
+    @Override
+    public Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds) {
+        LOGGER.info("Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
+
+        return isValidIdentities(memberIds) ? just(allotByMax(memberIds, (int) DB_SELECT.value, false)
+                .stream().map(memberRoleRelationMapper::selectByMemberIds)
+                .flatMap(List::stream)
+                .collect(toList()))
+                :
+                just(emptyList());
+    }
+
+    /**
+     * count relation by member id
+     *
+     * @param memberId
+     * @return
+     */
+    @Override
+    public long countRelationByMemberId(Long memberId) {
+        LOGGER.info("long countRelationByMemberId(Long memberId), memberId = {}", memberId);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return memberRoleRelationMapper.countByMemberId(memberId);
+    }
+
+    /**
+     * count relation by role id
+     *
+     * @param roleId
+     * @return
+     */
+    @Override
+    public long countRelationByRoleId(Long roleId) {
+        LOGGER.info("long countRelationByRoleId(Long roleId), roleId = {}", roleId);
+        if (isInvalidIdentity(roleId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return memberRoleRelationMapper.countByRoleId(roleId);
     }
 
 }

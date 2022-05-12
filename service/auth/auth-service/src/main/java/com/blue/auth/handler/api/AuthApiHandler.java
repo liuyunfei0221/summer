@@ -123,7 +123,7 @@ public final class AuthApiHandler {
      */
     public Mono<ServerResponse> updateAccess(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(AccessUpdateParam.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         controlService.updateAccessByAccess(tuple2.getT1(), tuple2.getT2()))
@@ -140,7 +140,7 @@ public final class AuthApiHandler {
      */
     public Mono<ServerResponse> resetAccess(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(AccessResetParam.class)
-                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(controlService::resetAccessByAccess)
                 .flatMap(ig ->
                         ok().contentType(APPLICATION_JSON)
@@ -155,7 +155,7 @@ public final class AuthApiHandler {
      */
     public Mono<ServerResponse> credentialSettingUp(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(CredentialSettingUpParam.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         just(controlService.credentialSettingUp(tuple2.getT1(), tuple2.getT2())))
@@ -172,7 +172,7 @@ public final class AuthApiHandler {
      */
     public Mono<ServerResponse> credentialModify(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(CredentialModifyParam.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         just(controlService.credentialModify(tuple2.getT1(), tuple2.getT2())))
@@ -189,7 +189,7 @@ public final class AuthApiHandler {
      */
     public Mono<ServerResponse> insertSecurityQuestion(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(SecurityQuestionInsertParam.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.insertSecurityQuestion(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ig ->
@@ -205,7 +205,7 @@ public final class AuthApiHandler {
      */
     public Mono<ServerResponse> insertSecurityQuestions(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(LIST_PARAM_FOR_QUESTION_INSERT_PARAM_TYPE)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.insertSecurityQuestions(tuple2.getT1().getData(), tuple2.getT2().getId()))
                 .flatMap(ig ->

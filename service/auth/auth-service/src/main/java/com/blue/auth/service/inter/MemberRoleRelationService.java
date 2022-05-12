@@ -16,6 +16,34 @@ import java.util.Optional;
 public interface MemberRoleRelationService {
 
     /**
+     * insert member role relation
+     *
+     * @param memberRoleRelation
+     * @return
+     */
+    int insertMemberRoleRelation(MemberRoleRelation memberRoleRelation);
+
+    /**
+     * insert member role relation
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     * @return
+     */
+    int insertMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
+
+    /**
+     * update member role relation
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     * @return
+     */
+    int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
+
+    /**
      * get role id by member id
      *
      * @param memberId
@@ -54,33 +82,5 @@ public interface MemberRoleRelationService {
      * @return
      */
     long countRelationByRoleId(Long roleId);
-
-    /**
-     * insert member role relation
-     *
-     * @param memberRoleRelation
-     * @return
-     */
-    int insertMemberRoleRelation(MemberRoleRelation memberRoleRelation);
-
-    /**
-     * insert member role relation
-     *
-     * @param memberId
-     * @param roleId
-     * @param operatorId
-     * @return
-     */
-    int insertMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
-
-    /**
-     * update member role relation
-     *
-     * @param memberId
-     * @param roleId
-     * @param operatorId
-     * @return
-     */
-    int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
 
 }

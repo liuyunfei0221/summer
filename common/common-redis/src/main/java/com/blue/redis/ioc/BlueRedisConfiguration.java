@@ -39,8 +39,8 @@ public class BlueRedisConfiguration {
     }
 
     @Bean
-    RedisTemplate<Object, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
-        return generateRedisTemplate(lettuceConnectionFactory);
+    RedisTemplate<Object, Object> redisTemplate(RedisConf redisConf, LettuceConnectionFactory lettuceConnectionFactory) {
+        return generateObjectRedisTemplate(redisConf, lettuceConnectionFactory);
     }
 
     @Bean

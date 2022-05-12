@@ -48,20 +48,6 @@ public interface RoleService {
     RoleInfo deleteRoleById(Long id);
 
     /**
-     * refresh default role
-     *
-     * @return
-     */
-    void refreshDefaultRole();
-
-    /**
-     * get default role
-     *
-     * @return
-     */
-    Role getDefaultRole();
-
-    /**
      * update default role by role id
      *
      * @param id
@@ -69,6 +55,13 @@ public interface RoleService {
      * @return
      */
     RoleManagerInfo updateDefaultRole(Long id, Long operatorId);
+
+    /**
+     * get default role
+     *
+     * @return
+     */
+    Role getDefaultRole();
 
     /**
      * get role by role id
@@ -88,6 +81,14 @@ public interface RoleService {
 
     /**
      * select roles by ids
+     *
+     * @param ids
+     * @return
+     */
+    List<Role> selectRoleByIds(List<Long> ids);
+
+    /**
+     * select roles mono by ids
      *
      * @param ids
      * @return

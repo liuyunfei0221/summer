@@ -2,15 +2,15 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.RoleInfo;
 import com.blue.auth.api.model.RoleManagerInfo;
-import com.blue.auth.config.deploy.BlockingDeploy;
+import com.blue.auth.component.sync.AuthorityUpdateSyncProcessor;
 import com.blue.auth.constant.RoleSortAttribute;
-import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.model.RoleCondition;
 import com.blue.auth.model.RoleInsertParam;
 import com.blue.auth.model.RoleUpdateParam;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.repository.mapper.RoleMapper;
+import com.blue.auth.repository.mapper.RoleResRelationMapper;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.PageModelRequest;
@@ -18,8 +18,6 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,23 +25,23 @@ import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
 
-import static com.blue.auth.converter.AuthModelConverters.roleToRoleManagerInfo;
+import static com.blue.auth.converter.AuthModelConverters.*;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.base.CacheKey.*;
 import static com.blue.base.constant.base.Default.DEFAULT;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static java.lang.System.currentTimeMillis;
-import static java.lang.Thread.onSpinWait;
+import static com.blue.base.constant.base.SyncKey.AUTHORITY_UPDATE_SYNC;
+import static com.blue.base.constant.base.SyncKey.DEFAULT_ROLE_UPDATE_SYNC;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -71,54 +69,44 @@ public class RoleServiceImpl implements RoleService {
 
     private RoleMapper roleMapper;
 
+    private final RoleResRelationMapper roleResRelationMapper;
+
     private StringRedisTemplate stringRedisTemplate;
 
-    private final RedissonClient redissonClient;
+    private AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public RoleServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, RoleMapper roleMapper,
-                           StringRedisTemplate stringRedisTemplate, RedissonClient redissonClient, BlockingDeploy blockingDeploy) {
+                           RoleResRelationMapper roleResRelationMapper, StringRedisTemplate stringRedisTemplate, AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.roleMapper = roleMapper;
+        this.roleResRelationMapper = roleResRelationMapper;
         this.stringRedisTemplate = stringRedisTemplate;
-        this.redissonClient = redissonClient;
-
-        MAX_WAITING_FOR_REFRESH = blockingDeploy.getBlockingMillis();
+        this.authorityUpdateSyncProcessor = authorityUpdateSyncProcessor;
     }
 
-    private static long MAX_WAITING_FOR_REFRESH;
+    private final Consumer<String> CACHE_DELETER = key ->
+            stringRedisTemplate.delete(key);
 
-    private static final String DEFAULT_ROLE_KEY = "SUMMER_DEFAULT_ROLE",
-            DEFAULT_ROLE_REFRESH_KEY = "SUMMER_DEFAULT_ROLE_REFRESHING";
+    private final Supplier<List<Role>> ROLES_DB_SUP = () ->
+            roleMapper.select();
 
-    private volatile Role defaultRole;
+    private final Supplier<List<Role>> ROLES_REDIS_SUP = () ->
+            ofNullable(stringRedisTemplate.opsForList().range(ROLES.key, 0, -1))
+                    .orElseGet(Collections::emptyList).stream().map(s -> GSON.fromJson(s, Role.class)).collect(toList());
 
-    private final Consumer<Role> REDIS_DEFAULT_ROLE_CACHE = role ->
-            ofNullable(role)
-                    .ifPresent(r -> {
-                        stringRedisTemplate.opsForValue().set(DEFAULT_ROLE_KEY, GSON.toJson(r));
-                        LOGGER.info("REDIS_CACHE_DEFAULT_ROLE_CACHE, r = {}", r);
-                    });
+    private final Consumer<List<Role>> ROLES_REDIS_SETTER = roles -> {
+        CACHE_DELETER.accept(ROLES.key);
+        stringRedisTemplate.opsForList().rightPushAll(ROLES.key,
+                roles.stream().map(GSON::toJson).collect(toList()));
+    };
 
-    private final Supplier<Optional<Role>> REDIS_DEFAULT_ROLE_GETTER = () ->
-            ofNullable(stringRedisTemplate.opsForValue().get(DEFAULT_ROLE_KEY))
-                    .filter(StringUtils::hasText)
-                    .map(v -> {
-                        LOGGER.info("REDIS_DEFAULT_ROLE_GETTER, v = {}", v);
-                        return GSON.fromJson(v, Role.class);
-                    });
+    private final Supplier<List<Role>> ROLES_WITH_CACHE_SUP = () ->
+            authorityUpdateSyncProcessor.selectGenericsWithCache(ROLES_REDIS_SUP, BlueChecker::isNotEmpty, ROLES_DB_SUP, ROLES_REDIS_SETTER);
 
-    private void deleteDefaultRoleFromCache() {
-        stringRedisTemplate.delete(DEFAULT_ROLE_KEY);
-    }
 
-    /**
-     * select default role from database
-     *
-     * @return
-     */
-    private Role getDefaultRoleFromDb() {
+    private final Supplier<Role> DEFAULT_ROLE_DB_SUP = () -> {
         List<Role> defaultRoles = roleMapper.selectDefault();
         if (isEmpty(defaultRoles))
             throw new BlueException(INTERNAL_SERVER_ERROR);
@@ -126,47 +114,29 @@ public class RoleServiceImpl implements RoleService {
             throw new BlueException(INTERNAL_SERVER_ERROR);
 
         Role defaultRole = defaultRoles.get(0);
-        this.defaultRole = defaultRole;
 
         LOGGER.info("Role getDefaultRoleFromDb(), defaultRole = {]", defaultRole);
         return defaultRole;
-    }
+    };
 
-    /**
-     * select default role or set to redis
-     *
-     * @return
-     */
-    private Role getDefaultRoleWithCache() {
-        return REDIS_DEFAULT_ROLE_GETTER.get()
-                .orElseGet(() -> {
-                    RLock lock = redissonClient.getLock(DEFAULT_ROLE_REFRESH_KEY);
-                    boolean tryLock = true;
-                    try {
-                        tryLock = lock.tryLock();
-                        if (tryLock) {
-                            Role defaultRole = getDefaultRoleFromDb();
-                            REDIS_DEFAULT_ROLE_CACHE.accept(defaultRole);
-                            return defaultRole;
-                        }
+    private final Supplier<Role> NULLABLE_DEFAULT_ROLE_REDIS_SUP = () ->
+            ofNullable(stringRedisTemplate.opsForValue().get(DEFAULT_ROLE.key))
+                    .filter(StringUtils::hasText)
+                    .map(v -> {
+                        LOGGER.info("REDIS_DEFAULT_ROLE_GETTER, v = {}", v);
+                        return GSON.fromJson(v, Role.class);
+                    }).orElse(null);
 
-                        long start = currentTimeMillis();
-                        while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= MAX_WAITING_FOR_REFRESH)
-                            onSpinWait();
+    private final Consumer<Role> DEFAULT_ROLE_REDIS_SETTER = role ->
+            ofNullable(role)
+                    .ifPresent(r -> {
+                        stringRedisTemplate.opsForValue().set(DEFAULT_ROLE.key, GSON.toJson(r));
+                        LOGGER.info("REDIS_CACHE_DEFAULT_ROLE_CACHE, r = {}", r);
+                    });
 
-                        return tryLock ? REDIS_DEFAULT_ROLE_GETTER.get().orElse(defaultRole) : defaultRole;
-                    } catch (Exception e) {
-                        return getDefaultRoleFromDb();
-                    } finally {
-                        if (tryLock)
-                            try {
-                                lock.unlock();
-                            } catch (Exception e) {
-                                LOGGER.warn("getDefaultRoleFromCache, lock.unlock() failed, e = {}", e);
-                            }
-                    }
-                });
-    }
+    private final Supplier<Role> DEFAULT_ROLE_WITH_CACHE_SUP = () ->
+            authorityUpdateSyncProcessor.selectGenericsWithCache(
+                    NULLABLE_DEFAULT_ROLE_REDIS_SUP, BlueChecker::isNotNull, DEFAULT_ROLE_DB_SUP, DEFAULT_ROLE_REDIS_SETTER);
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
@@ -278,11 +248,6 @@ public class RoleServiceImpl implements RoleService {
         return alteration;
     };
 
-    @PostConstruct
-    public void init() {
-        refreshDefaultRole();
-    }
-
     /**
      * insert a new role
      *
@@ -299,16 +264,20 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        INSERT_ROLE_VALIDATOR.accept(roleInsertParam);
-        Role role = AuthModelConverters.ROLE_INSERT_PARAM_2_ROLE_CONVERTER.apply(roleInsertParam);
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
+            INSERT_ROLE_VALIDATOR.accept(roleInsertParam);
+            Role role = ROLE_INSERT_PARAM_2_ROLE_CONVERTER.apply(roleInsertParam);
 
-        role.setId(blueIdentityProcessor.generate(Role.class));
-        role.setCreator(operatorId);
-        role.setUpdater(operatorId);
+            role.setId(blueIdentityProcessor.generate(Role.class));
+            role.setCreator(operatorId);
+            role.setUpdater(operatorId);
 
-        roleMapper.insert(role);
+            CACHE_DELETER.accept(ROLES.key);
+            roleMapper.insert(role);
+            CACHE_DELETER.accept(ROLES.key);
 
-        return AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(role);
+            return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
+        });
     }
 
     /**
@@ -327,13 +296,19 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        Role role = UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER.apply(roleUpdateParam);
-        if (ROLE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(roleUpdateParam, role)) {
-            roleMapper.updateByPrimaryKeySelective(role);
-            return AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(role);
-        }
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
+            Role role = UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER.apply(roleUpdateParam);
+            if (ROLE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(roleUpdateParam, role)) {
 
-        throw new BlueException(DATA_HAS_NOT_CHANGED);
+                CACHE_DELETER.accept(ROLES.key);
+                roleMapper.updateByPrimaryKeySelective(role);
+                CACHE_DELETER.accept(ROLES.key);
+
+                return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
+            }
+
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        });
     }
 
     /**
@@ -349,44 +324,21 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        Role role = roleMapper.selectByPrimaryKey(id);
-        if (isNotNull(role)) {
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
+            Role role = roleMapper.selectByPrimaryKey(id);
+            if (isNull(role))
+                throw new BlueException(DATA_NOT_EXIST);
+            if (role.getIsDefault())
+                throw new BlueException(UNSUPPORTED_OPERATE);
+
+            CACHE_DELETER.accept(ROLES.key);
+            int count = roleResRelationMapper.deleteByResId(id);
+            LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
             roleMapper.deleteByPrimaryKey(id);
-            return AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(role);
-        }
+            CACHE_DELETER.accept(ROLES.key);
 
-        throw new BlueException(DATA_NOT_EXIST);
-    }
-
-    /**
-     * refresh default role
-     *
-     * @return
-     */
-    @Override
-    public void refreshDefaultRole() {
-        REDIS_DEFAULT_ROLE_CACHE.accept(getDefaultRoleFromDb());
-        LOGGER.info("void refreshDefaultRole() -> SUCCESS");
-    }
-
-    /**
-     * get default role
-     *
-     * @return
-     */
-    @Override
-    public Role getDefaultRole() {
-        LOGGER.info("Role getDefaultRole()");
-
-        Role defaultRole = getDefaultRoleWithCache();
-
-        LOGGER.info("defaultRole = {}", defaultRole);
-        if (isNull(defaultRole)) {
-            LOGGER.error("Role getDefaultRole(), default role not exist");
-            throw new BlueException(INTERNAL_SERVER_ERROR);
-        }
-
-        return defaultRole;
+            return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
+        });
     }
 
     /**
@@ -403,38 +355,40 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        Role role = roleMapper.selectByPrimaryKey(id);
-        Role defaultRole = getDefaultRoleFromDb();
+        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(DEFAULT_ROLE_UPDATE_SYNC.key, () -> {
+            Role role = roleMapper.selectByPrimaryKey(id);
+            Role defaultRole = DEFAULT_ROLE_DB_SUP.get();
 
-        if (role.getId().equals(defaultRole.getId()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is already default");
+            if (role.getId().equals(defaultRole.getId()))
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is already default");
 
-        Long stamp = TIME_STAMP_GETTER.get();
+            Long stamp = TIME_STAMP_GETTER.get();
 
-        role.setIsDefault(DEFAULT.status);
-        role.setUpdater(operatorId);
-        role.setUpdateTime(stamp);
+            role.setIsDefault(DEFAULT.status);
+            role.setUpdater(operatorId);
+            role.setUpdateTime(stamp);
 
-        defaultRole.setIsDefault(NOT_DEFAULT.status);
-        defaultRole.setUpdater(operatorId);
-        defaultRole.setUpdateTime(stamp);
+            defaultRole.setIsDefault(NOT_DEFAULT.status);
+            defaultRole.setUpdater(operatorId);
+            defaultRole.setUpdateTime(stamp);
 
-        deleteDefaultRoleFromCache();
-        roleMapper.updateByPrimaryKey(role);
-        roleMapper.updateByPrimaryKey(defaultRole);
+            CACHE_DELETER.accept(DEFAULT_ROLE.key);
+            roleMapper.updateByPrimaryKey(role);
+            roleMapper.updateByPrimaryKey(defaultRole);
+            CACHE_DELETER.accept(DEFAULT_ROLE.key);
 
-        Map<Long, String> idAndNameMapping;
-        try {
-            idAndNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(role))).toFuture().join()
-                    .parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
-        } catch (Exception e) {
-            LOGGER.error("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), generate idAndNameMapping failed, e = {}", e);
-            idAndNameMapping = emptyMap();
-        }
+            Map<Long, String> idAndNameMapping;
+            try {
+                idAndNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(role))).toFuture().join()
+                        .parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+            } catch (Exception e) {
+                LOGGER.error("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), generate idAndNameMapping failed, e = {}", e);
+                idAndNameMapping = emptyMap();
+            }
 
-        deleteDefaultRoleFromCache();
-        return roleToRoleManagerInfo(role, ofNullable(idAndNameMapping.get(role.getCreator())).orElse(""),
-                ofNullable(idAndNameMapping.get(role.getUpdater())).orElse(""));
+            return roleToRoleManagerInfo(role, ofNullable(idAndNameMapping.get(role.getCreator())).orElse(""),
+                    ofNullable(idAndNameMapping.get(role.getUpdater())).orElse(""));
+        });
     }
 
     /**
@@ -450,6 +404,26 @@ public class RoleServiceImpl implements RoleService {
             throw new BlueException(INVALID_IDENTITY);
 
         return ofNullable(roleMapper.selectByPrimaryKey(id));
+    }
+
+    /**
+     * get default role
+     *
+     * @return
+     */
+    @Override
+    public Role getDefaultRole() {
+        LOGGER.info("Role getDefaultRole()");
+
+        Role defaultRole = DEFAULT_ROLE_WITH_CACHE_SUP.get();
+
+        LOGGER.info("defaultRole = {}", defaultRole);
+        if (isNull(defaultRole)) {
+            LOGGER.error("Role getDefaultRole(), default role not exist");
+            throw new BlueException(INTERNAL_SERVER_ERROR);
+        }
+
+        return defaultRole;
     }
 
     /**
@@ -474,14 +448,26 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Mono<List<Role>> selectRoleMonoByIds(List<Long> ids) {
+    public List<Role> selectRoleByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Role>> selectRoleMonoByIds(List<Long> ids), ids = {}", ids);
-        return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
+        return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(roleMapper::selectByIds)
                 .flatMap(List::stream)
-                .collect(toList()))
+                .collect(toList())
                 :
-                just(emptyList());
+                emptyList();
+    }
+
+    /**
+     * select roles mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Mono<List<Role>> selectRoleMonoByIds(List<Long> ids) {
+        LOGGER.info("Mono<List<Role>> selectRoleMonoByIds(List<Long> ids), ids = {}", ids);
+        return just(this.selectRoleByIds(ids));
     }
 
     /**
@@ -492,7 +478,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Mono<List<Role>> selectRole() {
         LOGGER.info("Mono<List<Role>> selectRole()");
-        return just(roleMapper.select());
+        return just(ROLES_WITH_CACHE_SUP.get());
     }
 
     /**

@@ -14,8 +14,7 @@ import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * member registry handler
@@ -40,10 +39,8 @@ public final class MemberRegistryApiHandler {
      */
     public Mono<ServerResponse> registry(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(MemberRegistryParam.class)
-                .switchIfEmpty(
-                        error(() -> new BlueException(EMPTY_PARAM)))
-                .flatMap(mrp ->
-                        just(memberAuthService.registerMemberBasic(mrp))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
+                .flatMap(mrp -> just(memberAuthService.registerMemberBasic(mrp))
                 )
                 .flatMap(mbi ->
                         ok()

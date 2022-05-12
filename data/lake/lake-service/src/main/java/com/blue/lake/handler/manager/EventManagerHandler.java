@@ -15,6 +15,7 @@ import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.error;
 import static reactor.util.Loggers.getLogger;
 
@@ -41,7 +42,7 @@ public class EventManagerHandler {
      */
     public Mono<ServerResponse> listEvent(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(LimitModelRequest.class)
-                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(lakeService::selectByLimitAndRows)
                 .flatMap(l ->
                         ok().contentType(APPLICATION_JSON)

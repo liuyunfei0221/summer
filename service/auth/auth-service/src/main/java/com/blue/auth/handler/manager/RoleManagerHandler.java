@@ -3,7 +3,6 @@ package com.blue.auth.handler.manager;
 import com.blue.auth.model.RoleInsertParam;
 import com.blue.auth.model.RoleUpdateParam;
 import com.blue.auth.service.inter.ControlService;
-import com.blue.auth.service.inter.RoleResRelationService;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.base.model.base.BlueResponse;
 import com.blue.base.model.base.IdentityParam;
@@ -22,8 +21,7 @@ import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * role manager handler
@@ -38,12 +36,9 @@ public final class RoleManagerHandler {
 
     private final RoleService roleService;
 
-    private final RoleResRelationService roleResRelationService;
-
-    public RoleManagerHandler(ControlService controlService, RoleService roleService, RoleResRelationService roleResRelationService) {
+    public RoleManagerHandler(ControlService controlService, RoleService roleService) {
         this.controlService = controlService;
         this.roleService = roleService;
-        this.roleResRelationService = roleResRelationService;
     }
 
     /**
@@ -54,7 +49,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> insert(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(RoleInsertParam.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.insertRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
@@ -70,7 +65,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> update(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(RoleUpdateParam.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM))),
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.updateRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
@@ -100,7 +95,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> updateDefault(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(IdentityParam.class)
-                        .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 , getAccessReact(serverRequest))
                 .flatMap(tuple2 -> controlService.updateDefaultRole(tuple2.getT1().getId(), tuple2.getT2().getId()))
                 .flatMap(ri ->
@@ -116,7 +111,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_ROLE_CONDITION_TYPE)
-                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(roleService::selectRoleInfoPageMonoByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
@@ -131,7 +126,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(IdentityParam.class)
-                .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(ip ->
                         controlService.selectAuthorityMonoByRoleId(ip.getId()))
                 .flatMap(auth ->

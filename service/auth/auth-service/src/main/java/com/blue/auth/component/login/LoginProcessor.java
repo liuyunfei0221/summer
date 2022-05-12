@@ -28,8 +28,7 @@ import static com.blue.base.constant.verify.VerifyType.IMAGE;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * login processor
@@ -84,7 +83,7 @@ public class LoginProcessor implements ApplicationListener<ContextRefreshedEvent
 
     private final Function<ServerRequest, Mono<ServerResponse>> loginHandler = serverRequest ->
             serverRequest.bodyToMono(LoginParam.class)
-                    .switchIfEmpty(error(() -> new BlueException(EMPTY_PARAM)))
+                    .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                     .flatMap(lp -> {
                         String credentialType = lp.getCredentialType();
                         return ACCESS_VERIFY_VALIDATOR.apply(credentialType, lp)

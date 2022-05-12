@@ -174,8 +174,7 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
         return fromPublisher(
                 ServerRequest.create(exchange, httpMessageReaders)
                         .bodyToMono(String.class)
-                        .switchIfEmpty(
-                                just(""))
+                        .switchIfEmpty(defer(() -> just("")))
                         .flatMap(requestBody -> {
                             String tarBody = REQUEST_BODY_PROCESSOR.apply(requestBody, attributes);
                             dataEvent.addData(REQUEST_BODY.key, tarBody);

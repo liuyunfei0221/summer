@@ -85,15 +85,17 @@ public class ControlServiceImpl implements ControlService {
 
     private final AuthService authService;
 
-    private final RoleService roleService;
+    private RoleService roleService;
+
+    private final ResourceService resourceService;
+
+    private final RoleResRelationService roleResRelationService;
 
     private final CredentialService credentialService;
 
     private final CredentialHistoryService credentialHistoryService;
 
     private final SecurityQuestionService securityQuestionService;
-
-    private RoleResRelationService roleResRelationService;
 
     private final MemberRoleRelationService memberRoleRelationService;
 
@@ -104,9 +106,13 @@ public class ControlServiceImpl implements ControlService {
     private final BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, JwtProcessor<MemberPayload> jwtProcessor,
-                              LoginService loginService, AuthService authService, RoleService roleService, CredentialService credentialService, CredentialHistoryService credentialHistoryService, SecurityQuestionService securityQuestionService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
-                              SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService, ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, ControlDeploy controlDeploy) {
+    public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer,
+                              RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, JwtProcessor<MemberPayload> jwtProcessor,
+                              LoginService loginService, AuthService authService, RoleService roleService, ResourceService resourceService,
+                              RoleResRelationService roleResRelationService, CredentialService credentialService, CredentialHistoryService credentialHistoryService,
+                              SecurityQuestionService securityQuestionService, MemberRoleRelationService memberRoleRelationService,
+                              SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService,
+                              ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, ControlDeploy controlDeploy) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
@@ -114,10 +120,11 @@ public class ControlServiceImpl implements ControlService {
         this.loginService = loginService;
         this.authService = authService;
         this.roleService = roleService;
+        this.resourceService = resourceService;
+        this.roleResRelationService = roleResRelationService;
         this.credentialService = credentialService;
         this.credentialHistoryService = credentialHistoryService;
         this.securityQuestionService = securityQuestionService;
-        this.roleResRelationService = roleResRelationService;
         this.memberRoleRelationService = memberRoleRelationService;
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
         this.executorService = executorService;
@@ -151,7 +158,7 @@ public class ControlServiceImpl implements ControlService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
 
-        Role role = roleResRelationService.getDefaultRole();
+        Role role = roleService.getDefaultRole();
         if (isNull(role))
             throw new BlueException(DATA_NOT_EXIST);
 
@@ -299,7 +306,7 @@ public class ControlServiceImpl implements ControlService {
     public Mono<MemberAccess> refreshAccess(String refresh) {
         LOGGER.info("Mono<MemberAccess> refreshAccess(String refresh), refresh = {}", refresh);
         return just(jwtProcessor.parse(refresh))
-                .switchIfEmpty(error(() -> new BlueException(UNAUTHORIZED)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
                 .flatMap(memberPayload ->
                         blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(memberPayload.getKeyId()), ALLOW, SEND_INTERVAL_MILLIS)
                                 .flatMap(allowed ->
@@ -598,7 +605,7 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(INVALID_IDENTITY);
 
         assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
-        return just(roleResRelationService.updateDefaultRole(id, operatorId));
+        return just(roleService.updateDefaultRole(id, operatorId));
     }
 
     /**
@@ -752,7 +759,7 @@ public class ControlServiceImpl implements ControlService {
                 .filter(l -> l > 0)
                 .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "level can't be null or less than 1")), getRoleByMemberId(operatorId).getLevel());
 
-        return just(roleResRelationService.insertRole(roleInsertParam, operatorId))
+        return just(roleService.insertRole(roleInsertParam, operatorId))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -771,7 +778,7 @@ public class ControlServiceImpl implements ControlService {
         LOGGER.info("Mono<RoleInfo> updateRole(RoleUpdateParam roleUpdateParam, Long operatorId), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
         assertRoleLevelForOperate(getRoleByRoleId(roleUpdateParam.getId()).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
-        return just(roleResRelationService.updateRole(roleUpdateParam, operatorId))
+        return just(roleService.updateRole(roleUpdateParam, operatorId))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -792,9 +799,10 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(INVALID_IDENTITY);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
+
         assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
-        return just(roleResRelationService.deleteRole(id, operatorId))
+        return just(roleService.deleteRoleById(id))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -812,7 +820,7 @@ public class ControlServiceImpl implements ControlService {
     public Mono<ResourceInfo> insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
         LOGGER.info("Mono<ResourceInfo> insertResource(ResourceInsertParam resourceInsertParam, Long operatorId), resourceInsertParam = {}, operatorId = {}", resourceInsertParam, operatorId);
 
-        return just(roleResRelationService.insertResource(resourceInsertParam, operatorId))
+        return just(resourceService.insertResource(resourceInsertParam, operatorId))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -829,8 +837,17 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<ResourceInfo> updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId) {
         LOGGER.info("Mono<ResourceInfo> updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}, operatorId = {}", resourceUpdateParam, operatorId);
+        if (isNull(resourceUpdateParam))
+            throw new BlueException(EMPTY_PARAM);
 
-        return just(roleResRelationService.updateResource(resourceUpdateParam, operatorId))
+        Long resId = resourceUpdateParam.getId();
+        if (isInvalidIdentity(resId))
+            throw new BlueException(UNAUTHORIZED);
+
+        roleResRelationService.getHighestLevelRoleByResourceId(resId).
+                ifPresent(hr -> assertRoleLevelForOperate(hr.getLevel(), getRoleByMemberId(operatorId).getLevel()));
+
+        return just(resourceService.updateResource(resourceUpdateParam, operatorId))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -852,7 +869,10 @@ public class ControlServiceImpl implements ControlService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(roleResRelationService.deleteResource(id, operatorId))
+        roleResRelationService.getHighestLevelRoleByResourceId(id).
+                ifPresent(hr -> assertRoleLevelForOperate(hr.getLevel(), getRoleByMemberId(operatorId).getLevel()));
+
+        return just(resourceService.deleteResourceById(id))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);

@@ -36,8 +36,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * city service impl
@@ -269,7 +268,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId) {
-        return just(CITIES_BY_STATE_ID_GETTER.apply(stateId)).switchIfEmpty(just(emptyList()));
+        return just(CITIES_BY_STATE_ID_GETTER.apply(stateId)).switchIfEmpty(defer(() -> just(emptyList())));
     }
 
     /**
