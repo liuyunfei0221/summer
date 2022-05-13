@@ -25,9 +25,8 @@ import com.blue.base.model.base.Access;
 import com.blue.base.model.base.KeyPair;
 import com.blue.base.model.exps.BlueException;
 import com.blue.jwt.common.JwtProcessor;
+import com.blue.redisson.common.SynchronizedProcessor;
 import com.google.gson.JsonSyntaxException;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -99,12 +98,13 @@ public class AuthServiceImpl implements AuthService {
 
     private final ExecutorService executorService;
 
-    private RedissonClient redissonClient;
+    private SynchronizedProcessor synchronizedProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public AuthServiceImpl(RefreshInfoService refreshInfoService, JwtProcessor<MemberPayload> jwtProcessor, AccessInfoCache accessInfoCache, StringRedisTemplate stringRedisTemplate,
                            RoleService roleService, ResourceService resourceService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
-                           InvalidLocalAccessProducer invalidLocalAccessProducer, ExecutorService executorService, RedissonClient redissonClient, SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
+                           InvalidLocalAccessProducer invalidLocalAccessProducer, ExecutorService executorService, SynchronizedProcessor synchronizedProcessor,
+                           SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
         this.refreshInfoService = refreshInfoService;
         this.jwtProcessor = jwtProcessor;
         this.accessInfoCache = accessInfoCache;
@@ -115,7 +115,7 @@ public class AuthServiceImpl implements AuthService {
         this.memberRoleRelationService = memberRoleRelationService;
         this.invalidLocalAccessProducer = invalidLocalAccessProducer;
         this.executorService = executorService;
-        this.redissonClient = redissonClient;
+        this.synchronizedProcessor = synchronizedProcessor;
 
         this.randomIdLen = sessionKeyDeploy.getRanLen();
         this.maxWaitingMillisForRefresh = blockingDeploy.getBlockingMillis();
@@ -353,8 +353,7 @@ public class AuthServiceImpl implements AuthService {
                         return empty();
                     })
                     .then(just(true));
-
-
+    
     /**
      * delete all refresh token infos by member id
      */
@@ -494,44 +493,20 @@ public class AuthServiceImpl implements AuthService {
             return;
         }
 
-        RLock authRefreshLock = redissonClient.getLock(genAccessInfoRefreshLockKey(keyId, elementType, elementValue));
-        boolean tryBusinessLock = false;
-        try {
-            if (!(tryBusinessLock = authRefreshLock.tryLock()))
-                return;
+        synchronizedProcessor.handleTaskWithTryLock(genAccessInfoRefreshLockKey(keyId, elementType, elementValue), () ->
+                        synchronizedProcessor.handleTaskWithLock(GLOBAL_LOCK_KEY_GEN.apply(keyId), () -> {
+                            try {
+                                RE_PACKAGERS.get(elementType).accept(accessInfo, elementValue);
+                                stringRedisTemplate.opsForValue()
+                                        .set(keyId, GSON.toJson(accessInfo), Duration.of(ofNullable(stringRedisTemplate.getExpire(keyId, SECONDS)).orElse(0L), ChronoUnit.SECONDS));
 
-            RLock globalLock = redissonClient.getLock(GLOBAL_LOCK_KEY_GEN.apply(keyId));
-            try {
-                globalLock.lock();
-                RE_PACKAGERS.get(elementType).accept(accessInfo, elementValue);
-                stringRedisTemplate.opsForValue()
-                        .set(keyId, GSON.toJson(accessInfo), Duration.of(ofNullable(stringRedisTemplate.getExpire(keyId, SECONDS)).orElse(0L), ChronoUnit.SECONDS));
-            } catch (Exception exception) {
-                LOGGER.error("lock on global failed, e = {}", exception);
-            } finally {
-                try {
-                    globalLock.unlock();
-                } catch (Exception e) {
-                    LOGGER.warn("globalLock unlock failed, e = {}", e);
-                }
-            }
-        } catch (Exception exception) {
-            LOGGER.error("lock on business failed, e = {}", exception);
-        } finally {
-            if (tryBusinessLock) {
-                try {
-                    authRefreshLock.unlock();
-                } catch (Exception e) {
-                    LOGGER.error("authRefreshLock, authRefreshLock.unlock() failed, e = {}", e);
-                }
-                try {
-                    Boolean localAddressInvalid = this.invalidateLocalAccessByKeyId(keyId).toFuture().join();
-                    LOGGER.info("refreshAccessInfoElementByKeyId(String keyId, AccessInfoRefreshElementType elementType, String elementValue), localAddressInvalid = {}", localAddressInvalid);
-                } catch (Exception e) {
-                    LOGGER.error("invalidLocalAuthProducer send failed, keyId = {}, e = {}", keyId, e);
-                }
-            }
-        }
+                                Boolean localAddressInvalid = this.invalidateLocalAccessByKeyId(keyId).toFuture().join();
+                                LOGGER.info("this.invalidateLocalAccessByKeyId(keyId).toFuture().join(), localAddressInvalid = {}", localAddressInvalid);
+                            } catch (Exception e) {
+                                LOGGER.error("invalidLocalAuthProducer send failed, keyId = {}, e = {}", keyId, e);
+                            }
+                        })
+                , true);
     }
 
     /**
@@ -614,31 +589,11 @@ public class AuthServiceImpl implements AuthService {
     /**
      * auth delete task
      */
-    private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_SYNC_TASK = memberId -> {
-        RLock lock = redissonClient.getLock(AUTH_INVALID_BY_MID_SYNC_KEY_GEN.apply(memberId));
-        boolean tryLock = true;
-        try {
-            tryLock = lock.tryLock();
-            if (tryLock) {
-                return INVALID_AUTH_BY_MEMBER_ID_TASK.apply(memberId);
-            }
-
-            long start = currentTimeMillis();
-            while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= MAX_WAIT_MILLIS_FOR_REDISSON_SYNC.value)
-                onSpinWait();
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        } finally {
-            if (tryLock)
-                try {
-                    lock.unlock();
-                } catch (Exception e) {
-                    LOGGER.warn("INVALID_AUTH_BY_MEMBER_ID_SYNC_TASK, lock.unlock() failed, e = {}", e);
-                }
-        }
-    };
+    private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_SYNC_TASK = memberId ->
+            synchronizedProcessor.handleSupWithTryLock(AUTH_INVALID_BY_MID_SYNC_KEY_GEN.apply(memberId),
+                    () -> INVALID_AUTH_BY_MEMBER_ID_TASK.apply(memberId),
+                    () -> true,
+                    () -> false);
 
     /**
      * get authority by role id

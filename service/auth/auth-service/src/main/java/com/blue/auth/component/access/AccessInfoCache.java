@@ -15,11 +15,11 @@ import reactor.util.Logger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
@@ -63,7 +63,7 @@ public final class AccessInfoCache {
     /**
      * global expire duration
      */
-    private final Duration globalExpireDuration;
+    private Duration globalExpireDuration;
 
     /**
      * local cache
@@ -143,9 +143,29 @@ public final class AccessInfoCache {
      */
     private final Function<String, Mono<String>> ACCESS_GETTER_WITH_CACHE = keyId -> {
         LOGGER.warn("ACCESS_GETTER_WITH_CACHE, get accessInfo from redis, keyId = {}", keyId);
+        if (isBlank(keyId))
+            return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
 
         return justOrEmpty(cache.getIfPresent(keyId))
                 .switchIfEmpty(defer(() -> REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER.apply(keyId)));
+    };
+
+    /**
+     * cache accessInfo getter
+     */
+    private final BiFunction<String, String, Mono<Boolean>> ACCESS_SETTER_WITH_CACHE = (keyId, accessInfo) -> {
+        LOGGER.info("ACCESS_SETTER_WITH_CACHE, keyId = {},accessInfo = {}", keyId, accessInfo);
+        if (isBlank(keyId) || isBlank(accessInfo))
+            return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
+
+        return reactiveStringRedisTemplate.opsForValue()
+                .set(keyId, accessInfo, globalExpireDuration)
+                .subscribeOn(scheduler)
+                .onErrorResume(throwable -> {
+                    LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
+                    return just(false);
+                })
+                .doOnSuccess(ig -> cache.invalidate(keyId));
     };
 
     /**
@@ -169,13 +189,7 @@ public final class AccessInfoCache {
      */
     public Mono<Boolean> setAccessInfo(String keyId, String accessInfo) {
         LOGGER.info("setAccessInfo(), keyId = {},accessInfo = {}", keyId, accessInfo);
-        return reactiveStringRedisTemplate.opsForValue()
-                .set(keyId, accessInfo, globalExpireDuration)
-                .subscribeOn(scheduler)
-                .onErrorResume(throwable -> {
-                    LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
-                    return just(false);
-                });
+        return ACCESS_SETTER_WITH_CACHE.apply(keyId, accessInfo);
     }
 
     /**

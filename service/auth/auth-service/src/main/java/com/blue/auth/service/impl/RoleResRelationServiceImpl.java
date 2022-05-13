@@ -2,7 +2,6 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.AuthorityBaseOnResource;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
-import com.blue.auth.component.sync.AuthorityUpdateSyncProcessor;
 import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.entity.Role;
@@ -14,6 +13,7 @@ import com.blue.auth.service.inter.RoleService;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.redisson.common.SynchronizedProcessor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +31,6 @@ import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.CacheKey.ROLE_RES_RELS;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.SyncKey.AUTHORITY_UPDATE_SYNC;
 import static java.util.Collections.emptyList;
 import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
@@ -65,17 +64,17 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
 
     private StringRedisTemplate stringRedisTemplate;
 
-    private AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor;
+    private SynchronizedProcessor synchronizedProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public RoleResRelationServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RoleResRelationMapper roleResRelationMapper, RoleService roleService, ResourceService resourceService,
-                                      StringRedisTemplate stringRedisTemplate, AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor) {
+                                      StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.roleResRelationMapper = roleResRelationMapper;
         this.roleService = roleService;
         this.resourceService = resourceService;
         this.stringRedisTemplate = stringRedisTemplate;
-        this.authorityUpdateSyncProcessor = authorityUpdateSyncProcessor;
+        this.synchronizedProcessor = synchronizedProcessor;
     }
 
     /**
@@ -123,7 +122,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     };
 
     private final Supplier<List<RoleResRelation>> RELATIONS_WITH_CACHE_SUP = () ->
-            authorityUpdateSyncProcessor.selectGenericsWithCache(RELATIONS_REDIS_SUP, BlueChecker::isNotEmpty, RELATIONS_DB_SUP, RELATIONS_REDIS_SETTER);
+            synchronizedProcessor.handleSupByOrderedWithSetter(RELATIONS_REDIS_SUP, BlueChecker::isNotEmpty, RELATIONS_DB_SUP, RELATIONS_REDIS_SETTER);
 
     /**
      * generate role-res-relations
@@ -172,15 +171,13 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isNull(roleResRelation))
             throw new BlueException(EMPTY_PARAM);
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            INSERT_RELATION_VALIDATOR.accept(roleResRelation);
+        INSERT_RELATION_VALIDATOR.accept(roleResRelation);
 
-            CACHE_DELETER.accept(ROLE_RES_RELS.key);
-            int inserted = roleResRelationMapper.insert(roleResRelation);
-            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+        CACHE_DELETER.accept(ROLE_RES_RELS.key);
+        int inserted = roleResRelationMapper.insert(roleResRelation);
+        CACHE_DELETER.accept(ROLE_RES_RELS.key);
 
-            return inserted;
-        });
+        return inserted;
     }
 
     /**
@@ -196,14 +193,12 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isEmpty(roleResRelations))
             throw new BlueException(EMPTY_PARAM);
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            CACHE_DELETER.accept(ROLE_RES_RELS.key);
-            int inserted = roleResRelationMapper.insertBatch(roleResRelations.stream().filter(Objects::nonNull)
-                    .peek(INSERT_RELATION_VALIDATOR).collect(toList()));
-            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+        CACHE_DELETER.accept(ROLE_RES_RELS.key);
+        int inserted = roleResRelationMapper.insertBatch(roleResRelations.stream().filter(Objects::nonNull)
+                .peek(INSERT_RELATION_VALIDATOR).collect(toList()));
+        CACHE_DELETER.accept(ROLE_RES_RELS.key);
 
-            return inserted;
-        });
+        return inserted;
     }
 
     /**
@@ -219,14 +214,12 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidIdentity(roleId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            CACHE_DELETER.accept(ROLE_RES_RELS.key);
-            int count = roleResRelationMapper.deleteByRoleId(roleId);
-            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+        CACHE_DELETER.accept(ROLE_RES_RELS.key);
+        int count = roleResRelationMapper.deleteByRoleId(roleId);
+        CACHE_DELETER.accept(ROLE_RES_RELS.key);
 
-            LOGGER.info("int deleteRelationByRoleId(Long roleId), count = {}", count);
-            return count;
-        });
+        LOGGER.info("int deleteRelationByRoleId(Long roleId), count = {}", count);
+        return count;
     }
 
     /**
@@ -242,14 +235,12 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidIdentity(resId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            CACHE_DELETER.accept(ROLE_RES_RELS.key);
-            int count = roleResRelationMapper.deleteByResId(resId);
-            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+        CACHE_DELETER.accept(ROLE_RES_RELS.key);
+        int count = roleResRelationMapper.deleteByResId(resId);
+        CACHE_DELETER.accept(ROLE_RES_RELS.key);
 
-            LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
-            return count;
-        });
+        LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
+        return count;
     }
 
     /**
@@ -271,37 +262,35 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId");
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            Optional<Role> roleOpt = roleService.getRoleById(roleId);
-            if (roleOpt.isEmpty())
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is not exist");
+        Optional<Role> roleOpt = roleService.getRoleById(roleId);
+        if (roleOpt.isEmpty())
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is not exist");
 
-            List<Long> resourceIds = resIds.stream().filter(Objects::nonNull).distinct()
-                    .collect(toList());
+        List<Long> resourceIds = resIds.stream().filter(Objects::nonNull).distinct()
+                .collect(toList());
 
-            if (isEmpty(resourceIds))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
-            List<Resource> resources = resourceService.selectResourceByIds(resourceIds);
-            if (isEmpty(resources))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+        if (isEmpty(resourceIds))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
+        List<Resource> resources = resourceService.selectResourceByIds(resourceIds);
+        if (isEmpty(resources))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resIds");
 
-            if (resources.size() < resourceIds.size()) {
-                Set<Long> resIdSet = resources.stream().map(Resource::getId).collect(toSet());
-                for (long rid : resourceIds)
-                    if (!resIdSet.contains(rid))
-                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resId in resIds, resId = " + rid);
-            }
+        if (resources.size() < resourceIds.size()) {
+            Set<Long> resIdSet = resources.stream().map(Resource::getId).collect(toSet());
+            for (long rid : resourceIds)
+                if (!resIdSet.contains(rid))
+                    throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resId in resIds, resId = " + rid);
+        }
 
-            List<RoleResRelation> roleResRelations = generateRoleResRelations(roleId, resourceIds, operatorId);
+        List<RoleResRelation> roleResRelations = generateRoleResRelations(roleId, resourceIds, operatorId);
 
-            CACHE_DELETER.accept(ROLE_RES_RELS.key);
-            this.deleteRelationByRoleId(roleId);
-            this.insertRelationBatch(roleResRelations);
-            CACHE_DELETER.accept(ROLE_RES_RELS.key);
+        CACHE_DELETER.accept(ROLE_RES_RELS.key);
+        this.deleteRelationByRoleId(roleId);
+        this.insertRelationBatch(roleResRelations);
+        CACHE_DELETER.accept(ROLE_RES_RELS.key);
 
-            return new AuthorityBaseOnRole(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(roleOpt.get()),
-                    resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList()));
-        });
+        return new AuthorityBaseOnRole(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(roleOpt.get()),
+                resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList()));
     }
 
     /**

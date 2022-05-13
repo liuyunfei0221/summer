@@ -84,4 +84,6 @@ public interface RedissonConf {
 
     Integer getExecutorBlockingQueueCapacity();
 
+    Long getMaxTryLockWaitingMillis();
+
 }

@@ -2,6 +2,7 @@ package com.blue.redisson.api.generator;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.redisson.api.conf.RedissonConf;
+import com.blue.redisson.common.SynchronizedProcessor;
 import com.blue.redisson.constant.ServerMode;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.redisson.api.RedissonClient;
@@ -218,6 +219,21 @@ public final class BlueRedissonGenerator {
     }
 
     /**
+     * generate sync processor
+     *
+     * @param redissonClient
+     * @param redissonConf
+     * @return
+     */
+    public static SynchronizedProcessor generateSynchronizedProcessor(RedissonClient redissonClient, RedissonConf redissonConf) {
+        if (isNull(redissonClient))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redissonClient can't be null");
+        confAsserter(redissonConf);
+
+        return new SynchronizedProcessor(redissonClient, redissonConf.getMaxTryLockWaitingMillis());
+    }
+
+    /**
      * assert params
      *
      * @param redissonConf
@@ -231,6 +247,10 @@ public final class BlueRedissonGenerator {
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
 
         SERVER_MODE_ASSERTER.accept(redissonConf);
+
+        Long maxTryLockWaitingMillis = redissonConf.getMaxTryLockWaitingMillis();
+        if (isNull(maxTryLockWaitingMillis) || redissonConf.getMaxTryLockWaitingMillis() < 0L)
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxTryLockWaitingMillis can't be null or less than 0");
     }
 
 }

@@ -80,6 +80,8 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
 
     protected Integer executorBlockingQueueCapacity;
 
+    protected Long maxTryLockWaitingMillis;
+
     public BaseRedissonConfParams() {
     }
 
@@ -238,6 +240,11 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
         return executorBlockingQueueCapacity;
     }
 
+    @Override
+    public Long getMaxTryLockWaitingMillis() {
+        return maxTryLockWaitingMillis;
+    }
+
     public void setServerMode(ServerMode serverMode) {
         this.serverMode = serverMode;
     }
@@ -362,6 +369,10 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
         this.executorBlockingQueueCapacity = executorBlockingQueueCapacity;
     }
 
+    public void setMaxTryLockWaitingMillis(Long maxTryLockWaitingMillis) {
+        this.maxTryLockWaitingMillis = maxTryLockWaitingMillis;
+    }
+
     @Override
     public String toString() {
         return "BaseRedissonConfParams{" +
@@ -396,6 +407,7 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
                 ", executorMaximumPoolSize=" + executorMaximumPoolSize +
                 ", executorKeepAliveSeconds=" + executorKeepAliveSeconds +
                 ", executorBlockingQueueCapacity=" + executorBlockingQueueCapacity +
+                ", maxTryLockWaitingMillis=" + maxTryLockWaitingMillis +
                 '}';
     }
 

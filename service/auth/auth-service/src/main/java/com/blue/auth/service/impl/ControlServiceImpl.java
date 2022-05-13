@@ -22,6 +22,7 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.jwt.common.JwtProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.redis.common.BlueLeakyBucketRateLimiter;
+import com.blue.redisson.common.SynchronizedProcessor;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -50,10 +51,13 @@ import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.INVALID;
 import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.base.SummerAttr.NON_VALUE_PARAM;
+import static com.blue.base.constant.base.SyncKey.AUTHORITY_UPDATE_SYNC;
+import static com.blue.base.constant.base.SyncKey.DEFAULT_ROLE_UPDATE_SYNC;
+import static com.blue.base.constant.base.SyncKeyPrefix.MEMBER_ROLE_REL_UPDATE_PRE;
+import static com.blue.base.constant.base.SyncKeyPrefix.QUESTION_INSERT_PRE;
 import static com.blue.base.constant.verify.BusinessType.*;
 import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateLeakyBucketRateLimiter;
 import static java.util.Optional.ofNullable;
-import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -105,6 +109,8 @@ public class ControlServiceImpl implements ControlService {
 
     private final BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter;
 
+    private final SynchronizedProcessor synchronizedProcessor;
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer,
                               RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, JwtProcessor<MemberPayload> jwtProcessor,
@@ -112,7 +118,8 @@ public class ControlServiceImpl implements ControlService {
                               RoleResRelationService roleResRelationService, CredentialService credentialService, CredentialHistoryService credentialHistoryService,
                               SecurityQuestionService securityQuestionService, MemberRoleRelationService memberRoleRelationService,
                               SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService,
-                              ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, ControlDeploy controlDeploy) {
+                              SynchronizedProcessor synchronizedProcessor, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
+                              Scheduler scheduler, ControlDeploy controlDeploy) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
@@ -128,6 +135,7 @@ public class ControlServiceImpl implements ControlService {
         this.memberRoleRelationService = memberRoleRelationService;
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
         this.executorService = executorService;
+        this.synchronizedProcessor = synchronizedProcessor;
         this.blueLeakyBucketRateLimiter = generateLeakyBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
 
         ALLOW = controlDeploy.getAllow();
@@ -276,6 +284,10 @@ public class ControlServiceImpl implements ControlService {
                 }).collect(toList());
     }
 
+    private static final Function<Long, String>
+            MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER = memberId -> MEMBER_ROLE_REL_UPDATE_PRE.prefix + memberId,
+            QUESTION_UPDATE_KEY_WRAPPER = memberId -> QUESTION_INSERT_PRE.prefix + memberId;
+
     /**
      * login
      *
@@ -418,7 +430,8 @@ public class ControlServiceImpl implements ControlService {
         assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), getRoleByMemberId(operatorId).getLevel());
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
-        boolean updated = memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId) > 0;
+        boolean updated = synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+                memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId)) > 0;
         if (updated)
             authService.refreshMemberRoleById(memberId, roleId, operatorId).toFuture().join();
 
@@ -445,7 +458,8 @@ public class ControlServiceImpl implements ControlService {
 
         packageExistAccess(credentials, memberId);
 
-        memberRoleRelationService.insertMemberRoleRelation(MEMBER_DEFAULT_ROLE_RELATION_GEN.apply(memberId));
+        synchronizedProcessor.handleTaskWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+                memberRoleRelationService.insertMemberRoleRelation(MEMBER_DEFAULT_ROLE_RELATION_GEN.apply(memberId)));
         credentialService.insertCredentials(credentials);
     }
 
@@ -605,7 +619,9 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(INVALID_IDENTITY);
 
         assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
-        return just(roleService.updateDefaultRole(id, operatorId));
+
+        return just(synchronizedProcessor.handleSupWithLock(DEFAULT_ROLE_UPDATE_SYNC.key, () ->
+                roleService.updateDefaultRole(id, operatorId)));
     }
 
     /**
@@ -706,8 +722,8 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Mono<Boolean> insertSecurityQuestion(SecurityQuestionInsertParam securityQuestionInsertParam, Long memberId) {
-        return fromFuture(runAsync(() -> securityQuestionService.insertSecurityQuestion(securityQuestionInsertParam, memberId), executorService))
-                .then(just(true));
+        return just(synchronizedProcessor.handleSupWithLock(QUESTION_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+                securityQuestionService.insertSecurityQuestion(securityQuestionInsertParam, memberId)) > 0);
     }
 
     /**
@@ -719,8 +735,8 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Mono<Boolean> insertSecurityQuestions(List<SecurityQuestionInsertParam> securityQuestionInsertParams, Long memberId) {
-        return fromFuture(runAsync(() -> securityQuestionService.insertSecurityQuestions(securityQuestionInsertParams, memberId), executorService))
-                .then(just(true));
+        return just(synchronizedProcessor.handleSupWithLock(QUESTION_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+                securityQuestionService.insertSecurityQuestions(securityQuestionInsertParams, memberId)) > 0);
     }
 
     /**
@@ -759,7 +775,8 @@ public class ControlServiceImpl implements ControlService {
                 .filter(l -> l > 0)
                 .orElseThrow(() -> new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "level can't be null or less than 1")), getRoleByMemberId(operatorId).getLevel());
 
-        return just(roleService.insertRole(roleInsertParam, operatorId))
+        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
+                roleService.insertRole(roleInsertParam, operatorId)))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -778,7 +795,8 @@ public class ControlServiceImpl implements ControlService {
         LOGGER.info("Mono<RoleInfo> updateRole(RoleUpdateParam roleUpdateParam, Long operatorId), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
         assertRoleLevelForOperate(getRoleByRoleId(roleUpdateParam.getId()).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
-        return just(roleService.updateRole(roleUpdateParam, operatorId))
+        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
+                roleService.updateRole(roleUpdateParam, operatorId)))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -802,7 +820,8 @@ public class ControlServiceImpl implements ControlService {
 
         assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
-        return just(roleService.deleteRoleById(id))
+        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
+                roleService.deleteRoleById(id)))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -820,7 +839,8 @@ public class ControlServiceImpl implements ControlService {
     public Mono<ResourceInfo> insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
         LOGGER.info("Mono<ResourceInfo> insertResource(ResourceInsertParam resourceInsertParam, Long operatorId), resourceInsertParam = {}, operatorId = {}", resourceInsertParam, operatorId);
 
-        return just(resourceService.insertResource(resourceInsertParam, operatorId))
+        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key,
+                () -> resourceService.insertResource(resourceInsertParam, operatorId)))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -847,7 +867,8 @@ public class ControlServiceImpl implements ControlService {
         roleResRelationService.getHighestLevelRoleByResourceId(resId).
                 ifPresent(hr -> assertRoleLevelForOperate(hr.getLevel(), getRoleByMemberId(operatorId).getLevel()));
 
-        return just(resourceService.updateResource(resourceUpdateParam, operatorId))
+        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
+                resourceService.updateResource(resourceUpdateParam, operatorId)))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -872,7 +893,8 @@ public class ControlServiceImpl implements ControlService {
         roleResRelationService.getHighestLevelRoleByResourceId(id).
                 ifPresent(hr -> assertRoleLevelForOperate(hr.getLevel(), getRoleByMemberId(operatorId).getLevel()));
 
-        return just(resourceService.deleteResourceById(id))
+        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
+                resourceService.deleteResourceById(id)))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -894,7 +916,8 @@ public class ControlServiceImpl implements ControlService {
         roleResRelationParam.asserts();
         assertRoleLevelForOperate(getRoleByRoleId(roleResRelationParam.getRoleId()).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
-        return just(roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), operatorId))
+        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
+                roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), operatorId)))
                 .doOnSuccess(auth -> {
                     LOGGER.info("auth = {}", auth);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -923,7 +946,8 @@ public class ControlServiceImpl implements ControlService {
         assertRoleLevelForOperate(getRoleByRoleId(roleId).getLevel(), operatorRoleLevel);
 
         return fromFuture(supplyAsync(() ->
-                memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId), executorService))
+                synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+                        memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId)), executorService))
                 .flatMap(ig -> authService.refreshMemberRoleById(memberId, roleId, operatorId))
                 .flatMap(ig -> this.selectAuthorityMonoByRoleId(roleId));
     }
@@ -943,7 +967,10 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(EMPTY_PARAM);
         roleResRelationParam.asserts();
 
-        AuthorityBaseOnRole authorityBaseOnRole = roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), BLUE_ID.value);
+        AuthorityBaseOnRole authorityBaseOnRole = synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
+                roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(),
+                        roleResRelationParam.getResIds(), BLUE_ID.value));
+
         systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
 
         return authorityBaseOnRole;
@@ -965,7 +992,8 @@ public class ControlServiceImpl implements ControlService {
         Long memberId = memberRoleRelationParam.getMemberId();
         Long roleId = memberRoleRelationParam.getRoleId();
 
-        if (memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, BLUE_ID.value) < 1)
+        if (synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+                memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, BLUE_ID.value)) < 1)
             throw new BlueException(DATA_NOT_EXIST);
 
         authService.refreshMemberRoleById(memberId, roleId, BLUE_ID.value).toFuture().join();

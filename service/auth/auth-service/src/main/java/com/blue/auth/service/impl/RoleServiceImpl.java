@@ -2,7 +2,6 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.RoleInfo;
 import com.blue.auth.api.model.RoleManagerInfo;
-import com.blue.auth.component.sync.AuthorityUpdateSyncProcessor;
 import com.blue.auth.constant.RoleSortAttribute;
 import com.blue.auth.model.RoleCondition;
 import com.blue.auth.model.RoleInsertParam;
@@ -18,6 +17,7 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
+import com.blue.redisson.common.SynchronizedProcessor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,12 +36,11 @@ import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.CacheKey.*;
+import static com.blue.base.constant.base.CacheKey.DEFAULT_ROLE;
+import static com.blue.base.constant.base.CacheKey.ROLES;
 import static com.blue.base.constant.base.Default.DEFAULT;
 import static com.blue.base.constant.base.Default.NOT_DEFAULT;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.SyncKey.AUTHORITY_UPDATE_SYNC;
-import static com.blue.base.constant.base.SyncKey.DEFAULT_ROLE_UPDATE_SYNC;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -73,17 +72,17 @@ public class RoleServiceImpl implements RoleService {
 
     private StringRedisTemplate stringRedisTemplate;
 
-    private AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor;
+    private SynchronizedProcessor synchronizedProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public RoleServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, RoleMapper roleMapper,
-                           RoleResRelationMapper roleResRelationMapper, StringRedisTemplate stringRedisTemplate, AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor) {
+                           RoleResRelationMapper roleResRelationMapper, StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.roleMapper = roleMapper;
         this.roleResRelationMapper = roleResRelationMapper;
         this.stringRedisTemplate = stringRedisTemplate;
-        this.authorityUpdateSyncProcessor = authorityUpdateSyncProcessor;
+        this.synchronizedProcessor = synchronizedProcessor;
     }
 
     private final Consumer<String> CACHE_DELETER = key ->
@@ -103,7 +102,7 @@ public class RoleServiceImpl implements RoleService {
     };
 
     private final Supplier<List<Role>> ROLES_WITH_CACHE_SUP = () ->
-            authorityUpdateSyncProcessor.selectGenericsWithCache(ROLES_REDIS_SUP, BlueChecker::isNotEmpty, ROLES_DB_SUP, ROLES_REDIS_SETTER);
+            synchronizedProcessor.handleSupByOrderedWithSetter(ROLES_REDIS_SUP, BlueChecker::isNotEmpty, ROLES_DB_SUP, ROLES_REDIS_SETTER);
 
 
     private final Supplier<Role> DEFAULT_ROLE_DB_SUP = () -> {
@@ -135,7 +134,7 @@ public class RoleServiceImpl implements RoleService {
                     });
 
     private final Supplier<Role> DEFAULT_ROLE_WITH_CACHE_SUP = () ->
-            authorityUpdateSyncProcessor.selectGenericsWithCache(
+            synchronizedProcessor.handleSupByOrderedWithSetter(
                     NULLABLE_DEFAULT_ROLE_REDIS_SUP, BlueChecker::isNotNull, DEFAULT_ROLE_DB_SUP, DEFAULT_ROLE_REDIS_SETTER);
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
@@ -264,20 +263,18 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            INSERT_ROLE_VALIDATOR.accept(roleInsertParam);
-            Role role = ROLE_INSERT_PARAM_2_ROLE_CONVERTER.apply(roleInsertParam);
+        INSERT_ROLE_VALIDATOR.accept(roleInsertParam);
+        Role role = ROLE_INSERT_PARAM_2_ROLE_CONVERTER.apply(roleInsertParam);
 
-            role.setId(blueIdentityProcessor.generate(Role.class));
-            role.setCreator(operatorId);
-            role.setUpdater(operatorId);
+        role.setId(blueIdentityProcessor.generate(Role.class));
+        role.setCreator(operatorId);
+        role.setUpdater(operatorId);
 
-            CACHE_DELETER.accept(ROLES.key);
-            roleMapper.insert(role);
-            CACHE_DELETER.accept(ROLES.key);
+        CACHE_DELETER.accept(ROLES.key);
+        roleMapper.insert(role);
+        CACHE_DELETER.accept(ROLES.key);
 
-            return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
-        });
+        return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
     }
 
     /**
@@ -296,19 +293,15 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            Role role = UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER.apply(roleUpdateParam);
-            if (ROLE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(roleUpdateParam, role)) {
-
-                CACHE_DELETER.accept(ROLES.key);
-                roleMapper.updateByPrimaryKeySelective(role);
-                CACHE_DELETER.accept(ROLES.key);
-
-                return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
-            }
-
+        Role role = UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER.apply(roleUpdateParam);
+        if (!ROLE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(roleUpdateParam, role))
             throw new BlueException(DATA_HAS_NOT_CHANGED);
-        });
+
+        CACHE_DELETER.accept(ROLES.key);
+        roleMapper.updateByPrimaryKeySelective(role);
+        CACHE_DELETER.accept(ROLES.key);
+
+        return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
     }
 
     /**
@@ -324,21 +317,19 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            Role role = roleMapper.selectByPrimaryKey(id);
-            if (isNull(role))
-                throw new BlueException(DATA_NOT_EXIST);
-            if (role.getIsDefault())
-                throw new BlueException(UNSUPPORTED_OPERATE);
+        Role role = roleMapper.selectByPrimaryKey(id);
+        if (isNull(role))
+            throw new BlueException(DATA_NOT_EXIST);
+        if (role.getIsDefault())
+            throw new BlueException(UNSUPPORTED_OPERATE);
 
-            CACHE_DELETER.accept(ROLES.key);
-            int count = roleResRelationMapper.deleteByResId(id);
-            LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
-            roleMapper.deleteByPrimaryKey(id);
-            CACHE_DELETER.accept(ROLES.key);
+        CACHE_DELETER.accept(ROLES.key);
+        int count = roleResRelationMapper.deleteByResId(id);
+        LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
+        roleMapper.deleteByPrimaryKey(id);
+        CACHE_DELETER.accept(ROLES.key);
 
-            return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
-        });
+        return ROLE_2_ROLE_INFO_CONVERTER.apply(role);
     }
 
     /**
@@ -355,40 +346,38 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(DEFAULT_ROLE_UPDATE_SYNC.key, () -> {
-            Role role = roleMapper.selectByPrimaryKey(id);
-            Role defaultRole = DEFAULT_ROLE_DB_SUP.get();
+        Role role = roleMapper.selectByPrimaryKey(id);
+        Role defaultRole = DEFAULT_ROLE_DB_SUP.get();
 
-            if (role.getId().equals(defaultRole.getId()))
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is already default");
+        if (role.getId().equals(defaultRole.getId()))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is already default");
 
-            Long stamp = TIME_STAMP_GETTER.get();
+        Long stamp = TIME_STAMP_GETTER.get();
 
-            role.setIsDefault(DEFAULT.status);
-            role.setUpdater(operatorId);
-            role.setUpdateTime(stamp);
+        role.setIsDefault(DEFAULT.status);
+        role.setUpdater(operatorId);
+        role.setUpdateTime(stamp);
 
-            defaultRole.setIsDefault(NOT_DEFAULT.status);
-            defaultRole.setUpdater(operatorId);
-            defaultRole.setUpdateTime(stamp);
+        defaultRole.setIsDefault(NOT_DEFAULT.status);
+        defaultRole.setUpdater(operatorId);
+        defaultRole.setUpdateTime(stamp);
 
-            CACHE_DELETER.accept(DEFAULT_ROLE.key);
-            roleMapper.updateByPrimaryKey(role);
-            roleMapper.updateByPrimaryKey(defaultRole);
-            CACHE_DELETER.accept(DEFAULT_ROLE.key);
+        CACHE_DELETER.accept(DEFAULT_ROLE.key);
+        roleMapper.updateByPrimaryKey(role);
+        roleMapper.updateByPrimaryKey(defaultRole);
+        CACHE_DELETER.accept(DEFAULT_ROLE.key);
 
-            Map<Long, String> idAndNameMapping;
-            try {
-                idAndNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(role))).toFuture().join()
-                        .parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
-            } catch (Exception e) {
-                LOGGER.error("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), generate idAndNameMapping failed, e = {}", e);
-                idAndNameMapping = emptyMap();
-            }
+        Map<Long, String> idAndNameMapping;
+        try {
+            idAndNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(role))).toFuture().join()
+                    .parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+        } catch (Exception e) {
+            LOGGER.error("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), generate idAndNameMapping failed, e = {}", e);
+            idAndNameMapping = emptyMap();
+        }
 
-            return roleToRoleManagerInfo(role, ofNullable(idAndNameMapping.get(role.getCreator())).orElse(""),
-                    ofNullable(idAndNameMapping.get(role.getUpdater())).orElse(""));
-        });
+        return roleToRoleManagerInfo(role, ofNullable(idAndNameMapping.get(role.getCreator())).orElse(""),
+                ofNullable(idAndNameMapping.get(role.getUpdater())).orElse(""));
     }
 
     /**

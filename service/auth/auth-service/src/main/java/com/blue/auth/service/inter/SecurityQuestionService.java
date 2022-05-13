@@ -20,16 +20,18 @@ public interface SecurityQuestionService {
      *
      * @param securityQuestionInsertParam
      * @param memberId
+     * @return
      */
-    void insertSecurityQuestion(SecurityQuestionInsertParam securityQuestionInsertParam, Long memberId);
+    int insertSecurityQuestion(SecurityQuestionInsertParam securityQuestionInsertParam, Long memberId);
 
     /**
      * insert security question batch
      *
      * @param securityQuestionInsertParams
      * @param memberId
+     * @return
      */
-    void insertSecurityQuestions(List<SecurityQuestionInsertParam> securityQuestionInsertParams, Long memberId);
+    int insertSecurityQuestions(List<SecurityQuestionInsertParam> securityQuestionInsertParams, Long memberId);
 
     /**
      * count security question by member id

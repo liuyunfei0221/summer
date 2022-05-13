@@ -306,6 +306,7 @@ redisson:
   executorMaximumPoolSize: 8
   executorkeepAliveSeconds: 64
   executorBlockingQueueCapacity: 128
+  maxTryLockWaitingMillis: 10000
 
 
 dubbo:

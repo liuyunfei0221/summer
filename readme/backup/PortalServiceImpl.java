@@ -174,7 +174,8 @@ public class PortalServiceImpl implements PortalService {
                         } finally {
                             if (tryLock)
                                 try {
-                                    lock.unlock();
+                                    if (lock.isLocked())
+                                        lock.unlock();
                                 } catch (Exception e) {
                                 }
                         }

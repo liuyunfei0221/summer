@@ -2,7 +2,6 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.ResourceInfo;
 import com.blue.auth.api.model.ResourceManagerInfo;
-import com.blue.auth.component.sync.AuthorityUpdateSyncProcessor;
 import com.blue.auth.constant.ResourceSortAttribute;
 import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.model.ResourceCondition;
@@ -19,6 +18,7 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
+import com.blue.redisson.common.SynchronizedProcessor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +41,6 @@ import static com.blue.base.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.CacheKey.RESOURCES;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.SyncKey.AUTHORITY_UPDATE_SYNC;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -73,17 +72,17 @@ public class ResourceServiceImpl implements ResourceService {
 
     private StringRedisTemplate stringRedisTemplate;
 
-    private AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor;
+    private SynchronizedProcessor synchronizedProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ResourceServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, ResourceMapper resourceMapper,
-                               RoleResRelationMapper roleResRelationMapper, StringRedisTemplate stringRedisTemplate, AuthorityUpdateSyncProcessor authorityUpdateSyncProcessor) {
+                               RoleResRelationMapper roleResRelationMapper, StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.resourceMapper = resourceMapper;
         this.roleResRelationMapper = roleResRelationMapper;
         this.stringRedisTemplate = stringRedisTemplate;
-        this.authorityUpdateSyncProcessor = authorityUpdateSyncProcessor;
+        this.synchronizedProcessor = synchronizedProcessor;
     }
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(ResourceSortAttribute.values())
@@ -312,7 +311,7 @@ public class ResourceServiceImpl implements ResourceService {
     };
 
     private final Supplier<List<Resource>> RESOURCES_WITH_CACHE_SUP = () ->
-            authorityUpdateSyncProcessor.selectGenericsWithCache(RESOURCES_REDIS_SUP, BlueChecker::isNotEmpty, RESOURCES_DB_SUP, RESOURCES_REDIS_SETTER);
+            synchronizedProcessor.handleSupByOrderedWithSetter(RESOURCES_REDIS_SUP, BlueChecker::isNotEmpty, RESOURCES_DB_SUP, RESOURCES_REDIS_SETTER);
 
     /**
      * insert resource
@@ -329,19 +328,17 @@ public class ResourceServiceImpl implements ResourceService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            INSERT_RESOURCE_VALIDATOR.accept(resourceInsertParam);
-            Resource resource = AuthModelConverters.RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER.apply(resourceInsertParam);
+        INSERT_RESOURCE_VALIDATOR.accept(resourceInsertParam);
+        Resource resource = AuthModelConverters.RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER.apply(resourceInsertParam);
 
-            long id = blueIdentityProcessor.generate(Resource.class);
-            resource.setId(id);
-            resource.setCreator(operatorId);
-            resource.setUpdater(operatorId);
+        long id = blueIdentityProcessor.generate(Resource.class);
+        resource.setId(id);
+        resource.setCreator(operatorId);
+        resource.setUpdater(operatorId);
 
-            resourceMapper.insert(resource);
+        resourceMapper.insert(resource);
 
-            return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
-        });
+        return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
     }
 
     /**
@@ -360,16 +357,13 @@ public class ResourceServiceImpl implements ResourceService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            Resource resource = UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER.apply(resourceUpdateParam);
-            if (RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(resourceUpdateParam, resource)) {
-                resourceMapper.updateByPrimaryKeySelective(resource);
-
-                return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
-            }
-
+        Resource resource = UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER.apply(resourceUpdateParam);
+        if (!RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(resourceUpdateParam, resource))
             throw new BlueException(DATA_HAS_NOT_CHANGED);
-        });
+
+        resourceMapper.updateByPrimaryKeySelective(resource);
+
+        return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
     }
 
     /**
@@ -385,17 +379,15 @@ public class ResourceServiceImpl implements ResourceService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return authorityUpdateSyncProcessor.handleAuthorityUpdateWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            Resource resource = resourceMapper.selectByPrimaryKey(id);
-            if (isNull(resource))
-                throw new BlueException(DATA_NOT_EXIST);
+        Resource resource = resourceMapper.selectByPrimaryKey(id);
+        if (isNull(resource))
+            throw new BlueException(DATA_NOT_EXIST);
 
-            int count = roleResRelationMapper.deleteByResId(id);
-            LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
-            resourceMapper.deleteByPrimaryKey(id);
+        int count = roleResRelationMapper.deleteByResId(id);
+        LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
+        resourceMapper.deleteByPrimaryKey(id);
 
-            return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
-        });
+        return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
     }
 
     /**
