@@ -1,7 +1,7 @@
 package com.blue.portal.handler.api;
 
 import com.blue.base.model.base.BlueResponse;
-import com.blue.portal.service.inter.PortalService;
+import com.blue.portal.service.inter.BulletinService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -23,14 +23,14 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 @Component
-public final class PortalApiHandler {
+public final class BulletinApiHandler {
 
-    private static final Logger LOGGER = Loggers.getLogger(PortalApiHandler.class);
+    private static final Logger LOGGER = Loggers.getLogger(BulletinApiHandler.class);
 
-    private final PortalService portalService;
+    private final BulletinService bulletinService;
 
-    public PortalApiHandler(PortalService portalService) {
-        this.portalService = portalService;
+    public BulletinApiHandler(BulletinService bulletinService) {
+        this.bulletinService = bulletinService;
     }
 
     /**
@@ -40,7 +40,7 @@ public final class PortalApiHandler {
      * @return
      */
     public Mono<ServerResponse> selectBulletin(ServerRequest serverRequest) {
-        return portalService.selectBulletin(getIntegerVariable(serverRequest, TYPE.key))
+        return bulletinService.selectBulletinInfoMonoByType(getIntegerVariable(serverRequest, TYPE.key))
                 .flatMap(bl -> ok()
                         .contentType(APPLICATION_JSON)
                         .body(generate(OK.code, bl, serverRequest), BlueResponse.class)

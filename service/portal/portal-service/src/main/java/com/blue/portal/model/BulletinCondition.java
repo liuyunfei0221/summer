@@ -196,6 +196,8 @@ public final class BulletinCondition extends SortCondition implements Serializab
                 ", createTimeEnd=" + createTimeEnd +
                 ", creator=" + creator +
                 ", updater=" + updater +
+                ", sortAttribute='" + sortAttribute + '\'' +
+                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

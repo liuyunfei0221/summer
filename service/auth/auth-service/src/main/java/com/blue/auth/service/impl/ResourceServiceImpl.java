@@ -497,7 +497,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<ResourceManagerInfo>> selectResourceInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest) {
+    public Mono<PageModelResponse<ResourceManagerInfo>> selectResourceManagerInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<ResourceInfo>> selectResourceInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))

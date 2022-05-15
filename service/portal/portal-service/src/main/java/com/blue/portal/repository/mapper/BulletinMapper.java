@@ -30,7 +30,7 @@ public interface BulletinMapper {
 
     List<Bulletin> selectByIds(@Param("ids") List<Long> ids);
 
-    List<Bulletin> selectAllPortalBulletinByCondition(@Param("currentStamp") Long currentStamp, @Param("type") Integer type, @Param("status") Integer status);
+    List<Bulletin> selectAllByCondition(@Param("currentStamp") Long currentStamp, @Param("type") Integer type, @Param("status") Integer status);
 
     List<Bulletin> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("bulletinCondition") BulletinCondition bulletinCondition);
 

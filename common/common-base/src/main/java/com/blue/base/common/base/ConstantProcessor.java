@@ -10,6 +10,7 @@ import com.blue.base.constant.portal.BulletinType;
 import com.blue.base.constant.auth.DeviceType;
 import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.auth.ResourceType;
+import com.blue.base.constant.portal.StyleType;
 import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
@@ -110,6 +111,12 @@ public final class ConstantProcessor {
      */
     private static final Map<Integer, BulletinType> BULLETIN_TYPE_MAPPING =
             of(BulletinType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+
+    /**
+     * valid style type identity and type mapping
+     */
+    private static final Map<Integer, StyleType> STYLE_TYPE_MAPPING =
+            of(StyleType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
 
     /**
      * valid statistics range identity and range mapping
@@ -293,6 +300,19 @@ public final class ConstantProcessor {
             return;
 
         if (!BULLETIN_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert style type
+     *
+     * @param identity
+     */
+    public static void assertStyleType(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!STYLE_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -589,6 +609,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         BulletinType type = BULLETIN_TYPE_MAPPING.get(identity);
+        if (isNull(type))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return type;
+    }
+
+    /**
+     * get style type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static StyleType getStyleTypeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        StyleType type = STYLE_TYPE_MAPPING.get(identity);
         if (isNull(type))
             throw new BlueException(INVALID_IDENTITY);
 

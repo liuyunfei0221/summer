@@ -213,7 +213,7 @@
         </foreach>
     </select>
 
-    <select id="selectAllPortalBulletinByCondition" resultMap="BaseResultMap">
+    <select id="selectAllByCondition" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM

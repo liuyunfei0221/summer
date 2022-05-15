@@ -39,9 +39,14 @@ public enum CacheKeyPrefix {
     SIGN_IN_PRE("SI_N_P:"),
 
     /**
-     * portal key prefix
+     * bulletins key prefix
      */
-    PORTALS_PRE("PTS_P:"),
+    BULLETINS_PRE("BTS_P:"),
+
+    /**
+     * styles key prefix
+     */
+    STYLES_PRE("STS_P:"),
 
     /**
      * cache manager key prefix

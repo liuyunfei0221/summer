@@ -41,7 +41,7 @@ public final class BulletinManagerHandler {
     public Mono<ServerResponse> listBulletin(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_BULLETIN_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(bulletinService::selectBulletinInfoPageMonoByPageAndCondition)
+                .flatMap(bulletinService::selectBulletinManagerInfoPageMonoByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));

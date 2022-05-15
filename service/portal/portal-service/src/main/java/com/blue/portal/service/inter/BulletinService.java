@@ -2,6 +2,7 @@ package com.blue.portal.service.inter;
 
 import com.blue.base.model.base.PageModelRequest;
 import com.blue.base.model.base.PageModelResponse;
+import com.blue.portal.api.model.BulletinInfo;
 import com.blue.portal.api.model.BulletinManagerInfo;
 import com.blue.portal.model.BulletinCondition;
 import com.blue.portal.repository.entity.Bulletin;
@@ -24,7 +25,14 @@ public interface BulletinService {
      * @param bulletin
      * @return
      */
-    int insert(Bulletin bulletin);
+    int insertBulletin(Bulletin bulletin);
+
+    /**
+     * expire bulletin infos
+     *
+     * @return
+     */
+    void invalidBulletinInfosCache();
 
     /**
      * get bulletin by id
@@ -35,7 +43,7 @@ public interface BulletinService {
     Optional<Bulletin> getBulletin(Long id);
 
     /**
-     * get attachment mono by id
+     * get bulletin mono by id
      *
      * @param id
      * @return
@@ -55,7 +63,15 @@ public interface BulletinService {
      * @param bulletinType
      * @return
      */
-    List<Bulletin> selectAllPortalBulletinByType(Integer bulletinType);
+    List<Bulletin> selectActiveBulletinByType(Integer bulletinType);
+
+    /**
+     * list bulletin infos
+     *
+     * @param bulletinType
+     * @return
+     */
+    Mono<List<BulletinInfo>> selectBulletinInfoMonoByType(Integer bulletinType);
 
     /**
      * select bulletin by page and condition
@@ -81,6 +97,6 @@ public interface BulletinService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<BulletinManagerInfo>> selectBulletinInfoPageMonoByPageAndCondition(PageModelRequest<BulletinCondition> pageModelRequest);
+    Mono<PageModelResponse<BulletinManagerInfo>> selectBulletinManagerInfoPageMonoByPageAndCondition(PageModelRequest<BulletinCondition> pageModelRequest);
 
 }

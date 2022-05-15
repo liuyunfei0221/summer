@@ -504,7 +504,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<RoleManagerInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest) {
+    public Mono<PageModelResponse<RoleManagerInfo>> selectRoleManagerInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
 

@@ -126,6 +126,6 @@ public interface RoleService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<RoleManagerInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest);
+    Mono<PageModelResponse<RoleManagerInfo>> selectRoleManagerInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest);
 
 }

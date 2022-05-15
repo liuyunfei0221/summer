@@ -9,9 +9,14 @@ package com.blue.base.constant.base;
 public enum SyncKeyPrefix {
 
     /**
-     * portal cache sync key prefix
+     * bulletins cache sync key prefix
      */
-    PORTALS_REFRESH_PRE("SYNC_PORTALS_REFRESHing_PRE:"),
+    BULLETINS_CACHE_PRE("BULLETINS_CACHE_PRE:"),
+
+    /**
+     * styles cache sync key prefix
+     */
+    STYLES_CACHE_PRE("STYLES_CACHE_PRE:"),
 
     /**
      * member role relation update sync key prefix

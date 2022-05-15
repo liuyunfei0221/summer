@@ -1941,6 +1941,23 @@ CREATE TABLE `bulletin`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of bulletin';
 
 
+CREATE TABLE `style`
+(
+    `id`          bigint        NOT NULL COMMENT 'id',
+    `name`        varchar(128)  NOT NULL COMMENT 'style name',
+    `attributes`  varchar(8192) NOT NULL COMMENT 'style attrtbutes',
+    `type`        tinyint       NOT NULL COMMENT 'style type: 1-a 2-b 3-c',
+    `status`      tinyint       NOT NULL COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint        NOT NULL COMMENT 'data create time',
+    `update_time` bigint        NOT NULL COMMENT 'data update time',
+    `creator`     bigint        NOT NULL COMMENT 'creator id',
+    `updater`     bigint        NOT NULL COMMENT 'updater id',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_name`(`name`) USING BTREE,
+    KEY           `idx_type_create`(`type`,`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of style';
+
+
 -- seata undo log
 
 CREATE TABLE `undo_log`

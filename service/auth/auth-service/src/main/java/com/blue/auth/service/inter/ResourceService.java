@@ -110,6 +110,6 @@ public interface ResourceService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<ResourceManagerInfo>> selectResourceInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest);
+    Mono<PageModelResponse<ResourceManagerInfo>> selectResourceManagerInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest);
 
 }
