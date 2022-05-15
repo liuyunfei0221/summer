@@ -160,12 +160,12 @@ public final class AccessInfoCache {
 
         return reactiveStringRedisTemplate.opsForValue()
                 .set(keyId, accessInfo, globalExpireDuration)
-                .subscribeOn(scheduler)
                 .onErrorResume(throwable -> {
                     LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
                     return just(false);
                 })
-                .doOnSuccess(ig -> cache.invalidate(keyId));
+                .doOnSuccess(ig -> cache.invalidate(keyId))
+                .subscribeOn(scheduler);
     };
 
     /**
@@ -199,15 +199,13 @@ public final class AccessInfoCache {
      */
     public Mono<Boolean> invalidAccessInfo(String keyId) {
         LOGGER.info("invalidAuthInfo(), keyId = {}", keyId);
-        return
-                isNotBlank(keyId) ?
-                        reactiveStringRedisTemplate.delete(keyId)
-                                .flatMap(l -> {
-                                    cache.invalidate(keyId);
-                                    return just(l > 0L);
-                                }).subscribeOn(scheduler)
-                        :
-                        just(false).subscribeOn(scheduler);
+        return isNotBlank(keyId) ?
+                reactiveStringRedisTemplate.delete(keyId)
+                        .flatMap(l -> just(l > 0L))
+                        .doOnSuccess(ig -> cache.invalidate(keyId))
+                        .subscribeOn(scheduler)
+                :
+                just(false).subscribeOn(scheduler);
     }
 
     /**
