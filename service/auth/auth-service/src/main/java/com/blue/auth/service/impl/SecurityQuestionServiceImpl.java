@@ -42,7 +42,6 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
 
     private SecurityQuestionMapper securityQuestionMapper;
 
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public SecurityQuestionServiceImpl(BlueIdentityProcessor blueIdentityProcessor, SecurityQuestionMapper securityQuestionMapper,
                                        QuestionDeploy questionDeploy) {

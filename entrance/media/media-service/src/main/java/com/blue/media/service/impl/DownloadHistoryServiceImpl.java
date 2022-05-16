@@ -120,7 +120,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
      * @return
      */
     @Override
-    public Mono<DownloadHistory> insert(DownloadHistory downloadHistory) {
+    public Mono<DownloadHistory> insertDownloadHistory(DownloadHistory downloadHistory) {
         LOGGER.info("Mono<DownloadHistory> insert(DownloadHistory downloadHistory), downloadHistory = {}", downloadHistory);
         return downloadHistoryRepository.insert(downloadHistory);
     }

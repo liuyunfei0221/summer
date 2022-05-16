@@ -7,6 +7,7 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
+import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.portal.api.model.BulletinInfo;
 import com.blue.portal.api.model.BulletinManagerInfo;
@@ -14,6 +15,8 @@ import com.blue.portal.config.blue.BlueRedisConfig;
 import com.blue.portal.config.deploy.CaffeineDeploy;
 import com.blue.portal.constant.BulletinSortAttribute;
 import com.blue.portal.model.BulletinCondition;
+import com.blue.portal.model.BulletinInsertParam;
+import com.blue.portal.model.BulletinUpdateParam;
 import com.blue.portal.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.portal.repository.entity.Bulletin;
 import com.blue.portal.repository.mapper.BulletinMapper;
@@ -22,6 +25,7 @@ import com.blue.redisson.common.SynchronizedProcessor;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -32,17 +36,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.CommonFunctions.GSON;
-import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
-import static com.blue.base.common.base.ConstantProcessor.assertBulletinType;
+import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.constant.base.CacheKeyPrefix.BULLETINS_PRE;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
@@ -50,13 +50,14 @@ import static com.blue.base.constant.base.SyncKeyPrefix.BULLETINS_CACHE_PRE;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
-import static com.blue.portal.converter.PortalModelConverters.BULLETINS_2_BULLETIN_INFOS_CONVERTER;
-import static com.blue.portal.converter.PortalModelConverters.bulletinToBulletinManagerInfo;
+import static com.blue.portal.converter.PortalModelConverters.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
 
@@ -73,6 +74,8 @@ public class BulletinServiceImpl implements BulletinService {
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
+    private final BlueIdentityProcessor blueIdentityProcessor;
+
     private BulletinMapper bulletinMapper;
 
     private StringRedisTemplate stringRedisTemplate;
@@ -80,9 +83,11 @@ public class BulletinServiceImpl implements BulletinService {
     private SynchronizedProcessor synchronizedProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public BulletinServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BulletinMapper bulletinMapper, StringRedisTemplate stringRedisTemplate,
+    public BulletinServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
+                               BulletinMapper bulletinMapper, StringRedisTemplate stringRedisTemplate,
                                SynchronizedProcessor synchronizedProcessor, ExecutorService executorService, BlueRedisConfig blueRedisConfig, CaffeineDeploy caffeineDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
+        this.blueIdentityProcessor = blueIdentityProcessor;
         this.bulletinMapper = bulletinMapper;
         this.stringRedisTemplate = stringRedisTemplate;
         this.synchronizedProcessor = synchronizedProcessor;
@@ -142,6 +147,7 @@ public class BulletinServiceImpl implements BulletinService {
         return LOCAL_CACHE.get(type, BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER);
     };
 
+
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(BulletinSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
@@ -171,19 +177,186 @@ public class BulletinServiceImpl implements BulletinService {
     };
 
     /**
+     * is a bulletin exist?
+     */
+    private final Consumer<BulletinInsertParam> INSERT_BULLETIN_VALIDATOR = bip -> {
+        if (isNull(bip))
+            throw new BlueException(EMPTY_PARAM);
+
+        bip.asserts();
+
+        if (isNotNull(bulletinMapper.selectByTitle(bip.getTitle())))
+            throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
+    };
+
+    /**
+     * is a bulletin exist?
+     */
+    private final Function<BulletinUpdateParam, Bulletin> UPDATE_BULLETIN_VALIDATOR_AND_ORIGIN_RETURNER = bup -> {
+        if (isNull(bup))
+            throw new BlueException(EMPTY_PARAM);
+
+        Long id = bup.getId();
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        ofNullable(bup.getTitle())
+                .filter(BlueChecker::isNotBlank)
+                .map(bulletinMapper::selectByTitle)
+                .map(Bulletin::getId)
+                .ifPresent(eid -> {
+                    if (!id.equals(eid))
+                        throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
+                });
+
+        Bulletin bulletin = bulletinMapper.selectByPrimaryKey(id);
+        if (isNull(bulletin))
+            throw new BlueException(DATA_NOT_EXIST);
+
+        return bulletin;
+    };
+
+    /**
+     * for bulletin
+     */
+    public static final BiFunction<BulletinUpdateParam, Bulletin, Boolean> UPDATE_BULLETIN_VALIDATOR = (p, t) -> {
+        if (isNull(p) || isNull(t))
+            throw new BlueException(BAD_REQUEST);
+
+        if (!p.getId().equals(t.getId()))
+            throw new BlueException(BAD_REQUEST);
+
+        boolean alteration = false;
+
+        String title = p.getTitle();
+        if (isNotBlank(title) && !title.equals(t.getTitle())) {
+            t.setTitle(title);
+            alteration = true;
+        }
+
+        String content = p.getContent();
+        if (isNotBlank(content) && !content.equals(t.getContent())) {
+            t.setContent(content);
+            alteration = true;
+        }
+
+        String link = p.getLink();
+        if (isNotBlank(link) && !link.equals(t.getLink())) {
+            t.setLink(link);
+            alteration = true;
+        }
+
+        Integer type = p.getType();
+        assertBulletinType(type, true);
+        if (type != null && !type.equals(t.getType())) {
+            t.setType(type);
+            alteration = true;
+        }
+
+        Integer priority = p.getPriority();
+        if (priority != null && !priority.equals(t.getPriority())) {
+            t.setPriority(priority);
+            alteration = true;
+        }
+
+        Long activeTime = p.getActiveTime();
+        if (activeTime != null && !activeTime.equals(t.getActiveTime())) {
+            t.setActiveTime(activeTime);
+            alteration = true;
+        }
+
+        Long expireTime = p.getExpireTime();
+        if (expireTime != null && !expireTime.equals(t.getExpireTime())) {
+            t.setExpireTime(expireTime);
+            alteration = true;
+        }
+
+        return alteration;
+    };
+
+    /**
      * insert bulletin
      *
-     * @param bulletin
+     * @param bulletinInsertParam
+     * @param operatorId
      * @return
      */
     @Override
-    public int insertBulletin(Bulletin bulletin) {
-        LOGGER.info("int insertBulletin(Bulletin bulletin), bulletin = {}", bulletin);
-        return ofNullable(bulletin)
-                .map(bulletinMapper::insert)
-                .orElse(0);
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public BulletinInfo insertBulletin(BulletinInsertParam bulletinInsertParam, Long operatorId) {
+        LOGGER.info("BulletinInfo insertBulletin(BulletinInsertParam bulletinInsertParam, Long operatorId), bulletinInsertParam = {}, operatorId = {}",
+                bulletinInsertParam, operatorId);
+        if (isNull(bulletinInsertParam))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(UNAUTHORIZED);
+
+        INSERT_BULLETIN_VALIDATOR.accept(bulletinInsertParam);
+        Bulletin bulletin = BULLETIN_INSERT_PARAM_2_BULLETIN_CONVERTER.apply(bulletinInsertParam);
+
+        bulletin.setId(blueIdentityProcessor.generate(Bulletin.class));
+        bulletin.setCreator(operatorId);
+        bulletin.setUpdater(operatorId);
+
+        bulletinMapper.insert(bulletin);
+        CACHE_DELETER.accept(bulletin.getType());
+
+        return BULLETIN_2_BULLETIN_INFO_CONVERTER.apply(bulletin);
     }
 
+    /**
+     * update a exist bulletin
+     *
+     * @param bulletinUpdateParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public BulletinInfo updateBulletin(BulletinUpdateParam bulletinUpdateParam, Long operatorId) {
+        LOGGER.info("BulletinInfo updateBulletin(BulletinUpdateParam bulletinUpdateParam, Long operatorId), bulletinUpdateParam = {}, operatorId = {}",
+                bulletinUpdateParam, operatorId);
+        if (isNull(bulletinUpdateParam))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(UNAUTHORIZED);
+
+        List<Integer> changedTypes = new LinkedList<>();
+
+        Bulletin bulletin = UPDATE_BULLETIN_VALIDATOR_AND_ORIGIN_RETURNER.apply(bulletinUpdateParam);
+        changedTypes.add(bulletin.getType());
+
+        Boolean changed = UPDATE_BULLETIN_VALIDATOR.apply(bulletinUpdateParam, bulletin);
+        if (changed != null && !changed)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        changedTypes.add(bulletin.getType());
+
+        bulletinMapper.updateByPrimaryKeySelective(bulletin);
+        changedTypes.forEach(CACHE_DELETER);
+
+        return BULLETIN_2_BULLETIN_INFO_CONVERTER.apply(bulletin);
+    }
+
+    /**
+     * delete bulletin
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public BulletinInfo deleteBulletin(Long id) {
+        LOGGER.info("BulletinInfo deleteBulletinById(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        Bulletin bulletin = bulletinMapper.selectByPrimaryKey(id);
+        if (isNull(bulletin))
+            throw new BlueException(DATA_NOT_EXIST);
+
+        bulletinMapper.deleteByPrimaryKey(id);
+        CACHE_DELETER.accept(bulletin.getType());
+
+        return BULLETIN_2_BULLETIN_INFO_CONVERTER.apply(bulletin);
+    }
 
     /**
      * expire bulletin infos
@@ -258,7 +431,7 @@ public class BulletinServiceImpl implements BulletinService {
      * @return
      */
     @Override
-    public Mono<List<BulletinInfo>> selectBulletinInfoMonoByType(Integer bulletinType) {
+    public Mono<List<BulletinInfo>> selectBulletinInfoMonoByTypeWithCache(Integer bulletinType) {
         LOGGER.info("Mono<List<BulletinInfo>> selectBulletin(Integer bulletinType), bulletinType = {}", bulletinType);
         assertBulletinType(bulletinType, false);
         return just(BULLETIN_INFOS_WITH_ALL_CACHE_GETTER.apply(bulletinType));

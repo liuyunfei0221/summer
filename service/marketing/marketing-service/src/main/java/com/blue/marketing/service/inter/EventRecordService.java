@@ -24,7 +24,7 @@ public interface EventRecordService {
      * @param eventRecord
      * @return
      */
-    int insertEvent(EventRecord eventRecord);
+    int insertEventRecord(EventRecord eventRecord);
 
     /**
      * insert event record batch
@@ -32,7 +32,7 @@ public interface EventRecordService {
      * @param eventRecords
      * @return
      */
-    int insertBatch(List<EventRecord> eventRecords);
+    int insertEventRecords(List<EventRecord> eventRecords);
 
     /**
      * get event record by id

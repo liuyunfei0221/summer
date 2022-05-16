@@ -3,7 +3,6 @@ package com.blue.auth.service.impl;
 import com.blue.auth.api.model.ResourceInfo;
 import com.blue.auth.api.model.ResourceManagerInfo;
 import com.blue.auth.constant.ResourceSortAttribute;
-import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.model.ResourceCondition;
 import com.blue.auth.model.ResourceInsertParam;
 import com.blue.auth.model.ResourceUpdateParam;
@@ -30,13 +29,12 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
 
-import static com.blue.auth.converter.AuthModelConverters.resourceToResourceManagerInfo;
+import static com.blue.auth.converter.AuthModelConverters.*;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.REST_URI_ASSERTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
-import static com.blue.base.common.base.ConstantProcessor.assertHttpMethod;
 import static com.blue.base.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.CacheKey.RESOURCES;
@@ -85,6 +83,26 @@ public class ResourceServiceImpl implements ResourceService {
         this.synchronizedProcessor = synchronizedProcessor;
     }
 
+    private final Consumer<String> CACHE_DELETER = key ->
+            stringRedisTemplate.delete(key);
+
+    private final Supplier<List<Resource>> RESOURCES_DB_SUP = () ->
+            resourceMapper.select();
+
+    private final Supplier<List<Resource>> RESOURCES_REDIS_SUP = () ->
+            ofNullable(stringRedisTemplate.opsForList().range(RESOURCES.key, 0, -1))
+                    .orElseGet(Collections::emptyList).stream().map(s -> GSON.fromJson(s, Resource.class)).collect(toList());
+
+    private final Consumer<List<Resource>> RESOURCES_REDIS_SETTER = resources -> {
+        CACHE_DELETER.accept(RESOURCES.key);
+        stringRedisTemplate.opsForList().rightPushAll(RESOURCES.key,
+                resources.stream().map(GSON::toJson).collect(toList()));
+    };
+
+    private final Supplier<List<Resource>> RESOURCES_WITH_CACHE_SUP = () ->
+            synchronizedProcessor.handleSupByOrderedWithSetter(RESOURCES_REDIS_SUP, BlueChecker::isNotEmpty, RESOURCES_DB_SUP, RESOURCES_REDIS_SETTER);
+
+
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(ResourceSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
@@ -125,51 +143,13 @@ public class ResourceServiceImpl implements ResourceService {
         if (isNull(rip))
             throw new BlueException(EMPTY_PARAM);
 
-        String requestMethod = rip.getRequestMethod();
-        assertHttpMethod(requestMethod, false);
+        rip.asserts();
 
-        String module = rip.getModule();
-        if (isBlank(module))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "module can't be null");
-
-        String uri = rip.getUri();
-        REST_URI_ASSERTER.accept(uri);
-
-        Boolean authenticate = rip.getAuthenticate();
-        if (isNull(authenticate))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "authenticate can't be null");
-
-        Boolean requestUnDecryption = rip.getRequestUnDecryption();
-        if (isNull(requestUnDecryption))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "requestUnDecryption can't be null");
-
-        Boolean responseUnEncryption = rip.getResponseUnEncryption();
-        if (isNull(responseUnEncryption))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "responseUnEncryption can't be null");
-
-        Boolean existenceRequestBody = rip.getExistenceRequestBody();
-        if (isNull(existenceRequestBody))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceRequestBody can't be null");
-
-        Boolean existenceResponseBody = rip.getExistenceResponseBody();
-        if (isNull(existenceResponseBody))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "existenceResponseBody can't be null");
-
-        Integer type = rip.getType();
-        assertResourceType(type, false);
-
-        String name = rip.getName();
-        if (isBlank(name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
-
-        String description = rip.getDescription();
-        if (isBlank(description))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
-
-        if (isNotNull(resourceMapper.selectByName(name)))
+        if (isNotNull(resourceMapper.selectByName(rip.getName())))
             throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
 
-        if (isNotNull(resourceMapper.selectByUnique(requestMethod.toUpperCase(), module.toLowerCase(), uri.toLowerCase())))
+        if (isNotNull(resourceMapper.selectByUnique(rip.getRequestMethod().toUpperCase(),
+                rip.getModule().toLowerCase(), rip.getName().toLowerCase())))
             throw new BlueException(RESOURCE_FEATURE_ALREADY_EXIST);
     };
 
@@ -177,6 +157,9 @@ public class ResourceServiceImpl implements ResourceService {
      * is a resource exist?
      */
     private final Function<ResourceUpdateParam, Resource> UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
+        if (isNull(rup))
+            throw new BlueException(EMPTY_PARAM);
+
         Long id = rup.getId();
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -214,7 +197,7 @@ public class ResourceServiceImpl implements ResourceService {
     /**
      * for resource
      */
-    public static final BiFunction<ResourceUpdateParam, Resource, Boolean> RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER = (p, t) -> {
+    public static final BiFunction<ResourceUpdateParam, Resource, Boolean> UPDATE_RESOURCE_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -294,25 +277,6 @@ public class ResourceServiceImpl implements ResourceService {
         return alteration;
     };
 
-    private final Consumer<String> CACHE_DELETER = key ->
-            stringRedisTemplate.delete(key);
-
-    private final Supplier<List<Resource>> RESOURCES_DB_SUP = () ->
-            resourceMapper.select();
-
-    private final Supplier<List<Resource>> RESOURCES_REDIS_SUP = () ->
-            ofNullable(stringRedisTemplate.opsForList().range(RESOURCES.key, 0, -1))
-                    .orElseGet(Collections::emptyList).stream().map(s -> GSON.fromJson(s, Resource.class)).collect(toList());
-
-    private final Consumer<List<Resource>> RESOURCES_REDIS_SETTER = resources -> {
-        CACHE_DELETER.accept(RESOURCES.key);
-        stringRedisTemplate.opsForList().rightPushAll(RESOURCES.key,
-                resources.stream().map(GSON::toJson).collect(toList()));
-    };
-
-    private final Supplier<List<Resource>> RESOURCES_WITH_CACHE_SUP = () ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(RESOURCES_REDIS_SUP, BlueChecker::isNotEmpty, RESOURCES_DB_SUP, RESOURCES_REDIS_SETTER);
-
     /**
      * insert resource
      *
@@ -322,23 +286,23 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
-        LOGGER.info("ResourceInfo insertResource(ResourceInsertParam resourceInsertParam), resourceInsertParam = {}", resourceInsertParam);
+        LOGGER.info("ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId), resourceInsertParam = {}, operatorId = {}",
+                resourceInsertParam, operatorId);
         if (isNull(resourceInsertParam))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
         INSERT_RESOURCE_VALIDATOR.accept(resourceInsertParam);
-        Resource resource = AuthModelConverters.RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER.apply(resourceInsertParam);
+        Resource resource = RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER.apply(resourceInsertParam);
 
-        long id = blueIdentityProcessor.generate(Resource.class);
-        resource.setId(id);
+        resource.setId(blueIdentityProcessor.generate(Resource.class));
         resource.setCreator(operatorId);
         resource.setUpdater(operatorId);
 
         resourceMapper.insert(resource);
 
-        return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
+        return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
     }
 
     /**
@@ -358,12 +322,12 @@ public class ResourceServiceImpl implements ResourceService {
             throw new BlueException(UNAUTHORIZED);
 
         Resource resource = UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER.apply(resourceUpdateParam);
-        if (!RESOURCE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(resourceUpdateParam, resource))
+        if (!UPDATE_RESOURCE_VALIDATOR.apply(resourceUpdateParam, resource))
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
         resourceMapper.updateByPrimaryKeySelective(resource);
 
-        return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
+        return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
     }
 
     /**
@@ -374,7 +338,7 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public ResourceInfo deleteResourceById(Long id) {
+    public ResourceInfo deleteResource(Long id) {
         LOGGER.info("ResourceInfo deleteResourceById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -387,7 +351,7 @@ public class ResourceServiceImpl implements ResourceService {
         LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
         resourceMapper.deleteByPrimaryKey(id);
 
-        return AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
+        return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
     }
 
     /**
@@ -397,7 +361,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public Optional<Resource> getResourceById(Long id) {
+    public Optional<Resource> getResource(Long id) {
         LOGGER.info("Optional<Resource> getResourceById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -412,12 +376,12 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public Mono<Optional<Resource>> getResourceMonoById(Long id) {
+    public Mono<Optional<Resource>> getResourceMono(Long id) {
         LOGGER.info("Mono<Optional<Resource>> getResourceMonoById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(getResourceById(id));
+        return just(getResource(id));
     }
 
     /**

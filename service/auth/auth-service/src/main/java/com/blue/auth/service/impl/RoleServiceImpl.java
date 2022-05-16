@@ -170,15 +170,9 @@ public class RoleServiceImpl implements RoleService {
         if (isNull(rip))
             throw new BlueException(EMPTY_PARAM);
 
-        String name = rip.getName();
-        if (isBlank(name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
+        rip.asserts();
 
-        String description = rip.getDescription();
-        if (isBlank(description))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
-
-        if (isNotNull(roleMapper.selectByName(name)))
+        if (isNotNull(roleMapper.selectByName(rip.getName())))
             throw new BlueException(ROLE_NAME_ALREADY_EXIST);
 
         if (isNotNull(roleMapper.selectByLevel(rip.getLevel())))
@@ -189,6 +183,9 @@ public class RoleServiceImpl implements RoleService {
      * is a role exist?
      */
     private final Function<RoleUpdateParam, Role> UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
+        if (isNull(rup))
+            throw new BlueException(EMPTY_PARAM);
+
         Long id = rup.getId();
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -220,7 +217,7 @@ public class RoleServiceImpl implements RoleService {
     /**
      * for role
      */
-    public static final BiFunction<RoleUpdateParam, Role, Boolean> ROLE_UPDATE_PARAM_AND_ROLE_COMPARER = (p, t) -> {
+    public static final BiFunction<RoleUpdateParam, Role, Boolean> UPDATE_ROLE_VALIDATOR = (p, t) -> {
         if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);
 
@@ -294,7 +291,7 @@ public class RoleServiceImpl implements RoleService {
             throw new BlueException(UNAUTHORIZED);
 
         Role role = UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER.apply(roleUpdateParam);
-        if (!ROLE_UPDATE_PARAM_AND_ROLE_COMPARER.apply(roleUpdateParam, role))
+        if (!UPDATE_ROLE_VALIDATOR.apply(roleUpdateParam, role))
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
         CACHE_DELETER.accept(ROLES.key);
@@ -312,7 +309,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public RoleInfo deleteRoleById(Long id) {
+    public RoleInfo deleteRole(Long id) {
         LOGGER.info("RoleInfo deleteRoleById(Long id, Long operatorId), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -387,7 +384,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Optional<Role> getRoleById(Long id) {
+    public Optional<Role> getRole(Long id) {
         LOGGER.info("Optional<Role> getRoleById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -422,12 +419,12 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Mono<Optional<Role>> getRoleMonoById(Long id) {
+    public Mono<Optional<Role>> getRoleMono(Long id) {
         LOGGER.info("Mono<Optional<Role>> getRoleMonoById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(getRoleById(id));
+        return just(getRole(id));
     }
 
     /**

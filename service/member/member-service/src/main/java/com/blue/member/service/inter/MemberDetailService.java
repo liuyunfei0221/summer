@@ -21,7 +21,7 @@ public interface MemberDetailService {
      * @param id
      * @return
      */
-    Optional<MemberDetail> selectMemberDetailByPrimaryKey(Long id);
+    Optional<MemberDetail> getMemberDetail(Long id);
 
     /**
      * query member detail mono by id
@@ -29,7 +29,7 @@ public interface MemberDetailService {
      * @param id
      * @return
      */
-    Mono<Optional<MemberDetail>> selectMemberDetailMonoByPrimaryKey(Long id);
+    Mono<Optional<MemberDetail>> getMemberDetailMono(Long id);
 
     /**
      * query member detail by member id
@@ -37,7 +37,7 @@ public interface MemberDetailService {
      * @param memberId
      * @return
      */
-    Optional<MemberDetail> selectMemberDetailByMemberId(Long memberId);
+    Optional<MemberDetail> getMemberDetailByMemberId(Long memberId);
 
     /**
      * query member detail mono by member id
@@ -45,7 +45,7 @@ public interface MemberDetailService {
      * @param memberId
      * @return
      */
-    Mono<Optional<MemberDetail>> selectMemberDetailMonoByMemberId(Long memberId);
+    Mono<Optional<MemberDetail>> getMemberDetailMonoByMemberId(Long memberId);
 
     /**
      * query member detail by id with assert
@@ -53,7 +53,7 @@ public interface MemberDetailService {
      * @param id
      * @return
      */
-    Mono<MemberDetailInfo> selectMemberDetailInfoMonoByPrimaryKeyWithAssert(Long id);
+    Mono<MemberDetailInfo> getMemberDetailInfoMonoWithAssert(Long id);
 
     /**
      * query member detail by member id with assert
@@ -61,7 +61,7 @@ public interface MemberDetailService {
      * @param memberId
      * @return
      */
-    Mono<MemberDetailInfo> selectMemberDetailInfoMonoByMemberIdWithAssert(Long memberId);
+    Mono<MemberDetailInfo> getMemberDetailInfoMonoByMemberIdWithAssert(Long memberId);
 
     /**
      * insert member detail

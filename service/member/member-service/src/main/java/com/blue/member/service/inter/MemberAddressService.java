@@ -24,7 +24,7 @@ public interface MemberAddressService {
      * @param id
      * @return
      */
-    Optional<MemberAddress> selectMemberAddressByPrimaryKey(Long id);
+    Optional<MemberAddress> getMemberAddress(Long id);
 
     /**
      * query address mono by id
@@ -32,7 +32,7 @@ public interface MemberAddressService {
      * @param id
      * @return
      */
-    Mono<Optional<MemberAddress>> selectMemberAddressMonoByPrimaryKey(Long id);
+    Mono<Optional<MemberAddress>> getMemberAddressMono(Long id);
 
     /**
      * query address by member id

@@ -68,7 +68,7 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
      * @return
      */
     @Override
-    public Optional<MemberRealName> selectMemberRealNameByPrimaryKey(Long id) {
+    public Optional<MemberRealName> getMemberRealName(Long id) {
         LOGGER.info("Optional<MemberRealName> selectMemberRealNameByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -83,7 +83,7 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberRealName>> selectMemberRealNameMonoByPrimaryKey(Long id) {
+    public Mono<Optional<MemberRealName>> getMemberRealNameMono(Long id) {
         LOGGER.info("Mono<Optional<MemberRealName>> selectMemberRealNameMonoByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -98,7 +98,7 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
      * @return
      */
     @Override
-    public Optional<MemberRealName> selectMemberRealNameByMemberId(Long memberId) {
+    public Optional<MemberRealName> getMemberRealNameByMemberId(Long memberId) {
         LOGGER.info("Optional<MemberRealName> selectMemberRealNameByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
@@ -113,7 +113,7 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberRealName>> selectMemberRealNameMonoByMemberId(Long memberId) {
+    public Mono<Optional<MemberRealName>> getMemberRealNameMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Optional<MemberRealName>> selectMemberRealNameMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
@@ -128,14 +128,14 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
      * @return
      */
     @Override
-    public Mono<MemberRealNameInfo> selectMemberRealNameInfoMonoByPrimaryKeyWithAssert(Long id) {
+    public Mono<MemberRealNameInfo> getMemberRealNameInfoMonoWithAssert(Long id) {
         LOGGER.info("Mono<MemberRealNameInfo> selectMemberRealNameInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         //noinspection DuplicatedCode
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
         return just(id)
-                .flatMap(this::selectMemberRealNameMonoByPrimaryKey)
+                .flatMap(this::getMemberRealNameMono)
                 .flatMap(mrnOpt ->
                         mrnOpt.map(Mono::just)
                                 .orElseGet(() ->
@@ -157,14 +157,14 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
      * @return
      */
     @Override
-    public Mono<MemberRealNameInfo> selectMemberRealNameInfoMonoByMemberIdWithAssert(Long memberId) {
+    public Mono<MemberRealNameInfo> getMemberRealNameInfoMonoByMemberIdWithAssert(Long memberId) {
         LOGGER.info("Mono<MemberRealNameInfo> selectMemberRealNameInfoMonoByMemberIdWithAssert(Long memberId), memberId = {}", memberId);
         //noinspection DuplicatedCode
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
         return just(memberId)
-                .flatMap(this::selectMemberRealNameMonoByMemberId)
+                .flatMap(this::getMemberRealNameMonoByMemberId)
                 .flatMap(mrnOpt ->
                         mrnOpt.map(Mono::just)
                                 .orElseGet(() ->

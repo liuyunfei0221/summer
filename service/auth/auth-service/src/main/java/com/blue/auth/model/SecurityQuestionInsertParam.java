@@ -15,7 +15,7 @@ import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public class SecurityQuestionInsertParam implements Serializable, Asserter {
+public final class SecurityQuestionInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 7060883955532299247L;
 

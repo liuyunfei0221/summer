@@ -81,7 +81,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
             eventRecord.setStatus(HandleStatus.BROKEN.status);
             LOGGER.error("handleEvent(MarketingEvent marketingEvent) failed, marketingEvent = {}, e = {}", marketingEvent, exception);
         } finally {
-            eventRecordService.insertEvent(eventRecord);
+            eventRecordService.insertEventRecord(eventRecord);
             LOGGER.info("eventMapper.insert(event) success, eventRecord = {}", eventRecord);
         }
 

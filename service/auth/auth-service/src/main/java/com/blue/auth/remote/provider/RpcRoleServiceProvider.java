@@ -81,7 +81,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
         return just(memberId).subscribeOn(scheduler)
                 .flatMap(memberRoleRelationService::getRoleIdMonoByMemberId)
                 .flatMap(roleIdOpt ->
-                        roleIdOpt.map(roleService::getRoleMonoById).orElseGet(() -> error(() -> new BlueException(INVALID_IDENTITY)))
+                        roleIdOpt.map(roleService::getRoleMono).orElseGet(() -> error(() -> new BlueException(INVALID_IDENTITY)))
                 )
                 .flatMap(roleOpt ->
                         roleOpt.map(role -> just(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(role))).orElseGet(() -> error(() -> new BlueException(DATA_NOT_EXIST)))

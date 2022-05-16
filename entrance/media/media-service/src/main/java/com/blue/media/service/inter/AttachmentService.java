@@ -24,7 +24,7 @@ public interface AttachmentService {
      * @param attachment
      * @return
      */
-    int insert(Attachment attachment);
+    int insertAttachment(Attachment attachment);
 
     /**
      * insert attachment batch
@@ -32,7 +32,7 @@ public interface AttachmentService {
      * @param attachments
      * @return
      */
-    int insertBatch(List<Attachment> attachments);
+    int insertAttachments(List<Attachment> attachments);
 
     /**
      * get attachment by id

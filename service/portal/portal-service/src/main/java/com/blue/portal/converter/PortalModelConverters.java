@@ -5,6 +5,7 @@ import com.blue.portal.api.model.BulletinInfo;
 import com.blue.portal.api.model.BulletinManagerInfo;
 import com.blue.portal.api.model.StyleInfo;
 import com.blue.portal.api.model.StyleManagerInfo;
+import com.blue.portal.model.BulletinInsertParam;
 import com.blue.portal.repository.entity.Bulletin;
 import com.blue.portal.repository.entity.Style;
 
@@ -12,7 +13,9 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
@@ -78,6 +81,32 @@ public final class PortalModelConverters {
                 bulletin.getCreator(), isNotBlank(creatorName) ? creatorName : "", bulletin.getUpdater(), isNotBlank(updaterName) ? updaterName : "");
 
     }
+
+    /**
+     * bulletin insert param -> bulletin
+     */
+    public static final Function<BulletinInsertParam, Bulletin> BULLETIN_INSERT_PARAM_2_BULLETIN_CONVERTER = param -> {
+        if (isNull(param))
+            throw new BlueException(EMPTY_PARAM);
+        param.asserts();
+
+        Long stamp = TIME_STAMP_GETTER.get();
+
+        Bulletin bulletin = new Bulletin();
+
+        bulletin.setTitle(param.getTitle());
+        bulletin.setContent(param.getContent());
+        bulletin.setLink(param.getLink());
+        bulletin.setType(param.getType());
+        bulletin.setStatus(VALID.status);
+        bulletin.setPriority(param.getPriority());
+        bulletin.setActiveTime(param.getActiveTime());
+        bulletin.setExpireTime(param.getExpireTime());
+        bulletin.setCreateTime(stamp);
+        bulletin.setUpdateTime(stamp);
+
+        return bulletin;
+    };
 
     /**
      * style -> style manager indo

@@ -27,7 +27,7 @@ public class BulletinApiRoute {
         RequestPredicate pathPredicate = path("/blue-bulletin");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("/{" + TYPE.key + "}", bulletinApiHandler::selectBulletin)
+                .GET("/{" + TYPE.key + "}", bulletinApiHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

@@ -246,4 +246,13 @@
         <include refid="Style_Conditions"/>
     </select>
 
+    <select id="selectByName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        style FORCE INDEX(idx_name)
+        WHERE
+        `name` = #{name,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

@@ -106,14 +106,6 @@ public interface CredentialService {
     Mono<List<CredentialInfo>> selectCredentialInfoMonoByMemberIdAndTypes(Long memberId, List<String> credentialTypes);
 
     /**
-     * insert credential batch
-     *
-     * @param credentials
-     * @return
-     */
-    void insertCredentials(List<Credential> credentials);
-
-    /**
      * insert credential
      *
      * @param credential
@@ -122,12 +114,12 @@ public interface CredentialService {
     void insertCredential(Credential credential);
 
     /**
-     * batch update credential by ids
+     * insert credential batch
      *
-     * @param credential
-     * @param ids
+     * @param credentials
+     * @return
      */
-    void updateCredentialByIds(String credential, List<Long> ids);
+    void insertCredentials(List<Credential> credentials);
 
     /**
      * update a exist role
@@ -138,12 +130,20 @@ public interface CredentialService {
     void updateCredential(Credential credential);
 
     /**
-     * delete role
+     * batch update credential by ids
+     *
+     * @param credential
+     * @param ids
+     */
+    void updateCredentialByIds(String credential, List<Long> ids);
+
+    /**
+     * delete credential
      *
      * @param id
      * @return
      */
-    void deleteCredentialById(Long id);
+    void deleteCredential(Long id);
 
     /**
      * update access

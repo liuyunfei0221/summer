@@ -14,8 +14,9 @@ import com.blue.portal.config.blue.BlueRedisConfig;
 import com.blue.portal.config.deploy.CaffeineDeploy;
 import com.blue.portal.constant.BulletinSortAttribute;
 import com.blue.portal.constant.StyleSortAttribute;
-import com.blue.portal.model.StyleCondition;
+import com.blue.portal.model.*;
 import com.blue.portal.remote.consumer.RpcMemberBasicServiceConsumer;
+import com.blue.portal.repository.entity.Bulletin;
 import com.blue.portal.repository.entity.Style;
 import com.blue.portal.repository.mapper.StyleMapper;
 import com.blue.portal.service.inter.StyleService;
@@ -33,10 +34,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
@@ -168,6 +166,141 @@ public class StyleServiceImpl implements StyleService {
 
         return new ArrayList<>(operatorIds);
     };
+
+
+    /**
+     * is a style exist?
+     */
+    private final Consumer<StyleInsertParam> INSERT_STYLE_VALIDATOR = sip -> {
+        if (isNull(sip))
+            throw new BlueException(EMPTY_PARAM);
+
+        sip.asserts();
+
+        if (isNotNull(styleMapper.selectByName(sip.getName())))
+            throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
+    };
+
+    /**
+     * is a style exist?
+     */
+    private final Function<StyleUpdateParam, Style> UPDATE_STYLE_VALIDATOR_AND_ORIGIN_RETURNER = sup -> {
+        if (isNull(sup))
+            throw new BlueException(EMPTY_PARAM);
+
+        Long id = sup.getId();
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        ofNullable(sup.getName())
+                .filter(BlueChecker::isNotBlank)
+                .map(styleMapper::selectByName)
+                .map(Style::getId)
+                .ifPresent(eid -> {
+                    if (!id.equals(eid))
+                        throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
+                });
+
+        Style style = styleMapper.selectByPrimaryKey(id);
+        if (isNull(style))
+            throw new BlueException(DATA_NOT_EXIST);
+
+        return style;
+    };
+
+    /**
+     * for bulletin
+     */
+    public static final BiFunction<BulletinUpdateParam, Bulletin, Boolean> UPDATE_BULLETIN_VALIDATOR = (p, t) -> {
+        if (isNull(p) || isNull(t))
+            throw new BlueException(BAD_REQUEST);
+
+        if (!p.getId().equals(t.getId()))
+            throw new BlueException(BAD_REQUEST);
+
+        boolean alteration = false;
+
+        String title = p.getTitle();
+        if (isNotBlank(title) && !title.equals(t.getTitle())) {
+            t.setTitle(title);
+            alteration = true;
+        }
+
+        String content = p.getContent();
+        if (isNotBlank(content) && !content.equals(t.getContent())) {
+            t.setContent(content);
+            alteration = true;
+        }
+
+        String link = p.getLink();
+        if (isNotBlank(link) && !link.equals(t.getLink())) {
+            t.setLink(link);
+            alteration = true;
+        }
+
+        Integer type = p.getType();
+        assertBulletinType(type, true);
+        if (type != null && !type.equals(t.getType())) {
+            t.setType(type);
+            alteration = true;
+        }
+
+        Integer priority = p.getPriority();
+        if (priority != null && !priority.equals(t.getPriority())) {
+            t.setPriority(priority);
+            alteration = true;
+        }
+
+        Long activeTime = p.getActiveTime();
+        if (activeTime != null && !activeTime.equals(t.getActiveTime())) {
+            t.setActiveTime(activeTime);
+            alteration = true;
+        }
+
+        Long expireTime = p.getExpireTime();
+        if (expireTime != null && !expireTime.equals(t.getExpireTime())) {
+            t.setExpireTime(expireTime);
+            alteration = true;
+        }
+
+        return alteration;
+    };
+
+
+    /**
+     * insert style
+     *
+     * @param styleInsertParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public StyleInfo insertStyle(StyleInsertParam styleInsertParam, Long operatorId) {
+        return null;
+    }
+
+    /**
+     * update a exist style
+     *
+     * @param styleUpdateParam
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public StyleInfo updateStyle(StyleUpdateParam styleUpdateParam, Long operatorId) {
+        return null;
+    }
+
+    /**
+     * delete style
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public StyleInfo deleteStyle(Long id) {
+        return null;
+    }
 
     /**
      * insert style

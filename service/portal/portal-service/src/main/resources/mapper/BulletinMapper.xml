@@ -317,4 +317,13 @@
         <include refid="Bulletin_Conditions"/>
     </select>
 
+    <select id="selectByTitle" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        bulletin FORCE INDEX(idx_title)
+        WHERE
+        `title` = #{title,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

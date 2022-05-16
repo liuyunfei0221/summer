@@ -5,6 +5,8 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.portal.api.model.BulletinInfo;
 import com.blue.portal.api.model.BulletinManagerInfo;
 import com.blue.portal.model.BulletinCondition;
+import com.blue.portal.model.BulletinInsertParam;
+import com.blue.portal.model.BulletinUpdateParam;
 import com.blue.portal.repository.entity.Bulletin;
 import reactor.core.publisher.Mono;
 
@@ -22,10 +24,28 @@ public interface BulletinService {
     /**
      * insert bulletin
      *
-     * @param bulletin
+     * @param bulletinInsertParam
+     * @param operatorId
      * @return
      */
-    int insertBulletin(Bulletin bulletin);
+    BulletinInfo insertBulletin(BulletinInsertParam bulletinInsertParam, Long operatorId);
+
+    /**
+     * update a exist bulletin
+     *
+     * @param bulletinUpdateParam
+     * @param operatorId
+     * @return
+     */
+    BulletinInfo updateBulletin(BulletinUpdateParam bulletinUpdateParam, Long operatorId);
+
+    /**
+     * delete bulletin
+     *
+     * @param id
+     * @return
+     */
+    BulletinInfo deleteBulletin(Long id);
 
     /**
      * expire bulletin infos
@@ -71,7 +91,7 @@ public interface BulletinService {
      * @param bulletinType
      * @return
      */
-    Mono<List<BulletinInfo>> selectBulletinInfoMonoByType(Integer bulletinType);
+    Mono<List<BulletinInfo>> selectBulletinInfoMonoByTypeWithCache(Integer bulletinType);
 
     /**
      * select bulletin by page and condition

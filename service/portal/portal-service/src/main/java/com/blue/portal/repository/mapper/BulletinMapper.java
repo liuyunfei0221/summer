@@ -36,4 +36,6 @@ public interface BulletinMapper {
 
     Long countByCondition(@Param("bulletinCondition") BulletinCondition bulletinCondition);
 
+    Bulletin selectByTitle(@Param("title") String title);
+
 }

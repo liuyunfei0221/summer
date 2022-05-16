@@ -46,7 +46,7 @@ public class RewardServiceImpl implements RewardService {
      * @return
      */
     @Override
-    public Optional<Reward> getRewardByPrimaryKey(Long id) {
+    public Optional<Reward> getReward(Long id) {
         LOGGER.info("Optional<Reward> getRewardByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);

@@ -1,27 +1,27 @@
-package com.blue.auth.model;
+package com.blue.portal.model;
 
 import com.blue.base.model.exps.BlueException;
 
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 
 /**
- * params for update a exist role
+ * params for update a exist style
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public final class RoleUpdateParam extends RoleInsertParam {
+public final class StyleUpdateParam extends StyleInsertParam {
 
-    private static final long serialVersionUID = 3709726547884800171L;
+    private static final long serialVersionUID = 4092725047795505179L;
 
     private Long id;
 
-    public RoleUpdateParam() {
+    public StyleUpdateParam() {
     }
 
-    public RoleUpdateParam(Long id, String name, String description, Integer level) {
-        super(name, description, level);
+    public StyleUpdateParam(Long id, String name, String attributes, Integer type) {
+        super(name, attributes, type);
         this.id = id;
     }
 
@@ -45,10 +45,12 @@ public final class RoleUpdateParam extends RoleInsertParam {
 
     @Override
     public String toString() {
-        return "RoleUpdateParam{" +
+        return "StyleUpdateParam{" +
                 "id=" + id +
                 ", name='" + super.getName() + '\'' +
-                ", description='" + super.getDescription() + '\'' +
+                ", attributes='" + super.getAttributes() + '\'' +
+                ", type=" + super.getType() +
                 '}';
     }
+
 }

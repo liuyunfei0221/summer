@@ -45,7 +45,7 @@ public interface ResourceService {
      * @param id
      * @return
      */
-    ResourceInfo deleteResourceById(Long id);
+    ResourceInfo deleteResource(Long id);
 
     /**
      * get resource by id
@@ -53,7 +53,7 @@ public interface ResourceService {
      * @param id
      * @return
      */
-    Optional<Resource> getResourceById(Long id);
+    Optional<Resource> getResource(Long id);
 
     /**
      * get resource mono by role id
@@ -61,7 +61,7 @@ public interface ResourceService {
      * @param id
      * @return
      */
-    Mono<Optional<Resource>> getResourceMonoById(Long id);
+    Mono<Optional<Resource>> getResourceMono(Long id);
 
     /**
      * select all resources

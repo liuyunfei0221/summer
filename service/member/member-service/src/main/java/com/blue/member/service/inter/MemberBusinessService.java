@@ -16,28 +16,28 @@ import java.util.Optional;
 public interface MemberBusinessService {
 
     /**
-     * query member business by id
+     * get member business by id
      *
      * @param id
      * @return
      */
-    Optional<MemberBusiness> selectMemberBusinessByPrimaryKey(Long id);
+    Optional<MemberBusiness> getMemberBusiness(Long id);
 
     /**
-     * query member business mono by id
+     * get member business mono by id
      *
      * @param id
      * @return
      */
-    Mono<Optional<MemberBusiness>> selectMemberBusinessMonoByPrimaryKey(Long id);
+    Mono<Optional<MemberBusiness>> getMemberBusinessMono(Long id);
 
     /**
-     * query member business by member id
+     * get member business by member id
      *
      * @param memberId
      * @return
      */
-    Optional<MemberBusiness> selectMemberBusinessByMemberId(Long memberId);
+    Optional<MemberBusiness> getMemberBusinessByMemberId(Long memberId);
 
     /**
      * query member business mono by member id
@@ -45,7 +45,7 @@ public interface MemberBusinessService {
      * @param memberId
      * @return
      */
-    Mono<Optional<MemberBusiness>> selectMemberBusinessMonoByMemberId(Long memberId);
+    Mono<Optional<MemberBusiness>> getMemberBusinessMonoByMemberId(Long memberId);
 
     /**
      * query member business by id with assert
@@ -53,7 +53,7 @@ public interface MemberBusinessService {
      * @param id
      * @return
      */
-    Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByPrimaryKeyWithAssert(Long id);
+    Mono<MemberBusinessInfo> getMemberBusinessInfoMonoWithAssert(Long id);
 
     /**
      * query member business by member id with assert
@@ -61,7 +61,7 @@ public interface MemberBusinessService {
      * @param memberId
      * @return
      */
-    Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByMemberIdWithAssert(Long memberId);
+    Mono<MemberBusinessInfo> getMemberBusinessInfoMonoByMemberIdWithAssert(Long memberId);
 
     /**
      * insert member business

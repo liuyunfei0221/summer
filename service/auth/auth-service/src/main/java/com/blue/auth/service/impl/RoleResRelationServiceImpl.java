@@ -262,7 +262,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId");
 
-        Optional<Role> roleOpt = roleService.getRoleById(roleId);
+        Optional<Role> roleOpt = roleService.getRole(roleId);
         if (roleOpt.isEmpty())
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is not exist");
 
@@ -324,7 +324,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidIdentity(roleId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return roleService.getRoleMonoById(roleId)
+        return roleService.getRoleMono(roleId)
                 .flatMap(roleOpt ->
                         roleOpt.map(role ->
                                         just(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(role)))
@@ -352,7 +352,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidIdentity(resId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return resourceService.getResourceMonoById(resId)
+        return resourceService.getResourceMono(resId)
                 .flatMap(resOpt ->
                         resOpt.map(res ->
                                         just(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(res)))

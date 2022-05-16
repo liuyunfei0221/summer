@@ -347,7 +347,7 @@ public class AuthServiceImpl implements AuthService {
      * delete all refresh token infos by key id
      */
     private final Function<String, Mono<Boolean>> REFRESH_INFOS_BY_ID_DELETER = id ->
-            refreshInfoService.deleteRefreshInfoById(id)
+            refreshInfoService.deleteRefreshInfo(id)
                     .onErrorResume(throwable -> {
                         LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR,  refreshInfoService.deleteRefreshInfoById(id) failed, id = {}, throwable = {}", id, throwable);
                         return empty();
@@ -449,7 +449,7 @@ public class AuthServiceImpl implements AuthService {
                 throw new BlueException(UNAUTHORIZED);
 
             if (parseLong(refreshInfo.getLoginTime()) + refreshExpireMillis <= TIME_STAMP_GETTER.get()) {
-                refreshInfoService.deleteRefreshInfoById(refreshInfo.getId())
+                refreshInfoService.deleteRefreshInfo(refreshInfo.getId())
                         .doOnError(throwable -> LOGGER.error("AUTH_ASSERTER ->  refreshInfoService.deleteRefreshInfoById() failed, refreshInfo = {}, throwable = {}", refreshInfo, throwable))
                         .subscribe();
                 throw new BlueException(UNAUTHORIZED);
@@ -810,7 +810,7 @@ public class AuthServiceImpl implements AuthService {
         if (isNull(memberPayload))
             return error(() -> new BlueException(UNAUTHORIZED));
 
-        return refreshInfoService.getRefreshInfoById(memberPayload.getKeyId())
+        return refreshInfoService.getRefreshInfoMono(memberPayload.getKeyId())
                 .onErrorResume(t -> {
                     LOGGER.warn("Mono<MemberAccess> refreshAccess(String refresh), refreshInfoService.getRefreshInfoById(memberPayload.getKeyId()) failed, memberPayload = {}, t = {}", memberPayload, t);
                     return error(() -> new BlueException(UNAUTHORIZED));

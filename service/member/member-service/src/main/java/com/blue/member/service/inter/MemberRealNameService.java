@@ -21,7 +21,7 @@ public interface MemberRealNameService {
      * @param id
      * @return
      */
-    Optional<MemberRealName> selectMemberRealNameByPrimaryKey(Long id);
+    Optional<MemberRealName> getMemberRealName(Long id);
 
     /**
      * query member real name mono by id
@@ -29,7 +29,7 @@ public interface MemberRealNameService {
      * @param id
      * @return
      */
-    Mono<Optional<MemberRealName>> selectMemberRealNameMonoByPrimaryKey(Long id);
+    Mono<Optional<MemberRealName>> getMemberRealNameMono(Long id);
 
     /**
      * query member real name by member id
@@ -37,7 +37,7 @@ public interface MemberRealNameService {
      * @param memberId
      * @return
      */
-    Optional<MemberRealName> selectMemberRealNameByMemberId(Long memberId);
+    Optional<MemberRealName> getMemberRealNameByMemberId(Long memberId);
 
     /**
      * query member real name mono by member id
@@ -45,7 +45,7 @@ public interface MemberRealNameService {
      * @param memberId
      * @return
      */
-    Mono<Optional<MemberRealName>> selectMemberRealNameMonoByMemberId(Long memberId);
+    Mono<Optional<MemberRealName>> getMemberRealNameMonoByMemberId(Long memberId);
 
     /**
      * query member real name by id with assert
@@ -53,7 +53,7 @@ public interface MemberRealNameService {
      * @param id
      * @return
      */
-    Mono<MemberRealNameInfo> selectMemberRealNameInfoMonoByPrimaryKeyWithAssert(Long id);
+    Mono<MemberRealNameInfo> getMemberRealNameInfoMonoWithAssert(Long id);
 
     /**
      * query member real name by id with assert
@@ -61,7 +61,7 @@ public interface MemberRealNameService {
      * @param memberId
      * @return
      */
-    Mono<MemberRealNameInfo> selectMemberRealNameInfoMonoByMemberIdWithAssert(Long memberId);
+    Mono<MemberRealNameInfo> getMemberRealNameInfoMonoByMemberIdWithAssert(Long memberId);
 
     /**
      * insert member real name

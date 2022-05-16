@@ -68,7 +68,7 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
      * @return
      */
     @Override
-    public Optional<MemberBusiness> selectMemberBusinessByPrimaryKey(Long id) {
+    public Optional<MemberBusiness> getMemberBusiness(Long id) {
         LOGGER.info("Optional<MemberBusiness> selectMemberBusinessByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -83,7 +83,7 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBusiness>> selectMemberBusinessMonoByPrimaryKey(Long id) {
+    public Mono<Optional<MemberBusiness>> getMemberBusinessMono(Long id) {
         LOGGER.info("Mono<Optional<MemberBusiness>> selectMemberBusinessMonoByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -98,7 +98,7 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
      * @return
      */
     @Override
-    public Optional<MemberBusiness> selectMemberBusinessByMemberId(Long memberId) {
+    public Optional<MemberBusiness> getMemberBusinessByMemberId(Long memberId) {
         LOGGER.info("Optional<MemberBusiness> selectMemberBusinessByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
@@ -113,7 +113,7 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBusiness>> selectMemberBusinessMonoByMemberId(Long memberId) {
+    public Mono<Optional<MemberBusiness>> getMemberBusinessMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Optional<MemberBusiness>> selectMemberAddressMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
@@ -128,14 +128,14 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
      * @return
      */
     @Override
-    public Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByPrimaryKeyWithAssert(Long id) {
+    public Mono<MemberBusinessInfo> getMemberBusinessInfoMonoWithAssert(Long id) {
         LOGGER.info("Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         //noinspection DuplicatedCode
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
         return just(id)
-                .flatMap(this::selectMemberBusinessMonoByPrimaryKey)
+                .flatMap(this::getMemberBusinessMono)
                 .flatMap(mbOpt ->
                         mbOpt.map(Mono::just)
                                 .orElseGet(() ->
@@ -157,14 +157,14 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
      * @return
      */
     @Override
-    public Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByMemberIdWithAssert(Long memberId) {
+    public Mono<MemberBusinessInfo> getMemberBusinessInfoMonoByMemberIdWithAssert(Long memberId) {
         LOGGER.info("Mono<MemberBusinessInfo> selectMemberBusinessInfoMonoByMemberIdWithAssert(Long memberId), memberId = {}", memberId);
         //noinspection DuplicatedCode
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
         return just(memberId)
-                .flatMap(this::selectMemberBusinessMonoByMemberId)
+                .flatMap(this::getMemberBusinessMonoByMemberId)
                 .flatMap(mbOpt ->
                         mbOpt.map(Mono::just)
                                 .orElseGet(() ->

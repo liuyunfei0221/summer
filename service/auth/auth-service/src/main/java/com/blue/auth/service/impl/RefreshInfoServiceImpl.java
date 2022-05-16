@@ -55,7 +55,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
      * @return
      */
     @Override
-    public Mono<Void> deleteRefreshInfoById(String id) {
+    public Mono<Void> deleteRefreshInfo(String id) {
         LOGGER.info("Mono<Void> deleteRefreshInfoById(String id), id = {}", id);
         if (isBlank(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -85,7 +85,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
      * @return
      */
     @Override
-    public Mono<RefreshInfo> getRefreshInfoById(String id) {
+    public Mono<RefreshInfo> getRefreshInfoMono(String id) {
         LOGGER.info("Mono<RefreshInfo> getRefreshInfoById(String id), id = {}", id);
         if (isBlank(id))
             throw new BlueException(INVALID_IDENTITY);

@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.CommonFunctions.REST_URI_ASSERTER;
 import static com.blue.base.common.base.ConstantProcessor.assertHttpMethod;
 import static com.blue.base.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
@@ -101,8 +102,7 @@ public class ResourceInsertParam implements Serializable, Asserter {
         assertHttpMethod(this.requestMethod, false);
         if (isBlank(this.module))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "module can't be blank");
-        if (isBlank(this.uri))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be blank");
+        REST_URI_ASSERTER.accept(uri);
         if (isNull(this.authenticate))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "authenticate can't be null");
         if (isNull(this.requestUnDecryption))

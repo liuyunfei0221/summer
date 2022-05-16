@@ -55,7 +55,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     public CompletableFuture<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id) {
         LOGGER.info("CompletableFuture<Optional<MemberBasicInfo>> selectMemberBasicInfoMonoByPrimaryKey(Long id), id = {},", id);
         return just(id).subscribeOn(scheduler)
-                .flatMap(memberBasicService::getMemberBasicMonoByPrimaryKey)
+                .flatMap(memberBasicService::getMemberBasicMono)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))
@@ -86,7 +86,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     public CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByPhone(String phone) {
         LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByPhone(String phone), phone = {},", phone);
         return just(phone).subscribeOn(scheduler)
-                .flatMap(memberBasicService::selectMemberBasicMonoByPhone)
+                .flatMap(memberBasicService::getMemberBasicMonoByPhone)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))
@@ -103,7 +103,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     public CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByEmail(String email) {
         LOGGER.info("CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByEmail(String email), email = {},", email);
         return just(email).subscribeOn(scheduler)
-                .flatMap(memberBasicService::selectMemberBasicMonoByEmail)
+                .flatMap(memberBasicService::getMemberBasicMonoByEmail)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
                         .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))

@@ -102,7 +102,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
      * @return
      */
     @Override
-    public Optional<MemberAddress> selectMemberAddressByPrimaryKey(Long id) {
+    public Optional<MemberAddress> getMemberAddress(Long id) {
         LOGGER.info("Optional<MemberAddress> selectMemberAddressByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -117,7 +117,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberAddress>> selectMemberAddressMonoByPrimaryKey(Long id) {
+    public Mono<Optional<MemberAddress>> getMemberAddressMono(Long id) {
         LOGGER.info("Mono<Optional<MemberAddress>> selectMemberAddressMonoByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -168,7 +168,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
             throw new BlueException(INVALID_IDENTITY);
 
         return just(id)
-                .flatMap(this::selectMemberAddressMonoByPrimaryKey)
+                .flatMap(this::getMemberAddressMono)
                 .flatMap(maOpt ->
                         maOpt.map(Mono::just)
                                 .orElseGet(() ->

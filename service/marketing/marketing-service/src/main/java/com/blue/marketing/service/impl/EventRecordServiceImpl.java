@@ -84,7 +84,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public int insertEvent(EventRecord eventRecord) {
+    public int insertEventRecord(EventRecord eventRecord) {
         LOGGER.info("int insertEvent(EventRecord eventRecord), eventRecord = {}", eventRecord);
         if (isNull(eventRecord))
             throw new BlueException(EMPTY_PARAM);
@@ -102,7 +102,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    public int insertBatch(List<EventRecord> eventRecords) {
+    public int insertEventRecords(List<EventRecord> eventRecords) {
         LOGGER.info("int insertBatch(List<EventRecord> eventRecords), eventRecords = {}", eventRecords);
         return ofNullable(eventRecords)
                 .filter(as -> as.size() > 0)

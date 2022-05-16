@@ -39,8 +39,8 @@ public final class BulletinApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> selectBulletin(ServerRequest serverRequest) {
-        return bulletinService.selectBulletinInfoMonoByType(getIntegerVariable(serverRequest, TYPE.key))
+    public Mono<ServerResponse> select(ServerRequest serverRequest) {
+        return bulletinService.selectBulletinInfoMonoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
                 .flatMap(bl -> ok()
                         .contentType(APPLICATION_JSON)
                         .body(generate(OK.code, bl, serverRequest), BlueResponse.class)

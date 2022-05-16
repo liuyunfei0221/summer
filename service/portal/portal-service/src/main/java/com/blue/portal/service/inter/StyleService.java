@@ -5,6 +5,8 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.portal.api.model.StyleInfo;
 import com.blue.portal.api.model.StyleManagerInfo;
 import com.blue.portal.model.StyleCondition;
+import com.blue.portal.model.StyleInsertParam;
+import com.blue.portal.model.StyleUpdateParam;
 import com.blue.portal.repository.entity.Style;
 import reactor.core.publisher.Mono;
 
@@ -18,6 +20,32 @@ import java.util.Optional;
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface StyleService {
+
+    /**
+     * insert style
+     *
+     * @param styleInsertParam
+     * @param operatorId
+     * @return
+     */
+    StyleInfo insertStyle(StyleInsertParam styleInsertParam, Long operatorId);
+
+    /**
+     * update a exist style
+     *
+     * @param styleUpdateParam
+     * @param operatorId
+     * @return
+     */
+    StyleInfo updateStyle(StyleUpdateParam styleUpdateParam, Long operatorId);
+
+    /**
+     * delete style
+     *
+     * @param id
+     * @return
+     */
+    StyleInfo deleteStyle(Long id);
 
     /**
      * insert style

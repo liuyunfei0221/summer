@@ -25,7 +25,7 @@ public interface DownloadHistoryService {
      * @param downloadHistory
      * @return
      */
-    Mono<DownloadHistory> insert(DownloadHistory downloadHistory);
+    Mono<DownloadHistory> insertDownloadHistory(DownloadHistory downloadHistory);
 
     /**
      * get download history by id

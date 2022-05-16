@@ -36,4 +36,6 @@ public interface StyleMapper {
 
     Long countByCondition(@Param("styleCondition") StyleCondition styleCondition);
 
+    Style selectByName(@Param("name") String name);
+
 }

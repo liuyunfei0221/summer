@@ -7,6 +7,7 @@ import org.springframework.web.reactive.function.server.RequestPredicate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static com.blue.base.constant.base.PathVariable.ID;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
@@ -28,7 +29,10 @@ public class BulletinManagerRoute {
         RequestPredicate pathPredicate = path("/blue-portal/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/bulletins", accept(APPLICATION_JSON), bulletinManagerHandler::listBulletin)
+                .POST("/bulletin", accept(APPLICATION_JSON), bulletinManagerHandler::insert)
+                .PUT("/bulletin", accept(APPLICATION_JSON), bulletinManagerHandler::update)
+                .DELETE("/bulletin/{" + ID.key + "}", bulletinManagerHandler::delete)
+                .POST("/bulletins", accept(APPLICATION_JSON), bulletinManagerHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

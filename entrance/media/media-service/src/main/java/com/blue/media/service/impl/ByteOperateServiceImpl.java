@@ -158,7 +158,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                         .filter(FileUploadResult::getSuccess)
                         .map(fur -> ATTACHMENT_CONVERTER.apply(fur, memberId)
                         ).collect(toList()))
-                .forEach(attachmentService::insertBatch);
+                .forEach(attachmentService::insertAttachments);
     };
 
     public static final UnaryOperator<String> FILE_TYPE_GETTER = CommonFunctions.FILE_TYPE_GETTER;
@@ -179,7 +179,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         downloadHistory.setCreator(memberId);
         downloadHistory.setCreateTime(TIME_STAMP_GETTER.get());
 
-        downloadHistoryService.insert(downloadHistory)
+        downloadHistoryService.insertDownloadHistory(downloadHistory)
                 .doOnError(throwable -> LOGGER.info("downloadHistoryService.insert(downloadHistory) failed, downloadHistory = {}, throwable = {}", downloadHistory, throwable))
                 .subscribe(dh -> LOGGER.info("DOWNLOAD_RECORDER -> insert(downloadHistory), dh = {}", dh));
     };

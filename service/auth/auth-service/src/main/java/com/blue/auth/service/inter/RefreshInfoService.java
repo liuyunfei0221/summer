@@ -27,7 +27,7 @@ public interface RefreshInfoService {
      * @param id
      * @return
      */
-    Mono<Void> deleteRefreshInfoById(String id);
+    Mono<Void> deleteRefreshInfo(String id);
 
     /**
      * delete refresh infos
@@ -43,7 +43,7 @@ public interface RefreshInfoService {
      * @param id
      * @return
      */
-    Mono<RefreshInfo> getRefreshInfoById(String id);
+    Mono<RefreshInfo> getRefreshInfoMono(String id);
 
     /**
      * select refresh info mono by probe

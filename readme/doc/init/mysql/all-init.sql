@@ -477,7 +477,13 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- portal manage
 
-       (260001, 'POST', 'blue-portal', '/manager/bulletins', b'1', b'1', b'1', b'0', b'1', 2,
+       (260001, 'POST', 'blue-portal', '/manager/bulletin', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert portal', 'insert portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260002, 'PUT', 'blue-portal', '/manager/bulletin', b'1', b'1', b'1', b'1', b'1', 2,
+        'update portal', 'update portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260003, 'DELETE', 'blue-portal', '/manager/bulletin/{id}', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete portal', 'delete portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260004, 'POST', 'blue-portal', '/manager/bulletins', b'1', b'1', b'1', b'0', b'1', 2,
         'bulletin list of manager', 'bulletin list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- marketing api

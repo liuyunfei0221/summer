@@ -45,7 +45,7 @@ public interface RoleService {
      * @param id
      * @return
      */
-    RoleInfo deleteRoleById(Long id);
+    RoleInfo deleteRole(Long id);
 
     /**
      * update default role by role id
@@ -69,7 +69,7 @@ public interface RoleService {
      * @param id
      * @return
      */
-    Optional<Role> getRoleById(Long id);
+    Optional<Role> getRole(Long id);
 
     /**
      * get role mono by role id
@@ -77,7 +77,7 @@ public interface RoleService {
      * @param id
      * @return
      */
-    Mono<Optional<Role>> getRoleMonoById(Long id);
+    Mono<Optional<Role>> getRoleMono(Long id);
 
     /**
      * select roles by ids

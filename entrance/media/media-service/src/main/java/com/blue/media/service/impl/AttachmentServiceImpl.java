@@ -85,7 +85,7 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public int insert(Attachment attachment) {
+    public int insertAttachment(Attachment attachment) {
         LOGGER.info("int insert(Attachment attachment), attachment = {}", attachment);
         return ofNullable(attachment)
                 .map(attachmentMapper::insert)
@@ -99,7 +99,7 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public int insertBatch(List<Attachment> attachments) {
+    public int insertAttachments(List<Attachment> attachments) {
         LOGGER.info("int insertBatch(List<Attachment> attachments), attachments = {}", attachments);
         return ofNullable(attachments)
                 .filter(as -> as.size() > 0)

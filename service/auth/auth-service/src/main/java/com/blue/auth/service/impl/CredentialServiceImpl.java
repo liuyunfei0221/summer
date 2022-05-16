@@ -217,28 +217,6 @@ public class CredentialServiceImpl implements CredentialService {
     }
 
     /**
-     * insert credential batch
-     *
-     * @param credentials
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public void insertCredentials(List<Credential> credentials) {
-        LOGGER.info("void insertCredentials(List<Credential> credentials), credential = {}", credentials);
-        if (isEmpty(credentials))
-            return;
-
-        CREDENTIALS_ASSERTER.accept(credentials);
-
-        credentials.parallelStream()
-                .forEach(c -> c.setId(blueIdentityProcessor.generate(Credential.class)));
-
-        credentialMapper.insertBatch(credentials);
-        LOGGER.info("insert batch credentials = {}", credentials);
-    }
-
-    /**
      * insert a new role
      *
      * @param credential
@@ -266,22 +244,25 @@ public class CredentialServiceImpl implements CredentialService {
     }
 
     /**
-     * insert credential
+     * insert credential batch
      *
-     * @param credential
+     * @param credentials
      * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public void updateCredentialByIds(String credential, List<Long> ids) {
-        LOGGER.info("void updateCredentialByIds(String credential, List<Long> ids), credential = {}, ids = {}", credential, ids);
-        if (isBlank(credential) || isEmpty(ids))
-            throw new BlueException(EMPTY_PARAM);
-        if (isNotEmpty(credentialMapper.selectByCredentials(singletonList(credential))))
-            throw new BlueException(DATA_ALREADY_EXIST);
+    public void insertCredentials(List<Credential> credentials) {
+        LOGGER.info("void insertCredentials(List<Credential> credentials), credential = {}", credentials);
+        if (isEmpty(credentials))
+            return;
 
-        credentialMapper.updateCredentialByIds(credential, ids);
-        LOGGER.info("update batch credential = {}", credential);
+        CREDENTIALS_ASSERTER.accept(credentials);
+
+        credentials.parallelStream()
+                .forEach(c -> c.setId(blueIdentityProcessor.generate(Credential.class)));
+
+        credentialMapper.insertBatch(credentials);
+        LOGGER.info("insert batch credentials = {}", credentials);
     }
 
     /**
@@ -302,13 +283,32 @@ public class CredentialServiceImpl implements CredentialService {
     }
 
     /**
+     * insert credential
+     *
+     * @param credential
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public void updateCredentialByIds(String credential, List<Long> ids) {
+        LOGGER.info("void updateCredentialByIds(String credential, List<Long> ids), credential = {}, ids = {}", credential, ids);
+        if (isBlank(credential) || isEmpty(ids))
+            throw new BlueException(EMPTY_PARAM);
+        if (isNotEmpty(credentialMapper.selectByCredentials(singletonList(credential))))
+            throw new BlueException(DATA_ALREADY_EXIST);
+
+        credentialMapper.updateCredentialByIds(credential, ids);
+        LOGGER.info("update batch credential = {}", credential);
+    }
+
+    /**
      * delete credential
      *
      * @param id
      * @return
      */
     @Override
-    public void deleteCredentialById(Long id) {
+    public void deleteCredential(Long id) {
         LOGGER.info("void deleteCredentialById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);

@@ -21,7 +21,7 @@ public interface RewardService {
      * @param id
      * @return
      */
-    Optional<Reward> getRewardByPrimaryKey(Long id);
+    Optional<Reward> getReward(Long id);
 
     /**
      * select rewards by ids

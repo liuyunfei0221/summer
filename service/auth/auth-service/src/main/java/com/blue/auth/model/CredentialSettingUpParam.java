@@ -14,7 +14,7 @@ import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public class CredentialSettingUpParam implements Serializable, Asserter {
+public final class CredentialSettingUpParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -4028585836242187864L;
 

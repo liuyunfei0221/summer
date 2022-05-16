@@ -159,7 +159,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         LOGGER.info("MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId), credentialTypes = {}, credential = {}, memberId = {}",
                 credentialTypes, credential, memberId);
 
-        Optional<MemberBasic> memberBasicOpt = memberBasicService.getMemberBasicByPrimaryKey(memberId);
+        Optional<MemberBasic> memberBasicOpt = memberBasicService.getMemberBasic(memberId);
         if (memberBasicOpt.isEmpty())
             throw new BlueException(DATA_NOT_EXIST);
 

@@ -103,7 +103,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Optional<MemberBasic> getMemberBasicByPrimaryKey(Long id) {
+    public Optional<MemberBasic> getMemberBasic(Long id) {
         LOGGER.info("Optional<MemberBasic> getMemberBasicByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -118,9 +118,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id) {
+    public Mono<Optional<MemberBasic>> getMemberBasicMono(Long id) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
-        return just(getMemberBasicByPrimaryKey(id));
+        return just(getMemberBasic(id));
     }
 
     /**
@@ -145,7 +145,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Optional<MemberBasic> selectMemberBasicByEmail(String email) {
+    public Optional<MemberBasic> getMemberBasicByEmail(String email) {
         LOGGER.info("Optional<MemberBasic> getMemberBasicByEmail(String email), email = {}", email);
         if (isBlank(email))
             throw new BlueException(BAD_REQUEST);
@@ -160,7 +160,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> selectMemberBasicMonoByPhone(String phone) {
+    public Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone), phone = {}", phone);
         if (isBlank(phone))
             throw new BlueException(BAD_REQUEST);
@@ -175,7 +175,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> selectMemberBasicMonoByEmail(String email) {
+    public Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email), email = {}", email);
         if (isBlank(email))
             throw new BlueException(BAD_REQUEST);
@@ -190,14 +190,14 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> selectMemberInfoMonoByPrimaryKeyWithAssert(Long id) {
+    public Mono<MemberBasicInfo> getMemberInfoMonoWithAssert(Long id) {
         LOGGER.info("Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
         //noinspection DuplicatedCode
         return just(id)
-                .flatMap(this::getMemberBasicMonoByPrimaryKey)
+                .flatMap(this::getMemberBasicMono)
                 .flatMap(mbOpt ->
                         mbOpt.map(Mono::just)
                                 .orElseGet(() ->

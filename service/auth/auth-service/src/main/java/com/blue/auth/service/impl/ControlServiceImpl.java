@@ -215,12 +215,12 @@ public class ControlServiceImpl implements ControlService {
     };
 
     private Role getRoleByRoleId(Long roleId) {
-        return roleService.getRoleById(roleId).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+        return roleService.getRole(roleId).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     }
 
     private Role getRoleByMemberId(Long memberId) {
         return memberRoleRelationService.getRoleIdByMemberId(memberId)
-                .map(roleService::getRoleById).filter(Optional::isPresent).map(Optional::get)
+                .map(roleService::getRole).filter(Optional::isPresent).map(Optional::get)
                 .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     }
 
@@ -821,7 +821,7 @@ public class ControlServiceImpl implements ControlService {
         assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
         return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
-                roleService.deleteRoleById(id)))
+                roleService.deleteRole(id)))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
@@ -894,7 +894,7 @@ public class ControlServiceImpl implements ControlService {
                 ifPresent(hr -> assertRoleLevelForOperate(hr.getLevel(), getRoleByMemberId(operatorId).getLevel()));
 
         return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
-                resourceService.deleteResourceById(id)))
+                resourceService.deleteResource(id)))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
                     systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
