@@ -44,9 +44,9 @@ public enum CacheKeyPrefix {
     BULLETINS_PRE("BTS_P:"),
 
     /**
-     * styles key prefix
+     * style key prefix
      */
-    STYLES_PRE("STS_P:"),
+    ACTIVE_STYLE_PRE("AST_P:"),
 
     /**
      * cache manager key prefix

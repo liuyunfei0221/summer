@@ -467,24 +467,36 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
        (250001, 'GET', 'blue-portal', '/bulletins/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'bulletin list of api', 'bulletin list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (250002, 'GET', 'blue-portal', '/formatter/{formatter}.html', b'1', b'1', b'1', b'0', b'1', 1,
+       (250002, 'GET', 'blue-portal', '/style/{type}', b'0', b'1', b'1', b'0', b'1', 1,
+        'active style of api', 'active style of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (250003, 'GET', 'blue-portal', '/formatter/{formatter}.html', b'1', b'1', b'1', b'0', b'1', 1,
         'formatter test', 'formatter test', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
-       (250003, 'GET', 'blue-portal', '/fallBack', b'0', b'1', b'1', b'0', b'1', 1,
+       (250004, 'GET', 'blue-portal', '/fallBack', b'0', b'1', b'1', b'0', b'1', 1,
         'GET fallback', 'GET fallback', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (250004, 'POST', 'blue-portal', '/fallBack', b'0', b'1', b'1', b'1', b'1', 1,
+       (250005, 'POST', 'blue-portal', '/fallBack', b'0', b'1', b'1', b'1', b'1', 1,
         'POST fallback', 'POST fallback', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- portal manage
 
-       (260001, 'POST', 'blue-portal', '/manager/bulletin', b'1', b'1', b'1', b'1', b'1', 2,
-        'insert portal', 'insert portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (260002, 'PUT', 'blue-portal', '/manager/bulletin', b'1', b'1', b'1', b'1', b'1', 2,
-        'update portal', 'update portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (260003, 'DELETE', 'blue-portal', '/manager/bulletin/{id}', b'1', b'1', b'1', b'1', b'1', 2,
-        'delete portal', 'delete portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (260004, 'POST', 'blue-portal', '/manager/bulletins', b'1', b'1', b'1', b'0', b'1', 2,
+       (260001, 'POST', 'blue-portal', '/manager/bulletins', b'1', b'1', b'1', b'0', b'1', 2,
         'bulletin list of manager', 'bulletin list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260002, 'POST', 'blue-portal', '/manager/bulletin', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert portal', 'insert portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260003, 'PUT', 'blue-portal', '/manager/bulletin', b'1', b'1', b'1', b'1', b'1', 2,
+        'update portal', 'update portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260004, 'DELETE', 'blue-portal', '/manager/bulletin/{id}', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete portal', 'delete portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
+       (260005, 'POST', 'blue-portal', '/manager/styles', b'1', b'1', b'1', b'1', b'1', 2,
+        'style list of manager', 'style list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260006, 'POST', 'blue-portal', '/manager/style', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert style', 'insert style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260007, 'PUT', 'blue-portal', '/manager/style', b'1', b'1', b'1', b'1', b'1', 2,
+        'update style', 'update style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260008, 'DELETE', 'blue-portal', '/manager/style/{id}', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete style', 'delete style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260009, 'PUT', 'blue-portal', '/manager/style/active', b'1', b'1', b'1', b'1', b'1', 2,
+        'update active style', 'update active style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- marketing api
 
@@ -1953,6 +1965,7 @@ CREATE TABLE `style`
     `name`        varchar(128)  NOT NULL COMMENT 'style name',
     `attributes`  varchar(8192) NOT NULL COMMENT 'style attrtbutes',
     `type`        tinyint       NOT NULL COMMENT 'style type: 1-a 2-b 3-c',
+    `is_active`   bit           NOT NULL COMMENT 'is active style? 1-yes 0-no',
     `status`      tinyint       NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint        NOT NULL COMMENT 'data create time',
     `update_time` bigint        NOT NULL COMMENT 'data update time',
@@ -1960,7 +1973,7 @@ CREATE TABLE `style`
     `updater`     bigint        NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_name`(`name`) USING BTREE,
-    KEY           `idx_type_create`(`type`,`create_time`) USING BTREE
+    KEY           `idx_type_active_create`(`type`,`is_active`,`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of style';
 
 
@@ -2025,6 +2038,11 @@ VALUES (1, 'popular bulletin 2', 'test data', 'www.baidu.com', 1, 1, 2, UNIX_TIM
         UNIX_TIMESTAMP() + 2678400, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (6, 'recommend bulletin 1', 'test data', 'cn.bing.com', 3, 1, 1, UNIX_TIMESTAMP() - 2678400,
         UNIX_TIMESTAMP() + 2678400, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+
+INSERT INTO `portal`.`style`(`id`, `name`, `attributes`, `type`, `is_active`, `status`, `create_time`, `update_time`,
+                             `creator`, `updater`)
+VALUES (1, 'blue', '{}', 1, b'1', 1, 1, 1, 1, 1);
+
 
 -- article
 

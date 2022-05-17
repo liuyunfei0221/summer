@@ -6,6 +6,7 @@ import com.blue.portal.api.model.BulletinManagerInfo;
 import com.blue.portal.api.model.StyleInfo;
 import com.blue.portal.api.model.StyleManagerInfo;
 import com.blue.portal.model.BulletinInsertParam;
+import com.blue.portal.model.StyleInsertParam;
 import com.blue.portal.repository.entity.Bulletin;
 import com.blue.portal.repository.entity.Style;
 
@@ -14,6 +15,7 @@ import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.base.constant.base.BlueBoolean.FALSE;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Collections.emptyList;
@@ -65,24 +67,6 @@ public final class PortalModelConverters {
                     .collect(toList()) : emptyList();
 
     /**
-     * bulletin -> bulletin manager indo
-     *
-     * @param bulletin
-     * @param creatorName
-     * @param updaterName
-     * @return
-     */
-    public static BulletinManagerInfo bulletinToBulletinManagerInfo(Bulletin bulletin, String creatorName, String updaterName) {
-        if (isNull(bulletin))
-            throw new BlueException(EMPTY_PARAM);
-
-        return new BulletinManagerInfo(bulletin.getId(), bulletin.getTitle(), bulletin.getContent(), bulletin.getLink(), bulletin.getType(), bulletin.getStatus(),
-                bulletin.getPriority(), bulletin.getActiveTime(), bulletin.getExpireTime(), bulletin.getCreateTime(), bulletin.getUpdateTime(),
-                bulletin.getCreator(), isNotBlank(creatorName) ? creatorName : "", bulletin.getUpdater(), isNotBlank(updaterName) ? updaterName : "");
-
-    }
-
-    /**
      * bulletin insert param -> bulletin
      */
     public static final Function<BulletinInsertParam, Bulletin> BULLETIN_INSERT_PARAM_2_BULLETIN_CONVERTER = param -> {
@@ -107,6 +91,47 @@ public final class PortalModelConverters {
 
         return bulletin;
     };
+
+    /**
+     * style insert param -> style
+     */
+    public static final Function<StyleInsertParam, Style> STYLE_INSERT_PARAM_2_STYLE_CONVERTER = param -> {
+        if (isNull(param))
+            throw new BlueException(EMPTY_PARAM);
+        param.asserts();
+
+        Long stamp = TIME_STAMP_GETTER.get();
+
+        Style style = new Style();
+
+        style.setName(param.getName());
+        style.setAttributes(param.getAttributes());
+        style.setType(param.getType());
+        style.setIsActive(FALSE.bool);
+        style.setStatus(VALID.status);
+        style.setCreateTime(stamp);
+        style.setUpdateTime(stamp);
+
+        return style;
+    };
+
+    /**
+     * bulletin -> bulletin manager indo
+     *
+     * @param bulletin
+     * @param creatorName
+     * @param updaterName
+     * @return
+     */
+    public static BulletinManagerInfo bulletinToBulletinManagerInfo(Bulletin bulletin, String creatorName, String updaterName) {
+        if (isNull(bulletin))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new BulletinManagerInfo(bulletin.getId(), bulletin.getTitle(), bulletin.getContent(), bulletin.getLink(), bulletin.getType(), bulletin.getStatus(),
+                bulletin.getPriority(), bulletin.getActiveTime(), bulletin.getExpireTime(), bulletin.getCreateTime(), bulletin.getUpdateTime(),
+                bulletin.getCreator(), isNotBlank(creatorName) ? creatorName : "", bulletin.getUpdater(), isNotBlank(updaterName) ? updaterName : "");
+
+    }
 
     /**
      * style -> style manager indo

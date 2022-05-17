@@ -1,13 +1,11 @@
 package com.blue.portal.handler.api;
 
 import com.blue.base.model.base.BlueResponse;
-import com.blue.portal.service.inter.BulletinService;
+import com.blue.portal.service.inter.StyleService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import static com.blue.base.common.reactive.PathVariableGetter.getIntegerVariable;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
@@ -17,33 +15,31 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 /**
- * portal api handler
+ * style api handler
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 @Component
-public final class BulletinApiHandler {
+public final class StyleApiHandler {
 
-    private static final Logger LOGGER = Loggers.getLogger(BulletinApiHandler.class);
+    private final StyleService styleService;
 
-    private final BulletinService bulletinService;
-
-    public BulletinApiHandler(BulletinService bulletinService) {
-        this.bulletinService = bulletinService;
+    public StyleApiHandler(StyleService styleService) {
+        this.styleService = styleService;
     }
 
     /**
-     * select bulletin
+     * get active style
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> select(ServerRequest serverRequest) {
-        return bulletinService.selectActiveBulletinInfoMonoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
-                .flatMap(blis -> ok()
+    public Mono<ServerResponse> get(ServerRequest serverRequest) {
+        return styleService.getActiveStyleInfoMonoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
+                .flatMap(sti -> ok()
                         .contentType(APPLICATION_JSON)
-                        .body(generate(OK.code, blis, serverRequest), BlueResponse.class)
+                        .body(generate(OK.code, sti, serverRequest), BlueResponse.class)
                 );
     }
 

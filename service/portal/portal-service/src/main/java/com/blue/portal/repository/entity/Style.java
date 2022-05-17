@@ -16,6 +16,8 @@ public class Style {
 
     private Integer type;
 
+    private Boolean isActive;
+
     /**
      * @see com.blue.base.constant.base.Status
      */
@@ -59,6 +61,14 @@ public class Style {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
     }
 
     public Integer getStatus() {
@@ -108,6 +118,7 @@ public class Style {
                 ", name='" + name + '\'' +
                 ", attributes='" + attributes + '\'' +
                 ", type=" + type +
+                ", isActive=" + isActive +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

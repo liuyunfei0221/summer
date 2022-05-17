@@ -1,6 +1,6 @@
-package com.blue.auth.router.manager;
+package com.blue.portal.router.manager;
 
-import com.blue.auth.handler.manager.ResourceManagerHandler;
+import com.blue.portal.handler.manager.StyleManagerHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -15,26 +15,26 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * resource manager route
+ * style api route
  *
  * @author liuyunfei
  */
 @SuppressWarnings("DuplicatedCode")
 @Configuration
-public class ResourceManagerRoute {
+public class StyleManagerRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> resourceManagerRouter(ResourceManagerHandler resourceManagerHandler) {
+    RouterFunction<ServerResponse> roleManagerRouter(StyleManagerHandler styleManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-auth/manager");
+        RequestPredicate pathPredicate = path("/blue-portal/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/resource", accept(APPLICATION_JSON), resourceManagerHandler::insert)
-                .PUT("/resource", accept(APPLICATION_JSON), resourceManagerHandler::update)
-                .DELETE("/resource/{" + ID.key + "}", resourceManagerHandler::delete)
-                .POST("/resources", accept(APPLICATION_JSON), resourceManagerHandler::select)
-                .POST("/resource/auth", accept(APPLICATION_JSON), resourceManagerHandler::selectAuthority)
+                .POST("/style", accept(APPLICATION_JSON), styleManagerHandler::insert)
+                .PUT("/style", accept(APPLICATION_JSON), styleManagerHandler::update)
+                .DELETE("/style/{" + ID.key + "}", styleManagerHandler::delete)
+                .PUT("/style/active", styleManagerHandler::updateActive)
+                .POST("/styles", accept(APPLICATION_JSON), styleManagerHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

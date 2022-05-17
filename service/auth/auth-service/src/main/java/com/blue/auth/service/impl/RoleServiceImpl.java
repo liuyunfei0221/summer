@@ -339,42 +339,44 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleManagerInfo updateDefaultRole(Long id, Long operatorId) {
-        LOGGER.info("void updateDefaultRole(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
+        LOGGER.info("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), id = {}， operatorId = {}", id, operatorId);
+        if (isInvalidIdentity(id) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        Role role = roleMapper.selectByPrimaryKey(id);
-        Role defaultRole = DEFAULT_ROLE_DB_SUP.get();
+        Role newDefaultRole = roleMapper.selectByPrimaryKey(id);
+        if (isNull(newDefaultRole))
+            throw new BlueException(DATA_NOT_EXIST);
 
-        if (role.getId().equals(defaultRole.getId()))
+        Role oldDefaultRole = DEFAULT_ROLE_DB_SUP.get();
+        if (newDefaultRole.getId().equals(oldDefaultRole.getId()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "role is already default");
 
         Long stamp = TIME_STAMP_GETTER.get();
 
-        role.setIsDefault(DEFAULT.status);
-        role.setUpdater(operatorId);
-        role.setUpdateTime(stamp);
+        newDefaultRole.setIsDefault(DEFAULT.status);
+        newDefaultRole.setUpdater(operatorId);
+        newDefaultRole.setUpdateTime(stamp);
 
-        defaultRole.setIsDefault(NOT_DEFAULT.status);
-        defaultRole.setUpdater(operatorId);
-        defaultRole.setUpdateTime(stamp);
+        oldDefaultRole.setIsDefault(NOT_DEFAULT.status);
+        oldDefaultRole.setUpdater(operatorId);
+        oldDefaultRole.setUpdateTime(stamp);
 
         CACHE_DELETER.accept(DEFAULT_ROLE.key);
-        roleMapper.updateByPrimaryKey(role);
-        roleMapper.updateByPrimaryKey(defaultRole);
+        roleMapper.updateByPrimaryKey(newDefaultRole);
+        roleMapper.updateByPrimaryKey(oldDefaultRole);
         CACHE_DELETER.accept(DEFAULT_ROLE.key);
 
         Map<Long, String> idAndNameMapping;
         try {
-            idAndNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(role))).toFuture().join()
+            idAndNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(newDefaultRole))).toFuture().join()
                     .parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
         } catch (Exception e) {
             LOGGER.error("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), generate idAndNameMapping failed, e = {}", e);
             idAndNameMapping = emptyMap();
         }
 
-        return roleToRoleManagerInfo(role, ofNullable(idAndNameMapping.get(role.getCreator())).orElse(""),
-                ofNullable(idAndNameMapping.get(role.getUpdater())).orElse(""));
+        return roleToRoleManagerInfo(newDefaultRole, ofNullable(idAndNameMapping.get(newDefaultRole.getCreator())).orElse(""),
+                ofNullable(idAndNameMapping.get(newDefaultRole.getUpdater())).orElse(""));
     }
 
     /**

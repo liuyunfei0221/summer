@@ -91,7 +91,7 @@ public interface BulletinService {
      * @param bulletinType
      * @return
      */
-    Mono<List<BulletinInfo>> selectBulletinInfoMonoByTypeWithCache(Integer bulletinType);
+    Mono<List<BulletinInfo>> selectActiveBulletinInfoMonoByTypeWithCache(Integer bulletinType);
 
     /**
      * select bulletin by page and condition

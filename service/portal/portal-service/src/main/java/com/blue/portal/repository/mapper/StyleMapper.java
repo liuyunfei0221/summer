@@ -30,7 +30,7 @@ public interface StyleMapper {
 
     List<Style> selectByIds(@Param("ids") List<Long> ids);
 
-    List<Style> selectAllByCondition( @Param("type") Integer type, @Param("status") Integer status);
+    List<Style> selectByTypeAndActive(@Param("type") Integer type, @Param("isActive") Boolean isActive);
 
     List<Style> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("styleCondition") StyleCondition styleCondition);
 

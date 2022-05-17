@@ -7,6 +7,7 @@ import com.blue.base.model.base.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
+import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.portal.api.model.StyleInfo;
 import com.blue.portal.api.model.StyleManagerInfo;
@@ -14,7 +15,9 @@ import com.blue.portal.config.blue.BlueRedisConfig;
 import com.blue.portal.config.deploy.CaffeineDeploy;
 import com.blue.portal.constant.BulletinSortAttribute;
 import com.blue.portal.constant.StyleSortAttribute;
-import com.blue.portal.model.*;
+import com.blue.portal.model.StyleCondition;
+import com.blue.portal.model.StyleInsertParam;
+import com.blue.portal.model.StyleUpdateParam;
 import com.blue.portal.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.portal.repository.entity.Bulletin;
 import com.blue.portal.repository.entity.Style;
@@ -33,25 +36,24 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertBulletinType;
 import static com.blue.base.common.base.ConstantProcessor.assertStyleType;
-import static com.blue.base.constant.base.CacheKeyPrefix.STYLES_PRE;
+import static com.blue.base.constant.base.BlueBoolean.FALSE;
+import static com.blue.base.constant.base.BlueBoolean.TRUE;
+import static com.blue.base.constant.base.CacheKeyPrefix.ACTIVE_STYLE_PRE;
 import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.constant.base.SyncKeyPrefix.STYLES_CACHE_PRE;
-import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
-import static com.blue.portal.converter.PortalModelConverters.STYLES_2_STYLE_INFOS_CONVERTER;
-import static com.blue.portal.converter.PortalModelConverters.styleToStyleManagerInfo;
-import static java.util.Collections.emptyList;
+import static com.blue.portal.converter.PortalModelConverters.*;
+import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -72,6 +74,8 @@ public class StyleServiceImpl implements StyleService {
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
+    private final BlueIdentityProcessor blueIdentityProcessor;
+
     private StyleMapper styleMapper;
 
     private StringRedisTemplate stringRedisTemplate;
@@ -79,30 +83,31 @@ public class StyleServiceImpl implements StyleService {
     private SynchronizedProcessor synchronizedProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public StyleServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, StyleMapper styleMapper, StringRedisTemplate stringRedisTemplate,
-                            SynchronizedProcessor synchronizedProcessor, ExecutorService executorService, BlueRedisConfig blueRedisConfig, CaffeineDeploy caffeineDeploy) {
+    public StyleServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
+                            StyleMapper styleMapper, StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor,
+                            ExecutorService executorService, BlueRedisConfig blueRedisConfig, CaffeineDeploy caffeineDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
+        this.blueIdentityProcessor = blueIdentityProcessor;
         this.styleMapper = styleMapper;
         this.stringRedisTemplate = stringRedisTemplate;
         this.synchronizedProcessor = synchronizedProcessor;
 
-        redisExpire = blueRedisConfig.getEntryTtl();
+        this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), ChronoUnit.SECONDS);
+
         CaffeineConf caffeineConf = new CaffeineConfParams(
                 caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);
         of(StyleType.values()).map(e -> e.identity)
-                .forEach(STYLE_INFOS_WITH_ALL_CACHE_GETTER::apply);
+                .forEach(ACTIVE_STYLE_INFO_WITH_ALL_CACHE_GETTER::apply);
     }
 
-    private static long redisExpire;
+    private Duration expireDuration;
 
-    private final static TimeUnit EXPIRE_UNIT = TimeUnit.SECONDS;
+    private static Cache<Integer, StyleInfo> LOCAL_CACHE;
 
-    private static Cache<Integer, List<StyleInfo>> LOCAL_CACHE;
-
-    private static final Function<Integer, String> STYLE_CACHE_KEY_GENERATOR = type -> STYLES_PRE.prefix + type;
+    private static final Function<Integer, String> STYLE_CACHE_KEY_GENERATOR = type -> ACTIVE_STYLE_PRE.prefix + type;
 
     private static final Function<Integer, String> STYLE_LOAD_SYNC_KEY_GEN = type -> STYLES_CACHE_PRE.prefix + type;
 
@@ -111,34 +116,44 @@ public class StyleServiceImpl implements StyleService {
         LOCAL_CACHE.invalidate(type);
     };
 
-    private final Function<Integer, List<StyleInfo>> STYLE_INFOS_DB_GETTER = type ->
-            STYLES_2_STYLE_INFOS_CONVERTER.apply(
-                    styleMapper.selectAllByCondition(type, VALID.status));
+    private final Function<Integer, Style> ACTIVE_STYLE_DB_GETTER = type -> {
+        assertStyleType(type, false);
 
-    private final Function<Integer, List<StyleInfo>> STYLE_INFOS_REDIS_GETTER = type ->
-            ofNullable(stringRedisTemplate.opsForList().range(ofNullable(type).map(STYLE_CACHE_KEY_GENERATOR)
-                    .orElseGet(() -> STYLE_CACHE_KEY_GENERATOR.apply(POPULAR.identity)), 0, -1))
-                    .filter(BlueChecker::isNotEmpty)
-                    .map(sl -> sl.stream().map(s -> GSON.fromJson(s, StyleInfo.class)).collect(toList()))
-                    .orElseGet(Collections::emptyList);
+        List<Style> activeStyles = this.selectByTypeAndActive(type, true);
+        LOGGER.info("ACTIVE_STYLE_INFO_DB_GETTER, activeStyles = {}, type = {}", activeStyles, type);
 
-    private final BiConsumer<Integer, List<StyleInfo>> STYLE_INFOS_REDIS_SETTER = (type, styleInfos) -> {
-        String cacheKey = STYLE_CACHE_KEY_GENERATOR.apply(type);
-        CACHE_DELETER.accept(type);
-        stringRedisTemplate.opsForList().rightPushAll(cacheKey, styleInfos.stream().map(GSON::toJson).collect(toList()));
-        stringRedisTemplate.expire(cacheKey, redisExpire, EXPIRE_UNIT);
+        if (isEmpty(activeStyles))
+            activeStyles = singletonList(new Style());
+
+        if (activeStyles.size() > 1)
+            LOGGER.error("active style by type more than 1, type = {}", type);
+
+        return activeStyles.get(0);
     };
 
-    private final Function<Integer, List<StyleInfo>> STYLE_INFOS_WITH_REDIS_CACHE_GETTER = type ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(() -> STYLE_INFOS_REDIS_GETTER.apply(type),
-                    BlueChecker::isNotEmpty, () -> STYLE_INFOS_DB_GETTER.apply(type),
-                    bulletinInfos -> STYLE_INFOS_REDIS_SETTER.accept(type, bulletinInfos));
+    private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_DB_GETTER = type ->
+            STYLE_2_STYLE_INFO_CONVERTER.apply(ACTIVE_STYLE_DB_GETTER.apply(type));
 
-    private final Function<Integer, List<StyleInfo>> STYLE_INFOS_WITH_ALL_CACHE_GETTER = type -> {
+    private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_REDIS_GETTER = type ->
+            ofNullable(stringRedisTemplate.opsForValue().get(STYLE_CACHE_KEY_GENERATOR.apply(type)))
+                    .map(s -> GSON.fromJson(s, StyleInfo.class)).orElse(null);
+
+    private final BiConsumer<Integer, StyleInfo> ACTIVE_STYLE_INFO_REDIS_SETTER = (type, styleInfo) -> {
+        String cacheKey = STYLE_CACHE_KEY_GENERATOR.apply(type);
+        CACHE_DELETER.accept(type);
+        stringRedisTemplate.opsForValue().set(cacheKey, GSON.toJson(styleInfo), expireDuration);
+    };
+
+    private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_WITH_REDIS_CACHE_GETTER = type ->
+            synchronizedProcessor.handleSupByOrderedWithSetter(() -> ACTIVE_STYLE_INFO_REDIS_GETTER.apply(type),
+                    BlueChecker::isNotNull, () -> ACTIVE_STYLE_INFO_DB_GETTER.apply(type),
+                    bulletinInfos -> ACTIVE_STYLE_INFO_REDIS_SETTER.accept(type, bulletinInfos));
+
+    private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_WITH_ALL_CACHE_GETTER = type -> {
         if (isNull(type))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null");
 
-        return LOCAL_CACHE.get(type, STYLE_INFOS_WITH_REDIS_CACHE_GETTER);
+        return LOCAL_CACHE.get(type, ACTIVE_STYLE_INFO_WITH_REDIS_CACHE_GETTER);
     };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(StyleSortAttribute.values())
@@ -209,9 +224,9 @@ public class StyleServiceImpl implements StyleService {
     };
 
     /**
-     * for bulletin
+     * for style
      */
-    public static final BiFunction<BulletinUpdateParam, Bulletin, Boolean> UPDATE_BULLETIN_VALIDATOR = (p, t) -> {
+    public static final BiFunction<StyleUpdateParam, Style, Boolean> UPDATE_STYLE_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -220,46 +235,22 @@ public class StyleServiceImpl implements StyleService {
 
         boolean alteration = false;
 
-        String title = p.getTitle();
-        if (isNotBlank(title) && !title.equals(t.getTitle())) {
-            t.setTitle(title);
+        String name = p.getName();
+        if (isNotBlank(name) && !name.equals(t.getName())) {
+            t.setName(name);
             alteration = true;
         }
 
-        String content = p.getContent();
-        if (isNotBlank(content) && !content.equals(t.getContent())) {
-            t.setContent(content);
-            alteration = true;
-        }
-
-        String link = p.getLink();
-        if (isNotBlank(link) && !link.equals(t.getLink())) {
-            t.setLink(link);
+        String attributes = p.getAttributes();
+        if (isNotBlank(attributes) && !attributes.equals(t.getAttributes())) {
+            t.setAttributes(attributes);
             alteration = true;
         }
 
         Integer type = p.getType();
-        assertBulletinType(type, true);
+        assertStyleType(type, true);
         if (type != null && !type.equals(t.getType())) {
             t.setType(type);
-            alteration = true;
-        }
-
-        Integer priority = p.getPriority();
-        if (priority != null && !priority.equals(t.getPriority())) {
-            t.setPriority(priority);
-            alteration = true;
-        }
-
-        Long activeTime = p.getActiveTime();
-        if (activeTime != null && !activeTime.equals(t.getActiveTime())) {
-            t.setActiveTime(activeTime);
-            alteration = true;
-        }
-
-        Long expireTime = p.getExpireTime();
-        if (expireTime != null && !expireTime.equals(t.getExpireTime())) {
-            t.setExpireTime(expireTime);
             alteration = true;
         }
 
@@ -276,7 +267,25 @@ public class StyleServiceImpl implements StyleService {
      */
     @Override
     public StyleInfo insertStyle(StyleInsertParam styleInsertParam, Long operatorId) {
-        return null;
+        LOGGER.info("StyleInfo insertStyle(StyleInsertParam styleInsertParam, Long operatorId), styleInsertParam = {}, operatorId = {}",
+                styleInsertParam, operatorId);
+        if (isNull(styleInsertParam))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(UNAUTHORIZED);
+
+        INSERT_STYLE_VALIDATOR.accept(styleInsertParam);
+
+        Style style = STYLE_INSERT_PARAM_2_STYLE_CONVERTER.apply(styleInsertParam);
+
+        style.setId(blueIdentityProcessor.generate(Bulletin.class));
+        style.setCreator(operatorId);
+        style.setUpdater(operatorId);
+
+        styleMapper.insert(style);
+        CACHE_DELETER.accept(style.getType());
+
+        return STYLE_2_STYLE_INFO_CONVERTER.apply(style);
     }
 
     /**
@@ -288,7 +297,27 @@ public class StyleServiceImpl implements StyleService {
      */
     @Override
     public StyleInfo updateStyle(StyleUpdateParam styleUpdateParam, Long operatorId) {
-        return null;
+        LOGGER.info("StyleInfo updateStyle(StyleUpdateParam styleUpdateParam, Long operatorId), styleUpdateParam = {}, operatorId = {}",
+                styleUpdateParam, operatorId);
+        if (isNull(styleUpdateParam))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(UNAUTHORIZED);
+
+        List<Integer> changedTypes = new LinkedList<>();
+
+        Style style = UPDATE_STYLE_VALIDATOR_AND_ORIGIN_RETURNER.apply(styleUpdateParam);
+        changedTypes.add(style.getType());
+
+        Boolean changed = UPDATE_STYLE_VALIDATOR.apply(styleUpdateParam, style);
+        if (changed != null && !changed)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        changedTypes.add(style.getType());
+
+        styleMapper.updateByPrimaryKeySelective(style);
+        changedTypes.forEach(CACHE_DELETER);
+
+        return STYLE_2_STYLE_INFO_CONVERTER.apply(style);
     }
 
     /**
@@ -299,21 +328,69 @@ public class StyleServiceImpl implements StyleService {
      */
     @Override
     public StyleInfo deleteStyle(Long id) {
-        return null;
+        LOGGER.info("BulletinInfo deleteBulletinById(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        Style style = styleMapper.selectByPrimaryKey(id);
+        if (isNull(style))
+            throw new BlueException(DATA_NOT_EXIST);
+
+        styleMapper.deleteByPrimaryKey(id);
+        CACHE_DELETER.accept(style.getType());
+
+        return STYLE_2_STYLE_INFO_CONVERTER.apply(style);
     }
 
     /**
-     * insert style
+     * update active style by id
      *
-     * @param style
+     * @param id
+     * @param operatorId
      * @return
      */
     @Override
-    public int insertStyle(Style style) {
-        LOGGER.info("int insertStyle(Style style), style = {}", style);
-        return ofNullable(style)
-                .map(styleMapper::insert)
-                .orElse(0);
+    public StyleManagerInfo updateActiveStyle(Long id, Long operatorId) {
+        LOGGER.info("void updateDefaultRole(Long id), id = {}", id);
+        if (isInvalidIdentity(id) || isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        Style newActiveStyle = styleMapper.selectByPrimaryKey(id);
+        if (isNull(newActiveStyle))
+            throw new BlueException(DATA_NOT_EXIST);
+
+        Integer type = newActiveStyle.getType();
+
+        Style oldActiveStyle = ACTIVE_STYLE_DB_GETTER.apply(type);
+        if (newActiveStyle.getId().equals(oldActiveStyle.getId()))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "style is already actived");
+
+        Long stamp = TIME_STAMP_GETTER.get();
+
+        newActiveStyle.setIsActive(TRUE.bool);
+        newActiveStyle.setUpdater(operatorId);
+        newActiveStyle.setUpdateTime(stamp);
+
+        oldActiveStyle.setIsActive(FALSE.bool);
+        oldActiveStyle.setUpdater(operatorId);
+        oldActiveStyle.setUpdateTime(stamp);
+
+        CACHE_DELETER.accept(type);
+        styleMapper.updateByPrimaryKey(newActiveStyle);
+        styleMapper.updateByPrimaryKey(oldActiveStyle);
+        CACHE_DELETER.accept(type);
+
+        Map<Long, String> idAndNameMapping;
+        try {
+            idAndNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(newActiveStyle)))
+                    .toFuture().join().parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+        } catch (Exception e) {
+            LOGGER.error("StyleManagerInfo updateActiveStyle(Long id, Long operatorId), generate idAndNameMapping failed, e = {}", e);
+            idAndNameMapping = emptyMap();
+        }
+
+        return styleToStyleManagerInfo(newActiveStyle, ofNullable(idAndNameMapping.get(newActiveStyle.getCreator())).orElse(""),
+                ofNullable(idAndNameMapping.get(newActiveStyle.getUpdater())).orElse(""));
     }
 
     /**
@@ -366,33 +443,35 @@ public class StyleServiceImpl implements StyleService {
     }
 
     /**
-     * list active style by type
+     * list style by type
      *
      * @param styleType
      * @return
      */
     @Override
-    public List<Style> selectActiveStyleByType(Integer styleType) {
-        LOGGER.info("List<Style> selectActiveStyleByType(Integer styleType), styleType = {}", styleType);
+    public List<Style> selectByTypeAndActive(Integer styleType, Boolean isActive) {
+        LOGGER.info("List<Style> selectByTypeAndActive(Integer styleType, Boolean isActive), styleType = {}, isActive = {}",
+                styleType, isActive);
         assertBulletinType(styleType, false);
+        if (isNull(isActive))
+            throw new BlueException(INVALID_IDENTITY);
 
-        List<Style> styles = styleMapper.selectAllByCondition(styleType, VALID.status);
+        List<Style> styles = styleMapper.selectByTypeAndActive(styleType, isActive);
         LOGGER.info("List<Style> selectActiveStyleByType(Integer styleType), styles = {}", styles);
 
         return styles;
     }
 
     /**
-     * list style infos
+     * get active style
      *
      * @param styleType
      * @return
      */
     @Override
-    public Mono<List<StyleInfo>> selectStyleInfoMonoByType(Integer styleType) {
-        LOGGER.info("Mono<List<StyleInfo>> selectStyleInfoMonoByType(Integer styleType), styleType = {}", styleType);
-        assertStyleType(styleType, false);
-        return just(STYLE_INFOS_WITH_ALL_CACHE_GETTER.apply(styleType));
+    public Mono<StyleInfo> getActiveStyleInfoMonoByTypeWithCache(Integer styleType) {
+        LOGGER.info("Mono<StyleInfo> getActiveStyleInfoMonoByTypeWithCache(Integer styleType), styleType = {}", styleType);
+        return just(ACTIVE_STYLE_INFO_WITH_ALL_CACHE_GETTER.apply(styleType));
     }
 
     /**

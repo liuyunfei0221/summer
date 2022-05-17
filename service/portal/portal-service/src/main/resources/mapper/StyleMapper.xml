@@ -7,6 +7,7 @@
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="attributes" jdbcType="VARCHAR" property="attributes"/>
         <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="is_active" jdbcType="BIT" property="isActive"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
@@ -16,16 +17,17 @@
 
     <sql id="Base_Column_List">
         id
-        , name, attributes, type, status, create_time, update_time, creator, updater
+        , name, attributes, type, is_active, status, create_time, update_time, creator, updater
     </sql>
 
 
     <insert id="insert" parameterType="com.blue.portal.repository.entity.Style">
         insert into style (id, name, attributes,
-                           type, status, create_time,
+                           type, is_active, status, create_time,
                            update_time, creator, updater)
         values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{attributes,jdbcType=VARCHAR},
-                #{type,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
+                #{type,jdbcType=TINYINT}, #{isActive,jdbcType=BIT}, #{status,jdbcType=TINYINT},
+                #{createTime,jdbcType=BIGINT},
                 #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
     </insert>
 
@@ -43,6 +45,9 @@
             </if>
             <if test="type != null">
                 type,
+            </if>
+            <if test="isActive != null">
+                is_active,
             </if>
             <if test="status != null">
                 status,
@@ -73,6 +78,9 @@
             <if test="type != null">
                 #{type,jdbcType=TINYINT},
             </if>
+            <if test="isActive != null">
+                #{isActive,jdbcType=BIT},
+            </if>
             <if test="status != null">
                 #{status,jdbcType=TINYINT},
             </if>
@@ -96,6 +104,7 @@
         set name        = #{name,jdbcType=VARCHAR},
             attributes  = #{attributes,jdbcType=VARCHAR},
             type        = #{type,jdbcType=TINYINT},
+            is_active   = #{isActive,jdbcType=BIT},
             status      = #{status,jdbcType=TINYINT},
             create_time = #{createTime,jdbcType=BIGINT},
             update_time = #{updateTime,jdbcType=BIGINT},
@@ -115,6 +124,9 @@
             </if>
             <if test="type != null">
                 type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="isActive != null">
+                is_active= #{isActive,jdbcType=BIT},
             </if>
             <if test="status != null">
                 status = #{status,jdbcType=TINYINT},
@@ -167,19 +179,19 @@
         </foreach>
     </select>
 
-    <select id="selectAllByCondition" resultMap="BaseResultMap">
+    <select id="selectByTypeAndActive" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        style FORCE INDEX(idx_type_create)
+        style FORCE INDEX(idx_type_active_create)
         <where>
             <if test="type != null">
                 AND
                 type = #{type,jdbcType=TINYINT}
             </if>
-            <if test="status != null">
+            <if test="isActive != null">
                 AND
-                status = #{status,jdbcType=TINYINT}
+                is_active = #{isActive,jdbcType=BIT}
             </if>
         </where>
         ORDER BY
@@ -205,7 +217,10 @@
                     AND
                     status = #{styleCondition.status,jdbcType=TINYINT}
                 </if>
-
+                <if test="styleCondition.isActive != null">
+                    AND
+                    is_active = #{styleCondition.isActive,jdbcType=BIT}
+                </if>
                 <if test="styleCondition.createTimeBegin != null">
                     AND
                     create_time &gt;= #{styleCondition.createTimeBegin,jdbcType=BIGINT}

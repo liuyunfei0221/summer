@@ -92,7 +92,7 @@ public class BulletinServiceImpl implements BulletinService {
         this.stringRedisTemplate = stringRedisTemplate;
         this.synchronizedProcessor = synchronizedProcessor;
 
-        redisExpire = blueRedisConfig.getEntryTtl();
+        this.redisExpire = blueRedisConfig.getEntryTtl();
         CaffeineConf caffeineConf = new CaffeineConfParams(
                 caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
                 AFTER_WRITE, executorService);
@@ -102,7 +102,7 @@ public class BulletinServiceImpl implements BulletinService {
                 .forEach(BULLETIN_INFOS_WITH_ALL_CACHE_GETTER::apply);
     }
 
-    private static long redisExpire;
+    private long redisExpire;
 
     private final static TimeUnit EXPIRE_UNIT = TimeUnit.SECONDS;
 
@@ -298,8 +298,11 @@ public class BulletinServiceImpl implements BulletinService {
         bulletin.setCreator(operatorId);
         bulletin.setUpdater(operatorId);
 
+        Integer type = bulletin.getType();
+
+        CACHE_DELETER.accept(type);
         bulletinMapper.insert(bulletin);
-        CACHE_DELETER.accept(bulletin.getType());
+        CACHE_DELETER.accept(type);
 
         return BULLETIN_2_BULLETIN_INFO_CONVERTER.apply(bulletin);
     }
@@ -330,6 +333,7 @@ public class BulletinServiceImpl implements BulletinService {
             throw new BlueException(DATA_HAS_NOT_CHANGED);
         changedTypes.add(bulletin.getType());
 
+        changedTypes.forEach(CACHE_DELETER);
         bulletinMapper.updateByPrimaryKeySelective(bulletin);
         changedTypes.forEach(CACHE_DELETER);
 
@@ -352,8 +356,11 @@ public class BulletinServiceImpl implements BulletinService {
         if (isNull(bulletin))
             throw new BlueException(DATA_NOT_EXIST);
 
+        Integer type = bulletin.getType();
+
+        CACHE_DELETER.accept(type);
         bulletinMapper.deleteByPrimaryKey(id);
-        CACHE_DELETER.accept(bulletin.getType());
+        CACHE_DELETER.accept(type);
 
         return BULLETIN_2_BULLETIN_INFO_CONVERTER.apply(bulletin);
     }
@@ -431,9 +438,8 @@ public class BulletinServiceImpl implements BulletinService {
      * @return
      */
     @Override
-    public Mono<List<BulletinInfo>> selectBulletinInfoMonoByTypeWithCache(Integer bulletinType) {
+    public Mono<List<BulletinInfo>> selectActiveBulletinInfoMonoByTypeWithCache(Integer bulletinType) {
         LOGGER.info("Mono<List<BulletinInfo>> selectBulletin(Integer bulletinType), bulletinType = {}", bulletinType);
-        assertBulletinType(bulletinType, false);
         return just(BULLETIN_INFOS_WITH_ALL_CACHE_GETTER.apply(bulletinType));
     }
 

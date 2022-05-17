@@ -1455,6 +1455,7 @@ CREATE TABLE `style`
     `name`        varchar(128)  NOT NULL COMMENT 'style name',
     `attributes`  varchar(8192) NOT NULL COMMENT 'style attrtbutes',
     `type`        tinyint       NOT NULL COMMENT 'style type: 1-a 2-b 3-c',
+    `is_active`   bit           NOT NULL COMMENT 'is active style? 1-yes 0-no',
     `status`      tinyint       NOT NULL COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint        NOT NULL COMMENT 'data create time',
     `update_time` bigint        NOT NULL COMMENT 'data update time',
@@ -1462,7 +1463,7 @@ CREATE TABLE `style`
     `updater`     bigint        NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_name`(`name`) USING BTREE,
-    KEY           `idx_type_create`(`type`,`create_time`) USING BTREE
+    KEY           `idx_type_active_create`(`type`,`is_active`,`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of style';
 
 

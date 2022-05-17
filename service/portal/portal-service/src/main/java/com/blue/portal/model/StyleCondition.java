@@ -26,6 +26,8 @@ public final class StyleCondition extends SortCondition implements Serializable 
      */
     private Integer type;
 
+    private Boolean isActive;
+
     /**
      * @see com.blue.base.constant.base.Status
      */
@@ -47,12 +49,13 @@ public final class StyleCondition extends SortCondition implements Serializable 
         super(sortAttribute, sortType);
     }
 
-    public StyleCondition(Long id, String nameLike, Integer type, Integer status, Long createTimeBegin, Long createTimeEnd,
+    public StyleCondition(Long id, String nameLike, Integer type, Boolean isActive, Integer status, Long createTimeBegin, Long createTimeEnd,
                           Long creator, Long updater, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.nameLike = nameLike;
         this.type = type;
+        this.isActive = isActive;
         this.status = status;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
@@ -82,6 +85,14 @@ public final class StyleCondition extends SortCondition implements Serializable 
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
+
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 
     public Integer getStatus() {
@@ -130,6 +141,7 @@ public final class StyleCondition extends SortCondition implements Serializable 
                 "id=" + id +
                 ", nameLike='" + nameLike + '\'' +
                 ", type=" + type +
+                ", isActive=" + isActive +
                 ", status=" + status +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +

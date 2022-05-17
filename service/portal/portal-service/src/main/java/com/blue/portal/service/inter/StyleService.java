@@ -48,12 +48,13 @@ public interface StyleService {
     StyleInfo deleteStyle(Long id);
 
     /**
-     * insert style
+     * update active style by id
      *
-     * @param style
+     * @param id
+     * @param operatorId
      * @return
      */
-    int insertStyle(Style style);
+    StyleManagerInfo updateActiveStyle(Long id, Long operatorId);
 
     /**
      * expire style infos
@@ -86,20 +87,21 @@ public interface StyleService {
     Mono<List<Style>> selectStyle();
 
     /**
-     * list active style by type
+     * list style by type and active
      *
      * @param styleType
+     * @param isActive
      * @return
      */
-    List<Style> selectActiveStyleByType(Integer styleType);
+    List<Style> selectByTypeAndActive(Integer styleType, Boolean isActive);
 
     /**
-     * list style infos
+     * get active style
      *
      * @param styleType
      * @return
      */
-    Mono<List<StyleInfo>> selectStyleInfoMonoByType(Integer styleType);
+    Mono<StyleInfo> getActiveStyleInfoMonoByTypeWithCache(Integer styleType);
 
     /**
      * select style by page and condition
