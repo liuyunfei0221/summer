@@ -1,8 +1,7 @@
 package com.blue.member.remote.consumer;
 
 import com.blue.auth.api.inter.RpcRoleService;
-import com.blue.auth.api.model.MemberRoleRelationInfo;
-import com.blue.auth.api.model.RoleInfo;
+import com.blue.auth.api.model.MemberRoleInfo;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -46,8 +45,8 @@ public class RpcRoleServiceConsumer {
      * @param memberId
      * @return
      */
-    public Mono<RoleInfo> selectRoleInfoByMemberId(Long memberId) {
-        LOGGER.info("RoleInfo getRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
+    public Mono<MemberRoleInfo> selectRoleInfoByMemberId(Long memberId) {
+        LOGGER.info("Mono<MemberRoleInfo> selectRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
         return fromFuture(rpcRoleService.selectRoleInfoByMemberId(memberId)).subscribeOn(scheduler);
     }
 
@@ -57,8 +56,8 @@ public class RpcRoleServiceConsumer {
      * @param memberIds
      * @return
      */
-    public Mono<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
-        LOGGER.info("List<MemberRoleRelationInfo> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
+    public Mono<List<MemberRoleInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
+        LOGGER.info("Mono<List<MemberRoleInfo>> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
         return fromFuture(rpcRoleService.selectRoleInfoByMemberIds(memberIds)).subscribeOn(scheduler);
     }
 

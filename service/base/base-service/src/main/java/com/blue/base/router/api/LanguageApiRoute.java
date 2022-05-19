@@ -26,7 +26,7 @@ public class LanguageApiRoute {
         RequestPredicate pathPredicate = path("/blue-base");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("/languages", languageApiHandler::selectLanguage)
+                .GET("/languages", languageApiHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

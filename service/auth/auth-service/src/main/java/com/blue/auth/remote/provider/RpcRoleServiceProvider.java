@@ -7,7 +7,7 @@ import com.blue.auth.service.inter.MemberRoleRelationService;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.base.model.exps.BlueException;
 import com.blue.auth.api.inter.RpcRoleService;
-import com.blue.auth.api.model.MemberRoleRelationInfo;
+import com.blue.auth.api.model.MemberRoleInfo;
 import com.blue.auth.api.model.RoleInfo;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
@@ -76,7 +76,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
      * @return
      */
     @Override
-    public CompletableFuture<MemberRoleRelationInfo> selectRoleInfoByMemberId(Long memberId) {
+    public CompletableFuture<MemberRoleInfo> selectRoleInfoByMemberId(Long memberId) {
         LOGGER.info("CompletableFuture<MemberRoleRelationInfo> selectRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
         return just(memberId).subscribeOn(scheduler)
                 .flatMap(memberRoleRelationService::getRoleIdMonoByMemberId)
@@ -87,7 +87,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
                         roleOpt.map(role -> just(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(role))).orElseGet(() -> error(() -> new BlueException(DATA_NOT_EXIST)))
                 )
                 .flatMap(roleInfo ->
-                        just(new MemberRoleRelationInfo(memberId, roleInfo)))
+                        just(new MemberRoleInfo(memberId, roleInfo)))
                 .toFuture();
     }
 
@@ -98,7 +98,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
      * @return
      */
     @Override
-    public CompletableFuture<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
+    public CompletableFuture<List<MemberRoleInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
         LOGGER.info("CompletableFuture<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
         return just(memberIds).subscribeOn(scheduler)
                 .flatMap(memberRoleRelationService::selectRelationMonoByMemberIds)
@@ -108,13 +108,13 @@ public class RpcRoleServiceProvider implements RpcRoleService {
                                     Map<Long, Role> idAndRoleMapping = roles.stream().collect(toMap(Role::getId, r -> r, (a, b) -> a));
                                     return just(relations.stream()
                                             .map(rel -> {
-                                                MemberRoleRelationInfo memberRoleRelationInfo = new MemberRoleRelationInfo();
-                                                memberRoleRelationInfo.setMemberId(rel.getMemberId());
+                                                MemberRoleInfo memberRoleInfo = new MemberRoleInfo();
+                                                memberRoleInfo.setMemberId(rel.getMemberId());
 
                                                 Role role = idAndRoleMapping.get(rel.getRoleId());
                                                 if (role != null) {
-                                                    memberRoleRelationInfo.setRoleInfo(new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault()));
-                                                    return memberRoleRelationInfo;
+                                                    memberRoleInfo.setRoleInfo(new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault()));
+                                                    return memberRoleInfo;
                                                 }
 
                                                 LOGGER.error("the role with id {} can't be null", rel.getRoleId());

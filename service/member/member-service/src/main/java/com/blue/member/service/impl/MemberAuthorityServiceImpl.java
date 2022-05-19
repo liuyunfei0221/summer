@@ -1,6 +1,6 @@
 package com.blue.member.service.impl;
 
-import com.blue.auth.api.model.MemberRoleRelationInfo;
+import com.blue.auth.api.model.MemberRoleInfo;
 import com.blue.auth.api.model.RoleInfo;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.PageModelRequest;
@@ -95,7 +95,7 @@ public class MemberAuthorityServiceImpl implements MemberAuthorityService {
                     Mono<List<MemberAuthorityInfo>> memberAuthorityInfosMono = members.size() > 0 ?
                             rpcRoleServiceConsumer.selectRoleInfoByMemberIds(members.stream().map(MemberBasic::getId).collect(toList()))
                                     .flatMap(relationInfos -> {
-                                        Map<Long, RoleInfo> memberIdAndRoleInfoMapping = relationInfos.stream().collect(toMap(MemberRoleRelationInfo::getMemberId, MemberRoleRelationInfo::getRoleInfo, (a, b) -> b));
+                                        Map<Long, RoleInfo> memberIdAndRoleInfoMapping = relationInfos.stream().collect(toMap(MemberRoleInfo::getMemberId, MemberRoleInfo::getRoleInfo, (a, b) -> b));
                                         return just(members.stream()
                                                 .map(memberBasic ->
                                                         new MemberAuthorityInfo(MEMBER_BASIC_2_MEMBER_INFO.apply(memberBasic), memberIdAndRoleInfoMapping.get(memberBasic.getId()))

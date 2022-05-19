@@ -1,6 +1,6 @@
 package com.blue.auth.api.inter;
 
-import com.blue.auth.api.model.MemberRoleRelationInfo;
+import com.blue.auth.api.model.MemberRoleInfo;
 import com.blue.auth.api.model.RoleInfo;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public interface RpcRoleService {
      * @param memberId
      * @return
      */
-    CompletableFuture<MemberRoleRelationInfo> selectRoleInfoByMemberId(Long memberId);
+    CompletableFuture<MemberRoleInfo> selectRoleInfoByMemberId(Long memberId);
 
     /**
      * get member's roles info by member ids
@@ -35,6 +35,6 @@ public interface RpcRoleService {
      * @param memberIds
      * @return
      */
-    CompletableFuture<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds);
+    CompletableFuture<List<MemberRoleInfo>> selectRoleInfoByMemberIds(List<Long> memberIds);
 
 }

@@ -33,7 +33,7 @@ public final class LanguageApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> selectLanguage(ServerRequest serverRequest) {
+    public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return just(LANGUAGES)
                 .flatMap(ls ->
                         ok()

@@ -3,10 +3,12 @@ package com.blue.auth.api.model;
 import java.io.Serializable;
 
 /**
+ * member and role info
+ *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class MemberRoleRelationInfo implements Serializable {
+public final class MemberRoleInfo implements Serializable {
 
     private static final long serialVersionUID = -8445536816680117649L;
 
@@ -14,10 +16,10 @@ public final class MemberRoleRelationInfo implements Serializable {
 
     private RoleInfo roleInfo;
 
-    public MemberRoleRelationInfo() {
+    public MemberRoleInfo() {
     }
 
-    public MemberRoleRelationInfo(Long memberId, RoleInfo roleInfo) {
+    public MemberRoleInfo(Long memberId, RoleInfo roleInfo) {
         this.memberId = memberId;
         this.roleInfo = roleInfo;
     }
