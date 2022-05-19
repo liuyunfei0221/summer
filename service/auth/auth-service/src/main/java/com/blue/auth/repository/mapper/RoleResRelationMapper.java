@@ -27,8 +27,6 @@ public interface RoleResRelationMapper {
 
     int deleteByRoleId(Long roleId);
 
-    int deleteByResId(Long resId);
-
     RoleResRelation selectByPrimaryKey(Long id);
 
     List<RoleResRelation> select();

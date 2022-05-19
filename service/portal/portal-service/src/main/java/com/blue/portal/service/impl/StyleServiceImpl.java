@@ -111,15 +111,18 @@ public class StyleServiceImpl implements StyleService {
 
     private static final Function<Integer, String> STYLE_LOAD_SYNC_KEY_GEN = type -> STYLES_CACHE_PRE.prefix + type;
 
-    private final Consumer<Integer> CACHE_DELETER = type -> {
-        stringRedisTemplate.delete(STYLE_CACHE_KEY_GENERATOR.apply(type));
+    private final Consumer<Integer> REDIS_CACHE_DELETER = type ->
+            stringRedisTemplate.delete(STYLE_CACHE_KEY_GENERATOR.apply(type));
+
+    private final Consumer<Integer> ALL_CACHE_DELETER = type -> {
+        REDIS_CACHE_DELETER.accept(type);
         LOCAL_CACHE.invalidate(type);
     };
 
     private final Function<Integer, Style> ACTIVE_STYLE_DB_GETTER = type -> {
         assertStyleType(type, false);
 
-        List<Style> activeStyles = this.selectByTypeAndActive(type, true);
+        List<Style> activeStyles = this.selectByTypeAndActive(type, TRUE.bool);
         LOGGER.info("ACTIVE_STYLE_INFO_DB_GETTER, activeStyles = {}, type = {}", activeStyles, type);
 
         if (isEmpty(activeStyles))
@@ -140,7 +143,7 @@ public class StyleServiceImpl implements StyleService {
 
     private final BiConsumer<Integer, StyleInfo> ACTIVE_STYLE_INFO_REDIS_SETTER = (type, styleInfo) -> {
         String cacheKey = STYLE_CACHE_KEY_GENERATOR.apply(type);
-        CACHE_DELETER.accept(type);
+        REDIS_CACHE_DELETER.accept(type);
         stringRedisTemplate.opsForValue().set(cacheKey, GSON.toJson(styleInfo), expireDuration);
     };
 
@@ -283,7 +286,7 @@ public class StyleServiceImpl implements StyleService {
         style.setUpdater(operatorId);
 
         styleMapper.insert(style);
-        CACHE_DELETER.accept(style.getType());
+        ALL_CACHE_DELETER.accept(style.getType());
 
         return STYLE_2_STYLE_INFO_CONVERTER.apply(style);
     }
@@ -315,7 +318,7 @@ public class StyleServiceImpl implements StyleService {
         changedTypes.add(style.getType());
 
         styleMapper.updateByPrimaryKeySelective(style);
-        changedTypes.forEach(CACHE_DELETER);
+        changedTypes.forEach(ALL_CACHE_DELETER);
 
         return STYLE_2_STYLE_INFO_CONVERTER.apply(style);
     }
@@ -337,7 +340,7 @@ public class StyleServiceImpl implements StyleService {
             throw new BlueException(DATA_NOT_EXIST);
 
         styleMapper.deleteByPrimaryKey(id);
-        CACHE_DELETER.accept(style.getType());
+        ALL_CACHE_DELETER.accept(style.getType());
 
         return STYLE_2_STYLE_INFO_CONVERTER.apply(style);
     }
@@ -375,10 +378,10 @@ public class StyleServiceImpl implements StyleService {
         oldActiveStyle.setUpdater(operatorId);
         oldActiveStyle.setUpdateTime(stamp);
 
-        CACHE_DELETER.accept(type);
+        ALL_CACHE_DELETER.accept(type);
         styleMapper.updateByPrimaryKey(newActiveStyle);
         styleMapper.updateByPrimaryKey(oldActiveStyle);
-        CACHE_DELETER.accept(type);
+        ALL_CACHE_DELETER.accept(type);
 
         Map<Long, String> idAndNameMapping;
         try {
@@ -402,7 +405,7 @@ public class StyleServiceImpl implements StyleService {
     public void invalidStyleInfosCache() {
         of(StyleType.values())
                 .forEach(type ->
-                        CACHE_DELETER.accept(type.identity));
+                        ALL_CACHE_DELETER.accept(type.identity));
     }
 
     /**

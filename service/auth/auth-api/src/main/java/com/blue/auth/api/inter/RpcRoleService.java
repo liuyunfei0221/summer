@@ -27,7 +27,7 @@ public interface RpcRoleService {
      * @param memberId
      * @return
      */
-    CompletableFuture<RoleInfo> selectRoleInfoByMemberId(Long memberId);
+    CompletableFuture<MemberRoleRelationInfo> selectRoleInfoByMemberId(Long memberId);
 
     /**
      * get member's roles info by member ids

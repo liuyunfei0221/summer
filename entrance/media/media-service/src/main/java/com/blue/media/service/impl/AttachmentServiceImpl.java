@@ -207,7 +207,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         return zip(
                 selectAttachmentMonoByLimitAndMemberId(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberId),
                 countAttachmentMonoByMemberId(memberId),
-                rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(memberId)
+                rpcMemberBasicServiceConsumer.getMemberBasicInfoMonoByPrimaryKey(memberId)
         ).flatMap(tuple3 -> {
             List<Attachment> attachments = tuple3.getT1();
             String memberName = tuple3.getT3().getName();

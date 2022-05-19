@@ -114,7 +114,7 @@ public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
                                         .flatMap(credentialOpt ->
                                                 credentialOpt.map(credential -> {
                                                             extra.put(NEW_MEMBER.key, false);
-                                                            return rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(credential.getMemberId())
+                                                            return rpcMemberBasicServiceConsumer.getMemberBasicInfoMonoByPrimaryKey(credential.getMemberId())
                                                                     .flatMap(mbi -> {
                                                                         MEMBER_STATUS_ASSERTER.accept(mbi);
                                                                         return authService.generateAuthMono(mbi.getId(), PHONE_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());

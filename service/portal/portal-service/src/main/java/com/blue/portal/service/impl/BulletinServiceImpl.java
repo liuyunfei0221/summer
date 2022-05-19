@@ -112,8 +112,11 @@ public class BulletinServiceImpl implements BulletinService {
 
     private static final Function<Integer, String> PORTAL_LOAD_SYNC_KEY_GEN = type -> BULLETINS_CACHE_PRE.prefix + type;
 
-    private final Consumer<Integer> CACHE_DELETER = type -> {
-        stringRedisTemplate.delete(BULLETIN_CACHE_KEY_GENERATOR.apply(type));
+    private final Consumer<Integer> REDIS_CACHE_DELETER = type ->
+            stringRedisTemplate.delete(BULLETIN_CACHE_KEY_GENERATOR.apply(type));
+
+    private final Consumer<Integer> ALL_CACHE_DELETER = type -> {
+        REDIS_CACHE_DELETER.accept(type);
         LOCAL_CACHE.invalidate(type);
     };
 
@@ -130,7 +133,7 @@ public class BulletinServiceImpl implements BulletinService {
 
     private final BiConsumer<Integer, List<BulletinInfo>> BULLETIN_INFOS_REDIS_SETTER = (type, bulletinInfos) -> {
         String cacheKey = BULLETIN_CACHE_KEY_GENERATOR.apply(type);
-        CACHE_DELETER.accept(type);
+        REDIS_CACHE_DELETER.accept(type);
         stringRedisTemplate.opsForList().rightPushAll(cacheKey, bulletinInfos.stream().map(GSON::toJson).collect(toList()));
         stringRedisTemplate.expire(cacheKey, redisExpire, EXPIRE_UNIT);
     };
@@ -300,9 +303,9 @@ public class BulletinServiceImpl implements BulletinService {
 
         Integer type = bulletin.getType();
 
-        CACHE_DELETER.accept(type);
+        ALL_CACHE_DELETER.accept(type);
         bulletinMapper.insert(bulletin);
-        CACHE_DELETER.accept(type);
+        ALL_CACHE_DELETER.accept(type);
 
         return BULLETIN_2_BULLETIN_INFO_CONVERTER.apply(bulletin);
     }
@@ -333,9 +336,9 @@ public class BulletinServiceImpl implements BulletinService {
             throw new BlueException(DATA_HAS_NOT_CHANGED);
         changedTypes.add(bulletin.getType());
 
-        changedTypes.forEach(CACHE_DELETER);
+        changedTypes.forEach(ALL_CACHE_DELETER);
         bulletinMapper.updateByPrimaryKeySelective(bulletin);
-        changedTypes.forEach(CACHE_DELETER);
+        changedTypes.forEach(ALL_CACHE_DELETER);
 
         return BULLETIN_2_BULLETIN_INFO_CONVERTER.apply(bulletin);
     }
@@ -358,9 +361,9 @@ public class BulletinServiceImpl implements BulletinService {
 
         Integer type = bulletin.getType();
 
-        CACHE_DELETER.accept(type);
+        ALL_CACHE_DELETER.accept(type);
         bulletinMapper.deleteByPrimaryKey(id);
-        CACHE_DELETER.accept(type);
+        ALL_CACHE_DELETER.accept(type);
 
         return BULLETIN_2_BULLETIN_INFO_CONVERTER.apply(bulletin);
     }
@@ -374,7 +377,7 @@ public class BulletinServiceImpl implements BulletinService {
     public void invalidBulletinInfosCache() {
         of(BulletinType.values())
                 .forEach(type ->
-                        CACHE_DELETER.accept(type.identity));
+                        ALL_CACHE_DELETER.accept(type.identity));
     }
 
     /**

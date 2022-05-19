@@ -223,27 +223,6 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     }
 
     /**
-     * delete relation by resource id
-     *
-     * @param resId
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public int deleteRelationByResId(Long resId) {
-        LOGGER.info("void deleteRelationByResId(Long resId), resId = {}", resId);
-        if (isInvalidIdentity(resId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        CACHE_DELETER.accept(ROLE_RES_RELS.key);
-        int count = roleResRelationMapper.deleteByResId(resId);
-        CACHE_DELETER.accept(ROLE_RES_RELS.key);
-
-        LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
-        return count;
-    }
-
-    /**
      * update authority base on role / generate role-resource-relations
      *
      * @param roleId
@@ -541,12 +520,12 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    public Mono<List<RoleResRelation>> selectRelationByResId(Long resId) {
-        LOGGER.info("Mono<List<RoleResRelation>> selectRelationByResId(Long resId), resId = {}", resId);
+    public List<RoleResRelation> selectRelationByResId(Long resId) {
+        LOGGER.info("List<RoleResRelation> selectRelationByResId(Long resId), resId = {}", resId);
         if (isInvalidIdentity(resId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(roleResRelationMapper.selectByResId(resId));
+        return roleResRelationMapper.selectByResId(resId);
     }
 
     /**

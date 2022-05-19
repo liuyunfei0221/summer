@@ -93,6 +93,9 @@ data:
     - id: 1
       index: 1
   forceWriteTables:
+    - tableName: undo_log
+      dataCenter: 0
+      worker: 0
   broadcastTables: [ ]
   singleDatabasesWithTables:
     - url: jdbc:mysql://192.168.182.132:3306/member
@@ -108,16 +111,29 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-      singleTables: [ undo_log ]
-  cacheEnabled: false
-  lazyLoadingEnabled: false
+      singleTables: [ ]
+  safeRowBoundsEnabled: false
+  safeResultHandlerEnabled: false
+  mapUnderscoreToCamelCase: false
   aggressiveLazyLoading: false
   multipleResultSetsEnabled: false
-  useColumnLabel: true
   useGeneratedKeys: false
-  connectionTimeout: 30000
+  useColumnLabel: true
+  cacheEnabled: false
+  callSettersOnNulls: false
+  useActualParamName: false
+  returnInstanceForEmptyRow: false
+  shrinkWhitespacesInSql: false
+  nullableOnForEach: false
+  localCacheScope: SESSION
+  jdbcTypeForNull:
+  defaultStatementTimeout: 30000
+  defaultFetchSize: 100
+  defaultResultSetType: DEFAULT
+  defaultExecutorType: BATCH
   autoMappingBehavior: FULL
-  executorType: BATCH
+  autoMappingUnknownColumnBehavior: FAILING
+  lazyLoadingEnabled: false
   mapperLocation: classpath:mapper/*.xml
   props:
     sql.show: true

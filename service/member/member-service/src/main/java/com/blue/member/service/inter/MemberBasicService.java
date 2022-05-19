@@ -40,7 +40,7 @@ public interface MemberBasicService {
      * @param phone
      * @return
      */
-    Optional<MemberBasic> selectMemberBasicByPhone(String phone);
+    Optional<MemberBasic> getMemberBasicByPhone(String phone);
 
     /**
      * query member by email
@@ -72,7 +72,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    Mono<MemberBasicInfo> getMemberInfoMonoWithAssert(Long id);
+    Mono<MemberBasicInfo> getMemberBasicInfoMonoWithAssert(Long id);
 
     /**
      * insert member

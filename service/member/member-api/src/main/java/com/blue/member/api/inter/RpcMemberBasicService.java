@@ -14,12 +14,12 @@ import java.util.concurrent.CompletableFuture;
 public interface RpcMemberBasicService {
 
     /**
-     * query member by id
+     * get member by id
      *
      * @param id
      * @return
      */
-    CompletableFuture<MemberBasicInfo> selectMemberBasicInfoMonoByPrimaryKey(Long id);
+    CompletableFuture<MemberBasicInfo> getMemberBasicInfoMonoByPrimaryKey(Long id);
 
     /**
      * select member basic by ids
@@ -30,19 +30,19 @@ public interface RpcMemberBasicService {
     CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids);
 
     /**
-     * query member basic by phone
+     * get member basic by phone
      *
      * @param phone
      * @return
      */
-    CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByPhone(String phone);
+    CompletableFuture<MemberBasicInfo> getMemberBasicInfoByPhone(String phone);
 
     /**
-     * query member basic by email
+     * get member basic by email
      *
      * @param email
      * @return
      */
-    CompletableFuture<MemberBasicInfo> selectMemberBasicInfoByEmail(String email);
+    CompletableFuture<MemberBasicInfo> getMemberBasicInfoByEmail(String email);
 
 }

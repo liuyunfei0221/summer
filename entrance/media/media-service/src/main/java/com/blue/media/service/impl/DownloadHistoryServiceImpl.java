@@ -209,7 +209,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         return zip(
                 selectDownloadHistoryMonoByLimitAndMemberId(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberId),
                 countDownloadHistoryMonoByMemberId(memberId),
-                rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(memberId)
+                rpcMemberBasicServiceConsumer.getMemberBasicInfoMonoByPrimaryKey(memberId)
         ).flatMap(tuple3 -> {
             List<DownloadHistory> downloadHistories = tuple3.getT1();
             String memberName = tuple3.getT3().getName();

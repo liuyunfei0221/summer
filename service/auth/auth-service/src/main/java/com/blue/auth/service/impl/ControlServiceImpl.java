@@ -11,6 +11,7 @@ import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.repository.entity.MemberRoleRelation;
 import com.blue.auth.repository.entity.Role;
+import com.blue.auth.repository.entity.RoleResRelation;
 import com.blue.auth.service.inter.*;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.common.base.ConstantProcessor;
@@ -820,12 +821,13 @@ public class ControlServiceImpl implements ControlService {
 
         assertRoleLevelForOperate(getRoleByRoleId(id).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
-        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
-                roleService.deleteRole(id)))
-                .doOnSuccess(ri -> {
-                    LOGGER.info("ri = {}", ri);
-                    systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
-                });
+        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
+            roleResRelationService.deleteRelationByRoleId(id);
+            return roleService.deleteRole(id);
+        })).doOnSuccess(ri -> {
+            LOGGER.info("ri = {}", ri);
+            systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
+        });
     }
 
     /**
@@ -862,7 +864,7 @@ public class ControlServiceImpl implements ControlService {
 
         Long resId = resourceUpdateParam.getId();
         if (isInvalidIdentity(resId))
-            throw new BlueException(UNAUTHORIZED);
+            throw new BlueException(INVALID_IDENTITY);
 
         roleResRelationService.getHighestLevelRoleByResourceId(resId).
                 ifPresent(hr -> assertRoleLevelForOperate(hr.getLevel(), getRoleByMemberId(operatorId).getLevel()));
@@ -890,15 +892,18 @@ public class ControlServiceImpl implements ControlService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        roleResRelationService.getHighestLevelRoleByResourceId(id).
-                ifPresent(hr -> assertRoleLevelForOperate(hr.getLevel(), getRoleByMemberId(operatorId).getLevel()));
+        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
+            List<RoleResRelation> relations = roleResRelationService.selectRelationByResId(id);
+            if (isNotEmpty(relations))
+                throw new BlueException(RESOURCE_STILL_USED, new String[]{
+                        roleService.selectRoleByIds(relations.stream().map(RoleResRelation::getRoleId).collect(toList()))
+                                .stream().map(Role::getName).reduce((a, b) -> a + "," + b).orElse("")});
 
-        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
-                resourceService.deleteResource(id)))
-                .doOnSuccess(ri -> {
-                    LOGGER.info("ri = {}", ri);
-                    systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
-                });
+            return resourceService.deleteResource(id);
+        })).doOnSuccess(ri -> {
+            LOGGER.info("ri = {}", ri);
+            systemAuthorityInfosRefreshProducer.send(NON_VALUE_PARAM);
+        });
     }
 
     /**
@@ -1030,7 +1035,7 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(INVALID_IDENTITY);
         assertRoleLevelForOperate(getRoleByMemberId(memberId).getLevel(), getRoleByMemberId(operatorId).getLevel());
 
-        return zip(rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByPrimaryKey(memberId),
+        return zip(rpcMemberBasicServiceConsumer.getMemberBasicInfoMonoByPrimaryKey(memberId),
                 credentialHistoryService.selectCredentialHistoryInfoMonoByMemberIdWithLimit(memberId),
                 securityQuestionService.selectSecurityQuestionInfoMonoByMemberId(memberId)
         ).flatMap(tuple3 -> just(new MemberSecurityInfo(memberId, tuple3.getT1().getName(), tuple3.getT2(), tuple3.getT3())));

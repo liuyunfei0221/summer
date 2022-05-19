@@ -5,19 +5,32 @@ package com.blue.database.api.conf;
  *
  * @author liuyunfei
  */
-public final class ForceWriteTableAttr extends ShardingTableAttr {
+public final class ForceWriteTableAttr {
 
     /**
-     * data center id
+     * table name
+     */
+    private transient String tableName;
+
+    /**
+     * data center
      */
     private transient Integer dataCenter;
 
     /**
-     * worker id
+     * worker
      */
     private transient Integer worker;
 
     public ForceWriteTableAttr() {
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     public Integer getDataCenter() {
@@ -40,9 +53,9 @@ public final class ForceWriteTableAttr extends ShardingTableAttr {
     public String toString() {
         return "ForceWriteTableAttr{" +
                 "tableName='" + tableName + '\'' +
-                ", shardingColumn='" + shardingColumn + '\'' +
-                "dataCenter=" + dataCenter +
+                ", dataCenter=" + dataCenter +
                 ", worker=" + worker +
                 '}';
     }
+
 }

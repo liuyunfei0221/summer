@@ -145,7 +145,7 @@ public final class PortalModelConverters {
         if (isNull(style))
             throw new BlueException(EMPTY_PARAM);
 
-        return new StyleManagerInfo(style.getId(), style.getName(), style.getAttributes(), style.getType(), style.getStatus(),
+        return new StyleManagerInfo(style.getId(), style.getName(), style.getAttributes(), style.getType(), style.getIsActive(), style.getStatus(),
                 style.getCreateTime(), style.getUpdateTime(), style.getCreator(), isNotBlank(creatorName) ? creatorName : "",
                 style.getUpdater(), isNotBlank(updaterName) ? updaterName : "");
     }

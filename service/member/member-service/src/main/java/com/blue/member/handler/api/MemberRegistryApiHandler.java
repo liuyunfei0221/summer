@@ -48,5 +48,4 @@ public final class MemberRegistryApiHandler {
                                 .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
     }
 
-
 }

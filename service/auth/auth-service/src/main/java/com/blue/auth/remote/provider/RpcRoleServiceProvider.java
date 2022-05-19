@@ -76,8 +76,8 @@ public class RpcRoleServiceProvider implements RpcRoleService {
      * @return
      */
     @Override
-    public CompletableFuture<RoleInfo> selectRoleInfoByMemberId(Long memberId) {
-        LOGGER.info("CompletableFuture<RoleInfo> selectRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
+    public CompletableFuture<MemberRoleRelationInfo> selectRoleInfoByMemberId(Long memberId) {
+        LOGGER.info("CompletableFuture<MemberRoleRelationInfo> selectRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
         return just(memberId).subscribeOn(scheduler)
                 .flatMap(memberRoleRelationService::getRoleIdMonoByMemberId)
                 .flatMap(roleIdOpt ->
@@ -85,7 +85,10 @@ public class RpcRoleServiceProvider implements RpcRoleService {
                 )
                 .flatMap(roleOpt ->
                         roleOpt.map(role -> just(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(role))).orElseGet(() -> error(() -> new BlueException(DATA_NOT_EXIST)))
-                ).toFuture();
+                )
+                .flatMap(roleInfo ->
+                        just(new MemberRoleRelationInfo(memberId, roleInfo)))
+                .toFuture();
     }
 
     /**

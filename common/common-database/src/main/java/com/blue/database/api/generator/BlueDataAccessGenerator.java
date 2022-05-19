@@ -3,11 +3,10 @@ package com.blue.database.api.generator;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
 import com.blue.database.api.conf.*;
-import com.blue.database.common.DatabaseForceAlgorithm;
 import com.blue.database.common.DatabaseShardingAlgorithm;
-import com.blue.database.common.TableForceAlgorithm;
 import com.blue.database.common.TableShardingAlgorithm;
 import com.blue.identity.api.conf.IdentityConf;
+import com.blue.identity.core.exp.IdentityException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
@@ -23,7 +22,6 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionManager;
 
@@ -33,7 +31,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.MathProcessor.assertDisorderIntegerContinuous;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.Symbol.*;
@@ -98,15 +97,29 @@ public final class BlueDataAccessGenerator {
     public static SqlSessionFactory generateSqlSessionFactory(DataSource dataSource, DataAccessConf dataAccessConf) {
         org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
 
-        ofNullable(dataAccessConf.getCacheEnabled()).ifPresent(configuration::setCacheEnabled);
-        ofNullable(dataAccessConf.getLazyLoadingEnabled()).ifPresent(configuration::setLazyLoadingEnabled);
+        ofNullable(dataAccessConf.getSafeRowBoundsEnabled()).ifPresent(configuration::setSafeRowBoundsEnabled);
+        ofNullable(dataAccessConf.getSafeResultHandlerEnabled()).ifPresent(configuration::setSafeResultHandlerEnabled);
+        ofNullable(dataAccessConf.getMapUnderscoreToCamelCase()).ifPresent(configuration::setMapUnderscoreToCamelCase);
         ofNullable(dataAccessConf.getAggressiveLazyLoading()).ifPresent(configuration::setAggressiveLazyLoading);
         ofNullable(dataAccessConf.getMultipleResultSetsEnabled()).ifPresent(configuration::setMultipleResultSetsEnabled);
-        ofNullable(dataAccessConf.getUseColumnLabel()).ifPresent(configuration::setUseColumnLabel);
         ofNullable(dataAccessConf.getUseGeneratedKeys()).ifPresent(configuration::setUseGeneratedKeys);
-        ofNullable(dataAccessConf.getConnectionTimeout()).ifPresent(configuration::setDefaultStatementTimeout);
+        ofNullable(dataAccessConf.getUseColumnLabel()).ifPresent(configuration::setUseColumnLabel);
+        ofNullable(dataAccessConf.getCacheEnabled()).ifPresent(configuration::setCacheEnabled);
+        ofNullable(dataAccessConf.getCallSettersOnNulls()).ifPresent(configuration::setCallSettersOnNulls);
+        ofNullable(dataAccessConf.getUseActualParamName()).ifPresent(configuration::setUseActualParamName);
+        ofNullable(dataAccessConf.getReturnInstanceForEmptyRow()).ifPresent(configuration::setReturnInstanceForEmptyRow);
+        ofNullable(dataAccessConf.getShrinkWhitespacesInSql()).ifPresent(configuration::setShrinkWhitespacesInSql);
+        ofNullable(dataAccessConf.getNullableOnForEach()).ifPresent(configuration::setNullableOnForEach);
+        ofNullable(dataAccessConf.getLocalCacheScope()).ifPresent(configuration::setLocalCacheScope);
+        ofNullable(dataAccessConf.getJdbcTypeForNull()).ifPresent(configuration::setJdbcTypeForNull);
+        ofNullable(dataAccessConf.getDefaultStatementTimeout()).ifPresent(configuration::setDefaultStatementTimeout);
+        ofNullable(dataAccessConf.getDefaultFetchSize()).ifPresent(configuration::setDefaultFetchSize);
+        ofNullable(dataAccessConf.getDefaultResultSetType()).ifPresent(configuration::setDefaultResultSetType);
+        ofNullable(dataAccessConf.getDefaultExecutorType()).ifPresent(configuration::setDefaultExecutorType);
         ofNullable(dataAccessConf.getAutoMappingBehavior()).ifPresent(configuration::setAutoMappingBehavior);
-        ofNullable(dataAccessConf.getExecutorType()).ifPresent(configuration::setDefaultExecutorType);
+        ofNullable(dataAccessConf.getAutoMappingUnknownColumnBehavior()).ifPresent(configuration::setAutoMappingUnknownColumnBehavior);
+        ofNullable(dataAccessConf.getLazyLoadingEnabled()).ifPresent(configuration::setLazyLoadingEnabled);
+
         if (ofNullable(dataAccessConf.getDebugLogging()).orElse(false))
             configuration.setLogImpl(StdOutImpl.class);
 
@@ -115,8 +128,7 @@ public final class BlueDataAccessGenerator {
         sqlSessionFactoryBean.setDataSource(dataSource);
 
         try {
-            ResourcePatternResolver resourceLoader = new PathMatchingResourcePatternResolver();
-            sqlSessionFactoryBean.setMapperLocations(resourceLoader.getResources(dataAccessConf.getMapperLocation()));
+            sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(dataAccessConf.getMapperLocation()));
         } catch (IOException e) {
             LOGGER.error("invalid mapper.xml path, e = {}", e);
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid mapper.xml path");
@@ -362,37 +374,36 @@ public final class BlueDataAccessGenerator {
                     String expression = shardingLogicDataBaseName + "_$->{0.." + maxDataBaseIndex + "}." + logicTableName + "_$->{0.." + maxTableIndex + "}";
 
                     TableRuleConfiguration conf = new TableRuleConfiguration(logicTableName, expression);
-                    conf.setDatabaseShardingStrategyConfig(new StandardShardingStrategyConfiguration(shardingColumn, new DatabaseShardingAlgorithm(shardingLogicDataBaseName, dataCenterToDatabaseMappings)));
-                    conf.setTableShardingStrategyConfig(new StandardShardingStrategyConfiguration(shardingColumn, new TableShardingAlgorithm(logicTableName, workerToTableMappings)));
+                    conf.setDatabaseShardingStrategyConfig(
+                            new StandardShardingStrategyConfiguration(shardingColumn,
+                                    new DatabaseShardingAlgorithm(shardingLogicDataBaseName, dataCenterToDatabaseMappings)));
+                    conf.setTableShardingStrategyConfig(
+                            new StandardShardingStrategyConfiguration(shardingColumn,
+                                    new TableShardingAlgorithm(logicTableName, workerToTableMappings)));
 
                     return conf;
                 }).collect(toList()));
 
         ofNullable(dataAccessConf.getForceWriteTables())
                 .filter(fwts -> fwts.size() > 0)
-                .ifPresent(fwts ->
-                        shardingRuleConfiguration.getTableRuleConfigs().addAll(
-                                fwts.stream().distinct().map(tableAttr -> {
-                                    String logicTableName = tableAttr.getTableName();
-                                    if (isBlank(logicTableName))
-                                        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "logicTableName can't be blank");
+                .ifPresent(fwts -> {
+                            ShardingStrategyConfiguration noneShardingStrategyConfiguration = new NoneShardingStrategyConfiguration();
+                            shardingRuleConfiguration.getTableRuleConfigs().addAll(
+                                    fwts.stream().distinct().map(tableAttr -> {
+                                        String logicTableName = tableAttr.getTableName();
+                                        if (isBlank(logicTableName))
+                                            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "logicTableName can't be blank");
 
-                                    String shardingColumn = tableAttr.getShardingColumn();
-                                    if (isBlank(shardingColumn))
-                                        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingColumn can't be blank");
+                                        TableRuleConfiguration conf = new TableRuleConfiguration(logicTableName,
+                                                parseForceDbName(shardingLogicDataBaseName, dataCenterToDatabaseMappings, tableAttr.getDataCenter()) +
+                                                        SCHEME_SEPARATOR.identity +
+                                                        parseForceTableName(logicTableName, workerToTableMappings, tableAttr.getWorker()));
+                                        conf.setDatabaseShardingStrategyConfig(noneShardingStrategyConfiguration);
+                                        conf.setTableShardingStrategyConfig(noneShardingStrategyConfiguration);
 
-                                    String expression = shardingLogicDataBaseName + "_$->{0.." + maxDataBaseIndex + "}." + logicTableName + "_$->{0.." + maxTableIndex + "}";
-
-                                    TableRuleConfiguration conf = new TableRuleConfiguration(logicTableName, expression);
-                                    conf.setDatabaseShardingStrategyConfig(
-                                            new StandardShardingStrategyConfiguration(shardingColumn,
-                                                    new DatabaseForceAlgorithm(shardingLogicDataBaseName, dataCenterToDatabaseMappings, dataCenter)));
-                                    conf.setTableShardingStrategyConfig(
-                                            new StandardShardingStrategyConfiguration(shardingColumn,
-                                                    new TableForceAlgorithm(logicTableName, workerToTableMappings, worker)));
-
-                                    return conf;
-                                }).collect(toList()))
+                                        return conf;
+                                    }).collect(toList()));
+                        }
                 );
 
         ofNullable(dataAccessConf.getBroadcastTables())
@@ -415,7 +426,9 @@ public final class BlueDataAccessGenerator {
      * @param dataAccessConf
      * @param identityConf
      */
-    private static void processSingleDb(ShardingRuleConfiguration shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf dataAccessConf, IdentityConf identityConf, List<UnaryOperator<DataSource>> singleProxiesChain) {
+    private static void processSingleDb(ShardingRuleConfiguration
+                                                shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf
+                                                dataAccessConf, IdentityConf identityConf, List<UnaryOperator<DataSource>> singleProxiesChain) {
         if (isNull(shardingRuleConfiguration) || isNull(dataSources) || isNull(existDatabases) || isNull(dataAccessConf) || isNull(identityConf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingRuleConfiguration or dataSources or existDatabases or dataAccessConf or identityConf can't be null");
 
@@ -484,6 +497,74 @@ public final class BlueDataAccessGenerator {
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database name can't be blank, dataBaseName = " + dataBaseName);
 
         return dataBaseName;
+    }
+
+    /**
+     * parst force write db name
+     *
+     * @param logicDataBaseName
+     * @param dataCenterToDatabaseMappings
+     * @param dataCenter
+     * @return
+     */
+    private static String parseForceDbName(String logicDataBaseName, List<IdentityToShardingMappingAttr> dataCenterToDatabaseMappings, Integer dataCenter) {
+        if (BlueChecker.isBlank(logicDataBaseName))
+            throw new IdentityException("logicDataBaseName can't be blank");
+        if (isNull(dataCenter) || dataCenter < 0)
+            return logicDataBaseName;
+
+        if (BlueChecker.isEmpty(dataCenterToDatabaseMappings))
+            throw new IdentityException("dataCenterToDatabaseMappings can't be empty");
+
+        Integer id;
+        Integer index;
+        for (IdentityToShardingMappingAttr attr : dataCenterToDatabaseMappings) {
+            id = attr.getId();
+            index = attr.getIndex();
+            if (isNull(id) || id < 0)
+                throw new IdentityException("id can't be less than 0");
+            if (isNull(index) || index < 0)
+                throw new IdentityException("index can't be less than 0");
+
+            if (dataCenter.equals(id))
+                return logicDataBaseName + PAR_CONCATENATION.identity + index;
+        }
+
+        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "mappings has no data center id " + dataCenter);
+    }
+
+    /**
+     * parst force write table name
+     *
+     * @param logicTableName
+     * @param workerToTableMappings
+     * @param worker
+     * @return
+     */
+    private static String parseForceTableName(String logicTableName, List<IdentityToShardingMappingAttr> workerToTableMappings, Integer worker) {
+        if (BlueChecker.isBlank(logicTableName))
+            throw new IdentityException("logicTableName can't be blank");
+        if (isNull(worker) || worker < 0)
+            return logicTableName;
+
+        if (BlueChecker.isEmpty(workerToTableMappings))
+            throw new IdentityException("workerToTableMappings can't be empty");
+
+        Integer id;
+        Integer index;
+        for (IdentityToShardingMappingAttr attr : workerToTableMappings) {
+            id = attr.getId();
+            index = attr.getIndex();
+            if (isNull(id) || id < 0)
+                throw new IdentityException("id can't be less than 0");
+            if (isNull(index) || index < 0)
+                throw new IdentityException("index can't be less than 0");
+
+            if (worker.equals(id))
+                return logicTableName + PAR_CONCATENATION.identity + index;
+        }
+
+        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "mappings has no worker id " + worker);
     }
 
     /**

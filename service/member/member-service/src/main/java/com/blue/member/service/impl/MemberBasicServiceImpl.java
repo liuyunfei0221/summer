@@ -130,7 +130,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Optional<MemberBasic> selectMemberBasicByPhone(String phone) {
+    public Optional<MemberBasic> getMemberBasicByPhone(String phone) {
         LOGGER.info("Optional<MemberBasic> getMemberBasicByPhone(String phone), phone = {}", phone);
         if (isBlank(phone))
             throw new BlueException(BAD_REQUEST);
@@ -190,7 +190,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> getMemberInfoMonoWithAssert(Long id) {
+    public Mono<MemberBasicInfo> getMemberBasicInfoMonoWithAssert(Long id) {
         LOGGER.info("Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);

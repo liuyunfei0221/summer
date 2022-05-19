@@ -15,7 +15,17 @@ public enum DictKey {
     /**
      * email
      */
-    EMAIL("EMAIL");
+    EMAIL("EMAIL"),
+
+    /**
+     * role
+     */
+    ROLE("ROLE"),
+
+    /**
+     * roles
+     */
+    ROLES("ROLES");
 
     public final String key;
 

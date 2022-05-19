@@ -111,15 +111,28 @@ data:
       readOnly: false
       autoCommit: false
       singleTables: [ resource,role,role_res_relation,undo_log ]
-  cacheEnabled: false
-  lazyLoadingEnabled: false
+  safeRowBoundsEnabled: false
+  safeResultHandlerEnabled: false
+  mapUnderscoreToCamelCase: false
   aggressiveLazyLoading: false
   multipleResultSetsEnabled: false
-  useColumnLabel: true
   useGeneratedKeys: false
-  connectionTimeout: 30000
+  useColumnLabel: true
+  cacheEnabled: false
+  callSettersOnNulls: false
+  useActualParamName: false
+  returnInstanceForEmptyRow: false
+  shrinkWhitespacesInSql: false
+  nullableOnForEach: false
+  localCacheScope: SESSION
+  jdbcTypeForNull:
+  defaultStatementTimeout: 30000
+  defaultFetchSize: 100
+  defaultResultSetType: DEFAULT
+  defaultExecutorType: BATCH
   autoMappingBehavior: FULL
-  executorType: BATCH
+  autoMappingUnknownColumnBehavior: FAILING
+  lazyLoadingEnabled: false
   mapperLocation: classpath:mapper/*.xml
   props:
     sql.show: true

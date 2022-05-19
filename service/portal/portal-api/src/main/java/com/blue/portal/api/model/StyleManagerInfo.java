@@ -21,6 +21,8 @@ public final class StyleManagerInfo implements Serializable {
 
     private Integer type;
 
+    private Boolean isActive;
+
     /**
      * @see com.blue.base.constant.base.Status
      */
@@ -41,12 +43,13 @@ public final class StyleManagerInfo implements Serializable {
     public StyleManagerInfo() {
     }
 
-    public StyleManagerInfo(Long id, String name, String attributes, Integer type, Integer status,
+    public StyleManagerInfo(Long id, String name, String attributes, Integer type, Boolean isActive, Integer status,
                             Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
         this.id = id;
         this.name = name;
         this.attributes = attributes;
         this.type = type;
+        this.isActive = isActive;
         this.status = status;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -86,6 +89,14 @@ public final class StyleManagerInfo implements Serializable {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean active) {
+        isActive = active;
     }
 
     public Integer getStatus() {
@@ -151,6 +162,7 @@ public final class StyleManagerInfo implements Serializable {
                 ", name='" + name + '\'' +
                 ", attributes='" + attributes + '\'' +
                 ", type=" + type +
+                ", isActive=" + isActive +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

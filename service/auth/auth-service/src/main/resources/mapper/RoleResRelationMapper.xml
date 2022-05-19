@@ -143,12 +143,6 @@
         where role_id = #{roleId,jdbcType=BIGINT}
     </delete>
 
-    <delete id="deleteByResId" parameterType="java.lang.Long">
-        delete
-        from role_res_relation
-        where res_id = #{resId,jdbcType=BIGINT}
-    </delete>
-
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

@@ -26,7 +26,7 @@ public class MemberApiRoute {
         RequestPredicate pathPredicate = path("/blue-member/member");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("", memberApiHandler::selectMemberInfo)
+                .GET("", memberApiHandler::getMemberInfo)
                 .build();
 
         return nest(pathPredicate, routerFunction);

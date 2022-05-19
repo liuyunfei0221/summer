@@ -36,18 +36,20 @@ public final class SynchronizedProcessor {
 
     private final long DEFAULT_MAX_WAITING_MILLIS;
 
+    private final boolean BREAK_ON_LOCK_FAIL = false;
+
     /**
      * get data from sups and handle cache
      *
      * @param firstSup
      * @param validator
      * @param secondSup
-     * @param firstSupSetter
+     * @param firstSupStoragor
      * @param <T>
      * @return
      */
-    public <T> T handleSupByOrderedWithSetter(Supplier<T> firstSup, Predicate<T> validator, Supplier<T> secondSup, Consumer<T> firstSupSetter) {
-        if (isNull(firstSup) || isNull(validator) || isNull(secondSup) || isNull(firstSupSetter))
+    public <T> T handleSupByOrderedWithSetter(Supplier<T> firstSup, Predicate<T> validator, Supplier<T> secondSup, Consumer<T> firstSupStoragor) {
+        if (isNull(firstSup) || isNull(validator) || isNull(secondSup) || isNull(firstSupStoragor))
             throw new BlueException();
 
         return ofNullable(firstSup.get())
@@ -65,7 +67,7 @@ public final class SynchronizedProcessor {
                         if (tryLock) {
                             res = secondSup.get();
                             if (validator.test(res))
-                                firstSupSetter.accept(res);
+                                firstSupStoragor.accept(res);
 
                             return res;
                         }
@@ -79,7 +81,7 @@ public final class SynchronizedProcessor {
                         return validator.test(res) ? res : secondSup.get();
                     } catch (Exception e) {
                         LOGGER.error("selectGenericsWithCache(Supplier<List<T>> firstSup, Supplier<List<T>> dbSup, Consumer<List<T>> cacheSetter) failed," +
-                                "cacheSup = {}, secondSup = {}, firstSupSetter = {}, e = {}", firstSup, secondSup, firstSupSetter, e);
+                                "cacheSup = {}, secondSup = {}, firstSupStoragor = {}, e = {}", firstSup, secondSup, firstSupStoragor, e);
                         return secondSup.get();
                     } finally {
                         if (tryLock)
@@ -87,7 +89,7 @@ public final class SynchronizedProcessor {
                                 lock.unlock();
                             } catch (Exception e) {
                                 LOGGER.warn("selectGenericsWithCache(Supplier<List<T>> cacheSup, Supplier<List<T>> dbSup, Consumer<List<T>> cacheSetter) lock.unlock() failed," +
-                                        "cacheSup = {}, dbSup = {}, cacheSetter = {}, e = {}", firstSup, secondSup, firstSupSetter, e);
+                                        "cacheSup = {}, dbSup = {}, cacheSetter = {}, e = {}", firstSup, secondSup, firstSupStoragor, e);
                             }
                     }
                 });
@@ -232,8 +234,9 @@ public final class SynchronizedProcessor {
      *
      * @param syncKey
      * @param handleTask
+     * @param fallbackTask
      */
-    public void handleTaskWithLock(String syncKey, HandleTask handleTask) {
+    public void handleTaskWithLock(String syncKey, HandleTask handleTask, HandleTask fallbackTask) {
         if (isBlank(syncKey) || isNull(handleTask))
             throw new BlueException();
 
@@ -242,7 +245,14 @@ public final class SynchronizedProcessor {
             lock.lock();
             handleTask.handle();
         } catch (Exception e) {
-            LOGGER.error("handleTaskWithLock(String syncKey, HandleTask handleTask) failed, syncKey = {}, e = {}", syncKey, e);
+            LOGGER.error("void handleTaskWithLock(String syncKey, HandleTask handleTask, HandleTask fallbackTask) failed, syncKey = {}, handleTask = {}, e = {}",
+                    syncKey, handleTask, e);
+
+            if (isNotNull(fallbackTask)) {
+                fallbackTask.handle();
+                return;
+            }
+
             throw e;
         } finally {
             try {
@@ -254,13 +264,23 @@ public final class SynchronizedProcessor {
     }
 
     /**
+     * handle task with lock
+     *
+     * @param syncKey
+     * @param handleTask
+     */
+    public void handleTaskWithLock(String syncKey, HandleTask handleTask) {
+        this.handleTaskWithLock(syncKey, handleTask, null);
+    }
+
+    /**
      * handle task with try lock
      *
      * @param syncKey
      * @param handleTask
      * @param breakOnLockFail
      */
-    public void handleTaskWithTryLock(String syncKey, HandleTask handleTask, boolean breakOnLockFail) {
+    public void handleTaskWithTryLock(String syncKey, HandleTask handleTask, HandleTask fallbackTask, boolean breakOnLockFail) {
         if (isBlank(syncKey) || isNull(handleTask))
             throw new BlueException();
 
@@ -276,9 +296,15 @@ public final class SynchronizedProcessor {
 
             handleTask.handle();
         } catch (Exception e) {
-            LOGGER.error("handleTaskWithTryLock(String syncKey, HandleTask handleTask, boolean breakOnLockFail) failed," +
-                            " syncKey = {}, breakOnLockFail = {}, e = {}",
-                    syncKey, breakOnLockFail, e);
+            LOGGER.error("void handleTaskWithTryLock(String syncKey, HandleTask handleTask, HandleTask fallbackTask, boolean breakOnLockFail), " +
+                            "syncKey = {}, handleTask = {}, fallbackTask = {}, breakOnLockFail = {}, e = {}",
+                    syncKey, handleTask, fallbackTask, breakOnLockFail, e);
+
+            if (isNotNull(fallbackTask)) {
+                fallbackTask.handle();
+                return;
+            }
+
             throw e;
         } finally {
             if (locked)
@@ -295,9 +321,31 @@ public final class SynchronizedProcessor {
      *
      * @param syncKey
      * @param handleTask
+     * @param fallbackTask
+     */
+    public void handleTaskWithTryLock(String syncKey, HandleTask handleTask, HandleTask fallbackTask) {
+        this.handleTaskWithTryLock(syncKey, handleTask, fallbackTask, BREAK_ON_LOCK_FAIL);
+    }
+
+    /**
+     * handle task with try lock
+     *
+     * @param syncKey
+     * @param handleTask
+     * @param breakOnLockFail
+     */
+    public void handleTaskWithTryLock(String syncKey, HandleTask handleTask, boolean breakOnLockFail) {
+        this.handleTaskWithTryLock(syncKey, handleTask, null, breakOnLockFail);
+    }
+
+    /**
+     * handle task with try lock
+     *
+     * @param syncKey
+     * @param handleTask
      */
     public void handleTaskWithTryLock(String syncKey, HandleTask handleTask) {
-        this.handleTaskWithTryLock(syncKey, handleTask, false);
+        this.handleTaskWithTryLock(syncKey, handleTask, null, BREAK_ON_LOCK_FAIL);
     }
 
 }

@@ -43,14 +43,6 @@ public interface RoleResRelationService {
     int deleteRelationByRoleId(Long roleId);
 
     /**
-     * delete relation by resource id
-     *
-     * @param resId
-     * @return
-     */
-    int deleteRelationByResId(Long resId);
-
-    /**
      * update authority base on role / generate role-resource-relations
      *
      * @param roleId
@@ -173,7 +165,7 @@ public interface RoleResRelationService {
      * @param resId
      * @return
      */
-    Mono<List<RoleResRelation>> selectRelationByResId(Long resId);
+    List<RoleResRelation> selectRelationByResId(Long resId);
 
     /**
      * select relation by role ids

@@ -84,7 +84,7 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      */
     public static final Function<ServerRequest, Mono<String>> SERVER_REQUEST_IP_SYNC_KEY_GETTER = request ->
             just(RATE_LIMIT_KEY_PRE + ofNullable(request)
-                    .map(req -> just(getIp(req)))
+                    .map(ReactiveCommonFunctions::getIp)
                     .orElseThrow(() -> new BlueException(BAD_REQUEST)));
 
 

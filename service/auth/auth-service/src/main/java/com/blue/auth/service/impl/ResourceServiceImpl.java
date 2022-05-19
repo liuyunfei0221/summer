@@ -9,7 +9,6 @@ import com.blue.auth.model.ResourceUpdateParam;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.mapper.ResourceMapper;
-import com.blue.auth.repository.mapper.RoleResRelationMapper;
 import com.blue.auth.service.inter.ResourceService;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.PageModelRequest;
@@ -66,19 +65,16 @@ public class ResourceServiceImpl implements ResourceService {
 
     private ResourceMapper resourceMapper;
 
-    private final RoleResRelationMapper roleResRelationMapper;
-
     private StringRedisTemplate stringRedisTemplate;
 
     private SynchronizedProcessor synchronizedProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ResourceServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, ResourceMapper resourceMapper,
-                               RoleResRelationMapper roleResRelationMapper, StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor) {
+                               StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.resourceMapper = resourceMapper;
-        this.roleResRelationMapper = roleResRelationMapper;
         this.stringRedisTemplate = stringRedisTemplate;
         this.synchronizedProcessor = synchronizedProcessor;
     }
@@ -300,7 +296,9 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setCreator(operatorId);
         resource.setUpdater(operatorId);
 
+        CACHE_DELETER.accept(RESOURCES.key);
         resourceMapper.insert(resource);
+        CACHE_DELETER.accept(RESOURCES.key);
 
         return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
     }
@@ -325,7 +323,9 @@ public class ResourceServiceImpl implements ResourceService {
         if (!UPDATE_RESOURCE_VALIDATOR.apply(resourceUpdateParam, resource))
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
+        CACHE_DELETER.accept(RESOURCES.key);
         resourceMapper.updateByPrimaryKeySelective(resource);
+        CACHE_DELETER.accept(RESOURCES.key);
 
         return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
     }
@@ -347,9 +347,9 @@ public class ResourceServiceImpl implements ResourceService {
         if (isNull(resource))
             throw new BlueException(DATA_NOT_EXIST);
 
-        int count = roleResRelationMapper.deleteByResId(id);
-        LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
+        CACHE_DELETER.accept(RESOURCES.key);
         resourceMapper.deleteByPrimaryKey(id);
+        CACHE_DELETER.accept(RESOURCES.key);
 
         return RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(resource);
     }

@@ -9,7 +9,6 @@ import com.blue.auth.model.RoleUpdateParam;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.repository.mapper.RoleMapper;
-import com.blue.auth.repository.mapper.RoleResRelationMapper;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.base.PageModelRequest;
@@ -68,19 +67,16 @@ public class RoleServiceImpl implements RoleService {
 
     private RoleMapper roleMapper;
 
-    private final RoleResRelationMapper roleResRelationMapper;
-
     private StringRedisTemplate stringRedisTemplate;
 
     private SynchronizedProcessor synchronizedProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public RoleServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, RoleMapper roleMapper,
-                           RoleResRelationMapper roleResRelationMapper, StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor) {
+                           StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.roleMapper = roleMapper;
-        this.roleResRelationMapper = roleResRelationMapper;
         this.stringRedisTemplate = stringRedisTemplate;
         this.synchronizedProcessor = synchronizedProcessor;
     }
@@ -321,8 +317,6 @@ public class RoleServiceImpl implements RoleService {
             throw new BlueException(UNSUPPORTED_OPERATE);
 
         CACHE_DELETER.accept(ROLES.key);
-        int count = roleResRelationMapper.deleteByResId(id);
-        LOGGER.info("void deleteRelationByResId(Long resId), count = {}", count);
         roleMapper.deleteByPrimaryKey(id);
         CACHE_DELETER.accept(ROLES.key);
 

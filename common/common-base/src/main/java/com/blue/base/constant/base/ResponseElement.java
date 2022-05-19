@@ -66,6 +66,7 @@ public enum ResponseElement {
     ROLE_LEVEL_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400200004, "Role level already exists"),
     RESOURCE_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400200005, "Resource name already exists"),
     RESOURCE_FEATURE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400200006, "Resource feature already exists"),
+    RESOURCE_STILL_USED(HttpStatus.BAD_REQUEST.value(), 400200007, "Resource are still used by the following roles"),
     //</editor-fold>
 
 
