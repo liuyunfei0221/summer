@@ -64,7 +64,7 @@ public class ControlServiceImpl implements ControlService {
     };
 
     /**
-     * init finance infos for a new member
+     * init finance info for a new member
      *
      * @param memberFinanceInfo
      */

@@ -1,6 +1,6 @@
 package com.blue.base.constant.base;
 
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 
 import static com.blue.base.constant.base.BlueNumericalValue.*;
 import static com.blue.base.constant.auth.DeviceType.UNKNOWN;

@@ -1,7 +1,7 @@
 package test;
 
 import com.blue.base.common.base.RsaProcessor;
-import com.blue.base.model.base.KeyPair;
+import com.blue.base.model.common.KeyPair;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;

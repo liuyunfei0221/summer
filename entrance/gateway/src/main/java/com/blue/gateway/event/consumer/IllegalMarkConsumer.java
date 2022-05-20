@@ -1,7 +1,7 @@
 package com.blue.gateway.event.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.base.IllegalMarkEvent;
+import com.blue.base.model.common.IllegalMarkEvent;
 import com.blue.gateway.component.illegal.IllegalAsserter;
 import com.blue.gateway.config.blue.BlueConsumerConfig;
 import com.blue.pulsar.common.BluePulsarConsumer;

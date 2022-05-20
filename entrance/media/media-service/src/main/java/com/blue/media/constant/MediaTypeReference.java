@@ -1,7 +1,7 @@
 package com.blue.media.constant;
 
 
-import com.blue.base.model.base.PageModelRequest;
+import com.blue.base.model.common.PageModelRequest;
 import com.blue.media.model.AttachmentCondition;
 import com.blue.media.model.DownloadHistoryCondition;
 import org.springframework.core.ParameterizedTypeReference;

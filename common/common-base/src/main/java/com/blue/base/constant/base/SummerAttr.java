@@ -1,6 +1,6 @@
 package com.blue.base.constant.base;
 
-import com.blue.base.model.base.NonValueParam;
+import com.blue.base.model.common.EmptyEvent;
 
 import java.io.File;
 import java.time.Clock;
@@ -61,9 +61,9 @@ public final class SummerAttr {
     public static final long ONLINE_TIME;
 
     /**
-     * non value param
+     * empty event
      */
-    public static final NonValueParam NON_VALUE_PARAM = new NonValueParam();
+    public static final EmptyEvent EMPTY_EVENT = new EmptyEvent();
 
     /**
      * config prop location

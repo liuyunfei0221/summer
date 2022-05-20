@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 public interface RpcRoleService {
 
     /**
-     * select all role infos
+     * select all role info
      *
      * @return
      */

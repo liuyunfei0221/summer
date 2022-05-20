@@ -6,8 +6,8 @@ import com.blue.auth.model.RoleCondition;
 import com.blue.auth.model.RoleInsertParam;
 import com.blue.auth.model.RoleUpdateParam;
 import com.blue.auth.repository.entity.Role;
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.List;

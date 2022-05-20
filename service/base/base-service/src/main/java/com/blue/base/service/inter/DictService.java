@@ -54,14 +54,14 @@ public interface DictService {
     Mono<List<DictInfo>> selectDictInfoByTypeCode(String code);
 
     /**
-     * invalid dict type infos
+     * invalid dict type info
      *
      * @return
      */
     void invalidDictTypeInfosCache();
 
     /**
-     * invalid dict infos
+     * invalid dict info
      *
      * @return
      */

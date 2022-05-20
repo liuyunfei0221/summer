@@ -9,7 +9,7 @@ import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 
 /**
- * access update infos
+ * access update info
  *
  * @author liuyunfei
  */

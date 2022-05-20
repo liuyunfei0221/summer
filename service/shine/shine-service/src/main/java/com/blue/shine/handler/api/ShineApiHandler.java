@@ -1,7 +1,7 @@
 package com.blue.shine.handler.api;
 
 import com.blue.base.common.reactive.ReactiveCommonFunctions;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.shine.service.inter.ShineService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;

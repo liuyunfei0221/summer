@@ -1,7 +1,7 @@
 package com.blue.lake.event.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.base.DataEvent;
+import com.blue.base.model.common.DataEvent;
 import com.blue.lake.config.blue.BlueConsumerConfig;
 import com.blue.lake.service.inter.LakeService;
 import com.blue.pulsar.common.BluePulsarConsumer;

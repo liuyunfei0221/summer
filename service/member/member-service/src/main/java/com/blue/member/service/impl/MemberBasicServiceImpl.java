@@ -1,17 +1,20 @@
 package com.blue.member.service.impl;
 
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.common.InvalidAuthEvent;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.constant.MemberBasicSortAttribute;
+import com.blue.member.event.producer.InvalidAuthProducer;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.repository.mapper.MemberBasicMapper;
 import com.blue.member.service.inter.MemberBasicService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -26,8 +29,10 @@ import java.util.stream.Stream;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
+import static com.blue.base.common.base.ConstantProcessor.assertStatus;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -48,12 +53,15 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
     private static final Logger LOGGER = getLogger(MemberBasicServiceImpl.class);
 
+    private final InvalidAuthProducer invalidAuthProducer;
+
     private MemberBasicMapper memberBasicMapper;
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public MemberBasicServiceImpl(MemberBasicMapper memberBasicMapper, BlueIdentityProcessor blueIdentityProcessor) {
+    public MemberBasicServiceImpl(InvalidAuthProducer invalidAuthProducer, MemberBasicMapper memberBasicMapper, BlueIdentityProcessor blueIdentityProcessor) {
+        this.invalidAuthProducer = invalidAuthProducer;
         this.memberBasicMapper = memberBasicMapper;
         this.blueIdentityProcessor = blueIdentityProcessor;
     }
@@ -95,6 +103,82 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
         return condition;
     };
+
+    /**
+     * insert member
+     *
+     * @param memberBasic
+     * @return
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public MemberBasicInfo insertMemberBasic(MemberBasic memberBasic) {
+        LOGGER.info("MemberBasicInfo insertMemberBasic(MemberBasic memberBasic), memberBasic = {}", memberBasic);
+        if (isNull(memberBasic))
+            throw new BlueException(EMPTY_PARAM);
+
+        MEMBER_EXIST_VALIDATOR.accept(memberBasic);
+
+        if (isInvalidIdentity(memberBasic.getId()))
+            memberBasic.setId(blueIdentityProcessor.generate(MemberBasic.class));
+
+        memberBasicMapper.insert(memberBasic);
+
+        return MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(memberBasic);
+    }
+
+    /**
+     * update member
+     *
+     * @param memberBasic
+     * @return
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    public MemberBasicInfo updateMemberBasic(MemberBasic memberBasic) {
+        LOGGER.info("void insert(MemberBasic memberBasic), memberBasic = {}", memberBasic);
+        if (isNull(memberBasic))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(memberBasic.getId()))
+            throw new BlueException(INVALID_IDENTITY);
+
+        memberBasicMapper.updateByPrimaryKey(memberBasic);
+
+        return MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(memberBasic);
+    }
+
+    /**
+     * update member status
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    public MemberBasicInfo updateMemberBasicStatus(Long id, Integer status) {
+        LOGGER.info("MemberBasicInfo updateMemberBasicStatus(Long id, Integer status), id = {}, status = {}", id, status);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+        assertStatus(status, false);
+
+
+
+        MemberBasic memberBasic = memberBasicMapper.selectByPrimaryKey(id);
+        if (isNull(memberBasic))
+            throw new BlueException(DATA_NOT_EXIST);
+
+        if (status.equals(memberBasic.getStatus()))
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        memberBasic.setStatus(status);
+        memberBasicMapper.updateStatus(id, status);
+
+        if (VALID.status != status)
+            invalidAuthProducer.send(new InvalidAuthEvent(id));
+
+        return MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(memberBasic);
+    }
 
     /**
      * get opt by id
@@ -210,49 +294,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                 }).flatMap(mb ->
                         just(MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(mb))
                 );
-    }
-
-    /**
-     * insert member
-     *
-     * @param memberBasic
-     * @return
-     */
-    @Override
-    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public MemberBasicInfo insertMemberBasic(MemberBasic memberBasic) {
-        LOGGER.info("MemberBasicInfo insertMemberBasic(MemberBasic memberBasic), memberBasic = {}", memberBasic);
-        if (isNull(memberBasic))
-            throw new BlueException(EMPTY_PARAM);
-
-        MEMBER_EXIST_VALIDATOR.accept(memberBasic);
-
-        if (isInvalidIdentity(memberBasic.getId()))
-            memberBasic.setId(blueIdentityProcessor.generate(MemberBasic.class));
-
-        memberBasicMapper.insert(memberBasic);
-
-        return MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(memberBasic);
-    }
-
-    /**
-     * update member
-     *
-     * @param memberBasic
-     * @return
-     */
-    @Override
-    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
-    public MemberBasicInfo updateMemberBasic(MemberBasic memberBasic) {
-        LOGGER.info("void insert(MemberBasic memberBasic), memberBasic = {}", memberBasic);
-        if (isNull(memberBasic))
-            throw new BlueException(EMPTY_PARAM);
-        if (isInvalidIdentity(memberBasic.getId()))
-            throw new BlueException(INVALID_IDENTITY);
-
-        memberBasicMapper.updateByPrimaryKey(memberBasic);
-
-        return MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(memberBasic);
     }
 
     /**

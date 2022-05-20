@@ -1,6 +1,6 @@
 package com.blue.base.common.reactive;
 
-import com.blue.base.model.base.TuringData;
+import com.blue.base.model.common.TuringData;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;

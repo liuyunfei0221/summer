@@ -1,7 +1,7 @@
 package com.blue.auth.component.access;
 
 import com.blue.auth.event.producer.AccessExpireProducer;
-import com.blue.base.model.base.KeyExpireParam;
+import com.blue.base.model.common.KeyExpireEvent;
 import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
@@ -111,7 +111,7 @@ public final class AccessInfoCache {
         try {
             this.executorService.execute(() -> {
                 if (hasText(keyId)) {
-                    accessExpireProducer.send(new KeyExpireParam(keyId, globalExpireMillis, UNIT));
+                    accessExpireProducer.send(new KeyExpireEvent(keyId, globalExpireMillis, UNIT));
                     LOGGER.warn("REDIS_ACCESS_REFRESHER -> SUCCESS, keyId = {}", keyId);
                 } else {
                     LOGGER.error("keyId or accessInfo is empty, keyId = {}", keyId);

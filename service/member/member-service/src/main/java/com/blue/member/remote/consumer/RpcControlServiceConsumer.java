@@ -3,7 +3,7 @@ package com.blue.member.remote.consumer;
 import com.blue.auth.api.inter.RpcControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.api.model.MemberCredentialInfo;
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -43,7 +43,7 @@ public class RpcControlServiceConsumer {
     }
 
     /**
-     * init auth infos for a new member
+     * init auth info for a new member
      *
      * @param memberCredentialInfo
      */

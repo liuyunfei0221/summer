@@ -1,7 +1,7 @@
 package com.blue.auth.model;
 
 import com.blue.auth.constant.ResourceSortAttribute;
-import com.blue.base.model.base.SortCondition;
+import com.blue.base.model.common.SortCondition;
 
 import java.io.Serializable;
 

@@ -4,7 +4,7 @@ import com.blue.analyze.component.statistics.inter.StatisticsCommand;
 import com.blue.analyze.service.inter.ActiveStatisticsService;
 import com.blue.base.common.access.AccessProcessor;
 import com.blue.base.constant.base.BlueDataAttrKey;
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 import reactor.util.Logger;
 
 import java.util.Map;

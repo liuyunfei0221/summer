@@ -1,8 +1,8 @@
 package com.blue.media.service.impl;
 
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.constant.AttachmentSortAttribute;

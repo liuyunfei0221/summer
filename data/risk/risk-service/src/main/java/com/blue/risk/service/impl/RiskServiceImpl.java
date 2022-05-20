@@ -1,6 +1,6 @@
 package com.blue.risk.service.impl;
 
-import com.blue.base.model.base.DataEvent;
+import com.blue.base.model.common.DataEvent;
 import com.blue.base.model.exps.BlueException;
 import com.blue.risk.component.risk.inter.RiskHandler;
 import com.blue.risk.service.inter.RiskService;

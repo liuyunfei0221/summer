@@ -2,8 +2,8 @@ package com.blue.portal.service.impl;
 
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.portal.StyleType;
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
@@ -216,7 +216,7 @@ public class StyleServiceImpl implements StyleService {
                 .map(Style::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
+                        throw new BlueException(STYLE_NAME_ALREADY_EXIST, new String[]{sup.getName()});
                 });
 
         Style style = styleMapper.selectByPrimaryKey(id);
@@ -397,7 +397,7 @@ public class StyleServiceImpl implements StyleService {
     }
 
     /**
-     * expire style infos
+     * expire style info
      *
      * @return
      */

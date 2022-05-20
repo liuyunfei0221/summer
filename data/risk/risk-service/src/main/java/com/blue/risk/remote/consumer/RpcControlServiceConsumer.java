@@ -2,7 +2,7 @@ package com.blue.risk.remote.consumer;
 
 import com.blue.auth.api.inter.RpcControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;

@@ -1,8 +1,8 @@
 package com.blue.marketing.handler.api;
 
-import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.common.BlueResponse;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.marketing.api.model.EventRecordInfo;
 import com.blue.marketing.service.inter.EventRecordService;

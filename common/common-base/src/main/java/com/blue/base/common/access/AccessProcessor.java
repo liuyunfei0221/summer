@@ -1,6 +1,6 @@
 package com.blue.base.common.access;
 
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 import com.blue.base.model.exps.BlueException;
 import com.google.gson.JsonSyntaxException;
 

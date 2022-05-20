@@ -2,7 +2,7 @@ package com.blue.auth.event.producer;
 
 import com.blue.auth.config.blue.BlueProducerConfig;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.base.NonValueParam;
+import com.blue.base.model.common.EmptyEvent;
 import com.blue.pulsar.common.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
 import reactor.util.Logger;
@@ -18,7 +18,7 @@ import static java.lang.Integer.MIN_VALUE;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * invalid auth from local cache consumer
+ * refresh authority info producer
  *
  * @author liuyunfei
  */
@@ -29,11 +29,11 @@ public final class SystemAuthorityInfosRefreshProducer implements BlueLifecycle 
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<NonValueParam> authorityInfosRefreshProducer;
+    private final BluePulsarProducer<EmptyEvent> authorityInfosRefreshProducer;
 
     public SystemAuthorityInfosRefreshProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.authorityInfosRefreshProducer = generateProducer(blueProducerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), NonValueParam.class);
+        this.authorityInfosRefreshProducer = generateProducer(blueProducerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), EmptyEvent.class);
     }
 
     @Override
@@ -60,13 +60,13 @@ public final class SystemAuthorityInfosRefreshProducer implements BlueLifecycle 
     /**
      * send message
      *
-     * @param nonValueParam
+     * @param emptyEvent
      */
-    public void send(NonValueParam nonValueParam) {
-        CompletableFuture<MessageId> future = authorityInfosRefreshProducer.sendAsync(nonValueParam);
-        LOGGER.info("authorityInfosRefreshProducer send, nonValueParam = {}", nonValueParam);
+    public void send(EmptyEvent emptyEvent) {
+        CompletableFuture<MessageId> future = authorityInfosRefreshProducer.sendAsync(emptyEvent);
+        LOGGER.info("authorityInfosRefreshProducer send, nonValueParam = {}", emptyEvent);
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("authorityInfosRefreshProducer send success, nonValueParam = {}, messageId = {}", nonValueParam, messageId);
+                LOGGER.info("authorityInfosRefreshProducer send success, nonValueParam = {}, messageId = {}", emptyEvent, messageId);
         future.thenAcceptAsync(c, executorService);
     }
 

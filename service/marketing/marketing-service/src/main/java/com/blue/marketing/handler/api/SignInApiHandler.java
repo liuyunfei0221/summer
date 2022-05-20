@@ -1,6 +1,6 @@
 package com.blue.marketing.handler.api;
 
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.marketing.service.inter.SignInService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;

@@ -1,7 +1,7 @@
 package com.blue.base.handler.api;
 
-import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.base.StringValueParam;
+import com.blue.base.model.common.BlueResponse;
+import com.blue.base.model.common.StringValueParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.service.inter.DictService;
 import org.springframework.stereotype.Component;

@@ -82,7 +82,7 @@ public class RpcCityServiceConsumer {
     }
 
     /**
-     * select city infos by state id
+     * select city info by state id
      *
      * @param stateId
      * @return
@@ -92,7 +92,7 @@ public class RpcCityServiceConsumer {
     }
 
     /**
-     * select city infos mono by state id
+     * select city info mono by state id
      *
      * @param stateId
      * @return
@@ -102,7 +102,7 @@ public class RpcCityServiceConsumer {
     }
 
     /**
-     * select city infos by ids
+     * select city info by ids
      *
      * @param ids
      * @return
@@ -112,7 +112,7 @@ public class RpcCityServiceConsumer {
     }
 
     /**
-     * select city infos mono by ids
+     * select city info mono by ids
      *
      * @param ids
      * @return

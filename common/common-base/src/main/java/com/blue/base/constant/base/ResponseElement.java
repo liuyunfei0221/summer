@@ -3,7 +3,7 @@ package com.blue.base.constant.base;
 import org.springframework.http.HttpStatus;
 
 /**
- * global exception infos
+ * global exception info
  *
  * @author liuyunfei
  */
@@ -70,18 +70,24 @@ public enum ResponseElement {
     //</editor-fold>
 
 
+    //<editor-fold desc="portal">
+    BULLETIN_TITLE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400700001, "Bulletin title already exists"),
+    STYLE_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400700007, "Style name already exists"),
+    //</editor-fold>
+
     //<editor-fold desc="marketing">
     REPEAT_SIGN_IN(HttpStatus.BAD_REQUEST.value(), 400800001, "Please don't sign in again"),
     //</editor-fold>
 
 
     //<editor-fold desc="gateways">
-    UNKNOWN_IP(HttpStatus.NOT_ACCEPTABLE.value(), 401900001, "Unknown ip"),
-    ILLEGAL_REQUEST(HttpStatus.NOT_ACCEPTABLE.value(), 401900002, "Illegal request"),
-    FILE_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 401900003, "File not exist"),
-    FILE_INVALID(HttpStatus.BAD_REQUEST.value(), 401900004, "Invalid file: %s"),
-    INVALID_EMAIL_ADDRESS(HttpStatus.BAD_REQUEST.value(), 401900005, "Invalid email address: %s");
+    UNKNOWN_IP(HttpStatus.NOT_ACCEPTABLE.value(), 400900001, "Unknown ip"),
+    ILLEGAL_REQUEST(HttpStatus.NOT_ACCEPTABLE.value(), 400900002, "Illegal request"),
+    FILE_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400900003, "File not exist"),
+    FILE_INVALID(HttpStatus.BAD_REQUEST.value(), 400900004, "Invalid file: %s"),
+    INVALID_EMAIL_ADDRESS(HttpStatus.BAD_REQUEST.value(), 400900005, "Invalid email address: %s");
     //</editor-fold>
+
 
     /**
      * http status

@@ -3,7 +3,7 @@ package com.blue.auth.handler.manager;
 import com.blue.auth.api.model.MemberRoleRelationParam;
 import com.blue.auth.api.model.RoleResRelationParam;
 import com.blue.auth.service.inter.ControlService;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;

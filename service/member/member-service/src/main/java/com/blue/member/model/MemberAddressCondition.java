@@ -1,7 +1,7 @@
 package com.blue.member.model;
 
 import com.blue.base.constant.base.SortType;
-import com.blue.base.model.base.SortCondition;
+import com.blue.base.model.common.SortCondition;
 import com.blue.member.constant.MemberAddressSortAttribute;
 
 import java.io.Serializable;

@@ -14,7 +14,7 @@ import java.util.List;
 public interface ShineService {
 
     /**
-     * list shine infos
+     * list shine info
      *
      * @param ip
      * @return

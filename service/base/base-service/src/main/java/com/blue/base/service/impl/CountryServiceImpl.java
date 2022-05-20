@@ -200,7 +200,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     /**
-     * select country infos by ids
+     * select country info by ids
      *
      * @return
      */
@@ -210,7 +210,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     /**
-     * select country infos by ids
+     * select country info by ids
      *
      * @return
      */
@@ -220,7 +220,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     /**
-     * invalid country infos
+     * invalid country info
      *
      * @return
      */

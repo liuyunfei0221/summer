@@ -31,7 +31,7 @@ public final class Credential implements Serializable {
     private String type;
 
     /**
-     * encrypted password(str)/infos(json)
+     * encrypted password(str)/info(json)
      */
     private String access;
 
@@ -41,7 +41,7 @@ public final class Credential implements Serializable {
     private Long memberId;
 
     /**
-     * extra infos
+     * extra info
      */
     private String extra;
 

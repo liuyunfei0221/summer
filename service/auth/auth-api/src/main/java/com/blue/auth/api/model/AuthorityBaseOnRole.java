@@ -19,7 +19,7 @@ public final class AuthorityBaseOnRole implements Serializable {
     private RoleInfo role;
 
     /**
-     * resource infos
+     * resource info
      */
     private List<ResourceInfo> resources;
 

@@ -39,7 +39,7 @@ public class RpcRoleServiceConsumer {
     }
 
     /**
-     * select all role infos
+     * select all role info
      *
      * @return
      */

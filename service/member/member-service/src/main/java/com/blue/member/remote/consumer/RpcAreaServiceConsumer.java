@@ -82,7 +82,7 @@ public class RpcAreaServiceConsumer {
     }
 
     /**
-     * select area infos by city id
+     * select area info by city id
      *
      * @param cityId
      * @return
@@ -92,7 +92,7 @@ public class RpcAreaServiceConsumer {
     }
 
     /**
-     * select area infos mono by city id
+     * select area info mono by city id
      *
      * @param cityId
      * @return
@@ -102,7 +102,7 @@ public class RpcAreaServiceConsumer {
     }
 
     /**
-     * select area infos by ids
+     * select area info by ids
      *
      * @param ids
      * @return
@@ -112,7 +112,7 @@ public class RpcAreaServiceConsumer {
     }
 
     /**
-     * select area infos mono by ids
+     * select area info mono by ids
      *
      * @param ids
      * @return

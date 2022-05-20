@@ -23,9 +23,14 @@ public enum BlueTopic {
     ACCESS_EXPIRE("accessExpire"),
 
     /**
-     * Local access certification expired
+     * invalid local access
      */
     INVALID_LOCAL_ACCESS("invalidLocalAccess"),
+
+    /**
+     * invalid global auth
+     */
+    INVALID_AUTH("invalidAuth"),
 
     /**
      * System authority Infos Refresh

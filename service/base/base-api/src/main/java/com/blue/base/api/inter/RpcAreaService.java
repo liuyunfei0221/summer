@@ -41,7 +41,7 @@ public interface RpcAreaService {
     CompletableFuture<AreaInfo> getAreaInfoMonoById(Long id);
 
     /**
-     * select area infos by city id
+     * select area info by city id
      *
      * @param cityId
      * @return
@@ -49,7 +49,7 @@ public interface RpcAreaService {
     List<AreaInfo> selectAreaInfoByCityId(Long cityId);
 
     /**
-     * select area infos mono by city id
+     * select area info mono by city id
      *
      * @param cityId
      * @return
@@ -57,7 +57,7 @@ public interface RpcAreaService {
     CompletableFuture<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId);
 
     /**
-     * select area infos by ids
+     * select area info by ids
      *
      * @param ids
      * @return
@@ -65,7 +65,7 @@ public interface RpcAreaService {
     Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids);
 
     /**
-     * select area infos mono by ids
+     * select area info mono by ids
      *
      * @param ids
      * @return

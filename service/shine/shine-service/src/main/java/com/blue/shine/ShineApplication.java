@@ -15,7 +15,7 @@ import static org.springframework.boot.SpringApplication.run;
 @SuppressWarnings("resource")
 @SummerSpringBootApplication
 @EnableDiscoveryClient
-@EnableBlueLifecycle(basePackages = "com.blue.shine.config.mq")
+@EnableBlueLifecycle(basePackages = "com.blue.shine.event")
 @EnableBlueDataAccess(basePackages = "com.blue.shine.repository.mapper")
 @EnableBlueTransaction
 @DubboComponentScan(basePackages = "com.blue.shine.remote")

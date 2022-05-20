@@ -2,7 +2,7 @@ package com.blue.base.component.exception.handler;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionInfo;
-import com.blue.base.model.base.ExceptionResponse;
+import com.blue.base.model.common.ExceptionResponse;
 import reactor.util.Logger;
 
 import java.util.List;

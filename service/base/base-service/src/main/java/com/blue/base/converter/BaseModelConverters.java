@@ -32,7 +32,7 @@ public final class BaseModelConverters {
     };
 
     /**
-     * countries -> country infos
+     * countries -> country info
      */
     public static final Function<List<Country>, List<CountryInfo>> COUNTRIES_2_COUNTRY_INFOS_CONVERTER = cs ->
             cs != null && cs.size() > 0 ? cs.stream()
@@ -50,7 +50,7 @@ public final class BaseModelConverters {
     };
 
     /**
-     * states -> state infos
+     * states -> state info
      */
     public static final Function<List<State>, List<StateInfo>> STATES_2_STATE_INFOS_CONVERTER = ss ->
             ss != null && ss.size() > 0 ? ss.stream()
@@ -68,7 +68,7 @@ public final class BaseModelConverters {
     };
 
     /**
-     * cities -> city infos
+     * cities -> city info
      */
     public static final Function<List<City>, List<CityInfo>> CITIES_2_CITY_INFOS_CONVERTER = cs ->
             cs != null && cs.size() > 0 ? cs.stream()
@@ -86,7 +86,7 @@ public final class BaseModelConverters {
     };
 
     /**
-     * areas -> area infos
+     * areas -> area info
      */
     public static final Function<List<Area>, List<AreaInfo>> AREAS_2_AREA_INFOS_CONVERTER = as ->
             isNotEmpty(as) ? as.stream()
@@ -104,7 +104,7 @@ public final class BaseModelConverters {
     };
 
     /**
-     * types -> type infos
+     * types -> type info
      */
     public static final Function<List<DictType>, List<DictTypeInfo>> DICT_TYPES_2_DICT_TYPE_INFOS_CONVERTER = ts ->
             isNotEmpty(ts) ? ts.stream()
@@ -122,7 +122,7 @@ public final class BaseModelConverters {
     };
 
     /**
-     * dict -> dict infos
+     * dict -> dict info
      */
     public static final Function<List<Dict>, List<DictInfo>> DICT_2_DICT_INFOS_CONVERTER = ds ->
             isNotEmpty(ds) ? ds.stream()

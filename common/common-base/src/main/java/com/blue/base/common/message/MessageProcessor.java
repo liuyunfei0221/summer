@@ -74,7 +74,7 @@ public final class MessageProcessor {
         List<File> files = getFiles(uri, true);
         int size = files.size();
 
-        Map<Integer, LanguageInfo> infos = new HashMap<>(size);
+        Map<Integer, LanguageInfo> info = new HashMap<>(size);
         Map<String, Map<Integer, String>> i18n = new HashMap<>(size);
 
         Map<String, String> messages;
@@ -86,14 +86,14 @@ public final class MessageProcessor {
             messages = parseProp(f);
             identity = LANGUAGE_IDENTITY_PARSER.apply(f.getName());
 
-            infos.put(LANGUAGE_PRIORITY_PARSER.apply(messages),
+            info.put(LANGUAGE_PRIORITY_PARSER.apply(messages),
                     new LanguageInfo(ofNullable(messages.get(LANGUAGE_NAME_KEY)).orElse(""),
                             identity, ofNullable(messages.get(LANGUAGE_ICON_KEY)).orElse("")));
 
             i18n.put(lowerCase(identity), MESSAGES_CONVERTER.apply(messages));
         }
 
-        List<LanguageInfo> supportLanguages = infos.entrySet().stream()
+        List<LanguageInfo> supportLanguages = info.entrySet().stream()
                 .sorted((a, b) -> {
                     if (DEFAULT_LANGUAGE.equals(lowerCase(a.getValue().getIdentity())))
                         return MIN_VALUE;

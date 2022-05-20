@@ -3,7 +3,7 @@ package com.blue.auth.event.consumer;
 import com.blue.auth.config.blue.BlueConsumerConfig;
 import com.blue.auth.service.inter.ControlService;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.base.NonValueParam;
+import com.blue.base.model.common.EmptyEvent;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import reactor.util.Logger;
 
@@ -28,7 +28,7 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
 
     private final ControlService controlService;
 
-    private BluePulsarConsumer<NonValueParam> systemAuthorityInfosRefreshConsumer;
+    private BluePulsarConsumer<EmptyEvent> systemAuthorityInfosRefreshConsumer;
 
     public SystemAuthorityInfosRefreshConsumer(BlueConsumerConfig blueConsumerConfig, ControlService controlService) {
         this.blueConsumerConfig = blueConsumerConfig;
@@ -37,8 +37,8 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
 
     @PostConstruct
     private void init() {
-        Consumer<NonValueParam> systemAuthorityInfosRefreshDataConsumer = nonValueParam ->
-                ofNullable(nonValueParam)
+        Consumer<EmptyEvent> systemAuthorityInfosRefreshDataConsumer = emptyEvent ->
+                ofNullable(emptyEvent)
                         .ifPresent(nvp -> {
                             LOGGER.info("systemAuthorityInfosRefreshDataConsumer received");
                             controlService.refreshSystemAuthorityInfos()

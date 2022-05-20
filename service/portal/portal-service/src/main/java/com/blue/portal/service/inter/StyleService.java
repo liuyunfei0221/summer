@@ -1,7 +1,7 @@
 package com.blue.portal.service.inter;
 
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.portal.api.model.StyleInfo;
 import com.blue.portal.api.model.StyleManagerInfo;
 import com.blue.portal.model.StyleCondition;
@@ -57,7 +57,7 @@ public interface StyleService {
     StyleManagerInfo updateActiveStyle(Long id, Long operatorId);
 
     /**
-     * expire style infos
+     * expire style info
      *
      * @return
      */

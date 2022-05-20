@@ -90,11 +90,11 @@ public final class PartInfoProcessor {
             }
 
         LOGGER.error("un handled part, part = {}", part);
-        Map<String, String> infos = new HashMap<>(4);
-        infos.put(PART_CLASS.identity, partClzName);
-        infos.put(PART_NAME.identity, part.name());
+        Map<String, String> info = new HashMap<>(4);
+        info.put(PART_CLASS.identity, partClzName);
+        info.put(PART_NAME.identity, part.name());
 
-        return infos;
+        return info;
     }
 
 }

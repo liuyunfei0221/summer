@@ -3,7 +3,7 @@ package com.blue.auth.service.impl;
 import com.blue.auth.component.login.LoginProcessor;
 import com.blue.auth.service.inter.AuthService;
 import com.blue.auth.service.inter.LoginService;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;

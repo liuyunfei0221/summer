@@ -2,7 +2,7 @@ package com.blue.auth.handler.api;
 
 import com.blue.auth.model.*;
 import com.blue.auth.service.inter.ControlService;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;

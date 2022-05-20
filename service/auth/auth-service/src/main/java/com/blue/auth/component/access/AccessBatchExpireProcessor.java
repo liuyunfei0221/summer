@@ -1,6 +1,6 @@
 package com.blue.auth.component.access;
 
-import com.blue.base.model.base.KeyExpireParam;
+import com.blue.base.model.common.KeyExpireEvent;
 import com.blue.base.model.exps.BlueException;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -39,7 +39,7 @@ public final class AccessBatchExpireProcessor {
 
     private static final long THREAD_KEEP_ALIVE_SECONDS = 64L;
 
-    private LinkedBlockingQueue<KeyExpireParam> bufferQueue;
+    private LinkedBlockingQueue<KeyExpireEvent> bufferQueue;
 
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -104,33 +104,33 @@ public final class AccessBatchExpireProcessor {
     /**
      * ignore fail sync putter
      */
-    private final Consumer<KeyExpireParam> IGNORE_FAIL_ELEMENT_PUTTER = keyExpireParam -> {
-        if (!bufferQueue.offer(keyExpireParam))
-            LOGGER.warn("MAYBE_FAILED_ELEMENT_PUTTER failed, keyExpireParam = {}", keyExpireParam);
+    private final Consumer<KeyExpireEvent> IGNORE_FAIL_ELEMENT_PUTTER = keyExpireEvent -> {
+        if (!bufferQueue.offer(keyExpireEvent))
+            LOGGER.warn("MAYBE_FAILED_ELEMENT_PUTTER failed, keyExpireEvent = {}", keyExpireEvent);
     };
 
     /**
      * async putter
      */
-    private final Consumer<KeyExpireParam> ASYNC_ELEMENT_PUTTER = keyExpireParam ->
-            executorService.execute(() -> IGNORE_FAIL_ELEMENT_PUTTER.accept(keyExpireParam));
+    private final Consumer<KeyExpireEvent> ASYNC_ELEMENT_PUTTER = keyExpireEvent ->
+            executorService.execute(() -> IGNORE_FAIL_ELEMENT_PUTTER.accept(keyExpireEvent));
 
     /**
      * element getter, maybe return null
      */
-    private final Supplier<KeyExpireParam> NULLABLE_ELEMENT_GETTER = () -> bufferQueue.poll();
+    private final Supplier<KeyExpireEvent> NULLABLE_ELEMENT_GETTER = () -> bufferQueue.poll();
 
     /**
      * expire data and release data to queue b
      */
-    private final BiConsumer<KeyExpireParam, RedisConnection> DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER = (keyExpireParam, connection) ->
-            connection.expire(keyExpireParam.getKey().getBytes(UTF_8), SECONDS_CONVERTER.apply(keyExpireParam.getExpire(), keyExpireParam.getUnit()));
+    private final BiConsumer<KeyExpireEvent, RedisConnection> DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER = (keyExpireEvent, connection) ->
+            connection.expire(keyExpireEvent.getKey().getBytes(UTF_8), SECONDS_CONVERTER.apply(keyExpireEvent.getExpire(), keyExpireEvent.getUnit()));
 
     /**
      * data expire task
      */
     private void handleExpireTask() {
-        KeyExpireParam firstData = NULLABLE_ELEMENT_GETTER.get();
+        KeyExpireEvent firstData = NULLABLE_ELEMENT_GETTER.get();
         if (isNull(firstData))
             return;
 
@@ -138,7 +138,7 @@ public final class AccessBatchExpireProcessor {
             DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(firstData, connection);
 
             int size = 1;
-            KeyExpireParam data;
+            KeyExpireEvent data;
             while (size <= BATCH_EXPIRE_MAX_PER_HANDLE && isNotNull(data = NULLABLE_ELEMENT_GETTER.get())) {
                 DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(data, connection);
                 size++;
@@ -163,32 +163,32 @@ public final class AccessBatchExpireProcessor {
     /**
      * params asserter
      */
-    private static final Consumer<KeyExpireParam> DATA_ASSERTER = keyExpireParam -> {
-        if (isNull(keyExpireParam))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keyExpireParam can't be null");
+    private static final Consumer<KeyExpireEvent> DATA_ASSERTER = keyExpireEvent -> {
+        if (isNull(keyExpireEvent))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keyExpireEvent can't be null");
 
-        if (isBlank(keyExpireParam.getKey()))
+        if (isBlank(keyExpireEvent.getKey()))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null or ''");
 
-        Long expire = keyExpireParam.getExpire();
+        Long expire = keyExpireEvent.getExpire();
         if (isNull(expire) || expire < 1L)
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "expire can't be null or less than 1");
 
-        if (isNull(keyExpireParam.getUnit()))
+        if (isNull(keyExpireEvent.getUnit()))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unit can't be null");
     };
 
     /**
      * timeout for refresh
      *
-     * @param keyExpireParam
+     * @param keyExpireEvent
      * @return
      */
-    public void expireKey(KeyExpireParam keyExpireParam) {
-        LOGGER.info("expireKey(KeyExpireParam keyExpireParam), keyExpireParam = {}", keyExpireParam);
-        DATA_ASSERTER.accept(keyExpireParam);
+    public void expireKey(KeyExpireEvent keyExpireEvent) {
+        LOGGER.info("expireKey(KeyExpireEvent keyExpireEvent), keyExpireEvent = {}", keyExpireEvent);
+        DATA_ASSERTER.accept(keyExpireEvent);
 
-        ASYNC_ELEMENT_PUTTER.accept(keyExpireParam);
+        ASYNC_ELEMENT_PUTTER.accept(keyExpireEvent);
     }
 
 }

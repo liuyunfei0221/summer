@@ -39,7 +39,7 @@ public class RpcResourceServiceConsumer {
     }
 
     /**
-     * select all resource infos
+     * select all resource info
      *
      * @return
      */

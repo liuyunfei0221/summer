@@ -24,6 +24,8 @@ public interface MemberBasicMapper {
 
     int deleteByPrimaryKey(Long id);
 
+    int updateStatus(@Param("id") Long id, @Param("status") Integer status);
+
     MemberBasic selectByPrimaryKey(Long id);
 
     /**

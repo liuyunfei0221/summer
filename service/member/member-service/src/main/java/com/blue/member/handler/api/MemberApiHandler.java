@@ -1,6 +1,6 @@
 package com.blue.member.handler.api;
 
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.member.service.inter.MemberBasicService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;

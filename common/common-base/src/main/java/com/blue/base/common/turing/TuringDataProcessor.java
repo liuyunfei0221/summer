@@ -1,6 +1,6 @@
 package com.blue.base.common.turing;
 
-import com.blue.base.model.base.TuringData;
+import com.blue.base.model.common.TuringData;
 import com.blue.base.model.exps.BlueException;
 import com.google.gson.JsonSyntaxException;
 

@@ -2,7 +2,7 @@ package com.blue.base.common.base;
 
 import com.blue.base.component.exception.handler.ExceptionProcessor;
 import com.blue.base.constant.base.*;
-import com.blue.base.model.base.*;
+import com.blue.base.model.common.*;
 import com.blue.base.model.exps.BlueException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

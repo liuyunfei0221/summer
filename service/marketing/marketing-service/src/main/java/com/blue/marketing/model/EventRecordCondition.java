@@ -1,6 +1,6 @@
 package com.blue.marketing.model;
 
-import com.blue.base.model.base.SortCondition;
+import com.blue.base.model.common.SortCondition;
 import com.blue.marketing.constant.EventRecordSortAttribute;
 
 import java.io.Serializable;

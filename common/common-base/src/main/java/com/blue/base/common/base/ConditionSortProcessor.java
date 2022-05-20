@@ -1,6 +1,6 @@
 package com.blue.base.common.base;
 
-import com.blue.base.model.base.SortCondition;
+import com.blue.base.model.common.SortCondition;
 import com.blue.base.model.exps.BlueException;
 
 import java.util.Map;

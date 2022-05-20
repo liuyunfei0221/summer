@@ -30,7 +30,7 @@ public interface RefreshInfoService {
     Mono<Void> deleteRefreshInfo(String id);
 
     /**
-     * delete refresh infos
+     * delete refresh info
      *
      * @param refreshInfos
      * @return

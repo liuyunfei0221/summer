@@ -1,6 +1,6 @@
 package com.blue.portal.handler.manager;
 
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.portal.model.BulletinInsertParam;
 import com.blue.portal.model.BulletinUpdateParam;

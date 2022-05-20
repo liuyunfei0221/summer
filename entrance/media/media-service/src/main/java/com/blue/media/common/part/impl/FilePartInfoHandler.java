@@ -34,17 +34,17 @@ public final class FilePartInfoHandler implements PartInfoHandler {
     public Map<String, String> process(Part part) {
 
         FilePart filePart = (FilePart) part;
-        Map<String, String> infos = new HashMap<>(8);
+        Map<String, String> info = new HashMap<>(8);
 
-        infos.put(PART_CLASS.identity, part.getClass().getName());
-        infos.put(PART_NAME.identity, filePart.name());
-        infos.put(FILE_NAME.identity, filePart.filename());
-        infos.put(PART_HEADERS.identity, of(part.headers())
+        info.put(PART_CLASS.identity, part.getClass().getName());
+        info.put(PART_NAME.identity, filePart.name());
+        info.put(FILE_NAME.identity, filePart.filename());
+        info.put(PART_HEADERS.identity, of(part.headers())
                 .stream()
                 .flatMap(headers -> headers.entrySet().stream())
                 .map(entry -> entry.getKey() + "=" + entry.getValue())
                 .collect(toList()).toString());
 
-        return infos;
+        return info;
     }
 }

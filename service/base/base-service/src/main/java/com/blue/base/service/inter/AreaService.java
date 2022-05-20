@@ -66,7 +66,7 @@ public interface AreaService {
     Mono<AreaInfo> getAreaInfoMonoById(Long id);
 
     /**
-     * select area infos by city id
+     * select area info by city id
      *
      * @param cityId
      * @return
@@ -74,7 +74,7 @@ public interface AreaService {
     List<AreaInfo> selectAreaInfoByCityId(Long cityId);
 
     /**
-     * select area infos mono by city id
+     * select area info mono by city id
      *
      * @param cityId
      * @return
@@ -82,7 +82,7 @@ public interface AreaService {
     Mono<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId);
 
     /**
-     * select area infos by ids
+     * select area info by ids
      *
      * @param ids
      * @return
@@ -90,7 +90,7 @@ public interface AreaService {
     Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids);
 
     /**
-     * select area infos mono by ids
+     * select area info mono by ids
      *
      * @param ids
      * @return
@@ -130,7 +130,7 @@ public interface AreaService {
     Mono<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids);
 
     /**
-     * invalid area infos
+     * invalid area info
      *
      * @return
      */

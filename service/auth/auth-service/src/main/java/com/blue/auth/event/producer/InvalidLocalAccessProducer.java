@@ -1,8 +1,8 @@
 package com.blue.auth.event.producer;
 
-import com.blue.auth.api.model.InvalidLocalAuthParam;
 import com.blue.auth.config.blue.BlueProducerConfig;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
+import com.blue.base.model.common.InvalidLocalAccessEvent;
 import com.blue.pulsar.common.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
 import reactor.util.Logger;
@@ -18,7 +18,7 @@ import static java.lang.Integer.MIN_VALUE;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * invalid auth from local cache consumer
+ * invalid auth from local cache producer
  *
  * @author liuyunfei
  */
@@ -29,11 +29,11 @@ public final class InvalidLocalAccessProducer implements BlueLifecycle {
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<InvalidLocalAuthParam> invalidLocalAuthProducer;
+    private final BluePulsarProducer<InvalidLocalAccessEvent> invalidLocalAccessProducer;
 
     public InvalidLocalAccessProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.invalidLocalAuthProducer = generateProducer(blueProducerConfig.getByKey(INVALID_LOCAL_ACCESS.name), InvalidLocalAuthParam.class);
+        this.invalidLocalAccessProducer = generateProducer(blueProducerConfig.getByKey(INVALID_LOCAL_ACCESS.name), InvalidLocalAccessEvent.class);
     }
 
     @Override
@@ -48,25 +48,25 @@ public final class InvalidLocalAccessProducer implements BlueLifecycle {
 
     @Override
     public void start() {
-        LOGGER.warn("invalidLocalAuthProducer start...");
+        LOGGER.warn("invalidLocalAccessProducer start...");
     }
 
     @Override
     public void stop() {
-        this.invalidLocalAuthProducer.shutdown();
-        LOGGER.warn("invalidLocalAuthProducer shutdown...");
+        this.invalidLocalAccessProducer.shutdown();
+        LOGGER.warn("invalidLocalAccessProducer shutdown...");
     }
 
     /**
      * send message
      *
-     * @param invalidLocalAuthParam
+     * @param invalidLocalAccessEvent
      */
-    public void send(InvalidLocalAuthParam invalidLocalAuthParam) {
-        CompletableFuture<MessageId> future = invalidLocalAuthProducer.sendAsync(invalidLocalAuthParam);
-        LOGGER.info("invalidLocalAuthProducer send, invalidLocalAuthParam = {}", invalidLocalAuthParam);
+    public void send(InvalidLocalAccessEvent invalidLocalAccessEvent) {
+        CompletableFuture<MessageId> future = invalidLocalAccessProducer.sendAsync(invalidLocalAccessEvent);
+        LOGGER.info("invalidLocalAccessProducer send, invalidLocalAccessEvent = {}", invalidLocalAccessEvent);
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("invalidLocalAuthProducer send success, invalidLocalAuthParam = {}, messageId = {}", invalidLocalAuthParam, messageId);
+                LOGGER.info("invalidLocalAccessProducer send success, invalidLocalAccessEvent = {}, messageId = {}", invalidLocalAccessEvent, messageId);
         future.thenAcceptAsync(c, executorService);
     }
 

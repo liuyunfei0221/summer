@@ -1,8 +1,8 @@
 package com.blue.gateway.config.filter.global;
 
 import com.blue.base.constant.base.BlueHeader;
-import com.blue.base.model.base.DataEvent;
-import com.blue.base.model.base.ExceptionResponse;
+import com.blue.base.model.common.DataEvent;
+import com.blue.base.model.common.ExceptionResponse;
 import com.blue.gateway.component.event.RequestEventReporter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

@@ -1,7 +1,7 @@
 package com.blue.gateway.component.illegal;
 
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.base.IllegalMarkEvent;
+import com.blue.base.model.common.IllegalMarkEvent;
 import com.blue.base.model.exps.BlueException;
 import com.blue.gateway.config.deploy.RiskControlDeploy;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;

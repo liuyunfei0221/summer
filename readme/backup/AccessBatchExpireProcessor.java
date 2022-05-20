@@ -1,6 +1,6 @@
 package com.blue.auth.component.access;
 
-import com.blue.base.model.base.KeyExpireParam;
+import com.blue.base.model.common.KeyExpireParam;
 import com.blue.base.model.exps.BlueException;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.connection.RedisConnection;

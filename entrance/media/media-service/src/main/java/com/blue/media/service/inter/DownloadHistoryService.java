@@ -1,7 +1,7 @@
 package com.blue.media.service.inter;
 
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.media.api.model.DownloadHistoryInfo;
 import com.blue.media.model.DownloadHistoryCondition;
 import com.blue.media.repository.entity.DownloadHistory;

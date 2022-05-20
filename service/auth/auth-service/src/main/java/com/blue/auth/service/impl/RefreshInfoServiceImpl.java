@@ -64,7 +64,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
     }
 
     /**
-     * delete refresh infos
+     * delete refresh info
      *
      * @param refreshInfos
      * @return

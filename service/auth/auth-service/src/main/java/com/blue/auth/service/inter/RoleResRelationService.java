@@ -8,7 +8,6 @@ import com.blue.auth.repository.entity.RoleResRelation;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * role resource relation service
@@ -51,14 +50,6 @@ public interface RoleResRelationService {
      * @return
      */
     AuthorityBaseOnRole updateAuthorityByRole(Long roleId, List<Long> resIds, Long operatorId);
-
-    /**
-     * get the highest lever role by resource id
-     *
-     * @param resId
-     * @return
-     */
-    Optional<Role> getHighestLevelRoleByResourceId(Long resId);
 
     /**
      * get authority base on role by role id

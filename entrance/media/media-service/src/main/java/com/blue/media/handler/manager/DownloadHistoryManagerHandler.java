@@ -1,6 +1,6 @@
 package com.blue.media.handler.manager;
 
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.service.inter.DownloadHistoryService;
 import org.springframework.stereotype.Component;

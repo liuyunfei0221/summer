@@ -1,7 +1,7 @@
 package com.blue.portal.service.inter;
 
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.portal.api.model.BulletinInfo;
 import com.blue.portal.api.model.BulletinManagerInfo;
 import com.blue.portal.model.BulletinCondition;
@@ -48,7 +48,7 @@ public interface BulletinService {
     BulletinInfo deleteBulletin(Long id);
 
     /**
-     * expire bulletin infos
+     * expire bulletin info
      *
      * @return
      */
@@ -86,7 +86,7 @@ public interface BulletinService {
     List<Bulletin> selectActiveBulletinByType(Integer bulletinType);
 
     /**
-     * list bulletin infos
+     * list bulletin info
      *
      * @param bulletinType
      * @return

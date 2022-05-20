@@ -163,7 +163,7 @@ public class DictServiceImpl implements DictService {
     }
 
     /**
-     * invalid dict type infos
+     * invalid dict type info
      *
      * @return
      */
@@ -175,7 +175,7 @@ public class DictServiceImpl implements DictService {
     }
 
     /**
-     * invalid dict infos
+     * invalid dict info
      *
      * @return
      */

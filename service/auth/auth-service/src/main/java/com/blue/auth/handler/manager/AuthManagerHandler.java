@@ -1,7 +1,7 @@
 package com.blue.auth.handler.manager;
 
 import com.blue.auth.service.inter.ControlService;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -38,14 +38,14 @@ public final class AuthManagerHandler {
     public Mono<ServerResponse> invalidateAuthByMember(ServerRequest serverRequest) {
         return zip(getLongVariableReact(serverRequest, MID.key),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.invalidateAuthByMember(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> controlService.invalidateAuthByMemberId(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
     }
 
     /**
-     * select security infos
+     * select security info
      *
      * @param serverRequest
      * @return

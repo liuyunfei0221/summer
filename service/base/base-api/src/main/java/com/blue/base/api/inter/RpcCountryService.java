@@ -54,7 +54,7 @@ public interface RpcCountryService {
     CompletableFuture<List<CountryInfo>> selectCountryInfoMono();
 
     /**
-     * select country infos by ids
+     * select country info by ids
      *
      * @param ids
      * @return
@@ -62,7 +62,7 @@ public interface RpcCountryService {
     Map<Long, CountryInfo> selectCountryInfoByIds(List<Long> ids);
 
     /**
-     * select country infos mono by ids
+     * select country info mono by ids
      *
      * @param ids
      * @return

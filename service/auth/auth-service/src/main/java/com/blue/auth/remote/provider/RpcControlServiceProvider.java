@@ -5,7 +5,7 @@ import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.api.model.MemberRoleRelationParam;
 import com.blue.auth.service.inter.ControlService;
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
@@ -46,7 +46,7 @@ public class RpcControlServiceProvider implements RpcControlService {
     }
 
     /**
-     * init auth infos for a new member
+     * init auth info for a new member
      *
      * @param memberCredentialInfo
      */

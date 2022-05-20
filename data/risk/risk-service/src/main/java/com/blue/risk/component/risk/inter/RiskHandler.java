@@ -1,6 +1,6 @@
 package com.blue.risk.component.risk.inter;
 
-import com.blue.base.model.base.DataEvent;
+import com.blue.base.model.common.DataEvent;
 
 /**
  * risk handler interface

@@ -1,7 +1,7 @@
 package com.blue.lake.service.inter;
 
-import com.blue.base.model.base.DataEvent;
-import com.blue.base.model.base.LimitModelRequest;
+import com.blue.base.model.common.DataEvent;
+import com.blue.base.model.common.LimitModelRequest;
 import com.blue.lake.repository.entity.OptEvent;
 import reactor.core.publisher.Mono;
 

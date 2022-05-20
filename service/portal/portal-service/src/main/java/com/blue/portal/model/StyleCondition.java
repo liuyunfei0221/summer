@@ -1,6 +1,6 @@
 package com.blue.portal.model;
 
-import com.blue.base.model.base.SortCondition;
+import com.blue.base.model.common.SortCondition;
 import com.blue.portal.constant.BulletinSortAttribute;
 
 import java.io.Serializable;

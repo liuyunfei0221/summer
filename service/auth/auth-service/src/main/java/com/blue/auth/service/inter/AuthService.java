@@ -6,7 +6,7 @@ import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.api.model.MemberPayload;
 import com.blue.auth.model.MemberAccess;
 import com.blue.auth.model.MemberAuth;
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 import reactor.core.publisher.Mono;
 
 /**

@@ -1,6 +1,6 @@
 package com.blue.auth.api.model;
 
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;

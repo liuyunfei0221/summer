@@ -15,7 +15,7 @@ import static org.springframework.boot.SpringApplication.run;
 @SuppressWarnings("resource")
 @SummerSpringBootApplication
 @EnableDiscoveryClient
-@EnableBlueLifecycle(basePackages = "com.blue.portal.config.mq")
+@EnableBlueLifecycle(basePackages = "com.blue.portal.event")
 @EnableBlueDataAccess(basePackages = "com.blue.portal.repository.mapper")
 @EnableBlueTransaction
 @DubboComponentScan(basePackages = "com.blue.portal.remote")

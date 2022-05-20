@@ -261,7 +261,7 @@ public class StateServiceImpl implements StateService {
     }
 
     /**
-     * select states infos by ids
+     * select states info by ids
      *
      * @param ids
      * @return
@@ -272,7 +272,7 @@ public class StateServiceImpl implements StateService {
     }
 
     /**
-     * select state infos mono by ids
+     * select state info mono by ids
      *
      * @param ids
      * @return
@@ -327,7 +327,7 @@ public class StateServiceImpl implements StateService {
     }
 
     /**
-     * invalid state infos
+     * invalid state info
      *
      * @return
      */

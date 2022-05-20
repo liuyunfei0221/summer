@@ -55,7 +55,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     }
 
     /**
-     * select all role infos
+     * select all role info
      *
      * @return
      */

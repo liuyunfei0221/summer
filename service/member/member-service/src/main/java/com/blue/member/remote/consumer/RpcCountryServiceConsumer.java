@@ -95,7 +95,7 @@ public class RpcCountryServiceConsumer {
     }
 
     /**
-     * select country infos by ids
+     * select country info by ids
      *
      * @param ids
      * @return
@@ -105,7 +105,7 @@ public class RpcCountryServiceConsumer {
     }
 
     /**
-     * select country infos mono by ids
+     * select country info mono by ids
      *
      * @param ids
      * @return

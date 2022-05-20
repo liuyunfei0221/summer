@@ -41,7 +41,7 @@ public interface RpcCityService {
     CompletableFuture<CityInfo> getCityInfoMonoById(Long id);
 
     /**
-     * select city infos by state id
+     * select city info by state id
      *
      * @param stateId
      * @return
@@ -49,7 +49,7 @@ public interface RpcCityService {
     List<CityInfo> selectCityInfoByStateId(Long stateId);
 
     /**
-     * select city infos mono by state id
+     * select city info mono by state id
      *
      * @param stateId
      * @return
@@ -57,7 +57,7 @@ public interface RpcCityService {
     CompletableFuture<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId);
 
     /**
-     * select city infos by ids
+     * select city info by ids
      *
      * @param ids
      * @return
@@ -65,7 +65,7 @@ public interface RpcCityService {
     Map<Long, CityInfo> selectCityInfoByIds(List<Long> ids);
 
     /**
-     * select city infos mono by ids
+     * select city info mono by ids
      *
      * @param ids
      * @return

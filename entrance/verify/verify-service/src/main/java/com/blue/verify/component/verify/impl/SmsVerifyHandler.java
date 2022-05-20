@@ -2,7 +2,7 @@ package com.blue.verify.component.verify.impl;
 
 import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.redis.common.BlueLeakyBucketRateLimiter;
 import com.blue.verify.component.verify.inter.VerifyHandler;

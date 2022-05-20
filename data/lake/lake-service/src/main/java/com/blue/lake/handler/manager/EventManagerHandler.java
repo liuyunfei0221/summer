@@ -1,7 +1,7 @@
 package com.blue.lake.handler.manager;
 
-import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.base.LimitModelRequest;
+import com.blue.base.model.common.BlueResponse;
+import com.blue.base.model.common.LimitModelRequest;
 import com.blue.base.model.exps.BlueException;
 import com.blue.lake.service.inter.LakeService;
 import org.springframework.stereotype.Component;

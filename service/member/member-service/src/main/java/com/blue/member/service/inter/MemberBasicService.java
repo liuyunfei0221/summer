@@ -1,7 +1,7 @@
 package com.blue.member.service.inter;
 
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;
@@ -17,6 +17,31 @@ import java.util.Optional;
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface MemberBasicService {
+
+    /**
+     * insert member
+     *
+     * @param memberBasic
+     * @return
+     */
+    MemberBasicInfo insertMemberBasic(MemberBasic memberBasic);
+
+    /**
+     * update member
+     *
+     * @param memberBasic
+     * @return
+     */
+    MemberBasicInfo updateMemberBasic(MemberBasic memberBasic);
+
+    /**
+     * update member status
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    MemberBasicInfo updateMemberBasicStatus(Long id, Integer status);
 
     /**
      * get opt by id
@@ -73,22 +98,6 @@ public interface MemberBasicService {
      * @return
      */
     Mono<MemberBasicInfo> getMemberBasicInfoMonoWithAssert(Long id);
-
-    /**
-     * insert member
-     *
-     * @param memberBasic
-     * @return
-     */
-    MemberBasicInfo insertMemberBasic(MemberBasic memberBasic);
-
-    /**
-     * update member
-     *
-     * @param memberBasic
-     * @return
-     */
-    MemberBasicInfo updateMemberBasic(MemberBasic memberBasic);
 
     /**
      * select members by ids

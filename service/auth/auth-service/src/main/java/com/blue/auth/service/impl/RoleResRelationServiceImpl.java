@@ -32,7 +32,6 @@ import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.CacheKey.ROLE_RES_RELS;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static java.util.Collections.emptyList;
-import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -270,25 +269,6 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
 
         return new AuthorityBaseOnRole(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(roleOpt.get()),
                 resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList()));
-    }
-
-    /**
-     * get the highest lever role by resource id
-     *
-     * @param resId
-     * @return
-     */
-    @Override
-    public Optional<Role> getHighestLevelRoleByResourceId(Long resId) {
-        LOGGER.info("Optional<Role> getHighestLevelRoleByResourceId(Long resId), resId = {}", resId);
-        if (isInvalidIdentity(resId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        List<Role> roles = roleService.selectRoleByIds(
-                roleResRelationMapper.selectByResId(resId)
-                        .stream().map(RoleResRelation::getRoleId).collect(toList()));
-
-        return roles.stream().max(comparing(Role::getLevel));
     }
 
     /**

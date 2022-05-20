@@ -1,8 +1,8 @@
 package com.blue.media.config.filter.global;
 
 import com.blue.base.constant.base.BlueHeader;
-import com.blue.base.model.base.DataEvent;
-import com.blue.base.model.base.ExceptionResponse;
+import com.blue.base.model.common.DataEvent;
+import com.blue.base.model.common.ExceptionResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.component.event.RequestEventReporter;
 import com.blue.media.config.deploy.ErrorReportDeploy;

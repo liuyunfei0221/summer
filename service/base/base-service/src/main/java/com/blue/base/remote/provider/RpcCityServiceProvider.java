@@ -91,7 +91,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     }
 
     /**
-     * select city infos by state id
+     * select city info by state id
      *
      * @param stateId
      * @return
@@ -103,7 +103,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     }
 
     /**
-     * select city infos mono by state id
+     * select city info mono by state id
      *
      * @param stateId
      * @return
@@ -118,7 +118,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     }
 
     /**
-     * select city infos by ids
+     * select city info by ids
      *
      * @param ids
      * @return
@@ -130,7 +130,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     }
 
     /**
-     * select city infos mono by ids
+     * select city info mono by ids
      *
      * @param ids
      * @return

@@ -1,7 +1,7 @@
 package com.blue.portal.constant;
 
 
-import com.blue.base.model.base.PageModelRequest;
+import com.blue.base.model.common.PageModelRequest;
 import com.blue.portal.model.BulletinCondition;
 import com.blue.portal.model.StyleCondition;
 import org.springframework.core.ParameterizedTypeReference;

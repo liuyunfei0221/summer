@@ -15,7 +15,7 @@ import static org.springframework.boot.SpringApplication.run;
 @SuppressWarnings("resource")
 @SummerSpringBootApplication
 @EnableDiscoveryClient
-@EnableBlueLifecycle(basePackages = "com.blue.finance.config.mq")
+@EnableBlueLifecycle(basePackages = "com.blue.finance.event")
 @EnableBlueDataAccess(basePackages = "com.blue.finance.repository.mapper")
 @EnableBlueTransaction
 @DubboComponentScan(basePackages = "com.blue.finance.remote")

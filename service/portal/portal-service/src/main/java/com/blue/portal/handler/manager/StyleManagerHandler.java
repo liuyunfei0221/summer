@@ -1,7 +1,7 @@
 package com.blue.portal.handler.manager;
 
-import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.base.IdentityParam;
+import com.blue.base.model.common.BlueResponse;
+import com.blue.base.model.common.IdentityParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.portal.model.StyleInsertParam;
 import com.blue.portal.model.StyleUpdateParam;

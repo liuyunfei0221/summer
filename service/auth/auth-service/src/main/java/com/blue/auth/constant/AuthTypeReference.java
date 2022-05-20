@@ -4,8 +4,8 @@ package com.blue.auth.constant;
 import com.blue.auth.model.ResourceCondition;
 import com.blue.auth.model.RoleCondition;
 import com.blue.auth.model.SecurityQuestionInsertParam;
-import com.blue.base.model.base.ListParam;
-import com.blue.base.model.base.PageModelRequest;
+import com.blue.base.model.common.ListParam;
+import com.blue.base.model.common.PageModelRequest;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.lang.reflect.Type;

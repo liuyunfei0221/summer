@@ -99,7 +99,7 @@ public class PortalServiceImpl implements PortalService {
     private static final Function<BulletinType, String> BULLETIN_CACHE_KEY_GENERATOR = type -> PORTALS_PRE.key + type.identity;
 
     /**
-     * refresh bulletin infos
+     * refresh bulletin info
      *
      * @return
      */
@@ -114,7 +114,7 @@ public class PortalServiceImpl implements PortalService {
 
 
     /**
-     * list bulletin infos from db
+     * list bulletin info from db
      */
     private final Function<BulletinType, List<BulletinInfo>> DB_CACHE_PORTAL_GETTER = type -> {
         List<Bulletin> bulletins = bulletinService.selectTargetActiveBulletinByType(type);
@@ -123,7 +123,7 @@ public class PortalServiceImpl implements PortalService {
     };
 
     /**
-     * list bulletin infos from redis
+     * list bulletin info from redis
      */
     private final Function<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_GETTER = type -> {
         List<String> bulletins = ofNullable(stringRedisTemplate.opsForList().range(ofNullable(type)
@@ -148,7 +148,7 @@ public class PortalServiceImpl implements PortalService {
     };
 
     /**
-     * list bulletin infos from redis, if not exist, set
+     * list bulletin info from redis, if not exist, set
      */
     private final Function<BulletinType, List<BulletinInfo>> REDIS_CACHE_PORTAL_GETTER_WITH_CACHE = type ->
             ofNullable(REDIS_CACHE_PORTAL_GETTER.apply(type))
@@ -183,7 +183,7 @@ public class PortalServiceImpl implements PortalService {
 
 
     /**
-     * list bulletin infos from local cache
+     * list bulletin info from local cache
      */
     private final Function<BulletinType, Mono<List<BulletinInfo>>> LOCAL_CACHE_PORTAL_FUNC = type -> {
         if (isNull(type))
@@ -194,7 +194,7 @@ public class PortalServiceImpl implements PortalService {
 
 
     /**
-     * list bulletin infos
+     * list bulletin info
      *
      * @param bulletinType
      * @return

@@ -1,6 +1,6 @@
 package com.blue.member.handler.manager;
 
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.service.inter.MemberAuthorityService;
 import org.springframework.stereotype.Component;

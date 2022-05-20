@@ -1,7 +1,7 @@
 package com.blue.base.component.exception.ioc;
 
 import com.blue.base.component.exception.handler.ExceptionProcessor;
-import com.blue.base.model.base.ExceptionResponse;
+import com.blue.base.model.common.ExceptionResponse;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;

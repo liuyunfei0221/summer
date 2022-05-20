@@ -6,7 +6,7 @@ import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 
 /**
- * member, role, login infos for generate member auth
+ * member, role, login info for generate member auth
  *
  * @author liuyunfei
  */

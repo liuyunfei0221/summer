@@ -82,7 +82,7 @@ public interface StateService {
     Mono<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId);
 
     /**
-     * select state infos by ids
+     * select state info by ids
      *
      * @param ids
      * @return
@@ -90,7 +90,7 @@ public interface StateService {
     Map<Long, StateInfo> selectStateInfoByIds(List<Long> ids);
 
     /**
-     * select state infos mono by ids
+     * select state info mono by ids
      *
      * @param ids
      * @return
@@ -130,7 +130,7 @@ public interface StateService {
     Mono<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids);
 
     /**
-     * invalid state infos
+     * invalid state info
      *
      * @return
      */

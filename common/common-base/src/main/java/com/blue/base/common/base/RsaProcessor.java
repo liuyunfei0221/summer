@@ -1,6 +1,6 @@
 package com.blue.base.common.base;
 
-import com.blue.base.model.base.KeyPair;
+import com.blue.base.model.common.KeyPair;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.util.FastByteArrayOutputStream;
 import reactor.util.Logger;

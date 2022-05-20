@@ -118,7 +118,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     }
 
     /**
-     * select state infos by ids
+     * select state info by ids
      *
      * @param ids
      * @return
@@ -130,7 +130,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     }
 
     /**
-     * select state infos mono by ids
+     * select state info mono by ids
      *
      * @param ids
      * @return

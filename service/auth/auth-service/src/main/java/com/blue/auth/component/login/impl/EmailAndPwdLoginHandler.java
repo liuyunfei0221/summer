@@ -7,7 +7,7 @@ import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.service.inter.AuthService;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.base.constant.auth.CredentialType;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
 import org.springframework.web.reactive.function.server.ServerRequest;

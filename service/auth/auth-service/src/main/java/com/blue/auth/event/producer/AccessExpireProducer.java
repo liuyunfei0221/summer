@@ -2,7 +2,7 @@ package com.blue.auth.event.producer;
 
 import com.blue.auth.config.blue.BlueProducerConfig;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.base.KeyExpireParam;
+import com.blue.base.model.common.KeyExpireEvent;
 import com.blue.pulsar.common.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
 import reactor.util.Logger;
@@ -30,11 +30,11 @@ public final class AccessExpireProducer implements BlueLifecycle {
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<KeyExpireParam> authExpireProducer;
+    private final BluePulsarProducer<KeyExpireEvent> authExpireProducer;
 
     public AccessExpireProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.authExpireProducer = generateProducer(blueProducerConfig.getByKey(ACCESS_EXPIRE.name), KeyExpireParam.class);
+        this.authExpireProducer = generateProducer(blueProducerConfig.getByKey(ACCESS_EXPIRE.name), KeyExpireEvent.class);
     }
 
     @Override
@@ -49,25 +49,25 @@ public final class AccessExpireProducer implements BlueLifecycle {
 
     @Override
     public void start() {
-        LOGGER.warn("authExpireProducer start...");
+        LOGGER.warn("accessExpireProducer start...");
     }
 
     @Override
     public void stop() {
         this.authExpireProducer.shutdown();
-        LOGGER.warn("authExpireProducer shutdown...");
+        LOGGER.warn("accessExpireProducer shutdown...");
     }
 
     /**
      * send message
      *
-     * @param keyExpireParam
+     * @param keyExpireEvent
      */
-    public void send(KeyExpireParam keyExpireParam) {
-        CompletableFuture<MessageId> future = authExpireProducer.sendAsync(keyExpireParam);
-        LOGGER.info("authExpireProducer send, keyExpireParam = {}", keyExpireParam);
+    public void send(KeyExpireEvent keyExpireEvent) {
+        CompletableFuture<MessageId> future = authExpireProducer.sendAsync(keyExpireEvent);
+        LOGGER.info("authExpireProducer send, keyExpireEvent = {}", keyExpireEvent);
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("authExpireProducer send success, keyExpireParam = {}, messageId = {}", keyExpireParam, messageId);
+                LOGGER.info("authExpireProducer send success, keyExpireEvent = {}, messageId = {}", keyExpireEvent, messageId);
         future.thenAcceptAsync(c, executorService);
     }
 

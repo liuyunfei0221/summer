@@ -3,7 +3,7 @@ package com.blue.auth.api.inter;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.api.model.MemberRoleRelationParam;
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 public interface RpcControlService {
 
     /**
-     * init auth infos for a new member
+     * init auth info for a new member
      *
      * @param memberCredentialInfo
      */

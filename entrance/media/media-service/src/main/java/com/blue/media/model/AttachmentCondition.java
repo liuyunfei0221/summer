@@ -1,6 +1,6 @@
 package com.blue.media.model;
 
-import com.blue.base.model.base.SortCondition;
+import com.blue.base.model.common.SortCondition;
 import com.blue.media.constant.AttachmentSortAttribute;
 
 import java.io.Serializable;

@@ -4,7 +4,7 @@ import com.blue.base.api.model.AreaRegion;
 import com.blue.base.api.model.CityRegion;
 import com.blue.base.api.model.CountryInfo;
 import com.blue.base.api.model.StateRegion;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.base.repository.template.AreaRepository;
 import com.blue.base.repository.template.CityRepository;
 import com.blue.base.repository.template.CountryRepository;

@@ -3,7 +3,7 @@ package com.blue.analyze.handler.api;
 import com.blue.analyze.model.MergeSummaryParam;
 import com.blue.analyze.model.SummaryParam;
 import com.blue.analyze.service.inter.StatisticsService;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;

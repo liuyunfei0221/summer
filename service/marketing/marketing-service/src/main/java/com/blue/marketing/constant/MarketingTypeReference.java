@@ -1,7 +1,7 @@
 package com.blue.marketing.constant;
 
 
-import com.blue.base.model.base.PageModelRequest;
+import com.blue.base.model.common.PageModelRequest;
 import com.blue.marketing.model.EventRecordCondition;
 import org.springframework.core.ParameterizedTypeReference;
 

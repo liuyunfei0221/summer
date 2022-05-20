@@ -66,7 +66,7 @@ public interface CityService {
     Mono<CityInfo> getCityInfoMonoById(Long id);
 
     /**
-     * select city infos by state id
+     * select city info by state id
      *
      * @param stateId
      * @return
@@ -74,7 +74,7 @@ public interface CityService {
     List<CityInfo> selectCityInfoByStateId(Long stateId);
 
     /**
-     * select city infos mono by state id
+     * select city info mono by state id
      *
      * @param stateId
      * @return
@@ -82,7 +82,7 @@ public interface CityService {
     Mono<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId);
 
     /**
-     * select city infos by ids
+     * select city info by ids
      *
      * @param ids
      * @return
@@ -90,7 +90,7 @@ public interface CityService {
     Map<Long, CityInfo> selectCityInfoByIds(List<Long> ids);
 
     /**
-     * select city infos mono by ids
+     * select city info mono by ids
      *
      * @param ids
      * @return
@@ -130,7 +130,7 @@ public interface CityService {
     Mono<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids);
 
     /**
-     * invalid city infos
+     * invalid city info
      *
      * @return
      */

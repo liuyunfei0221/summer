@@ -1,6 +1,6 @@
 package com.blue.media.handler.manager;
 
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.mail.common.MailReader;
 import com.blue.mail.common.MailSender;
 import jakarta.mail.Message;

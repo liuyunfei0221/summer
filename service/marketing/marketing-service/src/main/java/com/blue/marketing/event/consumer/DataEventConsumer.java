@@ -1,7 +1,7 @@
 package com.blue.marketing.event.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.base.DataEvent;
+import com.blue.base.model.common.DataEvent;
 import com.blue.marketing.config.blue.BlueConsumerConfig;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import reactor.util.Logger;

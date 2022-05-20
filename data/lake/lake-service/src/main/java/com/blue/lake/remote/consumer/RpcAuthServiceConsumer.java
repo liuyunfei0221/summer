@@ -1,6 +1,6 @@
 package com.blue.lake.remote.consumer;
 
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 import com.blue.auth.api.inter.RpcAuthService;
 import com.blue.auth.api.model.AccessAssert;
 import com.blue.auth.api.model.AccessAsserted;

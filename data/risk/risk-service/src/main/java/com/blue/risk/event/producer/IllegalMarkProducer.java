@@ -1,7 +1,7 @@
 package com.blue.risk.event.producer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.base.IllegalMarkEvent;
+import com.blue.base.model.common.IllegalMarkEvent;
 import com.blue.pulsar.common.BluePulsarProducer;
 import com.blue.risk.config.blue.BlueProducerConfig;
 import org.apache.pulsar.client.api.MessageId;

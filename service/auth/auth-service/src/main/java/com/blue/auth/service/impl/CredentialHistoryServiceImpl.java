@@ -171,7 +171,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
     }
 
     /**
-     * select credential history infos mono by member id with limit
+     * select credential history info mono by member id with limit
      *
      * @param memberId
      * @return

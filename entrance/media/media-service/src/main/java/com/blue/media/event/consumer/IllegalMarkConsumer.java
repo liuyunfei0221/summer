@@ -1,7 +1,7 @@
 package com.blue.media.event.consumer;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.base.IllegalMarkEvent;
+import com.blue.base.model.common.IllegalMarkEvent;
 import com.blue.media.component.illegal.IllegalAsserter;
 import com.blue.media.config.blue.BlueConsumerConfig;
 import com.blue.pulsar.common.BluePulsarConsumer;

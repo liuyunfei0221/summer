@@ -2,8 +2,8 @@ package com.blue.media.service.impl;
 
 import com.blue.base.common.base.CommonFunctions;
 import com.blue.base.constant.base.BlueFileType;
-import com.blue.base.model.base.BlueResponse;
-import com.blue.base.model.base.IdentityParam;
+import com.blue.base.model.common.BlueResponse;
+import com.blue.base.model.common.IdentityParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.common.BlueIdentityProcessor;
 import com.blue.media.api.model.FileUploadResult;

@@ -1,7 +1,7 @@
 package com.blue.media.service.impl;
 
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.DownloadHistoryInfo;
 import com.blue.media.constant.DownloadHistorySortAttribute;

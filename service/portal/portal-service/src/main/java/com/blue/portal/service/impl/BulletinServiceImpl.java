@@ -2,8 +2,8 @@ package com.blue.portal.service.impl;
 
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.portal.BulletinType;
-import com.blue.base.model.base.PageModelRequest;
-import com.blue.base.model.base.PageModelResponse;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
@@ -209,7 +209,7 @@ public class BulletinServiceImpl implements BulletinService {
                 .map(Bulletin::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
+                        throw new BlueException(BULLETIN_TITLE_ALREADY_EXIST, new String[]{bup.getTitle()});
                 });
 
         Bulletin bulletin = bulletinMapper.selectByPrimaryKey(id);
@@ -369,7 +369,7 @@ public class BulletinServiceImpl implements BulletinService {
     }
 
     /**
-     * expire bulletin infos
+     * expire bulletin info
      *
      * @return
      */
@@ -435,7 +435,7 @@ public class BulletinServiceImpl implements BulletinService {
     }
 
     /**
-     * list bulletin infos
+     * list bulletin info
      *
      * @param bulletinType
      * @return

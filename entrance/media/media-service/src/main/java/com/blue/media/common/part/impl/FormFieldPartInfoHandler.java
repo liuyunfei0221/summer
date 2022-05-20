@@ -35,17 +35,17 @@ public final class FormFieldPartInfoHandler implements PartInfoHandler {
     public Map<String, String> process(Part part) {
 
         FormFieldPart formFieldPart = (FormFieldPart) part;
-        Map<String, String> infos = new HashMap<>(8);
+        Map<String, String> info = new HashMap<>(8);
 
-        infos.put(PART_CLASS.identity, part.getClass().getName());
-        infos.put(PART_NAME.identity, formFieldPart.name());
-        infos.put(FILE_NAME.identity, formFieldPart.value());
-        infos.put(PART_HEADERS.identity, of(part.headers())
+        info.put(PART_CLASS.identity, part.getClass().getName());
+        info.put(PART_NAME.identity, formFieldPart.name());
+        info.put(FILE_NAME.identity, formFieldPart.value());
+        info.put(PART_HEADERS.identity, of(part.headers())
                 .stream()
                 .flatMap(headers -> headers.entrySet().stream())
                 .map(entry -> entry.getKey() + "=" + entry.getValue())
                 .collect(toList()).toString());
 
-        return infos;
+        return info;
     }
 }

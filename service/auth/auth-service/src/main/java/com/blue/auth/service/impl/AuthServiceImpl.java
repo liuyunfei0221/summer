@@ -4,7 +4,6 @@ import com.blue.auth.api.model.*;
 import com.blue.auth.component.access.AccessInfoCache;
 import com.blue.auth.config.deploy.BlockingDeploy;
 import com.blue.auth.config.deploy.SessionKeyDeploy;
-import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.event.producer.InvalidLocalAccessProducer;
 import com.blue.auth.model.AccessInfo;
 import com.blue.auth.model.AuthInfoRefreshElement;
@@ -21,8 +20,9 @@ import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.auth.DeviceType;
 import com.blue.base.constant.base.CacheKeyPrefix;
 import com.blue.base.constant.base.Symbol;
-import com.blue.base.model.base.Access;
-import com.blue.base.model.base.KeyPair;
+import com.blue.base.model.common.Access;
+import com.blue.base.model.common.InvalidLocalAccessEvent;
+import com.blue.base.model.common.KeyPair;
 import com.blue.base.model.exps.BlueException;
 import com.blue.jwt.common.JwtProcessor;
 import com.blue.redisson.common.SynchronizedProcessor;
@@ -40,6 +40,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.*;
 
+import static com.blue.auth.converter.AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER;
+import static com.blue.auth.converter.AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.base.ConstantProcessor.*;
@@ -152,7 +154,7 @@ public class AuthServiceImpl implements AuthService {
             PATH_SEPARATOR + resource.getModule().intern() + resource.getUri().intern();
 
     /**
-     * auth infos refreshing mark
+     * auth info refreshing mark
      */
     private volatile boolean authorityInfosRefreshing = true;
 
@@ -344,7 +346,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * delete all refresh token infos by key id
+     * delete all refresh token info by key id
      */
     private final Function<String, Mono<Boolean>> REFRESH_INFOS_BY_ID_DELETER = id ->
             refreshInfoService.deleteRefreshInfo(id)
@@ -353,9 +355,9 @@ public class AuthServiceImpl implements AuthService {
                         return empty();
                     })
                     .then(just(true));
-    
+
     /**
-     * delete all refresh token infos by member id
+     * delete all refresh token info by member id
      */
     private final Function<Long, Mono<Boolean>> REFRESH_INFOS_BY_MEMBER_ID_DELETER = memberId -> {
         RefreshInfo probe = new RefreshInfo();
@@ -564,7 +566,7 @@ public class AuthServiceImpl implements AuthService {
     private static final Function<Long, String> AUTH_INVALID_BY_MID_SYNC_KEY_GEN = memberId -> AUTH_INVALID_BY_MEMBER_ID_PRE.prefix + memberId;
 
     /**
-     * auth infos invalid task
+     * auth info invalid task
      */
     private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_TASK = memberId ->
             REFRESH_INFOS_BY_MEMBER_ID_DELETER.apply(memberId)
@@ -591,9 +593,7 @@ public class AuthServiceImpl implements AuthService {
      */
     private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_SYNC_TASK = memberId ->
             synchronizedProcessor.handleSupWithTryLock(AUTH_INVALID_BY_MID_SYNC_KEY_GEN.apply(memberId),
-                    () -> INVALID_AUTH_BY_MEMBER_ID_TASK.apply(memberId),
-                    () -> true,
-                    () -> false);
+                    () -> INVALID_AUTH_BY_MEMBER_ID_TASK.apply(memberId), () -> true, () -> false);
 
     /**
      * get authority by role id
@@ -663,7 +663,7 @@ public class AuthServiceImpl implements AuthService {
                                 .map(idAndResourceMapping::get)
                                 .filter(Objects::nonNull)
                                 .distinct()
-                                .map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER)
+                                .map(RESOURCE_2_RESOURCE_INFO_CONVERTER)
                                 .collect(toList())
                         , (a, b) -> a));
 
@@ -675,7 +675,7 @@ public class AuthServiceImpl implements AuthService {
         List<Role> roles = roleListCf.join();
         Map<Long, RoleInfo> tempIdAndRoleInfoMapping = roles
                 .parallelStream()
-                .map(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER)
+                .map(ROLE_2_ROLE_INFO_CONVERTER)
                 .collect(toMap(RoleInfo::getId, r -> r, (a, b) -> a));
 
         authorityInfosRefreshing = true;
@@ -902,7 +902,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<Boolean> invalidateLocalAccessByKeyId(String keyId) {
         LOGGER.info("Mono<Boolean> invalidateLocalAccessByKeyId(String keyId), keyId = {}", keyId);
-        invalidLocalAccessProducer.send(new InvalidLocalAuthParam(keyId));
+        invalidLocalAccessProducer.send(new InvalidLocalAccessEvent(keyId));
         return just(true);
     }
 

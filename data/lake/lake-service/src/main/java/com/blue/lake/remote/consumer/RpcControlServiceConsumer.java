@@ -1,6 +1,6 @@
 package com.blue.lake.remote.consumer;
 
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 import com.blue.auth.api.inter.RpcControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
 import org.apache.dubbo.config.annotation.DubboReference;

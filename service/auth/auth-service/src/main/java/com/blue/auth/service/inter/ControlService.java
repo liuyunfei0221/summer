@@ -2,7 +2,7 @@ package com.blue.auth.service.inter;
 
 import com.blue.auth.api.model.*;
 import com.blue.auth.model.*;
-import com.blue.base.model.base.Access;
+import com.blue.base.model.common.Access;
 import com.blue.member.api.model.MemberBasicInfo;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -43,6 +43,15 @@ public interface ControlService {
     Mono<ServerResponse> logout(ServerRequest serverRequest);
 
     /**
+     * operator's role level must higher than target member role level
+     *
+     * @param targetMemberId
+     * @param operatorMemberId
+     * @return
+     */
+    Boolean validateRoleLevelForOperate(Long targetMemberId, Long operatorMemberId);
+
+    /**
      * invalid auth by access
      *
      * @param access
@@ -65,6 +74,15 @@ public interface ControlService {
      * @return
      */
     Mono<Boolean> invalidateAuthByMemberId(Long memberId);
+
+    /**
+     * invalid member auth by member id
+     *
+     * @param memberId
+     * @param operatorId
+     * @return
+     */
+    Mono<Boolean> invalidateAuthByMemberId(Long memberId, Long operatorId);
 
     /**
      * invalid local auth by key id
@@ -108,14 +126,14 @@ public interface ControlService {
     boolean updateMemberRoleById(Long memberId, Long roleId, Long operatorId);
 
     /**
-     * init auth infos for a new member
+     * init auth info for a new member
      *
      * @param memberCredentialInfo
      */
     void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo);
 
     /**
-     * init auth infos for a new member
+     * init auth info for a new member
      *
      * @param memberCredentialInfo
      * @param roleId
@@ -304,15 +322,6 @@ public interface ControlService {
      * @param memberRoleRelationParam
      */
     void updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam);
-
-    /**
-     * invalid member auth by member id
-     *
-     * @param memberId
-     * @param operatorId
-     * @return
-     */
-    Mono<Boolean> invalidateAuthByMember(Long memberId, Long operatorId);
 
     /**
      * select security question mono by member id

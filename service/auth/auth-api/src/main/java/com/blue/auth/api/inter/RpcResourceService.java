@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 public interface RpcResourceService {
 
     /**
-     * select all resource infos
+     * select all resource info
      *
      * @return
      */

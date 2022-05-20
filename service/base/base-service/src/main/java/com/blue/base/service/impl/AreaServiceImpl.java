@@ -259,7 +259,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     /**
-     * select area infos by city id
+     * select area info by city id
      *
      * @param cityId
      * @return
@@ -270,7 +270,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     /**
-     * select area infos mono by city id
+     * select area info mono by city id
      *
      * @param cityId
      * @return
@@ -281,7 +281,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     /**
-     * select area infos by ids
+     * select area info by ids
      *
      * @param ids
      * @return
@@ -292,7 +292,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     /**
-     * select area infos mono by ids
+     * select area info mono by ids
      *
      * @param ids
      * @return
@@ -347,7 +347,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     /**
-     * invalid area infos
+     * invalid area info
      *
      * @return
      */

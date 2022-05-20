@@ -3,7 +3,7 @@ package com.blue.finance.api.model;
 import java.io.Serializable;
 
 /**
- * member finance infos with member id
+ * member finance info with member id
  *
  * @author liuyunfei
  */

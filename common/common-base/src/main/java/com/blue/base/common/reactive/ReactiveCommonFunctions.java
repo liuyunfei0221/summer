@@ -1,7 +1,7 @@
 package com.blue.base.common.reactive;
 
 import com.blue.base.common.base.CommonFunctions;
-import com.blue.base.model.base.BlueResponse;
+import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
