@@ -1,7 +1,7 @@
 package com.blue.base.common.message;
 
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.constant.base.DictKey;
+import com.blue.base.constant.base.ElementKey;
 import com.blue.base.model.message.LanguageInfo;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -17,7 +17,7 @@ import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.parseProp;
-import static com.blue.base.common.message.DictProcessor.resolveToValues;
+import static com.blue.base.common.message.ElementProcessor.resolveToValues;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
@@ -53,6 +53,7 @@ public final class MessageProcessor {
 
     private static volatile Map<String, Map<Integer, String>> I_18_N;
     private static volatile List<LanguageInfo> SUPPORT_LANGUAGES;
+    private static volatile LanguageInfo DEFAULT_LANGUAGE_INFO;
 
     private static final UnaryOperator<String> LANGUAGE_IDENTITY_PARSER = n -> {
         int idx = lastIndexOf(n, SCHEME_SEPARATOR.identity);
@@ -74,11 +75,12 @@ public final class MessageProcessor {
         List<File> files = getFiles(uri, true);
         int size = files.size();
 
-        Map<Integer, LanguageInfo> info = new HashMap<>(size);
+        Map<Integer, LanguageInfo> infoMap = new HashMap<>(size);
         Map<String, Map<Integer, String>> i18n = new HashMap<>(size);
 
         Map<String, String> messages;
         String identity;
+        LanguageInfo languageInfo;
         for (File f : files) {
             if (isNull(f))
                 continue;
@@ -86,14 +88,18 @@ public final class MessageProcessor {
             messages = parseProp(f);
             identity = LANGUAGE_IDENTITY_PARSER.apply(f.getName());
 
-            info.put(LANGUAGE_PRIORITY_PARSER.apply(messages),
-                    new LanguageInfo(ofNullable(messages.get(LANGUAGE_NAME_KEY)).orElse(""),
-                            identity, ofNullable(messages.get(LANGUAGE_ICON_KEY)).orElse("")));
+            languageInfo = new LanguageInfo(ofNullable(messages.get(LANGUAGE_NAME_KEY)).orElse(""),
+                    identity, ofNullable(messages.get(LANGUAGE_ICON_KEY)).orElse(""));
+
+            infoMap.put(LANGUAGE_PRIORITY_PARSER.apply(messages), languageInfo);
 
             i18n.put(lowerCase(identity), MESSAGES_CONVERTER.apply(messages));
+
+            if (DEFAULT_LANGUAGE.equals(languageInfo.getIdentity()))
+                DEFAULT_LANGUAGE_INFO = languageInfo;
         }
 
-        List<LanguageInfo> supportLanguages = info.entrySet().stream()
+        List<LanguageInfo> supportLanguages = infoMap.entrySet().stream()
                 .sorted((a, b) -> {
                     if (DEFAULT_LANGUAGE.equals(lowerCase(a.getValue().getIdentity())))
                         return MIN_VALUE;
@@ -108,8 +114,12 @@ public final class MessageProcessor {
         I_18_N = i18n;
         SUPPORT_LANGUAGES = supportLanguages;
 
+        if (isNull(DEFAULT_LANGUAGE_INFO))
+            throw new RuntimeException("DEFAULT_LANGUAGE_INFO can't be null");
+
         LOGGER.info("I_18_N = {}", I_18_N);
         LOGGER.info("SUPPORT_LANGUAGES = {}", SUPPORT_LANGUAGES);
+        LOGGER.info("DEFAULT_LANGUAGE_INFO = {}", DEFAULT_LANGUAGE_INFO);
     };
 
     private static final Function<List<String>, Map<Integer, String>> MESSAGES_GETTER = languages -> {
@@ -128,7 +138,7 @@ public final class MessageProcessor {
                     .map(messages -> messages.get(ofNullable(code).orElse(DEFAULT_CODE)))
                     .orElse(DEFAULT_MESSAGE).intern();
 
-    private static final Predicate<DictKey[]> NON_KEY_REPLACEMENTS_PRE = replacements ->
+    private static final Predicate<ElementKey[]> NON_KEY_REPLACEMENTS_PRE = replacements ->
             isNull(replacements) || replacements.length == 0;
 
     private static final Predicate<String[]> NON_STR_REPLACEMENTS_PRE = replacements ->
@@ -163,6 +173,15 @@ public final class MessageProcessor {
     }
 
     /**
+     * get default language
+     *
+     * @return
+     */
+    public static LanguageInfo getDefaultLanguage() {
+        return DEFAULT_LANGUAGE_INFO;
+    }
+
+    /**
      * get message by default
      *
      * @param code
@@ -178,7 +197,7 @@ public final class MessageProcessor {
      * @param code
      * @return
      */
-    public static String resolveToMessage(Integer code, DictKey[] replacements) {
+    public static String resolveToMessage(Integer code, ElementKey[] replacements) {
         String msg = MESSAGE_GETTER.apply(code, emptyList()).intern();
         return NON_KEY_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, resolveToValues(replacements));
     }
@@ -213,7 +232,7 @@ public final class MessageProcessor {
      * @param replacements
      * @return
      */
-    public static String resolveToMessage(Integer code, List<String> languages, DictKey[] replacements) {
+    public static String resolveToMessage(Integer code, List<String> languages, ElementKey[] replacements) {
         String msg = MESSAGE_GETTER.apply(code, languages).intern();
         return NON_KEY_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, resolveToValues(replacements, languages));
     }
@@ -250,7 +269,7 @@ public final class MessageProcessor {
      * @param replacements
      * @return
      */
-    public static String resolveToMessage(Integer code, ServerRequest serverRequest, DictKey[] replacements) {
+    public static String resolveToMessage(Integer code, ServerRequest serverRequest, ElementKey[] replacements) {
         String msg = MESSAGE_GETTER.apply(code, getAcceptLanguages(serverRequest)).intern();
         return NON_KEY_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, resolveToValues(replacements, serverRequest));
     }

@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static com.blue.base.common.message.MessageProcessor.getDefaultLanguage;
 import static com.blue.base.common.message.MessageProcessor.listSupportLanguages;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.ResponseElement.OK;
@@ -17,7 +18,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 import static reactor.core.publisher.Mono.just;
 
 /**
- * dict api handler
+ * language api handler
  *
  * @author liuyunfei
  */
@@ -26,6 +27,7 @@ import static reactor.core.publisher.Mono.just;
 public final class LanguageApiHandler {
 
     private static final List<LanguageInfo> LANGUAGES = listSupportLanguages();
+    private static final LanguageInfo DEFAULT_LANGUAGE = getDefaultLanguage();
 
     /**
      * select language
@@ -36,8 +38,21 @@ public final class LanguageApiHandler {
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return just(LANGUAGES)
                 .flatMap(ls ->
-                        ok()
-                                .contentType(APPLICATION_JSON)
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, ls, serverRequest), BlueResponse.class)
+                );
+    }
+
+    /**
+     * get default language
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> getDefault(ServerRequest serverRequest) {
+        return just(DEFAULT_LANGUAGE)
+                .flatMap(ls ->
+                        ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ls, serverRequest), BlueResponse.class)
                 );
     }

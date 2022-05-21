@@ -27,6 +27,7 @@ public class LanguageApiRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .GET("/languages", languageApiHandler::select)
+                .GET("/languages/default", languageApiHandler::getDefault)
                 .build();
 
         return nest(pathPredicate, routerFunction);

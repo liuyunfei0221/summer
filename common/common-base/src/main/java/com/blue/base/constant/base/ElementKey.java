@@ -1,11 +1,11 @@
 package com.blue.base.constant.base;
 
 /**
- * dict key
+ * element key
  *
  * @author liuyunfei
  */
-public enum DictKey {
+public enum ElementKey {
 
     /**
      * default key
@@ -29,7 +29,7 @@ public enum DictKey {
 
     public final String key;
 
-    DictKey(String key) {
+    ElementKey(String key) {
         this.key = key;
     }
 

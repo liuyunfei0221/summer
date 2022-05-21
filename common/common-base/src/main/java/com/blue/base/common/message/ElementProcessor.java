@@ -1,11 +1,13 @@
 package com.blue.base.common.message;
 
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.common.base.PropertiesProcessor;
-import com.blue.base.constant.base.DictKey;
+import com.blue.base.constant.base.ElementKey;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.util.Logger;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,10 +20,11 @@ import java.util.stream.Stream;
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
-import static com.blue.base.constant.base.DictKey.DEFAULT;
+import static com.blue.base.constant.base.ElementKey.DEFAULT;
 import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
 import static com.blue.base.constant.base.Symbol.*;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -29,16 +32,16 @@ import static org.apache.commons.lang3.StringUtils.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * i18n dict processor
+ * i18n element processor
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "unused"})
-public final class DictProcessor {
+public final class ElementProcessor {
 
-    private static final Logger LOGGER = getLogger(DictProcessor.class);
+    private static final Logger LOGGER = getLogger(ElementProcessor.class);
 
-    private static final String DICT_URI = "classpath:i18n/dict";
+    private static final String ELEMENT_URI = "classpath:i18n/element";
     private static final String DEFAULT_LANGUAGE = lowerCase(replace(LANGUAGE, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity));
     private static final String DEFAULT_KEY = DEFAULT.key;
     private static final String DEFAULT_VALUE = DEFAULT.key;
@@ -51,12 +54,12 @@ public final class DictProcessor {
 
     private static volatile Map<String, Map<String, String>> I_18_N;
 
-    private static final Consumer<String> DICT_LOADER = uri -> {
+    private static final Consumer<String> ELEMENT_LOADER = uri -> {
         List<File> files = getFiles(uri, true).stream().filter(Objects::nonNull).collect(toList());
         Integer supportLanguageSize = ofNullable(MessageProcessor.listSupportLanguages()).map(List::size).orElse(0);
 
         if (files.size() != supportLanguageSize)
-            LOGGER.warn("size of dict languages support and size of message languages support are different");
+            LOGGER.warn("size of element languages support and size of message languages support are different");
 
         //noinspection UnnecessaryLocalVariable
         Map<String, Map<String, String>> i18n = files.stream()
@@ -66,18 +69,33 @@ public final class DictProcessor {
         I_18_N = i18n;
     };
 
-    private static final Function<List<String>, Map<String, String>> DICT_GETTER = languages -> {
+    private static final Function<List<String>, Map<String, String>> ELEMENT_GETTER = languages -> {
         if (isNotNull(languages)) {
-            Map<String, String> dict;
+            Map<String, String> element;
             for (String language : languages)
-                if (isNotNull(dict = I_18_N.get(lowerCase(language))))
-                    return dict;
+                if (isNotNull(element = I_18_N.get(lowerCase(language))))
+                    return element;
         }
 
         return I_18_N.get(DEFAULT_LANGUAGE);
     };
 
-    private static final BiFunction<Map<String, String>, DictKey, String> VALUE_GETTER = (values, key) ->
+    private static final BiFunction<Map<String, String>, List<String>, Map<String, String>> TARGETS_GETTER = (allElement, keys) -> {
+        if (BlueChecker.isNotEmpty(allElement) && BlueChecker.isNotEmpty(keys)) {
+            Map<String, String> res = new HashMap<>(keys.size(), 1.0f);
+            String value;
+            for (String key : keys) {
+                value = allElement.get(key);
+                res.put(key, isNotNull(value) ? value : "");
+            }
+
+            return res;
+        }
+
+        return emptyMap();
+    };
+
+    private static final BiFunction<Map<String, String>, ElementKey, String> VALUE_GETTER = (values, key) ->
             ofNullable(values.get(ofNullable(key).map(k -> k.key).orElse(DEFAULT_KEY))).orElse(DEFAULT_VALUE).intern();
 
     static {
@@ -88,51 +106,112 @@ public final class DictProcessor {
      * refresh i18n messages
      */
     public static void refresh() {
-        DICT_LOADER.accept(DICT_URI);
+        ELEMENT_LOADER.accept(ELEMENT_URI);
     }
 
     /**
-     * get dict value by i18n
+     * select all elements by default language
      *
-     * @param key
      * @return
      */
-    public static String resolveToValue(DictKey key) {
-        return resolveToValue(key, emptyList());
+    public static Map<String, String> selectAllElement() {
+        return ELEMENT_GETTER.apply(null);
     }
 
     /**
-     * get dict values by i18n
+     * select all elements by languages
+     *
+     * @param languages
+     * @return
+     */
+    public static Map<String, String> selectAllElement(List<String> languages) {
+        return ELEMENT_GETTER.apply(languages);
+    }
+
+    /**
+     * select all elements by request
+     *
+     * @param serverRequest
+     * @return
+     */
+    public static Map<String, String> selectAllElement(ServerRequest serverRequest) {
+        return selectAllElement(getAcceptLanguages(serverRequest));
+    }
+
+    /**
+     * select elements by default language and keys
      *
      * @param keys
      * @return
      */
-    public static String[] resolveToValues(DictKey[] keys) {
+    public static Map<String, String> selectElement(List<String> keys) {
+        return BlueChecker.isNotEmpty(keys) ? TARGETS_GETTER.apply(ELEMENT_GETTER.apply(null), keys) : emptyMap();
+    }
+
+    /**
+     * select elements by languages and keys
+     *
+     * @param languages
+     * @param keys
+     * @return
+     */
+    public static Map<String, String> selectElement(List<String> languages, List<String> keys) {
+        return BlueChecker.isNotEmpty(keys) ? TARGETS_GETTER.apply(ELEMENT_GETTER.apply(languages), keys) : emptyMap();
+    }
+
+    /**
+     * select elements by request and request
+     *
+     * @param serverRequest
+     * @param keys
+     * @return
+     */
+    public static Map<String, String> selectElement(ServerRequest serverRequest, List<String> keys) {
+        return selectElement(getAcceptLanguages(serverRequest), keys);
+    }
+
+    /**
+     * get element value by i18n
+     *
+     * @param key
+     * @return
+     */
+    public static String resolveToValue(ElementKey key) {
+        return resolveToValue(key, emptyList());
+    }
+
+    /**
+     * get element values by i18n
+     *
+     * @param keys
+     * @return
+     */
+    public static String[] resolveToValues(ElementKey[] keys) {
         return resolveToValues(keys, emptyList());
     }
 
     /**
-     * get dict value by i18n
+     * get element value by i18n
      *
      * @param key
      * @param languages
      * @return
      */
-    public static String resolveToValue(DictKey key, List<String> languages) {
-        return ofNullable(DICT_GETTER.apply(languages))
+    public static String resolveToValue(ElementKey key, List<String> languages) {
+        return ofNullable(ELEMENT_GETTER.apply(languages))
                 .map(values -> VALUE_GETTER.apply(values, key))
                 .orElse(DEFAULT_VALUE).intern();
     }
 
     /**
-     * get dict values by i18n
+     * get element values by i18n
      *
      * @param keys
      * @param languages
      * @return
      */
-    public static String[] resolveToValues(DictKey[] keys, List<String> languages) {
-        return ofNullable(DICT_GETTER.apply(languages))
+    public static String[] resolveToValues(ElementKey[] keys, List<String> languages) {
+        return ofNullable(ELEMENT_GETTER.apply(languages))
                 .map(values ->
                         ofNullable(keys)
                                 .filter(ks -> ks.length > 0)
@@ -146,24 +225,24 @@ public final class DictProcessor {
     }
 
     /**
-     * get dict value by i18n
+     * get element value by i18n
      *
      * @param key
      * @param serverRequest
      * @return
      */
-    public static String resolveToValue(DictKey key, ServerRequest serverRequest) {
+    public static String resolveToValue(ElementKey key, ServerRequest serverRequest) {
         return resolveToValue(key, getAcceptLanguages(serverRequest));
     }
 
     /**
-     * get dict values by i18n
+     * get element values by i18n
      *
      * @param keys
      * @param serverRequest
      * @return
      */
-    public static String[] resolveToValues(DictKey[] keys, ServerRequest serverRequest) {
+    public static String[] resolveToValues(ElementKey[] keys, ServerRequest serverRequest) {
         return resolveToValues(keys, getAcceptLanguages(serverRequest));
     }
 
