@@ -46,7 +46,7 @@ public final class BaseModelConverters {
         if (isNull(state))
             throw new BlueException(EMPTY_PARAM);
 
-        return new StateInfo(state.getId(), state.getCountryId(), state.getName(), state.getFipsCode(), state.getCountryCode(), state.getStateCode());
+        return new StateInfo(state.getId(), state.getCountryId(), state.getName(), state.getFipsCode(), state.getStateCode());
     };
 
     /**

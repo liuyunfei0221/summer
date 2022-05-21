@@ -2,6 +2,8 @@ package com.blue.base.service.inter;
 
 import com.blue.base.api.model.StateInfo;
 import com.blue.base.api.model.StateRegion;
+import com.blue.base.model.StateInsertParam;
+import com.blue.base.model.StateUpdateParam;
 import com.blue.base.repository.entity.State;
 import reactor.core.publisher.Mono;
 
@@ -16,6 +18,30 @@ import java.util.Optional;
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface StateService {
+
+    /**
+     * insert state
+     *
+     * @param stateInsertParam
+     * @return
+     */
+    Mono<StateInfo> insertState(StateInsertParam stateInsertParam);
+
+    /**
+     * update state
+     *
+     * @param stateUpdateParam
+     * @return
+     */
+    Mono<StateInfo> updateState(StateUpdateParam stateUpdateParam);
+
+    /**
+     * delete city
+     *
+     * @param id
+     * @return
+     */
+    Mono<StateInfo> deleteCity(Long id);
 
     /**
      * get state by state id

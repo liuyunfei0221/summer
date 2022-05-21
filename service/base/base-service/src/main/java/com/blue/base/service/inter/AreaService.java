@@ -2,6 +2,8 @@ package com.blue.base.service.inter;
 
 import com.blue.base.api.model.AreaInfo;
 import com.blue.base.api.model.AreaRegion;
+import com.blue.base.model.AreaInsertParam;
+import com.blue.base.model.AreaUpdateParam;
 import com.blue.base.repository.entity.Area;
 import reactor.core.publisher.Mono;
 
@@ -16,6 +18,48 @@ import java.util.Optional;
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface AreaService {
+
+    /**
+     * insert area
+     *
+     * @param areaInsertParam
+     * @return
+     */
+    Mono<AreaInfo> insertArea(AreaInsertParam areaInsertParam);
+
+    /**
+     * update area
+     *
+     * @param areaUpdateParam
+     * @return
+     */
+    Mono<AreaInfo> updateArea(AreaUpdateParam areaUpdateParam);
+
+    /**
+     * delete area
+     *
+     * @param id
+     * @return
+     */
+    Mono<AreaInfo> deleteArea(Long id);
+
+    /**
+     * update country id on batch
+     *
+     * @param sourceCountryId
+     * @param descCountryId
+     * @return
+     */
+    int updateCountryIdByCountryId(Long sourceCountryId, Long descCountryId);
+
+    /**
+     * update state id on batch
+     *
+     * @param sourceStateId
+     * @param descStateId
+     * @return
+     */
+    int updateStateIdByStateId(Long sourceStateId, Long descStateId);
 
     /**
      * get area by id

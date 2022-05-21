@@ -26,7 +26,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavadocDeclaration"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavadocDeclaration", "unused"})
 public final class PortalModelConverters {
 
     /**

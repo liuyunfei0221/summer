@@ -265,6 +265,11 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(FORBIDDEN);
     };
 
+    private final BiConsumer<Long, Long> TAR_ROLE_LEVEL_ASSERTER = (targetRoleId, operatorMemberId) -> {
+        if (!TAR_ROLE_LEVEL_VALIDATOR.apply(targetRoleId, operatorMemberId))
+            throw new BlueException(FORBIDDEN);
+    };
+
     private static final Map<VerifyType, List<String>> VT_WITH_CTS_REL = Stream.of(VerifyTypeAndCredentialTypesRelation.values())
             .collect(toMap(e -> e.verifyType, e -> e.credentialTypes.stream().map(lt -> lt.identity).collect(toList()), (a, b) -> a));
 
@@ -901,7 +906,7 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(INVALID_IDENTITY);
 
         return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
-            TAR_ROLE_LEVEL_VALIDATOR.apply(id, operatorId);
+            TAR_ROLE_LEVEL_ASSERTER.accept(id, operatorId);
             roleResRelationService.deleteRelationByRoleId(id);
             return roleService.deleteRole(id);
         })).doOnSuccess(ri -> {
@@ -1020,7 +1025,7 @@ public class ControlServiceImpl implements ControlService {
         roleResRelationParam.asserts();
 
         return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
-            TAR_ROLE_LEVEL_VALIDATOR.apply(roleResRelationParam.getRoleId(), operatorId);
+            TAR_ROLE_LEVEL_ASSERTER.accept(roleResRelationParam.getRoleId(), operatorId);
             return roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), operatorId);
         })).doOnSuccess(auth -> {
             LOGGER.info("auth = {}", auth);

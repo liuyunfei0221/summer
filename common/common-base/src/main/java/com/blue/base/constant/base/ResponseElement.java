@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 public enum ResponseElement {
 
 
-    //<editor-fold desc="base">
+    //<editor-fold desc="common">
     OK(HttpStatus.OK.value(), HttpStatus.OK.value(), "Success"),
     TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS.value(), HttpStatus.TOO_MANY_REQUESTS.value(), "Too many requests"),
     PARTIAL_CONTENT(HttpStatus.PARTIAL_CONTENT.value(), HttpStatus.PARTIAL_CONTENT.value(), "Fallback"),
@@ -67,6 +67,14 @@ public enum ResponseElement {
     RESOURCE_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400200005, "Resource name already exists"),
     RESOURCE_FEATURE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400200006, "Resource feature already exists"),
     RESOURCE_STILL_USED(HttpStatus.BAD_REQUEST.value(), 400200007, "Resource are still used by the following roles"),
+    //</editor-fold>
+
+
+    //<editor-fold desc="base">
+    COUNTRY_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300001, "country already exists"),
+    STATE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300002, "State already exists"),
+    CITY_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300003, "City already exists"),
+    AREA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300004, "Area already exists"),
     //</editor-fold>
 
 

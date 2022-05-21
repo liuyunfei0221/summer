@@ -20,19 +20,16 @@ public final class StateInfo implements Serializable {
 
     private String fipsCode;
 
-    private String countryCode;
-
     private String stateCode;
 
     public StateInfo() {
     }
 
-    public StateInfo(Long id, Long countryId, String name, String fipsCode, String countryCode, String stateCode) {
+    public StateInfo(Long id, Long countryId, String name, String fipsCode, String stateCode) {
         this.id = id;
         this.countryId = countryId;
         this.name = name;
         this.fipsCode = fipsCode;
-        this.countryCode = countryCode;
         this.stateCode = stateCode;
     }
 
@@ -68,14 +65,6 @@ public final class StateInfo implements Serializable {
         this.fipsCode = fipsCode;
     }
 
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
     public String getStateCode() {
         return stateCode;
     }
@@ -91,7 +80,6 @@ public final class StateInfo implements Serializable {
                 ", countryId=" + countryId +
                 ", name='" + name + '\'' +
                 ", fipsCode='" + fipsCode + '\'' +
-                ", countryCode='" + countryCode + '\'' +
                 ", stateCode='" + stateCode + '\'' +
                 '}';
     }

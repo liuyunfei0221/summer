@@ -27,10 +27,6 @@ public class Area implements Serializable {
 
     private String name;
 
-    private String countryCode;
-
-    private String stateCode;
-
     private Integer status;
 
     private Long createTime;
@@ -77,22 +73,6 @@ public class Area implements Serializable {
         this.name = isNull(name) ? null : name.trim();
     }
 
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = isNull(countryCode) ? null : countryCode.trim();
-    }
-
-    public String getStateCode() {
-        return stateCode;
-    }
-
-    public void setStateCode(String stateCode) {
-        this.stateCode = isNull(stateCode) ? null : stateCode.trim();
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -125,8 +105,6 @@ public class Area implements Serializable {
                 ", stateId=" + stateId +
                 ", cityId=" + cityId +
                 ", name='" + name + '\'' +
-                ", countryCode='" + countryCode + '\'' +
-                ", stateCode='" + stateCode + '\'' +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

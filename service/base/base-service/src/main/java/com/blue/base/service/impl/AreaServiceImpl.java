@@ -3,30 +3,40 @@ package com.blue.base.service.impl;
 import com.blue.base.api.model.AreaInfo;
 import com.blue.base.api.model.AreaRegion;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
+import com.blue.base.model.AreaInsertParam;
+import com.blue.base.model.AreaUpdateParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Area;
+import com.blue.base.repository.entity.City;
 import com.blue.base.repository.template.AreaRepository;
 import com.blue.base.service.inter.AreaService;
 import com.blue.base.service.inter.CityService;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
+import com.blue.identity.common.BlueIdentityProcessor;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.util.Logger;
+import reactor.util.Loggers;
 
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.base.Status.VALID;
 import static com.blue.base.converter.BaseModelConverters.AREAS_2_AREA_INFOS_CONVERTER;
 import static com.blue.base.converter.BaseModelConverters.AREA_2_AREA_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
@@ -48,6 +58,10 @@ import static reactor.core.publisher.Mono.*;
 @Service
 public class AreaServiceImpl implements AreaService {
 
+    private static final Logger LOGGER = Loggers.getLogger(AreaServiceImpl.class);
+
+    private final BlueIdentityProcessor blueIdentityProcessor;
+
     private CityService cityService;
 
     private StateService stateService;
@@ -56,18 +70,19 @@ public class AreaServiceImpl implements AreaService {
 
     private AreaRepository areaRepository;
 
-    public AreaServiceImpl(CityService cityService, StateService stateService, CountryService countryService,
-                           ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, AreaRepository areaRepository) {
+    public AreaServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CityService cityService, StateService stateService,
+                           CountryService countryService, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, AreaRepository areaRepository) {
+        this.blueIdentityProcessor = blueIdentityProcessor;
         this.cityService = cityService;
         this.stateService = stateService;
         this.countryService = countryService;
         this.areaRepository = areaRepository;
 
-        cityIdAreasCache = generateCache(new CaffeineConfParams(
+        idAreaCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getAreaMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
-        idAreaCache = generateCache(new CaffeineConfParams(
+        cityIdAreasCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getAreaMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
@@ -133,8 +148,7 @@ public class AreaServiceImpl implements AreaService {
                                             cityService.getCityInfoMonoById(areaInfo.getCityId())
                                     ).flatMap(tuple3 ->
                                             just(new AreaRegion(id, tuple3.getT1(), tuple3.getT2(), tuple3.getT3(), areaInfo))))
-                            .toFuture().join()
-            );
+                            .toFuture().join());
         }
 
         throw new BlueException(INVALID_IDENTITY);
@@ -176,6 +190,217 @@ public class AreaServiceImpl implements AreaService {
                 .flatMap(Collection::stream)
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
     };
+
+    /**
+     * invalid all chche
+     */
+    private void invalidCache() {
+        idAreaCache.invalidateAll();
+        cityIdAreasCache.invalidateAll();
+        idRegionCache.invalidateAll();
+    }
+
+    /**
+     * is an area exist?
+     */
+    private final Consumer<AreaInsertParam> INSERT_AREA_VALIDATOR = param -> {
+        if (isNull(param))
+            throw new BlueException(EMPTY_PARAM);
+        param.asserts();
+
+        Area probe = new Area();
+        probe.setCityId(param.getCityId());
+        probe.setName(param.getName());
+
+        Long count = ofNullable(areaRepository.count(Example.of(probe)).toFuture().join()).orElse(0L);
+
+        if (count > 0L)
+            throw new BlueException(AREA_ALREADY_EXIST);
+    };
+
+    /**
+     * area insert param -> area
+     */
+    public final Function<AreaInsertParam, Area> AREA_INSERT_PARAM_2_AREA_CONVERTER = param -> {
+        if (isNull(param))
+            throw new BlueException(EMPTY_PARAM);
+        param.asserts();
+
+        Long cityId = param.getCityId();
+
+        City city = cityService.getCityById(cityId)
+                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+        Long stamp = TIME_STAMP_GETTER.get();
+
+        Area area = new Area();
+
+        area.setCountryId(city.getCountryId());
+        area.setStateId(city.getStateId());
+        area.setCityId(cityId);
+        area.setName(param.getName());
+        area.setStatus(VALID.status);
+        area.setCreateTime(stamp);
+        area.setUpdateTime(stamp);
+
+        return area;
+    };
+
+    /**
+     * is an area exist?
+     */
+    private final Function<AreaUpdateParam, Area> UPDATE_AREA_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
+        if (isNull(param))
+            throw new BlueException(EMPTY_PARAM);
+        param.asserts();
+
+        Long id = param.getId();
+
+        Area probe = new Area();
+        probe.setCityId(param.getCityId());
+        probe.setName(param.getName());
+
+        List<Area> areas = ofNullable(areaRepository.findAll(Example.of(probe)).collectList().toFuture().join())
+                .orElseGet(Collections::emptyList);
+
+        if (areas.stream().anyMatch(a -> !id.equals(a.getId())))
+            throw new BlueException(DATA_ALREADY_EXIST);
+
+        Area area = areaRepository.findById(id).toFuture().join();
+        if (isNull(area))
+            throw new BlueException(DATA_NOT_EXIST);
+
+        return area;
+    };
+
+    /**
+     * for area
+     */
+    public final BiFunction<AreaUpdateParam, Area, Boolean> UPDATE_AREA_VALIDATOR = (p, t) -> {
+        if (isNull(p) || isNull(t))
+            throw new BlueException(BAD_REQUEST);
+
+        if (!p.getId().equals(t.getId()))
+            throw new BlueException(BAD_REQUEST);
+
+        boolean alteration = false;
+
+        Long cityId = p.getCityId();
+        if (cityId != null && !cityId.equals(t.getCityId())) {
+            City city = cityService.getCityById(cityId)
+                    .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+
+            t.setCountryId(city.getCountryId());
+            t.setStateId(city.getStateId());
+            t.setCityId(cityId);
+
+            alteration = true;
+        }
+
+        String name = p.getName();
+        if (isNotBlank(name) && !name.equals(t.getName())) {
+            t.setName(name);
+            alteration = true;
+        }
+
+        return alteration;
+    };
+
+    /**
+     * insert area
+     *
+     * @param areaInsertParam
+     * @return
+     */
+    @Override
+    public Mono<AreaInfo> insertArea(AreaInsertParam areaInsertParam) {
+        LOGGER.info("Mono<AreaInfo> insertArea(AreaInsertParam areaInsertParam), areaInsertParam = {}", areaInsertParam);
+
+        INSERT_AREA_VALIDATOR.accept(areaInsertParam);
+        Area area = AREA_INSERT_PARAM_2_AREA_CONVERTER.apply(areaInsertParam);
+
+        area.setId(blueIdentityProcessor.generate(Area.class));
+
+        return areaRepository.insert(area)
+                .map(AREA_2_AREA_INFO_CONVERTER)
+                .doOnSuccess(ai -> {
+                    LOGGER.info("ai = {}", ai);
+                    invalidCache();
+                });
+    }
+
+    /**
+     * update area
+     *
+     * @param areaUpdateParam
+     * @return
+     */
+    @Override
+    public Mono<AreaInfo> updateArea(AreaUpdateParam areaUpdateParam) {
+        LOGGER.info("Mono<AreaInfo> updateArea(AreaUpdateParam areaUpdateParam), areaUpdateParam = {}", areaUpdateParam);
+
+        Area area = UPDATE_AREA_VALIDATOR_AND_ORIGIN_RETURNER.apply(areaUpdateParam);
+
+        Boolean changed = UPDATE_AREA_VALIDATOR.apply(areaUpdateParam, area);
+        if (changed != null && !changed)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        return areaRepository.save(area)
+                .map(AREA_2_AREA_INFO_CONVERTER)
+                .doOnSuccess(ai -> {
+                    LOGGER.info("ai = {}", ai);
+                    invalidCache();
+                });
+    }
+
+    /**
+     * delete area
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Mono<AreaInfo> deleteArea(Long id) {
+        LOGGER.info("Mono<AreaInfo> deleteArea(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        Area area = areaRepository.findById(id).toFuture().join();
+        if (isNull(area))
+            throw new BlueException(DATA_NOT_EXIST);
+
+        return areaRepository.delete(area)
+                .then(just(AREA_2_AREA_INFO_CONVERTER.apply(area)))
+                .doOnSuccess(ai -> {
+                    LOGGER.info("ai = {}", ai);
+                    invalidCache();
+                });
+    }
+
+    /**
+     * update country id on batch
+     *
+     * @param sourceCountryId
+     * @param descCountryId
+     * @return
+     */
+    @Override
+    public int updateCountryIdByCountryId(Long sourceCountryId, Long descCountryId) {
+        //TODO
+        return 0;
+    }
+
+    /**
+     * update state id on batch
+     *
+     * @param sourceStateId
+     * @param descStateId
+     * @return
+     */
+    @Override
+    public int updateStateIdByStateId(Long sourceStateId, Long descStateId) {
+        //TODO
+        return 0;
+    }
 
     /**
      * get area by id

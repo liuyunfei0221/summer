@@ -31,7 +31,7 @@ public interface BulletinService {
     BulletinInfo insertBulletin(BulletinInsertParam bulletinInsertParam, Long operatorId);
 
     /**
-     * update a exist bulletin
+     * update bulletin
      *
      * @param bulletinUpdateParam
      * @param operatorId

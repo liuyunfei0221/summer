@@ -114,7 +114,8 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(UNAUTHORIZED);
 
-        List<SecurityQuestion> securityQuestions = securityQuestionInsertParams.stream().map(SECURITY_QUESTION_INSERT_PARAM_2_SECURITY_QUESTION_CONVERTER).collect(toList());
+        List<SecurityQuestion> securityQuestions = securityQuestionInsertParams.stream()
+                .map(SECURITY_QUESTION_INSERT_PARAM_2_SECURITY_QUESTION_CONVERTER).collect(toList());
 
         QUESTIONS_VALIDATOR.accept(securityQuestions, memberId);
 

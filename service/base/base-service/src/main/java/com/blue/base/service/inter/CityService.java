@@ -2,6 +2,8 @@ package com.blue.base.service.inter;
 
 import com.blue.base.api.model.CityInfo;
 import com.blue.base.api.model.CityRegion;
+import com.blue.base.model.CityInsertParam;
+import com.blue.base.model.CityUpdateParam;
 import com.blue.base.repository.entity.City;
 import reactor.core.publisher.Mono;
 
@@ -16,6 +18,39 @@ import java.util.Optional;
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface CityService {
+
+    /**
+     * insert city
+     *
+     * @param cityInsertParam
+     * @return
+     */
+    Mono<CityInfo> insertCity(CityInsertParam cityInsertParam);
+
+    /**
+     * update city
+     *
+     * @param cityUpdateParam
+     * @return
+     */
+    Mono<CityInfo> updateCity(CityUpdateParam cityUpdateParam);
+
+    /**
+     * delete city
+     *
+     * @param id
+     * @return
+     */
+    Mono<CityInfo> deleteCity(Long id);
+
+    /**
+     * update country id on batch
+     *
+     * @param sourceCountryId
+     * @param descCountryId
+     * @return
+     */
+    int updateCountryIdByCountryId(Long sourceCountryId, Long descCountryId);
 
     /**
      * get city by id

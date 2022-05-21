@@ -1,7 +1,10 @@
 package com.blue.base.service.impl;
 
 import com.blue.base.api.model.CountryInfo;
+import com.blue.base.api.model.StateInfo;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
+import com.blue.base.model.CountryInsertParam;
+import com.blue.base.model.CountryUpdateParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Country;
 import com.blue.base.repository.template.CountryRepository;
@@ -105,6 +108,39 @@ public class CountryServiceImpl implements CountryService {
                 .flatMap(Collection::stream)
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
     };
+
+    /**
+     * insert country
+     *
+     * @param countryInsertParam
+     * @return
+     */
+    @Override
+    public Mono<StateInfo> insertState(CountryInsertParam countryInsertParam) {
+        return null;
+    }
+
+    /**
+     * update country
+     *
+     * @param countryUpdateParam
+     * @return
+     */
+    @Override
+    public Mono<StateInfo> updateState(CountryUpdateParam countryUpdateParam) {
+        return null;
+    }
+
+    /**
+     * delete country
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Mono<StateInfo> deleteCity(Long id) {
+        return null;
+    }
 
     /**
      * get country by country id

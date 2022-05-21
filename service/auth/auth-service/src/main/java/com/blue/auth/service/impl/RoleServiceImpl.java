@@ -165,7 +165,6 @@ public class RoleServiceImpl implements RoleService {
     private final Consumer<RoleInsertParam> INSERT_ROLE_VALIDATOR = rip -> {
         if (isNull(rip))
             throw new BlueException(EMPTY_PARAM);
-
         rip.asserts();
 
         if (isNotNull(roleMapper.selectByName(rip.getName())))
@@ -181,10 +180,9 @@ public class RoleServiceImpl implements RoleService {
     private final Function<RoleUpdateParam, Role> UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
         if (isNull(rup))
             throw new BlueException(EMPTY_PARAM);
+        rup.asserts();
 
         Long id = rup.getId();
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
 
         ofNullable(rup.getName())
                 .filter(BlueChecker::isNotBlank)
@@ -251,8 +249,6 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
         LOGGER.info("RoleInfo insertRole(RoleInsertParam roleInsertParam), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
-        if (isNull(roleInsertParam))
-            throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
@@ -281,8 +277,6 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId) {
         LOGGER.info("RoleInfo updateRole(RoleInsertParam roleInsertParam), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
-        if (isNull(roleUpdateParam))
-            throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 

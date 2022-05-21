@@ -185,7 +185,6 @@ public class BulletinServiceImpl implements BulletinService {
     private final Consumer<BulletinInsertParam> INSERT_BULLETIN_VALIDATOR = bip -> {
         if (isNull(bip))
             throw new BlueException(EMPTY_PARAM);
-
         bip.asserts();
 
         if (isNotNull(bulletinMapper.selectByTitle(bip.getTitle())))
@@ -198,10 +197,9 @@ public class BulletinServiceImpl implements BulletinService {
     private final Function<BulletinUpdateParam, Bulletin> UPDATE_BULLETIN_VALIDATOR_AND_ORIGIN_RETURNER = bup -> {
         if (isNull(bup))
             throw new BlueException(EMPTY_PARAM);
+        bup.asserts();
 
         Long id = bup.getId();
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
 
         ofNullable(bup.getTitle())
                 .filter(BlueChecker::isNotBlank)
@@ -289,8 +287,6 @@ public class BulletinServiceImpl implements BulletinService {
     public BulletinInfo insertBulletin(BulletinInsertParam bulletinInsertParam, Long operatorId) {
         LOGGER.info("BulletinInfo insertBulletin(BulletinInsertParam bulletinInsertParam, Long operatorId), bulletinInsertParam = {}, operatorId = {}",
                 bulletinInsertParam, operatorId);
-        if (isNull(bulletinInsertParam))
-            throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
@@ -311,7 +307,7 @@ public class BulletinServiceImpl implements BulletinService {
     }
 
     /**
-     * update a exist bulletin
+     * update bulletin
      *
      * @param bulletinUpdateParam
      * @param operatorId
@@ -321,14 +317,12 @@ public class BulletinServiceImpl implements BulletinService {
     public BulletinInfo updateBulletin(BulletinUpdateParam bulletinUpdateParam, Long operatorId) {
         LOGGER.info("BulletinInfo updateBulletin(BulletinUpdateParam bulletinUpdateParam, Long operatorId), bulletinUpdateParam = {}, operatorId = {}",
                 bulletinUpdateParam, operatorId);
-        if (isNull(bulletinUpdateParam))
-            throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        List<Integer> changedTypes = new LinkedList<>();
-
         Bulletin bulletin = UPDATE_BULLETIN_VALIDATOR_AND_ORIGIN_RETURNER.apply(bulletinUpdateParam);
+
+        List<Integer> changedTypes = new LinkedList<>();
         changedTypes.add(bulletin.getType());
 
         Boolean changed = UPDATE_BULLETIN_VALIDATOR.apply(bulletinUpdateParam, bulletin);
@@ -396,7 +390,7 @@ public class BulletinServiceImpl implements BulletinService {
     }
 
     /**
-     * get attachment mono by id
+     * get bulletin mono by id
      *
      * @param id
      * @return

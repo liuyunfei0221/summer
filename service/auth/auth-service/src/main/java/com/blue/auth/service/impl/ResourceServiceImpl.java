@@ -138,7 +138,6 @@ public class ResourceServiceImpl implements ResourceService {
     private final Consumer<ResourceInsertParam> INSERT_RESOURCE_VALIDATOR = rip -> {
         if (isNull(rip))
             throw new BlueException(EMPTY_PARAM);
-
         rip.asserts();
 
         if (isNotNull(resourceMapper.selectByName(rip.getName())))
@@ -155,10 +154,9 @@ public class ResourceServiceImpl implements ResourceService {
     private final Function<ResourceUpdateParam, Resource> UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
         if (isNull(rup))
             throw new BlueException(EMPTY_PARAM);
+        rup.asserts();
 
         Long id = rup.getId();
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
 
         ofNullable(rup.getName())
                 .filter(BlueChecker::isNotBlank)
@@ -284,8 +282,6 @@ public class ResourceServiceImpl implements ResourceService {
     public ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
         LOGGER.info("ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId), resourceInsertParam = {}, operatorId = {}",
                 resourceInsertParam, operatorId);
-        if (isNull(resourceInsertParam))
-            throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
@@ -314,8 +310,6 @@ public class ResourceServiceImpl implements ResourceService {
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId) {
         LOGGER.info("ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}", resourceUpdateParam);
-        if (isNull(resourceUpdateParam))
-            throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 

@@ -31,7 +31,7 @@ public interface StyleService {
     StyleInfo insertStyle(StyleInsertParam styleInsertParam, Long operatorId);
 
     /**
-     * update a exist style
+     * update style
      *
      * @param styleUpdateParam
      * @param operatorId

@@ -1,6 +1,9 @@
 package com.blue.base.service.inter;
 
 import com.blue.base.api.model.CountryInfo;
+import com.blue.base.api.model.StateInfo;
+import com.blue.base.model.CountryInsertParam;
+import com.blue.base.model.CountryUpdateParam;
 import com.blue.base.repository.entity.Country;
 import reactor.core.publisher.Mono;
 
@@ -15,6 +18,30 @@ import java.util.Optional;
  */
 @SuppressWarnings({"JavaDoc", "unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public interface CountryService {
+
+    /**
+     * insert country
+     *
+     * @param countryInsertParam
+     * @return
+     */
+    Mono<StateInfo> insertState(CountryInsertParam countryInsertParam);
+
+    /**
+     * update country
+     *
+     * @param countryUpdateParam
+     * @return
+     */
+    Mono<StateInfo> updateState(CountryUpdateParam countryUpdateParam);
+
+    /**
+     * delete country
+     *
+     * @param id
+     * @return
+     */
+    Mono<StateInfo> deleteCity(Long id);
 
     /**
      * get country by country id
@@ -82,7 +109,7 @@ public interface CountryService {
      * @param ids
      * @return
      */
-    Map<Long,CountryInfo> selectCountryInfoByIds(List<Long> ids);
+    Map<Long, CountryInfo> selectCountryInfoByIds(List<Long> ids);
 
     /**
      * select country info mono by ids
@@ -90,7 +117,7 @@ public interface CountryService {
      * @param ids
      * @return
      */
-    Mono<Map<Long,CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids);
+    Mono<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids);
 
     /**
      * invalid country info

@@ -25,8 +25,6 @@ public final class State implements Serializable {
 
     private String fipsCode;
 
-    private String countryCode;
-
     private String stateCode;
 
     private Integer status;
@@ -65,14 +63,6 @@ public final class State implements Serializable {
 
     public void setFipsCode(String fipsCode) {
         this.fipsCode = isNull(fipsCode) ? null : fipsCode.trim();
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = isNull(countryCode) ? null : countryCode.trim();
     }
 
     public String getStateCode() {
@@ -114,7 +104,6 @@ public final class State implements Serializable {
                 ", countryId=" + countryId +
                 ", name='" + name + '\'' +
                 ", fipsCode='" + fipsCode + '\'' +
-                ", countryCode='" + countryCode + '\'' +
                 ", stateCode='" + stateCode + '\'' +
                 ", status=" + status +
                 ", createTime=" + createTime +
