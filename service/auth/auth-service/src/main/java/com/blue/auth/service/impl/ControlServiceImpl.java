@@ -225,14 +225,14 @@ public class ControlServiceImpl implements ControlService {
                 .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     }
 
-    private static final BiFunction<Integer, Integer, Boolean> ROLE_LEVEL_VALIDATOR_FOR_ROLE_COMPARE = (tarLevel, operatorLevel) -> {
+    private static final BiFunction<Integer, Integer, Boolean> ROLE_LEVEL_VALIDATOR = (tarLevel, operatorLevel) -> {
         if (isNull(tarLevel) || isNull(operatorLevel))
             throw new BlueException(BAD_REQUEST);
 
         return tarLevel > operatorLevel;
     };
 
-    private static final BiConsumer<Integer, Integer> ROLE_LEVEL_ASSERTER_FOR_ROLE_COMPARE = (tarLevel, operatorLevel) -> {
+    private static final BiConsumer<Integer, Integer> ROLE_LEVEL_ASSERTER = (tarLevel, operatorLevel) -> {
         if (isNull(tarLevel) || isNull(operatorLevel))
             throw new BlueException(BAD_REQUEST);
 
@@ -240,28 +240,28 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(FORBIDDEN);
     };
 
-    private final BiFunction<Long, Long, Boolean> MEMBER_ROLE_LEVEL_VALIDATOR_FOR_ROLE_COMPARE = (targetMemberId, operatorMemberId) -> {
+    private final BiFunction<Long, Long, Boolean> MEMBER_ROLE_LEVEL_VALIDATOR = (targetMemberId, operatorMemberId) -> {
         LOGGER.info("BiFunction<Long, Long, Boolean> MEMBER_ROLE_LEVEL_VALIDATOR, targetMemberId = {}, operatorMemberId = {}",
                 targetMemberId, operatorMemberId);
 
-        return ROLE_LEVEL_VALIDATOR_FOR_ROLE_COMPARE.apply(ofNullable(getRoleByMemberId(targetMemberId))
+        return ROLE_LEVEL_VALIDATOR.apply(ofNullable(getRoleByMemberId(targetMemberId))
                         .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)),
                 ofNullable(getRoleByMemberId(operatorMemberId))
                         .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)));
     };
 
-    private final BiFunction<Long, Long, Boolean> TAR_ROLE_LEVEL_VALIDATOR_FOR_ROLE_COMPARE = (targetRoleId, operatorMemberId) -> {
+    private final BiFunction<Long, Long, Boolean> TAR_ROLE_LEVEL_VALIDATOR = (targetRoleId, operatorMemberId) -> {
         LOGGER.info("BiFunction<Long, Long, Boolean> TAR_ROLE_LEVEL_VALIDATOR, targetRoleId = {}, operatorMemberId = {}",
                 targetRoleId, operatorMemberId);
 
-        return ROLE_LEVEL_VALIDATOR_FOR_ROLE_COMPARE.apply(ofNullable(getRoleByRoleId(targetRoleId))
+        return ROLE_LEVEL_VALIDATOR.apply(ofNullable(getRoleByRoleId(targetRoleId))
                         .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)),
                 ofNullable(getRoleByMemberId(operatorMemberId))
                         .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)));
     };
 
-    private final BiConsumer<Long, Long> MEMBER_ROLE_LEVEL_ASSERTER_FOR_ROLE_COMPARE = (targetMemberId, operatorMemberId) -> {
-        if (!MEMBER_ROLE_LEVEL_VALIDATOR_FOR_ROLE_COMPARE.apply(targetMemberId, operatorMemberId))
+    private final BiConsumer<Long, Long> MEMBER_ROLE_LEVEL_ASSERTER = (targetMemberId, operatorMemberId) -> {
+        if (!MEMBER_ROLE_LEVEL_VALIDATOR.apply(targetMemberId, operatorMemberId))
             throw new BlueException(FORBIDDEN);
     };
 
@@ -384,7 +384,7 @@ public class ControlServiceImpl implements ControlService {
      */
     @Override
     public Boolean validateRoleLevelForOperate(Long targetMemberId, Long operatorMemberId) {
-        return MEMBER_ROLE_LEVEL_VALIDATOR_FOR_ROLE_COMPARE.apply(targetMemberId, operatorMemberId);
+        return MEMBER_ROLE_LEVEL_VALIDATOR.apply(targetMemberId, operatorMemberId);
     }
 
     /**
@@ -433,7 +433,7 @@ public class ControlServiceImpl implements ControlService {
         if (isInvalidIdentity(memberId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        MEMBER_ROLE_LEVEL_ASSERTER_FOR_ROLE_COMPARE.accept(memberId, operatorId);
+        MEMBER_ROLE_LEVEL_ASSERTER.accept(memberId, operatorId);
 
         return authService.invalidateAuthByMemberId(memberId);
     }
@@ -497,9 +497,9 @@ public class ControlServiceImpl implements ControlService {
         Integer operatorLevel = ofNullable(getRoleByMemberId(operatorId))
                 .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
-        ROLE_LEVEL_ASSERTER_FOR_ROLE_COMPARE.accept(ofNullable(getRoleByMemberId(memberId))
+        ROLE_LEVEL_ASSERTER.accept(ofNullable(getRoleByMemberId(memberId))
                 .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
-        ROLE_LEVEL_ASSERTER_FOR_ROLE_COMPARE.accept(ofNullable(getRoleByRoleId(roleId))
+        ROLE_LEVEL_ASSERTER.accept(ofNullable(getRoleByRoleId(roleId))
                 .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
 
         boolean updated = synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
@@ -698,7 +698,7 @@ public class ControlServiceImpl implements ControlService {
         if (isNull(operatorRole))
             throw new BlueException(DATA_NOT_EXIST);
 
-        ROLE_LEVEL_ASSERTER_FOR_ROLE_COMPARE.accept(targetRole.getLevel(), operatorRole.getLevel());
+        ROLE_LEVEL_ASSERTER.accept(targetRole.getLevel(), operatorRole.getLevel());
 
         return just(synchronizedProcessor.handleSupWithLock(DEFAULT_ROLE_UPDATE_SYNC.key, () ->
                 roleService.updateDefaultRole(id, operatorId)));
@@ -854,7 +854,7 @@ public class ControlServiceImpl implements ControlService {
         roleInsertParam.asserts();
 
         return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
-            ROLE_LEVEL_ASSERTER_FOR_ROLE_COMPARE.accept(roleInsertParam.getLevel(),
+            ROLE_LEVEL_ASSERTER.accept(roleInsertParam.getLevel(),
                     ofNullable(getRoleByMemberId(operatorId)).map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)));
             return roleService.insertRole(roleInsertParam, operatorId);
         })).doOnSuccess(ri -> {
@@ -876,7 +876,7 @@ public class ControlServiceImpl implements ControlService {
         roleUpdateParam.asserts();
 
         return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
-            ROLE_LEVEL_ASSERTER_FOR_ROLE_COMPARE.accept(roleUpdateParam.getLevel(),
+            ROLE_LEVEL_ASSERTER.accept(roleUpdateParam.getLevel(),
                     ofNullable(getRoleByMemberId(operatorId)).map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)));
             return roleService.updateRole(roleUpdateParam, operatorId);
         })).doOnSuccess(ri -> {
@@ -901,7 +901,7 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(INVALID_IDENTITY);
 
         return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
-            TAR_ROLE_LEVEL_VALIDATOR_FOR_ROLE_COMPARE.apply(id, operatorId);
+            TAR_ROLE_LEVEL_VALIDATOR.apply(id, operatorId);
             roleResRelationService.deleteRelationByRoleId(id);
             return roleService.deleteRole(id);
         })).doOnSuccess(ri -> {
@@ -954,10 +954,13 @@ public class ControlServiceImpl implements ControlService {
                     .map(roleService::selectRoleByIds)
                     .filter(BlueChecker::isNotEmpty)
                     .map(relRoles -> {
-                        Integer operatorLevel = ofNullable(getRoleByMemberId(operatorId))
-                                .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
-                        return relRoles.stream().filter(role -> !ROLE_LEVEL_VALIDATOR_FOR_ROLE_COMPARE.apply(role.getLevel(), operatorLevel))
-                                .collect(toList());
+                        Role operatorRole = ofNullable(getRoleByMemberId(operatorId))
+                                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+                        Integer operatorLevel = operatorRole.getLevel();
+
+                        return relRoles.stream().filter(role ->
+                                !ROLE_LEVEL_VALIDATOR.apply(role.getLevel(), operatorLevel)
+                                        && !operatorRole.getId().equals(role.getId())).collect(toList());
                     })
                     .filter(BlueChecker::isNotEmpty)
                     .ifPresent(higherLevelRoles -> {
@@ -1017,7 +1020,7 @@ public class ControlServiceImpl implements ControlService {
         roleResRelationParam.asserts();
 
         return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
-            TAR_ROLE_LEVEL_VALIDATOR_FOR_ROLE_COMPARE.apply(roleResRelationParam.getRoleId(), operatorId);
+            TAR_ROLE_LEVEL_VALIDATOR.apply(roleResRelationParam.getRoleId(), operatorId);
             return roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), operatorId);
         })).doOnSuccess(auth -> {
             LOGGER.info("auth = {}", auth);
@@ -1047,9 +1050,9 @@ public class ControlServiceImpl implements ControlService {
                     Integer operatorLevel = ofNullable(getRoleByMemberId(operatorId))
                             .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
-                    ROLE_LEVEL_ASSERTER_FOR_ROLE_COMPARE.accept(ofNullable(getRoleByMemberId(memberId))
+                    ROLE_LEVEL_ASSERTER.accept(ofNullable(getRoleByMemberId(memberId))
                             .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
-                    ROLE_LEVEL_ASSERTER_FOR_ROLE_COMPARE.accept(ofNullable(getRoleByRoleId(roleId))
+                    ROLE_LEVEL_ASSERTER.accept(ofNullable(getRoleByRoleId(roleId))
                             .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
 
                     return memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
@@ -1117,7 +1120,7 @@ public class ControlServiceImpl implements ControlService {
         if (isInvalidIdentity(memberId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        MEMBER_ROLE_LEVEL_ASSERTER_FOR_ROLE_COMPARE.accept(memberId, operatorId);
+        MEMBER_ROLE_LEVEL_ASSERTER.accept(memberId, operatorId);
 
         return zip(rpcMemberBasicServiceConsumer.getMemberBasicInfoMonoByPrimaryKey(memberId),
                 credentialHistoryService.selectCredentialHistoryInfoMonoByMemberIdWithLimit(memberId),
