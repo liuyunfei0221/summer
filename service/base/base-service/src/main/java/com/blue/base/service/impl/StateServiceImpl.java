@@ -64,6 +64,7 @@ public class StateServiceImpl implements StateService {
 
     private StateRepository stateRepository;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public StateServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CountryService countryService, ExecutorService executorService,
                             AreaCaffeineDeploy areaCaffeineDeploy, StateRepository stateRepository) {
         this.blueIdentityProcessor = blueIdentityProcessor;

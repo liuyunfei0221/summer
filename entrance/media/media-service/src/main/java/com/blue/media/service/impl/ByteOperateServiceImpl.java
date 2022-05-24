@@ -78,6 +78,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ByteOperateServiceImpl(ByteProcessor byteProcessor, AttachmentService attachmentService, DownloadHistoryService downloadHistoryService,
                                   BlueIdentityProcessor blueIdentityProcessor, FileDeploy fileDeploy) {
         this.byteProcessor = byteProcessor;

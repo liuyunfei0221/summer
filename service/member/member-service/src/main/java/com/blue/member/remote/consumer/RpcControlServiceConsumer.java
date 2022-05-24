@@ -20,14 +20,14 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam", "FieldCanBeLocal"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam", "FieldCanBeLocal", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcControlServiceConsumer {
 
     private static final Logger LOGGER = getLogger(RpcControlServiceConsumer.class);
 
     @DubboReference(version = "1.0",
-            providedBy = {"summer-auth"},
+//            providedBy = {"summer-auth"},
             methods = {
                     @Method(name = "initMemberAuthInfo", async = false, timeout = 60000, retries = 0),
                     @Method(name = "refreshMemberRoleById", async = true),

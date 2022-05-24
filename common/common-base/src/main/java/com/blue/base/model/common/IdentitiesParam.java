@@ -20,7 +20,7 @@ public final class IdentitiesParam implements Serializable, Asserter {
     private static final long serialVersionUID = -7710914687734474892L;
 
     /**
-     * id
+     * ids
      */
     private List<Long> ids;
 

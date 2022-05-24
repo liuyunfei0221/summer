@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.7</version>
+        <version>2.7.0</version>
     </parent>
 
     <groupId>com.blue</groupId>
@@ -28,14 +28,14 @@
     <properties>
         <project.build>UTF-8</project.build>
         <java.version>11</java.version>
-        <spring-boot.version>2.6.7</spring-boot.version>
-        <spring-cloud.version>2021.0.1</spring-cloud.version>
+        <spring-boot.version>2.7.0</spring-boot.version>
+        <spring-cloud.version>2021.0.2</spring-cloud.version>
         <aspectj.version>1.9.9.1</aspectj.version>
         <mysql-connector-java.version>8.0.29</mysql-connector-java.version>
         <clickhouse-java.version>0.3.2</clickhouse-java.version>
         <hikari-cp.version>5.0.1</hikari-cp.version>
         <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
-        <spring-dubbo.version>3.0.5</spring-dubbo.version>
+        <spring-dubbo.version>3.0.8</spring-dubbo.version>
         <zkclient.version>0.11</zkclient.version>
         <seata-spring.version>1.4.2</seata-spring.version>
         <spring-mybatis.version>2.2.2</spring-mybatis.version>

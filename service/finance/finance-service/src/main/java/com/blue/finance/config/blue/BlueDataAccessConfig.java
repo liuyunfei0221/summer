@@ -21,13 +21,8 @@ import static java.util.Collections.singletonList;
 public class BlueDataAccessConfig extends BaseDataAccessConfParams {
 
     @Override
-    public List<UnaryOperator<DataSource>> getShardingProxiesChain() {
+    public List<UnaryOperator<DataSource>> getProxiesChain() {
         return singletonList(DataSourceProxy::new);
-    }
-
-    @Override
-    public List<UnaryOperator<DataSource>> getSingleProxiesChain() {
-        return null;
     }
 
 }

@@ -67,6 +67,7 @@ public class CityServiceImpl implements CityService {
 
     private CityRepository cityRepository;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public CityServiceImpl(BlueIdentityProcessor blueIdentityProcessor, StateService stateService, CountryService countryService,
                            ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, CityRepository cityRepository) {
         this.blueIdentityProcessor = blueIdentityProcessor;

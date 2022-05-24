@@ -1,9 +1,21 @@
 package com.blue.base.handler.api;
 
+import com.blue.base.model.common.BlueResponse;
+import com.blue.base.model.common.ElememtKeysParam;
+import com.blue.base.model.exps.BlueException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+
+import static com.blue.base.common.message.ElementProcessor.selectAllElement;
+import static com.blue.base.common.message.ElementProcessor.selectElement;
+import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.base.ResponseElement.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * element api handler
@@ -14,39 +26,39 @@ import reactor.core.publisher.Mono;
 @Component
 public final class ElementApiHandler {
 
-
     /**
-     * select language
+     * select all element kv
      *
      * @param serverRequest
      * @return
      */
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
-
-        return null;
-
-//        return just(LANGUAGES)
-//                .flatMap(ls ->
-//                        ok().contentType(APPLICATION_JSON)
-//                                .body(generate(OK.code, ls, serverRequest), BlueResponse.class)
-//                );
+        return just(serverRequest)
+                .flatMap(request ->
+                        just(selectAllElement(request)))
+                .flatMap(element ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, element, serverRequest), BlueResponse.class)
+                );
     }
 
     /**
-     * get default language
+     * select element kv by keys
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> getDefault(ServerRequest serverRequest) {
-
-        return null;
-
-//        return just(DEFAULT_LANGUAGE)
-//                .flatMap(ls ->
-//                        ok().contentType(APPLICATION_JSON)
-//                                .body(generate(OK.code, ls, serverRequest), BlueResponse.class)
-//                );
+    public Mono<ServerResponse> selectByKeys(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(ElememtKeysParam.class)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
+                .flatMap(ep -> {
+                    ep.asserts();
+                    return just(selectElement(serverRequest, ep.getKeys()));
+                })
+                .flatMap(element ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, element, serverRequest), BlueResponse.class)
+                );
     }
 
 }

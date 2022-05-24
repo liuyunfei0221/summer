@@ -70,6 +70,7 @@ public class AreaServiceImpl implements AreaService {
 
     private AreaRepository areaRepository;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public AreaServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CityService cityService, StateService stateService,
                            CountryService countryService, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, AreaRepository areaRepository) {
         this.blueIdentityProcessor = blueIdentityProcessor;

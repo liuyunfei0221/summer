@@ -195,12 +195,13 @@ seata:
   enabled: true
   application-id: auth_trans
   tx-service-group: summer_group
-  enable-auto-data-source-proxy: true
+  enable-auto-data-source-proxy: false
   data-source-proxy-mode: AT
   use-jdk-proxy: false
-  #  excludes-for-auto-proxying: firstClassNameForExclude,secondClassNameForExclude
+#  excludes-for-auto-proxying: com.zaxxer.hikari.HikariDataSource
   client:
     rm:
+      connectionTwoPhaseHoldTimeoutXA: 60000
       async-commit-buffer-limit: 10000
       report-retry-count: 2
       table-meta-check-enable: false
@@ -211,6 +212,7 @@ seata:
         retry-interval: 10
         retry-times: 1
         retry-policy-branch-rollback-on-conflict: true
+      table-meta-checker-interval: 90000
     tm:
       commit-retry-count: 5
       rollback-retry-count: 5
@@ -251,7 +253,10 @@ seata:
     heartbeat: true
     serialization: seata
     compressor: none
-    enable-client-batch-send-request: true
+    enable-client-batch-send-request: false
+    enable-tc-server-batch-send-response: false
+    enable-rm-client-batch-send-request: false
+    enable-tm-client-batch-send-request: false
   config:
     type: zk
     zk:
@@ -862,6 +867,11 @@ dubbo:
     file: D:/locallogs/dubbo/auth/registry.properties
     check: false
     timeout: 60000
+    simplified: true
+  metadata-report:
+    address: zookeeper://192.168.182.132:2181
+    timeout: 60000
+    default: true
   application:
     id: summer-auth
     name: summer-auth

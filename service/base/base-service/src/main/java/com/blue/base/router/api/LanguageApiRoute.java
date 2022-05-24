@@ -12,7 +12,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * base api routes
+ * language api routes
  *
  * @author liuyunfei
  */
@@ -27,7 +27,7 @@ public class LanguageApiRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .GET("/languages", languageApiHandler::select)
-                .GET("/languages/default", languageApiHandler::getDefault)
+                .GET("/language", languageApiHandler::getDefault)
                 .build();
 
         return nest(pathPredicate, routerFunction);

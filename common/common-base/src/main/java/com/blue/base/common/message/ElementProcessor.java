@@ -70,7 +70,7 @@ public final class ElementProcessor {
     };
 
     private static final Function<List<String>, Map<String, String>> ELEMENT_GETTER = languages -> {
-        if (isNotNull(languages)) {
+        if (BlueChecker.isNotEmpty(languages)) {
             Map<String, String> element;
             for (String language : languages)
                 if (isNotNull(element = I_18_N.get(lowerCase(language))))
@@ -85,8 +85,10 @@ public final class ElementProcessor {
             Map<String, String> res = new HashMap<>(keys.size(), 1.0f);
             String value;
             for (String key : keys) {
-                value = allElement.get(key);
-                res.put(key, isNotNull(value) ? value : "");
+                if (isNotBlank(key)) {
+                    value = allElement.get(key);
+                    res.put(key, isNotNull(value) ? value : "");
+                }
             }
 
             return res;

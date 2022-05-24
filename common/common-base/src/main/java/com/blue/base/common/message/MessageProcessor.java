@@ -95,7 +95,8 @@ public final class MessageProcessor {
 
             i18n.put(lowerCase(identity), MESSAGES_CONVERTER.apply(messages));
 
-            if (DEFAULT_LANGUAGE.equals(languageInfo.getIdentity()))
+            if (DEFAULT_LANGUAGE.equals(
+                    ofNullable(languageInfo.getIdentity()).map(String::toLowerCase).orElse("")))
                 DEFAULT_LANGUAGE_INFO = languageInfo;
         }
 

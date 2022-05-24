@@ -12,7 +12,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * base api routes
+ * dict api routes
  *
  * @author liuyunfei
  */

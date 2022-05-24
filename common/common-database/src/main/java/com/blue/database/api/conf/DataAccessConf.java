@@ -81,14 +81,7 @@ public interface DataAccessConf {
      *
      * @return
      */
-    List<UnaryOperator<DataSource>> getShardingProxiesChain();
-
-    /**
-     * datasource proxy, for example : seata proxy
-     *
-     * @return
-     */
-    List<UnaryOperator<DataSource>> getSingleProxiesChain();
+    List<UnaryOperator<DataSource>> getProxiesChain();
 
     Boolean getSafeRowBoundsEnabled();
 

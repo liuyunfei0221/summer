@@ -54,6 +54,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     private final RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MemberAuthServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor,
                                  CredentialCollectProcessor credentialCollectProcessor, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
                                  RpcControlServiceConsumer rpcControlServiceConsumer, RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer) {
@@ -71,7 +72,6 @@ public class MemberAuthServiceImpl implements MemberAuthService {
      * @param memberRegistryParam
      * @return
      */
-    @SuppressWarnings("CommentedOutCode")
     @Override
     @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
             rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
@@ -104,8 +104,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         @SuppressWarnings("UnnecessaryLocalVariable")
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
 
-//        if (1 == 1)
-//            throw new BlueException(666, 666, "test rollback");
+        if (1 == 1)
+            throw new BlueException(666, 666, "test rollback");
 
         return memberBasicInfo;
     }

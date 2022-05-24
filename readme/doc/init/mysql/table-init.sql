@@ -64,19 +64,6 @@ CREATE TABLE `role_res_relation`
     UNIQUE KEY `idx_res_role`(`res_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of role and resource relation';
 
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
 -- auth0
 
 CREATE
@@ -165,19 +152,6 @@ CREATE TABLE `security_question_1`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_question`(`member_id`,`question`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='security question 1';
-
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 CREATE TABLE `undo_log_0`
 (
@@ -296,19 +270,6 @@ CREATE TABLE `security_question_1`
     UNIQUE KEY `idx_member_question`(`member_id`,`question`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='security question 1';
 
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
 CREATE TABLE `undo_log_0`
 (
     `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
@@ -397,19 +358,6 @@ CREATE TABLE `download_history_1`
     KEY             `idx_creator`(`creator`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of download history 1';
 
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
 CREATE TABLE `undo_log_0`
 (
     `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
@@ -497,19 +445,6 @@ CREATE TABLE `download_history_1`
     KEY             `idx_creator`(`creator`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of download history 1';
 
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
 CREATE TABLE `undo_log_0`
 (
     `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
@@ -543,19 +478,6 @@ CREATE
 DATABASE finance CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 finance;
-
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 -- finance0
 
@@ -695,19 +617,6 @@ CREATE TABLE `dynamic_resource_1`
     KEY               `idx_organization_handler`(`organization_id`,`handler_id`) USING BTREE,
     UNIQUE KEY `idx_method_placeholder_content`(`request_method`,`uri_placeholder`,`content_type`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dynamic resource 1';
-
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 CREATE TABLE `undo_log_0`
 (
@@ -874,19 +783,6 @@ CREATE TABLE `dynamic_resource_1`
     UNIQUE KEY `idx_method_placeholder_content`(`request_method`,`uri_placeholder`,`content_type`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dynamic resource 1';
 
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
 CREATE TABLE `undo_log_0`
 (
     `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
@@ -986,19 +882,6 @@ CREATE TABLE `event_record_1`
     KEY           `idx_creator_type_create_time`(`creator`,`type`,`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event record 1';
 
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
 CREATE TABLE `undo_log_0`
 (
     `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
@@ -1058,19 +941,6 @@ CREATE TABLE `event_record_1`
     KEY           `idx_creator_type_create_time`(`creator`,`type`,`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing event record 1';
 
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
 CREATE TABLE `undo_log_0`
 (
     `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
@@ -1103,19 +973,6 @@ CREATE
 DATABASE member CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 member;
-
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 -- member0
 
@@ -1347,19 +1204,6 @@ CREATE TABLE `member_business_1`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_code_profile`(`member_id`,`qr_code`,`profile`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 1';
-
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 CREATE TABLE `undo_log_0`
 (
@@ -1624,19 +1468,6 @@ CREATE TABLE `member_business_1`
     UNIQUE KEY `idx_member_code_profile`(`member_id`,`qr_code`,`profile`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 1';
 
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
 CREATE TABLE `undo_log_0`
 (
     `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
@@ -1708,41 +1539,12 @@ CREATE TABLE `style`
     KEY           `idx_type_active_create`(`type`,`is_active`,`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of style';
 
-
--- seata undo log
-
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
-
 -- portal0
 
 CREATE
 DATABASE portal_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 portal_0;
-
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 CREATE TABLE `undo_log_0`
 (
@@ -1776,19 +1578,6 @@ CREATE
 DATABASE portal_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 portal_1;
-
-CREATE TABLE `undo_log`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table';
 
 CREATE TABLE `undo_log_0`
 (

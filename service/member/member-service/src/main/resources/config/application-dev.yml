@@ -1,6 +1,6 @@
 server:
   # address: 127.0.0.1
-  port: 26000
+  port: 26010
   netty:
     connection-timeout: 6s
     h2c-max-content-length: 0B
@@ -167,12 +167,13 @@ seata:
   enabled: true
   application-id: member_trans
   tx-service-group: summer_group
-  enable-auto-data-source-proxy: true
+  enable-auto-data-source-proxy: false
   data-source-proxy-mode: AT
   use-jdk-proxy: false
-  #  excludes-for-auto-proxying: firstClassNameForExclude,secondClassNameForExclude
+#  excludes-for-auto-proxying: com.zaxxer.hikari.HikariDataSource
   client:
     rm:
+      connectionTwoPhaseHoldTimeoutXA: 60000
       async-commit-buffer-limit: 10000
       report-retry-count: 2
       table-meta-check-enable: false
@@ -223,7 +224,10 @@ seata:
     heartbeat: true
     serialization: seata
     compressor: none
-    enable-client-batch-send-request: true
+    enable-client-batch-send-request: false
+    enable-tc-server-batch-send-response: false
+    enable-rm-client-batch-send-request: false
+    enable-tm-client-batch-send-request: false
   config:
     type: zk
     zk:
@@ -336,6 +340,11 @@ dubbo:
     file: D:/locallogs/dubbo/member/registry.properties
     check: false
     timeout: 60000
+    simplified: true
+    metadata-report:
+      address: zookeeper://192.168.182.132:2181
+      timeout: 60000
+      default: true
   application:
     id: summer-member
     name: summer-member
@@ -346,7 +355,7 @@ dubbo:
   protocol:
     name: dubbo
     host: localhost
-    port: 27000
+    port: 26005
     accesslog: D:/locallogs/dubbo/member/access.log
   provider:
     retries: 0
