@@ -26,7 +26,6 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionManager;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -57,6 +56,44 @@ public final class BlueDataAccessGenerator {
     private static final Logger LOGGER = getLogger(BlueDataAccessGenerator.class);
 
     /**
+     * valid data element parts num
+     */
+    private static final int MIN_VALID_DB_URL_PARTS_LEN = 4;
+
+    /**
+     * datasource generator
+     */
+    private static final Function<ShardingDatabaseAttr, DataSource> DATA_SOURCE_GENERATOR = shardAttr -> {
+        HikariConfig hikariConfig = new HikariConfig();
+
+        String driverClassName = shardAttr.getDriverClassName();
+        if (isBlank(driverClassName))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "driverClassName can't be blank");
+
+        String url = shardAttr.getUrl();
+        if (isBlank(url))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "url can't be blank");
+
+        String username = shardAttr.getUsername();
+        if (isBlank(username))
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "username can't be blank");
+
+        hikariConfig.setDriverClassName(driverClassName);
+        hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDataBaseConf()).map(c -> PAR_CONCATENATION_DATABASE_CONF.identity + c).orElse(""));
+        hikariConfig.setUsername(username);
+        ofNullable(shardAttr.getPassword()).ifPresent(hikariConfig::setPassword);
+
+        ofNullable(shardAttr.getReadOnly()).ifPresent(hikariConfig::setReadOnly);
+        ofNullable(shardAttr.getConnectionTimeout()).ifPresent(hikariConfig::setConnectionTimeout);
+        ofNullable(shardAttr.getMaxLifetime()).ifPresent(hikariConfig::setMaxLifetime);
+        ofNullable(shardAttr.getMaximumPoolSize()).ifPresent(hikariConfig::setMaximumPoolSize);
+        ofNullable(shardAttr.getMinimumIdle()).ifPresent(hikariConfig::setMinimumIdle);
+        ofNullable(shardAttr.getTestQuery()).ifPresent(hikariConfig::setConnectionTestQuery);
+
+        return new HikariDataSource(hikariConfig);
+    };
+
+    /**
      * generate datasource
      *
      * @param dataAccessConf
@@ -64,6 +101,9 @@ public final class BlueDataAccessGenerator {
      * @return
      */
     public static DataSource generateDataSource(DataAccessConf dataAccessConf, IdentityConf identityConf) {
+        LOGGER.info("static DataSource generateDataSource(DataAccessConf dataAccessConf, IdentityConf identityConf), dataAccessConf = {}, identityConf = {}",
+                dataAccessConf, identityConf);
+
         if (isNull(dataAccessConf) || isNull(identityConf))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "shardingConf or identityConf can't be null");
 
@@ -80,8 +120,9 @@ public final class BlueDataAccessGenerator {
 
             return dataSource;
         } catch (Exception e) {
-            LOGGER.error("createDataSource(ShardingConf shardingConf, ShardingIdentityConf shardingIdentityConf, List<UnaryOperator<DataSource>> proxiesChain) failed, e = {}", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "createDataSource(ShardingConf shardingConf, ShardingIdentityConf shardingIdentityConf, List<UnaryOperator<DataSource>> proxiesChain) failed, e = " + e);
+            LOGGER.error("static DataSource generateDataSource(DataAccessConf dataAccessConf, IdentityConf identityConf) failed, dataAccessConf = {}, identityConf = {}, e = {}",
+                    dataAccessConf, identityConf, e);
+            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "static DataSource generateDataSource(DataAccessConf dataAccessConf, IdentityConf identityConf) failed, e = " + e);
         }
     }
 
@@ -103,6 +144,9 @@ public final class BlueDataAccessGenerator {
      * @return
      */
     public static SqlSessionFactory generateSqlSessionFactory(DataSource dataSource, DataAccessConf dataAccessConf) {
+        LOGGER.info("static SqlSessionFactory generateSqlSessionFactory(DataSource dataSource, DataAccessConf dataAccessConf), dataSource = {}, dataAccessConf = {}",
+                dataSource, dataAccessConf);
+
         org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
 
         ofNullable(dataAccessConf.getSafeRowBoundsEnabled()).ifPresent(configuration::setSafeRowBoundsEnabled);
@@ -137,12 +181,6 @@ public final class BlueDataAccessGenerator {
 
         try {
             sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(dataAccessConf.getMapperLocation()));
-        } catch (IOException e) {
-            LOGGER.error("invalid mapper.xml path, e = {}", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "invalid mapper.xml path");
-        }
-
-        try {
             return sqlSessionFactoryBean.getObject();
         } catch (Exception e) {
             LOGGER.error("generate sqlSessionFactory failed, e = {}", e);
@@ -160,46 +198,6 @@ public final class BlueDataAccessGenerator {
     public static SqlSessionTemplate generateSqlSessionTemplate(SqlSessionFactory sqlSessionFactory, ExecutorType executorType) {
         return new SqlSessionTemplate(sqlSessionFactory, executorType);
     }
-
-    //<editor-fold desc="constants">
-    /**
-     * valid data element parts num
-     */
-    private static final int MIN_VALID_DB_URL_PARTS_LEN = 4;
-    //</editor-fold>
-
-    /**
-     * datasource generator
-     */
-    private static final Function<ShardingDatabaseAttr, DataSource> DATA_SOURCE_GENERATOR = shardAttr -> {
-        HikariConfig hikariConfig = new HikariConfig();
-
-        String driverClassName = shardAttr.getDriverClassName();
-        if (isBlank(driverClassName))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "driverClassName can't be blank");
-
-        String url = shardAttr.getUrl();
-        if (isBlank(url))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "url can't be blank");
-
-        String username = shardAttr.getUsername();
-        if (isBlank(username))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "username can't be blank");
-
-        hikariConfig.setDriverClassName(driverClassName);
-        hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDataBaseConf()).map(c -> PAR_CONCATENATION_DATABASE_CONF.identity + c).orElse(""));
-        hikariConfig.setUsername(username);
-        ofNullable(shardAttr.getPassword()).ifPresent(hikariConfig::setPassword);
-
-        ofNullable(shardAttr.getReadOnly()).ifPresent(hikariConfig::setReadOnly);
-        ofNullable(shardAttr.getConnectionTimeout()).ifPresent(hikariConfig::setConnectionTimeout);
-        ofNullable(shardAttr.getMaxLifetime()).ifPresent(hikariConfig::setMaxLifetime);
-        ofNullable(shardAttr.getMaximumPoolSize()).ifPresent(hikariConfig::setMaximumPoolSize);
-        ofNullable(shardAttr.getMinimumIdle()).ifPresent(hikariConfig::setMinimumIdle);
-        ofNullable(shardAttr.getTestQuery()).ifPresent(hikariConfig::setConnectionTestQuery);
-
-        return new HikariDataSource(hikariConfig);
-    };
 
     /**
      * generate elements for datasource creation
@@ -409,11 +407,7 @@ public final class BlueDataAccessGenerator {
                 .filter(sbts -> sbts.size() > 0)
                 .ifPresent(sbts ->
                         shardingRuleConfiguration.getBroadcastTables().addAll(
-                                sbts.stream()
-                                        .filter(BlueChecker::isNotBlank)
-                                        .distinct()
-                                        .collect(toList())
-                        ));
+                                sbts.stream().filter(BlueChecker::isNotBlank).distinct().collect(toList())));
     }
 
     /**
@@ -498,12 +492,12 @@ public final class BlueDataAccessGenerator {
      * @return
      */
     private static String parseForceDbName(String logicDataBaseName, List<IdentityToShardingMappingAttr> dataCenterToDatabaseMappings, Integer dataCenter) {
-        if (BlueChecker.isBlank(logicDataBaseName))
+        if (isBlank(logicDataBaseName))
             throw new IdentityException("logicDataBaseName can't be blank");
         if (isNull(dataCenter) || dataCenter < 0)
             return logicDataBaseName;
 
-        if (BlueChecker.isEmpty(dataCenterToDatabaseMappings))
+        if (isEmpty(dataCenterToDatabaseMappings))
             throw new IdentityException("dataCenterToDatabaseMappings can't be empty");
 
         Integer id;
@@ -532,12 +526,12 @@ public final class BlueDataAccessGenerator {
      * @return
      */
     private static String parseForceTableName(String logicTableName, List<IdentityToShardingMappingAttr> workerToTableMappings, Integer worker) {
-        if (BlueChecker.isBlank(logicTableName))
+        if (isBlank(logicTableName))
             throw new IdentityException("logicTableName can't be blank");
         if (isNull(worker) || worker < 0)
             return logicTableName;
 
-        if (BlueChecker.isEmpty(workerToTableMappings))
+        if (isEmpty(workerToTableMappings))
             throw new IdentityException("workerToTableMappings can't be empty");
 
         Integer id;

@@ -9,11 +9,10 @@ import reactor.core.scheduler.Scheduler;
 import static com.blue.base.component.scheduler.api.generator.SchedulerGenerator.generateScheduler;
 
 /**
- * rest configuration
+ * scheduler configuration
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ConditionalOnBean(value = {SchedulerConf.class})
 @Configuration
 public class BlueSchedulerConfiguration {

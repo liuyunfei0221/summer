@@ -378,32 +378,6 @@ public class AreaServiceImpl implements AreaService {
     }
 
     /**
-     * update country id on batch
-     *
-     * @param sourceCountryId
-     * @param descCountryId
-     * @return
-     */
-    @Override
-    public int updateCountryIdByCountryId(Long sourceCountryId, Long descCountryId) {
-        //TODO
-        return 0;
-    }
-
-    /**
-     * update state id on batch
-     *
-     * @param sourceStateId
-     * @param descStateId
-     * @return
-     */
-    @Override
-    public int updateStateIdByStateId(Long sourceStateId, Long descStateId) {
-        //TODO
-        return 0;
-    }
-
-    /**
      * get area by id
      *
      * @param id

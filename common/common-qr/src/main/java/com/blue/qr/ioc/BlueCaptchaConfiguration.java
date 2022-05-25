@@ -13,7 +13,7 @@ import static com.blue.qr.api.generator.BlueQrCoderGenerator.generateQrCoder;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
 @ConditionalOnBean(value = {QrConf.class})
 @Configuration
 public class BlueCaptchaConfiguration {

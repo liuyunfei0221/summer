@@ -125,8 +125,8 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
        (180001, 'POST', 'blue-member', '/registry', b'0', b'1', b'1', b'1', b'1', 1,
         'member registry', 'member registry', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180002, 'GET', 'blue-member', '/member', b'1', b'1', b'1', b'0', b'1', 1,
-        'member info', 'member info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180002, 'GET', 'blue-member', '/basic', b'1', b'1', b'1', b'0', b'1', 1,
+        'member basic info', 'member basic info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- member manage
 

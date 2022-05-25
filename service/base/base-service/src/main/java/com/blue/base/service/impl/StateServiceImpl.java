@@ -370,6 +370,32 @@ public class StateServiceImpl implements StateService {
     }
 
     /**
+     * a state's countryId was changed
+     *
+     * @param countryId
+     * @param stateId
+     * @return
+     */
+    @Override
+    public int updateCountryIdOfCityByStateId(Long countryId, Long stateId) {
+        //TODO
+        return 0;
+    }
+
+    /**
+     * a state's countryId was changed
+     *
+     * @param countryId
+     * @param stateId
+     * @return
+     */
+    @Override
+    public int updateCountryIdOfAreaByStateId(Long countryId, Long stateId) {
+        //TODO
+        return 0;
+    }
+
+    /**
      * get state by state id
      *
      * @param id

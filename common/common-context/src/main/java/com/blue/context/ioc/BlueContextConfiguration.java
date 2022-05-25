@@ -14,6 +14,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  *
  * @author liuyunfei
  */
+@SuppressWarnings("SpringFacetCodeInspection")
 @ConditionalOnWebApplication(type = REACTIVE)
 @Configuration
 public class BlueContextConfiguration {

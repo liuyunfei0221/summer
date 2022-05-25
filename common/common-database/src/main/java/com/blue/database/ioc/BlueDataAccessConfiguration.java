@@ -18,7 +18,6 @@ import static org.apache.ibatis.session.ExecutorType.BATCH;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Configuration
 public class BlueDataAccessConfiguration {
 

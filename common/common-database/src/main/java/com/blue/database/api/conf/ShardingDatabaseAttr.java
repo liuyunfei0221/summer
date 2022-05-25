@@ -184,8 +184,8 @@ public class ShardingDatabaseAttr {
         return "ShardingDatabaseAttr{" +
                 "url='" + url + '\'' +
                 ", dataBaseConf='" + dataBaseConf + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", username='" + ":)" + '\'' +
+                ", password='" + ":)" + '\'' +
                 ", driverClassName='" + driverClassName + '\'' +
                 ", connectionTimeout=" + connectionTimeout +
                 ", maxLifetime=" + maxLifetime +

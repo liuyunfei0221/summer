@@ -369,14 +369,15 @@ public class CityServiceImpl implements CityService {
     }
 
     /**
-     * update country id on batch
+     * a city's stateId was changed
      *
-     * @param sourceCountryId
-     * @param descCountryId
+     * @param countryId
+     * @param stateId
+     * @param cityId
      * @return
      */
     @Override
-    public int updateCountryIdByCountryId(Long sourceCountryId, Long descCountryId) {
+    public int updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId) {
         //TODO
         return 0;
     }

@@ -20,11 +20,11 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
  */
 @SuppressWarnings("JavaDoc")
 @Component
-public final class MemberApiHandler {
+public final class MemberBasicApiHandler {
 
     private final MemberBasicService memberBasicService;
 
-    public MemberApiHandler(MemberBasicService memberBasicService) {
+    public MemberBasicApiHandler(MemberBasicService memberBasicService) {
         this.memberBasicService = memberBasicService;
     }
 
@@ -34,7 +34,7 @@ public final class MemberApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> getMemberInfo(ServerRequest serverRequest) {
+    public Mono<ServerResponse> getMemberBasicInfo(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(ai ->
                         memberBasicService.getMemberBasicInfoMonoWithAssert(ai.getId())

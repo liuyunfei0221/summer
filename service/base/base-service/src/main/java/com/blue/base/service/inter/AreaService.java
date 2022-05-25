@@ -44,24 +44,6 @@ public interface AreaService {
     Mono<AreaInfo> deleteArea(Long id);
 
     /**
-     * update country id on batch
-     *
-     * @param sourceCountryId
-     * @param descCountryId
-     * @return
-     */
-    int updateCountryIdByCountryId(Long sourceCountryId, Long descCountryId);
-
-    /**
-     * update state id on batch
-     *
-     * @param sourceStateId
-     * @param descStateId
-     * @return
-     */
-    int updateStateIdByStateId(Long sourceStateId, Long descStateId);
-
-    /**
      * get area by id
      *
      * @param id

@@ -14,7 +14,6 @@ import static com.blue.base.component.executor.api.generator.BlueExecutorGenerat
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ConditionalOnBean(value = {ExecutorConf.class})
 @Configuration
 public class BlueExecutorConfiguration {

@@ -44,13 +44,14 @@ public interface CityService {
     Mono<CityInfo> deleteCity(Long id);
 
     /**
-     * update country id on batch
+     * a city's stateId was changed
      *
-     * @param sourceCountryId
-     * @param descCountryId
+     * @param countryId
+     * @param stateId
+     * @param cityId
      * @return
      */
-    int updateCountryIdByCountryId(Long sourceCountryId, Long descCountryId);
+    int updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId);
 
     /**
      * get city by id

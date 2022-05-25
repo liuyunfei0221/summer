@@ -1,6 +1,6 @@
 package com.blue.member.router.api;
 
-import com.blue.member.handler.api.MemberApiHandler;
+import com.blue.member.handler.api.MemberBasicApiHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -17,16 +17,16 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
  * @author liuyunfei
  */
 @Configuration
-public class MemberApiRoute {
+public class MemberBasicApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> memberApiRouter(MemberApiHandler memberApiHandler) {
+    RouterFunction<ServerResponse> memberBasicApiRouter(MemberBasicApiHandler memberBasicApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-member/member");
+        RequestPredicate pathPredicate = path("/blue-member/basic");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("", memberApiHandler::getMemberInfo)
+                .GET("", memberBasicApiHandler::getMemberBasicInfo)
                 .build();
 
         return nest(pathPredicate, routerFunction);

@@ -44,6 +44,24 @@ public interface StateService {
     Mono<StateInfo> deleteCity(Long id);
 
     /**
+     * a state's countryId was changed
+     *
+     * @param countryId
+     * @param stateId
+     * @return
+     */
+    int updateCountryIdOfCityByStateId(Long countryId, Long stateId);
+
+    /**
+     * a state's countryId was changed
+     *
+     * @param countryId
+     * @param stateId
+     * @return
+     */
+    int updateCountryIdOfAreaByStateId(Long countryId, Long stateId);
+
+    /**
      * get state by state id
      *
      * @param id

@@ -13,7 +13,6 @@ import static com.blue.base.component.rest.api.generator.BlueRestGenerator.gener
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ConditionalOnBean(value = {RestConf.class})
 @Configuration
 public class BlueRestConfiguration {
