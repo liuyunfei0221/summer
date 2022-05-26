@@ -4,8 +4,7 @@ import com.blue.analyze.service.inter.ActiveStatisticsService;
 import com.blue.base.constant.analyze.StatisticsRange;
 import com.blue.base.constant.analyze.StatisticsType;
 import com.blue.base.model.exps.BlueException;
-import com.blue.redis.common.BlueValueMarker;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import com.blue.redis.component.BlueValueMarker;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -23,7 +22,6 @@ import static com.blue.base.common.base.BlueChecker.isValidIdentity;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
-import static com.blue.redis.api.generator.BlueValueMarkerGenerator.generateValueMarker;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
@@ -34,7 +32,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
 
@@ -44,8 +42,8 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
 
     private ExecutorService executorService;
 
-    public ActiveStatisticsServiceImpl(StringRedisTemplate stringRedisTemplate, ExecutorService executorService) {
-        this.blueValueMarker = generateValueMarker(stringRedisTemplate);
+    public ActiveStatisticsServiceImpl(BlueValueMarker blueValueMarker, ExecutorService executorService) {
+        this.blueValueMarker = blueValueMarker;
         this.executorService = executorService;
 
         for (StatisticsType statisticsType : StatisticsType.values())

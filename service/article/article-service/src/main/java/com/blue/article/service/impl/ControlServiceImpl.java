@@ -11,7 +11,7 @@ import com.blue.article.repository.entity.Link;
 import com.blue.article.service.inter.*;
 import com.blue.base.common.base.ConstantProcessor;
 import com.blue.base.model.exps.BlueException;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -38,7 +38,7 @@ import static reactor.core.publisher.Mono.just;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class ControlServiceImpl implements ControlService {
 

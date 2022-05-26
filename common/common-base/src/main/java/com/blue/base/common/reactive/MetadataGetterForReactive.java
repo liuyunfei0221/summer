@@ -34,7 +34,7 @@ public class MetadataGetterForReactive {
      * @return
      */
     public static Mono<Map<String, String>> getMetadataReact(ServerRequest serverRequest) {
-        return just(jsonToMetadata(serverRequest.headers().firstHeader(METADATA.name)));
+        return just(getMetadata(serverRequest));
     }
 
 

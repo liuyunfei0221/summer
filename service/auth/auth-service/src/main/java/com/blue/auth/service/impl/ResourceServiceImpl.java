@@ -14,9 +14,9 @@ import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.redisson.common.SynchronizedProcessor;
+import com.blue.redisson.component.SynchronizedProcessor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +53,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class ResourceServiceImpl implements ResourceService {
 
@@ -68,8 +68,7 @@ public class ResourceServiceImpl implements ResourceService {
     private StringRedisTemplate stringRedisTemplate;
 
     private SynchronizedProcessor synchronizedProcessor;
-
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    
     public ResourceServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, ResourceMapper resourceMapper,
                                StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;

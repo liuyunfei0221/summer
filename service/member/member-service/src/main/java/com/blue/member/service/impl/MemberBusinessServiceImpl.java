@@ -2,7 +2,7 @@ package com.blue.member.service.impl;
 
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBusinessInfo;
 import com.blue.member.repository.entity.MemberBusiness;
 import com.blue.member.repository.mapper.MemberBusinessMapper;

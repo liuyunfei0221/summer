@@ -2,9 +2,9 @@ package com.blue.es.ioc;
 
 import com.blue.es.api.conf.EsConf;
 import org.elasticsearch.client.RestClient;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import static com.blue.es.api.generator.BlueEsGenerator.generateRestClient;
 
@@ -15,7 +15,7 @@ import static com.blue.es.api.generator.BlueEsGenerator.generateRestClient;
  */
 @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
 @ConditionalOnBean(value = {EsConf.class})
-@Configuration
+@AutoConfiguration
 public class BlueEsConfiguration {
 
     @Bean

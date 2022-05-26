@@ -7,7 +7,7 @@ import com.blue.auth.repository.entity.SecurityQuestion;
 import com.blue.auth.repository.mapper.SecurityQuestionMapper;
 import com.blue.auth.service.inter.SecurityQuestionService;
 import com.blue.base.model.exps.BlueException;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;

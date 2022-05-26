@@ -21,16 +21,14 @@ import com.blue.base.model.common.Access;
 import com.blue.base.model.exps.BlueException;
 import com.blue.jwt.common.JwtProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.redis.common.BlueLeakyBucketRateLimiter;
-import com.blue.redisson.common.SynchronizedProcessor;
+import com.blue.redis.component.BlueLeakyBucketRateLimiter;
+import com.blue.redisson.component.SynchronizedProcessor;
 import io.seata.spring.annotation.GlobalTransactional;
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.*;
@@ -57,7 +55,6 @@ import static com.blue.base.constant.base.SyncKey.DEFAULT_ROLE_UPDATE_SYNC;
 import static com.blue.base.constant.base.SyncKeyPrefix.MEMBER_ROLE_REL_UPDATE_PRE;
 import static com.blue.base.constant.base.SyncKeyPrefix.QUESTION_INSERT_PRE;
 import static com.blue.base.constant.verify.BusinessType.*;
-import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateLeakyBucketRateLimiter;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
@@ -119,8 +116,7 @@ public class ControlServiceImpl implements ControlService {
                               RoleResRelationService roleResRelationService, CredentialService credentialService, CredentialHistoryService credentialHistoryService,
                               SecurityQuestionService securityQuestionService, MemberRoleRelationService memberRoleRelationService,
                               SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService,
-                              SynchronizedProcessor synchronizedProcessor, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
-                              Scheduler scheduler, ControlDeploy controlDeploy) {
+                              SynchronizedProcessor synchronizedProcessor, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter, ControlDeploy controlDeploy) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
@@ -137,7 +133,7 @@ public class ControlServiceImpl implements ControlService {
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
         this.executorService = executorService;
         this.synchronizedProcessor = synchronizedProcessor;
-        this.blueLeakyBucketRateLimiter = generateLeakyBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
+        this.blueLeakyBucketRateLimiter = blueLeakyBucketRateLimiter;
 
         ALLOW = controlDeploy.getAllow();
         SEND_INTERVAL_MILLIS = controlDeploy.getIntervalMillis();
@@ -452,28 +448,6 @@ public class ControlServiceImpl implements ControlService {
     @Override
     public Mono<Boolean> invalidateLocalAccessByKeyId(String keyId) {
         return authService.invalidateLocalAccessByKeyId(keyId);
-    }
-
-    /**
-     * get authority base on role by role id
-     *
-     * @param roleId
-     * @return
-     */
-    @Override
-    public Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId) {
-        return roleResRelationService.selectAuthorityMonoByRoleId(roleId);
-    }
-
-    /**
-     * get authority base on resource by res id
-     *
-     * @param resId
-     * @return
-     */
-    @Override
-    public Mono<AuthorityBaseOnResource> selectAuthorityMonoByResId(Long resId) {
-        return roleResRelationService.selectAuthorityMonoByResId(resId);
     }
 
     /**
@@ -1063,7 +1037,7 @@ public class ControlServiceImpl implements ControlService {
                     return memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
                 }), executorService))
                 .flatMap(ig -> authService.refreshMemberRoleById(memberId, roleId, operatorId))
-                .flatMap(ig -> this.selectAuthorityMonoByRoleId(roleId));
+                .flatMap(ig -> roleResRelationService.selectAuthorityMonoByRoleId(roleId));
     }
 
     /**
@@ -1093,10 +1067,11 @@ public class ControlServiceImpl implements ControlService {
      * update authority base on member / update member-role-relations sync with trans / not support for manager
      *
      * @param memberRoleRelationParam
+     * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public void updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
+    public AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
         LOGGER.info("AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam), memberRoleRelationParam = {}", memberRoleRelationParam);
         if (isNull(memberRoleRelationParam))
             throw new BlueException(EMPTY_PARAM);
@@ -1110,6 +1085,8 @@ public class ControlServiceImpl implements ControlService {
             throw new BlueException(DATA_NOT_EXIST);
 
         authService.refreshMemberRoleById(memberId, roleId, BLUE_ID.value).toFuture().join();
+
+        return roleResRelationService.selectAuthorityMonoByRoleId(roleId).toFuture().join();
     }
 
     /**

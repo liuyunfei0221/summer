@@ -71,10 +71,14 @@ public enum ResponseElement {
 
 
     //<editor-fold desc="base">
-    COUNTRY_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300001, "country already exists"),
-    STATE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300002, "State already exists"),
-    CITY_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300003, "City already exists"),
-    AREA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300004, "Area already exists"),
+    COUNTRY_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300001, "Country name already exists"),
+    COUNTRY_NATIVE_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300002, "Country native name already exists"),
+    COUNTRY_NUMERIC_CODE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300003, "Country mumeric code already exists"),
+    COUNTRY_CODE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300004, "Country code already exists"),
+    COUNTRY_PHONE_CODE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300005, "Country phone code already exists"),
+    STATE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300006, "State already exists"),
+    CITY_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300007, "City already exists"),
+    AREA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300008, "Area already exists"),
     //</editor-fold>
 
 

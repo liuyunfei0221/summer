@@ -3,8 +3,11 @@ package com.blue.base.service.impl;
 import com.blue.base.api.model.AreaInfo;
 import com.blue.base.api.model.AreaRegion;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
+import com.blue.base.model.AreaCondition;
 import com.blue.base.model.AreaInsertParam;
 import com.blue.base.model.AreaUpdateParam;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Area;
 import com.blue.base.repository.entity.City;
@@ -14,7 +17,7 @@ import com.blue.base.service.inter.CityService;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
@@ -54,13 +57,13 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class AreaServiceImpl implements AreaService {
 
     private static final Logger LOGGER = Loggers.getLogger(AreaServiceImpl.class);
 
-    private final BlueIdentityProcessor blueIdentityProcessor;
+    private BlueIdentityProcessor blueIdentityProcessor;
 
     private CityService cityService;
 
@@ -70,9 +73,8 @@ public class AreaServiceImpl implements AreaService {
 
     private AreaRepository areaRepository;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public AreaServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CityService cityService, StateService stateService,
-                           CountryService countryService, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, AreaRepository areaRepository) {
+    public AreaServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CityService cityService, StateService stateService, CountryService countryService,
+                           AreaRepository areaRepository, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.cityService = cityService;
         this.stateService = stateService;
@@ -193,15 +195,6 @@ public class AreaServiceImpl implements AreaService {
     };
 
     /**
-     * invalid all chche
-     */
-    private void invalidCache() {
-        idAreaCache.invalidateAll();
-        cityIdAreasCache.invalidateAll();
-        idRegionCache.invalidateAll();
-    }
-
-    /**
      * is an area exist?
      */
     private final Consumer<AreaInsertParam> INSERT_AREA_VALIDATOR = param -> {
@@ -235,6 +228,7 @@ public class AreaServiceImpl implements AreaService {
 
         Area area = new Area();
 
+        area.setId(blueIdentityProcessor.generate(Area.class));
         area.setCountryId(city.getCountryId());
         area.setStateId(city.getStateId());
         area.setCityId(cityId);
@@ -319,8 +313,6 @@ public class AreaServiceImpl implements AreaService {
         INSERT_AREA_VALIDATOR.accept(areaInsertParam);
         Area area = AREA_INSERT_PARAM_2_AREA_CONVERTER.apply(areaInsertParam);
 
-        area.setId(blueIdentityProcessor.generate(Area.class));
-
         return areaRepository.insert(area)
                 .map(AREA_2_AREA_INFO_CONVERTER)
                 .doOnSuccess(ai -> {
@@ -375,6 +367,16 @@ public class AreaServiceImpl implements AreaService {
                     LOGGER.info("ai = {}", ai);
                     invalidCache();
                 });
+    }
+
+    /**
+     * invalid chche
+     */
+    @Override
+    public void invalidCache() {
+        idAreaCache.invalidateAll();
+        cityIdAreasCache.invalidateAll();
+        idRegionCache.invalidateAll();
     }
 
     /**
@@ -556,6 +558,44 @@ public class AreaServiceImpl implements AreaService {
         cityIdAreasCache.invalidateAll();
         idAreaCache.invalidateAll();
         idRegionCache.invalidateAll();
+    }
+
+    /**
+     * select area by limit and condition
+     *
+     * @param limit
+     * @param rows
+     * @param areaCondition
+     * @return
+     */
+    @Override
+    public Mono<List<Area>> selectAreaMonoByLimitAndCondition(Long limit, Long rows, AreaCondition areaCondition) {
+
+
+
+        return null;
+    }
+
+    /**
+     * count area by condition
+     *
+     * @param areaCondition
+     * @return
+     */
+    @Override
+    public Mono<Long> countAreaMonoByCondition(AreaCondition areaCondition) {
+        return null;
+    }
+
+    /**
+     * select area info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    @Override
+    public Mono<PageModelResponse<AreaInfo>> selectAreaPageMonoByPageAndCondition(PageModelRequest<AreaCondition> pageModelRequest) {
+        return null;
     }
 
 }

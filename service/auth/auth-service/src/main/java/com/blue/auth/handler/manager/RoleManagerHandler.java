@@ -3,6 +3,7 @@ package com.blue.auth.handler.manager;
 import com.blue.auth.model.RoleInsertParam;
 import com.blue.auth.model.RoleUpdateParam;
 import com.blue.auth.service.inter.ControlService;
+import com.blue.auth.service.inter.RoleResRelationService;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.common.IdentityParam;
@@ -36,9 +37,12 @@ public final class RoleManagerHandler {
 
     private final RoleService roleService;
 
-    public RoleManagerHandler(ControlService controlService, RoleService roleService) {
+    private final RoleResRelationService roleResRelationService;
+
+    public RoleManagerHandler(ControlService controlService, RoleService roleService, RoleResRelationService roleResRelationService) {
         this.controlService = controlService;
         this.roleService = roleService;
+        this.roleResRelationService = roleResRelationService;
     }
 
     /**
@@ -128,7 +132,7 @@ public final class RoleManagerHandler {
         return serverRequest.bodyToMono(IdentityParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(ip ->
-                        controlService.selectAuthorityMonoByRoleId(ip.getId()))
+                        roleResRelationService.selectAuthorityMonoByRoleId(ip.getId()))
                 .flatMap(auth ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, auth, serverRequest), BlueResponse.class));

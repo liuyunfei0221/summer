@@ -9,8 +9,7 @@ import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.entity.SignRewardTodayRelation;
 import com.blue.marketing.service.inter.RewardService;
 import com.blue.marketing.service.inter.SignInService;
-import com.blue.redis.common.BlueBitMarker;
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import com.blue.redis.component.BlueBitMarker;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -32,7 +31,6 @@ import static com.blue.base.constant.base.CacheKeyPrefix.SIGN_IN_PRE;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
 import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
-import static com.blue.redis.api.generator.BlueBitMarkerGenerator.generateBitMarker;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
@@ -60,10 +58,10 @@ public class SignInServiceImpl implements SignInService {
     private final MarketingEventProducer marketingEventProducer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public SignInServiceImpl(RewardService rewardService, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
+    public SignInServiceImpl(RewardService rewardService, BlueBitMarker blueBitMarker,
                              MarketingEventProducer marketingEventProducer, BlockingDeploy blockingDeploy) {
         this.rewardService = rewardService;
-        this.blueBitMarker = generateBitMarker(reactiveStringRedisTemplate);
+        this.blueBitMarker = blueBitMarker;
         this.marketingEventProducer = marketingEventProducer;
 
         MAX_WAITING_FOR_REFRESH = blockingDeploy.getMillis();

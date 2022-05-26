@@ -1,6 +1,6 @@
 server:
   # address: 127.0.0.1
-  port: 57050
+  port: 57000
   netty:
     connection-timeout: 6s
     h2c-max-content-length: 0B

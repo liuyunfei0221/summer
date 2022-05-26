@@ -3,9 +3,9 @@ package com.blue.curator.ioc;
 import com.blue.curator.api.conf.DistributedLockConf;
 import com.blue.curator.api.generator.BlueDistributedLockGenerator;
 import org.slf4j.Logger;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import static java.util.Objects.isNull;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -17,7 +17,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @SuppressWarnings({"AlibabaRemoveCommentedCode", "JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
 @ConditionalOnBean(value = {DistributedLockConf.class})
-@Configuration
+@AutoConfiguration
 public class BlueDistributedLockConfiguration {
 
     private static final Logger LOGGER = getLogger(BlueDistributedLockConfiguration.class);

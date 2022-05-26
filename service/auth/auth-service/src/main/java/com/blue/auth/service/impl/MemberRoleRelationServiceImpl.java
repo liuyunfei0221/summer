@@ -4,7 +4,7 @@ import com.blue.auth.repository.entity.MemberRoleRelation;
 import com.blue.auth.repository.mapper.MemberRoleRelationMapper;
 import com.blue.auth.service.inter.MemberRoleRelationService;
 import com.blue.base.model.exps.BlueException;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import io.seata.spring.annotation.GlobalLock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

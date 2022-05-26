@@ -29,7 +29,7 @@ public final class AccessGetterForReactive {
     }
 
     /**
-     * get access from serverHttpRequest
+     * get access/refresh from serverHttpRequest
      *
      * @param serverHttpRequest
      * @return
@@ -39,27 +39,27 @@ public final class AccessGetterForReactive {
     }
 
     /**
-     * get access mono from serverRequest
+     * get access/refresh mono from serverRequest
      *
      * @param serverRequest
      * @return
      */
     public static Mono<Access> getAccessReact(ServerRequest serverRequest) {
-        return just(jsonToAccess(serverRequest.headers().firstHeader(AUTHORIZATION.name)));
+        return just(getAccess(serverRequest));
     }
 
     /**
-     * get access mono from serverHttpRequest
+     * get access/refresh mono from serverHttpRequest
      *
      * @param serverHttpRequest
      * @return
      */
     public static Mono<Access> getAccessReact(ServerHttpRequest serverHttpRequest) {
-        return just(jsonToAccess(serverHttpRequest.getHeaders().getFirst(AUTHORIZATION.name)));
+        return just(getAccess(serverHttpRequest));
     }
 
     /**
-     * get refresh token from request
+     * get access/refresh from request
      *
      * @param serverRequest
      * @return
@@ -69,7 +69,7 @@ public final class AccessGetterForReactive {
     }
 
     /**
-     * get refresh token from serverHttpRequest
+     * get access/refresh from serverHttpRequest
      *
      * @param serverHttpRequest
      * @return
@@ -79,23 +79,23 @@ public final class AccessGetterForReactive {
     }
 
     /**
-     * get refresh token mono from serverRequest
+     * get access/refresh mono from serverRequest
      *
      * @param serverRequest
      * @return
      */
     public static Mono<String> getAuthorizationReact(ServerRequest serverRequest) {
-        return just(ofNullable(serverRequest.headers().firstHeader(AUTHORIZATION.name)).orElse(""));
+        return just(getAuthorization(serverRequest));
     }
 
     /**
-     * get refresh token mono from serverHttpRequest
+     * get access/refresh mono from serverHttpRequest
      *
      * @param serverHttpRequest
      * @return
      */
     public static Mono<String> getAuthorizationReact(ServerHttpRequest serverHttpRequest) {
-        return just(ofNullable(serverHttpRequest.getHeaders().getFirst(AUTHORIZATION.name)).orElse(""));
+        return just(getAuthorization(serverHttpRequest));
     }
 
 }

@@ -10,8 +10,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.auth.constant.AuthTypeReference.LIST_PARAM_FOR_QUESTION_INSERT_PARAM_TYPE;
-import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.base.common.reactive.AccessGetterForReactive.getAuthorizationReact;
+import static com.blue.base.common.reactive.AccessGetterForReactive.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.SECRET;

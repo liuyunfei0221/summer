@@ -2,7 +2,7 @@ package com.blue.lake.service.impl;
 
 import com.blue.base.model.common.DataEvent;
 import com.blue.base.model.common.LimitModelRequest;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.lake.repository.entity.OptEvent;
 import com.blue.lake.repository.mapper.OptEventMapper;
 import com.blue.lake.service.inter.LakeService;

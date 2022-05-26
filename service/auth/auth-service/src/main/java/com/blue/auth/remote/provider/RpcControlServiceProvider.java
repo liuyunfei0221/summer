@@ -60,11 +60,12 @@ public class RpcControlServiceProvider implements RpcControlService {
      * update authority base on member / update member-role-relations sync with trans / not support for manager
      *
      * @param memberRoleRelationParam
+     * @return
      */
     @Override
-    public void updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
-        LOGGER.info("void updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam), memberRoleRelationParam = {}", memberRoleRelationParam);
-        controlService.updateAuthorityByMemberSync(memberRoleRelationParam);
+    public AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
+        LOGGER.info("AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam), memberRoleRelationParam = {}", memberRoleRelationParam);
+        return controlService.updateAuthorityByMemberSync(memberRoleRelationParam);
     }
 
     /**

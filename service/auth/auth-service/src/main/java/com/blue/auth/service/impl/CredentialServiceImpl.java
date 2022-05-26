@@ -5,7 +5,7 @@ import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.repository.mapper.CredentialMapper;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.base.model.exps.BlueException;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;

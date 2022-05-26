@@ -2,7 +2,8 @@ package com.blue.media.config.filter.global;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.config.deploy.RateLimiterDeploy;
-import com.blue.redis.common.BlueTokenBucketRateLimiter;
+import com.blue.redis.api.generator.BlueRateLimiterGenerator;
+import com.blue.redis.common.BlueFixedTokenBucketRateLimiter;
 import org.springframework.core.Ordered;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ import reactor.core.scheduler.Scheduler;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER;
 import static com.blue.base.constant.base.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.media.config.filter.BlueFilterOrder.BLUE_RATE_LIMIT;
-import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateTokenBucketRateLimiter;
+import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateFixedTokenBucketRateLimiter;
 import static reactor.core.publisher.Mono.error;
 
 /**
@@ -23,20 +24,21 @@ import static reactor.core.publisher.Mono.error;
  *
  * @author liuyunfei
  */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Component
 public final class BlueRateLimitFilter implements WebFilter, Ordered {
 
-    private final BlueTokenBucketRateLimiter blueTokenBucketRateLimiter;
+    private final BlueFixedTokenBucketRateLimiter blueFixedTokenBucketRateLimiter;
 
     public BlueRateLimitFilter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, RateLimiterDeploy rateLimiterDeploy) {
-        this.blueTokenBucketRateLimiter = generateTokenBucketRateLimiter(reactiveStringRedisTemplate, scheduler, rateLimiterDeploy.getReplenishRate(), rateLimiterDeploy.getBurstCapacity());
+        this.blueFixedTokenBucketRateLimiter = BlueRateLimiterGenerator.generateFixedTokenBucketRateLimiter(reactiveStringRedisTemplate, scheduler, rateLimiterDeploy.getReplenishRate(), rateLimiterDeploy.getBurstCapacity());
     }
 
     @SuppressWarnings("NullableProblems")
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER.apply(exchange.getRequest())
-                .flatMap(blueTokenBucketRateLimiter::isAllowed)
+                .flatMap(blueFixedTokenBucketRateLimiter::isAllowed)
                 .flatMap(a ->
                         a ? chain.filter(exchange) : error(() -> new BlueException(TOO_MANY_REQUESTS))
                 );

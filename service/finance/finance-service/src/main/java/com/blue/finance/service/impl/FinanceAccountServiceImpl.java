@@ -4,7 +4,7 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.finance.repository.entity.FinanceAccount;
 import com.blue.finance.repository.mapper.FinanceAccountMapper;
 import com.blue.finance.service.inter.FinanceAccountService;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;

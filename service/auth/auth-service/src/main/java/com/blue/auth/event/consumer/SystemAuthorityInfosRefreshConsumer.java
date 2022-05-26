@@ -18,6 +18,8 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
+ * refresh authority info consumer
+ *
  * @author liuyunfei
  */
 public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle {
@@ -39,7 +41,7 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
     private void init() {
         Consumer<EmptyEvent> systemAuthorityInfosRefreshDataConsumer = emptyEvent ->
                 ofNullable(emptyEvent)
-                        .ifPresent(nvp -> {
+                        .ifPresent(ee -> {
                             LOGGER.info("systemAuthorityInfosRefreshDataConsumer received");
                             controlService.refreshSystemAuthorityInfos()
                                     .doOnError(throwable -> LOGGER.info("controlService.refreshSystemAuthorityInfos() failed, throwable = {}", throwable))

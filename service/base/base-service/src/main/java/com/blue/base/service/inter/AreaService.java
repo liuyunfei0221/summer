@@ -2,8 +2,11 @@ package com.blue.base.service.inter;
 
 import com.blue.base.api.model.AreaInfo;
 import com.blue.base.api.model.AreaRegion;
+import com.blue.base.model.AreaCondition;
 import com.blue.base.model.AreaInsertParam;
 import com.blue.base.model.AreaUpdateParam;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.repository.entity.Area;
 import reactor.core.publisher.Mono;
 
@@ -42,6 +45,11 @@ public interface AreaService {
      * @return
      */
     Mono<AreaInfo> deleteArea(Long id);
+
+    /**
+     * invalid chche
+     */
+    void invalidCache();
 
     /**
      * get area by id
@@ -161,5 +169,31 @@ public interface AreaService {
      * @return
      */
     void invalidAreaInfosCache();
+
+    /**
+     * select area by limit and condition
+     *
+     * @param limit
+     * @param rows
+     * @param areaCondition
+     * @return
+     */
+    Mono<List<Area>> selectAreaMonoByLimitAndCondition(Long limit, Long rows, AreaCondition areaCondition);
+
+    /**
+     * count area by condition
+     *
+     * @param areaCondition
+     * @return
+     */
+    Mono<Long> countAreaMonoByCondition(AreaCondition areaCondition);
+
+    /**
+     * select area info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    Mono<PageModelResponse<AreaInfo>> selectAreaPageMonoByPageAndCondition(PageModelRequest<AreaCondition> pageModelRequest);
 
 }

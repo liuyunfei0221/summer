@@ -1,10 +1,10 @@
 package com.blue.qr.ioc;
 
 import com.blue.qr.api.conf.QrConf;
-import com.blue.qr.common.QrCoder;
+import com.blue.qr.component.QrCoder;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import static com.blue.qr.api.generator.BlueQrCoderGenerator.generateQrCoder;
 
@@ -15,7 +15,7 @@ import static com.blue.qr.api.generator.BlueQrCoderGenerator.generateQrCoder;
  */
 @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
 @ConditionalOnBean(value = {QrConf.class})
-@Configuration
+@AutoConfiguration
 public class BlueCaptchaConfiguration {
 
     @Bean

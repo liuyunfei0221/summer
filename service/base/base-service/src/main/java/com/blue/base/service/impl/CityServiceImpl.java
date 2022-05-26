@@ -13,8 +13,10 @@ import com.blue.base.service.inter.CityService;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
+import com.blue.mongo.component.CollectionGetter;
 import com.github.benmanes.caffeine.cache.Cache;
+import com.mongodb.client.model.UpdateOptions;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,9 @@ import static com.blue.base.converter.BaseModelConverters.CITIES_2_CITY_INFOS_CO
 import static com.blue.base.converter.BaseModelConverters.CITY_2_CITY_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -53,13 +58,13 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class CityServiceImpl implements CityService {
 
     private static final Logger LOGGER = Loggers.getLogger(CityServiceImpl.class);
 
-    private final BlueIdentityProcessor blueIdentityProcessor;
+    private BlueIdentityProcessor blueIdentityProcessor;
 
     private StateService stateService;
 
@@ -67,19 +72,22 @@ public class CityServiceImpl implements CityService {
 
     private CityRepository cityRepository;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    private final CollectionGetter collectionGetter;
+
     public CityServiceImpl(BlueIdentityProcessor blueIdentityProcessor, StateService stateService, CountryService countryService,
-                           ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, CityRepository cityRepository) {
+                           CityRepository cityRepository, CollectionGetter collectionGetter,
+                           ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.stateService = stateService;
         this.countryService = countryService;
         this.cityRepository = cityRepository;
+        this.collectionGetter = collectionGetter;
 
-        stateIdCitiesCache = generateCache(new CaffeineConfParams(
+        idCityCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
-        idCityCache = generateCache(new CaffeineConfParams(
+        stateIdCitiesCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
@@ -186,15 +194,6 @@ public class CityServiceImpl implements CityService {
     };
 
     /**
-     * invalid all chche
-     */
-    private void invalidCache() {
-        idCityCache.invalidateAll();
-        stateIdCitiesCache.invalidateAll();
-        idRegionCache.invalidateAll();
-    }
-
-    /**
      * is a city exist?
      */
     private final Consumer<CityInsertParam> INSERT_CITY_VALIDATOR = param -> {
@@ -215,7 +214,7 @@ public class CityServiceImpl implements CityService {
     /**
      * city insert param -> city
      */
-    public final Function<CityInsertParam, City> CITY_INSERT_PARAM_2_AREA_CONVERTER = param -> {
+    public final Function<CityInsertParam, City> CITY_INSERT_PARAM_2_CITY_CONVERTER = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -228,6 +227,7 @@ public class CityServiceImpl implements CityService {
 
         City city = new City();
 
+        city.setId(blueIdentityProcessor.generate(City.class));
         city.setCountryId(state.getCountryId());
         city.setStateId(stateId);
         city.setName(param.getName());
@@ -297,6 +297,12 @@ public class CityServiceImpl implements CityService {
         return alteration;
     };
 
+    private static final String COUNTRY_ID_COLUMN_NAME = "countryId";
+    private static final String STATE_ID_COLUMN_NAME = "stateId";
+    private static final String CITY_ID_COLUMN_NAME = "cityId";
+
+    private static final UpdateOptions OPTIONS = new UpdateOptions().upsert(true);
+
     /**
      * insert city
      *
@@ -308,9 +314,7 @@ public class CityServiceImpl implements CityService {
         LOGGER.info("Mono<CityInfo> insertCity(CityInsertParam cityInsertParam), cityInsertParam = {}", cityInsertParam);
 
         INSERT_CITY_VALIDATOR.accept(cityInsertParam);
-        City city = CITY_INSERT_PARAM_2_AREA_CONVERTER.apply(cityInsertParam);
-
-        city.setId(blueIdentityProcessor.generate(City.class));
+        City city = CITY_INSERT_PARAM_2_CITY_CONVERTER.apply(cityInsertParam);
 
         return cityRepository.insert(city)
                 .map(CITY_2_CITY_INFO_CONVERTER)
@@ -332,6 +336,9 @@ public class CityServiceImpl implements CityService {
 
         City city = UPDATE_CITY_VALIDATOR_AND_ORIGIN_RETURNER.apply(cityUpdateParam);
 
+        Long originalCountryId = city.getCountryId();
+        Long originalStateId = city.getStateId();
+
         Boolean changed = UPDATE_CITY_VALIDATOR.apply(cityUpdateParam, city);
         if (changed != null && !changed)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
@@ -340,6 +347,15 @@ public class CityServiceImpl implements CityService {
                 .map(CITY_2_CITY_INFO_CONVERTER)
                 .doOnSuccess(ci -> {
                     LOGGER.info("ci = {}", ci);
+
+                    Long destCountryId = city.getCountryId();
+                    Long destStateId = city.getStateId();
+
+                    if (!originalCountryId.equals(destCountryId) || !originalStateId.equals(destStateId)) {
+                        Long modifiedCount = updateCountryIdAndStateIdOfAreaByCityId(destCountryId, destStateId, city.getId()).toFuture().join();
+                        LOGGER.info("modifiedCount = {}", modifiedCount);
+                    }
+
                     invalidCache();
                 });
     }
@@ -369,6 +385,16 @@ public class CityServiceImpl implements CityService {
     }
 
     /**
+     * invalid chche
+     */
+    @Override
+    public void invalidCache() {
+        idCityCache.invalidateAll();
+        stateIdCitiesCache.invalidateAll();
+        idRegionCache.invalidateAll();
+    }
+
+    /**
      * a city's stateId was changed
      *
      * @param countryId
@@ -377,9 +403,25 @@ public class CityServiceImpl implements CityService {
      * @return
      */
     @Override
-    public int updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId) {
-        //TODO
-        return 0;
+    public Mono<Long> updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId) {
+        LOGGER.info("Mono<Long> updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId), countryId = {}, stateId = {}, cityId = {}",
+                countryId, stateId, cityId);
+        if (isInvalidIdentity(countryId) || isInvalidIdentity(stateId) || isInvalidIdentity(cityId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return collectionGetter.getCollectionReact(City.class)
+                .flatMap(collection ->
+                        from(collection.updateMany(eq(CITY_ID_COLUMN_NAME, cityId),
+                                combine(set(COUNTRY_ID_COLUMN_NAME, countryId),
+                                        set(STATE_ID_COLUMN_NAME, stateId)), OPTIONS)))
+                .flatMap(updateResult -> {
+                    long modifiedCount = updateResult.getModifiedCount();
+
+                    LOGGER.info("Mono<Long> updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId), matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
+                            countryId, stateId, updateResult.getMatchedCount(), modifiedCount, updateResult.wasAcknowledged());
+
+                    return just(modifiedCount);
+                });
     }
 
     /**

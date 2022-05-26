@@ -4,8 +4,8 @@ import com.blue.database.api.conf.DataAccessConf;
 import com.blue.identity.api.conf.IdentityConf;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 
@@ -18,7 +18,7 @@ import static org.apache.ibatis.session.ExecutorType.BATCH;
  *
  * @author liuyunfei
  */
-@Configuration
+@AutoConfiguration
 public class BlueDataAccessConfiguration {
 
     private final DataAccessConf dataAccessConf;
@@ -31,7 +31,7 @@ public class BlueDataAccessConfiguration {
     }
 
     @Bean
-    public DataSource dataSource() {
+    DataSource dataSource() {
         return generateDataSource(dataAccessConf, identityConf);
     }
 

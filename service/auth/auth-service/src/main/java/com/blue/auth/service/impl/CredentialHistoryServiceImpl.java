@@ -8,7 +8,7 @@ import com.blue.auth.repository.template.CredentialHistoryRepository;
 import com.blue.auth.service.inter.CredentialHistoryService;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class CredentialHistoryServiceImpl implements CredentialHistoryService {
 

@@ -6,7 +6,7 @@ import com.blue.finance.api.model.MemberFinanceInfo;
 import com.blue.finance.repository.entity.FinanceAccount;
 import com.blue.finance.service.inter.ControlService;
 import com.blue.finance.service.inter.FinanceAccountService;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
@@ -27,7 +27,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class ControlServiceImpl implements ControlService {
 

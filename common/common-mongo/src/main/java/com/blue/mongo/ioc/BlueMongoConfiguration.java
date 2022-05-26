@@ -1,11 +1,12 @@
 package com.blue.mongo.ioc;
 
 import com.blue.mongo.api.conf.MongoConf;
+import com.blue.mongo.component.CollectionGetter;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.reactivestreams.client.MongoClient;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 
 import static com.blue.mongo.api.generator.BlueMongoGenerator.*;
@@ -17,7 +18,7 @@ import static com.blue.mongo.api.generator.BlueMongoGenerator.*;
  */
 @SuppressWarnings({"AlibabaRemoveCommentedCode", "SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
 @ConditionalOnBean(value = {MongoConf.class})
-@Configuration
+@AutoConfiguration
 public class BlueMongoConfiguration {
 
     @Bean
@@ -33,6 +34,11 @@ public class BlueMongoConfiguration {
     @Bean
     ReactiveMongoTemplate reactiveMongoTemplate(MongoClient mongoClient, MongoConf mongoConf) {
         return generateReactiveMongoTemplate(mongoClient, mongoConf);
+    }
+
+    @Bean
+    CollectionGetter collectionGetter(ReactiveMongoTemplate reactiveMongoTemplate) {
+        return generateCollectionGetter(reactiveMongoTemplate);
     }
 
 }

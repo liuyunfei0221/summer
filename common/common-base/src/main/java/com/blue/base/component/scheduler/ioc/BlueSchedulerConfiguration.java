@@ -1,9 +1,9 @@
 package com.blue.base.component.scheduler.ioc;
 
 import com.blue.base.component.scheduler.api.conf.SchedulerConf;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import reactor.core.scheduler.Scheduler;
 
 import static com.blue.base.component.scheduler.api.generator.SchedulerGenerator.generateScheduler;
@@ -14,11 +14,11 @@ import static com.blue.base.component.scheduler.api.generator.SchedulerGenerator
  * @author liuyunfei
  */
 @ConditionalOnBean(value = {SchedulerConf.class})
-@Configuration
+@AutoConfiguration
 public class BlueSchedulerConfiguration {
 
     @Bean
-    public Scheduler scheduler(SchedulerConf schedulerConf) {
+    Scheduler scheduler(SchedulerConf schedulerConf) {
         return generateScheduler(schedulerConf);
     }
 

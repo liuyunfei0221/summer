@@ -6,13 +6,17 @@ import com.blue.base.config.deploy.AreaCaffeineDeploy;
 import com.blue.base.model.StateInsertParam;
 import com.blue.base.model.StateUpdateParam;
 import com.blue.base.model.exps.BlueException;
+import com.blue.base.repository.entity.Area;
+import com.blue.base.repository.entity.City;
 import com.blue.base.repository.entity.State;
 import com.blue.base.repository.template.StateRepository;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
+import com.blue.mongo.component.CollectionGetter;
 import com.github.benmanes.caffeine.cache.Cache;
+import com.mongodb.client.model.UpdateOptions;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -38,44 +42,48 @@ import static com.blue.base.converter.BaseModelConverters.STATES_2_STATE_INFOS_C
 import static com.blue.base.converter.BaseModelConverters.STATE_2_STATE_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static reactor.core.publisher.Mono.defer;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * state service impl
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class StateServiceImpl implements StateService {
 
     private static final Logger LOGGER = Loggers.getLogger(CityServiceImpl.class);
 
-    private final BlueIdentityProcessor blueIdentityProcessor;
+    private BlueIdentityProcessor blueIdentityProcessor;
 
     private CountryService countryService;
 
     private StateRepository stateRepository;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public StateServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CountryService countryService, ExecutorService executorService,
-                            AreaCaffeineDeploy areaCaffeineDeploy, StateRepository stateRepository) {
+    private final CollectionGetter collectionGetter;
+
+    public StateServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CountryService countryService, StateRepository stateRepository,
+                            ExecutorService executorService, CollectionGetter collectionGetter, AreaCaffeineDeploy areaCaffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.countryService = countryService;
         this.stateRepository = stateRepository;
+        this.collectionGetter = collectionGetter;
 
-        countryIdStatesCache = generateCache(new CaffeineConfParams(
+        idStateCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
-        idStateCache = generateCache(new CaffeineConfParams(
+        countryIdStatesCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
@@ -175,15 +183,6 @@ public class StateServiceImpl implements StateService {
     };
 
     /**
-     * invalid all chche
-     */
-    private void invalidCache() {
-        idStateCache.invalidateAll();
-        countryIdStatesCache.invalidateAll();
-        idRegionCache.invalidateAll();
-    }
-
-    /**
      * is a state exist?
      */
     private final Consumer<StateInsertParam> INSERT_STATE_VALIDATOR = param -> {
@@ -192,7 +191,7 @@ public class StateServiceImpl implements StateService {
         param.asserts();
 
         State probe = new State();
-        probe.setCountryId(probe.getCountryId());
+        probe.setCountryId(param.getCountryId());
         probe.setName(param.getName());
 
         Long count = ofNullable(stateRepository.count(Example.of(probe)).toFuture().join()).orElse(0L);
@@ -204,7 +203,7 @@ public class StateServiceImpl implements StateService {
     /**
      * state insert param -> state
      */
-    public final Function<StateInsertParam, State> STATE_INSERT_PARAM_2_AREA_CONVERTER = param -> {
+    public final Function<StateInsertParam, State> STATE_INSERT_PARAM_2_STATE_CONVERTER = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -218,6 +217,7 @@ public class StateServiceImpl implements StateService {
 
         State state = new State();
 
+        state.setId(blueIdentityProcessor.generate(State.class));
         state.setCountryId(countryId);
         state.setName(param.getName());
         state.setFipsCode(param.getFipsCode());
@@ -282,7 +282,6 @@ public class StateServiceImpl implements StateService {
             alteration = true;
         }
 
-
         String fipsCode = p.getFipsCode();
         if (isNotBlank(fipsCode) && !fipsCode.equals(t.getFipsCode())) {
             t.setFipsCode(fipsCode);
@@ -298,6 +297,12 @@ public class StateServiceImpl implements StateService {
         return alteration;
     };
 
+    private static final String COUNTRY_ID_COLUMN_NAME = "countryId";
+    private static final String STATE_ID_COLUMN_NAME = "stateId";
+
+    private static final UpdateOptions OPTIONS = new UpdateOptions().upsert(true);
+
+
     /**
      * insert state
      *
@@ -309,9 +314,7 @@ public class StateServiceImpl implements StateService {
         LOGGER.info("Mono<StateInfo> insertState(StateInsertParam stateInsertParam), stateInsertParam = {}", stateInsertParam);
 
         INSERT_STATE_VALIDATOR.accept(stateInsertParam);
-        State state = STATE_INSERT_PARAM_2_AREA_CONVERTER.apply(stateInsertParam);
-
-        state.setId(blueIdentityProcessor.generate(State.class));
+        State state = STATE_INSERT_PARAM_2_STATE_CONVERTER.apply(stateInsertParam);
 
         return stateRepository.insert(state)
                 .map(STATE_2_STATE_INFO_CONVERTER)
@@ -333,6 +336,8 @@ public class StateServiceImpl implements StateService {
 
         State state = UPDATE_STATE_VALIDATOR_AND_ORIGIN_RETURNER.apply(stateUpdateParam);
 
+        Long originalCountryId = state.getCountryId();
+
         Boolean changed = UPDATE_STATE_VALIDATOR.apply(stateUpdateParam, state);
         if (changed != null && !changed)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
@@ -341,6 +346,13 @@ public class StateServiceImpl implements StateService {
                 .map(STATE_2_STATE_INFO_CONVERTER)
                 .doOnSuccess(si -> {
                     LOGGER.info("si = {}", si);
+
+                    Long destCountryId = stateUpdateParam.getCountryId();
+                    if (!originalCountryId.equals(destCountryId)) {
+                        Long modifiedCount = updateCountryIdOfCityByStateId(destCountryId, state.getId()).toFuture().join();
+                        LOGGER.info("modifiedCount = {}", modifiedCount);
+                    }
+
                     invalidCache();
                 });
     }
@@ -352,7 +364,7 @@ public class StateServiceImpl implements StateService {
      * @return
      */
     @Override
-    public Mono<StateInfo> deleteCity(Long id) {
+    public Mono<StateInfo> deleteState(Long id) {
         LOGGER.info("Mono<StateInfo> deleteCity(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -370,16 +382,13 @@ public class StateServiceImpl implements StateService {
     }
 
     /**
-     * a state's countryId was changed
-     *
-     * @param countryId
-     * @param stateId
-     * @return
+     * invalid chche
      */
     @Override
-    public int updateCountryIdOfCityByStateId(Long countryId, Long stateId) {
-        //TODO
-        return 0;
+    public void invalidCache() {
+        idStateCache.invalidateAll();
+        countryIdStatesCache.invalidateAll();
+        idRegionCache.invalidateAll();
     }
 
     /**
@@ -390,9 +399,50 @@ public class StateServiceImpl implements StateService {
      * @return
      */
     @Override
-    public int updateCountryIdOfAreaByStateId(Long countryId, Long stateId) {
-        //TODO
-        return 0;
+    public Mono<Long> updateCountryIdOfCityByStateId(Long countryId, Long stateId) {
+        LOGGER.info("Mono<Long> updateCountryIdOfCityByStateId(Long countryId, Long stateId), countryId = {}, stateId = {}", countryId, stateId);
+        if (isInvalidIdentity(countryId) || isInvalidIdentity(stateId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return collectionGetter.getCollectionReact(City.class)
+                .flatMap(collection ->
+                        from(collection.updateMany(eq(STATE_ID_COLUMN_NAME, stateId),
+                                combine(set(COUNTRY_ID_COLUMN_NAME, countryId)), OPTIONS)))
+                .flatMap(updateResult -> {
+                    long modifiedCount = updateResult.getModifiedCount();
+
+                    LOGGER.info("Mono<Long> updateCountryIdOfCityByStateId(Long countryId, Long stateId), matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
+                            countryId, stateId, updateResult.getMatchedCount(), modifiedCount, updateResult.wasAcknowledged());
+
+                    return just(modifiedCount);
+                });
+    }
+
+    /**
+     * a state's countryId was changed
+     *
+     * @param countryId
+     * @param stateId
+     * @return
+     */
+    @Override
+    public Mono<Long> updateCountryIdOfAreaByStateId(Long countryId, Long stateId) {
+        LOGGER.info("Mono<Long> updateCountryIdOfAreaByStateId(Long countryId, Long stateId), countryId = {}, stateId = {}", countryId, stateId);
+        if (isInvalidIdentity(countryId) || isInvalidIdentity(stateId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return collectionGetter.getCollectionReact(Area.class)
+                .flatMap(collection ->
+                        from(collection.updateMany(eq(STATE_ID_COLUMN_NAME, stateId),
+                                combine(set(COUNTRY_ID_COLUMN_NAME, countryId)), OPTIONS)))
+                .flatMap(updateResult -> {
+                    long modifiedCount = updateResult.getModifiedCount();
+
+                    LOGGER.info("Mono<Long> updateCountryIdOfAreaByStateId(Long countryId, Long stateId), matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
+                            countryId, stateId, updateResult.getMatchedCount(), modifiedCount, updateResult.wasAcknowledged());
+
+                    return just(modifiedCount);
+                });
     }
 
     /**

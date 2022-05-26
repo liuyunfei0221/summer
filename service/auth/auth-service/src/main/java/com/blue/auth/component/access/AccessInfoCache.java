@@ -126,7 +126,7 @@ public final class AccessInfoCache {
      * redis accessInfo getter
      */
     private final Function<String, Mono<String>> REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER = keyId -> {
-        LOGGER.warn("REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER, get accessInfo from redis, keyId = {}", keyId);
+        LOGGER.warn("REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER, get accessInfo from redis and set in caff, keyId = {}", keyId);
 
         return reactiveStringRedisTemplate.opsForValue().get(keyId)
                 .flatMap(accessInfo -> {
@@ -142,7 +142,7 @@ public final class AccessInfoCache {
      * cache accessInfo getter
      */
     private final Function<String, Mono<String>> ACCESS_GETTER_WITH_CACHE = keyId -> {
-        LOGGER.warn("ACCESS_GETTER_WITH_CACHE, get accessInfo from redis, keyId = {}", keyId);
+        LOGGER.warn("ACCESS_GETTER_WITH_CACHE, get accessInfo from cache, keyId = {}", keyId);
         if (isBlank(keyId))
             return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
 

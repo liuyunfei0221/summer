@@ -30,9 +30,9 @@ public enum BlueHeader {
     USER_AGENT(HttpHeaders.USER_AGENT),
 
     /**
-     * turing data
+     * request ip
      */
-    TURING_DATA("Turing-Data"),
+    REQUEST_IP("Request_Ip"),
 
     /**
      * metadata
@@ -53,6 +53,11 @@ public enum BlueHeader {
      * need to pass turing test
      */
     NEED_TURING_TEST("Need-Turing-Test"),
+
+    /**
+     * turing data
+     */
+    TURING_DATA("Turing-Data"),
 
     /**
      * content

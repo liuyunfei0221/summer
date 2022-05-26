@@ -2,7 +2,7 @@ package com.blue.qr.api.generator;
 
 import com.blue.qr.api.conf.QrConfParams;
 import com.blue.qr.api.conf.QrConf;
-import com.blue.qr.common.QrCoder;
+import com.blue.qr.component.QrCoder;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 

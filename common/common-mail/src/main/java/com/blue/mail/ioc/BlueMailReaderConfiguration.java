@@ -1,10 +1,10 @@
 package com.blue.mail.ioc;
 
 import com.blue.mail.api.conf.MailReaderConf;
-import com.blue.mail.common.MailReader;
+import com.blue.mail.component.MailReader;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import static com.blue.mail.api.generator.BlueMailReaderGenerator.generateMailReader;
 
@@ -15,7 +15,7 @@ import static com.blue.mail.api.generator.BlueMailReaderGenerator.generateMailRe
  */
 @SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
 @ConditionalOnBean(value = {MailReaderConf.class})
-@Configuration
+@AutoConfiguration
 public class BlueMailReaderConfiguration {
 
     @Bean

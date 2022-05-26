@@ -1,7 +1,7 @@
 package com.blue.mail.api.generator;
 
 import com.blue.mail.api.conf.MailReaderConf;
-import com.blue.mail.common.MailReader;
+import com.blue.mail.component.MailReader;
 
 /**
  * mail sender generator

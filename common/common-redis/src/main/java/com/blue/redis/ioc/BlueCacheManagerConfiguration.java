@@ -17,7 +17,7 @@ import static com.blue.redis.api.generator.BlueRedisGenerator.generateCacheManag
 public class BlueCacheManagerConfiguration {
 
     @Bean
-    public CacheManager cacheManager(RedisConf redisConf, LettuceConnectionFactory lettuceConnectionFactory) {
+    CacheManager cacheManager(RedisConf redisConf, LettuceConnectionFactory lettuceConnectionFactory) {
         return generateCacheManager(redisConf, lettuceConnectionFactory);
     }
 

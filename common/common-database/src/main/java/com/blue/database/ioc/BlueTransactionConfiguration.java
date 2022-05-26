@@ -45,7 +45,7 @@ public class BlueTransactionConfiguration {
     private static final Logger LOGGER = getLogger(BlueTransactionConfiguration.class);
 
     @Bean
-    public TransactionManager txManager(DataSource dataSource) {
+    TransactionManager txManager(DataSource dataSource) {
         return generateTxManager(dataSource);
     }
 

@@ -4,6 +4,7 @@ import com.blue.auth.model.ResourceInsertParam;
 import com.blue.auth.model.ResourceUpdateParam;
 import com.blue.auth.service.inter.ControlService;
 import com.blue.auth.service.inter.ResourceService;
+import com.blue.auth.service.inter.RoleResRelationService;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.common.IdentityParam;
 import com.blue.base.model.exps.BlueException;
@@ -13,7 +14,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.auth.constant.AuthTypeReference.PAGE_MODEL_FOR_RESOURCE_CONDITION_TYPE;
-import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
+import static com.blue.base.common.reactive.AccessGetterForReactive.*;
 import static com.blue.base.common.reactive.PathVariableGetter.getLongVariableReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.PathVariable.ID;
@@ -36,9 +37,12 @@ public final class ResourceManagerHandler {
 
     private final ResourceService resourceService;
 
-    public ResourceManagerHandler(ControlService controlService, ResourceService resourceService) {
+    private final RoleResRelationService roleResRelationService;
+
+    public ResourceManagerHandler(ControlService controlService, ResourceService resourceService, RoleResRelationService roleResRelationService) {
         this.controlService = controlService;
         this.resourceService = resourceService;
+        this.roleResRelationService = roleResRelationService;
     }
 
     /**
@@ -112,7 +116,7 @@ public final class ResourceManagerHandler {
         return serverRequest.bodyToMono(IdentityParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(ip ->
-                        controlService.selectAuthorityMonoByResId(ip.getId()))
+                        roleResRelationService.selectAuthorityMonoByResId(ip.getId()))
                 .flatMap(auth ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, auth, serverRequest), BlueResponse.class));

@@ -26,8 +26,9 @@ public interface RpcControlService {
      * update authority base on member / update member-role-relations sync with trans / not support for manager
      *
      * @param memberRoleRelationParam
+     * @return
      */
-    void updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam);
+    AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam);
 
     /**
      * update member's auth by member id

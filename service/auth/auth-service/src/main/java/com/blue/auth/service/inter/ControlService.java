@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface ControlService {
 
     /**
@@ -91,22 +91,6 @@ public interface ControlService {
      * @return
      */
     Mono<Boolean> invalidateLocalAccessByKeyId(String keyId);
-
-    /**
-     * get authority base on role by role id
-     *
-     * @param roleId
-     * @return
-     */
-    Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId);
-
-    /**
-     * get authority base on resource by res id
-     *
-     * @param resId
-     * @return
-     */
-    Mono<AuthorityBaseOnResource> selectAuthorityMonoByResId(Long resId);
 
     /**
      * refresh resource key/info or role-resource-relation
@@ -320,8 +304,9 @@ public interface ControlService {
      * update authority base on member / update member-role-relations sync with trans / not support for manager
      *
      * @param memberRoleRelationParam
+     * @return
      */
-    void updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam);
+    AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam);
 
     /**
      * select security question mono by member id

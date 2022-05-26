@@ -4,7 +4,7 @@ import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberAddressInfo;
 import com.blue.member.config.deploy.AddressDeploy;
 import com.blue.member.constant.MemberAddressSortAttribute;

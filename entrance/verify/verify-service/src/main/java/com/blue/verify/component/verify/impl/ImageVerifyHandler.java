@@ -4,19 +4,16 @@ import com.blue.base.constant.base.RandomType;
 import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
-import com.blue.redis.api.generator.BlueRateLimiterGenerator;
-import com.blue.redis.common.BlueLeakyBucketRateLimiter;
-import com.blue.verify.common.CaptchaProcessor;
+import com.blue.captcha.component.CaptchaProcessor;
+import com.blue.redis.component.BlueLeakyBucketRateLimiter;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import com.blue.verify.config.deploy.ImageVerifyDeploy;
 import com.blue.verify.service.inter.VerifyService;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.imageio.ImageIO;
@@ -71,11 +68,11 @@ public class ImageVerifyHandler implements VerifyHandler {
     private final int ALLOW;
     private final long SEND_INTERVAL_MILLIS;
 
-    public ImageVerifyHandler(CaptchaProcessor captchaProcessor, VerifyService verifyService, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
-                              Scheduler scheduler, ExecutorService executorService, ImageVerifyDeploy imageVerifyDeploy) {
+    public ImageVerifyHandler(CaptchaProcessor captchaProcessor, VerifyService verifyService, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter,
+                              ExecutorService executorService, ImageVerifyDeploy imageVerifyDeploy) {
         this.captchaProcessor = captchaProcessor;
         this.verifyService = verifyService;
-        this.blueLeakyBucketRateLimiter = BlueRateLimiterGenerator.generateLeakyBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
+        this.blueLeakyBucketRateLimiter = blueLeakyBucketRateLimiter;
         this.executorService = executorService;
 
         Integer keyLength = imageVerifyDeploy.getKeyLength();

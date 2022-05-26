@@ -1,7 +1,6 @@
 package com.blue.base.service.inter;
 
 import com.blue.base.api.model.CountryInfo;
-import com.blue.base.api.model.StateInfo;
 import com.blue.base.model.CountryInsertParam;
 import com.blue.base.model.CountryUpdateParam;
 import com.blue.base.repository.entity.Country;
@@ -25,7 +24,7 @@ public interface CountryService {
      * @param countryInsertParam
      * @return
      */
-    Mono<StateInfo> insertState(CountryInsertParam countryInsertParam);
+    Mono<CountryInfo> insertCountry(CountryInsertParam countryInsertParam);
 
     /**
      * update country
@@ -33,7 +32,7 @@ public interface CountryService {
      * @param countryUpdateParam
      * @return
      */
-    Mono<StateInfo> updateState(CountryUpdateParam countryUpdateParam);
+    Mono<CountryInfo> updateCountry(CountryUpdateParam countryUpdateParam);
 
     /**
      * delete country
@@ -41,7 +40,12 @@ public interface CountryService {
      * @param id
      * @return
      */
-    Mono<StateInfo> deleteCity(Long id);
+    Mono<CountryInfo> deleteCountry(Long id);
+
+    /**
+     * invalid chche
+     */
+    void invalidCache();
 
     /**
      * get country by country id
