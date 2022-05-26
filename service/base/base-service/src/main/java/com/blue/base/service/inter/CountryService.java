@@ -25,7 +25,7 @@ public interface CountryService {
      * @param countryInsertParam
      * @return
      */
-    Mono<StateInfo> insertState(CountryInsertParam countryInsertParam);
+    Mono<StateInfo> insertCountry(CountryInsertParam countryInsertParam);
 
     /**
      * update country
@@ -33,7 +33,7 @@ public interface CountryService {
      * @param countryUpdateParam
      * @return
      */
-    Mono<StateInfo> updateState(CountryUpdateParam countryUpdateParam);
+    Mono<StateInfo> updateCountry(CountryUpdateParam countryUpdateParam);
 
     /**
      * delete country
@@ -41,7 +41,7 @@ public interface CountryService {
      * @param id
      * @return
      */
-    Mono<StateInfo> deleteCity(Long id);
+    Mono<StateInfo> deleteCountry(Long id);
 
     /**
      * get country by country id

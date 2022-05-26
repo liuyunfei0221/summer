@@ -1,6 +1,6 @@
 package com.blue.redis.api.generator;
 
-import com.blue.redis.common.BlueValueMarker;
+import com.blue.redis.component.BlueValueMarker;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**

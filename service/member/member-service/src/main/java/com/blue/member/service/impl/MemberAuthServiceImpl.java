@@ -3,7 +3,7 @@ package com.blue.member.service.impl;
 import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.base.model.exps.BlueException;
 import com.blue.finance.api.model.MemberFinanceInfo;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.component.credential.CredentialCollectProcessor;

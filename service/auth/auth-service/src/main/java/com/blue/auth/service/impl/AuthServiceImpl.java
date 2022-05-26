@@ -25,7 +25,7 @@ import com.blue.base.model.common.InvalidLocalAccessEvent;
 import com.blue.base.model.common.KeyPair;
 import com.blue.base.model.exps.BlueException;
 import com.blue.jwt.common.JwtProcessor;
-import com.blue.redisson.common.SynchronizedProcessor;
+import com.blue.redisson.component.SynchronizedProcessor;
 import com.google.gson.JsonSyntaxException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;

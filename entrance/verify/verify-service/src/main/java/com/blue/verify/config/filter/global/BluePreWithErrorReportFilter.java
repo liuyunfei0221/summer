@@ -18,11 +18,13 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.function.BiConsumer;
 
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
+import static com.blue.base.constant.base.BlueHeader.REQUEST_IP;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
@@ -35,7 +37,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "UnusedAssignment"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "UnusedAssignment", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
 
@@ -72,15 +74,19 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
         }
     }
 
+    private static final BiConsumer<ServerHttpRequest, String> REQUEST_IP_REPACKAGER =
+            (request, ip) -> request.mutate().headers(hs -> hs.set(REQUEST_IP.name, ip));
+
     private void packageAttr(ServerHttpRequest request, Map<String, Object> attributes) {
         String method = request.getMethodValue().intern();
         METHOD_VALUE_ASSERTER.accept(method);
         SCHEMA_ASSERTER.accept(request.getURI().getScheme());
 
         String realUri = request.getPath().value();
+        String ip = getIp(request);
 
         attributes.put(REQUEST_ID.key, request.getId());
-        attributes.put(CLIENT_IP.key, getIp(request));
+        attributes.put(CLIENT_IP.key, ip);
         attributes.put(METHOD.key, method);
         attributes.put(REAL_URI.key, realUri);
         attributes.put(URI.key, REQUEST_REST_URI_PROCESSOR.apply(realUri).intern());
@@ -93,6 +99,8 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
                 .ifPresent(host -> attributes.put(HOST.key, host));
         ofNullable(request.getHeaders().getFirst(BlueHeader.USER_AGENT.name))
                 .ifPresent(userAgent -> attributes.put(USER_AGENT.key, userAgent));
+
+        REQUEST_IP_REPACKAGER.accept(request, ip);
     }
 
     @SuppressWarnings({"NullableProblems", "DuplicatedCode"})

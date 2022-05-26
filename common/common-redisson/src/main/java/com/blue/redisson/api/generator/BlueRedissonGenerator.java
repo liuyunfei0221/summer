@@ -2,7 +2,7 @@ package com.blue.redisson.api.generator;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.redisson.api.conf.RedissonConf;
-import com.blue.redisson.common.SynchronizedProcessor;
+import com.blue.redisson.component.SynchronizedProcessor;
 import com.blue.redisson.constant.ServerMode;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.redisson.api.RedissonClient;

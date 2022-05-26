@@ -4,7 +4,7 @@ import com.blue.article.repository.entity.Article;
 import com.blue.article.repository.template.ArticleRepository;
 import com.blue.article.service.inter.ArticleService;
 import com.blue.base.model.exps.BlueException;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import org.elasticsearch.client.RestClient;
 import org.springframework.stereotype.Service;
 import reactor.util.Logger;
@@ -22,7 +22,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class ArticleServiceImpl implements ArticleService {
 

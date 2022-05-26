@@ -18,15 +18,16 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentities;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
-import static com.blue.base.constant.base.ResponseElement.DATA_NOT_EXIST;
-import static com.blue.base.constant.base.ResponseElement.INVALID_PARAM;
+import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.converter.BaseModelConverters.COUNTRIES_2_COUNTRY_INFOS_CONVERTER;
 import static com.blue.base.converter.BaseModelConverters.COUNTRY_2_COUNTRY_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
@@ -110,13 +111,43 @@ public class CountryServiceImpl implements CountryService {
     };
 
     /**
+     * invalid all chche
+     */
+    private void invalidCache() {
+        allCountriesCache.invalidateAll();
+        idCountryCache.invalidateAll();
+    }
+
+    /**
+     * is a country exist?
+     */
+    private final Consumer<CountryInsertParam> INSERT_COUNTRY_VALIDATOR = param -> {
+        if (isNull(param))
+            throw new BlueException(EMPTY_PARAM);
+        param.asserts();
+
+
+
+//        Country probe = new Country();
+//
+//        State probe = new State();
+//        probe.setCountryId(probe.getCountryId());
+//        probe.setName(param.getName());
+//
+//        Long count = ofNullable(countryRepository.count(Example.of(probe)).toFuture().join()).orElse(0L);
+//
+//        if (count > 0L)
+//            throw new BlueException(STATE_ALREADY_EXIST);
+    };
+
+    /**
      * insert country
      *
      * @param countryInsertParam
      * @return
      */
     @Override
-    public Mono<StateInfo> insertState(CountryInsertParam countryInsertParam) {
+    public Mono<StateInfo> insertCountry(CountryInsertParam countryInsertParam) {
         return null;
     }
 
@@ -127,7 +158,7 @@ public class CountryServiceImpl implements CountryService {
      * @return
      */
     @Override
-    public Mono<StateInfo> updateState(CountryUpdateParam countryUpdateParam) {
+    public Mono<StateInfo> updateCountry(CountryUpdateParam countryUpdateParam) {
         return null;
     }
 
@@ -138,7 +169,7 @@ public class CountryServiceImpl implements CountryService {
      * @return
      */
     @Override
-    public Mono<StateInfo> deleteCity(Long id) {
+    public Mono<StateInfo> deleteCountry(Long id) {
         return null;
     }
 

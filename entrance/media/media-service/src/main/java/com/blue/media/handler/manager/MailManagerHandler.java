@@ -1,8 +1,8 @@
 package com.blue.media.handler.manager;
 
 import com.blue.base.model.common.BlueResponse;
-import com.blue.mail.common.MailReader;
-import com.blue.mail.common.MailSender;
+import com.blue.mail.component.MailReader;
+import com.blue.mail.component.MailSender;
 import jakarta.mail.Message;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
@@ -28,7 +28,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "DuplicatedCode", "AliControlFlowStatementWithoutBraces", "unused"})
+@SuppressWarnings({"JavaDoc", "DuplicatedCode", "AliControlFlowStatementWithoutBraces", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class MailManagerHandler {
 

@@ -1,7 +1,10 @@
 package com.blue.redis.api.generator;
 
-import com.blue.redis.common.BlueBitMarker;
+import com.blue.redis.component.BlueBitMarker;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import reactor.core.scheduler.Scheduler;
+
+import static reactor.core.scheduler.Schedulers.boundedElastic;
 
 /**
  * bit marker generator
@@ -18,7 +21,18 @@ public final class BlueBitMarkerGenerator {
      * @return
      */
     public static BlueBitMarker generateBitMarker(ReactiveStringRedisTemplate reactiveStringRedisTemplate) {
-        return new BlueBitMarker(reactiveStringRedisTemplate);
+        return new BlueBitMarker(reactiveStringRedisTemplate, boundedElastic());
+    }
+
+    /**
+     * generate bit marker
+     *
+     * @param reactiveStringRedisTemplate
+     * @param scheduler
+     * @return
+     */
+    public static BlueBitMarker generateBitMarker(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
+        return new BlueBitMarker(reactiveStringRedisTemplate, scheduler);
     }
 
 }

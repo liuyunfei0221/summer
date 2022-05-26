@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
+import static com.blue.base.common.reactive.AccessGetterForReactive.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;

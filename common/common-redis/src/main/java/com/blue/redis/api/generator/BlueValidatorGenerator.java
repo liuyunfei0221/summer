@@ -1,6 +1,6 @@
 package com.blue.redis.api.generator;
 
-import com.blue.redis.common.BlueValidator;
+import com.blue.redis.component.BlueValidator;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.scheduler.Scheduler;
 

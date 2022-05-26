@@ -1,7 +1,7 @@
 package com.blue.redisson.ioc;
 
 import com.blue.redisson.api.conf.RedissonConf;
-import com.blue.redisson.common.SynchronizedProcessor;
+import com.blue.redisson.component.SynchronizedProcessor;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;

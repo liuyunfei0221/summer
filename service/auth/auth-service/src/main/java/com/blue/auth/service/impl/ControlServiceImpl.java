@@ -21,8 +21,8 @@ import com.blue.base.model.common.Access;
 import com.blue.base.model.exps.BlueException;
 import com.blue.jwt.common.JwtProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.redis.common.BlueLeakyBucketRateLimiter;
-import com.blue.redisson.common.SynchronizedProcessor;
+import com.blue.redis.component.BlueLeakyBucketRateLimiter;
+import com.blue.redisson.component.SynchronizedProcessor;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -119,8 +119,7 @@ public class ControlServiceImpl implements ControlService {
                               RoleResRelationService roleResRelationService, CredentialService credentialService, CredentialHistoryService credentialHistoryService,
                               SecurityQuestionService securityQuestionService, MemberRoleRelationService memberRoleRelationService,
                               SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService,
-                              SynchronizedProcessor synchronizedProcessor, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
-                              Scheduler scheduler, ControlDeploy controlDeploy) {
+                              SynchronizedProcessor synchronizedProcessor, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter, ControlDeploy controlDeploy) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
@@ -137,7 +136,7 @@ public class ControlServiceImpl implements ControlService {
         this.systemAuthorityInfosRefreshProducer = systemAuthorityInfosRefreshProducer;
         this.executorService = executorService;
         this.synchronizedProcessor = synchronizedProcessor;
-        this.blueLeakyBucketRateLimiter = generateLeakyBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
+        this.blueLeakyBucketRateLimiter = blueLeakyBucketRateLimiter;
 
         ALLOW = controlDeploy.getAllow();
         SEND_INTERVAL_MILLIS = controlDeploy.getIntervalMillis();

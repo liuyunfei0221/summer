@@ -5,7 +5,7 @@ import com.blue.base.model.common.InvalidAuthEvent;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.event.producer.InvalidAuthProducer;

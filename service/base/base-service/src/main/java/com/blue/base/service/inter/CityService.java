@@ -51,7 +51,7 @@ public interface CityService {
      * @param cityId
      * @return
      */
-    int updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId);
+    Mono<Long> updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId);
 
     /**
      * get city by id

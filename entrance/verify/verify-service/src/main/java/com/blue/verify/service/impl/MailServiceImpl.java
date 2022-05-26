@@ -1,6 +1,6 @@
 package com.blue.verify.service.impl;
 
-import com.blue.mail.common.MailSender;
+import com.blue.mail.component.MailSender;
 import com.blue.verify.service.inter.MailService;
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
@@ -17,7 +17,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class MailServiceImpl implements MailService {
 

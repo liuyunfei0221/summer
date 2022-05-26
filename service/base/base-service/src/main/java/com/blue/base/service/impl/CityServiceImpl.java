@@ -13,8 +13,10 @@ import com.blue.base.service.inter.CityService;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
+import com.blue.mongo.component.CollectionGetter;
 import com.github.benmanes.caffeine.cache.Cache;
+import com.mongodb.client.model.UpdateOptions;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,9 @@ import static com.blue.base.converter.BaseModelConverters.CITIES_2_CITY_INFOS_CO
 import static com.blue.base.converter.BaseModelConverters.CITY_2_CITY_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -67,19 +72,22 @@ public class CityServiceImpl implements CityService {
 
     private CityRepository cityRepository;
 
+    private final CollectionGetter collectionGetter;
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public CityServiceImpl(BlueIdentityProcessor blueIdentityProcessor, StateService stateService, CountryService countryService,
-                           ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, CityRepository cityRepository) {
+                           ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy, CityRepository cityRepository, CollectionGetter collectionGetter) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.stateService = stateService;
         this.countryService = countryService;
         this.cityRepository = cityRepository;
+        this.collectionGetter = collectionGetter;
 
-        stateIdCitiesCache = generateCache(new CaffeineConfParams(
+        idCityCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
-        idCityCache = generateCache(new CaffeineConfParams(
+        stateIdCitiesCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
@@ -368,6 +376,12 @@ public class CityServiceImpl implements CityService {
                 });
     }
 
+    private static final String COUNTRY_ID_COLUMN_NAME = "countryId";
+    private static final String STATE_ID_COLUMN_NAME = "stateId";
+    private static final String CITY_ID_COLUMN_NAME = "cityId";
+
+    private static final UpdateOptions OPTIONS = new UpdateOptions().upsert(true);
+
     /**
      * a city's stateId was changed
      *
@@ -377,9 +391,25 @@ public class CityServiceImpl implements CityService {
      * @return
      */
     @Override
-    public int updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId) {
-        //TODO
-        return 0;
+    public Mono<Long> updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId) {
+        LOGGER.info("Mono<Long> updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId), countryId = {}, stateId = {}, cityId = {}",
+                countryId, stateId, cityId);
+        if (isInvalidIdentity(countryId) || isInvalidIdentity(stateId) || isInvalidIdentity(cityId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return collectionGetter.getCollectionReact(City.class)
+                .flatMap(collection ->
+                        from(collection.updateMany(eq(CITY_ID_COLUMN_NAME, cityId),
+                                combine(set(COUNTRY_ID_COLUMN_NAME, countryId),
+                                        set(STATE_ID_COLUMN_NAME, stateId)), OPTIONS)))
+                .flatMap(updateResult -> {
+                    long modifiedCount = updateResult.getModifiedCount();
+
+                    LOGGER.info("Mono<Long> updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId), matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
+                            countryId, stateId, updateResult.getMatchedCount(), modifiedCount, updateResult.wasAcknowledged());
+
+                    return just(modifiedCount);
+                });
     }
 
     /**

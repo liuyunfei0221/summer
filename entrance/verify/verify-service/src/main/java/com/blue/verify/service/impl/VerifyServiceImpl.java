@@ -3,14 +3,11 @@ package com.blue.verify.service.impl;
 import com.blue.base.constant.base.RandomType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
-import com.blue.redis.api.generator.BlueValidatorGenerator;
-import com.blue.redis.common.BlueValidator;
+import com.blue.redis.component.BlueValidator;
 import com.blue.verify.config.deploy.VerifyDeploy;
 import com.blue.verify.service.inter.VerifyService;
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.time.Duration;
@@ -30,7 +27,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "AlibabaAvoidComplexCondition"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "AlibabaAvoidComplexCondition", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class VerifyServiceImpl implements VerifyService {
 
@@ -46,8 +43,8 @@ public class VerifyServiceImpl implements VerifyService {
     private final Duration DEFAULT_DURATION;
     private final boolean DEFAULT_REPEATABLE;
 
-    public VerifyServiceImpl(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, VerifyDeploy verifyDeploy) {
-        this.blueValidator = BlueValidatorGenerator.generateValidator(reactiveStringRedisTemplate, scheduler);
+    public VerifyServiceImpl(BlueValidator blueValidator, VerifyDeploy verifyDeploy) {
+        this.blueValidator = blueValidator;
 
         if (isNull(verifyDeploy))
             throw new RuntimeException("verifyDeploy can't be null");

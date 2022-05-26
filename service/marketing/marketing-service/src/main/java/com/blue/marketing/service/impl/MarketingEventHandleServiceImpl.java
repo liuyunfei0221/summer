@@ -3,7 +3,7 @@ package com.blue.marketing.service.impl;
 import com.blue.base.constant.marketing.HandleStatus;
 import com.blue.base.constant.marketing.MarketingEventType;
 import com.blue.base.model.exps.BlueException;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.component.marketing.MarketingEventProcessor;
 import com.blue.marketing.repository.entity.EventRecord;
@@ -27,7 +27,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class MarketingEventHandleServiceImpl implements MarketingEventHandleService {
 

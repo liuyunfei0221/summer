@@ -14,7 +14,7 @@ import com.blue.base.service.inter.CityService;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
-import com.blue.identity.common.BlueIdentityProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;

@@ -1,6 +1,6 @@
 import com.blue.base.model.exps.BlueException;
 import com.blue.qr.api.generator.BlueQrCoderGenerator;
-import com.blue.qr.common.QrCoder;
+import com.blue.qr.component.QrCoder;
 
 import java.io.*;
 import java.util.concurrent.ArrayBlockingQueue;
