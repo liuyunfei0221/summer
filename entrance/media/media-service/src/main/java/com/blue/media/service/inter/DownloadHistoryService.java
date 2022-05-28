@@ -71,22 +71,22 @@ public interface DownloadHistoryService {
     Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId);
 
     /**
-     * select download history by page and condition
+     * select download history by page and query
      *
      * @param limit
      * @param rows
      * @param query
      * @return
      */
-    Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndCondition(Long limit, Long rows, Query query);
+    Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
-     * count download history by condition
+     * count download history by query
      *
      * @param query
      * @return
      */
-    Mono<Long> countDownloadHistoryMonoByCondition(Query query);
+    Mono<Long> countDownloadHistoryMonoByQuery(Query query);
 
     /**
      * select download history info page by condition

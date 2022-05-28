@@ -3,8 +3,11 @@ package com.blue.base.service.impl;
 import com.blue.base.api.model.StateInfo;
 import com.blue.base.api.model.StateRegion;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
+import com.blue.base.model.StateCondition;
 import com.blue.base.model.StateInsertParam;
 import com.blue.base.model.StateUpdateParam;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Area;
 import com.blue.base.repository.entity.City;
@@ -14,11 +17,12 @@ import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.identity.component.BlueIdentityProcessor;
-import com.blue.mongo.component.CollectionGetter;
 import com.github.benmanes.caffeine.cache.Cache;
-import com.mongodb.client.model.UpdateOptions;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -34,6 +38,7 @@ import java.util.function.Function;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.base.constant.ColumnName.COUNTRY_ID;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -42,15 +47,19 @@ import static com.blue.base.converter.BaseModelConverters.STATES_2_STATE_INFOS_C
 import static com.blue.base.converter.BaseModelConverters.STATE_2_STATE_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
+import static com.blue.mongo.constant.LikeElement.PREFIX;
+import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.mongodb.core.query.Criteria.byExample;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 import static reactor.core.publisher.Mono.*;
 
 /**
@@ -70,14 +79,14 @@ public class StateServiceImpl implements StateService {
 
     private StateRepository stateRepository;
 
-    private final CollectionGetter collectionGetter;
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
 
     public StateServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CountryService countryService, StateRepository stateRepository,
-                            ExecutorService executorService, CollectionGetter collectionGetter, AreaCaffeineDeploy areaCaffeineDeploy) {
+                            ExecutorService executorService, ReactiveMongoTemplate reactiveMongoTemplate, AreaCaffeineDeploy areaCaffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.countryService = countryService;
         this.stateRepository = stateRepository;
-        this.collectionGetter = collectionGetter;
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
 
         idStateCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
@@ -297,11 +306,27 @@ public class StateServiceImpl implements StateService {
         return alteration;
     };
 
-    private static final String COUNTRY_ID_COLUMN_NAME = "countryId";
-    private static final String STATE_ID_COLUMN_NAME = "stateId";
+    private static final String NAME_COLUMN_NAME = "name";
 
-    private static final UpdateOptions OPTIONS = new UpdateOptions().upsert(true);
+    private static final Function<StateCondition, Query> CONDITION_PROCESSOR = condition -> {
+        Query query = new Query();
 
+        if (condition == null)
+            return query;
+
+        State probe = new State();
+
+        ofNullable(condition.getId()).ifPresent(probe::setId);
+        ofNullable(condition.getCountryId()).ifPresent(probe::setCountryId);
+        ofNullable(condition.getStatus()).ifPresent(probe::setStatus);
+
+        query.addCriteria(byExample(probe));
+
+        ofNullable(condition.getNameLike()).ifPresent(nameLike ->
+                query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+
+        return query;
+    };
 
     /**
      * insert state
@@ -349,8 +374,12 @@ public class StateServiceImpl implements StateService {
 
                     Long destCountryId = stateUpdateParam.getCountryId();
                     if (!originalCountryId.equals(destCountryId)) {
-                        Long modifiedCount = updateCountryIdOfCityByStateId(destCountryId, state.getId()).toFuture().join();
-                        LOGGER.info("modifiedCount = {}", modifiedCount);
+                        Long stateId = state.getId();
+
+                        Long cityModifiedCount = updateCountryIdOfCityByStateId(destCountryId, stateId).toFuture().join();
+                        Long areayModifiedCount = updateCountryIdOfAreaByStateId(destCountryId, stateId).toFuture().join();
+
+                        LOGGER.info("cityModifiedCount = {}, areayModifiedCount = {}", cityModifiedCount, areayModifiedCount);
                     }
 
                     invalidCache();
@@ -404,10 +433,11 @@ public class StateServiceImpl implements StateService {
         if (isInvalidIdentity(countryId) || isInvalidIdentity(stateId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return collectionGetter.getCollectionReact(City.class)
-                .flatMap(collection ->
-                        from(collection.updateMany(eq(STATE_ID_COLUMN_NAME, stateId),
-                                combine(set(COUNTRY_ID_COLUMN_NAME, countryId)), OPTIONS)))
+        City probe = new City();
+        probe.setStateId(stateId);
+
+        return reactiveMongoTemplate.updateMulti(query(byExample(probe)), new Update()
+                        .set(COUNTRY_ID.name, countryId), City.class)
                 .flatMap(updateResult -> {
                     long modifiedCount = updateResult.getModifiedCount();
 
@@ -431,10 +461,11 @@ public class StateServiceImpl implements StateService {
         if (isInvalidIdentity(countryId) || isInvalidIdentity(stateId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return collectionGetter.getCollectionReact(Area.class)
-                .flatMap(collection ->
-                        from(collection.updateMany(eq(STATE_ID_COLUMN_NAME, stateId),
-                                combine(set(COUNTRY_ID_COLUMN_NAME, countryId)), OPTIONS)))
+        Area probe = new Area();
+        probe.setStateId(stateId);
+
+        return reactiveMongoTemplate.updateMulti(query(byExample(probe)), new Update()
+                        .set(COUNTRY_ID.name, countryId), Area.class)
                 .flatMap(updateResult -> {
                     long modifiedCount = updateResult.getModifiedCount();
 
@@ -623,6 +654,68 @@ public class StateServiceImpl implements StateService {
         countryIdStatesCache.invalidateAll();
         idStateCache.invalidateAll();
         idRegionCache.invalidateAll();
+    }
+
+    /**
+     * select state by limit and query
+     *
+     * @param limit
+     * @param rows
+     * @param query
+     * @return
+     */
+    @Override
+    public Mono<List<State>> selectStateMonoByLimitAndQuery(Long limit, Long rows, Query query) {
+        LOGGER.info("Mono<List<State>> selectStateMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
+                "limit = {}, rows = {}, query = {}", limit, rows, query);
+
+        if (limit == null || limit < 0 || rows == null || rows == 0)
+            throw new BlueException(INVALID_PARAM);
+
+        Query q = isNotNull(query) ? query : new Query();
+        q.skip(limit).limit(rows.intValue());
+
+        return reactiveMongoTemplate.find(q, State.class).collectList();
+    }
+
+    /**
+     * count state by query
+     *
+     * @param query
+     * @return
+     */
+    @Override
+    public Mono<Long> countStateMonoByQuery(Query query) {
+        LOGGER.info("Mono<Long> countStateMonoByQuery(Query query), query = {}", query);
+        return reactiveMongoTemplate.count(query, State.class);
+    }
+
+    /**
+     * select state info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    @Override
+    public Mono<PageModelResponse<StateInfo>> selectStatePageMonoByPageAndCondition(PageModelRequest<StateCondition> pageModelRequest) {
+        LOGGER.info("Mono<PageModelResponse<StateInfo>> selectStatePageMonoByPageAndCondition(PageModelRequest<StateCondition> pageModelRequest), " +
+                "pageModelRequest = {}", pageModelRequest);
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+
+        return zip(
+                selectStateMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countStateMonoByQuery(query)
+        ).flatMap(tuple2 -> {
+            List<State> states = tuple2.getT1();
+
+            return isNotEmpty(states) ?
+                    just(new PageModelResponse<>(STATES_2_STATE_INFOS_CONVERTER.apply(states), tuple2.getT2()))
+                    :
+                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+        });
     }
 
 }

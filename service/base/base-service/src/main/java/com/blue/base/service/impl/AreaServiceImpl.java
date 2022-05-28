@@ -21,6 +21,8 @@ import com.blue.identity.component.BlueIdentityProcessor;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -44,12 +46,18 @@ import static com.blue.base.converter.BaseModelConverters.AREAS_2_AREA_INFOS_CON
 import static com.blue.base.converter.BaseModelConverters.AREA_2_AREA_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static com.blue.mongo.constant.LikeElement.PREFIX;
+import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.mongodb.core.query.Criteria.byExample;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Mono.*;
 
 /**
@@ -73,13 +81,16 @@ public class AreaServiceImpl implements AreaService {
 
     private AreaRepository areaRepository;
 
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
+
     public AreaServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CityService cityService, StateService stateService, CountryService countryService,
-                           AreaRepository areaRepository, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy) {
+                           AreaRepository areaRepository, ReactiveMongoTemplate reactiveMongoTemplate, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.cityService = cityService;
         this.stateService = stateService;
         this.countryService = countryService;
         this.areaRepository = areaRepository;
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
 
         idAreaCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getAreaMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
@@ -298,6 +309,30 @@ public class AreaServiceImpl implements AreaService {
         }
 
         return alteration;
+    };
+
+    private static final String NAME_COLUMN_NAME = "name";
+
+    private static final Function<AreaCondition, Query> CONDITION_PROCESSOR = condition -> {
+        Query query = new Query();
+
+        if (condition == null)
+            return query;
+
+        Area probe = new Area();
+
+        ofNullable(condition.getId()).ifPresent(probe::setId);
+        ofNullable(condition.getCountryId()).ifPresent(probe::setCountryId);
+        ofNullable(condition.getStateId()).ifPresent(probe::setStateId);
+        ofNullable(condition.getCityId()).ifPresent(probe::setCityId);
+        ofNullable(condition.getStatus()).ifPresent(probe::setStatus);
+
+        query.addCriteria(byExample(probe));
+
+        ofNullable(condition.getNameLike()).ifPresent(nameLike ->
+                query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+
+        return query;
     };
 
     /**
@@ -561,30 +596,37 @@ public class AreaServiceImpl implements AreaService {
     }
 
     /**
-     * select area by limit and condition
+     * select area by limit and query
      *
      * @param limit
      * @param rows
-     * @param areaCondition
+     * @param query
      * @return
      */
     @Override
-    public Mono<List<Area>> selectAreaMonoByLimitAndCondition(Long limit, Long rows, AreaCondition areaCondition) {
+    public Mono<List<Area>> selectAreaMonoByLimitAndQuery(Long limit, Long rows, Query query) {
+        LOGGER.info("Mono<List<Area>> selectAreaMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
+                "limit = {}, rows = {}, query = {}", limit, rows, query);
 
+        if (limit == null || limit < 0 || rows == null || rows == 0)
+            throw new BlueException(INVALID_PARAM);
 
+        Query q = isNotNull(query) ? query : new Query();
+        q.skip(limit).limit(rows.intValue());
 
-        return null;
+        return reactiveMongoTemplate.find(q, Area.class).collectList();
     }
 
     /**
-     * count area by condition
+     * count area by query
      *
-     * @param areaCondition
+     * @param query
      * @return
      */
     @Override
-    public Mono<Long> countAreaMonoByCondition(AreaCondition areaCondition) {
-        return null;
+    public Mono<Long> countAreaMonoByQuery(Query query) {
+        LOGGER.info("Mono<Long> countAreaMonoByQuery(Query query), query = {}", query);
+        return reactiveMongoTemplate.count(query, Area.class);
     }
 
     /**
@@ -595,7 +637,24 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<PageModelResponse<AreaInfo>> selectAreaPageMonoByPageAndCondition(PageModelRequest<AreaCondition> pageModelRequest) {
-        return null;
+        LOGGER.info("Mono<PageModelResponse<AreaInfo>> selectAreaPageMonoByPageAndCondition(PageModelRequest<AreaCondition> pageModelRequest), " +
+                "pageModelRequest = {}", pageModelRequest);
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+
+        return zip(
+                selectAreaMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countAreaMonoByQuery(query)
+        ).flatMap(tuple2 -> {
+            List<Area> areas = tuple2.getT1();
+
+            return isNotEmpty(areas) ?
+                    just(new PageModelResponse<>(AREAS_2_AREA_INFOS_CONVERTER.apply(areas), tuple2.getT2()))
+                    :
+                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+        });
     }
 
 }

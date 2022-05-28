@@ -1,9 +1,13 @@
 package com.blue.base.service.inter;
 
 import com.blue.base.api.model.CountryInfo;
+import com.blue.base.model.CountryCondition;
 import com.blue.base.model.CountryInsertParam;
 import com.blue.base.model.CountryUpdateParam;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.repository.entity.Country;
+import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -129,5 +133,31 @@ public interface CountryService {
      * @return
      */
     void invalidCountryInfosCache();
+
+    /**
+     * select country by limit and query
+     *
+     * @param limit
+     * @param rows
+     * @param query
+     * @return
+     */
+    Mono<List<Country>> selectCountryMonoByLimitAndQuery(Long limit, Long rows, Query query);
+
+    /**
+     * count country by query
+     *
+     * @param query
+     * @return
+     */
+    Mono<Long> countCountryMonoByQuery(Query query);
+
+    /**
+     * select country info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    Mono<PageModelResponse<CountryInfo>> selectCountryPageMonoByPageAndCondition(PageModelRequest<CountryCondition> pageModelRequest);
 
 }

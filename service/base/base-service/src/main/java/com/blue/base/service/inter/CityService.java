@@ -2,9 +2,13 @@ package com.blue.base.service.inter;
 
 import com.blue.base.api.model.CityInfo;
 import com.blue.base.api.model.CityRegion;
+import com.blue.base.model.CityCondition;
 import com.blue.base.model.CityInsertParam;
 import com.blue.base.model.CityUpdateParam;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.repository.entity.City;
+import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -176,5 +180,31 @@ public interface CityService {
      * @return
      */
     void invalidCityInfosCache();
+
+    /**
+     * select city by limit and query
+     *
+     * @param limit
+     * @param rows
+     * @param query
+     * @return
+     */
+    Mono<List<City>> selectCityMonoByLimitAndQuery(Long limit, Long rows, Query query);
+
+    /**
+     * count city by query
+     *
+     * @param query
+     * @return
+     */
+    Mono<Long> countCityMonoByQuery(Query query);
+
+    /**
+     * select city info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    Mono<PageModelResponse<CityInfo>> selectCityPageMonoByPageAndCondition(PageModelRequest<CityCondition> pageModelRequest);
 
 }

@@ -38,7 +38,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.domain.Sort.unsorted;
-import static org.springframework.data.mongodb.core.query.Query.query;
+import static org.springframework.data.mongodb.core.query.Criteria.byExample;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
@@ -48,7 +49,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
@@ -90,27 +91,29 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
 
     private static final Function<DownloadHistoryCondition, Query> CONDITION_PROCESSOR = condition -> {
+        Query query = new Query();
+
         if (condition == null)
-            return query(new Criteria());
+            return query;
 
-        DownloadHistory ex = new DownloadHistory();
+        DownloadHistory probe = new DownloadHistory();
 
-        ofNullable(condition.getId()).ifPresent(ex::setId);
-        ofNullable(condition.getAttachmentId()).ifPresent(ex::setAttachmentId);
-        ofNullable(condition.getCreator()).ifPresent(ex::setCreator);
+        ofNullable(condition.getId()).ifPresent(probe::setId);
+        ofNullable(condition.getAttachmentId()).ifPresent(probe::setAttachmentId);
+        ofNullable(condition.getCreator()).ifPresent(probe::setCreator);
 
-        Criteria criteria = Criteria.byExample(ex);
+        Criteria criteria = byExample(probe);
 
         ofNullable(condition.getCreateTimeBegin())
-                .ifPresent(ctb -> criteria.andOperator(Criteria.where("createTime").gte(ctb)));
+                .ifPresent(ctb -> criteria.andOperator(where("createTime").gte(ctb)));
         ofNullable(condition.getCreateTimeEnd())
-                .ifPresent(cte -> criteria.andOperator(Criteria.where("createTime").lte(cte)));
+                .ifPresent(cte -> criteria.andOperator(where("createTime").lte(cte)));
 
-        Query query = query(criteria);
+        query.addCriteria(criteria);
 
         query.with(SORTER_CONVERTER.apply(condition));
 
-        return query(criteria);
+        return query;
     };
 
     /**
@@ -229,7 +232,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     }
 
     /**
-     * select download history by page and condition
+     * select download history by page and query
      *
      * @param limit
      * @param rows
@@ -237,21 +240,28 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
      * @return
      */
     @Override
-    public Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndCondition(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndCondition(Long limit, Long rows, Query query), " +
+    public Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndQuery(Long limit, Long rows, Query query) {
+        LOGGER.info("Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
                 "limit = {}, rows = {}, query = {}", limit, rows, query);
-        return reactiveMongoTemplate.find(query, DownloadHistory.class).collectList();
+
+        if (limit == null || limit < 0 || rows == null || rows == 0)
+            throw new BlueException(INVALID_PARAM);
+
+        Query q = isNotNull(query) ? query : new Query();
+        q.skip(limit).limit(rows.intValue());
+
+        return reactiveMongoTemplate.find(q, DownloadHistory.class).collectList();
     }
 
     /**
-     * count download history by condition
+     * count download history by query
      *
      * @param query
      * @return
      */
     @Override
-    public Mono<Long> countDownloadHistoryMonoByCondition(Query query) {
-        LOGGER.info("Mono<Long> countDownloadHistoryMonoByCondition(Query query), query = {}", query);
+    public Mono<Long> countDownloadHistoryMonoByQuery(Query query) {
+        LOGGER.info("Mono<Long> countDownloadHistoryMonoByQuery(Query query), query = {}", query);
         return reactiveMongoTemplate.count(query, DownloadHistory.class);
     }
 
@@ -271,8 +281,8 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
         return zip(
-                selectDownloadHistoryMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
-                countDownloadHistoryMonoByCondition(query)
+                selectDownloadHistoryMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countDownloadHistoryMonoByQuery(query)
         ).flatMap(tuple2 -> {
             List<DownloadHistory> downloadHistories = tuple2.getT1();
 

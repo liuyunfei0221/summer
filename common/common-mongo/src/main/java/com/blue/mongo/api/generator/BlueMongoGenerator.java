@@ -3,7 +3,6 @@ package com.blue.mongo.api.generator;
 import com.blue.base.model.exps.BlueException;
 import com.blue.mongo.api.conf.AddressAttr;
 import com.blue.mongo.api.conf.MongoConf;
-import com.blue.mongo.component.CollectionGetter;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -128,20 +127,6 @@ public final class BlueMongoGenerator {
         confAsserter(mongoConf);
 
         return new ReactiveMongoTemplate(mongoClient, mongoConf.getDatabase());
-    }
-
-    /**
-     * generate collection getter
-     *
-     * @param reactiveMongoTemplate
-     * @return
-     */
-    public static CollectionGetter generateCollectionGetter(ReactiveMongoTemplate reactiveMongoTemplate) {
-        LOGGER.info("generateCollectionGetter(ReactiveMongoTemplate reactiveMongoTemplate), reactiveMongoTemplate = {}", reactiveMongoTemplate);
-        if (isNull(reactiveMongoTemplate))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveMongoTemplate can't be null");
-
-        return new CollectionGetter(reactiveMongoTemplate);
     }
 
     /**

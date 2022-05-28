@@ -2,9 +2,13 @@ package com.blue.base.service.inter;
 
 import com.blue.base.api.model.StateInfo;
 import com.blue.base.api.model.StateRegion;
+import com.blue.base.model.StateCondition;
 import com.blue.base.model.StateInsertParam;
 import com.blue.base.model.StateUpdateParam;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.repository.entity.State;
+import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -184,5 +188,31 @@ public interface StateService {
      * @return
      */
     void invalidStateInfosCache();
+
+    /**
+     * select state by limit and query
+     *
+     * @param limit
+     * @param rows
+     * @param query
+     * @return
+     */
+    Mono<List<State>> selectStateMonoByLimitAndQuery(Long limit, Long rows, Query query);
+
+    /**
+     * count state by query
+     *
+     * @param query
+     * @return
+     */
+    Mono<Long> countStateMonoByQuery(Query query);
+
+    /**
+     * select state info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    Mono<PageModelResponse<StateInfo>> selectStatePageMonoByPageAndCondition(PageModelRequest<StateCondition> pageModelRequest);
 
 }

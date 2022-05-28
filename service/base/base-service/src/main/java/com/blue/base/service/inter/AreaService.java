@@ -8,6 +8,7 @@ import com.blue.base.model.AreaUpdateParam;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.repository.entity.Area;
+import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -171,22 +172,22 @@ public interface AreaService {
     void invalidAreaInfosCache();
 
     /**
-     * select area by limit and condition
+     * select area by limit and query
      *
      * @param limit
      * @param rows
-     * @param areaCondition
+     * @param query
      * @return
      */
-    Mono<List<Area>> selectAreaMonoByLimitAndCondition(Long limit, Long rows, AreaCondition areaCondition);
+    Mono<List<Area>> selectAreaMonoByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
-     * count area by condition
+     * count area by query
      *
-     * @param areaCondition
+     * @param query
      * @return
      */
-    Mono<Long> countAreaMonoByCondition(AreaCondition areaCondition);
+    Mono<Long> countAreaMonoByQuery(Query query);
 
     /**
      * select area info page by condition

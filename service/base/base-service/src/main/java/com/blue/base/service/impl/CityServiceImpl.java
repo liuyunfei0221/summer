@@ -3,9 +3,13 @@ package com.blue.base.service.impl;
 import com.blue.base.api.model.CityInfo;
 import com.blue.base.api.model.CityRegion;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
+import com.blue.base.model.CityCondition;
 import com.blue.base.model.CityInsertParam;
 import com.blue.base.model.CityUpdateParam;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
+import com.blue.base.repository.entity.Area;
 import com.blue.base.repository.entity.City;
 import com.blue.base.repository.entity.State;
 import com.blue.base.repository.template.CityRepository;
@@ -14,11 +18,12 @@ import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.identity.component.BlueIdentityProcessor;
-import com.blue.mongo.component.CollectionGetter;
 import com.github.benmanes.caffeine.cache.Cache;
-import com.mongodb.client.model.UpdateOptions;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -34,6 +39,8 @@ import java.util.function.Function;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.base.constant.ColumnName.COUNTRY_ID;
+import static com.blue.base.constant.ColumnName.STATE_ID;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -42,15 +49,19 @@ import static com.blue.base.converter.BaseModelConverters.CITIES_2_CITY_INFOS_CO
 import static com.blue.base.converter.BaseModelConverters.CITY_2_CITY_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
+import static com.blue.mongo.constant.LikeElement.PREFIX;
+import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.mongodb.core.query.Criteria.byExample;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
 import static reactor.core.publisher.Mono.*;
 
 /**
@@ -72,16 +83,16 @@ public class CityServiceImpl implements CityService {
 
     private CityRepository cityRepository;
 
-    private final CollectionGetter collectionGetter;
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
 
     public CityServiceImpl(BlueIdentityProcessor blueIdentityProcessor, StateService stateService, CountryService countryService,
-                           CityRepository cityRepository, CollectionGetter collectionGetter,
+                           CityRepository cityRepository, ReactiveMongoTemplate reactiveMongoTemplate,
                            ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.stateService = stateService;
         this.countryService = countryService;
         this.cityRepository = cityRepository;
-        this.collectionGetter = collectionGetter;
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
 
         idCityCache = generateCache(new CaffeineConfParams(
                 areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
@@ -297,11 +308,28 @@ public class CityServiceImpl implements CityService {
         return alteration;
     };
 
-    private static final String COUNTRY_ID_COLUMN_NAME = "countryId";
-    private static final String STATE_ID_COLUMN_NAME = "stateId";
-    private static final String CITY_ID_COLUMN_NAME = "cityId";
+    private static final String NAME_COLUMN_NAME = "name";
 
-    private static final UpdateOptions OPTIONS = new UpdateOptions().upsert(true);
+    private static final Function<CityCondition, Query> CONDITION_PROCESSOR = condition -> {
+        Query query = new Query();
+
+        if (condition == null)
+            return query;
+
+        City probe = new City();
+
+        ofNullable(condition.getId()).ifPresent(probe::setId);
+        ofNullable(condition.getCountryId()).ifPresent(probe::setCountryId);
+        ofNullable(condition.getStateId()).ifPresent(probe::setStateId);
+        ofNullable(condition.getStatus()).ifPresent(probe::setStatus);
+
+        query.addCriteria(byExample(probe));
+
+        ofNullable(condition.getNameLike()).ifPresent(nameLike ->
+                query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+
+        return query;
+    };
 
     /**
      * insert city
@@ -409,11 +437,11 @@ public class CityServiceImpl implements CityService {
         if (isInvalidIdentity(countryId) || isInvalidIdentity(stateId) || isInvalidIdentity(cityId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return collectionGetter.getCollectionReact(City.class)
-                .flatMap(collection ->
-                        from(collection.updateMany(eq(CITY_ID_COLUMN_NAME, cityId),
-                                combine(set(COUNTRY_ID_COLUMN_NAME, countryId),
-                                        set(STATE_ID_COLUMN_NAME, stateId)), OPTIONS)))
+        Area probe = new Area();
+        probe.setCityId(cityId);
+
+        return reactiveMongoTemplate.updateMulti(query(byExample(probe)), new Update()
+                        .set(COUNTRY_ID.name, countryId).set(STATE_ID.name, stateId), Area.class)
                 .flatMap(updateResult -> {
                     long modifiedCount = updateResult.getModifiedCount();
 
@@ -603,6 +631,68 @@ public class CityServiceImpl implements CityService {
         stateIdCitiesCache.invalidateAll();
         idCityCache.invalidateAll();
         idRegionCache.invalidateAll();
+    }
+
+    /**
+     * select city by limit and query
+     *
+     * @param limit
+     * @param rows
+     * @param query
+     * @return
+     */
+    @Override
+    public Mono<List<City>> selectCityMonoByLimitAndQuery(Long limit, Long rows, Query query) {
+        LOGGER.info("Mono<List<City>> selectCityMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
+                "limit = {}, rows = {}, query = {}", limit, rows, query);
+
+        if (limit == null || limit < 0 || rows == null || rows == 0)
+            throw new BlueException(INVALID_PARAM);
+
+        Query q = isNotNull(query) ? query : new Query();
+        q.skip(limit).limit(rows.intValue());
+
+        return reactiveMongoTemplate.find(q, City.class).collectList();
+    }
+
+    /**
+     * count city by query
+     *
+     * @param query
+     * @return
+     */
+    @Override
+    public Mono<Long> countCityMonoByQuery(Query query) {
+        LOGGER.info("Mono<Long> countCityMonoByQuery(Query query), query = {}", query);
+        return reactiveMongoTemplate.count(query, City.class);
+    }
+
+    /**
+     * select city info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    @Override
+    public Mono<PageModelResponse<CityInfo>> selectCityPageMonoByPageAndCondition(PageModelRequest<CityCondition> pageModelRequest) {
+        LOGGER.info("Mono<PageModelResponse<CityInfo>> selectCityPageMonoByPageAndCondition(PageModelRequest<CityCondition> pageModelRequest), " +
+                "pageModelRequest = {}", pageModelRequest);
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+
+        return zip(
+                selectCityMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countCityMonoByQuery(query)
+        ).flatMap(tuple2 -> {
+            List<City> cities = tuple2.getT1();
+
+            return isNotEmpty(cities) ?
+                    just(new PageModelResponse<>(CITIES_2_CITY_INFOS_CONVERTER.apply(cities), tuple2.getT2()))
+                    :
+                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+        });
     }
 
 }

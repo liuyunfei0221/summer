@@ -5,18 +5,18 @@ import com.blue.shine.api.model.ShineInfo;
 import com.blue.shine.repository.entity.Shine;
 import com.blue.shine.repository.template.ShineRepository;
 import com.blue.shine.service.inter.ShineService;
-import com.mongodb.client.result.UpdateResult;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -70,23 +70,16 @@ public class ShineServiceImpl implements ShineService {
     public Mono<List<ShineInfo>> selectShineInfo(String ip) {
         LOGGER.warn("ip = {}", ip);
 
-//        String contentLike = "ten";
-//
-//        Query query = new Query(Criteria.where("content").regex(".*?\\" + contentLike + ".*"));
-//
-//        Flux<Shine> shineFlux = reactiveMongoTemplate.find(query, Shine.class);
-//        List<Shine> shineList = shineFlux.collectList().toFuture().join();
-//        System.err.println(shineList);
+        String contentLike = "ten";
+        Pattern pattern = Pattern.compile("^.*" + contentLike + ".*$", Pattern.CASE_INSENSITIVE);
+        Query query = new Query();
+        query.addCriteria(Criteria.where("content").regex(pattern));
 
-        Query query = Query.query(Criteria.where("content").is("R"));
+        query.skip(5).limit(3);
 
-        Update update = Update.update("order", 99999);
-
-        Mono<UpdateResult> updateResultMono = reactiveMongoTemplate.updateMulti(query, update, Shine.class);
-        UpdateResult updateResult = updateResultMono.toFuture().join();
-
-        System.err.println(updateResult);
-        System.err.println(updateResult.getModifiedCount());
+        Flux<Shine> shineFlux = reactiveMongoTemplate.find(query, Shine.class);
+        List<Shine> shineList = shineFlux.collectList().toFuture().join();
+        System.err.println(shineList);
 
         return shineRepository.findAll()
                 .take(3)

@@ -11,7 +11,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * package sort attr
  *
- * @author DarkBlue
+ * @author liuyunfei
  */
 public enum SortSchema {
 

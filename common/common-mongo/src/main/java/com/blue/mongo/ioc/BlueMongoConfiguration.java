@@ -1,7 +1,6 @@
 package com.blue.mongo.ioc;
 
 import com.blue.mongo.api.conf.MongoConf;
-import com.blue.mongo.component.CollectionGetter;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.reactivestreams.client.MongoClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -34,11 +33,6 @@ public class BlueMongoConfiguration {
     @Bean
     ReactiveMongoTemplate reactiveMongoTemplate(MongoClient mongoClient, MongoConf mongoConf) {
         return generateReactiveMongoTemplate(mongoClient, mongoConf);
-    }
-
-    @Bean
-    CollectionGetter collectionGetter(ReactiveMongoTemplate reactiveMongoTemplate) {
-        return generateCollectionGetter(reactiveMongoTemplate);
     }
 
 }

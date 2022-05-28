@@ -3,14 +3,14 @@ package com.blue.base.model;
 import java.io.Serializable;
 
 /**
- * area condition for select
+ * city condition for select
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class AreaCondition implements Serializable {
+public final class CityCondition implements Serializable {
 
-    private static final long serialVersionUID = 2966321684062786198L;
+    private static final long serialVersionUID = 6565138545340327590L;
 
     private Long id;
 
@@ -18,20 +18,17 @@ public final class AreaCondition implements Serializable {
 
     private Long stateId;
 
-    private Long cityId;
-
     private String nameLike;
 
     private Integer status;
 
-    public AreaCondition() {
+    public CityCondition() {
     }
 
-    public AreaCondition(Long id, Long countryId, Long stateId, Long cityId, String nameLike, Integer status) {
+    public CityCondition(Long id, Long countryId, Long stateId, String nameLike, Integer status) {
         this.id = id;
         this.countryId = countryId;
         this.stateId = stateId;
-        this.cityId = cityId;
         this.nameLike = nameLike;
         this.status = status;
     }
@@ -60,14 +57,6 @@ public final class AreaCondition implements Serializable {
         this.stateId = stateId;
     }
 
-    public Long getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(Long cityId) {
-        this.cityId = cityId;
-    }
-
     public String getNameLike() {
         return nameLike;
     }
@@ -86,11 +75,10 @@ public final class AreaCondition implements Serializable {
 
     @Override
     public String toString() {
-        return "AreaCondition{" +
+        return "CityCondition{" +
                 "id=" + id +
                 ", countryId=" + countryId +
                 ", stateId=" + stateId +
-                ", cityId=" + cityId +
                 ", nameLike='" + nameLike + '\'' +
                 ", status=" + status +
                 '}';

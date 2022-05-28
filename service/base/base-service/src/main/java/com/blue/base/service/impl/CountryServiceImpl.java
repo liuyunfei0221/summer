@@ -2,8 +2,11 @@ package com.blue.base.service.impl;
 
 import com.blue.base.api.model.CountryInfo;
 import com.blue.base.config.deploy.AreaCaffeineDeploy;
+import com.blue.base.model.CountryCondition;
 import com.blue.base.model.CountryInsertParam;
 import com.blue.base.model.CountryUpdateParam;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Country;
 import com.blue.base.repository.template.CountryRepository;
@@ -13,6 +16,7 @@ import com.blue.identity.component.BlueIdentityProcessor;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -37,12 +41,18 @@ import static com.blue.base.converter.BaseModelConverters.COUNTRIES_2_COUNTRY_IN
 import static com.blue.base.converter.BaseModelConverters.COUNTRY_2_COUNTRY_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static com.blue.mongo.constant.LikeElement.PREFIX;
+import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.mongodb.core.query.Criteria.byExample;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.just;
 
@@ -284,6 +294,26 @@ public class CountryServiceImpl implements CountryService {
         return alteration;
     };
 
+    private static final String NAME_COLUMN_NAME = "name";
+
+    private static final Function<CountryCondition, Query> CONDITION_PROCESSOR = condition -> {
+        Query query = new Query();
+
+        if (condition == null)
+            return query;
+
+        Country probe = new Country();
+
+        ofNullable(condition.getId()).ifPresent(probe::setId);
+        ofNullable(condition.getStatus()).ifPresent(probe::setStatus);
+
+        query.addCriteria(byExample(probe));
+
+        ofNullable(condition.getNameLike()).ifPresent(nameLike ->
+                query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+
+        return query;
+    };
 
     /**
      * insert country
@@ -485,6 +515,41 @@ public class CountryServiceImpl implements CountryService {
     public void invalidCountryInfosCache() {
         allCountriesCache.invalidateAll();
         idCountryCache.invalidateAll();
+    }
+
+    /**
+     * select country by limit and query
+     *
+     * @param limit
+     * @param rows
+     * @param query
+     * @return
+     */
+    @Override
+    public Mono<List<Country>> selectCountryMonoByLimitAndQuery(Long limit, Long rows, Query query) {
+        return null;
+    }
+
+    /**
+     * count country by query
+     *
+     * @param query
+     * @return
+     */
+    @Override
+    public Mono<Long> countCountryMonoByQuery(Query query) {
+        return null;
+    }
+
+    /**
+     * select country info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    @Override
+    public Mono<PageModelResponse<CountryInfo>> selectCountryPageMonoByPageAndCondition(PageModelRequest<CountryCondition> pageModelRequest) {
+        return null;
     }
 
 }
