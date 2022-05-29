@@ -16,6 +16,7 @@ import com.blue.identity.component.BlueIdentityProcessor;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -53,8 +54,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static reactor.core.publisher.Mono.defer;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * country service impl
@@ -71,9 +71,12 @@ public class CountryServiceImpl implements CountryService {
 
     private CountryRepository countryRepository;
 
-    public CountryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CountryRepository countryRepository,
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
+
+    public CountryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CountryRepository countryRepository, ReactiveMongoTemplate reactiveMongoTemplate,
                               ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.countryRepository = countryRepository;
 
         idCountryCache = generateCache(new CaffeineConfParams(
@@ -295,6 +298,14 @@ public class CountryServiceImpl implements CountryService {
     };
 
     private static final String NAME_COLUMN_NAME = "name";
+    private static final String NATIVE_NAME_COLUMN_NAME = "nativeName";
+    private static final String NUMERIC_CODE_COLUMN_NAME = "numericCode";
+    private static final String COUNTRY_CODE_COLUMN_NAME = "countryCode";
+    private static final String PHONE_CODE_COLUMN_NAME = "phoneCode";
+    private static final String CAPITAL_COLUMN_NAME = "capital";
+    private static final String TOP_LEVEL_DOMAIN_COLUMN_NAME = "topLevelDomain";
+    private static final String REGION_COLUMN_NAME = "region";
+
 
     private static final Function<CountryCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
@@ -305,12 +316,28 @@ public class CountryServiceImpl implements CountryService {
         Country probe = new Country();
 
         ofNullable(condition.getId()).ifPresent(probe::setId);
+        ofNullable(condition.getCurrency()).ifPresent(probe::setCurrency);
+        ofNullable(condition.getCurrencySymbol()).ifPresent(probe::setCurrencySymbol);
         ofNullable(condition.getStatus()).ifPresent(probe::setStatus);
 
         query.addCriteria(byExample(probe));
 
         ofNullable(condition.getNameLike()).ifPresent(nameLike ->
                 query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+        ofNullable(condition.getNativeNameLike()).ifPresent(nativeNameLike ->
+                query.addCriteria(where(NATIVE_NAME_COLUMN_NAME).regex(compile(PREFIX.element + nativeNameLike + SUFFIX.element, CASE_INSENSITIVE))));
+        ofNullable(condition.getNumericCodeLike()).ifPresent(numericCodeLike ->
+                query.addCriteria(where(NUMERIC_CODE_COLUMN_NAME).regex(compile(PREFIX.element + numericCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
+        ofNullable(condition.getCountryCodeLike()).ifPresent(countryCodeLike ->
+                query.addCriteria(where(COUNTRY_CODE_COLUMN_NAME).regex(compile(PREFIX.element + countryCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
+        ofNullable(condition.getPhoneCodeLike()).ifPresent(phoneCodeLike ->
+                query.addCriteria(where(PHONE_CODE_COLUMN_NAME).regex(compile(PREFIX.element + phoneCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
+        ofNullable(condition.getCapitalLike()).ifPresent(capitalLike ->
+                query.addCriteria(where(CAPITAL_COLUMN_NAME).regex(compile(PREFIX.element + capitalLike + SUFFIX.element, CASE_INSENSITIVE))));
+        ofNullable(condition.getTopLevelDomainLike()).ifPresent(topLevelDomainLike ->
+                query.addCriteria(where(TOP_LEVEL_DOMAIN_COLUMN_NAME).regex(compile(PREFIX.element + topLevelDomainLike + SUFFIX.element, CASE_INSENSITIVE))));
+        ofNullable(condition.getRegionLike()).ifPresent(regionLike ->
+                query.addCriteria(where(REGION_COLUMN_NAME).regex(compile(PREFIX.element + regionLike + SUFFIX.element, CASE_INSENSITIVE))));
 
         return query;
     };
@@ -527,7 +554,16 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<List<Country>> selectCountryMonoByLimitAndQuery(Long limit, Long rows, Query query) {
-        return null;
+        LOGGER.info("Mono<List<Country>> selectCountryMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
+                "limit = {}, rows = {}, query = {}", limit, rows, query);
+
+        if (limit == null || limit < 0 || rows == null || rows == 0)
+            throw new BlueException(INVALID_PARAM);
+
+        Query q = isNotNull(query) ? query : new Query();
+        q.skip(limit).limit(rows.intValue());
+
+        return reactiveMongoTemplate.find(q, Country.class).collectList();
     }
 
     /**
@@ -538,7 +574,8 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<Long> countCountryMonoByQuery(Query query) {
-        return null;
+        LOGGER.info("Mono<Long> countCountryMonoByQuery(Query query), query = {}", query);
+        return reactiveMongoTemplate.count(query, Country.class);
     }
 
     /**
@@ -549,7 +586,24 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<PageModelResponse<CountryInfo>> selectCountryPageMonoByPageAndCondition(PageModelRequest<CountryCondition> pageModelRequest) {
-        return null;
+        LOGGER.info("Mono<PageModelResponse<CountryInfo>> selectCountryPageMonoByPageAndCondition(PageModelRequest<CountryCondition> pageModelRequest), " +
+                "pageModelRequest = {}", pageModelRequest);
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+
+        return zip(
+                selectCountryMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countCountryMonoByQuery(query)
+        ).flatMap(tuple2 -> {
+            List<Country> countries = tuple2.getT1();
+
+            return isNotEmpty(countries) ?
+                    just(new PageModelResponse<>(COUNTRIES_2_COUNTRY_INFOS_CONVERTER.apply(countries), tuple2.getT2()))
+                    :
+                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+        });
     }
 
 }
