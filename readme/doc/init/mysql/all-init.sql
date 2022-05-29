@@ -306,6 +306,7 @@ INSERT INTO `auth`.`resource`(`id`, `request_method`, `module`, `uri`, `authenti
                               `type`, `name`, `description`, `create_time`, `update_time`,
                               `creator`, `updater`)
 
+
 -- base api
 
 VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 1,
@@ -328,11 +329,45 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'query dict types', 'query dict types', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (100010, 'GET', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'test get endpoint', 'test get endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (100011, 'POST', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
-        'test post endpoint', 'test post endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- base manage
+
+       (110001, 'POST', 'blue-base', '/manager/countries', b'1', b'1', b'1', b'1', b'1', 2,
+        'country list', 'country list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110002, 'POST', 'blue-base', '/manager/country', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert country', 'insert country', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110003, 'PUT', 'blue-base', '/manager/country', b'1', b'1', b'1', b'1', b'1', 2,
+        'update country', 'update country', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110004, 'DELETE', 'blue-base', '/manager/country/{id}', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete country', 'delete country', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
+       (110005, 'POST', 'blue-base', '/manager/states', b'1', b'1', b'1', b'1', b'1', 2,
+        'state list', 'state list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110006, 'POST', 'blue-base', '/manager/state', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert state', 'insert state', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110007, 'PUT', 'blue-base', '/manager/state', b'1', b'1', b'1', b'1', b'1', 2,
+        'update state', 'update state', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110008, 'DELETE', 'blue-base', '/manager/state/{id}', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete state', 'delete state', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
+       (110009, 'POST', 'blue-base', '/manager/cities', b'1', b'1', b'1', b'1', b'1', 2,
+        'city list', 'city list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110010, 'POST', 'blue-base', '/manager/city', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert city', 'insert city', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110011, 'PUT', 'blue-base', '/manager/city', b'1', b'1', b'1', b'1', b'1', 2,
+        'update city', 'update city', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110012, 'DELETE', 'blue-base', '/manager/city/{id}', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete city', 'delete city', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
+       (110013, 'POST', 'blue-base', '/manager/areas', b'1', b'1', b'1', b'1', b'1', 2,
+        'area list', 'area list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110014, 'POST', 'blue-base', '/manager/area', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert area', 'insert area', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110015, 'PUT', 'blue-base', '/manager/area', b'1', b'1', b'1', b'1', b'1', 2,
+        'update area', 'update area', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110016, 'DELETE', 'blue-base', '/manager/area/{id}', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete area', 'delete area', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- verify api
@@ -2054,7 +2089,6 @@ CREATE TABLE `style`
     UNIQUE KEY `idx_name`(`name`) USING BTREE,
     KEY           `idx_type_active_create`(`type`,`is_active`,`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of style';
-
 
 
 -- portal0

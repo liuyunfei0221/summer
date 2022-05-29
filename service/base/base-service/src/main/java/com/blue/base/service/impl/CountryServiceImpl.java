@@ -598,7 +598,6 @@ public class CountryServiceImpl implements CountryService {
                 countCountryMonoByQuery(query)
         ).flatMap(tuple2 -> {
             List<Country> countries = tuple2.getT1();
-
             return isNotEmpty(countries) ?
                     just(new PageModelResponse<>(COUNTRIES_2_COUNTRY_INFOS_CONVERTER.apply(countries), tuple2.getT2()))
                     :
