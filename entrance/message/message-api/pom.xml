@@ -4,24 +4,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <artifactId>summer</artifactId>
+        <artifactId>message</artifactId>
         <groupId>com.blue</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>entrance</artifactId>
+    <artifactId>message-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>entrance</name>
-    <description>entrance</description>
+    <name>message-api</name>
+    <description>message-api</description>
 
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <modules>
-        <module>gateway</module>
-        <module>media</module>
-        <module>message</module>
-        <module>verify</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.blue</groupId>
+            <artifactId>common-base</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>
