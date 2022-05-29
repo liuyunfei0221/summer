@@ -16,9 +16,23 @@ public final class CountryInfo implements Serializable {
 
     private String name;
 
+    private String nativeName;
+
+    private String numericCode;
+
     private String countryCode;
 
     private String phoneCode;
+
+    private String capital;
+
+    private String currency;
+
+    private String currencySymbol;
+
+    private String topLevelDomain;
+
+    private String region;
 
     private String emoji;
 
@@ -27,11 +41,20 @@ public final class CountryInfo implements Serializable {
     public CountryInfo() {
     }
 
-    public CountryInfo(Long id, String name, String countryCode, String phoneCode, String emoji, String emojiu) {
+    public CountryInfo(Long id, String name, String nativeName, String numericCode, String countryCode, String phoneCode,
+                       String capital, String currency, String currencySymbol, String topLevelDomain, String region,
+                       String emoji, String emojiu) {
         this.id = id;
         this.name = name;
+        this.nativeName = nativeName;
+        this.numericCode = numericCode;
         this.countryCode = countryCode;
         this.phoneCode = phoneCode;
+        this.capital = capital;
+        this.currency = currency;
+        this.currencySymbol = currencySymbol;
+        this.topLevelDomain = topLevelDomain;
+        this.region = region;
         this.emoji = emoji;
         this.emojiu = emojiu;
     }
@@ -52,6 +75,22 @@ public final class CountryInfo implements Serializable {
         this.name = name;
     }
 
+    public String getNativeName() {
+        return nativeName;
+    }
+
+    public void setNativeName(String nativeName) {
+        this.nativeName = nativeName;
+    }
+
+    public String getNumericCode() {
+        return numericCode;
+    }
+
+    public void setNumericCode(String numericCode) {
+        this.numericCode = numericCode;
+    }
+
     public String getCountryCode() {
         return countryCode;
     }
@@ -66,6 +105,46 @@ public final class CountryInfo implements Serializable {
 
     public void setPhoneCode(String phoneCode) {
         this.phoneCode = phoneCode;
+    }
+
+    public String getCapital() {
+        return capital;
+    }
+
+    public void setCapital(String capital) {
+        this.capital = capital;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public String getCurrencySymbol() {
+        return currencySymbol;
+    }
+
+    public void setCurrencySymbol(String currencySymbol) {
+        this.currencySymbol = currencySymbol;
+    }
+
+    public String getTopLevelDomain() {
+        return topLevelDomain;
+    }
+
+    public void setTopLevelDomain(String topLevelDomain) {
+        this.topLevelDomain = topLevelDomain;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     public String getEmoji() {
@@ -89,8 +168,15 @@ public final class CountryInfo implements Serializable {
         return "CountryInfo{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", nativeName='" + nativeName + '\'' +
+                ", numericCode='" + numericCode + '\'' +
                 ", countryCode='" + countryCode + '\'' +
                 ", phoneCode='" + phoneCode + '\'' +
+                ", capital='" + capital + '\'' +
+                ", currency='" + currency + '\'' +
+                ", currencySymbol='" + currencySymbol + '\'' +
+                ", topLevelDomain='" + topLevelDomain + '\'' +
+                ", region='" + region + '\'' +
                 ", emoji='" + emoji + '\'' +
                 ", emojiu='" + emojiu + '\'' +
                 '}';

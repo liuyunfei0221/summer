@@ -247,10 +247,10 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 
-        Query q = isNotNull(query) ? query : new Query();
-        q.skip(limit).limit(rows.intValue());
+        Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
+        listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(q, DownloadHistory.class).collectList();
+        return reactiveMongoTemplate.find(listQuery, DownloadHistory.class).collectList();
     }
 
     /**

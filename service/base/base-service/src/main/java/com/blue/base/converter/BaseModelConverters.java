@@ -28,7 +28,9 @@ public final class BaseModelConverters {
         if (isNull(country))
             throw new BlueException(EMPTY_PARAM);
 
-        return new CountryInfo(country.getId(), country.getName(), country.getCountryCode(), country.getPhoneCode(), country.getEmoji(), country.getEmojiu());
+        return new CountryInfo(country.getId(), country.getName(), country.getNativeName(), country.getNumericCode(), country.getCountryCode(),
+                country.getPhoneCode(), country.getCapital(), country.getCurrency(), country.getCurrencySymbol(), country.getTopLevelDomain(),
+                country.getRegion(), country.getEmoji(), country.getEmojiu());
     };
 
     /**

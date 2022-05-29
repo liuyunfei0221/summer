@@ -8,6 +8,16 @@ package com.blue.base.constant;
 public enum ColumnName {
 
     /**
+     * ID
+     */
+    ID("id"),
+
+    /**
+     * NAME
+     */
+    NAME("name"),
+
+    /**
      * country id
      */
     COUNTRY_ID("countryId"),

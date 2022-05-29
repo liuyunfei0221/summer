@@ -38,7 +38,7 @@ import java.util.function.Function;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.ColumnName.COUNTRY_ID;
+import static com.blue.base.constant.ColumnName.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -57,6 +57,7 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.domain.Sort.by;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -67,7 +68,7 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection", "DuplicatedCode"})
 @Service
 public class StateServiceImpl implements StateService {
 
@@ -115,8 +116,7 @@ public class StateServiceImpl implements StateService {
                     .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
     private final Function<Long, List<StateInfo>> DB_STATES_BY_COUNTRY_ID_GETTER = cid ->
-            STATES_2_STATE_INFOS_CONVERTER.apply(
-                    this.selectStateByCountryId(cid).stream().sorted(Comparator.comparing(State::getName)).collect(toList()));
+            STATES_2_STATE_INFOS_CONVERTER.apply(this.selectStateByCountryId(cid));
 
     private final Function<Long, Optional<StateInfo>> STATE_OPT_BY_ID_GETTER = id ->
             ofNullable(idStateCache.get(id, DB_STATE_GETTER));
@@ -325,6 +325,8 @@ public class StateServiceImpl implements StateService {
         ofNullable(condition.getNameLike()).ifPresent(nameLike ->
                 query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
 
+        query.with(by(Sort.Order.asc(NAME.name)));
+
         return query;
     };
 
@@ -501,7 +503,7 @@ public class StateServiceImpl implements StateService {
         State probe = new State();
         probe.setCountryId(countryId);
 
-        return stateRepository.findAll(Example.of(probe), Sort.by(Sort.Order.asc("name")))
+        return stateRepository.findAll(Example.of(probe), by(Sort.Order.asc(NAME.name)))
                 .collectList().toFuture().join();
     }
 
@@ -672,10 +674,10 @@ public class StateServiceImpl implements StateService {
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 
-        Query q = isNotNull(query) ? query : new Query();
-        q.skip(limit).limit(rows.intValue());
+        Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
+        listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(q, State.class).collectList();
+        return reactiveMongoTemplate.find(listQuery, State.class).collectList();
     }
 
     /**

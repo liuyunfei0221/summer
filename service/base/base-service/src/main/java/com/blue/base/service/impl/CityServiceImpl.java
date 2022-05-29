@@ -39,8 +39,7 @@ import java.util.function.Function;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.ColumnName.COUNTRY_ID;
-import static com.blue.base.constant.ColumnName.STATE_ID;
+import static com.blue.base.constant.ColumnName.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -59,6 +58,7 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.domain.Sort.by;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -69,7 +69,7 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection", "DuplicatedCode"})
 @Service
 public class CityServiceImpl implements CityService {
 
@@ -121,8 +121,7 @@ public class CityServiceImpl implements CityService {
                     .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
     private final Function<Long, List<CityInfo>> DB_CITIES_BY_STATE_ID_GETTER = sid ->
-            CITIES_2_CITY_INFOS_CONVERTER.apply(
-                    this.selectCityByStateId(sid).stream().sorted(Comparator.comparing(City::getName)).collect(toList()));
+            CITIES_2_CITY_INFOS_CONVERTER.apply(this.selectCityByStateId(sid));
 
     private final Function<Long, Optional<CityInfo>> CITY_OPT_BY_ID_GETTER = id ->
             ofNullable(idCityCache.get(id, DB_CITY_GETTER));
@@ -328,6 +327,8 @@ public class CityServiceImpl implements CityService {
         ofNullable(condition.getNameLike()).ifPresent(nameLike ->
                 query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
 
+        query.with(by(Sort.Order.asc(NAME.name)));
+
         return query;
     };
 
@@ -477,7 +478,7 @@ public class CityServiceImpl implements CityService {
         City probe = new City();
         probe.setStateId(stateId);
 
-        return cityRepository.findAll(Example.of(probe), Sort.by(Sort.Order.asc("name")))
+        return cityRepository.findAll(Example.of(probe), by(Sort.Order.asc(NAME.name)))
                 .collectList().toFuture().join();
     }
 
@@ -649,10 +650,10 @@ public class CityServiceImpl implements CityService {
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 
-        Query q = isNotNull(query) ? query : new Query();
-        q.skip(limit).limit(rows.intValue());
+        Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
+        listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(q, City.class).collectList();
+        return reactiveMongoTemplate.find(listQuery, City.class).collectList();
     }
 
     /**

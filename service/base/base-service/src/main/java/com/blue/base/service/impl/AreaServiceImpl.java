@@ -38,6 +38,7 @@ import java.util.function.Function;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.base.constant.ColumnName.NAME;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -56,6 +57,7 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.domain.Sort.by;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Mono.*;
@@ -65,7 +67,7 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection", "DuplicatedCode"})
 @Service
 public class AreaServiceImpl implements AreaService {
 
@@ -119,8 +121,7 @@ public class AreaServiceImpl implements AreaService {
                     .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
     private final Function<Long, List<AreaInfo>> DB_AREAS_BY_CITY_ID_GETTER = cid ->
-            AREAS_2_AREA_INFOS_CONVERTER.apply(
-                    this.selectAreaByCityId(cid).stream().sorted(Comparator.comparing(Area::getName)).collect(toList()));
+            AREAS_2_AREA_INFOS_CONVERTER.apply(this.selectAreaByCityId(cid));
 
     private final Function<Long, Optional<AreaInfo>> AREA_OPT_BY_ID_GETTER = id ->
             ofNullable(idAreaCache.get(id, DB_AREA_GETTER));
@@ -332,6 +333,8 @@ public class AreaServiceImpl implements AreaService {
         ofNullable(condition.getNameLike()).ifPresent(nameLike ->
                 query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
 
+        query.with(by(Sort.Order.asc(NAME.name)));
+
         return query;
     };
 
@@ -439,7 +442,7 @@ public class AreaServiceImpl implements AreaService {
         Area probe = new Area();
         probe.setCityId(cityId);
 
-        return areaRepository.findAll(Example.of(probe), Sort.by(Sort.Order.asc("name")))
+        return areaRepository.findAll(Example.of(probe), by(Sort.Order.asc(NAME.name)))
                 .collectList().toFuture().join();
     }
 
@@ -611,10 +614,10 @@ public class AreaServiceImpl implements AreaService {
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 
-        Query q = isNotNull(query) ? query : new Query();
-        q.skip(limit).limit(rows.intValue());
+        Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
+        listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(q, Area.class).collectList();
+        return reactiveMongoTemplate.find(listQuery, Area.class).collectList();
     }
 
     /**
