@@ -587,18 +587,6 @@ public class AreaServiceImpl implements AreaService {
     }
 
     /**
-     * invalid area info
-     *
-     * @return
-     */
-    @Override
-    public void invalidAreaInfosCache() {
-        cityIdAreasCache.invalidateAll();
-        idAreaCache.invalidateAll();
-        idRegionCache.invalidateAll();
-    }
-
-    /**
      * select area by limit and query
      *
      * @param limit

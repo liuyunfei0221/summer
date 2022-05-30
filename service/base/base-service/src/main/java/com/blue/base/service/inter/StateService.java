@@ -183,13 +183,6 @@ public interface StateService {
     Mono<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids);
 
     /**
-     * invalid state info
-     *
-     * @return
-     */
-    void invalidStateInfosCache();
-
-    /**
      * select state by limit and query
      *
      * @param limit

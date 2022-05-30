@@ -175,13 +175,6 @@ public interface CityService {
     Mono<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids);
 
     /**
-     * invalid city info
-     *
-     * @return
-     */
-    void invalidCityInfosCache();
-
-    /**
      * select city by limit and query
      *
      * @param limit

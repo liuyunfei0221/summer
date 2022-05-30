@@ -405,7 +405,19 @@ public class CityServiceImpl implements CityService {
         if (isNull(city))
             throw new BlueException(DATA_NOT_EXIST);
 
-        return cityRepository.delete(city)
+        Area probe = new Area();
+        probe.setCityId(id);
+
+        Query query = new Query();
+        query.addCriteria(byExample(probe));
+
+        return reactiveMongoTemplate.count(query, Area.class)
+                .flatMap(areaCount ->
+                        areaCount <= 0L ?
+                                cityRepository.delete(city)
+                                :
+                                error(new BlueException(REGION_DATA_STILL_USED))
+                )
                 .then(just(CITY_2_CITY_INFO_CONVERTER.apply(city)))
                 .doOnSuccess(ci -> {
                     LOGGER.info("ci = {}", ci);
@@ -620,18 +632,6 @@ public class CityServiceImpl implements CityService {
     @Override
     public Mono<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids) {
         return just(CITY_REGIONS_GETTER.apply(ids));
-    }
-
-    /**
-     * invalid city info
-     *
-     * @return
-     */
-    @Override
-    public void invalidCityInfosCache() {
-        stateIdCitiesCache.invalidateAll();
-        idCityCache.invalidateAll();
-        idRegionCache.invalidateAll();
     }
 
     /**

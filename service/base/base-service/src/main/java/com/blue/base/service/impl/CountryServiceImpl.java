@@ -9,6 +9,7 @@ import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.Country;
+import com.blue.base.repository.entity.State;
 import com.blue.base.repository.template.CountryRepository;
 import com.blue.base.service.inter.CountryService;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
@@ -406,7 +407,19 @@ public class CountryServiceImpl implements CountryService {
         if (isNull(country))
             throw new BlueException(DATA_NOT_EXIST);
 
-        return countryRepository.delete(country)
+        State probe = new State();
+        probe.setCountryId(id);
+
+        Query query = new Query();
+        query.addCriteria(byExample(probe));
+
+        return reactiveMongoTemplate.count(query, State.class)
+                .flatMap(stateCount ->
+                        stateCount <= 0L ?
+                                countryRepository.delete(country)
+                                :
+                                error(new BlueException(REGION_DATA_STILL_USED))
+                )
                 .then(just(COUNTRY_2_COUNTRY_INFO_CONVERTER.apply(country)))
                 .doOnSuccess(ci -> {
                     LOGGER.info("ci = {}", ci);
@@ -534,17 +547,6 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public Mono<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids) {
         return just(CACHE_COUNTRIES_BY_IDS_GETTER.apply(ids));
-    }
-
-    /**
-     * invalid country info
-     *
-     * @return
-     */
-    @Override
-    public void invalidCountryInfosCache() {
-        allCountriesCache.invalidateAll();
-        idCountryCache.invalidateAll();
     }
 
     /**

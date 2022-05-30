@@ -43,8 +43,7 @@ import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
-import static com.blue.base.converter.BaseModelConverters.STATES_2_STATE_INFOS_CONVERTER;
-import static com.blue.base.converter.BaseModelConverters.STATE_2_STATE_INFO_CONVERTER;
+import static com.blue.base.converter.BaseModelConverters.*;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
@@ -404,7 +403,19 @@ public class StateServiceImpl implements StateService {
         if (isNull(state))
             throw new BlueException(DATA_NOT_EXIST);
 
-        return stateRepository.delete(state)
+        City probe = new City();
+        probe.setStateId(id);
+
+        Query query = new Query();
+        query.addCriteria(byExample(probe));
+
+        return reactiveMongoTemplate.count(query, City.class)
+                .flatMap(cityCount ->
+                        cityCount <= 0L ?
+                                stateRepository.delete(state)
+                                :
+                                error(new BlueException(REGION_DATA_STILL_USED))
+                )
                 .then(just(STATE_2_STATE_INFO_CONVERTER.apply(state)))
                 .doOnSuccess(si -> {
                     LOGGER.info("si = {}", si);
@@ -644,18 +655,6 @@ public class StateServiceImpl implements StateService {
     @Override
     public Mono<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids) {
         return just(STATE_REGIONS_GETTER.apply(ids));
-    }
-
-    /**
-     * invalid state info
-     *
-     * @return
-     */
-    @Override
-    public void invalidStateInfosCache() {
-        countryIdStatesCache.invalidateAll();
-        idStateCache.invalidateAll();
-        idRegionCache.invalidateAll();
     }
 
     /**

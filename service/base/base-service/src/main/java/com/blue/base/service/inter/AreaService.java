@@ -165,13 +165,6 @@ public interface AreaService {
     Mono<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids);
 
     /**
-     * invalid area info
-     *
-     * @return
-     */
-    void invalidAreaInfosCache();
-
-    /**
      * select area by limit and query
      *
      * @param limit

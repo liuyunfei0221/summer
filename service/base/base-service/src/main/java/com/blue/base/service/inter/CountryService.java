@@ -128,13 +128,6 @@ public interface CountryService {
     Mono<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids);
 
     /**
-     * invalid country info
-     *
-     * @return
-     */
-    void invalidCountryInfosCache();
-
-    /**
      * select country by limit and query
      *
      * @param limit
