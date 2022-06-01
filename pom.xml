@@ -37,7 +37,7 @@
         <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
         <spring-dubbo.version>3.0.8</spring-dubbo.version>
         <zkclient.version>0.11</zkclient.version>
-        <seata-spring.version>1.5.1</seata-spring.version>
+        <seata-spring.version>1.4.2</seata-spring.version>
         <spring-mybatis.version>2.2.2</spring-mybatis.version>
         <groovy.version>3.0.10</groovy.version>
         <apache.curator.version>5.2.1</apache.curator.version>
