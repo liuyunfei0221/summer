@@ -1,10 +1,10 @@
 package com.blue.auth.remote.provider;
 
-import com.blue.auth.api.inter.RpcControlService;
+import com.blue.auth.api.inter.RpcAuthControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.api.model.MemberRoleRelationParam;
-import com.blue.auth.service.inter.ControlService;
+import com.blue.auth.service.inter.AuthControlService;
 import com.blue.base.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
@@ -18,30 +18,30 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * rpc control provider
+ * rpc auth control provider
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
-@DubboService(interfaceClass = RpcControlService.class,
+@DubboService(interfaceClass = RpcAuthControlService.class,
         version = "1.0",
         methods = {
                 @Method(name = "initMemberAuthInfo", async = false, timeout = 60000, retries = 0),
-                @Method(name = "updateAuthorityByMemberSync", async = false, timeout = 60000, retries = 1),
+                @Method(name = "updateAuthorityByMemberSync", async = false, timeout = 60000, retries = 0),
                 @Method(name = "refreshMemberRoleById", async = false),
                 @Method(name = "getAuthorityByAccess", async = true),
                 @Method(name = "getAuthorityByMemberId", async = true)
         })
-public class RpcControlServiceProvider implements RpcControlService {
+public class RpcAuthControlServiceProvider implements RpcAuthControlService {
 
-    private static final Logger LOGGER = getLogger(RpcControlServiceProvider.class);
+    private static final Logger LOGGER = getLogger(RpcAuthControlServiceProvider.class);
 
-    private final ControlService controlService;
+    private final AuthControlService authControlService;
 
     private final Scheduler scheduler;
 
-    public RpcControlServiceProvider(ControlService controlService, Scheduler scheduler) {
-        this.controlService = controlService;
+    public RpcAuthControlServiceProvider(AuthControlService authControlService, Scheduler scheduler) {
+        this.authControlService = authControlService;
         this.scheduler = scheduler;
     }
 
@@ -53,7 +53,7 @@ public class RpcControlServiceProvider implements RpcControlService {
     @Override
     public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo) {
         LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
-        controlService.initMemberAuthInfo(memberCredentialInfo);
+        authControlService.initMemberAuthInfo(memberCredentialInfo);
     }
 
     /**
@@ -65,7 +65,7 @@ public class RpcControlServiceProvider implements RpcControlService {
     @Override
     public AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
         LOGGER.info("AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam), memberRoleRelationParam = {}", memberRoleRelationParam);
-        return controlService.updateAuthorityByMemberSync(memberRoleRelationParam);
+        return authControlService.updateAuthorityByMemberSync(memberRoleRelationParam);
     }
 
     /**
@@ -79,7 +79,7 @@ public class RpcControlServiceProvider implements RpcControlService {
     @Override
     public CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
-        return controlService.refreshMemberRoleById(memberId, roleId, operatorId).subscribeOn(scheduler).toFuture();
+        return authControlService.refreshMemberRoleById(memberId, roleId, operatorId).subscribeOn(scheduler).toFuture();
     }
 
     /**
@@ -91,7 +91,7 @@ public class RpcControlServiceProvider implements RpcControlService {
     @Override
     public CompletableFuture<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByAccess(Access access), access = {}", access);
-        return just(access).subscribeOn(scheduler).flatMap(controlService::getAuthorityMonoByAccess).toFuture();
+        return just(access).subscribeOn(scheduler).flatMap(authControlService::getAuthorityMonoByAccess).toFuture();
     }
 
     /**
@@ -103,7 +103,7 @@ public class RpcControlServiceProvider implements RpcControlService {
     @Override
     public CompletableFuture<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("CompletableFuture<Authority> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
-        return just(memberId).subscribeOn(scheduler).flatMap(controlService::getAuthorityMonoByMemberId).toFuture();
+        return just(memberId).subscribeOn(scheduler).flatMap(authControlService::getAuthorityMonoByMemberId).toFuture();
     }
 
 }

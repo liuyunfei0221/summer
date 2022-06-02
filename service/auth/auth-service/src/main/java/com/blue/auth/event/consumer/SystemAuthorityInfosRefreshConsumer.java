@@ -1,7 +1,7 @@
 package com.blue.auth.event.consumer;
 
 import com.blue.auth.config.blue.BlueConsumerConfig;
-import com.blue.auth.service.inter.ControlService;
+import com.blue.auth.service.inter.AuthControlService;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.model.common.EmptyEvent;
 import com.blue.pulsar.common.BluePulsarConsumer;
@@ -28,13 +28,13 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final ControlService controlService;
+    private final AuthControlService authControlService;
 
     private BluePulsarConsumer<EmptyEvent> systemAuthorityInfosRefreshConsumer;
 
-    public SystemAuthorityInfosRefreshConsumer(BlueConsumerConfig blueConsumerConfig, ControlService controlService) {
+    public SystemAuthorityInfosRefreshConsumer(BlueConsumerConfig blueConsumerConfig, AuthControlService authControlService) {
         this.blueConsumerConfig = blueConsumerConfig;
-        this.controlService = controlService;
+        this.authControlService = authControlService;
     }
 
     @PostConstruct
@@ -43,7 +43,7 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
                 ofNullable(emptyEvent)
                         .ifPresent(ee -> {
                             LOGGER.info("systemAuthorityInfosRefreshDataConsumer received");
-                            controlService.refreshSystemAuthorityInfos()
+                            authControlService.refreshSystemAuthorityInfos()
                                     .doOnError(throwable -> LOGGER.info("controlService.refreshSystemAuthorityInfos() failed, throwable = {}", throwable))
                                     .subscribe(v -> LOGGER.info("controlService.refreshSystemAuthorityInfos()"));
                         });

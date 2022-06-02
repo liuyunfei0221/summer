@@ -1,7 +1,7 @@
 package com.blue.auth.handler.api;
 
 import com.blue.auth.model.*;
-import com.blue.auth.service.inter.ControlService;
+import com.blue.auth.service.inter.AuthControlService;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.stereotype.Component;
@@ -29,10 +29,10 @@ import static reactor.core.publisher.Mono.*;
 @Component
 public final class AuthApiHandler {
 
-    private final ControlService controlService;
+    private final AuthControlService authControlService;
 
-    public AuthApiHandler(ControlService controlService) {
-        this.controlService = controlService;
+    public AuthApiHandler(AuthControlService authControlService) {
+        this.authControlService = authControlService;
     }
 
     /**
@@ -42,7 +42,7 @@ public final class AuthApiHandler {
      * @return
      */
     public Mono<ServerResponse> login(ServerRequest serverRequest) {
-        return controlService.login(serverRequest);
+        return authControlService.login(serverRequest);
     }
 
     /**
@@ -53,7 +53,7 @@ public final class AuthApiHandler {
      */
     public Mono<ServerResponse> refreshAccess(ServerRequest serverRequest) {
         return getAuthorizationReact(serverRequest)
-                .flatMap(controlService::refreshAccess)
+                .flatMap(authControlService::refreshAccess)
                 .flatMap(ma ->
                         ok().contentType(APPLICATION_JSON)
                                 .header(AUTHORIZATION.name, ma.getAuth())
@@ -72,7 +72,7 @@ public final class AuthApiHandler {
     public Mono<ServerResponse> updateSecret(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        controlService.updateSecKeyByAccess(acc)
+                        authControlService.updateSecKeyByAccess(acc)
                                 .flatMap(secKey ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(SECRET.name, secKey)
@@ -89,7 +89,7 @@ public final class AuthApiHandler {
     public Mono<ServerResponse> logout(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        controlService.invalidateAuthByAccess(acc)
+                        authControlService.invalidateAuthByAccess(acc)
                                 .flatMap(success ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(AUTHORIZATION.name, "")
@@ -106,7 +106,7 @@ public final class AuthApiHandler {
     public Mono<ServerResponse> logoutEverywhere(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        controlService.invalidateAuthByMemberId(acc.getId())
+                        authControlService.invalidateAuthByMemberId(acc.getId())
                                 .flatMap(success ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(AUTHORIZATION.name, "")
@@ -125,7 +125,7 @@ public final class AuthApiHandler {
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
-                        controlService.updateAccessByAccess(tuple2.getT1(), tuple2.getT2()))
+                        authControlService.updateAccessByAccess(tuple2.getT1(), tuple2.getT2()))
                 .flatMap(ig ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, serverRequest), BlueResponse.class));
@@ -140,7 +140,7 @@ public final class AuthApiHandler {
     public Mono<ServerResponse> resetAccess(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(AccessResetParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(controlService::resetAccessByAccess)
+                .flatMap(authControlService::resetAccessByAccess)
                 .flatMap(ig ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, serverRequest), BlueResponse.class));
@@ -157,7 +157,7 @@ public final class AuthApiHandler {
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
-                        just(controlService.credentialSettingUp(tuple2.getT1(), tuple2.getT2())))
+                        just(authControlService.credentialSettingUp(tuple2.getT1(), tuple2.getT2())))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
@@ -174,7 +174,7 @@ public final class AuthApiHandler {
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
-                        just(controlService.credentialModify(tuple2.getT1(), tuple2.getT2())))
+                        just(authControlService.credentialModify(tuple2.getT1(), tuple2.getT2())))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
@@ -190,7 +190,7 @@ public final class AuthApiHandler {
         return zip(serverRequest.bodyToMono(SecurityQuestionInsertParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.insertSecurityQuestion(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.insertSecurityQuestion(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ig ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, serverRequest), BlueResponse.class));
@@ -206,7 +206,7 @@ public final class AuthApiHandler {
         return zip(serverRequest.bodyToMono(LIST_PARAM_FOR_QUESTION_INSERT_PARAM_TYPE)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.insertSecurityQuestions(tuple2.getT1().getData(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.insertSecurityQuestions(tuple2.getT1().getData(), tuple2.getT2().getId()))
                 .flatMap(ig ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, serverRequest), BlueResponse.class));
@@ -221,7 +221,7 @@ public final class AuthApiHandler {
     public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        controlService.getAuthorityMonoByAccess(acc)
+                        authControlService.getAuthorityMonoByAccess(acc)
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(generate(OK.code, authority, serverRequest)

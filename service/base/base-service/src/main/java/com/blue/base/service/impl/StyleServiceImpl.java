@@ -25,13 +25,13 @@ import com.blue.redisson.component.SynchronizedProcessor;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.function.*;
@@ -51,11 +51,14 @@ import static com.blue.base.constant.base.SyncKeyPrefix.STYLES_CACHE_PRE;
 import static com.blue.base.converter.BaseModelConverters.*;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
 
@@ -90,10 +93,10 @@ public class StyleServiceImpl implements StyleService {
         this.stringRedisTemplate = stringRedisTemplate;
         this.synchronizedProcessor = synchronizedProcessor;
 
-        this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), ChronoUnit.SECONDS);
+        this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(
-                caffeineDeploy.getStyleMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
+                caffeineDeploy.getStyleMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);
@@ -112,7 +115,7 @@ public class StyleServiceImpl implements StyleService {
     private final Consumer<Integer> REDIS_CACHE_DELETER = type ->
             stringRedisTemplate.delete(STYLE_CACHE_KEY_GENERATOR.apply(type));
 
-    private final Consumer<Integer> ALL_CACHE_DELETER = type -> {
+    private final Consumer<Integer> CACHE_DELETER = type -> {
         REDIS_CACHE_DELETER.accept(type);
         LOCAL_CACHE.invalidate(type);
     };
@@ -124,7 +127,7 @@ public class StyleServiceImpl implements StyleService {
         LOGGER.info("ACTIVE_STYLE_INFO_DB_GETTER, activeStyles = {}, type = {}", activeStyles, type);
 
         if (isEmpty(activeStyles))
-            activeStyles = singletonList(new Style());
+            throw new BlueException(DATA_NOT_EXIST);
 
         if (activeStyles.size() > 1)
             LOGGER.error("active style by type more than 1, type = {}", type);
@@ -182,7 +185,6 @@ public class StyleServiceImpl implements StyleService {
 
         return new ArrayList<>(operatorIds);
     };
-
 
     /**
      * is a style exist?
@@ -265,6 +267,7 @@ public class StyleServiceImpl implements StyleService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public StyleInfo insertStyle(StyleInsertParam styleInsertParam, Long operatorId) {
         LOGGER.info("StyleInfo insertStyle(StyleInsertParam styleInsertParam, Long operatorId), styleInsertParam = {}, operatorId = {}",
                 styleInsertParam, operatorId);
@@ -280,7 +283,7 @@ public class StyleServiceImpl implements StyleService {
         style.setUpdater(operatorId);
 
         styleMapper.insert(style);
-        ALL_CACHE_DELETER.accept(style.getType());
+        CACHE_DELETER.accept(style.getType());
 
         return STYLE_2_STYLE_INFO_CONVERTER.apply(style);
     }
@@ -293,6 +296,7 @@ public class StyleServiceImpl implements StyleService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public StyleInfo updateStyle(StyleUpdateParam styleUpdateParam, Long operatorId) {
         LOGGER.info("StyleInfo updateStyle(StyleUpdateParam styleUpdateParam, Long operatorId), styleUpdateParam = {}, operatorId = {}",
                 styleUpdateParam, operatorId);
@@ -310,7 +314,7 @@ public class StyleServiceImpl implements StyleService {
         changedTypes.add(style.getType());
 
         styleMapper.updateByPrimaryKeySelective(style);
-        changedTypes.forEach(ALL_CACHE_DELETER);
+        changedTypes.forEach(CACHE_DELETER);
 
         return STYLE_2_STYLE_INFO_CONVERTER.apply(style);
     }
@@ -322,6 +326,7 @@ public class StyleServiceImpl implements StyleService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public StyleInfo deleteStyle(Long id) {
         LOGGER.info("BulletinInfo deleteBulletinById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
@@ -330,9 +335,11 @@ public class StyleServiceImpl implements StyleService {
         Style style = styleMapper.selectByPrimaryKey(id);
         if (isNull(style))
             throw new BlueException(DATA_NOT_EXIST);
+        if (style.getIsActive())
+            throw new BlueException(STYLE_STILL_ACTIVE);
 
         styleMapper.deleteByPrimaryKey(id);
-        ALL_CACHE_DELETER.accept(style.getType());
+        CACHE_DELETER.accept(style.getType());
 
         return STYLE_2_STYLE_INFO_CONVERTER.apply(style);
     }
@@ -345,6 +352,7 @@ public class StyleServiceImpl implements StyleService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public StyleManagerInfo updateActiveStyle(Long id, Long operatorId) {
         LOGGER.info("void updateDefaultRole(Long id), id = {}", id);
         if (isInvalidIdentity(id) || isInvalidIdentity(operatorId))
@@ -357,8 +365,8 @@ public class StyleServiceImpl implements StyleService {
         Integer type = newActiveStyle.getType();
 
         Style oldActiveStyle = ACTIVE_STYLE_DB_GETTER.apply(type);
-        if (newActiveStyle.getId().equals(oldActiveStyle.getId()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "style is already actived");
+        if (isNotNull(oldActiveStyle) && newActiveStyle.getId().equals(oldActiveStyle.getId()))
+            throw new BlueException(STYLE_ALREADY_ACTIVE);
 
         Long stamp = TIME_STAMP_GETTER.get();
 
@@ -370,10 +378,10 @@ public class StyleServiceImpl implements StyleService {
         oldActiveStyle.setUpdater(operatorId);
         oldActiveStyle.setUpdateTime(stamp);
 
-        ALL_CACHE_DELETER.accept(type);
+        CACHE_DELETER.accept(type);
         styleMapper.updateByPrimaryKey(newActiveStyle);
         styleMapper.updateByPrimaryKey(oldActiveStyle);
-        ALL_CACHE_DELETER.accept(type);
+        CACHE_DELETER.accept(type);
 
         Map<Long, String> idAndNameMapping;
         try {
@@ -397,7 +405,7 @@ public class StyleServiceImpl implements StyleService {
     public void invalidStyleInfosCache() {
         of(StyleType.values())
                 .forEach(type ->
-                        ALL_CACHE_DELETER.accept(type.identity));
+                        CACHE_DELETER.accept(type.identity));
     }
 
     /**

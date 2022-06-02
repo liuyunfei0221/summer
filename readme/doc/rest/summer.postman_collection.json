@@ -227,6 +227,32 @@
 					"response": []
 				},
 				{
+					"name": "根据类型获取样式",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-base/style/1",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-base",
+								"style",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "测试区域",
 					"request": {
 						"method": "GET",
@@ -846,6 +872,179 @@
 								"manager",
 								"area",
 								"37606074366296065"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台样式列表查询",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMzhiZWE3ODRlMWU0YWU0NGFjNmQyZmRlY2NlNGM0ZDAxZTg3Yjg4ZjQ5OGEyMWMxNDg1YTViMDAwYTAxNmRjMDYzNjUwZjQ5NGQxNjdhM2M1ODBjZDQ5MWQxMTdjNjdkZjIwZDkxMmY0NjhlNWU0NTMwZmU5NzZhYTkzYmVjZDMiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDE4OTc5NyIsIm5iZiI6MTY1NDE4OTc5NywidCI6IldNOEV5VmhLZThQIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4MDA1MDE5OTE5Nzc3NzkzX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYxOTY1Nzk3NzM2LCJpIjoiMzgwMDUwMTk5MTk3Nzc3OTMiLCJleHAiOjE2NjE5NjU3OTcsImlhdCI6MTY1NDE4OTc5NywianRpIjoiczJJbGNaa2VCR20xc2duWDgwWTZsR1FzRE1UdXhJeEQiLCJuIjoiUFZBUiJ9.KSrmVJzQYTnW5GbpZLUtupSwMq3bvHm6NoFrW1tpNYZt73rV8pQ0yr-ejg79c4nbKKabWag_tVyjYSjv9ewLkQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"isActive\":null,\r\n        \"type\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-base/manager/styles",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-base",
+								"manager",
+								"styles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台添加样式",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMzhiZWE3ODRlMWU0YWU0NGFjNmQyZmRlY2NlNGM0ZDAxZTg3Yjg4ZjQ5OGEyMWMxNDg1YTViMDAwYTAxNmRjMDYzNjUwZjQ5NGQxNjdhM2M1ODBjZDQ5MWQxMTdjNjdkZjIwZDkxMmY0NjhlNWU0NTMwZmU5NzZhYTkzYmVjZDMiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDE4OTc5NyIsIm5iZiI6MTY1NDE4OTc5NywidCI6IldNOEV5VmhLZThQIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4MDA1MDE5OTE5Nzc3NzkzX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYxOTY1Nzk3NzM2LCJpIjoiMzgwMDUwMTk5MTk3Nzc3OTMiLCJleHAiOjE2NjE5NjU3OTcsImlhdCI6MTY1NDE4OTc5NywianRpIjoiczJJbGNaa2VCR20xc2duWDgwWTZsR1FzRE1UdXhJeEQiLCJuIjoiUFZBUiJ9.KSrmVJzQYTnW5GbpZLUtupSwMq3bvHm6NoFrW1tpNYZt73rV8pQ0yr-ejg79c4nbKKabWag_tVyjYSjv9ewLkQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"blue style\",\r\n    \"attributes\":\"blue attributes\",\r\n    \"type\":1\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-base/manager/style",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-base",
+								"manager",
+								"style"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台修改样式",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMzhiZWE3ODRlMWU0YWU0NGFjNmQyZmRlY2NlNGM0ZDAxZTg3Yjg4ZjQ5OGEyMWMxNDg1YTViMDAwYTAxNmRjMDYzNjUwZjQ5NGQxNjdhM2M1ODBjZDQ5MWQxMTdjNjdkZjIwZDkxMmY0NjhlNWU0NTMwZmU5NzZhYTkzYmVjZDMiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDE4OTc5NyIsIm5iZiI6MTY1NDE4OTc5NywidCI6IldNOEV5VmhLZThQIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4MDA1MDE5OTE5Nzc3NzkzX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYxOTY1Nzk3NzM2LCJpIjoiMzgwMDUwMTk5MTk3Nzc3OTMiLCJleHAiOjE2NjE5NjU3OTcsImlhdCI6MTY1NDE4OTc5NywianRpIjoiczJJbGNaa2VCR20xc2duWDgwWTZsR1FzRE1UdXhJeEQiLCJuIjoiUFZBUiJ9.KSrmVJzQYTnW5GbpZLUtupSwMq3bvHm6NoFrW1tpNYZt73rV8pQ0yr-ejg79c4nbKKabWag_tVyjYSjv9ewLkQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":38010776249701370,\r\n    \"name\":\"blue style ccc\",\r\n    \"attributes\":\"blue attributes ccc\",\r\n    \"type\":1\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-base/manager/style",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-base",
+								"manager",
+								"style"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台删除样式",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMzhiZWE3ODRlMWU0YWU0NGFjNmQyZmRlY2NlNGM0ZDAxZTg3Yjg4ZjQ5OGEyMWMxNDg1YTViMDAwYTAxNmRjMDYzNjUwZjQ5NGQxNjdhM2M1ODBjZDQ5MWQxMTdjNjdkZjIwZDkxMmY0NjhlNWU0NTMwZmU5NzZhYTkzYmVjZDMiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDE4OTc5NyIsIm5iZiI6MTY1NDE4OTc5NywidCI6IldNOEV5VmhLZThQIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4MDA1MDE5OTE5Nzc3NzkzX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYxOTY1Nzk3NzM2LCJpIjoiMzgwMDUwMTk5MTk3Nzc3OTMiLCJleHAiOjE2NjE5NjU3OTcsImlhdCI6MTY1NDE4OTc5NywianRpIjoiczJJbGNaa2VCR20xc2duWDgwWTZsR1FzRE1UdXhJeEQiLCJuIjoiUFZBUiJ9.KSrmVJzQYTnW5GbpZLUtupSwMq3bvHm6NoFrW1tpNYZt73rV8pQ0yr-ejg79c4nbKKabWag_tVyjYSjv9ewLkQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:10000/blue-base/manager/style/1",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-base",
+								"manager",
+								"style",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台启用样式",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMzhiZWE3ODRlMWU0YWU0NGFjNmQyZmRlY2NlNGM0ZDAxZTg3Yjg4ZjQ5OGEyMWMxNDg1YTViMDAwYTAxNmRjMDYzNjUwZjQ5NGQxNjdhM2M1ODBjZDQ5MWQxMTdjNjdkZjIwZDkxMmY0NjhlNWU0NTMwZmU5NzZhYTkzYmVjZDMiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDE4OTc5NyIsIm5iZiI6MTY1NDE4OTc5NywidCI6IldNOEV5VmhLZThQIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4MDA1MDE5OTE5Nzc3NzkzX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYxOTY1Nzk3NzM2LCJpIjoiMzgwMDUwMTk5MTk3Nzc3OTMiLCJleHAiOjE2NjE5NjU3OTcsImlhdCI6MTY1NDE4OTc5NywianRpIjoiczJJbGNaa2VCR20xc2duWDgwWTZsR1FzRE1UdXhJeEQiLCJuIjoiUFZBUiJ9.KSrmVJzQYTnW5GbpZLUtupSwMq3bvHm6NoFrW1tpNYZt73rV8pQ0yr-ejg79c4nbKKabWag_tVyjYSjv9ewLkQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":1\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-base/manager/style/active",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-base",
+								"manager",
+								"style",
+								"active"
 							]
 						}
 					},
@@ -1960,14 +2159,85 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-member/member",
+							"raw": "localhost:10000/blue-member/member/basic",
 							"host": [
 								"localhost"
 							],
 							"port": "10000",
 							"path": [
 								"blue-member",
-								"member"
+								"member",
+								"basic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "更新头像",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiODViNGU2YmQxODEwOTA5NTE0MjA1NzE3Mjc4NjI1MDcyNmU3NTQ4MjVlNDBiMGMzMzQ4NmE2ZDFlNGY4ZjAyNzRlMWNiYzRlYWNhMzY4MzkxZTE2YmZiOTQ1NzI4ZjIyN2RkOTc0NDE1ZjRkZGI1MmIwZjhlNzkzNjE2Mzc2NzAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDE2NTUwNiIsIm5iZiI6MTY1NDE2NTUwNiwidCI6ImY0clNicUk0aGk0IiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM3OTgzMzcyMjEwODY0MTI5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYxOTQxNTA2NzUzLCJpIjoiMzc5ODMzNzIyMTA4NjQxMjkiLCJleHAiOjE2NjE5NDE1MDYsImlhdCI6MTY1NDE2NTUwNiwianRpIjoiNFAxRmpvdU5vT0pnNWFyV2VhTGVzajZkeUJjYllseUwiLCJuIjoiUFZBUiJ9.bFiROi-pHYRhrSyHzXMR4HvqwHJ_VYOAiJgkTz4DZAi42W5_5MlS7KRwDQQyOhymuzyOhZVlLhFEra13eAsngQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"data\":\"www.blue.icon/blue-icon-888\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-member/basic/icon",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-member",
+								"basic",
+								"icon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "更新个人简介",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiODViNGU2YmQxODEwOTA5NTE0MjA1NzE3Mjc4NjI1MDcyNmU3NTQ4MjVlNDBiMGMzMzQ4NmE2ZDFlNGY4ZjAyNzRlMWNiYzRlYWNhMzY4MzkxZTE2YmZiOTQ1NzI4ZjIyN2RkOTc0NDE1ZjRkZGI1MmIwZjhlNzkzNjE2Mzc2NzAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDE2NTUwNiIsIm5iZiI6MTY1NDE2NTUwNiwidCI6ImY0clNicUk0aGk0IiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM3OTgzMzcyMjEwODY0MTI5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYxOTQxNTA2NzUzLCJpIjoiMzc5ODMzNzIyMTA4NjQxMjkiLCJleHAiOjE2NjE5NDE1MDYsImlhdCI6MTY1NDE2NTUwNiwianRpIjoiNFAxRmpvdU5vT0pnNWFyV2VhTGVzajZkeUJjYllseUwiLCJuIjoiUFZBUiJ9.bFiROi-pHYRhrSyHzXMR4HvqwHJ_VYOAiJgkTz4DZAi42W5_5MlS7KRwDQQyOhymuzyOhZVlLhFEra13eAsngQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"data\":\"一个深蓝蓝\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:10000/blue-member/basic/summary",
+							"host": [
+								"localhost"
+							],
+							"port": "10000",
+							"path": [
+								"blue-member",
+								"basic",
+								"summary"
 							]
 						}
 					},
@@ -2182,32 +2452,6 @@
 					"response": []
 				},
 				{
-					"name": "根据类型获取样式",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "localhost:10000/blue-portal/style/1",
-							"host": [
-								"localhost"
-							],
-							"port": "10000",
-							"path": [
-								"blue-portal",
-								"style",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "模板调用测试",
 					"request": {
 						"method": "GET",
@@ -2268,41 +2512,6 @@
 								"blue-portal",
 								"manager",
 								"bulletins"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "后台样式列表查询",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGIwZmY1Y2RkMDk0ZWM0YTc2MWE1M2QwZTQwZjFmYmM0ZjZmNWNiYTk5NTA5ZjYzYWIyOWUzNDlkNjFmZjk0Nzk2ZWRkZWJhZjdiMmUxNDUwZTk5MWFiYzFkMDY1OTAxOTM3YmMzMzYwMGZkY2M0ZDhkYWY4YTQzMmVmOTFlYjciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1Mjk1OTIxMCIsIm5iZiI6MTY1Mjk1OTIxMCwidCI6IkpzV0h5bVczRFU5IiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM2Njg1NjA0ODkyNzA0NzY5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYwNzM1MjEwMDIxLCJpIjoiMzY2ODU2MDQ4OTI3MDQ3NjkiLCJleHAiOjE2NjA3MzUyMTAsImlhdCI6MTY1Mjk1OTIxMCwianRpIjoiVWRCdmRJeHB4OXNHRUNHNkhLUTFKSFpMaERYM1E1OTUiLCJuIjoiUFZBUiJ9.dZF4l0KO4TqJYD3rwlnIvJOPPR6MAdxDB0X__Uja9JdzyXrPo4K-itaiNtz70krnjQgyiQL7KOSMpyvaFwtuJA",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"isActive\":null,\r\n        \"type\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
-						},
-						"url": {
-							"raw": "localhost:10000/blue-portal/manager/styles",
-							"host": [
-								"localhost"
-							],
-							"port": "10000",
-							"path": [
-								"blue-portal",
-								"manager",
-								"styles"
 							]
 						}
 					},
@@ -2405,144 +2614,6 @@
 								"manager",
 								"bulletin",
 								"36692475766657163"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "后台添加样式",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGIwZmY1Y2RkMDk0ZWM0YTc2MWE1M2QwZTQwZjFmYmM0ZjZmNWNiYTk5NTA5ZjYzYWIyOWUzNDlkNjFmZjk0Nzk2ZWRkZWJhZjdiMmUxNDUwZTk5MWFiYzFkMDY1OTAxOTM3YmMzMzYwMGZkY2M0ZDhkYWY4YTQzMmVmOTFlYjciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1Mjk1OTIxMCIsIm5iZiI6MTY1Mjk1OTIxMCwidCI6IkpzV0h5bVczRFU5IiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM2Njg1NjA0ODkyNzA0NzY5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYwNzM1MjEwMDIxLCJpIjoiMzY2ODU2MDQ4OTI3MDQ3NjkiLCJleHAiOjE2NjA3MzUyMTAsImlhdCI6MTY1Mjk1OTIxMCwianRpIjoiVWRCdmRJeHB4OXNHRUNHNkhLUTFKSFpMaERYM1E1OTUiLCJuIjoiUFZBUiJ9.dZF4l0KO4TqJYD3rwlnIvJOPPR6MAdxDB0X__Uja9JdzyXrPo4K-itaiNtz70krnjQgyiQL7KOSMpyvaFwtuJA",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"blue style\",\r\n    \"attributes\":\"blue attributes\",\r\n    \"type\":1\r\n}"
-						},
-						"url": {
-							"raw": "localhost:10000/blue-portal/manager/style",
-							"host": [
-								"localhost"
-							],
-							"port": "10000",
-							"path": [
-								"blue-portal",
-								"manager",
-								"style"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "后台修改样式",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGIwZmY1Y2RkMDk0ZWM0YTc2MWE1M2QwZTQwZjFmYmM0ZjZmNWNiYTk5NTA5ZjYzYWIyOWUzNDlkNjFmZjk0Nzk2ZWRkZWJhZjdiMmUxNDUwZTk5MWFiYzFkMDY1OTAxOTM3YmMzMzYwMGZkY2M0ZDhkYWY4YTQzMmVmOTFlYjciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1Mjk1OTIxMCIsIm5iZiI6MTY1Mjk1OTIxMCwidCI6IkpzV0h5bVczRFU5IiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM2Njg1NjA0ODkyNzA0NzY5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYwNzM1MjEwMDIxLCJpIjoiMzY2ODU2MDQ4OTI3MDQ3NjkiLCJleHAiOjE2NjA3MzUyMTAsImlhdCI6MTY1Mjk1OTIxMCwianRpIjoiVWRCdmRJeHB4OXNHRUNHNkhLUTFKSFpMaERYM1E1OTUiLCJuIjoiUFZBUiJ9.dZF4l0KO4TqJYD3rwlnIvJOPPR6MAdxDB0X__Uja9JdzyXrPo4K-itaiNtz70krnjQgyiQL7KOSMpyvaFwtuJA",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\":36694016586153985,\r\n    \"name\":\"blue style ccc\",\r\n    \"attributes\":\"blue attributes ccc\",\r\n    \"type\":1\r\n}"
-						},
-						"url": {
-							"raw": "localhost:10000/blue-portal/manager/style",
-							"host": [
-								"localhost"
-							],
-							"port": "10000",
-							"path": [
-								"blue-portal",
-								"manager",
-								"style"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "后台删除样式",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGIwZmY1Y2RkMDk0ZWM0YTc2MWE1M2QwZTQwZjFmYmM0ZjZmNWNiYTk5NTA5ZjYzYWIyOWUzNDlkNjFmZjk0Nzk2ZWRkZWJhZjdiMmUxNDUwZTk5MWFiYzFkMDY1OTAxOTM3YmMzMzYwMGZkY2M0ZDhkYWY4YTQzMmVmOTFlYjciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1Mjk1OTIxMCIsIm5iZiI6MTY1Mjk1OTIxMCwidCI6IkpzV0h5bVczRFU5IiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM2Njg1NjA0ODkyNzA0NzY5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYwNzM1MjEwMDIxLCJpIjoiMzY2ODU2MDQ4OTI3MDQ3NjkiLCJleHAiOjE2NjA3MzUyMTAsImlhdCI6MTY1Mjk1OTIxMCwianRpIjoiVWRCdmRJeHB4OXNHRUNHNkhLUTFKSFpMaERYM1E1OTUiLCJuIjoiUFZBUiJ9.dZF4l0KO4TqJYD3rwlnIvJOPPR6MAdxDB0X__Uja9JdzyXrPo4K-itaiNtz70krnjQgyiQL7KOSMpyvaFwtuJA",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "localhost:10000/blue-portal/manager/style/1",
-							"host": [
-								"localhost"
-							],
-							"port": "10000",
-							"path": [
-								"blue-portal",
-								"manager",
-								"style",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "后台启用样式",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGIwZmY1Y2RkMDk0ZWM0YTc2MWE1M2QwZTQwZjFmYmM0ZjZmNWNiYTk5NTA5ZjYzYWIyOWUzNDlkNjFmZjk0Nzk2ZWRkZWJhZjdiMmUxNDUwZTk5MWFiYzFkMDY1OTAxOTM3YmMzMzYwMGZkY2M0ZDhkYWY4YTQzMmVmOTFlYjciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1Mjk1OTIxMCIsIm5iZiI6MTY1Mjk1OTIxMCwidCI6IkpzV0h5bVczRFU5IiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM2Njg1NjA0ODkyNzA0NzY5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYwNzM1MjEwMDIxLCJpIjoiMzY2ODU2MDQ4OTI3MDQ3NjkiLCJleHAiOjE2NjA3MzUyMTAsImlhdCI6MTY1Mjk1OTIxMCwianRpIjoiVWRCdmRJeHB4OXNHRUNHNkhLUTFKSFpMaERYM1E1OTUiLCJuIjoiUFZBUiJ9.dZF4l0KO4TqJYD3rwlnIvJOPPR6MAdxDB0X__Uja9JdzyXrPo4K-itaiNtz70krnjQgyiQL7KOSMpyvaFwtuJA",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"id\":36695489759942289\r\n}"
-						},
-						"url": {
-							"raw": "localhost:10000/blue-portal/manager/style/active",
-							"host": [
-								"localhost"
-							],
-							"port": "10000",
-							"path": [
-								"blue-portal",
-								"manager",
-								"style",
-								"active"
 							]
 						}
 					},
@@ -3114,7 +3185,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"7789509\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"4214494\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:10000/blue-auth/auth/login",
@@ -3143,7 +3214,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDYwYzhkMjA2ZmMwMWM2ODU5NTA5YjQ0YjRhNGNjZDk1MzE2YjNiMGZlMTc0N2IxYzg2MWVkMGY1NmZlNjNhYzBiMGUyNTgwMGJjMTUxY2IxYzI0ZmNhYmFjNzJiMWJhOTYxODI3NTY4MDE2NzEzOGY0MmQ0MGRmYTA4MmYwZjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MzQ1OTg1NSIsIm5iZiI6MTY1MzQ1OTg1NSwidCI6IjBPd2w4YUp3MTUxIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM3MjI0NDg0Nzc1NjU3NDc4X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYxMjM1ODU1OTQ4LCJpIjoiMzcyMjQ0ODQ3NzU2NTc0NzgiLCJleHAiOjE2NjEyMzU4NTUsImlhdCI6MTY1MzQ1OTg1NSwianRpIjoibHF0ckhHcEVFRzFMbkxtcE45Umk2Yk8wQlFrVU9UR2QiLCJuIjoiUFZBUiJ9.3Ct0vHmRd_MTTMHRPMnVAVZdPJjUPNYahCIVnyUlg4E2U_TJQ-rzmF1Ld_XbwPQEIPYZW-pdSBCq9GCY5whHlQ",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMzYwZWY5MTdiMDNmNjAxMmNiMmVmN2ZjZDMwMzQ1N2JjNjdkNTQwNjgzYTBkNDNkODI5MGUxNWE4MGRhNzQzOTVjMTFkMWViMWJmYjJlNDZmNTA3MDBmYTdhNjAxZGM2NjI2N2FjYzRmMTg3NjY3NjBlZTUyYWI3Mzk0MDY1MGEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDE4OTU0NiIsIm5iZiI6MTY1NDE4OTU0NiwidCI6IlF4S1NpendCVWhSIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4MDA1MDE5OTE5Nzc3NzkzX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYxOTY1NTQ2NjY1LCJpIjoiMzgwMDUwMTk5MTk3Nzc3OTMiLCJleHAiOjE2NjE5NjU1NDYsImlhdCI6MTY1NDE4OTU0NiwianRpIjoienRCUVEySG9uWEFuNWtPdFZSUDhZRDVva1R3OGRBQ3EiLCJuIjoiUFZBUiJ9.QazO1JVWEIP2D0QT6WgNOYB_CXgsAjYk9aEunSX7REl9N40FMzVIZ6WHQ0A8Td1HImGytw1dcbMsXJMx8BJSgw",
 								"type": "text"
 							}
 						],
@@ -3649,7 +3720,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"phone\":\"15933160669\",\r\n    \"phoneVerify\":\"2854355\",\r\n    \"email\":\"yunfei0221@outloot.com\",\r\n    \"emailVerify\":\"9020945\",\r\n    \"access\":\"12345678\",\r\n    \"name\":\"刘云飞\",\r\n    \"gender\":1\r\n}"
+							"raw": "{\r\n    \"phone\":\"15933160669\",\r\n    \"phoneVerify\":\"5616612\",\r\n    \"email\":\"yunfei0221@outloot.com\",\r\n    \"emailVerify\":\"3744976\",\r\n    \"access\":\"12345678\",\r\n    \"name\":\"刘云飞\",\r\n    \"gender\":1\r\n}"
 						},
 						"url": {
 							"raw": "localhost:10000/blue-member/registry",

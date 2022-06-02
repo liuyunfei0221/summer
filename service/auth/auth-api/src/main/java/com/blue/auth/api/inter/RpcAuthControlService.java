@@ -8,12 +8,12 @@ import com.blue.base.model.common.Access;
 import java.util.concurrent.CompletableFuture;
 
 /**
- * rpc control interface
+ * rpc auth control interface
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public interface RpcControlService {
+public interface RpcAuthControlService {
 
     /**
      * init auth info for a new member

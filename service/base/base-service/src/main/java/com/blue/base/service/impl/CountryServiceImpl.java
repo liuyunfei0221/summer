@@ -308,7 +308,6 @@ public class CountryServiceImpl implements CountryService {
     private static final String TOP_LEVEL_DOMAIN_COLUMN_NAME = "topLevelDomain";
     private static final String REGION_COLUMN_NAME = "region";
 
-
     private static final Function<CountryCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
 

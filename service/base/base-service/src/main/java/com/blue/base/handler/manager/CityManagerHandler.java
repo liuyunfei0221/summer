@@ -5,7 +5,7 @@ import com.blue.base.model.CityUpdateParam;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.service.inter.CityService;
-import com.blue.base.service.inter.ControlService;
+import com.blue.base.service.inter.RegionControlService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -33,11 +33,11 @@ public class CityManagerHandler {
 
     private final CityService cityService;
 
-    private final ControlService controlService;
+    private final RegionControlService regionControlService;
 
-    public CityManagerHandler(CityService cityService, ControlService controlService) {
+    public CityManagerHandler(CityService cityService, RegionControlService regionControlService) {
         this.cityService = cityService;
-        this.controlService = controlService;
+        this.regionControlService = regionControlService;
     }
 
     /**
@@ -49,7 +49,7 @@ public class CityManagerHandler {
     public Mono<ServerResponse> insert(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CityInsertParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(controlService::insertCity)
+                .flatMap(regionControlService::insertCity)
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ci, serverRequest), BlueResponse.class));
@@ -64,7 +64,7 @@ public class CityManagerHandler {
     public Mono<ServerResponse> update(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CityUpdateParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(controlService::updateCity)
+                .flatMap(regionControlService::updateCity)
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ci, serverRequest), BlueResponse.class));
@@ -78,7 +78,7 @@ public class CityManagerHandler {
      */
     public Mono<ServerResponse> delete(ServerRequest serverRequest) {
         return getLongVariableReact(serverRequest, ID.key)
-                .flatMap(controlService::deleteCity)
+                .flatMap(regionControlService::deleteCity)
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ci, serverRequest), BlueResponse.class));

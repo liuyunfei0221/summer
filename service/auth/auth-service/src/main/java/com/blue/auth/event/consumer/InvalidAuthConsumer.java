@@ -1,7 +1,7 @@
 package com.blue.auth.event.consumer;
 
 import com.blue.auth.config.blue.BlueConsumerConfig;
-import com.blue.auth.service.inter.ControlService;
+import com.blue.auth.service.inter.AuthControlService;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.model.common.InvalidAuthEvent;
 import com.blue.pulsar.common.BluePulsarConsumer;
@@ -28,14 +28,14 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(InvalidAuthConsumer.class);
 
-    private final ControlService controlService;
+    private final AuthControlService authControlService;
 
     private final BlueConsumerConfig blueConsumerConfig;
 
     private BluePulsarConsumer<InvalidAuthEvent> invalidAuthConsumer;
 
-    public InvalidAuthConsumer(ControlService controlService, BlueConsumerConfig blueConsumerConfig) {
-        this.controlService = controlService;
+    public InvalidAuthConsumer(AuthControlService authControlService, BlueConsumerConfig blueConsumerConfig) {
+        this.authControlService = authControlService;
         this.blueConsumerConfig = blueConsumerConfig;
     }
 
@@ -44,7 +44,7 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
         Consumer<InvalidAuthEvent> invalidAuthDataConsumer = invalidLocalAuthEvent ->
                 ofNullable(invalidLocalAuthEvent)
                         .map(InvalidAuthEvent::getMemberId)
-                        .ifPresent(memberId -> controlService.invalidateAuthByMemberId(memberId)
+                        .ifPresent(memberId -> authControlService.invalidateAuthByMemberId(memberId)
                                 .doOnError(throwable -> LOGGER.info("controlService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable))
                                 .subscribe(b -> LOGGER.info("controlService.invalidateAuthByMemberId(memberId), b = {}, memberId = {}", b, memberId)));
 

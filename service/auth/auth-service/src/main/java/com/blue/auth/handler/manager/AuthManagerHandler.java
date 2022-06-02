@@ -1,6 +1,6 @@
 package com.blue.auth.handler.manager;
 
-import com.blue.auth.service.inter.ControlService;
+import com.blue.auth.service.inter.AuthControlService;
 import com.blue.base.model.common.BlueResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -23,10 +23,10 @@ import static reactor.core.publisher.Mono.zip;
 @Component
 public final class AuthManagerHandler {
 
-    private final ControlService controlService;
+    private final AuthControlService authControlService;
 
-    public AuthManagerHandler(ControlService controlService) {
-        this.controlService = controlService;
+    public AuthManagerHandler(AuthControlService authControlService) {
+        this.authControlService = authControlService;
     }
 
     /**
@@ -38,7 +38,7 @@ public final class AuthManagerHandler {
     public Mono<ServerResponse> invalidateAuthByMember(ServerRequest serverRequest) {
         return zip(getLongVariableReact(serverRequest, MID.key),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.invalidateAuthByMemberId(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.invalidateAuthByMemberId(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
@@ -53,7 +53,7 @@ public final class AuthManagerHandler {
     public Mono<ServerResponse> selectSecurityInfos(ServerRequest serverRequest) {
         return zip(getLongVariableReact(serverRequest, MID.key),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.selectSecurityInfoMonoByMemberId(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.selectSecurityInfoMonoByMemberId(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(res ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, res, serverRequest), BlueResponse.class));

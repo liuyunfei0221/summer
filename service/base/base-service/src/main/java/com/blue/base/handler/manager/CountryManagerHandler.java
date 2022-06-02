@@ -4,7 +4,7 @@ import com.blue.base.model.CountryInsertParam;
 import com.blue.base.model.CountryUpdateParam;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.base.service.inter.ControlService;
+import com.blue.base.service.inter.RegionControlService;
 import com.blue.base.service.inter.CountryService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -33,11 +33,11 @@ public class CountryManagerHandler {
 
     private final CountryService countryService;
 
-    private final ControlService controlService;
+    private final RegionControlService regionControlService;
 
-    public CountryManagerHandler(CountryService countryService, ControlService controlService) {
+    public CountryManagerHandler(CountryService countryService, RegionControlService regionControlService) {
         this.countryService = countryService;
-        this.controlService = controlService;
+        this.regionControlService = regionControlService;
     }
 
     /**
@@ -49,7 +49,7 @@ public class CountryManagerHandler {
     public Mono<ServerResponse> insert(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CountryInsertParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(controlService::insertCountry)
+                .flatMap(regionControlService::insertCountry)
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ci, serverRequest), BlueResponse.class));
@@ -64,7 +64,7 @@ public class CountryManagerHandler {
     public Mono<ServerResponse> update(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(CountryUpdateParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(controlService::updateCountry)
+                .flatMap(regionControlService::updateCountry)
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ci, serverRequest), BlueResponse.class));
@@ -78,7 +78,7 @@ public class CountryManagerHandler {
      */
     public Mono<ServerResponse> delete(ServerRequest serverRequest) {
         return getLongVariableReact(serverRequest, ID.key)
-                .flatMap(controlService::deleteCountry)
+                .flatMap(regionControlService::deleteCountry)
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ci, serverRequest), BlueResponse.class));

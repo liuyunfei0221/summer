@@ -2,7 +2,7 @@ package com.blue.auth.handler.manager;
 
 import com.blue.auth.model.ResourceInsertParam;
 import com.blue.auth.model.ResourceUpdateParam;
-import com.blue.auth.service.inter.ControlService;
+import com.blue.auth.service.inter.AuthControlService;
 import com.blue.auth.service.inter.ResourceService;
 import com.blue.auth.service.inter.RoleResRelationService;
 import com.blue.base.model.common.BlueResponse;
@@ -33,14 +33,14 @@ import static reactor.core.publisher.Mono.*;
 @Component
 public final class ResourceManagerHandler {
 
-    private final ControlService controlService;
+    private final AuthControlService authControlService;
 
     private final ResourceService resourceService;
 
     private final RoleResRelationService roleResRelationService;
 
-    public ResourceManagerHandler(ControlService controlService, ResourceService resourceService, RoleResRelationService roleResRelationService) {
-        this.controlService = controlService;
+    public ResourceManagerHandler(AuthControlService authControlService, ResourceService resourceService, RoleResRelationService roleResRelationService) {
+        this.authControlService = authControlService;
         this.resourceService = resourceService;
         this.roleResRelationService = roleResRelationService;
     }
@@ -55,7 +55,7 @@ public final class ResourceManagerHandler {
         return zip(serverRequest.bodyToMono(ResourceInsertParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.insertResource(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.insertResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
@@ -71,7 +71,7 @@ public final class ResourceManagerHandler {
         return zip(serverRequest.bodyToMono(ResourceUpdateParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.updateResource(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.updateResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
@@ -85,7 +85,7 @@ public final class ResourceManagerHandler {
      */
     public Mono<ServerResponse> delete(ServerRequest serverRequest) {
         return zip(getLongVariableReact(serverRequest, ID.key), getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.deleteResource(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.deleteResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));

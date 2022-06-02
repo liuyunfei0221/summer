@@ -71,9 +71,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service
-public class ControlServiceImpl implements ControlService {
+public class AuthControlServiceImpl implements AuthControlService {
 
-    private static final Logger LOGGER = getLogger(ControlServiceImpl.class);
+    private static final Logger LOGGER = getLogger(AuthControlServiceImpl.class);
 
     private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
 
@@ -110,13 +110,13 @@ public class ControlServiceImpl implements ControlService {
     private final SynchronizedProcessor synchronizedProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public ControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer,
-                              RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, JwtProcessor<MemberPayload> jwtProcessor,
-                              LoginService loginService, AuthService authService, RoleService roleService, ResourceService resourceService,
-                              RoleResRelationService roleResRelationService, CredentialService credentialService, CredentialHistoryService credentialHistoryService,
-                              SecurityQuestionService securityQuestionService, MemberRoleRelationService memberRoleRelationService,
-                              SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService,
-                              SynchronizedProcessor synchronizedProcessor, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter, ControlDeploy controlDeploy) {
+    public AuthControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer,
+                                  RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, JwtProcessor<MemberPayload> jwtProcessor,
+                                  LoginService loginService, AuthService authService, RoleService roleService, ResourceService resourceService,
+                                  RoleResRelationService roleResRelationService, CredentialService credentialService, CredentialHistoryService credentialHistoryService,
+                                  SecurityQuestionService securityQuestionService, MemberRoleRelationService memberRoleRelationService,
+                                  SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService,
+                                  SynchronizedProcessor synchronizedProcessor, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter, ControlDeploy controlDeploy) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;

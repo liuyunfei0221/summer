@@ -1,6 +1,6 @@
 package com.blue.member.remote.consumer;
 
-import com.blue.auth.api.inter.RpcControlService;
+import com.blue.auth.api.inter.RpcAuthControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.base.model.common.Access;
@@ -16,7 +16,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * rpc control consumer
+ * rpc auth control consumer
  *
  * @author liuyunfei
  */
@@ -27,14 +27,14 @@ public class RpcControlServiceConsumer {
     private static final Logger LOGGER = getLogger(RpcControlServiceConsumer.class);
 
     @DubboReference(version = "1.0",
-//            providedBy = {"summer-auth"},
+            providedBy = {"summer-auth"},
             methods = {
                     @Method(name = "initMemberAuthInfo", async = false, timeout = 60000, retries = 0),
                     @Method(name = "refreshMemberRoleById", async = true),
                     @Method(name = "getAuthorityByAccess", async = true),
                     @Method(name = "getAuthorityByMemberId", async = true)
             })
-    private RpcControlService rpcControlService;
+    private RpcAuthControlService rpcAuthControlService;
 
     private final Scheduler scheduler;
 
@@ -49,7 +49,7 @@ public class RpcControlServiceConsumer {
      */
     public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo) {
         LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
-        rpcControlService.initMemberAuthInfo(memberCredentialInfo);
+        rpcAuthControlService.initMemberAuthInfo(memberCredentialInfo);
     }
 
     /**
@@ -62,7 +62,7 @@ public class RpcControlServiceConsumer {
      */
     Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
-        return fromFuture(rpcControlService.refreshMemberRoleById(memberId, roleId, operatorId)).subscribeOn(scheduler).subscribeOn(scheduler);
+        return fromFuture(rpcAuthControlService.refreshMemberRoleById(memberId, roleId, operatorId)).subscribeOn(scheduler).subscribeOn(scheduler);
     }
 
     /**
@@ -73,7 +73,7 @@ public class RpcControlServiceConsumer {
      */
     public Mono<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByAccess(Access access), access = {}", access);
-        return fromFuture(rpcControlService.getAuthorityByAccess(access)).subscribeOn(scheduler).subscribeOn(scheduler);
+        return fromFuture(rpcAuthControlService.getAuthorityByAccess(access)).subscribeOn(scheduler).subscribeOn(scheduler);
     }
 
     /**
@@ -84,7 +84,7 @@ public class RpcControlServiceConsumer {
      */
     public Mono<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
-        return fromFuture(rpcControlService.getAuthorityByMemberId(memberId)).subscribeOn(scheduler).subscribeOn(scheduler);
+        return fromFuture(rpcAuthControlService.getAuthorityByMemberId(memberId)).subscribeOn(scheduler).subscribeOn(scheduler);
     }
 
 }

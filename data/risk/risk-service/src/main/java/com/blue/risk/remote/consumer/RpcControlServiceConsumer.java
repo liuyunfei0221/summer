@@ -1,6 +1,6 @@
 package com.blue.risk.remote.consumer;
 
-import com.blue.auth.api.inter.RpcControlService;
+import com.blue.auth.api.inter.RpcAuthControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.base.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -14,7 +14,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * rpc control consumer
+ * rpc auth control consumer
  *
  * @author liuyunfei
  */
@@ -30,7 +30,7 @@ public class RpcControlServiceConsumer {
                     @Method(name = "getAuthorityByAccess", async = true),
                     @Method(name = "getAuthorityByMemberId", async = true)
             })
-    private RpcControlService rpcControlService;
+    private RpcAuthControlService rpcAuthControlService;
 
     /**
      * query authority by access
@@ -40,7 +40,7 @@ public class RpcControlServiceConsumer {
      */
     public Mono<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByAccess(Access access), access = {}", access);
-        return fromFuture(rpcControlService.getAuthorityByAccess(access));
+        return fromFuture(rpcAuthControlService.getAuthorityByAccess(access));
     }
 
     /**
@@ -51,7 +51,7 @@ public class RpcControlServiceConsumer {
      */
     public Mono<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
-        return fromFuture(rpcControlService.getAuthorityByMemberId(memberId));
+        return fromFuture(rpcAuthControlService.getAuthorityByMemberId(memberId));
     }
 
 }

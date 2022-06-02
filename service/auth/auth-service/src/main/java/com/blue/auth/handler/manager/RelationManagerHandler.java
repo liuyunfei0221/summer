@@ -2,7 +2,7 @@ package com.blue.auth.handler.manager;
 
 import com.blue.auth.api.model.MemberRoleRelationParam;
 import com.blue.auth.api.model.RoleResRelationParam;
-import com.blue.auth.service.inter.ControlService;
+import com.blue.auth.service.inter.AuthControlService;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.stereotype.Component;
@@ -27,10 +27,10 @@ import static reactor.core.publisher.Mono.*;
 @Component
 public class RelationManagerHandler {
 
-    private final ControlService controlService;
+    private final AuthControlService authControlService;
 
-    public RelationManagerHandler(ControlService controlService) {
-        this.controlService = controlService;
+    public RelationManagerHandler(AuthControlService authControlService) {
+        this.authControlService = authControlService;
     }
 
     /**
@@ -43,7 +43,7 @@ public class RelationManagerHandler {
         return zip(serverRequest.bodyToMono(RoleResRelationParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.updateAuthorityByRole(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.updateAuthorityByRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
@@ -59,7 +59,7 @@ public class RelationManagerHandler {
         return zip(serverRequest.bodyToMono(MemberRoleRelationParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.updateAuthorityByMember(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.updateAuthorityByMember(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));

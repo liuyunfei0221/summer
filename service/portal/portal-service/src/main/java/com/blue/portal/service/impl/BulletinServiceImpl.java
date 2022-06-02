@@ -32,17 +32,16 @@ import reactor.util.Logger;
 import reactor.util.Loggers;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.CommonFunctions.*;
+import static com.blue.base.common.base.CommonFunctions.GSON;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
-import static com.blue.base.common.base.ConstantProcessor.*;
+import static com.blue.base.common.base.ConstantProcessor.assertBulletinType;
 import static com.blue.base.constant.base.CacheKeyPrefix.BULLETINS_PRE;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.Status.VALID;
@@ -51,6 +50,7 @@ import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static com.blue.portal.converter.PortalModelConverters.*;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -92,9 +92,10 @@ public class BulletinServiceImpl implements BulletinService {
         this.stringRedisTemplate = stringRedisTemplate;
         this.synchronizedProcessor = synchronizedProcessor;
 
-        this.redisExpire = blueRedisConfig.getEntryTtl();
+        this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
+
         CaffeineConf caffeineConf = new CaffeineConfParams(
-                caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
+                caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);
@@ -102,9 +103,7 @@ public class BulletinServiceImpl implements BulletinService {
                 .forEach(BULLETIN_INFOS_WITH_ALL_CACHE_GETTER::apply);
     }
 
-    private long redisExpire;
-
-    private final static TimeUnit EXPIRE_UNIT = TimeUnit.SECONDS;
+    private Duration expireDuration;
 
     private static Cache<Integer, List<BulletinInfo>> LOCAL_CACHE;
 
@@ -115,7 +114,7 @@ public class BulletinServiceImpl implements BulletinService {
     private final Consumer<Integer> REDIS_CACHE_DELETER = type ->
             stringRedisTemplate.delete(BULLETIN_CACHE_KEY_GENERATOR.apply(type));
 
-    private final Consumer<Integer> ALL_CACHE_DELETER = type -> {
+    private final Consumer<Integer> CACHE_DELETER = type -> {
         REDIS_CACHE_DELETER.accept(type);
         LOCAL_CACHE.invalidate(type);
     };
@@ -135,7 +134,7 @@ public class BulletinServiceImpl implements BulletinService {
         String cacheKey = BULLETIN_CACHE_KEY_GENERATOR.apply(type);
         REDIS_CACHE_DELETER.accept(type);
         stringRedisTemplate.opsForList().rightPushAll(cacheKey, bulletinInfos.stream().map(GSON::toJson).collect(toList()));
-        stringRedisTemplate.expire(cacheKey, redisExpire, EXPIRE_UNIT);
+        stringRedisTemplate.expire(cacheKey, expireDuration);
     };
 
     private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER = type ->
@@ -299,9 +298,9 @@ public class BulletinServiceImpl implements BulletinService {
 
         Integer type = bulletin.getType();
 
-        ALL_CACHE_DELETER.accept(type);
+        CACHE_DELETER.accept(type);
         bulletinMapper.insert(bulletin);
-        ALL_CACHE_DELETER.accept(type);
+        CACHE_DELETER.accept(type);
 
         return BULLETIN_2_BULLETIN_INFO_CONVERTER.apply(bulletin);
     }
@@ -314,6 +313,7 @@ public class BulletinServiceImpl implements BulletinService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public BulletinInfo updateBulletin(BulletinUpdateParam bulletinUpdateParam, Long operatorId) {
         LOGGER.info("BulletinInfo updateBulletin(BulletinUpdateParam bulletinUpdateParam, Long operatorId), bulletinUpdateParam = {}, operatorId = {}",
                 bulletinUpdateParam, operatorId);
@@ -330,9 +330,9 @@ public class BulletinServiceImpl implements BulletinService {
             throw new BlueException(DATA_HAS_NOT_CHANGED);
         changedTypes.add(bulletin.getType());
 
-        changedTypes.forEach(ALL_CACHE_DELETER);
+        changedTypes.forEach(CACHE_DELETER);
         bulletinMapper.updateByPrimaryKeySelective(bulletin);
-        changedTypes.forEach(ALL_CACHE_DELETER);
+        changedTypes.forEach(CACHE_DELETER);
 
         return BULLETIN_2_BULLETIN_INFO_CONVERTER.apply(bulletin);
     }
@@ -344,6 +344,7 @@ public class BulletinServiceImpl implements BulletinService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public BulletinInfo deleteBulletin(Long id) {
         LOGGER.info("BulletinInfo deleteBulletinById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
@@ -355,9 +356,9 @@ public class BulletinServiceImpl implements BulletinService {
 
         Integer type = bulletin.getType();
 
-        ALL_CACHE_DELETER.accept(type);
+        CACHE_DELETER.accept(type);
         bulletinMapper.deleteByPrimaryKey(id);
-        ALL_CACHE_DELETER.accept(type);
+        CACHE_DELETER.accept(type);
 
         return BULLETIN_2_BULLETIN_INFO_CONVERTER.apply(bulletin);
     }
@@ -371,7 +372,7 @@ public class BulletinServiceImpl implements BulletinService {
     public void invalidBulletinInfosCache() {
         of(BulletinType.values())
                 .forEach(type ->
-                        ALL_CACHE_DELETER.accept(type.identity));
+                        CACHE_DELETER.accept(type.identity));
     }
 
     /**

@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public interface ControlService {
+public interface RegionControlService {
 
     /**
      * insert country

@@ -2,7 +2,7 @@ package com.blue.auth.handler.manager;
 
 import com.blue.auth.model.RoleInsertParam;
 import com.blue.auth.model.RoleUpdateParam;
-import com.blue.auth.service.inter.ControlService;
+import com.blue.auth.service.inter.AuthControlService;
 import com.blue.auth.service.inter.RoleResRelationService;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.base.model.common.BlueResponse;
@@ -33,14 +33,14 @@ import static reactor.core.publisher.Mono.*;
 @Component
 public final class RoleManagerHandler {
 
-    private final ControlService controlService;
+    private final AuthControlService authControlService;
 
     private final RoleService roleService;
 
     private final RoleResRelationService roleResRelationService;
 
-    public RoleManagerHandler(ControlService controlService, RoleService roleService, RoleResRelationService roleResRelationService) {
-        this.controlService = controlService;
+    public RoleManagerHandler(AuthControlService authControlService, RoleService roleService, RoleResRelationService roleResRelationService) {
+        this.authControlService = authControlService;
         this.roleService = roleService;
         this.roleResRelationService = roleResRelationService;
     }
@@ -55,7 +55,7 @@ public final class RoleManagerHandler {
         return zip(serverRequest.bodyToMono(RoleInsertParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.insertRole(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.insertRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
@@ -71,7 +71,7 @@ public final class RoleManagerHandler {
         return zip(serverRequest.bodyToMono(RoleUpdateParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.updateRole(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.updateRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
@@ -85,7 +85,7 @@ public final class RoleManagerHandler {
      */
     public Mono<ServerResponse> delete(ServerRequest serverRequest) {
         return zip(getLongVariableReact(serverRequest, ID.key), getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.deleteRole(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.deleteRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
@@ -101,7 +101,7 @@ public final class RoleManagerHandler {
         return zip(serverRequest.bodyToMono(IdentityParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 , getAccessReact(serverRequest))
-                .flatMap(tuple2 -> controlService.updateDefaultRole(tuple2.getT1().getId(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.updateDefaultRole(tuple2.getT1().getId(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));

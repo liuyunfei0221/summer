@@ -27,9 +27,9 @@ import static reactor.core.publisher.Mono.fromRunnable;
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
-public class ControlServiceImpl implements ControlService {
+public class RegionControlServiceImpl implements RegionControlService {
 
-    private static final Logger LOGGER = Loggers.getLogger(ControlServiceImpl.class);
+    private static final Logger LOGGER = Loggers.getLogger(RegionControlServiceImpl.class);
 
     private final CountryService countryService;
 
@@ -43,9 +43,9 @@ public class ControlServiceImpl implements ControlService {
 
     private final SynchronizedProcessor synchronizedProcessor;
 
-    public ControlServiceImpl(CountryService countryService, StateService stateService, CityService cityService,
-                              AreaService areaService, RegionInfosInvalidProducer regionInfosInvalidProducer,
-                              SynchronizedProcessor synchronizedProcessor) {
+    public RegionControlServiceImpl(CountryService countryService, StateService stateService, CityService cityService,
+                                    AreaService areaService, RegionInfosInvalidProducer regionInfosInvalidProducer,
+                                    SynchronizedProcessor synchronizedProcessor) {
         this.countryService = countryService;
         this.stateService = stateService;
         this.cityService = cityService;

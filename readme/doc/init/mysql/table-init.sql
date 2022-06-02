@@ -2064,34 +2064,6 @@ CREATE TABLE `style`
     KEY           `idx_type_active_create`(`type`,`is_active`,`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of style';
 
-CREATE TABLE `dict_type`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `code`        varchar(128) NOT NULL COMMENT 'dict type code',
-    `name`        varchar(256) DEFAULT '' COMMENT 'dict type name',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
-    `creator`     bigint       NOT NULL COMMENT 'creator id',
-    `updater`     bigint       NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_code`(`code`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dict type';
-
-CREATE TABLE `dict`
-(
-    `id`           bigint       NOT NULL COMMENT 'id',
-    `dict_type_id` bigint       NOT NULL COMMENT 'dict type id',
-    `name`         varchar(256) DEFAULT '' COMMENT 'dict name',
-    `value`        varchar(128) NOT NULL COMMENT 'dict value',
-    `create_time`  bigint       NOT NULL COMMENT 'data create time',
-    `update_time`  bigint       NOT NULL COMMENT 'data update time',
-    `creator`      bigint       NOT NULL COMMENT 'creator id',
-    `updater`      bigint       NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_type_name_value`(`dict_type_id`,`name`,`value` ) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dict';
-
 CREATE
 DATABASE base_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE

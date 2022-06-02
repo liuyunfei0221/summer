@@ -16,7 +16,7 @@ import java.util.List;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public interface ControlService {
+public interface AuthControlService {
 
     /**
      * login

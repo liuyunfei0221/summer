@@ -2047,25 +2047,6 @@ CREATE TABLE `bulletin`
     KEY           `idx_pri_stat`(`priority`,`status`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of bulletin';
 
-
-CREATE TABLE `style`
-(
-    `id`          bigint        NOT NULL COMMENT 'id',
-    `name`        varchar(128)  NOT NULL COMMENT 'style name',
-    `attributes`  varchar(8192) NOT NULL COMMENT 'style attrtbutes',
-    `type`        tinyint       NOT NULL COMMENT 'style type: 1-a 2-b 3-c',
-    `is_active`   bit           NOT NULL COMMENT 'is active style? 1-yes 0-no',
-    `status`      tinyint       NOT NULL COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint        NOT NULL COMMENT 'data create time',
-    `update_time` bigint        NOT NULL COMMENT 'data update time',
-    `creator`     bigint        NOT NULL COMMENT 'creator id',
-    `updater`     bigint        NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_name`(`name`) USING BTREE,
-    KEY           `idx_type_active_create`(`type`,`is_active`,`create_time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of style';
-
-
 -- portal0
 
 CREATE
@@ -2148,10 +2129,6 @@ VALUES (1, 'popular bulletin 2', 'test data', 'www.baidu.com', 1, 1, 2, UNIX_TIM
         UNIX_TIMESTAMP() + 2678400, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (6, 'recommend bulletin 1', 'test data', 'cn.bing.com', 3, 1, 1, UNIX_TIMESTAMP() - 2678400,
         UNIX_TIMESTAMP() + 2678400, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
-
-INSERT INTO `portal`.`style`(`id`, `name`, `attributes`, `type`, `is_active`, `status`, `create_time`, `update_time`,
-                             `creator`, `updater`)
-VALUES (1, 'blue', '{}', 1, b'1', 1, 1, 1, 1, 1);
 
 
 -- article
@@ -2622,36 +2599,15 @@ CREATE TABLE `style`
     KEY           `idx_type_active_create`(`type`,`is_active`,`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of style';
 
+INSERT INTO `base`.`style`(`id`, `name`, `attributes`, `type`, `is_active`, `status`, `create_time`, `update_time`,
+                           `creator`, `updater`)
+VALUES (1, 'blue1', '{}', 1, b'1', 1, 1, 1, 1, 1),
+       (2, 'blue2', '{}', 2, b'1', 1, 1, 1, 1, 1),
+       (3, 'blue3', '{}', 3, b'1', 1, 1, 1, 1, 1),
 
-CREATE TABLE `dict_type`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `code`        varchar(128) NOT NULL COMMENT 'dict type code',
-    `name`        varchar(256) DEFAULT '' COMMENT 'dict type name',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
-    `creator`     bigint       NOT NULL COMMENT 'creator id',
-    `updater`     bigint       NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_code`(`code`) USING BTREE,
-    UNIQUE KEY `idx_name`(`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dict type';
-
-CREATE TABLE `dict`
-(
-    `id`           bigint       NOT NULL COMMENT 'id',
-    `dict_type_id` bigint       NOT NULL COMMENT 'dict type id',
-    `name`         varchar(256) DEFAULT '' COMMENT 'dict name',
-    `value`        varchar(128) NOT NULL COMMENT 'dict value',
-    `create_time`  bigint       NOT NULL COMMENT 'data create time',
-    `update_time`  bigint       NOT NULL COMMENT 'data update time',
-    `creator`      bigint       NOT NULL COMMENT 'creator id',
-    `updater`      bigint       NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_type_name_value`(`dict_type_id`,`name`,`value` ) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of dict';
-
-
+       (4, 'blue4', '{}', 1, b'0', 1, 1, 1, 1, 1),
+       (5, 'blue5', '{}', 2, b'0', 1, 1, 1, 1, 1),
+       (6, 'blue6', '{}', 3, b'0', 1, 1, 1, 1, 1);
 
 CREATE
 DATABASE base_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

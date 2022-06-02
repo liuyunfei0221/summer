@@ -5,7 +5,7 @@ import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.component.auto.MemberParamPackagerProcessor;
 import com.blue.auth.remote.consumer.RpcMemberAuthServiceConsumer;
 import com.blue.auth.service.inter.AutoRegisterService;
-import com.blue.auth.service.inter.ControlService;
+import com.blue.auth.service.inter.AuthControlService;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import io.seata.spring.annotation.GlobalTransactional;
@@ -34,12 +34,12 @@ public class AutoRegisterServiceImpl implements AutoRegisterService {
 
     private final RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer;
 
-    private final ControlService controlService;
+    private final AuthControlService authControlService;
 
-    public AutoRegisterServiceImpl(MemberParamPackagerProcessor memberParamPackagerProcessor, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer, ControlService controlService) {
+    public AutoRegisterServiceImpl(MemberParamPackagerProcessor memberParamPackagerProcessor, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer, AuthControlService authControlService) {
         this.memberParamPackagerProcessor = memberParamPackagerProcessor;
         this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
-        this.controlService = controlService;
+        this.authControlService = authControlService;
     }
 
     private final BiFunction<List<CredentialInfo>, String, MemberRegistryParam> REGISTRY_PARAM_CONVERTER = (credentials, source) -> {
@@ -68,7 +68,7 @@ public class AutoRegisterServiceImpl implements AutoRegisterService {
 
         MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.autoRegisterMemberBasic(REGISTRY_PARAM_CONVERTER.apply(credentials, source));
 
-        controlService.initMemberAuthInfo(new MemberCredentialInfo(memberBasicInfo.getId(), credentials), roleId);
+        authControlService.initMemberAuthInfo(new MemberCredentialInfo(memberBasicInfo.getId(), credentials), roleId);
 
         return memberBasicInfo;
     }

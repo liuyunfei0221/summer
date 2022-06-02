@@ -3,7 +3,7 @@ package com.blue.base.event.consumer;
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.config.blue.BlueConsumerConfig;
 import com.blue.base.model.common.EmptyEvent;
-import com.blue.base.service.inter.ControlService;
+import com.blue.base.service.inter.RegionControlService;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import reactor.util.Logger;
 
@@ -28,13 +28,13 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final ControlService controlService;
+    private final RegionControlService regionControlService;
 
     private BluePulsarConsumer<EmptyEvent> regionInfosInvalidConsumer;
 
-    public RegionInfosInvalidConsumer(BlueConsumerConfig blueConsumerConfig, ControlService controlService) {
+    public RegionInfosInvalidConsumer(BlueConsumerConfig blueConsumerConfig, RegionControlService regionControlService) {
         this.blueConsumerConfig = blueConsumerConfig;
-        this.controlService = controlService;
+        this.regionControlService = regionControlService;
     }
 
     @PostConstruct
@@ -43,7 +43,7 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
                 ofNullable(emptyEvent)
                         .ifPresent(ee -> {
                             LOGGER.info("regionInfosInvalidConsumerDataConsumer received");
-                            controlService.invalidAllCache()
+                            regionControlService.invalidAllCache()
                                     .doOnError(throwable -> LOGGER.info("controlService.invalidAllCache() failed, throwable = {}", throwable))
                                     .subscribe(v -> LOGGER.info("controlService.invalidAllCache()"));
                         });

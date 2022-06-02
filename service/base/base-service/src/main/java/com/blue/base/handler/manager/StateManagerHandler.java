@@ -4,7 +4,7 @@ import com.blue.base.model.StateInsertParam;
 import com.blue.base.model.StateUpdateParam;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.base.service.inter.ControlService;
+import com.blue.base.service.inter.RegionControlService;
 import com.blue.base.service.inter.StateService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -33,11 +33,11 @@ public class StateManagerHandler {
 
     private final StateService stateService;
 
-    private final ControlService controlService;
+    private final RegionControlService regionControlService;
 
-    public StateManagerHandler(StateService stateService, ControlService controlService) {
+    public StateManagerHandler(StateService stateService, RegionControlService regionControlService) {
         this.stateService = stateService;
-        this.controlService = controlService;
+        this.regionControlService = regionControlService;
     }
 
     /**
@@ -49,7 +49,7 @@ public class StateManagerHandler {
     public Mono<ServerResponse> insert(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(StateInsertParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(controlService::insertState)
+                .flatMap(regionControlService::insertState)
                 .flatMap(si ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, si, serverRequest), BlueResponse.class));
@@ -64,7 +64,7 @@ public class StateManagerHandler {
     public Mono<ServerResponse> update(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(StateUpdateParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(controlService::updateState)
+                .flatMap(regionControlService::updateState)
                 .flatMap(si ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, si, serverRequest), BlueResponse.class));
@@ -78,7 +78,7 @@ public class StateManagerHandler {
      */
     public Mono<ServerResponse> delete(ServerRequest serverRequest) {
         return getLongVariableReact(serverRequest, ID.key)
-                .flatMap(controlService::deleteState)
+                .flatMap(regionControlService::deleteState)
                 .flatMap(si ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, si, serverRequest), BlueResponse.class));

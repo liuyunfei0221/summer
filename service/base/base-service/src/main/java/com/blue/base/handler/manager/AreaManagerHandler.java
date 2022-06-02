@@ -5,7 +5,7 @@ import com.blue.base.model.AreaUpdateParam;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.service.inter.AreaService;
-import com.blue.base.service.inter.ControlService;
+import com.blue.base.service.inter.RegionControlService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -33,11 +33,11 @@ public class AreaManagerHandler {
 
     private final AreaService areaService;
 
-    private final ControlService controlService;
+    private final RegionControlService regionControlService;
 
-    public AreaManagerHandler(AreaService areaService, ControlService controlService) {
+    public AreaManagerHandler(AreaService areaService, RegionControlService regionControlService) {
         this.areaService = areaService;
-        this.controlService = controlService;
+        this.regionControlService = regionControlService;
     }
 
     /**
@@ -49,7 +49,7 @@ public class AreaManagerHandler {
     public Mono<ServerResponse> insert(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(AreaInsertParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(controlService::insertArea)
+                .flatMap(regionControlService::insertArea)
                 .flatMap(ai ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ai, serverRequest), BlueResponse.class));
@@ -64,7 +64,7 @@ public class AreaManagerHandler {
     public Mono<ServerResponse> update(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(AreaUpdateParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(controlService::updateArea)
+                .flatMap(regionControlService::updateArea)
                 .flatMap(ai ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ai, serverRequest), BlueResponse.class));
@@ -78,7 +78,7 @@ public class AreaManagerHandler {
      */
     public Mono<ServerResponse> delete(ServerRequest serverRequest) {
         return getLongVariableReact(serverRequest, ID.key)
-                .flatMap(controlService::deleteArea)
+                .flatMap(regionControlService::deleteArea)
                 .flatMap(ai ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ai, serverRequest), BlueResponse.class));

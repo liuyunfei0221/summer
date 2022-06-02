@@ -80,6 +80,8 @@ public enum ResponseElement {
     CITY_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300007, "City already exists"),
     AREA_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300008, "Area already exists"),
     REGION_DATA_STILL_USED(HttpStatus.BAD_REQUEST.value(), 400200009, "Region is still used"),
+    STYLE_STILL_ACTIVE(HttpStatus.BAD_REQUEST.value(), 400200010, "Style is still active"),
+    STYLE_ALREADY_ACTIVE(HttpStatus.BAD_REQUEST.value(), 400200011, "Style already still active"),
     //</editor-fold>
 
 

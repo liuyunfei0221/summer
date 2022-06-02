@@ -163,25 +163,13 @@ public class DictServiceImpl implements DictService {
     }
 
     /**
-     * invalid dict type info
+     * invalid cache
      *
      * @return
      */
     @Override
-    public void invalidDictTypeInfosCache() {
-        LOGGER.info("void invalidDictTypeInfosCache()");
-
-        ALL_TYPES_CACHE.invalidateAll();
-    }
-
-    /**
-     * invalid dict info
-     *
-     * @return
-     */
-    @Override
-    public void invalidDictInfosCache() {
-        LOGGER.info("void invalidDictInfosCache()");
+    public void invalidCache() {
+        LOGGER.info("void invalidCache()");
 
         ALL_TYPES_CACHE.invalidateAll();
         TYPE_CODE_DICT_CACHE.invalidateAll();
