@@ -30,6 +30,10 @@ public final class MemberBasic implements Serializable {
      */
     private Integer gender;
 
+    private String summary;
+
+    private String source;
+
     /**
      * @see com.blue.base.constant.base.Status
      */
@@ -88,6 +92,22 @@ public final class MemberBasic implements Serializable {
         this.gender = gender;
     }
 
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -121,6 +141,8 @@ public final class MemberBasic implements Serializable {
                 ", name='" + name + '\'' +
                 ", icon='" + icon + '\'' +
                 ", gender=" + gender +
+                ", summary=" + summary +
+                ", source=" + source +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

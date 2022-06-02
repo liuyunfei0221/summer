@@ -1,7 +1,7 @@
-package com.blue.portal.model;
+package com.blue.base.model;
 
+import com.blue.base.constant.StyleSortAttribute;
 import com.blue.base.model.common.SortCondition;
-import com.blue.portal.constant.BulletinSortAttribute;
 
 import java.io.Serializable;
 
@@ -42,7 +42,7 @@ public final class StyleCondition extends SortCondition implements Serializable 
     private Long updater;
 
     public StyleCondition() {
-        super(BulletinSortAttribute.ID.attribute, DESC.identity);
+        super(StyleSortAttribute.ID.attribute, DESC.identity);
     }
 
     public StyleCondition(String sortAttribute, String sortType) {

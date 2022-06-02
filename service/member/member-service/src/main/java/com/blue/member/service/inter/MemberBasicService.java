@@ -2,6 +2,7 @@ package com.blue.member.service.inter;
 
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
+import com.blue.base.model.common.StringDataParam;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;
@@ -33,6 +34,24 @@ public interface MemberBasicService {
      * @return
      */
     MemberBasicInfo updateMemberBasic(MemberBasic memberBasic);
+
+    /**
+     * update member's icon
+     *
+     * @param id
+     * @param stringDataParam
+     * @return
+     */
+    Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, StringDataParam stringDataParam);
+
+    /**
+     * update member's summary
+     *
+     * @param id
+     * @param stringDataParam
+     * @return
+     */
+    Mono<MemberBasicInfo> updateMemberBasicSummary(Long id, StringDataParam stringDataParam);
 
     /**
      * update member status

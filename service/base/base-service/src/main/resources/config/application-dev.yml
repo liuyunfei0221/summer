@@ -101,7 +101,7 @@ data:
       testQuery: SELECT 1 FROM DUAL
       readOnly: false
       autoCommit: false
-      singleTables: [ country,state,city,area,dict_type,dict ]
+      singleTables: [ country,state,city,area,style, dict_type,dict ]
   safeRowBoundsEnabled: false
   safeResultHandlerEnabled: false
   mapUnderscoreToCamelCase: false
@@ -314,11 +314,12 @@ dubbo:
     check: false
 
 
-area:
+caffeine:
   countryMaximumSize: 1
   stateMaximumSize: 1024
   cityMaximumSize: 32768
   areaMaximumSize: 65536
+  styleMaximumSize: 32
   expireSeconds: 30
 
 

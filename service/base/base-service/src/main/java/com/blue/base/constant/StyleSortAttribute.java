@@ -1,4 +1,4 @@
-package com.blue.portal.constant;
+package com.blue.base.constant;
 
 /**
  * style sort columns

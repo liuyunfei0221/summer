@@ -1,28 +1,26 @@
-package com.blue.portal.service.impl;
+package com.blue.base.service.impl;
 
+import com.blue.base.api.model.StyleInfo;
+import com.blue.base.api.model.StyleManagerInfo;
 import com.blue.base.common.base.BlueChecker;
+import com.blue.base.config.blue.BlueRedisConfig;
+import com.blue.base.config.deploy.CaffeineDeploy;
+import com.blue.base.constant.StyleSortAttribute;
 import com.blue.base.constant.portal.StyleType;
+import com.blue.base.model.StyleCondition;
+import com.blue.base.model.StyleInsertParam;
+import com.blue.base.model.StyleUpdateParam;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
+import com.blue.base.remote.consumer.RpcMemberBasicServiceConsumer;
+import com.blue.base.repository.entity.Style;
+import com.blue.base.repository.mapper.StyleMapper;
+import com.blue.base.service.inter.StyleService;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.portal.api.model.StyleInfo;
-import com.blue.portal.api.model.StyleManagerInfo;
-import com.blue.portal.config.blue.BlueRedisConfig;
-import com.blue.portal.config.deploy.CaffeineDeploy;
-import com.blue.portal.constant.BulletinSortAttribute;
-import com.blue.portal.constant.StyleSortAttribute;
-import com.blue.portal.model.StyleCondition;
-import com.blue.portal.model.StyleInsertParam;
-import com.blue.portal.model.StyleUpdateParam;
-import com.blue.portal.remote.consumer.RpcMemberBasicServiceConsumer;
-import com.blue.portal.repository.entity.Bulletin;
-import com.blue.portal.repository.entity.Style;
-import com.blue.portal.repository.mapper.StyleMapper;
-import com.blue.portal.service.inter.StyleService;
 import com.blue.redisson.component.SynchronizedProcessor;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -50,9 +48,9 @@ import static com.blue.base.constant.base.BlueBoolean.TRUE;
 import static com.blue.base.constant.base.CacheKeyPrefix.ACTIVE_STYLE_PRE;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.base.SyncKeyPrefix.STYLES_CACHE_PRE;
+import static com.blue.base.converter.BaseModelConverters.*;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
-import static com.blue.portal.converter.PortalModelConverters.*;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -95,7 +93,7 @@ public class StyleServiceImpl implements StyleService {
         this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), ChronoUnit.SECONDS);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(
-                caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
+                caffeineDeploy.getStyleMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);
@@ -166,7 +164,7 @@ public class StyleServiceImpl implements StyleService {
         if (isNull(condition))
             return new StyleCondition();
 
-        process(condition, SORT_ATTRIBUTE_MAPPING, BulletinSortAttribute.ID.column);
+        process(condition, SORT_ATTRIBUTE_MAPPING, StyleSortAttribute.ID.column);
 
         ofNullable(condition.getNameLike())
                 .filter(StringUtils::hasText).ifPresent(titleLike -> condition.setNameLike("%" + titleLike + "%"));
@@ -277,7 +275,7 @@ public class StyleServiceImpl implements StyleService {
 
         Style style = STYLE_INSERT_PARAM_2_STYLE_CONVERTER.apply(styleInsertParam);
 
-        style.setId(blueIdentityProcessor.generate(Bulletin.class));
+        style.setId(blueIdentityProcessor.generate(Style.class));
         style.setCreator(operatorId);
         style.setUpdater(operatorId);
 

@@ -986,17 +986,19 @@ CREATE TABLE `member_basic_0`
     `id`          bigint NOT NULL COMMENT 'id',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
-    `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
+    `icon`        varchar(256) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE,
+    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
 
 CREATE TABLE `member_basic_1`
@@ -1004,17 +1006,19 @@ CREATE TABLE `member_basic_1`
     `id`          bigint NOT NULL COMMENT 'id',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE,
+    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
 CREATE TABLE `member_real_name_0`
@@ -1243,17 +1247,19 @@ CREATE TABLE `member_basic_0`
     `id`          bigint NOT NULL COMMENT 'id',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
-    `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
+    `icon`        varchar(256) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE,
+    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
 
 CREATE TABLE `member_basic_1`
@@ -1261,17 +1267,19 @@ CREATE TABLE `member_basic_1`
     `id`          bigint NOT NULL COMMENT 'id',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE,
+    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
 CREATE TABLE `member_real_name_0`
@@ -1521,23 +1529,6 @@ CREATE TABLE `bulletin`
     KEY           `idx_active_expire_type_stat_pri`(`active_time`,`expire_time`,`type`,`status`,`priority`) USING BTREE,
     KEY           `idx_pri_stat`(`priority`,`status`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of bulletin';
-
-CREATE TABLE `style`
-(
-    `id`          bigint        NOT NULL COMMENT 'id',
-    `name`        varchar(128)  NOT NULL COMMENT 'style name',
-    `attributes`  varchar(8192) NOT NULL COMMENT 'style attrtbutes',
-    `type`        tinyint       NOT NULL COMMENT 'style type: 1-a 2-b 3-c',
-    `is_active`   bit           NOT NULL COMMENT 'is active style? 1-yes 0-no',
-    `status`      tinyint       NOT NULL COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint        NOT NULL COMMENT 'data create time',
-    `update_time` bigint        NOT NULL COMMENT 'data update time',
-    `creator`     bigint        NOT NULL COMMENT 'creator id',
-    `updater`     bigint        NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_name`(`name`) USING BTREE,
-    KEY           `idx_type_active_create`(`type`,`is_active`,`create_time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of style';
 
 -- portal0
 
@@ -2055,6 +2046,23 @@ CREATE
 DATABASE base CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 base;
+
+CREATE TABLE `style`
+(
+    `id`          bigint        NOT NULL COMMENT 'id',
+    `name`        varchar(128)  NOT NULL COMMENT 'style name',
+    `attributes`  varchar(8192) NOT NULL COMMENT 'style attrtbutes',
+    `type`        tinyint       NOT NULL COMMENT 'style type: 1-a 2-b 3-c',
+    `is_active`   bit           NOT NULL COMMENT 'is active style? 1-yes 0-no',
+    `status`      tinyint       NOT NULL COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint        NOT NULL COMMENT 'data create time',
+    `update_time` bigint        NOT NULL COMMENT 'data update time',
+    `creator`     bigint        NOT NULL COMMENT 'creator id',
+    `updater`     bigint        NOT NULL COMMENT 'updater id',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_name`(`name`) USING BTREE,
+    KEY           `idx_type_active_create`(`type`,`is_active`,`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of style';
 
 CREATE TABLE `dict_type`
 (

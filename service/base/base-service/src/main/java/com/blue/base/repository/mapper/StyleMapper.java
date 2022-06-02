@@ -1,7 +1,7 @@
-package com.blue.portal.repository.mapper;
+package com.blue.base.repository.mapper;
 
-import com.blue.portal.model.StyleCondition;
-import com.blue.portal.repository.entity.Style;
+import com.blue.base.model.StyleCondition;
+import com.blue.base.repository.entity.Style;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

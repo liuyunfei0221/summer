@@ -122,7 +122,7 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
                                                         .orElseGet(() -> {
                                                             extra.put(NEW_MEMBER.key, true);
                                                             return just(roleService.getDefaultRole().getId())
-                                                                    .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(email), roleId))
+                                                                    .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(email), roleId, EMAIL_VERIFY_AUTO_REGISTER.source))
                                                                             .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), roleId, EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
                                                         })
                                         )

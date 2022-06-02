@@ -1,7 +1,7 @@
 package com.blue.base.handler.api;
 
 import com.blue.base.model.common.BlueResponse;
-import com.blue.base.model.common.StringValueParam;
+import com.blue.base.model.common.StringDataParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.base.service.inter.DictService;
 import org.springframework.stereotype.Component;
@@ -54,8 +54,8 @@ public final class DictApiHandler {
      * @return
      */
     public Mono<ServerResponse> selectDict(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(StringValueParam.class)
-                .map(StringValueParam::getValue)
+        return serverRequest.bodyToMono(StringDataParam.class)
+                .map(StringDataParam::getData)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(dictService::selectDictInfoByTypeCode)
                 .flatMap(ts ->

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
-<mapper namespace="com.blue.portal.repository.mapper.StyleMapper">
-    <resultMap id="BaseResultMap" type="com.blue.portal.repository.entity.Style">
+<mapper namespace="com.blue.base.repository.mapper.StyleMapper">
+    <resultMap id="BaseResultMap" type="com.blue.base.repository.entity.Style">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="attributes" jdbcType="VARCHAR" property="attributes"/>
@@ -21,7 +21,7 @@
     </sql>
 
 
-    <insert id="insert" parameterType="com.blue.portal.repository.entity.Style">
+    <insert id="insert" parameterType="com.blue.base.repository.entity.Style">
         insert into style (id, name, attributes,
                            type, is_active, status, create_time,
                            update_time, creator, updater)
@@ -31,7 +31,7 @@
                 #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
     </insert>
 
-    <insert id="insertSelective" parameterType="com.blue.portal.repository.entity.Style">
+    <insert id="insertSelective" parameterType="com.blue.base.repository.entity.Style">
         insert into style
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -99,7 +99,7 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.portal.repository.entity.Style">
+    <update id="updateByPrimaryKey" parameterType="com.blue.base.repository.entity.Style">
         update style
         set name        = #{name,jdbcType=VARCHAR},
             attributes  = #{attributes,jdbcType=VARCHAR},
@@ -113,7 +113,7 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKeySelective" parameterType="com.blue.portal.repository.entity.Style">
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.base.repository.entity.Style">
         update style
         <set>
             <if test="name != null">

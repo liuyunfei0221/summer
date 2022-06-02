@@ -18,8 +18,9 @@ public interface AutoRegisterService {
      *
      * @param credentials
      * @param roleId
+     * @param source
      * @return
      */
-    MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials, Long roleId);
+    MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials, Long roleId, String source);
 
 }

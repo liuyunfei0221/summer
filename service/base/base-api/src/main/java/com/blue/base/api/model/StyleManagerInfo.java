@@ -1,12 +1,17 @@
-package com.blue.portal.repository.entity;
+package com.blue.base.api.model;
+
+import java.io.Serializable;
+
 
 /**
- * style entity
+ * style manager info
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public class Style {
+public final class StyleManagerInfo implements Serializable {
+
+    private static final long serialVersionUID = 2353772661918508963L;
 
     private Long id;
 
@@ -29,7 +34,30 @@ public class Style {
 
     private Long creator;
 
+    private String creatorName;
+
     private Long updater;
+
+    private String updaterName;
+
+    public StyleManagerInfo() {
+    }
+
+    public StyleManagerInfo(Long id, String name, String attributes, Integer type, Boolean isActive, Integer status,
+                            Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
+        this.id = id;
+        this.name = name;
+        this.attributes = attributes;
+        this.type = type;
+        this.isActive = isActive;
+        this.status = status;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.creator = creator;
+        this.creatorName = creatorName;
+        this.updater = updater;
+        this.updaterName = updaterName;
+    }
 
     public Long getId() {
         return id;
@@ -44,7 +72,7 @@ public class Style {
     }
 
     public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+        this.name = name;
     }
 
     public String getAttributes() {
@@ -52,7 +80,7 @@ public class Style {
     }
 
     public void setAttributes(String attributes) {
-        this.attributes = attributes == null ? null : attributes.trim();
+        this.attributes = attributes;
     }
 
     public Integer getType() {
@@ -67,8 +95,8 @@ public class Style {
         return isActive;
     }
 
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
+    public void setIsActive(Boolean active) {
+        isActive = active;
     }
 
     public Integer getStatus() {
@@ -103,6 +131,14 @@ public class Style {
         this.creator = creator;
     }
 
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
     public Long getUpdater() {
         return updater;
     }
@@ -111,9 +147,17 @@ public class Style {
         this.updater = updater;
     }
 
+    public String getUpdaterName() {
+        return updaterName;
+    }
+
+    public void setUpdaterName(String updaterName) {
+        this.updaterName = updaterName;
+    }
+
     @Override
     public String toString() {
-        return "Style{" +
+        return "StyleManagerInfo{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", attributes='" + attributes + '\'' +
@@ -123,7 +167,9 @@ public class Style {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", creator=" + creator +
+                ", creatorName='" + creatorName + '\'' +
                 ", updater=" + updater +
+                ", updaterName='" + updaterName + '\'' +
                 '}';
     }
 

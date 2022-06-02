@@ -1,7 +1,7 @@
-package com.blue.portal.handler.api;
+package com.blue.base.handler.api;
 
 import com.blue.base.model.common.BlueResponse;
-import com.blue.portal.service.inter.StyleService;
+import com.blue.base.service.inter.StyleService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;

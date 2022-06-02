@@ -1,4 +1,4 @@
-package com.blue.portal.remote.consumer;
+package com.blue.base.remote.consumer;
 
 import com.blue.member.api.inter.RpcMemberBasicService;
 import com.blue.member.api.model.MemberBasicInfo;
@@ -19,7 +19,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
 @Component
 public class RpcMemberBasicServiceConsumer {
 

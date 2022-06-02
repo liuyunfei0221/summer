@@ -1,6 +1,6 @@
-package com.blue.portal.router.manager;
+package com.blue.base.router.manager;
 
-import com.blue.portal.handler.manager.StyleManagerHandler;
+import com.blue.base.handler.manager.StyleManagerHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -27,7 +27,7 @@ public class StyleManagerRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> roleManagerRouter(StyleManagerHandler styleManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-portal/manager");
+        RequestPredicate pathPredicate = path("/blue-base/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/style", accept(APPLICATION_JSON), styleManagerHandler::insert)

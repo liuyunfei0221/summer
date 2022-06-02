@@ -27,6 +27,8 @@ public final class MemberBasicInfo implements Serializable {
      */
     private Integer gender;
 
+    private String summary;
+
     /**
      * @see com.blue.base.constant.base.Status
      */
@@ -39,13 +41,15 @@ public final class MemberBasicInfo implements Serializable {
     public MemberBasicInfo() {
     }
 
-    public MemberBasicInfo(Long id, String phone, String email, String name, String icon, Integer gender, Integer status, Long createTime, Long updateTime) {
+    public MemberBasicInfo(Long id, String phone, String email, String name, String icon, Integer gender,
+                           String summary, Integer status, Long createTime, Long updateTime) {
         this.id = id;
         this.phone = phone;
         this.email = email;
         this.name = name;
         this.icon = icon;
         this.gender = gender;
+        this.summary = summary;
         this.status = status;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -99,6 +103,14 @@ public final class MemberBasicInfo implements Serializable {
         this.gender = gender;
     }
 
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -132,6 +144,7 @@ public final class MemberBasicInfo implements Serializable {
                 ", name='" + name + '\'' +
                 ", icon='" + icon + '\'' +
                 ", gender=" + gender +
+                ", summary=" + summary +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

@@ -1,11 +1,13 @@
 package com.blue.member.api.model;
 
+import com.blue.base.constant.base.BlueNumericalValue;
 import com.blue.base.inter.Asserter;
 import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.VERIFY_IS_INVALID;
 
@@ -38,6 +40,8 @@ public final class MemberRegistryParam implements Serializable, Asserter {
      */
     private Integer gender;
 
+    private String source;
+
     public MemberRegistryParam() {
     }
 
@@ -46,8 +50,15 @@ public final class MemberRegistryParam implements Serializable, Asserter {
         if (isBlank(this.phone) || isBlank(this.email) || isBlank(this.access) || isBlank(this.name))
             throw new BlueException(BAD_REQUEST);
 
-        if (isBlank(phoneVerify) || isBlank(emailVerify))
+        if (isBlank(this.phoneVerify) || isBlank(this.emailVerify))
             throw new BlueException(VERIFY_IS_INVALID);
+
+        if (isNotBlank(this.access)) {
+            if (this.access.length() > BlueNumericalValue.ACS_LEN_MAX.value)
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too long");
+            if (this.access.length() < BlueNumericalValue.ACS_LEN_MIN.value)
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
+        }
     }
 
     public String getPhone() {
@@ -114,6 +125,14 @@ public final class MemberRegistryParam implements Serializable, Asserter {
         this.gender = gender;
     }
 
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     @Override
     public String toString() {
         return "MemberRegistryParam{" +
@@ -125,6 +144,7 @@ public final class MemberRegistryParam implements Serializable, Asserter {
                 ", name='" + name + '\'' +
                 ", icon='" + icon + '\'' +
                 ", gender=" + gender +
+                ", source=" + source +
                 '}';
     }
 

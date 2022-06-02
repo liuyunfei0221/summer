@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static reactor.util.Loggers.getLogger;
@@ -42,7 +42,7 @@ public class AutoRegisterServiceImpl implements AutoRegisterService {
         this.controlService = controlService;
     }
 
-    private final Function<List<CredentialInfo>, MemberRegistryParam> REGISTRY_PARAM_CONVERTER = credentials -> {
+    private final BiFunction<List<CredentialInfo>, String, MemberRegistryParam> REGISTRY_PARAM_CONVERTER = (credentials, source) -> {
         MemberRegistryParam memberRegistryParam = new MemberRegistryParam();
         credentials.forEach(credential -> memberParamPackagerProcessor.packageCredentialInfoToRegistryParam(credential, memberRegistryParam));
 
@@ -55,6 +55,7 @@ public class AutoRegisterServiceImpl implements AutoRegisterService {
      *
      * @param credentials
      * @param roleId
+     * @param source
      * @return
      */
     @Override
@@ -62,10 +63,10 @@ public class AutoRegisterServiceImpl implements AutoRegisterService {
             rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
-    public MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials, Long roleId) {
-        LOGGER.info("MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials), credentials = {}", credentials);
+    public MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials, Long roleId, String source) {
+        LOGGER.info("MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials), credentials = {}, source = {}", credentials, source);
 
-        MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.autoRegisterMemberBasic(REGISTRY_PARAM_CONVERTER.apply(credentials));
+        MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.autoRegisterMemberBasic(REGISTRY_PARAM_CONVERTER.apply(credentials, source));
 
         controlService.initMemberAuthInfo(new MemberCredentialInfo(memberBasicInfo.getId(), credentials), roleId);
 

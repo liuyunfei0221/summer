@@ -1,13 +1,13 @@
-package com.blue.portal.service.inter;
+package com.blue.base.service.inter;
 
+import com.blue.base.api.model.StyleInfo;
+import com.blue.base.api.model.StyleManagerInfo;
+import com.blue.base.model.StyleCondition;
+import com.blue.base.model.StyleInsertParam;
+import com.blue.base.model.StyleUpdateParam;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
-import com.blue.portal.api.model.StyleInfo;
-import com.blue.portal.api.model.StyleManagerInfo;
-import com.blue.portal.model.StyleCondition;
-import com.blue.portal.model.StyleInsertParam;
-import com.blue.portal.model.StyleUpdateParam;
-import com.blue.portal.repository.entity.Style;
+import com.blue.base.repository.entity.Style;
 import reactor.core.publisher.Mono;
 
 import java.util.List;

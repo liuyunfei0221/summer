@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "area")
-public class AreaCaffeineDeploy {
+@ConfigurationProperties(prefix = "caffeine")
+public class CaffeineDeploy {
 
     private int countryMaximumSize;
 
@@ -20,9 +20,11 @@ public class AreaCaffeineDeploy {
 
     private int areaMaximumSize;
 
+    private int styleMaximumSize;
+
     private int expireSeconds;
 
-    public AreaCaffeineDeploy() {
+    public CaffeineDeploy() {
     }
 
     public int getCountryMaximumSize() {
@@ -57,6 +59,14 @@ public class AreaCaffeineDeploy {
         this.areaMaximumSize = areaMaximumSize;
     }
 
+    public int getStyleMaximumSize() {
+        return styleMaximumSize;
+    }
+
+    public void setStyleMaximumSize(int styleMaximumSize) {
+        this.styleMaximumSize = styleMaximumSize;
+    }
+
     public int getExpireSeconds() {
         return expireSeconds;
     }
@@ -72,6 +82,7 @@ public class AreaCaffeineDeploy {
                 ", stateMaximumSize=" + stateMaximumSize +
                 ", cityMaximumSize=" + cityMaximumSize +
                 ", areaMaximumSize=" + areaMaximumSize +
+                ", styleMaximumSize=" + styleMaximumSize +
                 ", expireSeconds=" + expireSeconds +
                 '}';
     }

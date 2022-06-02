@@ -1,6 +1,8 @@
 package com.blue.member.handler.api;
 
 import com.blue.base.model.common.BlueResponse;
+import com.blue.base.model.common.StringDataParam;
+import com.blue.base.model.exps.BlueException;
 import com.blue.member.service.inter.MemberBasicService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -9,9 +11,11 @@ import reactor.core.publisher.Mono;
 
 import static com.blue.base.common.reactive.AccessGetterForReactive.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * member api handler
@@ -39,10 +43,43 @@ public final class MemberBasicApiHandler {
                 .flatMap(ai ->
                         memberBasicService.getMemberBasicInfoMonoWithAssert(ai.getId())
                                 .flatMap(mbi ->
-                                        ok()
-                                                .contentType(APPLICATION_JSON)
+                                        ok().contentType(APPLICATION_JSON)
                                                 .body(generate(OK.code, mbi, serverRequest), BlueResponse.class))
                 );
+    }
+
+    /**
+     * update member's icon
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> updateIcon(ServerRequest serverRequest) {
+        return zip(getAccessReact(serverRequest),
+                serverRequest.bodyToMono(StringDataParam.class)
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))))
+                .flatMap(tuple2 ->
+                        memberBasicService.updateMemberBasicIcon(tuple2.getT1().getId(), tuple2.getT2()))
+                .flatMap(mbi ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
+    }
+
+    /**
+     * update member's summary
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> updateSummary(ServerRequest serverRequest) {
+        return zip(getAccessReact(serverRequest),
+                serverRequest.bodyToMono(StringDataParam.class)
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))))
+                .flatMap(tuple2 ->
+                        memberBasicService.updateMemberBasicSummary(tuple2.getT1().getId(), tuple2.getT2()))
+                .flatMap(mbi ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
     }
 
 }

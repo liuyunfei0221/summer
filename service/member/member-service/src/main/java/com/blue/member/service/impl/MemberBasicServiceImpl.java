@@ -4,6 +4,7 @@ import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.common.InvalidAuthEvent;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
+import com.blue.base.model.common.StringDataParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
@@ -47,7 +48,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service
 public class MemberBasicServiceImpl implements MemberBasicService {
 
@@ -148,6 +149,66 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     }
 
     /**
+     * update member's icon
+     *
+     * @param id
+     * @param stringDataParam
+     * @return
+     */
+    @Override
+    public Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, StringDataParam stringDataParam) {
+        LOGGER.info("Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, StringDataParam stringDataParam), id = {}, stringDataParam = {}",
+                id, stringDataParam);
+        if (isInvalidIdentity(id))
+            throw new BlueException(UNAUTHORIZED);
+        if (isNull(stringDataParam))
+            throw new BlueException(EMPTY_PARAM);
+
+        String icon = stringDataParam.getData();
+        if (isBlank(icon))
+            throw new BlueException(EMPTY_PARAM);
+
+        return justOrEmpty(memberBasicMapper.selectByPrimaryKey(id))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .flatMap(mb -> {
+                    memberBasicMapper.updateIcon(id, icon);
+                    mb.setIcon(icon);
+                    return just(mb);
+                })
+                .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO);
+    }
+
+    /**
+     * update member's summary
+     *
+     * @param id
+     * @param stringDataParam
+     * @return
+     */
+    @Override
+    public Mono<MemberBasicInfo> updateMemberBasicSummary(Long id, StringDataParam stringDataParam) {
+        LOGGER.info("Mono<MemberBasicInfo> updateMemberBasicSummary(Long id, StringDataParam stringDataParam), id = {}, stringDataParam = {}",
+                id, stringDataParam);
+        if (isInvalidIdentity(id))
+            throw new BlueException(UNAUTHORIZED);
+        if (isNull(stringDataParam))
+            throw new BlueException(EMPTY_PARAM);
+
+        String summary = stringDataParam.getData();
+        if (isBlank(summary))
+            throw new BlueException(EMPTY_PARAM);
+
+        return justOrEmpty(memberBasicMapper.selectByPrimaryKey(id))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .flatMap(mb -> {
+                    memberBasicMapper.updateSummary(id, summary);
+                    mb.setSummary(summary);
+                    return just(mb);
+                })
+                .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO);
+    }
+
+    /**
      * update member status
      *
      * @param id
@@ -161,8 +222,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
         assertStatus(status, false);
-
-
 
         MemberBasic memberBasic = memberBasicMapper.selectByPrimaryKey(id);
         if (isNull(memberBasic))
@@ -279,7 +338,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        //noinspection DuplicatedCode
         return just(id)
                 .flatMap(this::getMemberBasicMono)
                 .flatMap(mbOpt ->

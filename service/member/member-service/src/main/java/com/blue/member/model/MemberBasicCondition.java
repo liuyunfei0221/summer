@@ -31,6 +31,8 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
      */
     private Integer gender;
 
+    private String source;
+
     /**
      * @see com.blue.base.constant.base.Status
      */
@@ -46,26 +48,21 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
 
     public MemberBasicCondition() {
         super(MemberBasicSortAttribute.ID.attribute, SortType.DESC.identity);
-        this.phone = null;
-        this.email = null;
-        this.name = null;
     }
 
     public MemberBasicCondition(String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
-        this.phone = null;
-        this.email = null;
-        this.name = null;
     }
 
-    public MemberBasicCondition(Long id, String phone, String email, String name, Integer gender, Integer status,
+    public MemberBasicCondition(Long id, String phone, String email, String name, Integer gender, String source, Integer status,
                                 Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
-        this.phone = isNotBlank(phone) ? phone : null;
-        this.email = isNotBlank(email) ? email : null;
-        this.name = isNotBlank(name) ? name : null;
+        this.phone = phone;
+        this.email = email;
+        this.name = name;
         this.gender = gender;
+        this.source = source;
         this.status = status;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
@@ -111,6 +108,14 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
 
     public void setGender(Integer gender) {
         this.gender = gender;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public Integer getStatus() {
@@ -161,6 +166,7 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", gender=" + gender +
+                ", source=" + source +
                 ", status=" + status +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +

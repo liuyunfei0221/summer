@@ -39,7 +39,8 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'query dict types', 'query dict types', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (100010, 'GET', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'test get endpoint', 'test get endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
+       (100011, 'GET', 'blue-base', '/style/{type}', b'0', b'1', b'1', b'0', b'1', 1,
+        'active style of api', 'active style of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- base manage
 
@@ -79,6 +80,16 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
        (110016, 'DELETE', 'blue-base', '/manager/area/{id}', b'1', b'1', b'1', b'1', b'1', 2,
         'delete area', 'delete area', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
+       (110017, 'POST', 'blue-base', '/manager/styles', b'1', b'1', b'1', b'1', b'1', 2,
+        'style list of manager', 'style list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110018, 'POST', 'blue-base', '/manager/style', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert style', 'insert style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110019, 'PUT', 'blue-base', '/manager/style', b'1', b'1', b'1', b'1', b'1', 2,
+        'update style', 'update style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110020, 'DELETE', 'blue-base', '/manager/style/{id}', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete style', 'delete style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110021, 'PUT', 'blue-base', '/manager/style/active', b'1', b'1', b'1', b'1', b'1', 2,
+        'update active style', 'update active style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- verify api
 
@@ -151,8 +162,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'update member-role-relation', 'update member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (170015, 'GET', 'blue-auth', '/manager/auth/security/{mid}', b'1', b'1', b'1', b'0', b'1', 2,
-        'select members security info', 'select members security info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
-        1),
+        'select members security info', 'select members security info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- member api
@@ -161,6 +171,11 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'member registry', 'member registry', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180002, 'GET', 'blue-member', '/basic', b'1', b'1', b'1', b'0', b'1', 1,
         'member basic info', 'member basic info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180003, 'PUT', 'blue-member', '/basic/icon', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member icon', 'update member icon', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180004, 'PUT', 'blue-member', '/basic/summary', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member summary', 'update member summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
 
 -- member manage
 
@@ -229,8 +244,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
        (250001, 'GET', 'blue-portal', '/bulletins/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'bulletin list of api', 'bulletin list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (250002, 'GET', 'blue-portal', '/style/{type}', b'0', b'1', b'1', b'0', b'1', 1,
-        'active style of api', 'active style of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
        (250003, 'GET', 'blue-portal', '/formatter/{formatter}.html', b'1', b'1', b'1', b'0', b'1', 1,
         'formatter test', 'formatter test', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (250004, 'GET', 'blue-portal', '/fallBack', b'0', b'1', b'1', b'0', b'1', 1,
@@ -248,17 +262,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'update portal', 'update portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (260004, 'DELETE', 'blue-portal', '/manager/bulletin/{id}', b'1', b'1', b'1', b'1', b'1', 2,
         'delete portal', 'delete portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
-       (260005, 'POST', 'blue-portal', '/manager/styles', b'1', b'1', b'1', b'1', b'1', 2,
-        'style list of manager', 'style list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (260006, 'POST', 'blue-portal', '/manager/style', b'1', b'1', b'1', b'1', b'1', 2,
-        'insert style', 'insert style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (260007, 'PUT', 'blue-portal', '/manager/style', b'1', b'1', b'1', b'1', b'1', 2,
-        'update style', 'update style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (260008, 'DELETE', 'blue-portal', '/manager/style/{id}', b'1', b'1', b'1', b'1', b'1', 2,
-        'delete style', 'delete style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (260009, 'PUT', 'blue-portal', '/manager/style/active', b'1', b'1', b'1', b'1', b'1', 2,
-        'update active style', 'update active style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- marketing api
 

@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
+import static com.blue.base.constant.auth.CredentialType.PHONE_PWD;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.member.Gender.UNKNOWN;
@@ -44,14 +45,6 @@ public final class MemberModelConverters {
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too short");
         }
 
-        String access = memberRegistryParam.getAccess();
-        if (isNotBlank(access)) {
-            if (access.length() > BlueNumericalValue.ACS_LEN_MAX.value)
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too long");
-            if (access.length() < BlueNumericalValue.ACS_LEN_MIN.value)
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
-        }
-
         String name = memberRegistryParam.getName();
         if (isBlank(name))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
@@ -70,6 +63,10 @@ public final class MemberModelConverters {
                     return gender;
                 }).orElseGet(() -> UNKNOWN.identity));
         memberBasic.setStatus(Status.VALID.status);
+
+        String source = memberRegistryParam.getSource();
+        memberBasic.setSource(isNotBlank(source) ? source : PHONE_PWD.source);
+
         memberBasic.setCreateTime(epochSecond);
         memberBasic.setUpdateTime(epochSecond);
 
@@ -78,11 +75,9 @@ public final class MemberModelConverters {
 
     public static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = memberBasic -> {
         if (memberBasic != null)
-            return new MemberBasicInfo(memberBasic.getId(),
-                    memberBasic.getPhone(), memberBasic.getEmail(),
-                    memberBasic.getName(), memberBasic.getIcon(),
-                    memberBasic.getGender(), memberBasic.getStatus(),
-                    memberBasic.getCreateTime(), memberBasic.getUpdateTime());
+            return new MemberBasicInfo(memberBasic.getId(), memberBasic.getPhone(), memberBasic.getEmail(),
+                    memberBasic.getName(), memberBasic.getIcon(), memberBasic.getGender(), memberBasic.getSummary(),
+                    memberBasic.getStatus(), memberBasic.getCreateTime(), memberBasic.getUpdateTime());
 
         throw new BlueException(EMPTY_PARAM);
     };

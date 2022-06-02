@@ -1,6 +1,6 @@
-package com.blue.portal.router.api;
+package com.blue.base.router.api;
 
-import com.blue.portal.handler.api.StyleApiHandler;
+import com.blue.base.handler.api.StyleApiHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -13,7 +13,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * bulletin api routers
+ * style api routers
  *
  * @author liuyunfei
  */
@@ -24,7 +24,7 @@ public class StyleApiRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> styleApiRouter(StyleApiHandler styleApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-portal");
+        RequestPredicate pathPredicate = path("/blue-base");
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .GET("/style/{" + TYPE.key + "}", styleApiHandler::get)

@@ -329,7 +329,8 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'query dict types', 'query dict types', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (100010, 'GET', 'blue-base', '/bulletin/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'test get endpoint', 'test get endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
+       (100011, 'GET', 'blue-base', '/style/{type}', b'0', b'1', b'1', b'0', b'1', 1,
+        'active style of api', 'active style of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- base manage
 
@@ -369,6 +370,16 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
        (110016, 'DELETE', 'blue-base', '/manager/area/{id}', b'1', b'1', b'1', b'1', b'1', 2,
         'delete area', 'delete area', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
+       (110017, 'POST', 'blue-base', '/manager/styles', b'1', b'1', b'1', b'1', b'1', 2,
+        'style list of manager', 'style list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110018, 'POST', 'blue-base', '/manager/style', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert style', 'insert style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110019, 'PUT', 'blue-base', '/manager/style', b'1', b'1', b'1', b'1', b'1', 2,
+        'update style', 'update style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110020, 'DELETE', 'blue-base', '/manager/style/{id}', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete style', 'delete style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110021, 'PUT', 'blue-base', '/manager/style/active', b'1', b'1', b'1', b'1', b'1', 2,
+        'update active style', 'update active style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- verify api
 
@@ -441,8 +452,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'update member-role-relation', 'update member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (170015, 'GET', 'blue-auth', '/manager/auth/security/{mid}', b'1', b'1', b'1', b'0', b'1', 2,
-        'select members security info', 'select members security info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
-        1),
+        'select members security info', 'select members security info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- member api
@@ -451,6 +461,11 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'member registry', 'member registry', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180002, 'GET', 'blue-member', '/basic', b'1', b'1', b'1', b'0', b'1', 1,
         'member basic info', 'member basic info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180003, 'PUT', 'blue-member', '/basic/icon', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member icon', 'update member icon', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180004, 'PUT', 'blue-member', '/basic/summary', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member summary', 'update member summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
 
 -- member manage
 
@@ -519,8 +534,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
        (250001, 'GET', 'blue-portal', '/bulletins/{type}', b'0', b'1', b'1', b'0', b'1', 1,
         'bulletin list of api', 'bulletin list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (250002, 'GET', 'blue-portal', '/style/{type}', b'0', b'1', b'1', b'0', b'1', 1,
-        'active style of api', 'active style of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
        (250003, 'GET', 'blue-portal', '/formatter/{formatter}.html', b'1', b'1', b'1', b'0', b'1', 1,
         'formatter test', 'formatter test', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (250004, 'GET', 'blue-portal', '/fallBack', b'0', b'1', b'1', b'0', b'1', 1,
@@ -538,17 +552,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'update portal', 'update portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (260004, 'DELETE', 'blue-portal', '/manager/bulletin/{id}', b'1', b'1', b'1', b'1', b'1', 2,
         'delete portal', 'delete portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
-       (260005, 'POST', 'blue-portal', '/manager/styles', b'1', b'1', b'1', b'1', b'1', 2,
-        'style list of manager', 'style list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (260006, 'POST', 'blue-portal', '/manager/style', b'1', b'1', b'1', b'1', b'1', 2,
-        'insert style', 'insert style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (260007, 'PUT', 'blue-portal', '/manager/style', b'1', b'1', b'1', b'1', b'1', 2,
-        'update style', 'update style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (260008, 'DELETE', 'blue-portal', '/manager/style/{id}', b'1', b'1', b'1', b'1', b'1', 2,
-        'delete style', 'delete style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (260009, 'PUT', 'blue-portal', '/manager/style/active', b'1', b'1', b'1', b'1', b'1', 2,
-        'update active style', 'update active style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- marketing api
 
@@ -603,26 +606,14 @@ VALUES (1, 'blue', 'blue', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 -- blue admin res
 INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                        `updater`)
-SELECT id + 1000000,
-       1,
-       id,
-       UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
-       1
+SELECT id + 1000000, 1, id, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1
 FROM `auth`.`resource`;
 
 
 -- admin res
 INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                        `updater`)
-SELECT id + 2000000,
-       2,
-       id,
-       UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
-       1
+SELECT id + 2000000, 2, id, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1
 FROM `auth`.`resource`
 WHERE `type` = 2;
 
@@ -630,13 +621,7 @@ WHERE `type` = 2;
 -- manager res
 INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                        `updater`)
-SELECT id + 3000000,
-       3,
-       id,
-       UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
-       1
+SELECT id + 3000000, 3, id, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1
 FROM `auth`.`resource`
 WHERE `type` = 2;
 
@@ -644,13 +629,7 @@ WHERE `type` = 2;
 -- tester res
 INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                        `updater`)
-SELECT id + 4000000,
-       4,
-       id,
-       UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
-       1
+SELECT id + 4000000, 4, id, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1
 FROM `auth`.`resource`
 WHERE `type` = 2;
 
@@ -658,13 +637,7 @@ WHERE `type` = 2;
 -- customer res
 INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                        `updater`)
-SELECT id + 5000000,
-       5,
-       id,
-       UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
-       1
+SELECT id + 5000000, 5, id, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1
 FROM `auth`.`resource`
 WHERE `type` = 2;
 
@@ -672,13 +645,7 @@ WHERE `type` = 2;
 -- member res
 INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
                                        `updater`)
-SELECT id + 6000000,
-       6,
-       id,
-       UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
-       1
+SELECT id + 6000000, 6, id, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1
 FROM `auth`.`resource`
 WHERE `type` = 1;
 
@@ -1533,17 +1500,19 @@ CREATE TABLE `member_basic_0`
     `id`          bigint NOT NULL COMMENT 'id',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
-    `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
+    `icon`        varchar(256) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE,
+    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
 
 CREATE TABLE `member_basic_1`
@@ -1551,17 +1520,19 @@ CREATE TABLE `member_basic_1`
     `id`          bigint NOT NULL COMMENT 'id',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE,
+    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
 CREATE TABLE `member_real_name_0`
@@ -1791,17 +1762,19 @@ CREATE TABLE `member_basic_0`
     `id`          bigint NOT NULL COMMENT 'id',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
-    `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
+    `icon`        varchar(256) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE,
+    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
 
 CREATE TABLE `member_basic_1`
@@ -1809,17 +1782,19 @@ CREATE TABLE `member_basic_1`
     `id`          bigint NOT NULL COMMENT 'id',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `access`      varchar(256) DEFAULT '' COMMENT 'access',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE
+    KEY           `idx_name`(`name`) USING BTREE,
+    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
 CREATE TABLE `member_real_name_0`
@@ -2629,6 +2604,23 @@ CREATE
 DATABASE base CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 base;
+
+CREATE TABLE `style`
+(
+    `id`          bigint        NOT NULL COMMENT 'id',
+    `name`        varchar(128)  NOT NULL COMMENT 'style name',
+    `attributes`  varchar(8192) NOT NULL COMMENT 'style attrtbutes',
+    `type`        tinyint       NOT NULL COMMENT 'style type: 1-a 2-b 3-c',
+    `is_active`   bit           NOT NULL COMMENT 'is active style? 1-yes 0-no',
+    `status`      tinyint       NOT NULL COMMENT 'data status: 1-valid 0-invalid',
+    `create_time` bigint        NOT NULL COMMENT 'data create time',
+    `update_time` bigint        NOT NULL COMMENT 'data update time',
+    `creator`     bigint        NOT NULL COMMENT 'creator id',
+    `updater`     bigint        NOT NULL COMMENT 'updater id',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_name`(`name`) USING BTREE,
+    KEY           `idx_type_active_create`(`type`,`is_active`,`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of style';
 
 
 CREATE TABLE `dict_type`

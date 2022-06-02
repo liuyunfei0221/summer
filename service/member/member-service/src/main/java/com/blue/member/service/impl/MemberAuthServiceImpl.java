@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.constant.auth.CredentialType.PHONE_PWD;
 import static com.blue.base.constant.base.ResponseElement.*;
 import static com.blue.base.constant.verify.BusinessType.REGISTER;
 import static com.blue.base.constant.verify.VerifyType.MAIL;
@@ -66,6 +67,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         this.rpcFinanceAccountServiceConsumer = rpcFinanceAccountServiceConsumer;
     }
 
+    private static final String DEFAULT_SOURCE = PHONE_PWD.source;
+
     /**
      * member registry
      *
@@ -82,6 +85,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
         memberRegistryParam.asserts();
+        memberRegistryParam.setSource(DEFAULT_SOURCE);
 
         if (!rpcVerifyHandleServiceConsumer.validate(SMS, REGISTER, memberRegistryParam.getPhone(), memberRegistryParam.getPhoneVerify(), true)
                 .toFuture().join())

@@ -2,7 +2,7 @@ package com.blue.base.service.impl;
 
 import com.blue.base.api.model.StateInfo;
 import com.blue.base.api.model.StateRegion;
-import com.blue.base.config.deploy.AreaCaffeineDeploy;
+import com.blue.base.config.deploy.CaffeineDeploy;
 import com.blue.base.model.StateCondition;
 import com.blue.base.model.StateInsertParam;
 import com.blue.base.model.StateUpdateParam;
@@ -82,22 +82,22 @@ public class StateServiceImpl implements StateService {
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
     public StateServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CountryService countryService, StateRepository stateRepository,
-                            ExecutorService executorService, ReactiveMongoTemplate reactiveMongoTemplate, AreaCaffeineDeploy areaCaffeineDeploy) {
+                            ExecutorService executorService, ReactiveMongoTemplate reactiveMongoTemplate, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.countryService = countryService;
         this.stateRepository = stateRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
 
         idStateCache = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         countryIdStatesCache = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         idRegionCache = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getStateMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 

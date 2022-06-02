@@ -2,7 +2,7 @@ package com.blue.base.service.impl;
 
 import com.blue.base.api.model.CityInfo;
 import com.blue.base.api.model.CityRegion;
-import com.blue.base.config.deploy.AreaCaffeineDeploy;
+import com.blue.base.config.deploy.CaffeineDeploy;
 import com.blue.base.model.CityCondition;
 import com.blue.base.model.CityInsertParam;
 import com.blue.base.model.CityUpdateParam;
@@ -87,7 +87,7 @@ public class CityServiceImpl implements CityService {
 
     public CityServiceImpl(BlueIdentityProcessor blueIdentityProcessor, StateService stateService, CountryService countryService,
                            CityRepository cityRepository, ReactiveMongoTemplate reactiveMongoTemplate,
-                           ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy) {
+                           ExecutorService executorService, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.stateService = stateService;
         this.countryService = countryService;
@@ -95,15 +95,15 @@ public class CityServiceImpl implements CityService {
         this.reactiveMongoTemplate = reactiveMongoTemplate;
 
         idCityCache = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         stateIdCitiesCache = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         idRegionCache = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getCityMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 

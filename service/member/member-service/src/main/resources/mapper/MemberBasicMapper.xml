@@ -13,6 +13,9 @@
                 typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
         <result column="icon" jdbcType="VARCHAR" property="icon"/>
         <result column="gender" jdbcType="TINYINT" property="gender"/>
+        <result column="summary" jdbcType="VARCHAR" property="summary"
+                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+        <result column="source" jdbcType="VARCHAR" property="source"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
@@ -20,20 +23,21 @@
 
     <sql id="Base_Column_List">
         id
-        , phone, email, name, icon, gender, status, create_time, update_time
+        , phone, email, name, icon, gender, summary, source, status, create_time, update_time
     </sql>
 
     <insert id="insert" parameterType="com.blue.member.repository.entity.MemberBasic">
-        insert into member_basic (id, phone,
-                                  email, name,
-                                  icon, gender, status,
+        insert into member_basic (id, phone, email, name, icon,
+                                  gender, summary, source, status,
                                   create_time, update_time)
         values (#{id,jdbcType=BIGINT},
                 #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
                 #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
                 #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-                #{icon,jdbcType=VARCHAR}, #{gender,jdbcType=TINYINT}, #{status,jdbcType=TINYINT},
-                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
+                #{icon,jdbcType=VARCHAR}, #{gender,jdbcType=TINYINT},
+                #{summary,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{source,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertSelective" parameterType="com.blue.member.repository.entity.MemberBasic">
@@ -56,6 +60,12 @@
             </if>
             <if test="gender != null">
                 gender,
+            </if>
+            <if test="summary != null">
+                summary,
+            </if>
+            <if test="source != null">
+                source,
             </if>
             <if test="status != null">
                 status,
@@ -86,6 +96,12 @@
             <if test="gender != null">
                 #{gender,jdbcType=TINYINT},
             </if>
+            <if test="summary != null">
+                #{summary,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            </if>
+            <if test="source != null">
+                #{source,jdbcType=VARCHAR},
+            </if>
             <if test="status != null">
                 #{status,jdbcType=TINYINT},
             </if>
@@ -105,6 +121,8 @@
             name        = #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
             icon        = #{icon,jdbcType=VARCHAR},
             gender      = #{gender,jdbcType=TINYINT},
+            summary     = #{summary,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            source      = #{source,jdbcType=VARCHAR},
             status      = #{status,jdbcType=TINYINT},
             create_time = #{createTime,jdbcType=BIGINT},
             update_time = #{updateTime,jdbcType=BIGINT}
@@ -129,6 +147,12 @@
             <if test="gender != null">
                 gender = #{gender,jdbcType=TINYINT},
             </if>
+            <if test="summary != null">
+                summary = #{summary,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            </if>
+            <if test="source != null">
+                source = #{source,jdbcType=VARCHAR},
+            </if>
             <if test="status != null">
                 status = #{status,jdbcType=TINYINT},
             </if>
@@ -148,7 +172,19 @@
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
-    <update id="updateStatus" parameterType="com.blue.member.repository.entity.MemberBasic">
+    <update id="updateIcon">
+        update member_basic
+        set icon = #{icon,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateSummary">
+        update member_basic
+        set summary = #{summary,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateStatus">
         update member_basic
         set status = #{status,jdbcType=TINYINT}
         where id = #{id,jdbcType=BIGINT}
@@ -207,24 +243,28 @@
                     AND
                     id = #{memberBasicCondition.id,jdbcType=BIGINT}
                 </if>
-                <if test="memberBasicCondition.phone != null">
+                <if test="memberBasicCondition.phone != null and memberBasicCondition.phone != ''">
                     AND
                     phone =
                     #{memberBasicCondition.phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
                 </if>
-                <if test="memberBasicCondition.email != null">
+                <if test="memberBasicCondition.email != null and memberBasicCondition.email != ''">
                     AND
                     email =
                     #{memberBasicCondition.email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
                 </if>
-                <if test="memberBasicCondition.name != null">
+                <if test="memberBasicCondition.name != null and memberBasicCondition.name != ''">
                     AND
                     name =
                     #{memberBasicCondition.name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler}
                 </if>
-                <if test="memberBasicCondition.gender != null">
+                <if test="memberBasicCondition.gender != null and memberBasicCondition.gender != ''">
                     AND
                     gender = #{memberBasicCondition.gender,jdbcType=TINYINT}
+                </if>
+                <if test="memberBasicCondition.source != null and memberBasicCondition.source != ''">
+                    AND
+                    source = #{memberBasicCondition.source,jdbcType=VARCHAR}
                 </if>
                 <if test="memberBasicCondition.status != null">
                     AND

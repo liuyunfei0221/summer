@@ -1,4 +1,4 @@
-package com.blue.portal.model;
+package com.blue.base.model;
 
 import com.blue.base.model.exps.BlueException;
 

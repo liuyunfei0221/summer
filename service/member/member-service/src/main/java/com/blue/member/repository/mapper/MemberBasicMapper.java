@@ -24,6 +24,10 @@ public interface MemberBasicMapper {
 
     int deleteByPrimaryKey(Long id);
 
+    int updateIcon(@Param("id") Long id, @Param("icon") String icon);
+
+    int updateSummary(@Param("id") Long id, @Param("summary") String summary);
+
     int updateStatus(@Param("id") Long id, @Param("status") Integer status);
 
     MemberBasic selectByPrimaryKey(Long id);

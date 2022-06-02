@@ -120,7 +120,7 @@ public class MiniProWithAutoRegisterLoginHandler implements LoginHandler {
                                 .orElseGet(() -> {
                                     extra.put(NEW_MEMBER.key, true);
                                     return just(roleService.getDefaultRole().getId())
-                                            .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId))
+                                            .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, MINI_PRO_AUTO_REGISTER.source))
                                                     .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), roleId, MINI_PRO_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
                                 })
                 )

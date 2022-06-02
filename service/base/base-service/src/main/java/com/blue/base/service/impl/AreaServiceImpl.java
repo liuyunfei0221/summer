@@ -2,7 +2,7 @@ package com.blue.base.service.impl;
 
 import com.blue.base.api.model.AreaInfo;
 import com.blue.base.api.model.AreaRegion;
-import com.blue.base.config.deploy.AreaCaffeineDeploy;
+import com.blue.base.config.deploy.CaffeineDeploy;
 import com.blue.base.model.AreaCondition;
 import com.blue.base.model.AreaInsertParam;
 import com.blue.base.model.AreaUpdateParam;
@@ -86,7 +86,7 @@ public class AreaServiceImpl implements AreaService {
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
     public AreaServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CityService cityService, StateService stateService, CountryService countryService,
-                           AreaRepository areaRepository, ReactiveMongoTemplate reactiveMongoTemplate, ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy) {
+                           AreaRepository areaRepository, ReactiveMongoTemplate reactiveMongoTemplate, ExecutorService executorService, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.cityService = cityService;
         this.stateService = stateService;
@@ -95,15 +95,15 @@ public class AreaServiceImpl implements AreaService {
         this.reactiveMongoTemplate = reactiveMongoTemplate;
 
         idAreaCache = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getAreaMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         cityIdAreasCache = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getAreaMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         idRegionCache = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getAreaMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 

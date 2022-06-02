@@ -1,7 +1,7 @@
 package com.blue.base.service.impl;
 
 import com.blue.base.api.model.CountryInfo;
-import com.blue.base.config.deploy.AreaCaffeineDeploy;
+import com.blue.base.config.deploy.CaffeineDeploy;
 import com.blue.base.model.CountryCondition;
 import com.blue.base.model.CountryInsertParam;
 import com.blue.base.model.CountryUpdateParam;
@@ -77,17 +77,17 @@ public class CountryServiceImpl implements CountryService {
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
     public CountryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CountryRepository countryRepository, ReactiveMongoTemplate reactiveMongoTemplate,
-                              ExecutorService executorService, AreaCaffeineDeploy areaCaffeineDeploy) {
+                              ExecutorService executorService, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.countryRepository = countryRepository;
 
         idCountryCache = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getCountryMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getCountryMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         allCountriesCache = generateCache(new CaffeineConfParams(
-                areaCaffeineDeploy.getCountryMaximumSize(), Duration.of(areaCaffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getCountryMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 
