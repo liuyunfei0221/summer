@@ -10,9 +10,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import static org.springframework.boot.SpringApplication.run;
 
 /**
+ * shine application
+ *
  * @author liuyunfei
  */
-@SuppressWarnings("resource")
 @SummerSpringBootApplication
 @EnableDiscoveryClient
 @EnableBlueLifecycle(basePackages = "com.blue.shine.event")

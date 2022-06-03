@@ -10,9 +10,10 @@ import static org.springframework.boot.SpringApplication.run;
 
 
 /**
+ * member application
+ *
  * @author liuyunfei
  */
-@SuppressWarnings("resource")
 @SummerSpringBootApplication
 @EnableDiscoveryClient
 @EnableBlueLifecycle(basePackages = "com.blue.member.event")
