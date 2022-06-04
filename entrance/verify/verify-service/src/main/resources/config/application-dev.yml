@@ -52,7 +52,7 @@ cors:
 
 
 web:
-  maxInMemorySize: 8388608
+  maxInMemorySize: 4096
 
 
 data:

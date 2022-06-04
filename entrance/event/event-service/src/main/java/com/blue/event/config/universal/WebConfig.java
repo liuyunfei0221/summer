@@ -1,6 +1,6 @@
-package com.blue.verify.config.universal;
+package com.blue.event.config.universal;
 
-import com.blue.verify.config.deploy.WebDeploy;
+import com.blue.event.config.deploy.WebDeploy;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +17,6 @@ import java.util.List;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Configuration
 public class WebConfig implements WebFluxConfigurer {
 
