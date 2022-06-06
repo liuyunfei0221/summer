@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
-import java.time.Instant;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -56,9 +56,9 @@ public class ControlServiceImpl implements ControlService {
         financeAccount.setOutlay(0L);
         financeAccount.setStatus(Status.VALID.status);
 
-        long epochSecond = Instant.now().getEpochSecond();
-        financeAccount.setCreateTime(epochSecond);
-        financeAccount.setUpdateTime(epochSecond);
+        Long stamp = TIME_STAMP_GETTER.get();
+        financeAccount.setCreateTime(stamp);
+        financeAccount.setUpdateTime(stamp);
 
         return financeAccount;
     };

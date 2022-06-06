@@ -46,6 +46,7 @@ public enum ResponseElement {
     TIME_FORMAT_IS_INVALID(HttpStatus.BAD_REQUEST.value(), 400000018, "Time format is invalid"),
     UNSUPPORTED_OPERATE(HttpStatus.BAD_REQUEST.value(), 400000019, "Operate is not support"),
     NEED_TURING_TEST(HttpStatus.BAD_REQUEST.value(), 400000020, "Need to pass the Turing test"),
+    DATA_NOT_BELONG_TO_YOU(HttpStatus.BAD_REQUEST.value(), 400000021, "Data not belong to you"),
     //</editor-fold>
 
 
@@ -73,7 +74,7 @@ public enum ResponseElement {
     //<editor-fold desc="base">
     COUNTRY_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300001, "Country name already exists"),
     COUNTRY_NATIVE_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300002, "Country native name already exists"),
-    COUNTRY_NUMERIC_CODE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300003, "Country mumeric code already exists"),
+    COUNTRY_NUMERIC_CODE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300003, "Country numeric code already exists"),
     COUNTRY_CODE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300004, "Country code already exists"),
     COUNTRY_PHONE_CODE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300005, "Country phone code already exists"),
     STATE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400300006, "State already exists"),

@@ -28,7 +28,6 @@ import reactor.util.Logger;
 
 import java.io.File;
 import java.net.URLEncoder;
-import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.function.*;
@@ -38,7 +37,7 @@ import java.util.stream.Stream;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.common.reactive.AccessGetterForReactive.*;
+import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.base.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_WRITE;
@@ -108,7 +107,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         attachment.setFileType(substring(destination, lastIndexOf(destination, SCHEME_SEPARATOR.identity) + 1));
         attachment.setSize(fur.getLength());
         attachment.setStatus(VALID.status);
-        attachment.setCreateTime(Instant.now().getEpochSecond());
+        attachment.setCreateTime(TIME_STAMP_GETTER.get());
         attachment.setCreator(memberId);
 
         return attachment;

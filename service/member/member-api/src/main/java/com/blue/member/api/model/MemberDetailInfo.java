@@ -22,7 +22,7 @@ public final class MemberDetailInfo implements Serializable {
     private Integer gender;
 
     /**
-     * phone format: 86-13131693996
+     * phone format: 8613131693996
      */
     private String phone;
 

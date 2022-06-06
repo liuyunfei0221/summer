@@ -25,6 +25,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLan
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.BlueHeader.REQUEST_IP;
+import static com.blue.base.constant.base.DataEventOpType.CLICK;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
@@ -119,6 +120,7 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
                                 .switchIfEmpty(defer(() -> just("")))
                                 .flatMap(requestBody -> {
                                     DataEvent dataEvent = new DataEvent();
+                                    dataEvent.setDataEventOpType(CLICK);
 
                                     dataEvent.setDataEventType(UNIFIED);
                                     dataEvent.setStamp(TIME_STAMP_GETTER.get());

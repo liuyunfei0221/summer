@@ -175,14 +175,23 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'update member icon', 'update member icon', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180004, 'PUT', 'blue-member', '/basic/summary', b'1', b'1', b'1', b'0', b'1', 1,
         'update member summary', 'update member summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
+       (180005, 'POST', 'blue-member', '/address', b'1', b'1', b'1', b'1', b'1', 1,
+        'add address', 'add address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180006, 'PUT', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
+        'update address', 'update address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180007, 'DELETE', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
+        'delete address', 'delete address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180008, 'GET', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
+        'select address for api', 'select address for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- member manage
 
-       (190001, 'POST', 'blue-member', '/manager/members', b'1', b'1', b'1', b'1', b'1', 2,
+       (190001, 'POST', 'blue-member', '/manager/basic', b'1', b'1', b'1', b'1', b'1', 2,
         'member list', 'member list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (190002, 'POST', 'blue-member', '/manager/authorities', b'1', b'1', b'1', b'1', b'1', 2,
         'authority list', 'authority list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (190003, 'POST', 'blue-member', '/manager/address', b'1', b'1', b'1', b'1', b'1', 2,
+        'select address for manager', 'select address for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- finance api

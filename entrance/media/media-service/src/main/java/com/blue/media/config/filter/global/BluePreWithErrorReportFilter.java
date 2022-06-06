@@ -30,6 +30,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLan
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.BlueHeader.REQUEST_IP;
+import static com.blue.base.constant.base.DataEventOpType.CLICK;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
 import static com.blue.media.common.MediaCommonFunctions.extractValuesToBind;
@@ -149,8 +150,9 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
         return chain.filter(exchange)
                 .onErrorResume(throwable -> {
                     DataEvent dataEvent = new DataEvent();
-
                     dataEvent.setDataEventType(UNIFIED);
+                    dataEvent.setDataEventOpType(CLICK);
+
                     dataEvent.setStamp(TIME_STAMP_GETTER.get());
                     EVENT_PACKAGER.accept(attributes, dataEvent);
                     report(throwable, request, dataEvent);

@@ -1,8 +1,8 @@
-package com.blue.risk.remote.consumer;
+package com.blue.lake.remote.consumer;
 
+import com.blue.base.model.common.Access;
 import com.blue.auth.api.inter.RpcAuthControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
-import com.blue.base.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -20,9 +20,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "FieldCanBeLocal"})
 @Component
-public class RpcControlServiceConsumer {
+public class RpcAuthControlServiceConsumer {
 
-    private static final Logger LOGGER = getLogger(RpcControlServiceConsumer.class);
+    private static final Logger LOGGER = getLogger(RpcAuthControlServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-auth"},

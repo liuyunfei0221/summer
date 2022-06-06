@@ -68,7 +68,7 @@ public class ResourceServiceImpl implements ResourceService {
     private StringRedisTemplate stringRedisTemplate;
 
     private SynchronizedProcessor synchronizedProcessor;
-    
+
     public ResourceServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, ResourceMapper resourceMapper,
                                StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
@@ -308,7 +308,8 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId) {
-        LOGGER.info("ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}", resourceUpdateParam);
+        LOGGER.info("ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}, operatorId = {}",
+                resourceUpdateParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 

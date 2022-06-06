@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f11459a7-81b9-475f-8f54-e05864b43ecf",
+		"_postman_id": "a03efa41-5459-40b7-b83d-e76c2c8c66a8",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11135497"
@@ -2264,7 +2264,7 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"phone\":null,\r\n        \"email\":null,\r\n        \"name\":null,\r\n        \"gender\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-member/manager/members",
+							"raw": "localhost:10000/blue-member/manager/basic",
 							"host": [
 								"localhost"
 							],
@@ -2272,7 +2272,7 @@
 							"path": [
 								"blue-member",
 								"manager",
-								"members"
+								"basic"
 							]
 						}
 					},

@@ -7,8 +7,6 @@ import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
 
-import java.util.concurrent.ExecutorService;
-
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -29,10 +27,8 @@ public class RpcFinanceAccountServiceConsumer {
             })
     private RpcFinanceAccountService rpcFinanceAccountService;
 
-    private final ExecutorService executorService;
 
-    public RpcFinanceAccountServiceConsumer(ExecutorService executorService) {
-        this.executorService = executorService;
+    public RpcFinanceAccountServiceConsumer() {
     }
 
     /**

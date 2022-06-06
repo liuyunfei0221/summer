@@ -1,15 +1,15 @@
 package com.blue.article.converter;
 
+import com.blue.article.model.ArticleInsertParam;
+import com.blue.article.model.LinkInsertParam;
 import com.blue.article.repository.entity.Article;
 import com.blue.article.repository.entity.Link;
 import com.blue.base.model.exps.BlueException;
-import com.blue.article.model.ArticleInsertParam;
-import com.blue.article.model.LinkInsertParam;
 
-import java.time.Instant;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.base.Status.VALID;
 import static java.util.Optional.ofNullable;
@@ -27,7 +27,7 @@ public final class BusinessModelConverters {
             throw new BlueException(EMPTY_PARAM);
         articleInsertParam.asserts();
 
-        long epochSecond = Instant.now().getEpochSecond();
+        Long stamp = TIME_STAMP_GETTER.get();
 
         Article article = new Article();
         article.setTitle(articleInsertParam.getTitle());
@@ -39,8 +39,8 @@ public final class BusinessModelConverters {
         article.setComments(0L);
         article.setLikes(0L);
         article.setBoring(0L);
-        article.setCreateTime(epochSecond);
-        article.setUpdateTime(epochSecond);
+        article.setCreateTime(stamp);
+        article.setUpdateTime(stamp);
         article.setStatus(VALID.status);
 
         return article;
@@ -51,7 +51,7 @@ public final class BusinessModelConverters {
             throw new BlueException(EMPTY_PARAM);
         linkInsertParam.asserts();
 
-        long epochSecond = Instant.now().getEpochSecond();
+        Long stamp = TIME_STAMP_GETTER.get();
         Link link = new Link();
 
         link.setLinkUrl(linkInsertParam.getLinkUrl());
@@ -64,7 +64,7 @@ public final class BusinessModelConverters {
         link.setBoring(0L);
 
         link.setStatus(VALID.status);
-        link.setCreateTime(epochSecond);
+        link.setCreateTime(stamp);
 
         return link;
     };

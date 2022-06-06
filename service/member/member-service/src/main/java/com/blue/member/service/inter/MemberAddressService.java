@@ -3,6 +3,8 @@ package com.blue.member.service.inter;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.member.api.model.MemberAddressInfo;
+import com.blue.member.model.MemberAddressInsertParam;
+import com.blue.member.model.MemberAddressUpdateParam;
 import com.blue.member.model.MemberAddressCondition;
 import com.blue.member.repository.entity.MemberAddress;
 import reactor.core.publisher.Mono;
@@ -17,6 +19,33 @@ import java.util.Optional;
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface MemberAddressService {
+
+    /**
+     * insert address
+     *
+     * @param memberAddressInsertParam
+     * @param memberId
+     * @return
+     */
+    MemberAddressInfo insertMemberAddress(MemberAddressInsertParam memberAddressInsertParam, Long memberId);
+
+    /**
+     * update a exist address
+     *
+     * @param addressUpdateParam
+     * @param memberId
+     * @return
+     */
+    MemberAddressInfo updateMemberAddress(MemberAddressUpdateParam addressUpdateParam, Long memberId);
+
+    /**
+     * delete address
+     *
+     * @param id
+     * @param memberId
+     * @return
+     */
+    MemberAddressInfo deleteMemberAddress(Long id, Long memberId);
 
     /**
      * query address by id
@@ -51,20 +80,28 @@ public interface MemberAddressService {
     Mono<List<MemberAddress>> selectMemberAddressMonoByMemberId(Long memberId);
 
     /**
+     * query address info by member id
+     *
+     * @param memberId
+     * @return
+     */
+    List<MemberAddressInfo> selectMemberAddressInfoByMemberId(Long memberId);
+
+    /**
+     * query address info mono by member id
+     *
+     * @param memberId
+     * @return
+     */
+    Mono<List<MemberAddressInfo>> selectMemberAddressInfoMonoByMemberId(Long memberId);
+
+    /**
      * query address by id with assert
      *
      * @param id
      * @return
      */
     Mono<MemberAddressInfo> selectMemberAddressInfoMonoByPrimaryKeyWithAssert(Long id);
-
-    /**
-     * insert address
-     *
-     * @param memberAddress
-     * @return
-     */
-    MemberAddressInfo insertMemberAddress(MemberAddress memberAddress);
 
     /**
      * select address by ids

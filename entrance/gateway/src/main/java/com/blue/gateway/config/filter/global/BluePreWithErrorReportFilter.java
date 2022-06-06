@@ -26,6 +26,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
 import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.base.BlueHeader.REQUEST_IP;
+import static com.blue.base.constant.base.DataEventOpType.CLICK;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
@@ -119,8 +120,9 @@ public final class BluePreWithErrorReportFilter implements GlobalFilter, Ordered
                                 .switchIfEmpty(defer(() -> just("")))
                                 .flatMap(requestBody -> {
                                     DataEvent dataEvent = new DataEvent();
-
                                     dataEvent.setDataEventType(UNIFIED);
+                                    dataEvent.setDataEventOpType(CLICK);
+
                                     dataEvent.setStamp(TIME_STAMP_GETTER.get());
                                     EVENT_PACKAGER.accept(attributes, dataEvent);
                                     if (!"".equals(requestBody))

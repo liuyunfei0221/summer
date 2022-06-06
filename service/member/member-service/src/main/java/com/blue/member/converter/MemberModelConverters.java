@@ -6,10 +6,10 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.*;
 import com.blue.member.repository.entity.*;
 
-import java.time.Instant;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
 import static com.blue.base.constant.auth.CredentialType.PHONE_PWD;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
@@ -49,7 +49,7 @@ public final class MemberModelConverters {
         if (isBlank(name))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
-        long epochSecond = Instant.now().getEpochSecond();
+        Long stamp = TIME_STAMP_GETTER.get();
 
         MemberBasic memberBasic = new MemberBasic();
         memberBasic.setPhone(phone);
@@ -67,8 +67,8 @@ public final class MemberModelConverters {
         String source = memberRegistryParam.getSource();
         memberBasic.setSource(isNotBlank(source) ? source : PHONE_PWD.source);
 
-        memberBasic.setCreateTime(epochSecond);
-        memberBasic.setUpdateTime(epochSecond);
+        memberBasic.setCreateTime(stamp);
+        memberBasic.setUpdateTime(stamp);
 
         return memberBasic;
     };

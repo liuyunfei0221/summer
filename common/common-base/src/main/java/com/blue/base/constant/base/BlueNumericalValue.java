@@ -138,6 +138,11 @@ public enum BlueNumericalValue {
     NOT_LOGGED_IN_ROLE_ID(0L),
 
     /**
+     * member role id for unknown
+     */
+    UNKNOWN_LOGGED_IN_ROLE_ID(-1L),
+
+    /**
      * login timestamp for not login
      */
     NOT_LOGGED_IN_TIME(0L),

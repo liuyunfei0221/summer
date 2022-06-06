@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public final class EventTypeReference {
 
-    public static final ParameterizedTypeReference<Map<String,String>> EVENT_MODEL_FOR_RESOURCE_CONDITION_TYPE = new ParameterizedTypeReference<>() {
+    public static final ParameterizedTypeReference<Map<String,Object>> EVENT_MODEL_FOR_RESOURCE_CONDITION_TYPE = new ParameterizedTypeReference<>() {
         @SuppressWarnings("NullableProblems")
         @Override
         public Type getType() {

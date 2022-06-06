@@ -16,6 +16,8 @@ public class OptEvent implements Serializable {
 
     private String dataEventType;
 
+    private String dataEventOpType;
+
     private Long stamp;
 
     private String createDate;
@@ -62,6 +64,8 @@ public class OptEvent implements Serializable {
 
     private Integer existenceResponseBody;
 
+    private Integer durationSeconds;
+
     public Long getId() {
         return id;
     }
@@ -76,6 +80,14 @@ public class OptEvent implements Serializable {
 
     public void setDataEventType(String dataEventType) {
         this.dataEventType = dataEventType;
+    }
+
+    public String getDataEventOpType() {
+        return dataEventOpType;
+    }
+
+    public void setDataEventOpType(String dataEventOpType) {
+        this.dataEventOpType = dataEventOpType;
     }
 
     public Long getStamp() {
@@ -262,11 +274,20 @@ public class OptEvent implements Serializable {
         this.existenceResponseBody = existenceResponseBody;
     }
 
+    public Integer getDurationSeconds() {
+        return durationSeconds;
+    }
+
+    public void setDurationSeconds(Integer durationSeconds) {
+        this.durationSeconds = durationSeconds;
+    }
+
     @Override
     public String toString() {
         return "OptEvent{" +
                 "id=" + id +
                 ", dataEventType='" + dataEventType + '\'' +
+                ", dataEventOpType='" + dataEventOpType + '\'' +
                 ", stamp=" + stamp +
                 ", createDate='" + createDate + '\'' +
                 ", method='" + method + '\'' +
@@ -290,6 +311,7 @@ public class OptEvent implements Serializable {
                 ", responseUnEncryption=" + responseUnEncryption +
                 ", existenceRequestBody=" + existenceRequestBody +
                 ", existenceResponseBody=" + existenceResponseBody +
+                ", durationSeconds=" + durationSeconds +
                 '}';
     }
 

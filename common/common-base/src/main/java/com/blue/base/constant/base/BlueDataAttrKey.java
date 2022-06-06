@@ -123,6 +123,11 @@ public enum BlueDataAttrKey {
     EXISTENCE_RESPONSE_BODY("existenceResponseBody"),
 
     /**
+     * duration seconds/used for stop over
+     */
+    DURATION_SECONDS("durationSeconds"),
+
+    /**
      * do not need turing test?
      */
     WITHOUT_TURING_TEST("withoutTuringTest");

@@ -36,6 +36,7 @@ import java.util.function.Function;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.constant.base.BlueDataAttrKey.*;
+import static com.blue.base.constant.base.DataEventOpType.CLICK;
 import static com.blue.base.constant.base.DataEventType.UNIFIED;
 import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
 import static com.blue.media.common.MediaCommonFunctions.*;
@@ -110,6 +111,8 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
 
     private void packageRequestInfo(DataEvent dataEvent, Map<String, Object> attributes) {
         dataEvent.setDataEventType(UNIFIED);
+        dataEvent.setDataEventOpType(CLICK);
+
         dataEvent.setStamp(TIME_STAMP_GETTER.get());
 
         EVENT_PACKAGER.accept(attributes, dataEvent);

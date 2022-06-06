@@ -7,7 +7,7 @@ import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.component.credential.CredentialCollectProcessor;
-import com.blue.member.remote.consumer.RpcControlServiceConsumer;
+import com.blue.member.remote.consumer.RpcAuthControlServiceConsumer;
 import com.blue.member.remote.consumer.RpcFinanceAccountServiceConsumer;
 import com.blue.member.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
@@ -51,19 +51,19 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
 
-    private final RpcControlServiceConsumer rpcControlServiceConsumer;
+    private final RpcAuthControlServiceConsumer rpcAuthControlServiceConsumer;
 
     private final RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MemberAuthServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor,
                                  CredentialCollectProcessor credentialCollectProcessor, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
-                                 RpcControlServiceConsumer rpcControlServiceConsumer, RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer) {
+                                 RpcAuthControlServiceConsumer rpcAuthControlServiceConsumer, RpcFinanceAccountServiceConsumer rpcFinanceAccountServiceConsumer) {
         this.memberBasicService = memberBasicService;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.credentialCollectProcessor = credentialCollectProcessor;
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
-        this.rpcControlServiceConsumer = rpcControlServiceConsumer;
+        this.rpcAuthControlServiceConsumer = rpcAuthControlServiceConsumer;
         this.rpcFinanceAccountServiceConsumer = rpcFinanceAccountServiceConsumer;
     }
 
@@ -100,7 +100,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         memberBasic.setId(id);
 
         //init auth info
-        rpcControlServiceConsumer.initMemberAuthInfo(new MemberCredentialInfo(id, credentialCollectProcessor.collect(memberBasic, memberRegistryParam.getAccess())));
+        rpcAuthControlServiceConsumer.initMemberAuthInfo(new MemberCredentialInfo(id, credentialCollectProcessor.collect(memberBasic, memberRegistryParam.getAccess())));
 
         //init finance account
         rpcFinanceAccountServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));

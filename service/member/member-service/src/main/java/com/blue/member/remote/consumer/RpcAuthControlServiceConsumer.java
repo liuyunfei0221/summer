@@ -22,9 +22,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam", "FieldCanBeLocal", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
-public class RpcControlServiceConsumer {
+public class RpcAuthControlServiceConsumer {
 
-    private static final Logger LOGGER = getLogger(RpcControlServiceConsumer.class);
+    private static final Logger LOGGER = getLogger(RpcAuthControlServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-auth"},
@@ -38,7 +38,7 @@ public class RpcControlServiceConsumer {
 
     private final Scheduler scheduler;
 
-    public RpcControlServiceConsumer(Scheduler scheduler) {
+    public RpcAuthControlServiceConsumer(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
