@@ -26,22 +26,7 @@
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
-            <artifactId>common-captcha</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.blue</groupId>
-            <artifactId>common-database</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.blue</groupId>
             <artifactId>common-dubbo</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.blue</groupId>
-            <artifactId>common-mail</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

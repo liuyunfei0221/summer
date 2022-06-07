@@ -28,7 +28,7 @@ public class EventApiRoute {
         RequestPredicate pathPredicate = path("/blue-event");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/report", accept(APPLICATION_JSON), eventApiHandler::report)
+                .POST("/event/report", accept(APPLICATION_JSON), eventApiHandler::report)
                 .build();
 
         return nest(pathPredicate, routerFunction);

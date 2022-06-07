@@ -296,6 +296,14 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 -- shine manage
 
 
+-- event api
+
+       (300001, 'POST', 'blue-event', '/event/report', b'0', b'1', b'1', b'0', b'1', 1,
+        'event report', 'event report', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
+-- event manage
+
+
 -- data api
 
 -- data manage
