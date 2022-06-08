@@ -2,7 +2,7 @@ package com.blue.base.component.exception.handler.impl;
 
 import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionInfo;
-import com.blue.base.constant.base.BlueMediaType;
+import com.blue.base.constant.common.BlueMediaType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.codec.DecodingException;
 import reactor.util.Logger;
@@ -10,11 +10,11 @@ import reactor.util.Logger;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.blue.base.constant.base.ResponseElement.FILE_INVALID;
+import static com.blue.base.constant.common.ResponseElement.FILE_INVALID;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static org.apache.commons.lang3.StringUtils.substring;
 import static reactor.util.Loggers.getLogger;
@@ -32,7 +32,7 @@ public class DecodingExceptionHandler implements ExceptionHandler {
     private static final String EXP_NAME = "org.springframework.core.codec.DecodingException";
 
     private static final Map<String, String> KNOWN_MESSAGE_MAPPING = Stream.of(BlueMediaType.values())
-            .collect(Collectors.toMap(bmt -> "No multipart boundary found in Content-Type: \"" + bmt.identity + "\"",
+            .collect(toMap(bmt -> "No multipart boundary found in Content-Type: " + bmt.identity,
                     bmt -> "<" + bmt.identity + ">get bound failed,Please specify <boundary> in <Content-Type>.", (a, b) -> a));
 
     private static final UnaryOperator<String> TOO_MANY_PARTS_MESSAGE_CONVERTER = message -> {

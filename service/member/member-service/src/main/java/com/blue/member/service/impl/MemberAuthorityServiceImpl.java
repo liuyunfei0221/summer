@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseElement.INVALID_PARAM;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;

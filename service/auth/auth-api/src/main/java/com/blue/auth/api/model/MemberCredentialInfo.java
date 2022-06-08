@@ -8,7 +8,7 @@ import java.util.List;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
-import static com.blue.base.constant.base.ResponseElement.INVALID_PARAM;
+import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
 
 /**
  * member credential infoS with member id

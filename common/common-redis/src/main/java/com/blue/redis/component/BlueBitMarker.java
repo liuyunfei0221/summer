@@ -15,7 +15,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.SET_BIT_WITH_EXPIRE;
 import static java.nio.ByteBuffer.wrap;

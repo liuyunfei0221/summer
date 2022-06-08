@@ -1,6 +1,6 @@
 package com.blue.member.api.model;
 
-import com.blue.base.constant.base.BlueNumericalValue;
+import com.blue.base.constant.common.BlueNumericalValue;
 import com.blue.base.inter.Asserter;
 import com.blue.base.model.exps.BlueException;
 
@@ -8,8 +8,8 @@ import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.VERIFY_IS_INVALID;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.VERIFY_IS_INVALID;
 
 /**
  * member registry params

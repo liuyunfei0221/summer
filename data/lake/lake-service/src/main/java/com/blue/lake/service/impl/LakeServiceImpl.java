@@ -12,8 +12,8 @@ import reactor.util.Logger;
 
 import java.util.List;
 
-import static com.blue.base.constant.base.BlueNumericalValue.LIMIT;
-import static com.blue.base.constant.base.BlueNumericalValue.ROWS;
+import static com.blue.base.constant.common.BlueNumericalValue.LIMIT;
+import static com.blue.base.constant.common.BlueNumericalValue.ROWS;
 import static com.blue.lake.converter.LakeModelConverters.DATA_EVENT_2_OPT_EVENT;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;

@@ -1,6 +1,6 @@
 package com.blue.media.model;
 
-import com.blue.base.constant.base.SortType;
+import com.blue.base.constant.common.SortType;
 import com.blue.base.model.common.SortCondition;
 import com.blue.media.constant.DownloadHistorySortAttribute;
 

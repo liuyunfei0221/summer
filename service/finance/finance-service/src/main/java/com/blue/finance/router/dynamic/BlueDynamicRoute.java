@@ -16,8 +16,8 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.ConstantProcessor.getMediaTypeByIdentity;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.Symbol.PATH_SEPARATOR;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;

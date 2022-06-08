@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 import static reactor.core.publisher.Mono.just;

@@ -10,9 +10,10 @@ import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.base.BlueBoolean.FALSE;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.Status.VALID;
+import static com.blue.base.constant.common.BlueBoolean.FALSE;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Status.VALID;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
@@ -152,8 +153,8 @@ public final class BaseModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new StyleManagerInfo(style.getId(), style.getName(), style.getAttributes(), style.getType(), style.getIsActive(), style.getStatus(),
-                style.getCreateTime(), style.getUpdateTime(), style.getCreator(), isNotBlank(creatorName) ? creatorName : "",
-                style.getUpdater(), isNotBlank(updaterName) ? updaterName : "");
+                style.getCreateTime(), style.getUpdateTime(), style.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value,
+                style.getUpdater(), isNotBlank(updaterName) ? updaterName : EMPTY_DATA.value);
     }
 
     /**

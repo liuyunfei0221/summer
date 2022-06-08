@@ -14,7 +14,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static java.io.File.separator;
 import static java.lang.Class.forName;
 import static java.lang.Thread.currentThread;
@@ -154,11 +155,11 @@ public final class ClassGetter {
     private static void handlePath(String path, List<String> clzNames) {
         String clazzName;
         if (path.contains(JAVA_MAIN_PREFIX)) {
-            path = path.replace(CLASS_SUFFIX, "");
+            path = path.replace(CLASS_SUFFIX, EMPTY_DATA.value);
             clazzName = path.substring(indexOf(path, JAVA_MAIN_PREFIX) + JAVA_MAIN_PREFIX.length())
                     .replace(separator, PACKAGE_SEPARATOR);
         } else if (path.contains(CLASS_PREFIX)) {
-            path = path.replace(CLASS_SUFFIX, "");
+            path = path.replace(CLASS_SUFFIX, EMPTY_DATA.value);
             clazzName = path.substring(indexOf(path, CLASS_PREFIX) + CLASS_PREFIX.length())
                     .replace(separator, PACKAGE_SEPARATOR);
         } else {
@@ -179,7 +180,7 @@ public final class ClassGetter {
             name = jarEntry.getName();
 
             if (name.endsWith(CLASS_SUFFIX)) {
-                name = name.replace(CLASS_SUFFIX, "").replace(PATH_SEPARATOR, PACKAGE_SEPARATOR);
+                name = name.replace(CLASS_SUFFIX, EMPTY_DATA.value).replace(PATH_SEPARATOR, PACKAGE_SEPARATOR);
                 if (recursive) {
                     if (name.startsWith(packageName) && !name.contains(INNER_CLASS_IDENTITY))
                         clzNames.add(name);

@@ -3,7 +3,7 @@ package com.blue.base.model;
 import com.blue.base.model.exps.BlueException;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 
 /**
  * params for update exist area

@@ -28,7 +28,7 @@ public final class MemberDetailCondition implements Serializable {
     private Integer gender;
 
     /**
-     * @see com.blue.base.constant.base.Status
+     * @see com.blue.base.constant.common.Status
      */
     private Integer status;
 

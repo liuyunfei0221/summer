@@ -11,8 +11,9 @@ import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.Status.VALID;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Status.VALID;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
@@ -83,7 +84,7 @@ public final class PortalModelConverters {
 
         return new BulletinManagerInfo(bulletin.getId(), bulletin.getTitle(), bulletin.getContent(), bulletin.getLink(), bulletin.getType(), bulletin.getStatus(),
                 bulletin.getPriority(), bulletin.getActiveTime(), bulletin.getExpireTime(), bulletin.getCreateTime(), bulletin.getUpdateTime(),
-                bulletin.getCreator(), isNotBlank(creatorName) ? creatorName : "", bulletin.getUpdater(), isNotBlank(updaterName) ? updaterName : "");
+                bulletin.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value, bulletin.getUpdater(), isNotBlank(updaterName) ? updaterName : EMPTY_DATA.value);
     }
 
 }

@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.SyncKey.AUTHORITY_UPDATE_SYNC;
+import static com.blue.base.constant.common.SyncKey.AUTHORITY_UPDATE_SYNC;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;

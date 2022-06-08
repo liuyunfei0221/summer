@@ -18,8 +18,8 @@ import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.auth.AccessInfoRefreshElementType;
 import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.auth.DeviceType;
-import com.blue.base.constant.base.CacheKeyPrefix;
-import com.blue.base.constant.base.Symbol;
+import com.blue.base.constant.common.CacheKeyPrefix;
+import com.blue.base.constant.common.Symbol;
 import com.blue.base.model.common.Access;
 import com.blue.base.model.common.InvalidLocalAccessEvent;
 import com.blue.base.model.common.KeyPair;
@@ -50,10 +50,11 @@ import static com.blue.base.constant.auth.AccessInfoRefreshElementType.PUB_KEY;
 import static com.blue.base.constant.auth.AccessInfoRefreshElementType.ROLE;
 import static com.blue.base.constant.auth.CredentialType.NOT_LOGGED_IN;
 import static com.blue.base.constant.auth.DeviceType.UNKNOWN;
-import static com.blue.base.constant.base.BlueNumericalValue.*;
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
-import static com.blue.base.constant.base.SyncKeyPrefix.AUTH_INVALID_BY_MEMBER_ID_PRE;
+import static com.blue.base.constant.common.BlueNumericalValue.*;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.SyncKeyPrefix.AUTH_INVALID_BY_MEMBER_ID_PRE;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
 import static java.lang.System.currentTimeMillis;
@@ -267,7 +268,7 @@ public class AuthServiceImpl implements AuthService {
 
     static {
         RE_PACKAGERS.put(ROLE, (ai, ele) -> {
-            if (isNull(ai) || isNull(ele) || "".equals(ele))
+            if (isNull(ai) || isNull(ele) || EMPTY_DATA.value.equals(ele))
                 throw new BlueException(BAD_REQUEST);
 
             long roleId;
@@ -279,7 +280,7 @@ public class AuthServiceImpl implements AuthService {
             ai.setRoleId(roleId);
         });
         RE_PACKAGERS.put(PUB_KEY, (ai, ele) -> {
-            if (isNull(ai) || isNull(ele) || "".equals(ele))
+            if (isNull(ai) || isNull(ele) || EMPTY_DATA.value.equals(ele))
                 throw new BlueException(BAD_REQUEST);
             ai.setPubKey(ele);
         });
@@ -480,7 +481,7 @@ public class AuthServiceImpl implements AuthService {
     private void refreshAccessInfoElementByKeyId(String keyId, AccessInfoRefreshElementType elementType, String elementValue) {
         LOGGER.info("void refreshAccessInfoElementByKeyId(String keyId, AuthInfoRefreshElementType elementType, String elementValue), keyId = {}, elementType = {}, elementValue = {}", keyId, elementType, elementValue);
         String originalAuthInfoJson = ofNullable(stringRedisTemplate.opsForValue().get(keyId))
-                .orElse("");
+                .orElse(EMPTY_DATA.value);
 
         if (isBlank(originalAuthInfoJson)) {
             LOGGER.info("member's authInfo is blank, can't refresh");
@@ -729,7 +730,7 @@ public class AuthServiceImpl implements AuthService {
                                 boolean resUnEncryption = resource.getResponseUnEncryption();
 
                                 return just(new AccessAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
-                                        reqUnDecryption && resUnEncryption ? "" : accessInfo.getPubKey(),
+                                        reqUnDecryption && resUnEncryption ? EMPTY_DATA.value : accessInfo.getPubKey(),
                                         new Access(parseLong(memberPayload.getId()), accessInfo.getRoleId(), memberPayload.getCredentialType().intern(),
                                                 memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), OK.message));
                             });

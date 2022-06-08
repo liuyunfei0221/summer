@@ -5,7 +5,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
-import static com.blue.base.constant.base.BlueHeader.REQUEST_IP;
+import static com.blue.base.constant.common.BlueHeader.REQUEST_IP;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
 

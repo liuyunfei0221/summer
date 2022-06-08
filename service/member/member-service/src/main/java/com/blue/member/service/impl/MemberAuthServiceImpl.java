@@ -24,7 +24,7 @@ import java.util.Optional;
 import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.auth.CredentialType.PHONE_PWD;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.verify.BusinessType.REGISTER;
 import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static com.blue.base.constant.verify.VerifyType.SMS;

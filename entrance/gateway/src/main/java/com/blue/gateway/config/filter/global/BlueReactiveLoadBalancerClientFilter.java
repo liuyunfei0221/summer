@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.NOT_FOUND;
+import static com.blue.base.constant.common.ResponseElement.NOT_FOUND;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_LOAD_BALANCER_CLIENT;
 import static java.util.Optional.ofNullable;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.*;

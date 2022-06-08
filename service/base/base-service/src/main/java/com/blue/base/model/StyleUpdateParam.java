@@ -3,7 +3,7 @@ package com.blue.base.model;
 import com.blue.base.model.exps.BlueException;
 
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 
 /**
  * params for update a exist style

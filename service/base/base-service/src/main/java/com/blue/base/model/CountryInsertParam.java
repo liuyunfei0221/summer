@@ -6,7 +6,7 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
  * params for insert a new country

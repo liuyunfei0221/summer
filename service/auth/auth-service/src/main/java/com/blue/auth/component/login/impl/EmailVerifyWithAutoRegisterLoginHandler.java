@@ -33,10 +33,11 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.auth.CredentialType.EMAIL_PWD;
 import static com.blue.base.constant.auth.CredentialType.EMAIL_VERIFY_AUTO_REGISTER;
 import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
-import static com.blue.base.constant.base.BlueHeader.*;
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.Status.INVALID;
-import static com.blue.base.constant.base.Status.VALID;
+import static com.blue.base.constant.common.BlueHeader.*;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Status.INVALID;
+import static com.blue.base.constant.common.Status.VALID;
 import static com.blue.base.constant.verify.BusinessType.EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER;
 import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -81,8 +82,8 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
     private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = email -> {
         List<CredentialInfo> credentials = new ArrayList<>(5);
 
-        credentials.add(new CredentialInfo(email, EMAIL_VERIFY_AUTO_REGISTER.identity, "", VALID.status, "from auto registry"));
-        credentials.add(new CredentialInfo(email, EMAIL_PWD.identity, "", INVALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(email, EMAIL_VERIFY_AUTO_REGISTER.identity, EMPTY_DATA.value, VALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(email, EMAIL_PWD.identity, EMPTY_DATA.value, INVALID.status, "from auto registry"));
 
         return credentials;
     };

@@ -1,7 +1,7 @@
 package com.blue.media.service.impl;
 
 import com.blue.base.common.base.CommonFunctions;
-import com.blue.base.constant.base.BlueFileType;
+import com.blue.base.constant.common.BlueFileType;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.common.IdentityParam;
 import com.blue.base.model.exps.BlueException;
@@ -39,11 +39,12 @@ import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.base.BlueHeader.CONTENT_DISPOSITION;
-import static com.blue.base.constant.base.BlueNumericalValue.DB_WRITE;
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.Status.VALID;
-import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
+import static com.blue.base.constant.common.BlueHeader.CONTENT_DISPOSITION;
+import static com.blue.base.constant.common.BlueNumericalValue.DB_WRITE;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.base.constant.common.Symbol.SCHEME_SEPARATOR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -131,7 +132,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
             throw new BlueException(EMPTY_PARAM);
 
         int size = resources.size();
-        if (size == 1 && "".equals(((FilePart) (resources.get(0))).filename()))
+        if (size == 1 && EMPTY_DATA.value.equals(((FilePart) (resources.get(0))).filename()))
             throw new BlueException(EMPTY_PARAM);
 
         if (size > CURRENT_SIZE_THRESHOLD)

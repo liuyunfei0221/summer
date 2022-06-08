@@ -7,8 +7,8 @@ import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.util.Optional.ofNullable;
 import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;

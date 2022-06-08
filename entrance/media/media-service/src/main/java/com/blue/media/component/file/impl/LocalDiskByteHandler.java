@@ -22,9 +22,9 @@ import java.util.function.*;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.Symbol.SCHEME_SEPARATOR;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.Symbol.SCHEME_SEPARATOR;
 import static com.blue.base.constant.media.ByteHandlerType.LOCAL_DISK;
 import static com.blue.media.common.MediaCommonFunctions.BUFFER_SIZE;
 import static com.blue.media.common.MediaCommonFunctions.DATA_BUFFER_FACTORY;

@@ -5,7 +5,7 @@ import com.blue.base.model.common.SortCondition;
 
 import java.io.Serializable;
 
-import static com.blue.base.constant.base.SortType.DESC;
+import static com.blue.base.constant.common.SortType.DESC;
 
 /**
  * style condition for select
@@ -29,7 +29,7 @@ public final class StyleCondition extends SortCondition implements Serializable 
     private Boolean isActive;
 
     /**
-     * @see com.blue.base.constant.base.Status
+     * @see com.blue.base.constant.common.Status
      */
     private Integer status;
 

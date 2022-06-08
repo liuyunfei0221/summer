@@ -6,7 +6,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
 import static com.blue.base.common.access.AccessProcessor.jsonToAccess;
-import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
+import static com.blue.base.constant.common.BlueHeader.AUTHORIZATION;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
 
@@ -65,7 +66,7 @@ public final class AccessGetterForReactive {
      * @return
      */
     public static String getAuthorization(ServerRequest serverRequest) {
-        return ofNullable(serverRequest.headers().firstHeader(AUTHORIZATION.name)).orElse("");
+        return ofNullable(serverRequest.headers().firstHeader(AUTHORIZATION.name)).orElse(EMPTY_DATA.value);
     }
 
     /**
@@ -75,7 +76,7 @@ public final class AccessGetterForReactive {
      * @return
      */
     public static String getAuthorization(ServerHttpRequest serverHttpRequest) {
-        return ofNullable(serverHttpRequest.getHeaders().getFirst(AUTHORIZATION.name)).orElse("");
+        return ofNullable(serverHttpRequest.getHeaders().getFirst(AUTHORIZATION.name)).orElse(EMPTY_DATA.value);
     }
 
     /**

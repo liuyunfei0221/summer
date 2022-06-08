@@ -12,10 +12,11 @@ import reactor.core.publisher.Mono;
 import static com.blue.auth.constant.AuthTypeReference.LIST_PARAM_FOR_QUESTION_INSERT_PARAM_TYPE;
 import static com.blue.base.common.reactive.AccessGetterForReactive.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.base.BlueHeader.SECRET;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseElement.OK;
+import static com.blue.base.constant.common.BlueHeader.AUTHORIZATION;
+import static com.blue.base.constant.common.BlueHeader.SECRET;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.OK;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
@@ -92,7 +93,7 @@ public final class AuthApiHandler {
                         authControlService.invalidateAuthByAccess(acc)
                                 .flatMap(success ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .header(AUTHORIZATION.name, "")
+                                                .header(AUTHORIZATION.name, EMPTY_DATA.value)
                                                 .body(generate(OK.code, serverRequest)
                                                         , BlueResponse.class)));
     }
@@ -109,7 +110,7 @@ public final class AuthApiHandler {
                         authControlService.invalidateAuthByMemberId(acc.getId())
                                 .flatMap(success ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .header(AUTHORIZATION.name, "")
+                                                .header(AUTHORIZATION.name, EMPTY_DATA.value)
                                                 .body(generate(OK.code, serverRequest)
                                                         , BlueResponse.class)));
     }

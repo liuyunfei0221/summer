@@ -7,7 +7,7 @@ import java.util.List;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 
 /**
  * tree node

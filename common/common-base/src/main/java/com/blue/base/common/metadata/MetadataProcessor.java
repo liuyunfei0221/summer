@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.GSON;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static com.google.gson.reflect.TypeToken.getParameterized;
 
 /**

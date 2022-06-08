@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import static com.blue.base.constant.auth.CredentialType.NOT_LOGGED_IN;
-import static com.blue.base.constant.base.ResponseElement.FORBIDDEN;
+import static com.blue.base.constant.common.ResponseElement.FORBIDDEN;
 import static reactor.core.publisher.Mono.error;
 import static reactor.util.Loggers.getLogger;
 

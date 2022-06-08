@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
  * member access info/json str in redis cache

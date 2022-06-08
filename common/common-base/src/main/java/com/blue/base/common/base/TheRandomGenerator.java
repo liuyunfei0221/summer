@@ -5,7 +5,7 @@ import com.blue.base.model.exps.BlueException;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
  * @author liuyunfei

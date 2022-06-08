@@ -9,7 +9,7 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-import static com.blue.base.constant.base.ResponseElement.ILLEGAL_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.ILLEGAL_REQUEST;
 import static com.blue.media.config.filter.BlueFilterOrder.BLUE_ILLEGAL_ASSERT;
 import static reactor.core.publisher.Mono.error;
 

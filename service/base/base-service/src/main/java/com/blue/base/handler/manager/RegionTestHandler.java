@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.base.ResponseElement.OK;
+import static com.blue.base.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;

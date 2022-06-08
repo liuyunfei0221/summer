@@ -12,8 +12,9 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.auth.CredentialType.*;
-import static com.blue.base.constant.base.Status.INVALID;
-import static com.blue.base.constant.base.Status.VALID;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Status.INVALID;
+import static com.blue.base.constant.common.Status.VALID;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -50,7 +51,7 @@ public final class PhoneCredentialCollector implements CredentialCollector {
         if (isBlank(phone))
             return;
 
-        String tarAccess = isNotNull(access) ? access : "";
+        String tarAccess = isNotNull(access) ? access : EMPTY_DATA.value;
         TAR_TYPES.stream()
                 .map(type -> new CredentialInfo(phone, type, tarAccess, STATUS_GETTER.test(type, tarAccess) ? VALID.status : INVALID.status, "from registry"))
                 .forEach(credentials::add);

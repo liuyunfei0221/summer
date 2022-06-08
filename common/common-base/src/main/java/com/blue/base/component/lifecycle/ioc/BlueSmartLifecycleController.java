@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Comparator.comparingInt;
 import static reactor.util.Loggers.getLogger;
 
@@ -26,7 +26,7 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public class BlueSmartLifecycleController implements ApplicationContextAware, SmartLifecycle {
 
-    private static final Logger LOGGER = getLogger(BlueLifecycleBeanDefinitionRegistrar.class);
+    private static final Logger LOGGER = getLogger(BlueSmartLifecycleController.class);
 
     private ApplicationContext applicationContext;
 

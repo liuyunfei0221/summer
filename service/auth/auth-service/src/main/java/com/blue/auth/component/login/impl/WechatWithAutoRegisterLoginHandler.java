@@ -31,10 +31,11 @@ import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.auth.CredentialType.*;
 import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
-import static com.blue.base.constant.base.BlueHeader.*;
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.Status.INVALID;
-import static com.blue.base.constant.base.Status.VALID;
+import static com.blue.base.constant.common.BlueHeader.*;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Status.INVALID;
+import static com.blue.base.constant.common.Status.VALID;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -75,11 +76,11 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
     private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = phone -> {
         List<CredentialInfo> credentials = new ArrayList<>(4);
 
-        credentials.add(new CredentialInfo(phone, PHONE_VERIFY_AUTO_REGISTER.identity, "", VALID.status, "from auto registry"));
-        credentials.add(new CredentialInfo(phone, PHONE_PWD.identity, "", INVALID.status, "from auto registry"));
-        credentials.add(new CredentialInfo(phone, LOCAL_PHONE_AUTO_REGISTER.identity, "", VALID.status, "from auto registry"));
-        credentials.add(new CredentialInfo(phone, WECHAT_AUTO_REGISTER.identity, "", VALID.status, "from auto registry"));
-        credentials.add(new CredentialInfo(phone, MINI_PRO_AUTO_REGISTER.identity, "", VALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(phone, PHONE_VERIFY_AUTO_REGISTER.identity, EMPTY_DATA.value, VALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(phone, PHONE_PWD.identity, EMPTY_DATA.value, INVALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(phone, LOCAL_PHONE_AUTO_REGISTER.identity, EMPTY_DATA.value, VALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(phone, WECHAT_AUTO_REGISTER.identity, EMPTY_DATA.value, VALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(phone, MINI_PRO_AUTO_REGISTER.identity, EMPTY_DATA.value, VALID.status, "from auto registry"));
 
         return credentials;
     };
@@ -97,7 +98,7 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
 
         //TODO verify param
 
-        String phone = "";
+        String phone = EMPTY_DATA.value;
 
         Map<String, Object> extra = new HashMap<>(2);
 

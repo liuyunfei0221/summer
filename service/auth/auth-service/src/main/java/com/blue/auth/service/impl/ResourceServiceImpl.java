@@ -35,9 +35,10 @@ import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.REST_URI_ASSERTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertResourceType;
-import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.CacheKey.RESOURCES;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.CacheKey.RESOURCES;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -471,8 +472,8 @@ public class ResourceServiceImpl implements ResourceService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(resources.stream().map(r ->
-                                                resourceToResourceManagerInfo(r, ofNullable(idAndNameMapping.get(r.getCreator())).orElse(""),
-                                                        ofNullable(idAndNameMapping.get(r.getUpdater())).orElse(""))).collect(toList()));
+                                                resourceToResourceManagerInfo(r, ofNullable(idAndNameMapping.get(r.getCreator())).orElse(EMPTY_DATA.value),
+                                                        ofNullable(idAndNameMapping.get(r.getUpdater())).orElse(EMPTY_DATA.value))).collect(toList()));
                                     }).flatMap(resourceManagerInfos ->
                                             just(new PageModelResponse<>(resourceManagerInfos, tuple2.getT2())))
                             :

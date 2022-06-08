@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 

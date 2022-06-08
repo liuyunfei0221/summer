@@ -30,9 +30,10 @@ import java.util.Set;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.CommonFunctions.*;
-import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.base.constant.base.DataEventOpType.CLICK;
-import static com.blue.base.constant.base.DataEventType.UNIFIED;
+import static com.blue.base.constant.common.BlueDataAttrKey.*;
+import static com.blue.base.constant.common.DataEventOpType.CLICK;
+import static com.blue.base.constant.common.DataEventType.UNIFIED;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.verify.common.VerifyCommonFactory.*;
 import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_POST_WITH_DATA_REPORT;
 import static java.lang.String.valueOf;
@@ -153,7 +154,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
 
         return ServerRequest.create(exchange, httpMessageReaders)
                 .bodyToMono(String.class)
-                .switchIfEmpty(defer(() -> just("")))
+                .switchIfEmpty(defer(() -> just(EMPTY_DATA.value)))
                 .flatMap(requestBody -> {
                     dataEvent.addData(REQUEST_BODY.key, requestBody);
                     return just(REQUEST_DECORATOR_GENERATOR.apply(request, just(requestBodyProcessor.handleRequestBody(requestBody))));

@@ -44,16 +44,17 @@ import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.base.common.base.ConstantProcessor.getVerifyTypeByIdentity;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIpReact;
-import static com.blue.base.constant.base.BlueNumericalValue.BLUE_ID;
-import static com.blue.base.constant.base.RateLimitKeyPrefix.ACCESS_UPDATE_RATE_LIMIT_KEY_PRE;
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.Status.INVALID;
-import static com.blue.base.constant.base.Status.VALID;
-import static com.blue.base.constant.base.SummerAttr.EMPTY_EVENT;
-import static com.blue.base.constant.base.SyncKey.AUTHORITY_UPDATE_SYNC;
-import static com.blue.base.constant.base.SyncKey.DEFAULT_ROLE_UPDATE_SYNC;
-import static com.blue.base.constant.base.SyncKeyPrefix.MEMBER_ROLE_REL_UPDATE_PRE;
-import static com.blue.base.constant.base.SyncKeyPrefix.QUESTION_INSERT_PRE;
+import static com.blue.base.constant.common.BlueNumericalValue.BLUE_ID;
+import static com.blue.base.constant.common.RateLimitKeyPrefix.ACCESS_UPDATE_RATE_LIMIT_KEY_PRE;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Status.INVALID;
+import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.base.constant.common.SummerAttr.EMPTY_EVENT;
+import static com.blue.base.constant.common.SyncKey.AUTHORITY_UPDATE_SYNC;
+import static com.blue.base.constant.common.SyncKey.DEFAULT_ROLE_UPDATE_SYNC;
+import static com.blue.base.constant.common.SyncKeyPrefix.MEMBER_ROLE_REL_UPDATE_PRE;
+import static com.blue.base.constant.common.SyncKeyPrefix.QUESTION_INSERT_PRE;
 import static com.blue.base.constant.verify.BusinessType.*;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -198,7 +199,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         credential.setAccess(ofNullable(credentialInfo.getAccess())
                 .filter(BlueChecker::isNotBlank)
                 .map(AccessEncoder::encryptAccess)
-                .orElse(""));
+                .orElse(EMPTY_DATA.value));
 
         credential.setMemberId(memberId);
         credential.setExtra(credentialInfo.getExtra());
@@ -310,7 +311,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
                     cre.setCredential(credential);
                     cre.setType(type);
-                    cre.setAccess("");
+                    cre.setAccess(EMPTY_DATA.value);
                     cre.setMemberId(memberId);
                     cre.setExtra("from add credential");
                     cre.setStatus(ALLOW_ACCESS_LT_SET.contains(type) ? INVALID.status : VALID.status);
@@ -945,7 +946,7 @@ public class AuthControlServiceImpl implements AuthControlService {
                     .ifPresent(higherLevelRoles -> {
                         if (isNotEmpty(higherLevelRoles))
                             throw new BlueException(RESOURCE_STILL_USED, new String[]{
-                                    higherLevelRoles.stream().map(Role::getName).reduce((a, b) -> a + "," + b).orElse("")});
+                                    higherLevelRoles.stream().map(Role::getName).reduce((a, b) -> a + "," + b).orElse(EMPTY_DATA.value)});
                     });
 
             return resourceService.updateResource(resourceUpdateParam, operatorId);
@@ -975,7 +976,7 @@ public class AuthControlServiceImpl implements AuthControlService {
             if (isNotEmpty(relations))
                 throw new BlueException(RESOURCE_STILL_USED, new String[]{
                         roleService.selectRoleByIds(relations.stream().map(RoleResRelation::getRoleId).collect(toList()))
-                                .stream().map(Role::getName).reduce((a, b) -> a + "," + b).orElse("")});
+                                .stream().map(Role::getName).reduce((a, b) -> a + "," + b).orElse(EMPTY_DATA.value)});
 
             return resourceService.deleteResource(id);
         })).doOnSuccess(ri -> {

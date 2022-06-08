@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static java.util.stream.Collectors.toMap;
 import static reactor.util.Loggers.getLogger;
 

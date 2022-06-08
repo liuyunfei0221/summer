@@ -2,7 +2,7 @@ package com.blue.base.constant.analyze;
 
 import java.util.function.Supplier;
 
-import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
+import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
 import static java.time.LocalDate.now;
 
 /**

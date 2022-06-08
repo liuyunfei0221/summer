@@ -7,7 +7,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static java.util.Optional.of;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;

@@ -1,6 +1,6 @@
 package com.blue.auth.common;
 
-import com.blue.base.constant.base.BlueNumericalValue;
+import com.blue.base.constant.common.BlueNumericalValue;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,7 +9,7 @@ import java.util.function.BiPredicate;
 import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**

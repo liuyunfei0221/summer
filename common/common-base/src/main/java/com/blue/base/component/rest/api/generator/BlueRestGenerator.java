@@ -18,7 +18,7 @@ import java.time.Duration;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
 import static io.netty.channel.ChannelOption.TCP_NODELAY;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -59,7 +59,7 @@ public final class BlueRestGenerator {
         Function<HttpClient, HttpClient> mapper = httpClient ->
                 httpClient
                         .option(CONNECT_TIMEOUT_MILLIS, restConf.getConnectTimeoutMillis())
-                        .option(TCP_NODELAY, restConf.getUseTcpNodelay())
+                        .option(TCP_NODELAY, restConf.getUseTcpNoDelay())
                         .protocol(restConf.getProtocols().toArray(HttpProtocol[]::new))
                         .responseTimeout(Duration.of(restConf.getResponseTimeoutMillis(), MILLIS))
                         .doOnConnected(

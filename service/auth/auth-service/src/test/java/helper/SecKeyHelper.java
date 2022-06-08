@@ -5,7 +5,7 @@ import com.blue.base.model.exps.BlueException;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.jwt.constant.JwtConfSchema.*;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
 

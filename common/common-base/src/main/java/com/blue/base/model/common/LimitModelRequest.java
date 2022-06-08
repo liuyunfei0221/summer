@@ -5,8 +5,8 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.BlueNumericalValue.*;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.BlueNumericalValue.*;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static java.util.Optional.ofNullable;
 
 /**

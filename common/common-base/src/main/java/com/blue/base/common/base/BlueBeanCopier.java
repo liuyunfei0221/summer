@@ -1,6 +1,6 @@
 package com.blue.base.common.base;
 
-import com.blue.base.constant.base.Symbol;
+import com.blue.base.constant.common.Symbol;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.cglib.beans.BeanCopier;
 import reactor.util.Logger;
@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static reactor.util.Loggers.getLogger;
 
 /**

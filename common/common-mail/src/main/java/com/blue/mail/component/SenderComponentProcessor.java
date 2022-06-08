@@ -23,8 +23,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.FileGetter.getFile;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static jakarta.mail.Session.getInstance;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;

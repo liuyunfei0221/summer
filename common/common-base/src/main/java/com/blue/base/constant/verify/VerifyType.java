@@ -1,9 +1,9 @@
 package com.blue.base.constant.verify;
 
-import com.blue.base.constant.base.RandomType;
+import com.blue.base.constant.common.RandomType;
 
-import static com.blue.base.constant.base.RandomType.ALPHANUMERIC;
-import static com.blue.base.constant.base.RandomType.NUMERIC;
+import static com.blue.base.constant.common.RandomType.ALPHANUMERIC;
+import static com.blue.base.constant.common.RandomType.NUMERIC;
 
 /**
  * verify type

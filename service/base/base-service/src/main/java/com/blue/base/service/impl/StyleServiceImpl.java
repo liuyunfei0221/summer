@@ -43,11 +43,12 @@ import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertBulletinType;
 import static com.blue.base.common.base.ConstantProcessor.assertStyleType;
-import static com.blue.base.constant.base.BlueBoolean.FALSE;
-import static com.blue.base.constant.base.BlueBoolean.TRUE;
-import static com.blue.base.constant.base.CacheKeyPrefix.ACTIVE_STYLE_PRE;
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.SyncKeyPrefix.STYLES_CACHE_PRE;
+import static com.blue.base.constant.common.BlueBoolean.FALSE;
+import static com.blue.base.constant.common.BlueBoolean.TRUE;
+import static com.blue.base.constant.common.CacheKeyPrefix.ACTIVE_STYLE_PRE;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.SyncKeyPrefix.STYLES_CACHE_PRE;
 import static com.blue.base.converter.BaseModelConverters.*;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
@@ -392,8 +393,8 @@ public class StyleServiceImpl implements StyleService {
             idAndNameMapping = emptyMap();
         }
 
-        return styleToStyleManagerInfo(newActiveStyle, ofNullable(idAndNameMapping.get(newActiveStyle.getCreator())).orElse(""),
-                ofNullable(idAndNameMapping.get(newActiveStyle.getUpdater())).orElse(""));
+        return styleToStyleManagerInfo(newActiveStyle, ofNullable(idAndNameMapping.get(newActiveStyle.getCreator())).orElse(EMPTY_DATA.value),
+                ofNullable(idAndNameMapping.get(newActiveStyle.getUpdater())).orElse(EMPTY_DATA.value));
     }
 
     /**
@@ -528,8 +529,8 @@ public class StyleServiceImpl implements StyleService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(styles.stream().map(s ->
-                                                styleToStyleManagerInfo(s, ofNullable(idAndNameMapping.get(s.getCreator())).orElse(""),
-                                                        ofNullable(idAndNameMapping.get(s.getUpdater())).orElse(""))).collect(toList()));
+                                                styleToStyleManagerInfo(s, ofNullable(idAndNameMapping.get(s.getCreator())).orElse(EMPTY_DATA.value),
+                                                        ofNullable(idAndNameMapping.get(s.getUpdater())).orElse(EMPTY_DATA.value))).collect(toList()));
                                     }).flatMap(styleManagerInfos ->
                                             just(new PageModelResponse<>(styleManagerInfos, tuple2.getT2())))
                             :

@@ -19,7 +19,7 @@ import java.util.function.BiConsumer;
 import static com.blue.auth.converter.AuthModelConverters.SECURITY_QUESTION_2_SECURITY_QUESTION_INFO_CONVERTER;
 import static com.blue.auth.converter.AuthModelConverters.SECURITY_QUESTION_INSERT_PARAM_2_SECURITY_QUESTION_CONVERTER;
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;

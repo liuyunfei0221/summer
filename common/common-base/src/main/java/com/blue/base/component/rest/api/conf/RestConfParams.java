@@ -20,7 +20,7 @@ public class RestConfParams implements RestConf {
 
     protected Integer connectTimeoutMillis;
 
-    protected Boolean useTcpNodelay;
+    protected Boolean useTcpNoDelay;
 
     protected List<HttpProtocol> protocols;
 
@@ -36,14 +36,14 @@ public class RestConfParams implements RestConf {
     }
 
     public RestConfParams(Integer maxConnections, Integer workerCount, Boolean useGlobalResources,
-                          Integer connectTimeoutMillis, Boolean useTcpNodelay, List<HttpProtocol> protocols,
+                          Integer connectTimeoutMillis, Boolean useTcpNoDelay, List<HttpProtocol> protocols,
                           Integer responseTimeoutMillis, Integer readTimeoutMillis, Integer writeTimeoutMillis,
                           Integer maxByteInMemorySize) {
         this.maxConnections = maxConnections;
         this.workerCount = workerCount;
         this.useGlobalResources = useGlobalResources;
         this.connectTimeoutMillis = connectTimeoutMillis;
-        this.useTcpNodelay = useTcpNodelay;
+        this.useTcpNoDelay = useTcpNoDelay;
         this.protocols = protocols;
         this.responseTimeoutMillis = responseTimeoutMillis;
         this.readTimeoutMillis = readTimeoutMillis;
@@ -72,8 +72,8 @@ public class RestConfParams implements RestConf {
     }
 
     @Override
-    public Boolean getUseTcpNodelay() {
-        return useTcpNodelay;
+    public Boolean getUseTcpNoDelay() {
+        return useTcpNoDelay;
     }
 
     @Override
@@ -117,8 +117,8 @@ public class RestConfParams implements RestConf {
         this.connectTimeoutMillis = connectTimeoutMillis;
     }
 
-    public void setUseTcpNodelay(Boolean useTcpNodelay) {
-        this.useTcpNodelay = useTcpNodelay;
+    public void setUseTcpNoDelay(Boolean useTcpNoDelay) {
+        this.useTcpNoDelay = useTcpNoDelay;
     }
 
     public void setProtocols(List<HttpProtocol> protocols) {
@@ -148,7 +148,7 @@ public class RestConfParams implements RestConf {
                 ", workerCount=" + workerCount +
                 ", useGlobalResources=" + useGlobalResources +
                 ", connectTimeoutMillis=" + connectTimeoutMillis +
-                ", useTcpNodelay=" + useTcpNodelay +
+                ", useTcpNoDelay=" + useTcpNoDelay +
                 ", protocols=" + protocols +
                 ", responseTimeoutMillis=" + responseTimeoutMillis +
                 ", readTimeoutMillis=" + readTimeoutMillis +

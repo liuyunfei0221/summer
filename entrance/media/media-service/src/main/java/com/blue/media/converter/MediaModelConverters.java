@@ -10,7 +10,8 @@ import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 
 /**
  * model converters in media project
@@ -28,7 +29,7 @@ public final class MediaModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new AttachmentInfo(attachment.getId(), attachment.getName(), attachment.getSize(),
-                attachment.getStatus(), attachment.getCreateTime(), attachment.getCreator(), isNotBlank(creatorName) ? creatorName : "");
+                attachment.getStatus(), attachment.getCreateTime(), attachment.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value);
     };
 
     /**
@@ -43,8 +44,8 @@ public final class MediaModelConverters {
         if (isNull(downloadHistory))
             throw new BlueException(EMPTY_PARAM);
 
-        return new DownloadHistoryInfo(downloadHistory.getId(), downloadHistory.getAttachmentId(), isNotBlank(attachmentName) ? attachmentName : "", downloadHistory.getCreateTime(),
-                downloadHistory.getCreator(), isNotBlank(creatorName) ? creatorName : "");
+        return new DownloadHistoryInfo(downloadHistory.getId(), downloadHistory.getAttachmentId(), isNotBlank(attachmentName) ? attachmentName : EMPTY_DATA.value, downloadHistory.getCreateTime(),
+                downloadHistory.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value);
     }
 
 }

@@ -172,6 +172,8 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
         throw new AuthenticationException(UNAUTHORIZED);
     };
 
+    private static final String EMPTY_DATA = "";
+
     /**
      * construct
      *
@@ -245,7 +247,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
                 return CLAIM_2_DATA_PROCESSOR.apply(
                         jwt.getClaims().entrySet().stream()
                                 .collect(toMap(Map.Entry::getKey, e ->
-                                        ofNullable(e.getValue()).map(Claim::asString).orElse(""), (a, b) -> a)));
+                                        ofNullable(e.getValue()).map(Claim::asString).orElse(EMPTY_DATA), (a, b) -> a)));
             } catch (Exception e) {
                 throw new AuthenticationException(UNAUTHORIZED);
             }

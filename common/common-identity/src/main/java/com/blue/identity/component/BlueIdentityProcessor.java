@@ -1,6 +1,6 @@
 package com.blue.identity.component;
 
-import com.blue.base.constant.base.Symbol;
+import com.blue.base.constant.common.Symbol;
 import com.blue.identity.api.conf.IdentityConf;
 import com.blue.identity.core.BlueIdentityGenerator;
 import com.blue.identity.core.SnowflakeIdentityParser;

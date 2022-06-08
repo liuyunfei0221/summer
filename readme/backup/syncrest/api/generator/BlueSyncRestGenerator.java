@@ -28,7 +28,7 @@ import reactor.util.Logger;
 
 import java.net.SocketTimeoutException;
 
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.nio.charset.CodingErrorAction.IGNORE;
 import static java.util.Optional.ofNullable;
 import static org.apache.http.client.config.CookieSpecs.STANDARD;

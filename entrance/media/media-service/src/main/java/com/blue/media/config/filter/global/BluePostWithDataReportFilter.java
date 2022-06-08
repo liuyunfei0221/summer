@@ -35,10 +35,11 @@ import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.*;
-import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.base.constant.base.DataEventOpType.CLICK;
-import static com.blue.base.constant.base.DataEventType.UNIFIED;
-import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
+import static com.blue.base.constant.common.BlueDataAttrKey.*;
+import static com.blue.base.constant.common.DataEventOpType.CLICK;
+import static com.blue.base.constant.common.DataEventType.UNIFIED;
+import static com.blue.base.constant.common.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.common.MediaCommonFunctions.*;
 import static com.blue.media.config.filter.BlueFilterOrder.BLUE_POST_WITH_DATA_REPORT;
 import static java.lang.String.valueOf;
@@ -90,7 +91,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
                     requestBody
                     :
                     decryptRequestBody(requestBody,
-                            ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(""),
+                            ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(EMPTY_DATA.value),
                             EXPIRED_SECONDS);
 
     private static final BiFunction<String, Map<String, Object>, String> RESPONSE_BODY_PROCESSOR = (responseBody, attributes) ->
@@ -98,7 +99,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
                     .map(b -> (boolean) b).orElse(true) ?
                     responseBody
                     :
-                    encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(""));
+                    encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(EMPTY_DATA.value));
 
     private void reportError(Throwable throwable, ServerHttpRequest request, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
         ExceptionResponse exceptionResponse = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
@@ -269,7 +270,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
         public Mono<Void> processor(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
             return ServerRequest.create(exchange, httpMessageReaders)
                     .bodyToMono(String.class)
-                    .switchIfEmpty(defer(() -> just("")))
+                    .switchIfEmpty(defer(() -> just(EMPTY_DATA.value)))
                     .flatMap(requestBody -> {
                         String tarBody = REQUEST_BODY_PROCESSOR.apply(requestBody, exchange.getAttributes());
                         dataEvent.addData(REQUEST_BODY.key, tarBody);

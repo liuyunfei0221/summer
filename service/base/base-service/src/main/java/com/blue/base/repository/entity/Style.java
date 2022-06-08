@@ -19,7 +19,7 @@ public class Style {
     private Boolean isActive;
 
     /**
-     * @see com.blue.base.constant.base.Status
+     * @see com.blue.base.constant.common.Status
      */
     private Integer status;
 

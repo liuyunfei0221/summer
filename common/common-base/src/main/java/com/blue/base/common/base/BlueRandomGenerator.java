@@ -1,6 +1,6 @@
 package com.blue.base.common.base;
 
-import com.blue.base.constant.base.RandomType;
+import com.blue.base.constant.common.RandomType;
 import com.blue.base.model.exps.BlueException;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -9,9 +9,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.RandomType.*;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.RandomType.*;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 
 /**

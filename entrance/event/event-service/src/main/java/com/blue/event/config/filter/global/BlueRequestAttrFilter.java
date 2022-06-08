@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.HEADER_VALUE_GETTER;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.event.config.filter.BlueFilterOrder.BLUE_REQUEST_ATTR;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;

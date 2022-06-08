@@ -22,7 +22,7 @@ public enum CredentialType {
     /**
      * login by local phone num with auto register
      */
-    LOCAL_PHONE_AUTO_REGISTER("LPAR", "CLI", false, "APP", ""),
+    LOCAL_PHONE_AUTO_REGISTER("LPAR", "CLI", false, "APP", "login with local phone no"),
 
     /**
      * login with email address and message verify with auto register

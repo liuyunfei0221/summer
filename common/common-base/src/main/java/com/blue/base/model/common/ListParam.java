@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 
 /**
  * list data param

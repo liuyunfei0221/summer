@@ -38,11 +38,12 @@ import java.util.stream.Stream;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.base.BlueNumericalValue.BLUE_ID;
-import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.Status.VALID;
-import static com.blue.base.constant.base.SyncKeyPrefix.ADDRESS_UPDATE_PRE;
+import static com.blue.base.constant.common.BlueNumericalValue.BLUE_ID;
+import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.base.constant.common.SyncKeyPrefix.ADDRESS_UPDATE_PRE;
 import static com.blue.member.constant.ColumnName.*;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_ADDRESSES_2_MEMBER_ADDRESSES_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_ADDRESS_2_MEMBER_ADDRESS_INFO;
@@ -162,7 +163,7 @@ public class MemberAddressServiceImpl implements MemberAddressService {
                     });
 
             memberAddress.setAreaId(BLUE_ID.value);
-            memberAddress.setArea("");
+            memberAddress.setArea(EMPTY_DATA.value);
         }
     }
 

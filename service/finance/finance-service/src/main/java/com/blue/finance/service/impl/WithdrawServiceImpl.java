@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.util.Loggers.getLogger;

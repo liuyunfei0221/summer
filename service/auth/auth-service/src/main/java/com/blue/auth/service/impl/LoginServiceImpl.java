@@ -11,8 +11,9 @@ import reactor.core.publisher.Mono;
 
 import static com.blue.base.common.reactive.AccessGetterForReactive.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.base.ResponseElement.OK;
+import static com.blue.base.constant.common.BlueHeader.AUTHORIZATION;
+import static com.blue.base.constant.common.ResponseElement.OK;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
@@ -58,7 +59,7 @@ public class LoginServiceImpl implements LoginService {
                         authService.invalidateAuthByAccess(acc)
                                 .flatMap(success ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .header(AUTHORIZATION.name, "")
+                                                .header(AUTHORIZATION.name, EMPTY_DATA.value)
                                                 .body(
                                                         generate(OK.code, serverRequest)
                                                         , BlueResponse.class)));

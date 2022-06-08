@@ -8,7 +8,7 @@ import java.util.List;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.ConstantProcessor.assertArticleType;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
  * article insert param

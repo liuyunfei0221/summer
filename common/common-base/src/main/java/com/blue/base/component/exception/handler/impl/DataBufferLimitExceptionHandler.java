@@ -8,7 +8,7 @@ import reactor.util.Logger;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static org.apache.commons.lang3.StringUtils.indexOf;
 import static reactor.util.Loggers.getLogger;
 

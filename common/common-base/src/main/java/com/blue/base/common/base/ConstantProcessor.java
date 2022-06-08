@@ -2,7 +2,7 @@ package com.blue.base.common.base;
 
 import com.blue.base.constant.analyze.StatisticsRange;
 import com.blue.base.constant.analyze.StatisticsType;
-import com.blue.base.constant.base.*;
+import com.blue.base.constant.common.*;
 import com.blue.base.constant.article.ArticleType;
 import com.blue.base.constant.article.SubjectType;
 import com.blue.base.constant.member.Gender;
@@ -21,8 +21,8 @@ import java.util.Map;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;

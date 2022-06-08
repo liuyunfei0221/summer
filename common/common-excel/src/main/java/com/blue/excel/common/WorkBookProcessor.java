@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.lang.String.valueOf;
 import static org.slf4j.LoggerFactory.getLogger;
 

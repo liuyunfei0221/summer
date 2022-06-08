@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.time.temporal.ChronoUnit;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
  * redis key expire info

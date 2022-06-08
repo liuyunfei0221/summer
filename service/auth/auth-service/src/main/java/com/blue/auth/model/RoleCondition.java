@@ -5,7 +5,7 @@ import com.blue.base.model.common.SortCondition;
 
 import java.io.Serializable;
 
-import static com.blue.base.constant.base.SortType.DESC;
+import static com.blue.base.constant.common.SortType.DESC;
 
 /**
  * role condition for select

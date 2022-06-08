@@ -1,5 +1,6 @@
 package com.blue.database.type;
 
+import com.blue.base.component.encoder.api.common.StringColumnEncoder;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.springframework.util.StringUtils;
@@ -9,7 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static com.blue.database.type.StringColumnEncoder.encryptString;
+import static com.blue.base.component.encoder.api.common.StringColumnEncoder.encryptString;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -29,7 +31,7 @@ public final class EncodeStringTypeHandler extends BaseTypeHandler<String> {
         return ofNullable(resultSet.getString(columnName))
                 .filter(StringUtils::hasText)
                 .map(StringColumnEncoder::decryptString)
-                .orElse("");
+                .orElse(EMPTY_DATA.value);
     }
 
     @Override
@@ -37,7 +39,7 @@ public final class EncodeStringTypeHandler extends BaseTypeHandler<String> {
         return ofNullable(resultSet.getString(columnIndex))
                 .filter(StringUtils::hasText)
                 .map(StringColumnEncoder::decryptString)
-                .orElse("");
+                .orElse(EMPTY_DATA.value);
     }
 
     @Override
@@ -45,7 +47,7 @@ public final class EncodeStringTypeHandler extends BaseTypeHandler<String> {
         return ofNullable(callableStatement.getString(columnIndex))
                 .filter(StringUtils::hasText)
                 .map(StringColumnEncoder::decryptString)
-                .orElse("");
+                .orElse(EMPTY_DATA.value);
     }
 
 }

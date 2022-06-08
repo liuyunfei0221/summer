@@ -6,7 +6,7 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 
 /**
  * access update info

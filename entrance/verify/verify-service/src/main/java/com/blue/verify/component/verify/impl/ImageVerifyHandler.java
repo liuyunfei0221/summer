@@ -1,6 +1,6 @@
 package com.blue.verify.component.verify.impl;
 
-import com.blue.base.constant.base.RandomType;
+import com.blue.base.constant.common.RandomType;
 import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
@@ -27,11 +27,11 @@ import java.util.function.UnaryOperator;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER;
-import static com.blue.base.constant.base.BlueHeader.VERIFY_KEY;
-import static com.blue.base.constant.base.RateLimitKeyPrefix.IMAGE_VERIFY_RATE_LIMIT_KEY_PRE;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseElement.TOO_MANY_REQUESTS;
-import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
+import static com.blue.base.constant.common.BlueHeader.VERIFY_KEY;
+import static com.blue.base.constant.common.RateLimitKeyPrefix.IMAGE_VERIFY_RATE_LIMIT_KEY_PRE;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.TOO_MANY_REQUESTS;
+import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.base.constant.verify.VerifyType.IMAGE;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.concurrent.CompletableFuture.supplyAsync;

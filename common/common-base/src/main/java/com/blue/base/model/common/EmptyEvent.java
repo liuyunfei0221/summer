@@ -2,6 +2,8 @@ package com.blue.base.model.common;
 
 import java.io.Serializable;
 
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+
 /**
  * non value wrapper
  *
@@ -11,7 +13,7 @@ import java.io.Serializable;
 public class EmptyEvent implements Serializable {
     private static final long serialVersionUID = -3647476377407752861L;
 
-    private String value = "";
+    private String value = EMPTY_DATA.value;
 
     public EmptyEvent() {
     }

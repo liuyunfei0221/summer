@@ -5,9 +5,9 @@ import com.blue.base.component.exception.handler.model.ExceptionInfo;
 import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
-import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
-import static com.blue.base.constant.base.Symbol.UNKNOWN;
+import static com.blue.base.constant.common.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
+import static com.blue.base.constant.common.Symbol.PATH_SEPARATOR;
+import static com.blue.base.constant.common.Symbol.UNKNOWN;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 

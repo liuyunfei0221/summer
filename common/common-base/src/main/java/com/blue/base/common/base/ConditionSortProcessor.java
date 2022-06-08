@@ -7,8 +7,8 @@ import java.util.Map;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.assertSortType;
-import static com.blue.base.constant.base.ResponseElement.INVALID_PARAM;
-import static com.blue.base.constant.base.SortType.DESC;
+import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
+import static com.blue.base.constant.common.SortType.DESC;
 import static java.util.Optional.ofNullable;
 
 /**

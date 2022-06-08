@@ -14,7 +14,7 @@ import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.ClassGetter.getClassesByPackage;
 import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
 import static com.blue.base.common.message.MessageProcessor.resolveToMessage;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;

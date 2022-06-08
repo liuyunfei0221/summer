@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 import static com.blue.auth.constant.LoginAttribute.VERIFICATION_CODE;
 import static com.blue.auth.constant.LoginAttribute.VERIFICATION_KEY;
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.verify.BusinessType.CREDENTIAL_ACCESS_LOGIN;
 import static com.blue.base.constant.verify.VerifyType.IMAGE;
 import static java.util.Optional.ofNullable;

@@ -3,7 +3,8 @@ package com.blue.auth.model;
 import com.blue.base.model.exps.BlueException;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 
 /**
  * member, role, login info for generate member auth
@@ -39,9 +40,9 @@ public final class AuthGenElement {
             throw new BlueException(BAD_REQUEST);
         if (isNull(roleId) || roleId < 1L)
             throw new BlueException(BAD_REQUEST);
-        if (isNull(credentialType) || "".equals(credentialType))
+        if (isNull(credentialType) || EMPTY_DATA.value.equals(credentialType))
             throw new BlueException(BAD_REQUEST);
-        if (isNull(deviceType) || "".equals(deviceType))
+        if (isNull(deviceType) || EMPTY_DATA.value.equals(deviceType))
             throw new BlueException(BAD_REQUEST);
 
         this.memberId = memberId;

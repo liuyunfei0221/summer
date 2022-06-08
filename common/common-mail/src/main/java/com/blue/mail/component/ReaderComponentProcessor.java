@@ -9,7 +9,7 @@ import reactor.util.Logger;
 import java.util.Properties;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static jakarta.mail.Session.getInstance;
 import static reactor.util.Loggers.getLogger;
 

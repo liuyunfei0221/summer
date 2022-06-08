@@ -1,6 +1,6 @@
 package com.blue.gateway.config.filter.global;
 
-import com.blue.base.constant.base.BlueHeader;
+import com.blue.base.constant.common.BlueHeader;
 import com.blue.base.model.common.DataEvent;
 import com.blue.base.model.common.ExceptionResponse;
 import com.blue.gateway.component.event.RequestEventReporter;
@@ -23,11 +23,12 @@ import java.util.function.BiConsumer;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
-import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.base.BlueHeader.REQUEST_IP;
-import static com.blue.base.constant.base.DataEventOpType.CLICK;
-import static com.blue.base.constant.base.DataEventType.UNIFIED;
+import static com.blue.base.constant.common.BlueDataAttrKey.*;
+import static com.blue.base.constant.common.BlueHeader.AUTHORIZATION;
+import static com.blue.base.constant.common.BlueHeader.REQUEST_IP;
+import static com.blue.base.constant.common.DataEventOpType.CLICK;
+import static com.blue.base.constant.common.DataEventType.UNIFIED;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
@@ -117,7 +118,7 @@ public final class BluePreWithErrorReportFilter implements GlobalFilter, Ordered
                 .onErrorResume(throwable ->
                         ServerRequest.create(exchange, httpMessageReaders)
                                 .bodyToMono(String.class)
-                                .switchIfEmpty(defer(() -> just("")))
+                                .switchIfEmpty(defer(() -> just(EMPTY_DATA.value)))
                                 .flatMap(requestBody -> {
                                     DataEvent dataEvent = new DataEvent();
                                     dataEvent.setDataEventType(UNIFIED);
@@ -125,7 +126,7 @@ public final class BluePreWithErrorReportFilter implements GlobalFilter, Ordered
 
                                     dataEvent.setStamp(TIME_STAMP_GETTER.get());
                                     EVENT_PACKAGER.accept(attributes, dataEvent);
-                                    if (!"".equals(requestBody))
+                                    if (!EMPTY_DATA.value.equals(requestBody))
                                         dataEvent.addData(REQUEST_BODY.key, requestBody);
                                     report(throwable, request, dataEvent);
 

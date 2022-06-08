@@ -18,8 +18,8 @@ import java.util.function.Predicate;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.message.MessageProcessor.resolveToMessage;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.Symbol.LIST_ELEMENT_SEPARATOR;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.Symbol.LIST_ELEMENT_SEPARATOR;
 import static java.lang.Double.compare;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;

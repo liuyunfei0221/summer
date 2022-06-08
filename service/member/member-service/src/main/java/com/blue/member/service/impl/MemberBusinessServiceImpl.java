@@ -18,8 +18,8 @@ import java.util.function.Consumer;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;

@@ -1,7 +1,7 @@
 package com.blue.base.common.base;
 
 import com.blue.base.component.exception.handler.ExceptionProcessor;
-import com.blue.base.constant.base.*;
+import com.blue.base.constant.common.*;
 import com.blue.base.model.common.*;
 import com.blue.base.model.exps.BlueException;
 import com.google.gson.Gson;
@@ -19,11 +19,12 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.RsaProcessor.*;
-import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
-import static com.blue.base.constant.base.Symbol.PAIR_SEPARATOR;
-import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
+import static com.blue.base.constant.common.BlueDataAttrKey.*;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.SummerAttr.LANGUAGE;
+import static com.blue.base.constant.common.Symbol.PAIR_SEPARATOR;
+import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Instant.now;
 import static java.util.Collections.singletonList;
@@ -236,14 +237,14 @@ public class CommonFunctions {
                     .filter(cts -> cts.size() > 0)
                     .map(cts -> cts.get(0))
                     .map(HEADER_VALUE_CONVERTER)
-                    .orElse("");
+                    .orElse(EMPTY_DATA.value);
 
     /**
      * simple header value getter
      */
     public static final BiFunction<HttpHeaders, String, String> SIMPLE_HEADER_VALUE_GETTER = (headers, key) ->
             ofNullable(headers.getFirst(key))
-                    .orElse("");
+                    .orElse(EMPTY_DATA.value);
 
     /**
      * get a random str
@@ -261,7 +262,7 @@ public class CommonFunctions {
      */
     public static final BiFunction<DataWrapper, Long, String> DATA_CONVERTER = (dataWrapper, expire) -> {
         if (TIME_STAMP_GETTER.get() - ofNullable(dataWrapper.getTimeStamp()).orElse(0L) <= expire)
-            return ofNullable(dataWrapper.getOriginal()).orElse("");
+            return ofNullable(dataWrapper.getOriginal()).orElse(EMPTY_DATA.value);
 
         throw new BlueException(DECRYPTION_FAILED);
     };

@@ -1,12 +1,12 @@
 package com.blue.base.component.exception.handler.model;
 
-import com.blue.base.constant.base.ResponseElement;
+import com.blue.base.constant.common.ResponseElement;
 import com.blue.base.model.exps.BlueException;
 
 import java.util.Arrays;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 
 /**
  * http status code and result

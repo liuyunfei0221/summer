@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 

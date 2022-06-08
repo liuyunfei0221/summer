@@ -1,6 +1,6 @@
 package com.blue.media.config.filter.global;
 
-import com.blue.base.constant.base.BlueHeader;
+import com.blue.base.constant.common.BlueHeader;
 import com.blue.base.model.common.DataEvent;
 import com.blue.base.model.common.ExceptionResponse;
 import com.blue.base.model.exps.BlueException;
@@ -28,11 +28,12 @@ import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
-import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.base.constant.base.BlueHeader.REQUEST_IP;
-import static com.blue.base.constant.base.DataEventOpType.CLICK;
-import static com.blue.base.constant.base.DataEventType.UNIFIED;
-import static com.blue.base.constant.base.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
+import static com.blue.base.constant.common.BlueDataAttrKey.*;
+import static com.blue.base.constant.common.BlueHeader.REQUEST_IP;
+import static com.blue.base.constant.common.DataEventOpType.CLICK;
+import static com.blue.base.constant.common.DataEventType.UNIFIED;
+import static com.blue.base.constant.common.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.common.MediaCommonFunctions.extractValuesToBind;
 import static com.blue.media.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
@@ -229,7 +230,7 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
         public Mono<String> processor(ServerWebExchange exchange) {
             return ServerRequest.create(exchange, httpMessageReaders)
                     .bodyToMono(String.class)
-                    .switchIfEmpty(defer(() -> just("")));
+                    .switchIfEmpty(defer(() -> just(EMPTY_DATA.value)));
         }
     }
 

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static reactor.core.publisher.Mono.error;

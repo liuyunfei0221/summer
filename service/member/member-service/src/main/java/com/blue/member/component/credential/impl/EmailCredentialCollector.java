@@ -13,8 +13,9 @@ import java.util.stream.Stream;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.auth.CredentialType.EMAIL_PWD;
 import static com.blue.base.constant.auth.CredentialType.EMAIL_VERIFY_AUTO_REGISTER;
-import static com.blue.base.constant.base.Status.INVALID;
-import static com.blue.base.constant.base.Status.VALID;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Status.INVALID;
+import static com.blue.base.constant.common.Status.VALID;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -51,7 +52,7 @@ public final class EmailCredentialCollector implements CredentialCollector {
         if (isBlank(email))
             return;
 
-        String tarAccess = access != null ? access : "";
+        String tarAccess = access != null ? access : EMPTY_DATA.value;
         TAR_TYPES.stream()
                 .map(type -> new CredentialInfo(email, type, tarAccess, STATUS_GETTER.test(type, tarAccess) ? VALID.status : INVALID.status, "from registry"))
                 .forEach(credentials::add);

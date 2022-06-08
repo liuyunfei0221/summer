@@ -1,6 +1,6 @@
 package com.blue.finance.service.impl;
 
-import com.blue.base.constant.base.Status;
+import com.blue.base.constant.common.Status;
 import com.blue.base.model.exps.BlueException;
 import com.blue.finance.api.model.MemberFinanceInfo;
 import com.blue.finance.repository.entity.FinanceAccount;
@@ -16,8 +16,8 @@ import java.util.function.Function;
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.util.Loggers.getLogger;

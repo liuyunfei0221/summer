@@ -8,7 +8,8 @@ import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 
 /**
  * model converters in marketing project
@@ -26,7 +27,7 @@ public final class MarketingModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new EventRecordInfo(eventRecord.getId(), eventRecord.getType(),
-                eventRecord.getData(), eventRecord.getStatus(), eventRecord.getCreateTime(), eventRecord.getCreator(), isNotBlank(creatorName) ? creatorName : "");
+                eventRecord.getData(), eventRecord.getStatus(), eventRecord.getCreateTime(), eventRecord.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value);
     };
 
 }

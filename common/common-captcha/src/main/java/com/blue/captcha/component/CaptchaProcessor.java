@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.awt.image.BufferedImage;
 import java.util.Properties;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 

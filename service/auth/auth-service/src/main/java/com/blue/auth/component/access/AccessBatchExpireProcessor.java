@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.of;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;

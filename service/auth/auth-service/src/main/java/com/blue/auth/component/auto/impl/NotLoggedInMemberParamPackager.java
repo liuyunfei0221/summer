@@ -7,7 +7,7 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.MemberRegistryParam;
 
 import static com.blue.base.constant.auth.CredentialType.NOT_LOGGED_IN;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
  * packager for not login

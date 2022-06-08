@@ -1,6 +1,6 @@
 package com.blue.base.common.base;
 
-import com.blue.base.constant.base.Status;
+import com.blue.base.constant.common.Status;
 import com.blue.base.model.common.IdentityParam;
 import com.blue.base.model.exps.BlueException;
 import org.apache.commons.lang3.StringUtils;
@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.Status.VALID;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.Status.VALID;
 
 /**
  * @author liuyunfei

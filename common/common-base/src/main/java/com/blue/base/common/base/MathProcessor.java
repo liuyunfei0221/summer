@@ -9,7 +9,7 @@ import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.toList;

@@ -19,9 +19,9 @@ import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.BlueChecker.isValidIdentity;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
-import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;

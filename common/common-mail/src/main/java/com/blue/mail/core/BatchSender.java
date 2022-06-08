@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.mail.component.SenderComponentProcessor.*;
 import static java.lang.Integer.bitCount;
 import static java.lang.Integer.numberOfLeadingZeros;

@@ -16,8 +16,8 @@ import java.util.function.BiConsumer;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static reactor.util.Loggers.getLogger;

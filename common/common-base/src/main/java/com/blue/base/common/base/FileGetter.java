@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.util.ResourceUtils.getURL;

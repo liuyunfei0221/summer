@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static java.lang.Long.valueOf;
 import static java.lang.Math.round;
 import static java.util.Collections.singletonList;

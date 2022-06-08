@@ -4,7 +4,7 @@ package com.blue.base.common.base;
 import com.blue.base.model.exps.BlueException;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.util.DigestUtils.md5DigestAsHex;

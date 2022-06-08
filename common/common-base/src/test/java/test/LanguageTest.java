@@ -1,9 +1,9 @@
 package test;
 
 import com.blue.base.common.message.MessageProcessor;
-import com.blue.base.constant.base.ElementKey;
+import com.blue.base.constant.common.ElementKey;
 
-import static com.blue.base.constant.base.ResponseElement.INVALID_EMAIL_ADDRESS;
+import static com.blue.base.constant.common.ResponseElement.INVALID_EMAIL_ADDRESS;
 import static java.util.Collections.singletonList;
 
 public class LanguageTest {

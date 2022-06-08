@@ -6,7 +6,7 @@ import org.springframework.lang.NonNull;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static org.springframework.data.redis.core.script.DigestUtils.sha1DigestAsHex;
 
 /**

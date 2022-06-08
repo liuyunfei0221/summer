@@ -13,8 +13,8 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.LEAKY_BUCKET_RATE_LIMITER;
 import static java.util.Arrays.asList;

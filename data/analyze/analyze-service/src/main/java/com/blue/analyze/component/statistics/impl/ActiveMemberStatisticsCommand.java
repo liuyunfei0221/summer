@@ -3,7 +3,7 @@ package com.blue.analyze.component.statistics.impl;
 import com.blue.analyze.component.statistics.inter.StatisticsCommand;
 import com.blue.analyze.service.inter.ActiveStatisticsService;
 import com.blue.base.common.access.AccessProcessor;
-import com.blue.base.constant.base.BlueDataAttrKey;
+import com.blue.base.constant.common.BlueDataAttrKey;
 import com.blue.base.model.common.Access;
 import reactor.util.Logger;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 import static com.blue.base.constant.analyze.StatisticsRange.D;
 import static com.blue.base.constant.analyze.StatisticsRange.M;
 import static com.blue.base.constant.analyze.StatisticsType.MA;
-import static com.blue.base.constant.base.BlueDataAttrKey.MEMBER_ID;
+import static com.blue.base.constant.common.BlueDataAttrKey.MEMBER_ID;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.empty;
 import static reactor.core.publisher.Mono.just;

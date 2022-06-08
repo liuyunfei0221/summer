@@ -5,7 +5,7 @@ import com.blue.marketing.constant.EventRecordSortAttribute;
 
 import java.io.Serializable;
 
-import static com.blue.base.constant.base.SortType.DESC;
+import static com.blue.base.constant.common.SortType.DESC;
 
 /**
  * event record condition for select

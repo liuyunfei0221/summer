@@ -11,9 +11,10 @@ import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.getResourceTypeByIdentity;
-import static com.blue.base.constant.base.Default.NOT_DEFAULT;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.Symbol.PATH_SEPARATOR;
+import static com.blue.base.constant.common.Default.NOT_DEFAULT;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Symbol.PATH_SEPARATOR;
 
 /**
  * model converters in auth project
@@ -68,8 +69,8 @@ public final class AuthModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new RoleManagerInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault(),
-                role.getCreateTime(), role.getUpdateTime(), role.getCreator(), isNotBlank(creatorName) ? creatorName : "",
-                role.getUpdater(), isNotBlank(updaterName) ? updaterName : "");
+                role.getCreateTime(), role.getUpdateTime(), role.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value,
+                role.getUpdater(), isNotBlank(updaterName) ? updaterName : EMPTY_DATA.value);
     }
 
     /**
@@ -133,8 +134,8 @@ public final class AuthModelConverters {
 
         return new ResourceManagerInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(), resource.getAuthenticate(),
                 resource.getRequestUnDecryption(), resource.getResponseUnEncryption(), resource.getExistenceRequestBody(), resource.getExistenceResponseBody(), getResourceTypeByIdentity(resource.getType()).disc.intern(),
-                resource.getName(), resource.getDescription(), resource.getCreateTime(), resource.getUpdateTime(), resource.getCreator(), isNotBlank(creatorName) ? creatorName : "",
-                resource.getUpdater(), isNotBlank(updaterName) ? updaterName : "");
+                resource.getName(), resource.getDescription(), resource.getCreateTime(), resource.getUpdateTime(), resource.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value,
+                resource.getUpdater(), isNotBlank(updaterName) ? updaterName : EMPTY_DATA.value);
     }
 
     /**
@@ -144,7 +145,7 @@ public final class AuthModelConverters {
         if (isNull(credential))
             throw new BlueException(EMPTY_PARAM);
 
-        return new CredentialInfo(credential.getCredential(), credential.getType(), "", credential.getStatus(), credential.getExtra());
+        return new CredentialInfo(credential.getCredential(), credential.getType(), EMPTY_DATA.value, credential.getStatus(), credential.getExtra());
     };
 
     /**

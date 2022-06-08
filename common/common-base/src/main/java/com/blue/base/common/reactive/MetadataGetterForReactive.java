@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 import static com.blue.base.common.metadata.MetadataProcessor.jsonToMetadata;
-import static com.blue.base.constant.base.BlueHeader.METADATA;
+import static com.blue.base.constant.common.BlueHeader.METADATA;
 import static reactor.core.publisher.Mono.just;
 
 /**

@@ -42,10 +42,11 @@ import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertBulletinType;
-import static com.blue.base.constant.base.CacheKeyPrefix.BULLETINS_PRE;
-import static com.blue.base.constant.base.ResponseElement.*;
-import static com.blue.base.constant.base.Status.VALID;
-import static com.blue.base.constant.base.SyncKeyPrefix.BULLETINS_CACHE_PRE;
+import static com.blue.base.constant.common.CacheKeyPrefix.BULLETINS_PRE;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.base.constant.common.SyncKeyPrefix.BULLETINS_CACHE_PRE;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
@@ -492,8 +493,8 @@ public class BulletinServiceImpl implements BulletinService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(bulletins.stream().map(b ->
-                                                bulletinToBulletinManagerInfo(b, ofNullable(idAndNameMapping.get(b.getCreator())).orElse(""),
-                                                        ofNullable(idAndNameMapping.get(b.getUpdater())).orElse(""))).collect(toList()));
+                                                bulletinToBulletinManagerInfo(b, ofNullable(idAndNameMapping.get(b.getCreator())).orElse(EMPTY_DATA.value),
+                                                        ofNullable(idAndNameMapping.get(b.getUpdater())).orElse(EMPTY_DATA.value))).collect(toList()));
                                     }).flatMap(bulletinManagerInfos ->
                                             just(new PageModelResponse<>(bulletinManagerInfos, tuple2.getT2())))
                             :

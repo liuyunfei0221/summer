@@ -20,7 +20,7 @@ public interface RestConf {
 
     Integer getConnectTimeoutMillis();
 
-    Boolean getUseTcpNodelay();
+    Boolean getUseTcpNoDelay();
 
     List<HttpProtocol> getProtocols();
 

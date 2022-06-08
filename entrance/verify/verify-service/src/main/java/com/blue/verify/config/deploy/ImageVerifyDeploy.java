@@ -1,6 +1,6 @@
 package com.blue.verify.config.deploy;
 
-import com.blue.base.constant.base.RandomType;
+import com.blue.base.constant.common.RandomType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 

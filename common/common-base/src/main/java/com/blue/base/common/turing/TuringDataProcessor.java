@@ -6,7 +6,7 @@ import com.google.gson.JsonSyntaxException;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.GSON;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 
 /**
  * turing data object and json str converter

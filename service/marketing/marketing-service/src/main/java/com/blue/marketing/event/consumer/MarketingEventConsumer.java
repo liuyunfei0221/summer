@@ -11,7 +11,7 @@ import reactor.util.Logger;
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.base.BlueTopic.MARKETING;
+import static com.blue.base.constant.common.BlueTopic.MARKETING;
 import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;

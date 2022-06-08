@@ -29,7 +29,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.converter.MediaModelConverters.downloadHistoryToDownloadHistoryInfo;
 import static com.blue.mongo.common.SortConverter.convert;
 import static java.util.Collections.emptyList;
@@ -221,7 +222,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                             .flatMap(attachments -> {
                                 Map<Long, String> idAndNameMapping = attachments.parallelStream().collect(toMap(Attachment::getId, Attachment::getName, (a, b) -> a));
                                 return just(downloadHistories.stream().map(dh ->
-                                                downloadHistoryToDownloadHistoryInfo(dh, ofNullable(idAndNameMapping.get(dh.getAttachmentId())).orElse(""), memberName))
+                                                downloadHistoryToDownloadHistoryInfo(dh, ofNullable(idAndNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_DATA.value), memberName))
                                         .collect(toList()));
                             }).flatMap(downloadHistoryInfo ->
                                     just(new PageModelResponse<>(downloadHistoryInfo, tuple3.getT2())))
@@ -295,8 +296,8 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                         Map<Long, String> memberIdAndNameMapping = t2.getT2();
 
                         return just(downloadHistories.stream().map(dh ->
-                                        downloadHistoryToDownloadHistoryInfo(dh, ofNullable(attachmentIdAndNameMapping.get(dh.getAttachmentId())).orElse(""),
-                                                ofNullable(memberIdAndNameMapping.get(dh.getCreator())).orElse("")))
+                                        downloadHistoryToDownloadHistoryInfo(dh, ofNullable(attachmentIdAndNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_DATA.value),
+                                                ofNullable(memberIdAndNameMapping.get(dh.getCreator())).orElse(EMPTY_DATA.value)))
                                 .collect(toList()))
                                 .flatMap(downloadHistoryInfo ->
                                         just(new PageModelResponse<>(downloadHistoryInfo, tuple2.getT2())));

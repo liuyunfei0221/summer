@@ -1,8 +1,8 @@
 package com.blue.base.model.common;
 
-import com.blue.base.constant.base.BlueDataAttrKey;
-import com.blue.base.constant.base.DataEventOpType;
-import com.blue.base.constant.base.DataEventType;
+import com.blue.base.constant.common.BlueDataAttrKey;
+import com.blue.base.constant.common.DataEventOpType;
+import com.blue.base.constant.common.DataEventType;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -26,14 +26,14 @@ public final class DataEvent implements Serializable {
     /**
      * event type
      *
-     * @see com.blue.base.constant.base.DataEventType
+     * @see com.blue.base.constant.common.DataEventType
      */
     private DataEventType dataEventType;
 
     /**
      * event operate type
      *
-     * @see com.blue.base.constant.base.DataEventOpType
+     * @see com.blue.base.constant.common.DataEventOpType
      */
     private DataEventOpType dataEventOpType;
 

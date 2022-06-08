@@ -3,7 +3,7 @@ package com.blue.base.model.common;
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 
 /**
  * exp response result info

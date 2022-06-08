@@ -6,7 +6,7 @@ import com.google.gson.JsonSyntaxException;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.GSON;
-import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
+import static com.blue.base.constant.common.ResponseElement.UNAUTHORIZED;
 
 /**
  * auth object and auth str converter

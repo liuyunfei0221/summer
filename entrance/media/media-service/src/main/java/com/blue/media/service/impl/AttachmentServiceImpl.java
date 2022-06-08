@@ -25,9 +25,10 @@ import java.util.stream.Stream;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
-import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -271,7 +272,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(attachments.stream().map(a ->
-                                                        ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER.apply(a, ofNullable(idAndNameMapping.get(a.getCreator())).orElse("")))
+                                                        ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER.apply(a, ofNullable(idAndNameMapping.get(a.getCreator())).orElse(EMPTY_DATA.value)))
                                                 .collect(toList()));
                                     }).flatMap(attachmentInfos ->
                                             just(new PageModelResponse<>(attachmentInfos, tuple2.getT2())))

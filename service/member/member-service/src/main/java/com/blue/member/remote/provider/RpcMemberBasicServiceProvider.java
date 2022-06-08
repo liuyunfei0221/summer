@@ -13,7 +13,7 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static com.blue.base.constant.base.ResponseElement.DATA_NOT_EXIST;
+import static com.blue.base.constant.common.ResponseElement.DATA_NOT_EXIST;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;

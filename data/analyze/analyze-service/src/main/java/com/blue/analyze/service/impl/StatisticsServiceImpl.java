@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ConstantProcessor.getStatisticsRangeByIdentity;
 import static com.blue.base.common.base.ConstantProcessor.getStatisticsTypeByIdentity;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;

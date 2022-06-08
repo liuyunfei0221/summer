@@ -22,10 +22,11 @@ import java.util.function.Function;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.getBoolByBool;
-import static com.blue.base.constant.base.BlueBoolean.TRUE;
-import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.base.ResponseElement.OK;
+import static com.blue.base.constant.common.BlueBoolean.TRUE;
+import static com.blue.base.constant.common.BlueDataAttrKey.*;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.OK;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static java.time.Instant.ofEpochSecond;
 import static java.time.LocalDate.ofInstant;
 import static java.time.ZoneId.systemDefault;
@@ -63,7 +64,7 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
                 .orElse(new HashSet<>(0));
 
         NESTING_RES = ofNullable(nestingResponseDeploy.getResponse()).filter(StringUtils::isNotEmpty)
-                .orElse("");
+                .orElse(EMPTY_DATA.value);
     }
 
     /**
@@ -76,9 +77,9 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
         OptEvent optEvent = new OptEvent();
 
         optEvent.setDataEventType(ofNullable(param.getDataEventType())
-                .map(t -> t.identity).orElse(""));
+                .map(t -> t.identity).orElse(EMPTY_DATA.value));
         optEvent.setDataEventOpType(ofNullable(param.getDataEventOpType())
-                .map(t -> t.identity).orElse(""));
+                .map(t -> t.identity).orElse(EMPTY_DATA.value));
 
         long stamp = ofNullable(param.getStamp()).orElse(TIME_STAMP_GETTER.get());
         optEvent.setStamp(stamp);
@@ -86,17 +87,17 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
 
         Map<String, String> entries = param.getEntries();
 
-        optEvent.setMethod(ofNullable(entries.get(METHOD.key)).orElse(""));
-        optEvent.setUri(ofNullable(entries.get(URI.key)).orElse(""));
+        optEvent.setMethod(ofNullable(entries.get(METHOD.key)).orElse(EMPTY_DATA.value));
+        optEvent.setUri(ofNullable(entries.get(URI.key)).orElse(EMPTY_DATA.value));
 
-        String realUri = ofNullable(entries.get(REAL_URI.key)).orElse("");
+        String realUri = ofNullable(entries.get(REAL_URI.key)).orElse(EMPTY_DATA.value);
         optEvent.setRealUri(realUri);
-        optEvent.setRequestBody(ofNullable(entries.get(REQUEST_BODY.key)).orElse(""));
+        optEvent.setRequestBody(ofNullable(entries.get(REQUEST_BODY.key)).orElse(EMPTY_DATA.value));
         optEvent.setResponseStatus(ofNullable(entries.get(RESPONSE_STATUS.key)).map(Integer::parseInt).orElse(OK.status));
-        optEvent.setResponseBody(ofNullable(entries.get(RESPONSE_BODY.key)).map(body -> NESTING_RESPONSE_BODY_HANDLER.apply(realUri, body)).orElse(""));
-        optEvent.setRequestId(ofNullable(entries.get(REQUEST_ID.key)).orElse(""));
-        optEvent.setMetadata(ofNullable(entries.get(METADATA.key)).orElse(""));
-        optEvent.setJwt(ofNullable(entries.get(JWT.key)).orElse(""));
+        optEvent.setResponseBody(ofNullable(entries.get(RESPONSE_BODY.key)).map(body -> NESTING_RESPONSE_BODY_HANDLER.apply(realUri, body)).orElse(EMPTY_DATA.value));
+        optEvent.setRequestId(ofNullable(entries.get(REQUEST_ID.key)).orElse(EMPTY_DATA.value));
+        optEvent.setMetadata(ofNullable(entries.get(METADATA.key)).orElse(EMPTY_DATA.value));
+        optEvent.setJwt(ofNullable(entries.get(JWT.key)).orElse(EMPTY_DATA.value));
 
         ofNullable(entries.get(ACCESS.key)).filter(BlueChecker::isNotBlank)
                 .map(AccessProcessor::jsonToAccess)
@@ -108,9 +109,9 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
                     optEvent.setLoginTime(access.getLoginTime());
                 });
 
-        optEvent.setClientIp(ofNullable(entries.get(CLIENT_IP.key)).orElse(""));
-        optEvent.setUserAgent(ofNullable(entries.get(USER_AGENT.key)).orElse(""));
-        optEvent.setSecKey(ofNullable(entries.get(SEC_KEY.key)).orElse(""));
+        optEvent.setClientIp(ofNullable(entries.get(CLIENT_IP.key)).orElse(EMPTY_DATA.value));
+        optEvent.setUserAgent(ofNullable(entries.get(USER_AGENT.key)).orElse(EMPTY_DATA.value));
+        optEvent.setSecKey(ofNullable(entries.get(SEC_KEY.key)).orElse(EMPTY_DATA.value));
         optEvent.setRequestUnDecryption(getBoolByBool(ofNullable(entries.get(REQUEST_UN_DECRYPTION.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
         optEvent.setResponseUnEncryption(getBoolByBool(ofNullable(entries.get(RESPONSE_UN_ENCRYPTION.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
         optEvent.setExistenceRequestBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_REQUEST_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);

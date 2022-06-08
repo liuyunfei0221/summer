@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.mail.component.ReaderComponentProcessor.*;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;

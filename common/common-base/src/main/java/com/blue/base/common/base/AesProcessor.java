@@ -12,7 +12,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Base64.getDecoder;
 import static java.util.Base64.getEncoder;

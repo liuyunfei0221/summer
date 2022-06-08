@@ -1,7 +1,7 @@
 package com.blue.member.converter;
 
-import com.blue.base.constant.base.BlueNumericalValue;
-import com.blue.base.constant.base.Status;
+import com.blue.base.constant.common.BlueNumericalValue;
+import com.blue.base.constant.common.Status;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.*;
 import com.blue.member.repository.entity.*;
@@ -13,8 +13,8 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
 import static com.blue.base.constant.auth.CredentialType.PHONE_PWD;
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.member.Gender.UNKNOWN;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;

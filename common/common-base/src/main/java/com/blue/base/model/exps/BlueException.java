@@ -1,11 +1,12 @@
 package com.blue.base.model.exps;
 
-import com.blue.base.constant.base.ResponseElement;
+import com.blue.base.constant.common.ResponseElement;
 
 import java.util.Arrays;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 
 /**
  * global business exception
@@ -131,7 +132,7 @@ public final class BlueException extends RuntimeException {
                 "status=" + status +
                 ", code=" + code +
                 ", message='" + message + '\'' +
-                (isNull(replacements) ? "" : ", replacements=" + Arrays.toString(replacements)) +
+                (isNull(replacements) ? EMPTY_DATA.value : ", replacements=" + Arrays.toString(replacements)) +
                 '}';
     }
 }

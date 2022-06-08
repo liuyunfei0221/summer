@@ -29,9 +29,10 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.CommonFunctions.*;
-import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.base.constant.base.DataEventOpType.CLICK;
-import static com.blue.base.constant.base.DataEventType.UNIFIED;
+import static com.blue.base.constant.common.BlueDataAttrKey.*;
+import static com.blue.base.constant.common.DataEventOpType.CLICK;
+import static com.blue.base.constant.common.DataEventType.UNIFIED;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.gateway.common.GatewayCommonFunctions.*;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_POST_WITH_DATA_REPORT;
 import static java.lang.String.valueOf;
@@ -75,14 +76,14 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
                     requestBody
                     :
                     decryptRequestBody(requestBody,
-                            ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(""), EXPIRED_SECONDS);
+                            ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(EMPTY_DATA.value), EXPIRED_SECONDS);
 
     private static final BiFunction<String, Map<String, Object>, String> RESPONSE_BODY_PROCESSOR = (responseBody, attributes) ->
             ofNullable(attributes.get(RESPONSE_UN_ENCRYPTION.key))
                     .map(b -> (boolean) b).orElse(true) ?
                     responseBody
                     :
-                    encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(""));
+                    encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(EMPTY_DATA.value));
 
     private void packageError(Throwable throwable, ServerHttpRequest request, DataEvent dataEvent) {
         ExceptionResponse exceptionResponse = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
@@ -176,7 +177,7 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
         return fromPublisher(
                 ServerRequest.create(exchange, httpMessageReaders)
                         .bodyToMono(String.class)
-                        .switchIfEmpty(defer(() -> just("")))
+                        .switchIfEmpty(defer(() -> just(EMPTY_DATA.value)))
                         .flatMap(requestBody -> {
                             String tarBody = REQUEST_BODY_PROCESSOR.apply(requestBody, attributes);
                             dataEvent.addData(REQUEST_BODY.key, tarBody);

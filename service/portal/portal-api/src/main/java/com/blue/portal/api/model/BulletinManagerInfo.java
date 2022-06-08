@@ -27,7 +27,7 @@ public final class BulletinManagerInfo implements Serializable {
     private Integer type;
 
     /**
-     * @see com.blue.base.constant.base.Status
+     * @see com.blue.base.constant.common.Status
      */
     private Integer status;
 

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static com.blue.auth.converter.AuthModelConverters.CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER;
-import static com.blue.base.constant.base.ResponseElement.DATA_NOT_EXIST;
+import static com.blue.base.constant.common.ResponseElement.DATA_NOT_EXIST;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 

@@ -20,8 +20,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.UNAUTHORIZED;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -130,7 +131,7 @@ public final class AccessInfoCache {
 
         return reactiveStringRedisTemplate.opsForValue().get(keyId)
                 .flatMap(accessInfo -> {
-                    if (!"".equals(accessInfo)) {
+                    if (!EMPTY_DATA.value.equals(accessInfo)) {
                         cache.put(keyId, accessInfo);
                         REDIS_ACCESS_REFRESHER.accept(keyId);
                     }

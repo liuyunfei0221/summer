@@ -20,11 +20,12 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
-import static com.blue.base.constant.base.CacheKeyPrefix.ILLEGAL_IP_PRE;
-import static com.blue.base.constant.base.CacheKeyPrefix.ILLEGAL_JWT_PRE;
-import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.Symbol.WILDCARD;
+import static com.blue.base.constant.common.CacheKeyPrefix.ILLEGAL_IP_PRE;
+import static com.blue.base.constant.common.CacheKeyPrefix.ILLEGAL_JWT_PRE;
+import static com.blue.base.constant.common.BlueDataAttrKey.*;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Symbol.WILDCARD;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
@@ -36,7 +37,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public final class IllegalAsserter {
 
@@ -144,8 +145,8 @@ public final class IllegalAsserter {
         Map<String, Object> attributes = exchange.getAttributes();
 
         String resKey = REQ_RES_KEY_GENERATOR.apply(
-                ofNullable(attributes.get(METHOD.key)).map(String::valueOf).orElse(""),
-                ofNullable(attributes.get(URI.key)).map(String::valueOf).orElse(""));
+                ofNullable(attributes.get(METHOD.key)).map(String::valueOf).orElse(EMPTY_DATA.value),
+                ofNullable(attributes.get(URI.key)).map(String::valueOf).orElse(EMPTY_DATA.value));
 
         return zip(
                 ofNullable(attributes.get(JWT.key))

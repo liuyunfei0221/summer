@@ -9,7 +9,7 @@ import reactor.util.Logger;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.lang.Thread.onSpinWait;
 import static reactor.util.Loggers.getLogger;
 

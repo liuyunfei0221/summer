@@ -1,6 +1,6 @@
 package com.blue.member.model;
 
-import com.blue.base.constant.base.SortType;
+import com.blue.base.constant.common.SortType;
 import com.blue.base.model.common.SortCondition;
 import com.blue.member.constant.MemberBasicSortAttribute;
 
@@ -34,7 +34,7 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
     private String source;
 
     /**
-     * @see com.blue.base.constant.base.Status
+     * @see com.blue.base.constant.common.Status
      */
     private Integer status;
 

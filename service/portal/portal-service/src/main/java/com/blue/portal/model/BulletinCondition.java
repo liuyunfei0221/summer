@@ -5,7 +5,7 @@ import com.blue.portal.constant.BulletinSortAttribute;
 
 import java.io.Serializable;
 
-import static com.blue.base.constant.base.SortType.DESC;
+import static com.blue.base.constant.common.SortType.DESC;
 
 /**
  * bulletin condition for select
@@ -29,7 +29,7 @@ public final class BulletinCondition extends SortCondition implements Serializab
     private Integer type;
 
     /**
-     * @see com.blue.base.constant.base.Status
+     * @see com.blue.base.constant.common.Status
      */
     private Integer status;
 

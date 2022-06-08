@@ -4,7 +4,7 @@ import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionInfo;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.base.ResponseElement.GATEWAY_TIMEOUT;
+import static com.blue.base.constant.common.ResponseElement.GATEWAY_TIMEOUT;
 import static reactor.util.Loggers.getLogger;
 
 /**

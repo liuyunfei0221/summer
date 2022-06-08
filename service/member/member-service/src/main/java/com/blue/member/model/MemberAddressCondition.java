@@ -1,6 +1,6 @@
 package com.blue.member.model;
 
-import com.blue.base.constant.base.SortType;
+import com.blue.base.constant.common.SortType;
 import com.blue.base.model.common.SortCondition;
 import com.blue.member.constant.MemberAddressSortAttribute;
 
@@ -47,7 +47,7 @@ public final class MemberAddressCondition extends SortCondition implements Seria
     private String referenceLike;
 
     /**
-     * @see com.blue.base.constant.base.Status
+     * @see com.blue.base.constant.common.Status
      */
     private Integer status;
 

@@ -5,7 +5,7 @@ import com.blue.base.component.exception.handler.model.ExceptionInfo;
 import org.springframework.util.StringUtils;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 

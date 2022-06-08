@@ -23,9 +23,9 @@ import java.util.concurrent.ExecutorService;
 
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.constant.article.SubjectType.ARTICLE;
-import static com.blue.base.constant.base.ResponseElement.DATA_NOT_EXIST;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
-import static com.blue.base.constant.base.Status.VALID;
+import static com.blue.base.constant.common.ResponseElement.DATA_NOT_EXIST;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.Status.VALID;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;

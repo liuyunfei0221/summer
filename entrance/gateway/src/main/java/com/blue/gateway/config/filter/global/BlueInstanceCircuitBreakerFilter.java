@@ -1,6 +1,6 @@
 package com.blue.gateway.config.filter.global;
 
-import com.blue.base.constant.base.Symbol;
+import com.blue.base.constant.common.Symbol;
 import com.blue.gateway.config.deploy.CircuitBreakerDeploy;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;

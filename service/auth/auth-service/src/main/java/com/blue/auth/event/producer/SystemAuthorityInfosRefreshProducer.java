@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.base.BlueTopic.SYSTEM_AUTHORITY_INFOS_REFRESH;
+import static com.blue.base.constant.common.BlueTopic.SYSTEM_AUTHORITY_INFOS_REFRESH;
 import static com.blue.pulsar.api.generator.BluePulsarProducerGenerator.generateProducer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;

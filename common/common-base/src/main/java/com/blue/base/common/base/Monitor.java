@@ -6,7 +6,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.*;
 
 /**
  * monitor for value

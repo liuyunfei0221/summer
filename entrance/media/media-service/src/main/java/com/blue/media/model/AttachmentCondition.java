@@ -5,7 +5,7 @@ import com.blue.media.constant.AttachmentSortAttribute;
 
 import java.io.Serializable;
 
-import static com.blue.base.constant.base.SortType.DESC;
+import static com.blue.base.constant.common.SortType.DESC;
 
 /**
  * attachment condition for select

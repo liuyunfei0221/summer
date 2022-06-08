@@ -32,8 +32,9 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.MathProcessor.assertDisorderIntegerContinuous;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.Symbol.*;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Symbol.*;
 import static com.blue.identity.constant.IdentitySchema.MAX_DATA_CENTER_ID;
 import static com.blue.identity.constant.IdentitySchema.MAX_WORKER_ID;
 import static java.lang.Integer.parseInt;
@@ -79,7 +80,7 @@ public final class BlueDataAccessGenerator {
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "username can't be blank");
 
         hikariConfig.setDriverClassName(driverClassName);
-        hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDataBaseConf()).map(c -> PAR_CONCATENATION_DATABASE_CONF.identity + c).orElse(""));
+        hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDataBaseConf()).map(c -> PAR_CONCATENATION_DATABASE_CONF.identity + c).orElse(EMPTY_DATA.value));
         hikariConfig.setUsername(username);
         ofNullable(shardAttr.getPassword()).ifPresent(hikariConfig::setPassword);
 

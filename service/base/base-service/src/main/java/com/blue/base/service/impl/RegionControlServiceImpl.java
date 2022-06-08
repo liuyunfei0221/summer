@@ -15,9 +15,9 @@ import reactor.util.Logger;
 import reactor.util.Loggers;
 
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
-import static com.blue.base.constant.base.SummerAttr.EMPTY_EVENT;
-import static com.blue.base.constant.base.SyncKey.REGION_UPDATE_SYNC;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.SummerAttr.EMPTY_EVENT;
+import static com.blue.base.constant.common.SyncKey.REGION_UPDATE_SYNC;
 import static reactor.core.publisher.Mono.fromRunnable;
 
 /**

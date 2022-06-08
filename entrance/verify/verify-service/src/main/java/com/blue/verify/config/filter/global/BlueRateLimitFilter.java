@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER;
-import static com.blue.base.constant.base.ResponseElement.TOO_MANY_REQUESTS;
+import static com.blue.base.constant.common.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateFixedTokenBucketRateLimiter;
 import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_RATE_LIMIT;
 import static reactor.core.publisher.Mono.error;

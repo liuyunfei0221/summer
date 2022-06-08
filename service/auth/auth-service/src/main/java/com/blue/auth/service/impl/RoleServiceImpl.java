@@ -34,12 +34,13 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
-import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.base.CacheKey.DEFAULT_ROLE;
-import static com.blue.base.constant.base.CacheKey.ROLES;
-import static com.blue.base.constant.base.Default.DEFAULT;
-import static com.blue.base.constant.base.Default.NOT_DEFAULT;
-import static com.blue.base.constant.base.ResponseElement.*;
+import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.CacheKey.DEFAULT_ROLE;
+import static com.blue.base.constant.common.CacheKey.ROLES;
+import static com.blue.base.constant.common.Default.DEFAULT;
+import static com.blue.base.constant.common.Default.NOT_DEFAULT;
+import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -363,8 +364,8 @@ public class RoleServiceImpl implements RoleService {
             idAndNameMapping = emptyMap();
         }
 
-        return roleToRoleManagerInfo(newDefaultRole, ofNullable(idAndNameMapping.get(newDefaultRole.getCreator())).orElse(""),
-                ofNullable(idAndNameMapping.get(newDefaultRole.getUpdater())).orElse(""));
+        return roleToRoleManagerInfo(newDefaultRole, ofNullable(idAndNameMapping.get(newDefaultRole.getCreator())).orElse(EMPTY_DATA.value),
+                ofNullable(idAndNameMapping.get(newDefaultRole.getUpdater())).orElse(EMPTY_DATA.value));
     }
 
     /**
@@ -509,8 +510,8 @@ public class RoleServiceImpl implements RoleService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(roles.stream().map(r ->
-                                                roleToRoleManagerInfo(r, ofNullable(idAndNameMapping.get(r.getCreator())).orElse(""),
-                                                        ofNullable(idAndNameMapping.get(r.getUpdater())).orElse(""))).collect(toList()));
+                                                roleToRoleManagerInfo(r, ofNullable(idAndNameMapping.get(r.getCreator())).orElse(EMPTY_DATA.value),
+                                                        ofNullable(idAndNameMapping.get(r.getUpdater())).orElse(EMPTY_DATA.value))).collect(toList()));
                                     }).flatMap(resourceManagerInfos ->
                                             just(new PageModelResponse<>(resourceManagerInfos, tuple2.getT2())))
                             :

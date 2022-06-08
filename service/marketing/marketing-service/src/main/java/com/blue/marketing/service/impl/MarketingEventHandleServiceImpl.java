@@ -16,7 +16,7 @@ import reactor.util.Logger;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;

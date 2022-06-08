@@ -6,7 +6,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
 import static com.blue.base.common.turing.TuringDataProcessor.jsonToTuringData;
-import static com.blue.base.constant.base.BlueHeader.TURING_DATA;
+import static com.blue.base.constant.common.BlueHeader.TURING_DATA;
 import static reactor.core.publisher.Mono.just;
 
 /**

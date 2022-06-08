@@ -1,6 +1,6 @@
 package com.blue.finance.handler.dynamic;
 
-import com.blue.base.constant.base.Symbol;
+import com.blue.base.constant.common.Symbol;
 import com.blue.base.model.exps.BlueException;
 import com.blue.finance.component.dynamic.inter.DynamicEndPointHandler;
 import com.blue.finance.config.deploy.DynamicApiDeploy;
@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;

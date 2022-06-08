@@ -18,10 +18,11 @@ import java.util.function.BiConsumer;
 import static com.blue.base.common.access.AccessProcessor.accessToJson;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.HEADER_VALUE_GETTER;
-import static com.blue.base.constant.base.BlueDataAttrKey.*;
-import static com.blue.base.constant.base.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.base.ResponseElement.UNAUTHORIZED;
-import static com.blue.base.constant.base.SpecialAccess.VISITOR;
+import static com.blue.base.constant.common.BlueDataAttrKey.*;
+import static com.blue.base.constant.common.BlueHeader.AUTHORIZATION;
+import static com.blue.base.constant.common.ResponseElement.UNAUTHORIZED;
+import static com.blue.base.constant.common.SpecialAccess.VISITOR;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_AUTH;
 import static java.util.Optional.ofNullable;
 
@@ -66,8 +67,8 @@ public final class BlueAuthFilter implements GlobalFilter, Ordered {
 
         return rpcAuthServiceConsumer.assertAccess(
                         new AccessAssert(HEADER_VALUE_GETTER.apply(request.getHeaders(), AUTHORIZATION.name),
-                                ofNullable(attributes.get(METHOD.key)).map(String::valueOf).orElse(""),
-                                ofNullable(attributes.get(URI.key)).map(String::valueOf).orElse("")))
+                                ofNullable(attributes.get(METHOD.key)).map(String::valueOf).orElse(EMPTY_DATA.value),
+                                ofNullable(attributes.get(URI.key)).map(String::valueOf).orElse(EMPTY_DATA.value)))
                 .flatMap(authAsserted -> {
                     authProcess(authAsserted, request, attributes);
                     return chain.filter(exchange);

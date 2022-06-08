@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.blue.base.common.base.BlueChecker.isValidIdentity;
-import static com.blue.base.constant.base.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 

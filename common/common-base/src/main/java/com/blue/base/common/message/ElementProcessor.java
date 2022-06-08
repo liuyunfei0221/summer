@@ -2,7 +2,7 @@ package com.blue.base.common.message;
 
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.common.base.PropertiesProcessor;
-import com.blue.base.constant.base.ElementKey;
+import com.blue.base.constant.common.ElementKey;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.util.Logger;
 
@@ -20,9 +20,10 @@ import java.util.stream.Stream;
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
-import static com.blue.base.constant.base.ElementKey.DEFAULT;
-import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
-import static com.blue.base.constant.base.Symbol.*;
+import static com.blue.base.constant.common.ElementKey.DEFAULT;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.SummerAttr.LANGUAGE;
+import static com.blue.base.constant.common.Symbol.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
@@ -48,7 +49,7 @@ public final class ElementProcessor {
 
     private static final UnaryOperator<String> PRE_NAME_PARSER = n -> {
         int idx = lastIndexOf(n, SCHEME_SEPARATOR.identity);
-        String name = idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : "") : n;
+        String name = idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : EMPTY_DATA.value) : n;
         return replace(name, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity);
     };
 
@@ -87,7 +88,7 @@ public final class ElementProcessor {
             for (String key : keys) {
                 if (isNotBlank(key)) {
                     value = allElement.get(key);
-                    res.put(key, isNotNull(value) ? value : "");
+                    res.put(key, isNotNull(value) ? value : EMPTY_DATA.value);
                 }
             }
 

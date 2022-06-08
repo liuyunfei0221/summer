@@ -1,7 +1,7 @@
 package com.blue.base.common.message;
 
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.constant.base.ElementKey;
+import com.blue.base.constant.common.ElementKey;
 import com.blue.base.model.message.LanguageInfo;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -19,9 +19,10 @@ import static com.blue.base.common.base.FileGetter.getFiles;
 import static com.blue.base.common.base.PropertiesProcessor.parseProp;
 import static com.blue.base.common.message.ElementProcessor.resolveToValues;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
-import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.base.SummerAttr.LANGUAGE;
-import static com.blue.base.constant.base.Symbol.*;
+import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.SummerAttr.LANGUAGE;
+import static com.blue.base.constant.common.Symbol.*;
 import static java.lang.Integer.*;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
@@ -57,7 +58,7 @@ public final class MessageProcessor {
 
     private static final UnaryOperator<String> LANGUAGE_IDENTITY_PARSER = n -> {
         int idx = lastIndexOf(n, SCHEME_SEPARATOR.identity);
-        return replace(idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : "") : n, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity);
+        return replace(idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : EMPTY_DATA.value) : n, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity);
     };
 
     private static final Function<Map<String, String>, Integer> LANGUAGE_PRIORITY_PARSER = map ->
@@ -88,15 +89,15 @@ public final class MessageProcessor {
             messages = parseProp(f);
             identity = LANGUAGE_IDENTITY_PARSER.apply(f.getName());
 
-            languageInfo = new LanguageInfo(ofNullable(messages.get(LANGUAGE_NAME_KEY)).orElse(""),
-                    identity, ofNullable(messages.get(LANGUAGE_ICON_KEY)).orElse(""));
+            languageInfo = new LanguageInfo(ofNullable(messages.get(LANGUAGE_NAME_KEY)).orElse(EMPTY_DATA.value),
+                    identity, ofNullable(messages.get(LANGUAGE_ICON_KEY)).orElse(EMPTY_DATA.value));
 
             infoMap.put(LANGUAGE_PRIORITY_PARSER.apply(messages), languageInfo);
 
             i18n.put(lowerCase(identity), MESSAGES_CONVERTER.apply(messages));
 
             if (DEFAULT_LANGUAGE.equals(
-                    ofNullable(languageInfo.getIdentity()).map(String::toLowerCase).orElse("")))
+                    ofNullable(languageInfo.getIdentity()).map(String::toLowerCase).orElse(EMPTY_DATA.value)))
                 DEFAULT_LANGUAGE_INFO = languageInfo;
         }
 
