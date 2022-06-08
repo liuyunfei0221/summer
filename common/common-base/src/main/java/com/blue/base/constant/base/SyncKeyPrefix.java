@@ -29,6 +29,11 @@ public enum SyncKeyPrefix {
     AUTH_INVALID_BY_MEMBER_ID_PRE("AUTH_INVALID_BY_MEMBER_ID_PRE:"),
 
     /**
+     * operate address sync key pre
+     */
+    ADDRESS_UPDATE_PRE("ADDRESS_UPDATE:"),
+
+    /**
      * question insert key pre
      */
     QUESTION_INSERT_PRE("QUESTION_INSERT_PRE:");

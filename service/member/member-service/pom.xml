@@ -36,12 +36,17 @@
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
-            <artifactId>common-qr</artifactId>
+            <artifactId>common-mongo</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
             <artifactId>common-pulsar</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.blue</groupId>
+            <artifactId>common-qr</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

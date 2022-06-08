@@ -202,9 +202,7 @@ public class StateServiceImpl implements StateService {
         probe.setCountryId(param.getCountryId());
         probe.setName(param.getName());
 
-        Long count = ofNullable(stateRepository.count(Example.of(probe)).toFuture().join()).orElse(0L);
-
-        if (count > 0L)
+        if (ofNullable(stateRepository.count(Example.of(probe)).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(STATE_ALREADY_EXIST);
     };
 
@@ -305,8 +303,6 @@ public class StateServiceImpl implements StateService {
         return alteration;
     };
 
-    private static final String NAME_COLUMN_NAME = "name";
-
     private static final Function<StateCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
 
@@ -322,7 +318,7 @@ public class StateServiceImpl implements StateService {
         query.addCriteria(byExample(probe));
 
         ofNullable(condition.getNameLike()).ifPresent(nameLike ->
-                query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+                query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
 
         query.with(by(Sort.Order.asc(NAME.name)));
 
@@ -378,9 +374,9 @@ public class StateServiceImpl implements StateService {
                         Long stateId = state.getId();
 
                         Long cityModifiedCount = updateCountryIdOfCityByStateId(destCountryId, stateId).toFuture().join();
-                        Long areayModifiedCount = updateCountryIdOfAreaByStateId(destCountryId, stateId).toFuture().join();
+                        Long areaModifiedCount = updateCountryIdOfAreaByStateId(destCountryId, stateId).toFuture().join();
 
-                        LOGGER.info("cityModifiedCount = {}, areayModifiedCount = {}", cityModifiedCount, areayModifiedCount);
+                        LOGGER.info("cityModifiedCount = {}, areaModifiedCount = {}", cityModifiedCount, areaModifiedCount);
                     }
 
                     invalidCache();

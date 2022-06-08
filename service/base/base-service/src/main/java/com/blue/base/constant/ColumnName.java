@@ -30,7 +30,42 @@ public enum ColumnName {
     /**
      * city id
      */
-    CITY_ID("cityId");
+    CITY_ID("cityId"),
+
+    /**
+     * native name
+     */
+    NATIVE_NAME("nativeName"),
+
+    /**
+     * number code
+     */
+    NUMERIC_CODE("numericCode"),
+
+    /**
+     * country code
+     */
+    COUNTRY_CODE("countryCode"),
+
+    /**
+     * phone code
+     */
+    PHONE_CODE("phoneCode"),
+
+    /**
+     * capital
+     */
+    CAPITAL("capital"),
+
+    /**
+     * top level domain
+     */
+    TOP_LEVEL_DOMAIN("topLevelDomain"),
+
+    /**
+     * region
+     */
+    REGION("region");
 
     public final String name;
 

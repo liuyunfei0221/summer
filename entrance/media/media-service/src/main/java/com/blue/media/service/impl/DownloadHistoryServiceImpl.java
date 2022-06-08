@@ -89,7 +89,6 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         return convert(condition.getSortType(), singletonList(condition.getSortAttribute()));
     };
 
-
     private static final Function<DownloadHistoryCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
 
@@ -280,8 +279,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
-        return zip(
-                selectDownloadHistoryMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+        return zip(selectDownloadHistoryMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
                 countDownloadHistoryMonoByQuery(query)
         ).flatMap(tuple2 -> {
             List<DownloadHistory> downloadHistories = tuple2.getT1();

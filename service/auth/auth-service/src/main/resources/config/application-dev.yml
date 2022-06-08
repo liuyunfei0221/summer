@@ -889,6 +889,7 @@ dubbo:
     address: zookeeper://172.16.203.216:2181
     timeout: 60000
     default: true
+    check: false
   application:
     id: summer-auth
     name: summer-auth

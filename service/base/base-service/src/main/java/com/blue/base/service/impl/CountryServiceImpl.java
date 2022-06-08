@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.ColumnName.NAME;
+import static com.blue.base.constant.ColumnName.*;
 import static com.blue.base.constant.base.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.base.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.base.ResponseElement.*;
@@ -171,7 +171,6 @@ public class CountryServiceImpl implements CountryService {
             throw new BlueException(COUNTRY_PHONE_CODE_ALREADY_EXIST);
     };
 
-
     /**
      * state insert param -> state
      */
@@ -299,15 +298,6 @@ public class CountryServiceImpl implements CountryService {
         return alteration;
     };
 
-    private static final String NAME_COLUMN_NAME = "name";
-    private static final String NATIVE_NAME_COLUMN_NAME = "nativeName";
-    private static final String NUMERIC_CODE_COLUMN_NAME = "numericCode";
-    private static final String COUNTRY_CODE_COLUMN_NAME = "countryCode";
-    private static final String PHONE_CODE_COLUMN_NAME = "phoneCode";
-    private static final String CAPITAL_COLUMN_NAME = "capital";
-    private static final String TOP_LEVEL_DOMAIN_COLUMN_NAME = "topLevelDomain";
-    private static final String REGION_COLUMN_NAME = "region";
-
     private static final Function<CountryCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
 
@@ -324,21 +314,21 @@ public class CountryServiceImpl implements CountryService {
         query.addCriteria(byExample(probe));
 
         ofNullable(condition.getNameLike()).ifPresent(nameLike ->
-                query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+                query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(condition.getNativeNameLike()).ifPresent(nativeNameLike ->
-                query.addCriteria(where(NATIVE_NAME_COLUMN_NAME).regex(compile(PREFIX.element + nativeNameLike + SUFFIX.element, CASE_INSENSITIVE))));
+                query.addCriteria(where(NATIVE_NAME.name).regex(compile(PREFIX.element + nativeNameLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(condition.getNumericCodeLike()).ifPresent(numericCodeLike ->
-                query.addCriteria(where(NUMERIC_CODE_COLUMN_NAME).regex(compile(PREFIX.element + numericCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
+                query.addCriteria(where(NUMERIC_CODE.name).regex(compile(PREFIX.element + numericCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(condition.getCountryCodeLike()).ifPresent(countryCodeLike ->
-                query.addCriteria(where(COUNTRY_CODE_COLUMN_NAME).regex(compile(PREFIX.element + countryCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
+                query.addCriteria(where(COUNTRY_CODE.name).regex(compile(PREFIX.element + countryCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(condition.getPhoneCodeLike()).ifPresent(phoneCodeLike ->
-                query.addCriteria(where(PHONE_CODE_COLUMN_NAME).regex(compile(PREFIX.element + phoneCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
+                query.addCriteria(where(PHONE_CODE.name).regex(compile(PREFIX.element + phoneCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(condition.getCapitalLike()).ifPresent(capitalLike ->
-                query.addCriteria(where(CAPITAL_COLUMN_NAME).regex(compile(PREFIX.element + capitalLike + SUFFIX.element, CASE_INSENSITIVE))));
+                query.addCriteria(where(CAPITAL.name).regex(compile(PREFIX.element + capitalLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(condition.getTopLevelDomainLike()).ifPresent(topLevelDomainLike ->
-                query.addCriteria(where(TOP_LEVEL_DOMAIN_COLUMN_NAME).regex(compile(PREFIX.element + topLevelDomainLike + SUFFIX.element, CASE_INSENSITIVE))));
+                query.addCriteria(where(TOP_LEVEL_DOMAIN.name).regex(compile(PREFIX.element + topLevelDomainLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(condition.getRegionLike()).ifPresent(regionLike ->
-                query.addCriteria(where(REGION_COLUMN_NAME).regex(compile(PREFIX.element + regionLike + SUFFIX.element, CASE_INSENSITIVE))));
+                query.addCriteria(where(REGION.name).regex(compile(PREFIX.element + regionLike + SUFFIX.element, CASE_INSENSITIVE))));
 
         query.with(by(Sort.Order.asc(NAME.name)));
 

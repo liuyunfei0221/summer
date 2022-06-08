@@ -50,7 +50,7 @@ public class MemberAddressUpdateParam extends MemberAddressInsertParam {
                 ", email='" + super.getEmail() + '\'' +
                 ", cityId=" + super.getCityId() +
                 ", areaId=" + super.getAreaId() +
-                ", address='" + super.getAddress() + '\'' +
+                ", detail='" + super.getDetail() + '\'' +
                 ", reference='" + super.getReference() + '\'' +
                 ", extra='" + super.getExtra() + '\'' +
                 '}';

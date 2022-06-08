@@ -6,6 +6,7 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.*;
 import com.blue.member.repository.entity.*;
 
+import java.util.List;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
@@ -15,7 +16,9 @@ import static com.blue.base.constant.auth.CredentialType.PHONE_PWD;
 import static com.blue.base.constant.base.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.base.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.member.Gender.UNKNOWN;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 /**
  * model converters in member project
@@ -94,10 +97,15 @@ public final class MemberModelConverters {
             return new MemberAddressInfo(memberAddress.getId(), memberAddress.getMemberId(), memberAddress.getMemberName(), memberAddress.getGender(),
                     memberAddress.getPhone(), memberAddress.getEmail(), memberAddress.getCountryId(), memberAddress.getCountry(), memberAddress.getStateId(),
                     memberAddress.getState(), memberAddress.getCityId(), memberAddress.getCity(), memberAddress.getAreaId(), memberAddress.getArea(),
-                    memberAddress.getAddress(), memberAddress.getReference(), memberAddress.getExtra());
+                    memberAddress.getDetail(), memberAddress.getReference(), memberAddress.getExtra());
 
         throw new BlueException(EMPTY_PARAM);
     };
+
+    public static final Function<List<MemberAddress>, List<MemberAddressInfo>> MEMBER_ADDRESSES_2_MEMBER_ADDRESSES_INFO = mas ->
+            mas != null && mas.size() > 0 ? mas.stream()
+                    .map(MEMBER_ADDRESS_2_MEMBER_ADDRESS_INFO)
+                    .collect(toList()) : emptyList();
 
     public static final Function<MemberBusiness, MemberBusinessInfo> MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO = memberBusiness -> {
         if (memberBusiness != null)

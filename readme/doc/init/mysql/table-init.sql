@@ -1071,62 +1071,6 @@ CREATE TABLE `member_real_name_1`
     UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member real name detail 1';
 
-CREATE TABLE `member_address_0`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `member_name` varchar(256) DEFAULT '' COMMENT 'member name',
-    `gender`      tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone format: 8613131693996',
-    `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `country_id`  bigint       NOT NULL COMMENT 'country id',
-    `country`     varchar(256) NOT NULL COMMENT 'country name',
-    `state_id`    bigint       NOT NULL COMMENT 'state id',
-    `state`       varchar(256) NOT NULL COMMENT 'state name',
-    `city_id`     bigint       NOT NULL COMMENT 'city id',
-    `city`        varchar(256) NOT NULL COMMENT 'city name',
-    `area_id`     bigint       DEFAULT '0' COMMENT 'area id',
-    `area`        varchar(256) DEFAULT '' COMMENT 'area name',
-    `address`     varchar(512) NOT NULL COMMENT 'address',
-    `reference`   varchar(255) NOT NULL COMMENT 'reference',
-    `extra`       varchar(255) DEFAULT '' COMMENT 'extra info',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    KEY           `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_phone`(`phone`) USING BTREE,
-    KEY           `idx_country_state_city_area`(`country_id`,`state_id`,`city_id`,`area_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 0';
-
-CREATE TABLE `member_address_1`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `member_name` varchar(256) DEFAULT '' COMMENT 'member name',
-    `gender`      tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone format: 8613131693996',
-    `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `country_id`  bigint       NOT NULL COMMENT 'country id',
-    `country`     varchar(256) NOT NULL COMMENT 'country name',
-    `state_id`    bigint       NOT NULL COMMENT 'state id',
-    `state`       varchar(256) NOT NULL COMMENT 'state name',
-    `city_id`     bigint       NOT NULL COMMENT 'city id',
-    `city`        varchar(256) NOT NULL COMMENT 'city name',
-    `area_id`     bigint       DEFAULT '0' COMMENT 'area id',
-    `area`        varchar(256) DEFAULT '' COMMENT 'area name',
-    `address`     varchar(512) NOT NULL COMMENT 'address',
-    `reference`   varchar(255) NOT NULL COMMENT 'reference',
-    `extra`       varchar(255) DEFAULT '' COMMENT 'extra info',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    KEY           `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_phone`(`phone`) USING BTREE,
-    KEY           `idx_country_state_city_area`(`country_id`,`state_id`,`city_id`,`area_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 1';
-
 CREATE TABLE `member_detail_0`
 (
     `id`         bigint NOT NULL COMMENT 'id',
@@ -1331,62 +1275,6 @@ CREATE TABLE `member_real_name_1`
     KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member real name 1';
-
-CREATE TABLE `member_address_0`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `member_name` varchar(256) DEFAULT '' COMMENT 'member name',
-    `gender`      tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone format: 8613131693996',
-    `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `country_id`  bigint       NOT NULL COMMENT 'country id',
-    `country`     varchar(256) NOT NULL COMMENT 'country name',
-    `state_id`    bigint       NOT NULL COMMENT 'state id',
-    `state`       varchar(256) NOT NULL COMMENT 'state name',
-    `city_id`     bigint       NOT NULL COMMENT 'city id',
-    `city`        varchar(256) NOT NULL COMMENT 'city name',
-    `area_id`     bigint       DEFAULT '0' COMMENT 'area id',
-    `area`        varchar(256) DEFAULT '' COMMENT 'area name',
-    `address`     varchar(512) NOT NULL COMMENT 'address',
-    `reference`   varchar(255) NOT NULL COMMENT 'reference',
-    `extra`       varchar(255) DEFAULT '' COMMENT 'extra info',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    KEY           `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_phone`(`phone`) USING BTREE,
-    KEY           `idx_country_state_city_area`(`country_id`,`state_id`,`city_id`,`area_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 0';
-
-CREATE TABLE `member_address_1`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `member_id`   bigint       NOT NULL COMMENT 'member id',
-    `member_name` varchar(256) DEFAULT '' COMMENT 'member name',
-    `gender`      tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `phone`       varchar(256) NOT NULL COMMENT 'phone format: 8613131693996',
-    `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `country_id`  bigint       NOT NULL COMMENT 'country id',
-    `country`     varchar(256) NOT NULL COMMENT 'country name',
-    `state_id`    bigint       NOT NULL COMMENT 'state id',
-    `state`       varchar(256) NOT NULL COMMENT 'state name',
-    `city_id`     bigint       NOT NULL COMMENT 'city id',
-    `city`        varchar(256) NOT NULL COMMENT 'city name',
-    `area_id`     bigint       DEFAULT '0' COMMENT 'area id',
-    `area`        varchar(256) DEFAULT '' COMMENT 'area name',
-    `address`     varchar(512) NOT NULL COMMENT 'address',
-    `reference`   varchar(255) NOT NULL COMMENT 'reference',
-    `extra`       varchar(255) DEFAULT '' COMMENT 'extra info',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    KEY           `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_phone`(`phone`) USING BTREE,
-    KEY           `idx_country_state_city_area`(`country_id`,`state_id`,`city_id`,`area_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member address 1';
 
 CREATE TABLE `member_detail_0`
 (

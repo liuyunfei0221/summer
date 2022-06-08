@@ -20,7 +20,7 @@ public final class MemberAddressCondition extends SortCondition implements Seria
 
     private Long memberId;
 
-    private String memberName;
+    private String memberNameLike;
 
     /**
      * @see com.blue.base.constant.member.Gender
@@ -30,9 +30,9 @@ public final class MemberAddressCondition extends SortCondition implements Seria
     /**
      * phone format: 8613131693996
      */
-    private String phone;
+    private String phoneLike;
 
-    private String email;
+    private String emailLike;
 
     private Long countryId;
 
@@ -40,9 +40,11 @@ public final class MemberAddressCondition extends SortCondition implements Seria
 
     private Long cityId;
 
-    private String address;
+    private Long areaId;
 
-    private String reference;
+    private String detailLike;
+
+    private String referenceLike;
 
     /**
      * @see com.blue.base.constant.base.Status
@@ -65,21 +67,22 @@ public final class MemberAddressCondition extends SortCondition implements Seria
         super(sortAttribute, sortType);
     }
 
-    public MemberAddressCondition(Long id, Long memberId, String memberName, Integer gender, String phone, String email, Long countryId,
-                                  Long stateId, Long cityId, String address, String reference, Integer status, Long createTimeBegin,
+    public MemberAddressCondition(Long id, Long memberId, String memberNameLike, Integer gender, String phoneLike, String emailLike, Long countryId,
+                                  Long stateId, Long cityId, Long areaId, String detailLike, String referenceLike, Integer status, Long createTimeBegin,
                                   Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.memberId = memberId;
-        this.memberName = memberName;
+        this.memberNameLike = memberNameLike;
         this.gender = gender;
-        this.phone = phone;
-        this.email = email;
+        this.phoneLike = phoneLike;
+        this.emailLike = emailLike;
         this.countryId = countryId;
         this.stateId = stateId;
         this.cityId = cityId;
-        this.address = address;
-        this.reference = reference;
+        this.areaId = areaId;
+        this.detailLike = detailLike;
+        this.referenceLike = referenceLike;
         this.status = status;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
@@ -103,12 +106,12 @@ public final class MemberAddressCondition extends SortCondition implements Seria
         this.memberId = memberId;
     }
 
-    public String getMemberName() {
-        return memberName;
+    public String getMemberNameLike() {
+        return memberNameLike;
     }
 
-    public void setMemberName(String memberName) {
-        this.memberName = memberName;
+    public void setMemberNameLike(String memberNameLike) {
+        this.memberNameLike = memberNameLike;
     }
 
     public Integer getGender() {
@@ -119,20 +122,20 @@ public final class MemberAddressCondition extends SortCondition implements Seria
         this.gender = gender;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getPhoneLike() {
+        return phoneLike;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPhoneLike(String phoneLike) {
+        this.phoneLike = phoneLike;
     }
 
-    public String getEmail() {
-        return email;
+    public String getEmailLike() {
+        return emailLike;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setEmailLike(String emailLike) {
+        this.emailLike = emailLike;
     }
 
     public Long getCountryId() {
@@ -159,20 +162,28 @@ public final class MemberAddressCondition extends SortCondition implements Seria
         this.cityId = cityId;
     }
 
-    public String getAddress() {
-        return address;
+    public Long getAreaId() {
+        return areaId;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
     }
 
-    public String getReference() {
-        return reference;
+    public String getDetailLike() {
+        return detailLike;
     }
 
-    public void setReference(String reference) {
-        this.reference = reference;
+    public void setDetailLike(String detailLike) {
+        this.detailLike = detailLike;
+    }
+
+    public String getReferenceLike() {
+        return referenceLike;
+    }
+
+    public void setReferenceLike(String referenceLike) {
+        this.referenceLike = referenceLike;
     }
 
     public Integer getStatus() {
@@ -220,15 +231,16 @@ public final class MemberAddressCondition extends SortCondition implements Seria
         return "MemberAddressCondition{" +
                 "id=" + id +
                 ", memberId=" + memberId +
-                ", memberName='" + memberName + '\'' +
+                ", memberNameLike='" + memberNameLike + '\'' +
                 ", gender=" + gender +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
+                ", phoneLike='" + phoneLike + '\'' +
+                ", emailLike='" + emailLike + '\'' +
                 ", countryId=" + countryId +
                 ", stateId=" + stateId +
                 ", cityId=" + cityId +
-                ", address='" + address + '\'' +
-                ", reference='" + reference + '\'' +
+                ", areaId=" + areaId +
+                ", detailLike='" + detailLike + '\'' +
+                ", referenceLike='" + referenceLike + '\'' +
                 ", status=" + status +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
@@ -236,5 +248,4 @@ public final class MemberAddressCondition extends SortCondition implements Seria
                 ", updateTimeEnd=" + updateTimeEnd +
                 '}';
     }
-
 }

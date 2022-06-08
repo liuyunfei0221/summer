@@ -35,7 +35,7 @@ public class MemberAddressInsertParam implements Serializable, Asserter {
 
     private Long areaId;
 
-    private String address;
+    private String detail;
 
     private String reference;
 
@@ -44,14 +44,14 @@ public class MemberAddressInsertParam implements Serializable, Asserter {
     public MemberAddressInsertParam() {
     }
 
-    public MemberAddressInsertParam(String memberName, Integer gender, String phone, String email, Long cityId, Long areaId, String address, String reference, String extra) {
+    public MemberAddressInsertParam(String memberName, Integer gender, String phone, String email, Long cityId, Long areaId, String detail, String reference, String extra) {
         this.memberName = memberName;
         this.gender = gender;
         this.phone = phone;
         this.email = email;
         this.cityId = cityId;
         this.areaId = areaId;
-        this.address = address;
+        this.detail = detail;
         this.reference = reference;
         this.extra = extra;
     }
@@ -65,8 +65,8 @@ public class MemberAddressInsertParam implements Serializable, Asserter {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
         if (isNull(this.cityId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "cityId can't be null");
-        if (isBlank(this.address))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "address can't be blank");
+        if (isBlank(this.detail))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "detail can't be blank");
         if (isBlank(this.reference))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "reference can't be blank");
     }
@@ -119,12 +119,12 @@ public class MemberAddressInsertParam implements Serializable, Asserter {
         this.areaId = areaId;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDetail() {
+        return detail;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public String getReference() {
@@ -152,7 +152,7 @@ public class MemberAddressInsertParam implements Serializable, Asserter {
                 ", email='" + email + '\'' +
                 ", cityId=" + cityId +
                 ", areaId=" + areaId +
-                ", address='" + address + '\'' +
+                ", detail='" + detail + '\'' +
                 ", reference='" + reference + '\'' +
                 ", extra='" + extra + '\'' +
                 '}';

@@ -1,5 +1,7 @@
 package com.blue.member.repository.entity;
 
+import org.springframework.data.annotation.Id;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,7 @@ public final class MemberAddress implements Serializable {
 
     private static final long serialVersionUID = -8696202344611000378L;
 
+    @Id
     private Long id;
 
     private Long memberId;
@@ -43,7 +46,7 @@ public final class MemberAddress implements Serializable {
 
     private String area;
 
-    private String address;
+    private String detail;
 
     private String reference;
 
@@ -167,12 +170,12 @@ public final class MemberAddress implements Serializable {
         this.area = area;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDetail() {
+        return detail;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public String getReference() {
@@ -232,7 +235,7 @@ public final class MemberAddress implements Serializable {
                 ", city='" + city + '\'' +
                 ", areaId=" + areaId +
                 ", area='" + area + '\'' +
-                ", address='" + address + '\'' +
+                ", detail='" + detail + '\'' +
                 ", reference='" + reference + '\'' +
                 ", extra='" + extra + '\'' +
                 ", status=" + status +

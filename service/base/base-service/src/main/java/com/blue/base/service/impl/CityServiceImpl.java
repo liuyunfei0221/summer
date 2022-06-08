@@ -215,9 +215,7 @@ public class CityServiceImpl implements CityService {
         probe.setStateId(param.getStateId());
         probe.setName(param.getName());
 
-        Long count = ofNullable(cityRepository.count(Example.of(probe)).toFuture().join()).orElse(0L);
-
-        if (count > 0L)
+        if (ofNullable(cityRepository.count(Example.of(probe)).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(CITY_ALREADY_EXIST);
     };
 
@@ -307,8 +305,6 @@ public class CityServiceImpl implements CityService {
         return alteration;
     };
 
-    private static final String NAME_COLUMN_NAME = "name";
-
     private static final Function<CityCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
 
@@ -325,7 +321,7 @@ public class CityServiceImpl implements CityService {
         query.addCriteria(byExample(probe));
 
         ofNullable(condition.getNameLike()).ifPresent(nameLike ->
-                query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+                query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
 
         query.with(by(Sort.Order.asc(NAME.name)));
 

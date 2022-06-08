@@ -46,7 +46,7 @@ public final class MemberAddressInfo implements Serializable {
 
     private String area;
 
-    private String address;
+    private String detail;
 
     private String reference;
 
@@ -57,7 +57,7 @@ public final class MemberAddressInfo implements Serializable {
 
     public MemberAddressInfo(Long id, Long memberId, String memberName, Integer gender, String phone, String email,
                              Long countryId, String country, Long stateId, String state, Long cityId, String city, Long areaId, String area,
-                             String address, String reference, String extra) {
+                             String detail, String reference, String extra) {
         this.id = id;
         this.memberId = memberId;
         this.memberName = memberName;
@@ -72,7 +72,7 @@ public final class MemberAddressInfo implements Serializable {
         this.city = city;
         this.areaId = areaId;
         this.area = area;
-        this.address = address;
+        this.detail = detail;
         this.reference = reference;
         this.extra = extra;
     }
@@ -189,12 +189,12 @@ public final class MemberAddressInfo implements Serializable {
         this.area = area;
     }
 
-    public String getAddress() {
-        return address;
+    public String getDetail() {
+        return detail;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public String getReference() {
@@ -230,7 +230,7 @@ public final class MemberAddressInfo implements Serializable {
                 ", city='" + city + '\'' +
                 ", areaId=" + areaId +
                 ", area='" + area + '\'' +
-                ", address='" + address + '\'' +
+                ", detail='" + detail + '\'' +
                 ", reference='" + reference + '\'' +
                 ", extra='" + extra + '\'' +
                 '}';

@@ -42,6 +42,13 @@ db.area.createIndex({"id":1});
 db.area.createIndex({"cityId":1});
 
 
+-- member
+use member;
+
+db.memberAddress.createIndex({"id":1});
+db.memberAddress.createIndex({"memberId":1});
+db.memberAddress.createIndex({"createTime":-1});
+
 
 -- media
 use media;

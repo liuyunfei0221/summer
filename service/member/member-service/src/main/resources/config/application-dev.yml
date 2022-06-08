@@ -80,8 +80,6 @@ data:
     - tableName: member_detail
       shardingColumn: id
 
-    - tableName: member_address
-      shardingColumn: id
   shardingTableSizePerDataBase: 2
   dataCenterToDatabaseMappings:
     - id: 0
@@ -164,6 +162,36 @@ identity:
   paddingScheduledCorePoolSize: 2
   paddingScheduledInitialDelayMillis: 5000
   paddingScheduledDelayMillis: 15000
+
+
+mongo:
+  addressAttrs:
+    - address: 172.16.203.216
+      port: 27017
+  auth: false
+  userName:
+  password:
+  database: member
+  retryReads: true
+  retryWrites: false
+  applicationName: blue-member
+  uuidRepresentation: JAVA_LEGACY
+  socketConnectTimeoutMillis: 5000
+  socketReadTimeoutMillis: 5000
+  socketReceiveBufferSize: 1000000
+  socketSendBufferSize: 1024
+  clusterConnectionMode: MULTIPLE
+  clusterType: STANDALONE
+  clusterLocalThresholdMillis: 5000
+  serverSelectionTimeoutMillis: 5000
+  poolMaxSize: 12
+  poolMinSize: 4
+  poolMaxWaitTimeMillis: 3000
+  poolMaxConnectionLifeTimeMillis: 60000
+  poolMaxConnectionIdleTimeMillis: 60000
+  poolMaintenanceInitialDelayMillis: 3000
+  poolMaintenanceFrequencyMillis: 60000
+  sslEnabled: false
 
 
 seata:
@@ -362,10 +390,11 @@ dubbo:
     check: false
     timeout: 60000
     simplified: true
-    metadata-report:
-      address: zookeeper://172.16.203.216:2181
-      timeout: 60000
-      default: true
+  metadata-report:
+    address: zookeeper://172.16.203.216:2181
+    timeout: 60000
+    default: true
+    check: false
   application:
     id: summer-member
     name: summer-member

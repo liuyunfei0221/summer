@@ -218,9 +218,7 @@ public class AreaServiceImpl implements AreaService {
         probe.setCityId(param.getCityId());
         probe.setName(param.getName());
 
-        Long count = ofNullable(areaRepository.count(Example.of(probe)).toFuture().join()).orElse(0L);
-
-        if (count > 0L)
+        if (ofNullable(areaRepository.count(Example.of(probe)).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(AREA_ALREADY_EXIST);
     };
 
@@ -312,8 +310,6 @@ public class AreaServiceImpl implements AreaService {
         return alteration;
     };
 
-    private static final String NAME_COLUMN_NAME = "name";
-
     private static final Function<AreaCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
 
@@ -331,7 +327,7 @@ public class AreaServiceImpl implements AreaService {
         query.addCriteria(byExample(probe));
 
         ofNullable(condition.getNameLike()).ifPresent(nameLike ->
-                query.addCriteria(where(NAME_COLUMN_NAME).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+                query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
 
         query.with(by(Sort.Order.asc(NAME.name)));
 

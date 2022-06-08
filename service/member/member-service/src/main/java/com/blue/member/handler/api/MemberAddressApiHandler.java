@@ -45,7 +45,7 @@ public final class MemberAddressApiHandler {
         return zip(serverRequest.bodyToMono(MemberAddressInsertParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> just(memberAddressService.insertMemberAddress(tuple2.getT1(), tuple2.getT2().getId())))
+                .flatMap(tuple2 -> memberAddressService.insertMemberAddress(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(mai ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, mai, serverRequest), BlueResponse.class));
@@ -61,7 +61,7 @@ public final class MemberAddressApiHandler {
         return zip(serverRequest.bodyToMono(MemberAddressUpdateParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> just(memberAddressService.updateMemberAddress(tuple2.getT1(), tuple2.getT2().getId())))
+                .flatMap(tuple2 -> memberAddressService.updateMemberAddress(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(mai ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, mai, serverRequest), BlueResponse.class));
@@ -75,7 +75,7 @@ public final class MemberAddressApiHandler {
      */
     public Mono<ServerResponse> delete(ServerRequest serverRequest) {
         return zip(getLongVariableReact(serverRequest, ID.key), getAccessReact(serverRequest))
-                .flatMap(tuple2 -> just(memberAddressService.deleteMemberAddress(tuple2.getT1(), tuple2.getT2().getId())))
+                .flatMap(tuple2 -> memberAddressService.deleteMemberAddress(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(mai ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, mai, serverRequest), BlueResponse.class));

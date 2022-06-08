@@ -255,7 +255,7 @@ dubbo:
   protocol:
     name: dubbo
     host: localhost
-    port: 21000
+    port: 21100
     accesslog: D:/locallogs/dubbo/base/access.log
   provider:
     retries: 0

@@ -224,6 +224,8 @@ public final class SnowflakeIdentityGenerator {
             LAST_SECONDS_PROCESSOR.accept(timeStamp);
 
         return (timeStamp << timeStampShift) | dataCenterWithWorkerBitsMask | seq;
+
+//        return ((timestamp - twepoch) << timestampLeftShift) | (datacenterId << datacenterIdShift) | (workerId << workerIdShift) | sequence;
     }
 
 }

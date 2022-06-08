@@ -7,6 +7,7 @@ import com.blue.member.model.MemberAddressInsertParam;
 import com.blue.member.model.MemberAddressUpdateParam;
 import com.blue.member.model.MemberAddressCondition;
 import com.blue.member.repository.entity.MemberAddress;
+import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface MemberAddressService {
      * @param memberId
      * @return
      */
-    MemberAddressInfo insertMemberAddress(MemberAddressInsertParam memberAddressInsertParam, Long memberId);
+    Mono<MemberAddressInfo> insertMemberAddress(MemberAddressInsertParam memberAddressInsertParam, Long memberId);
 
     /**
      * update a exist address
@@ -36,7 +37,7 @@ public interface MemberAddressService {
      * @param memberId
      * @return
      */
-    MemberAddressInfo updateMemberAddress(MemberAddressUpdateParam addressUpdateParam, Long memberId);
+    Mono<MemberAddressInfo> updateMemberAddress(MemberAddressUpdateParam addressUpdateParam, Long memberId);
 
     /**
      * delete address
@@ -45,15 +46,7 @@ public interface MemberAddressService {
      * @param memberId
      * @return
      */
-    MemberAddressInfo deleteMemberAddress(Long id, Long memberId);
-
-    /**
-     * query address by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<MemberAddress> getMemberAddress(Long id);
+    Mono<MemberAddressInfo> deleteMemberAddress(Long id, Long memberId);
 
     /**
      * query address mono by id
@@ -64,28 +57,12 @@ public interface MemberAddressService {
     Mono<Optional<MemberAddress>> getMemberAddressMono(Long id);
 
     /**
-     * query address by member id
-     *
-     * @param memberId
-     * @return
-     */
-    List<MemberAddress> selectMemberAddressByMemberId(Long memberId);
-
-    /**
      * query address mono by member id
      *
      * @param memberId
      * @return
      */
     Mono<List<MemberAddress>> selectMemberAddressMonoByMemberId(Long memberId);
-
-    /**
-     * query address info by member id
-     *
-     * @param memberId
-     * @return
-     */
-    List<MemberAddressInfo> selectMemberAddressInfoByMemberId(Long memberId);
 
     /**
      * query address info mono by member id
@@ -116,18 +93,18 @@ public interface MemberAddressService {
      *
      * @param limit
      * @param rows
-     * @param memberAddressCondition
+     * @param query
      * @return
      */
-    Mono<List<MemberAddress>> selectMemberAddressMonoByLimitAndCondition(Long limit, Long rows, MemberAddressCondition memberAddressCondition);
+    Mono<List<MemberAddress>> selectMemberAddressMonoByLimitAndCondition(Long limit, Long rows, Query query);
 
     /**
      * count address by condition
      *
-     * @param memberAddressCondition
+     * @param query
      * @return
      */
-    Mono<Long> countMemberAddressMonoByCondition(MemberAddressCondition memberAddressCondition);
+    Mono<Long> countMemberAddressMonoByCondition(Query query);
 
     /**
      * select address info page by condition
