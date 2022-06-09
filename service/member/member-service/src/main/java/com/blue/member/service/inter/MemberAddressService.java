@@ -3,15 +3,14 @@ package com.blue.member.service.inter;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.member.api.model.MemberAddressInfo;
+import com.blue.member.model.MemberAddressCondition;
 import com.blue.member.model.MemberAddressInsertParam;
 import com.blue.member.model.MemberAddressUpdateParam;
-import com.blue.member.model.MemberAddressCondition;
 import com.blue.member.repository.entity.MemberAddress;
 import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * member address service
@@ -54,7 +53,7 @@ public interface MemberAddressService {
      * @param id
      * @return
      */
-    Mono<Optional<MemberAddress>> getMemberAddressMono(Long id);
+    Mono<MemberAddress> getMemberAddressMono(Long id);
 
     /**
      * query address mono by member id
@@ -89,22 +88,22 @@ public interface MemberAddressService {
     Mono<List<MemberAddressInfo>> selectMemberAddressInfoMonoByIds(List<Long> ids);
 
     /**
-     * select address by page and condition
+     * select address by page and query
      *
      * @param limit
      * @param rows
      * @param query
      * @return
      */
-    Mono<List<MemberAddress>> selectMemberAddressMonoByLimitAndCondition(Long limit, Long rows, Query query);
+    Mono<List<MemberAddress>> selectMemberAddressMonoByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
-     * count address by condition
+     * count address by query
      *
      * @param query
      * @return
      */
-    Mono<Long> countMemberAddressMonoByCondition(Query query);
+    Mono<Long> countMemberAddressMonoByQuery(Query query);
 
     /**
      * select address info page by condition

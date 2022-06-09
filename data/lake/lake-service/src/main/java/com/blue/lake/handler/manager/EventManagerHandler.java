@@ -40,7 +40,7 @@ public class EventManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> listEvent(ServerRequest serverRequest) {
+    public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(LimitModelRequest.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(lakeService::selectByLimitAndRows)

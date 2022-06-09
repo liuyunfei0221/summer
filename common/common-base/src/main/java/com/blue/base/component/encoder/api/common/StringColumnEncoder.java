@@ -12,6 +12,10 @@ import static org.slf4j.LoggerFactory.getLogger;
  * string column encoder
  *
  * @author liuyunfei
+ *
+ * <p>
+ * init by
+ * @see com.blue.base.component.encoder.ioc.StringColumnEncoderInitializer
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 public final class StringColumnEncoder {

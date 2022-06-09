@@ -41,7 +41,7 @@ public interface DownloadHistoryService {
      * @param id
      * @return
      */
-    Mono<Optional<DownloadHistory>> getDownloadHistoryMono(Long id);
+    Mono<DownloadHistory> getDownloadHistoryMono(Long id);
 
     /**
      * select download history by page and memberId

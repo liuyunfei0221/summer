@@ -45,13 +45,13 @@ public interface MemberBasicService {
     Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, StringDataParam stringDataParam);
 
     /**
-     * update member's summary
+     * update member's profile
      *
      * @param id
      * @param stringDataParam
      * @return
      */
-    Mono<MemberBasicInfo> updateMemberBasicSummary(Long id, StringDataParam stringDataParam);
+    Mono<MemberBasicInfo> updateMemberBasicProfile(Long id, StringDataParam stringDataParam);
 
     /**
      * update member status

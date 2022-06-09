@@ -5,10 +5,10 @@ import com.blue.base.model.common.PageModelResponse;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.model.AttachmentCondition;
 import com.blue.media.repository.entity.Attachment;
+import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * attachment service
@@ -24,7 +24,7 @@ public interface AttachmentService {
      * @param attachment
      * @return
      */
-    int insertAttachment(Attachment attachment);
+    Mono<Attachment> insertAttachment(Attachment attachment);
 
     /**
      * insert attachment batch
@@ -32,15 +32,7 @@ public interface AttachmentService {
      * @param attachments
      * @return
      */
-    int insertAttachments(List<Attachment> attachments);
-
-    /**
-     * get attachment by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<Attachment> getAttachment(Long id);
+    Mono<List<Attachment>> insertAttachments(List<Attachment> attachments);
 
     /**
      * get attachment mono by id
@@ -48,15 +40,7 @@ public interface AttachmentService {
      * @param id
      * @return
      */
-    Mono<Optional<Attachment>> getAttachmentMono(Long id);
-
-    /**
-     * select attachments by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<Attachment> selectAttachmentByIds(List<Long> ids);
+    Mono<Attachment> getAttachmentMono(Long id);
 
     /**
      * select attachments mono by ids
@@ -64,7 +48,7 @@ public interface AttachmentService {
      * @param ids
      * @return
      */
-    Mono<List<Attachment>> selectAttachmentMonoByIds(List<Long> ids);
+    Mono<List<AttachmentInfo>> selectAttachmentMonoByIds(List<Long> ids);
 
     /**
      * select attachment by limit and member id
@@ -98,18 +82,18 @@ public interface AttachmentService {
      *
      * @param limit
      * @param rows
-     * @param attachmentCondition
+     * @param query
      * @return
      */
-    Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, AttachmentCondition attachmentCondition);
+    Mono<List<Attachment>> selectAttachmentMonoByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
      * count attachment by condition
      *
-     * @param attachmentCondition
+     * @param query
      * @return
      */
-    Mono<Long> countAttachmentMonoByCondition(AttachmentCondition attachmentCondition);
+    Mono<Long> countAttachmentMonoByQuery(Query query);
 
     /**
      * select attachment info page by condition

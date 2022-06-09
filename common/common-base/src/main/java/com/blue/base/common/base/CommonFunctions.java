@@ -282,17 +282,6 @@ public class CommonFunctions {
                     .ifPresent(metadata -> dataEvent.addData(key, metadata)));
     };
 
-    public static final UnaryOperator<String> FILE_TYPE_GETTER = fileName -> {
-        if (isBlank(fileName))
-            throw new BlueException(INVALID_PARAM);
-
-        int lastIndex = lastIndexOf(fileName, SCHEME_SEPARATOR);
-        if (lastIndex < 0 || lastIndex == fileName.length() - 1)
-            throw new BlueException(INVALID_PARAM);
-
-        return substring(fileName, lastIndex + 1);
-    };
-
     /**
      * decrypt request body
      *

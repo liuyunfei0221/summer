@@ -20,12 +20,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.UnaryOperator;
 
+import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
 import static io.netty.buffer.ByteBufAllocator.DEFAULT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.*;
 import static org.springframework.core.io.buffer.DataBufferUtils.release;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
@@ -111,6 +114,17 @@ public final class MediaCommonFunctions extends ReactiveCommonFunctions {
                             );
                         }
                     };
+
+    public static final UnaryOperator<String> FILE_TYPE_GETTER = fileName -> {
+        if (isBlank(fileName))
+            throw new BlueException(INVALID_PARAM);
+
+        int lastIndex = lastIndexOf(fileName, SCHEME_SEPARATOR);
+        if (lastIndex < 0 || lastIndex == fileName.length() - 1)
+            throw new BlueException(INVALID_PARAM);
+
+        return substring(fileName, lastIndex + 1);
+    };
 
     private static void addBindStringValue(Map<String, String> params, String key, List<String> values) {
         ofNullable(values)

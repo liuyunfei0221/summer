@@ -26,7 +26,7 @@ public class EventManagerRoute {
         RequestPredicate pathPredicate = path("/blue-lake");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/events", accept(APPLICATION_JSON), eventManagerHandler::listEvent)
+                .POST("/events", accept(APPLICATION_JSON), eventManagerHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

@@ -26,7 +26,7 @@ public interface MemberBasicMapper {
 
     int updateIcon(@Param("id") Long id, @Param("icon") String icon);
 
-    int updateSummary(@Param("id") Long id, @Param("summary") String summary);
+    int updateProfile(@Param("id") Long id, @Param("profile") String profile);
 
     int updateStatus(@Param("id") Long id, @Param("status") Integer status);
 

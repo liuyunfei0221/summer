@@ -30,7 +30,7 @@ public final class MemberBasic implements Serializable {
      */
     private Integer gender;
 
-    private String summary;
+    private String profile;
 
     private String source;
 
@@ -92,12 +92,12 @@ public final class MemberBasic implements Serializable {
         this.gender = gender;
     }
 
-    public String getSummary() {
-        return summary;
+    public String getProfile() {
+        return profile;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 
     public String getSource() {
@@ -141,7 +141,7 @@ public final class MemberBasic implements Serializable {
                 ", name='" + name + '\'' +
                 ", icon='" + icon + '\'' +
                 ", gender=" + gender +
-                ", summary=" + summary +
+                ", profile=" + profile +
                 ", source=" + source +
                 ", status=" + status +
                 ", createTime=" + createTime +

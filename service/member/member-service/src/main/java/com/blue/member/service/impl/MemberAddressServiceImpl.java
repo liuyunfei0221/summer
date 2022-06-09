@@ -2,6 +2,7 @@ package com.blue.member.service.impl;
 
 import com.blue.base.api.model.AreaRegion;
 import com.blue.base.api.model.CityRegion;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
@@ -29,7 +30,6 @@ import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -69,7 +69,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class MemberAddressServiceImpl implements MemberAddressService {
 
@@ -87,7 +87,6 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
     private final MemberAddressRepository memberAddressRepository;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MemberAddressServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor, RpcAreaServiceConsumer rpcAreaServiceConsumer,
                                     RpcCityServiceConsumer rpcCityServiceConsumer, MemberAddressRepository memberAddressRepository, AddressDeploy addressDeploy) {
         this.reactiveMongoTemplate = reactiveMongoTemplate;
@@ -247,20 +246,20 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
         ofNullable(condition.getId()).ifPresent(probe::setId);
         ofNullable(condition.getMemberId()).ifPresent(probe::setMemberId);
-        ofNullable(condition.getMemberNameLike()).ifPresent(memberNameLike ->
+        ofNullable(condition.getMemberNameLike()).filter(BlueChecker::isNotBlank).ifPresent(memberNameLike ->
                 query.addCriteria(where(MEMBER_NAME.name).regex(compile(PREFIX.element + memberNameLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(condition.getGender()).ifPresent(probe::setGender);
-        ofNullable(condition.getPhoneLike()).ifPresent(phoneLike ->
+        ofNullable(condition.getPhoneLike()).filter(BlueChecker::isNotBlank).ifPresent(phoneLike ->
                 query.addCriteria(where(PHONE.name).regex(compile(PREFIX.element + phoneLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getEmailLike()).ifPresent(emailLike ->
+        ofNullable(condition.getEmailLike()).filter(BlueChecker::isNotBlank).ifPresent(emailLike ->
                 query.addCriteria(where(EMAIL.name).regex(compile(PREFIX.element + emailLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(condition.getCountryId()).ifPresent(probe::setCountryId);
         ofNullable(condition.getStateId()).ifPresent(probe::setStateId);
         ofNullable(condition.getCityId()).ifPresent(probe::setCityId);
         ofNullable(condition.getAreaId()).ifPresent(probe::setAreaId);
-        ofNullable(condition.getDetailLike()).ifPresent(detailLike ->
+        ofNullable(condition.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike ->
                 query.addCriteria(where(DETAIL.name).regex(compile(PREFIX.element + detailLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getReferenceLike()).ifPresent(referenceLike ->
+        ofNullable(condition.getReferenceLike()).filter(BlueChecker::isNotBlank).ifPresent(referenceLike ->
                 query.addCriteria(where(REFERENCE.name).regex(compile(PREFIX.element + referenceLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(condition.getStatus()).ifPresent(probe::setStatus);
 
@@ -384,13 +383,12 @@ public class MemberAddressServiceImpl implements MemberAddressService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberAddress>> getMemberAddressMono(Long id) {
-        LOGGER.info("Mono<Optional<MemberAddress>> selectMemberAddressMonoByPrimaryKey(Long id), id = {}", id);
+    public Mono<MemberAddress> getMemberAddressMono(Long id) {
+        LOGGER.info("Mono<MemberAddress> selectMemberAddressMonoByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return memberAddressRepository.findById(id)
-                .map(Optional::ofNullable);
+        return memberAddressRepository.findById(id);
     }
 
     /**
@@ -441,10 +439,8 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
         return just(id)
                 .flatMap(this::getMemberAddressMono)
-                .flatMap(maOpt ->
-                        maOpt.map(Mono::just)
-                                .orElseGet(() -> error(() -> new BlueException(DATA_NOT_EXIST)))
-                ).flatMap(ma -> {
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .flatMap(ma -> {
                     if (isInvalidStatus(ma.getStatus()))
                         return error(() -> new BlueException(DATA_NOT_EXIST));
                     LOGGER.info("ma = {}", ma);
@@ -483,11 +479,11 @@ public class MemberAddressServiceImpl implements MemberAddressService {
      * @return
      */
     @Override
-    public Mono<List<MemberAddress>> selectMemberAddressMonoByLimitAndCondition(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<MemberAddress>> selectMemberAddressMonoByLimitAndCondition(Long limit, Long rows, Query query), " +
+    public Mono<List<MemberAddress>> selectMemberAddressMonoByLimitAndQuery(Long limit, Long rows, Query query) {
+        LOGGER.info("Mono<List<MemberAddress>> selectMemberAddressMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
                 "limit = {}, rows = {}, query = {}", limit, rows, query);
 
-        if (limit == null || limit < 0 || rows == null || rows == 0)
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
@@ -503,8 +499,8 @@ public class MemberAddressServiceImpl implements MemberAddressService {
      * @return
      */
     @Override
-    public Mono<Long> countMemberAddressMonoByCondition(Query query) {
-        LOGGER.info("Mono<Long> countMemberAddressMonoByCondition(Query query), query = {}", query);
+    public Mono<Long> countMemberAddressMonoByQuery(Query query) {
+        LOGGER.info("Mono<Long> countMemberAddressMonoByQuery(Query query), query = {}", query);
         return reactiveMongoTemplate.count(query, MemberAddress.class);
     }
 
@@ -523,8 +519,8 @@ public class MemberAddressServiceImpl implements MemberAddressService {
 
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
-        return zip(selectMemberAddressMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
-                countMemberAddressMonoByCondition(query)
+        return zip(selectMemberAddressMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countMemberAddressMonoByQuery(query)
         ).flatMap(tuple2 -> {
             List<MemberAddress> memberAddresses = tuple2.getT1();
 

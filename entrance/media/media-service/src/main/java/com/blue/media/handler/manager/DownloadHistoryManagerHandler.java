@@ -38,7 +38,7 @@ public final class DownloadHistoryManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> listDownloadHistory(ServerRequest serverRequest) {
+    public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_DOWNLOAD_HISTORY_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(downloadHistoryService::selectDownloadHistoryInfoPageMonoByPageAndCondition)

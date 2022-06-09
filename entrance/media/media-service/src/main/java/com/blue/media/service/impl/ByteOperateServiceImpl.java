@@ -1,12 +1,15 @@
 package com.blue.media.service.impl;
 
-import com.blue.base.common.base.CommonFunctions;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.common.BlueFileType;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.common.IdentityParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
+import com.blue.media.api.model.AttachmentUploadInfo;
 import com.blue.media.api.model.FileUploadResult;
+import com.blue.media.api.model.UploadResultSummary;
+import com.blue.media.common.MediaCommonFunctions;
 import com.blue.media.component.file.ByteProcessor;
 import com.blue.media.config.deploy.FileDeploy;
 import com.blue.media.repository.entity.Attachment;
@@ -39,12 +42,15 @@ import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.base.constant.common.BlueBoolean.FALSE;
+import static com.blue.base.constant.common.BlueBoolean.TRUE;
 import static com.blue.base.constant.common.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_WRITE;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.VALID;
 import static com.blue.base.constant.common.Symbol.SCHEME_SEPARATOR;
+import static com.blue.media.converter.MediaModelConverters.ATTACHMENTS_2_ATTACHMENT_UPLOAD_INFOS_CONVERTER;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -149,20 +155,34 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         return byteProcessor.read(new File(link).toPath());
     };
 
-    private final BiConsumer<List<FileUploadResult>, Long> ATTACHMENTS_RECORDER = (rls, memberId) -> {
-        LOGGER.info("ATTACHMENTS_RECORDER, rls = {}, memberId = {}", rls, memberId);
+    private final BiFunction<List<FileUploadResult>, Long, UploadResultSummary> ATTACHMENTS_RECORDER = (fileUploadResults, memberId) -> {
+        LOGGER.info("ATTACHMENTS_RECORDER, fileUploadResults = {}, memberId = {}", fileUploadResults, memberId);
 
-        allotByMax(rls, (int) DB_WRITE.value, false)
-                .stream()
-                .filter(l -> !isEmpty(l))
-                .map(l -> l.stream()
-                        .filter(FileUploadResult::getSuccess)
-                        .map(fur -> ATTACHMENT_CONVERTER.apply(fur, memberId)
-                        ).collect(toList()))
-                .forEach(attachmentService::insertAttachments);
+        UploadResultSummary uploadResultSummary = new UploadResultSummary();
+
+        List<AttachmentUploadInfo> success = uploadResultSummary.getSuccess();
+        List<FileUploadResult> fail = uploadResultSummary.getFail();
+
+        Map<Boolean, List<FileUploadResult>> booleanListMap = fileUploadResults.stream().collect(Collectors.groupingBy(FileUploadResult::getSuccess));
+        ofNullable(booleanListMap.get(FALSE.bool)).filter(BlueChecker::isNotEmpty).ifPresent(fail::addAll);
+
+        ofNullable(booleanListMap.get(TRUE.bool)).filter(BlueChecker::isNotEmpty).ifPresent(results ->
+                success.addAll(allotByMax(results, (int) DB_WRITE.value, false)
+                        .parallelStream()
+                        .filter(l -> !isEmpty(l))
+                        .map(l -> l.stream()
+                                .filter(FileUploadResult::getSuccess)
+                                .map(fur -> ATTACHMENT_CONVERTER.apply(fur, memberId)).collect(toList()))
+                        .map(attachments ->
+                                ATTACHMENTS_2_ATTACHMENT_UPLOAD_INFOS_CONVERTER.apply(attachmentService.insertAttachments(attachments).toFuture().join())
+                        )
+                        .flatMap(List::stream)
+                        .collect(toList())));
+
+        return uploadResultSummary;
     };
 
-    public static final UnaryOperator<String> FILE_TYPE_GETTER = CommonFunctions.FILE_TYPE_GETTER;
+    public static final UnaryOperator<String> FILE_TYPE_GETTER = MediaCommonFunctions.FILE_TYPE_GETTER;
 
     private static final MediaType DEFAULT_MEDIA_TYPE = APPLICATION_OCTET_STREAM;
     private static final Map<String, MediaType> FILE_MEDIA_MAPPING = Stream.of(BlueFileType.values())
@@ -199,14 +219,23 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
                         zip(ATTACHMENTS_UPLOADER.apply(tuple2.getT1()), just(tuple2.getT2().getId())))
-                .flatMap(tuple2 -> {
-                    List<FileUploadResult> rl = tuple2.getT1();
-                    return ok()
-                            .contentType(APPLICATION_JSON)
-                            .body(generate(OK.code, rl, serverRequest), BlueResponse.class)
-                            .doOnSuccess(res -> ATTACHMENTS_RECORDER.accept(rl, tuple2.getT2()));
-                });
+                .flatMap(tuple2 ->
+                        just(ATTACHMENTS_RECORDER.apply(tuple2.getT1(), tuple2.getT2())))
+                .flatMap(summary ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, summary, serverRequest), BlueResponse.class)
+                );
     }
+
+    private static final String CONTENT_DISPOSITION_PREFIX = "attachment; filename=";
+
+    private static final Function<Attachment, String> CONTENT_DISPOSITION_GEN = attachment ->
+            ofNullable(attachment)
+                    .map(Attachment::getName)
+                    .filter(BlueChecker::isNotBlank)
+                    .map(name -> URLEncoder.encode(name, UTF_8))
+                    .map(encodedName -> CONTENT_DISPOSITION_PREFIX + encodedName)
+                    .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
     /**
      * download
@@ -222,14 +251,12 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                 .flatMap(tuple2 -> {
                     Long attachmentId = tuple2.getT1().getId();
                     return attachmentService.getAttachmentMono(attachmentId)
-                            .flatMap(attOpt ->
-                                    just(attOpt.orElseThrow(() -> new BlueException(DATA_NOT_EXIST))))
+                            .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                             .flatMap(attachment -> {
                                 String link = attachment.getLink();
 
                                 return ok().contentType(MEDIA_GETTER.apply(FILE_TYPE_GETTER.apply(link)))
-                                        .header(CONTENT_DISPOSITION.name,
-                                                "attachment; filename=" + URLEncoder.encode(attachment.getName(), UTF_8))
+                                        .header(CONTENT_DISPOSITION.name, CONTENT_DISPOSITION_GEN.apply(attachment))
                                         .body(fromDataBuffers(ATTACHMENTS_DOWNLOADER.apply(link)))
                                         .doOnSuccess(res -> DOWNLOAD_RECORDER.accept(attachmentId, tuple2.getT2().getId()));
                             });

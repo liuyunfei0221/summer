@@ -7,24 +7,24 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="member_id" jdbcType="BIGINT" property="memberId"/>
         <result column="real_name" jdbcType="VARCHAR" property="realName"
-                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="gender" jdbcType="TINYINT" property="gender"/>
         <result column="birthday" jdbcType="VARCHAR" property="birthday"
-                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="nationality_id" jdbcType="BIGINT" property="nationalityId"/>
         <result column="ethnic_id" jdbcType="BIGINT" property="ethnicId"/>
         <result column="id_card_no" jdbcType="VARCHAR" property="idCardNo"
-                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="residence_address" jdbcType="VARCHAR" property="residenceAddress"
-                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="issuing_authority" jdbcType="VARCHAR" property="issuingAuthority"
-                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="since_date" jdbcType="VARCHAR" property="sinceDate"
-                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="expire_date" jdbcType="VARCHAR" property="expireDate"
-                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="extra" jdbcType="VARCHAR" property="extra"
-                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
@@ -45,17 +45,17 @@
                                       extra, status, create_time,
                                       update_time)
         values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
-                #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{gender,jdbcType=TINYINT},
-                #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{nationalityId,jdbcType=BIGINT},
                 #{ethnicId,jdbcType=BIGINT},
-                #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-                #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-                #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-                #{sinceDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-                #{expireDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-                #{extra,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+                #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+                #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+                #{sinceDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+                #{expireDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+                #{extra,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
                 #{updateTime,jdbcType=BIGINT})
     </insert>
@@ -120,13 +120,13 @@
                 #{memberId,jdbcType=BIGINT},
             </if>
             <if test="realName != null">
-                #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="gender != null">
                 #{gender,jdbcType=TINYINT},
             </if>
             <if test="birthday != null">
-                #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="nationalityId != null">
                 #{nationalityId,jdbcType=BIGINT},
@@ -135,22 +135,22 @@
                 #{ethnicId,jdbcType=BIGINT},
             </if>
             <if test="idCardNo != null">
-                #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="residenceAddress != null">
-                #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="issuingAuthority != null">
-                #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="sinceDate != null">
-                #{sinceDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{sinceDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="expireDate != null">
-                #{expireDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{expireDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="extra != null">
-                #{extra,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{extra,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="status != null">
                 #{status,jdbcType=TINYINT},
@@ -167,17 +167,17 @@
     <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.MemberRealName">
         update member_real_name
         set member_id         = #{memberId,jdbcType=BIGINT},
-            real_name         = #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            real_name         = #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             gender            = #{gender,jdbcType=TINYINT},
-            birthday          = #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            birthday          = #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             nationality_id    = #{nationalityId,jdbcType=BIGINT},
             ethnic_id         = #{ethnicId,jdbcType=BIGINT},
-            id_card_no        = #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-            residence_address = #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-            issuing_authority = #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-            since_date        = #{sinceDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-            expire_date       = #{expireDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-            extra             = #{extra,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            id_card_no        = #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            residence_address = #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            issuing_authority = #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            since_date        = #{sinceDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            expire_date       = #{expireDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            extra             = #{extra,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             status            = #{status,jdbcType=TINYINT},
             create_time       = #{createTime,jdbcType=BIGINT},
             update_time       = #{updateTime,jdbcType=BIGINT}
@@ -192,14 +192,14 @@
             </if>
             <if test="realName != null">
                 real_name =
-                #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="gender != null">
                 gender = #{gender,jdbcType=TINYINT},
             </if>
             <if test="birthday != null">
                 birthday =
-                #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="nationalityId != null">
                 nationality_id = #{nationalityId,jdbcType=BIGINT},
@@ -209,26 +209,26 @@
             </if>
             <if test="idCardNo != null">
                 id_card_no =
-                #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="residenceAddress != null">
                 residence_address =
-                #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="issuingAuthority != null">
                 issuing_authority =
-                #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="sinceDate != null">
                 since_date =
-                #{sinceDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{sinceDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="expireDate != null">
                 expire_date =
-                #{expireDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{expireDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="extra != null">
-                extra = #{extra,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                extra = #{extra,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="status != null">
                 status = #{status,jdbcType=TINYINT},

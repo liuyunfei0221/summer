@@ -6,9 +6,9 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="member_id" jdbcType="BIGINT" property="memberId"/>
         <result column="question" jdbcType="VARCHAR" property="question"
-                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="answer" jdbcType="VARCHAR" property="answer"
-                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
     </resultMap>
 
@@ -21,8 +21,8 @@
         insert into security_question (id, member_id, question,
                                        answer, create_time)
         values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
-                #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-                #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+                #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{createTime,jdbcType=BIGINT})
     </insert>
 
@@ -53,10 +53,10 @@
                 #{memberId,jdbcType=BIGINT},
             </if>
             <if test="question != null">
-                #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="answer != null">
-                #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=BIGINT},
@@ -67,8 +67,8 @@
     <update id="updateByPrimaryKey" parameterType="com.blue.auth.repository.entity.SecurityQuestion">
         update security_question
         set member_id   = #{memberId,jdbcType=BIGINT},
-            question    = #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-            answer      = #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            question    = #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            answer      = #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             create_time = #{createTime,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -80,10 +80,10 @@
                 member_id = #{memberId,jdbcType=BIGINT},
             </if>
             <if test="question != null">
-                question = #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                question = #{question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="answer != null">
-                answer = #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                answer = #{answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=BIGINT},
@@ -114,8 +114,8 @@
                 (
                 #{item.id,jdbcType=BIGINT},
                 #{item.memberId,jdbcType=BIGINT},
-                #{item.question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
-                #{item.answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{item.question,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+                #{item.answer,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{item.createTime,jdbcType=BIGINT}
                 )
             </foreach>

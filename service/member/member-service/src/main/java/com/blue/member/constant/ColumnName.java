@@ -8,12 +8,12 @@ package com.blue.member.constant;
 public enum ColumnName {
 
     /**
-     * ID
+     * id
      */
     ID("id"),
 
     /**
-     * NAME
+     * name
      */
     NAME("name"),
 
@@ -43,12 +43,12 @@ public enum ColumnName {
     REFERENCE("reference"),
 
     /**
-     *
+     * create time
      */
     CREATE_TIME("createTime"),
 
     /**
-     * phone code
+     * update time
      */
     UPDATE_TIME("updateTime");
 

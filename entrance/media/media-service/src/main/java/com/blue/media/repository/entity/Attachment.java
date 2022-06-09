@@ -1,6 +1,8 @@
 package com.blue.media.repository.entity;
 
 
+import org.springframework.data.annotation.Id;
+
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
@@ -15,6 +17,7 @@ public final class Attachment implements Serializable {
 
     private static final long serialVersionUID = -9017169609442683728L;
 
+    @Id
     private Long id;
 
     private String link;

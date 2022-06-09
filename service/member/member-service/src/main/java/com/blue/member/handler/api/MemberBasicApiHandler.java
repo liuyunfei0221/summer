@@ -66,17 +66,17 @@ public final class MemberBasicApiHandler {
     }
 
     /**
-     * update member's summary
+     * update member's profile
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> updateSummary(ServerRequest serverRequest) {
+    public Mono<ServerResponse> updateProfile(ServerRequest serverRequest) {
         return zip(getAccessReact(serverRequest),
                 serverRequest.bodyToMono(StringDataParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))))
                 .flatMap(tuple2 ->
-                        memberBasicService.updateMemberBasicSummary(tuple2.getT1().getId(), tuple2.getT2()))
+                        memberBasicService.updateMemberBasicProfile(tuple2.getT1().getId(), tuple2.getT2()))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));

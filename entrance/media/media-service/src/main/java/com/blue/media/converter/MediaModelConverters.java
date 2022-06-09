@@ -2,16 +2,21 @@ package com.blue.media.converter;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.AttachmentInfo;
+import com.blue.media.api.model.AttachmentUploadInfo;
 import com.blue.media.api.model.DownloadHistoryInfo;
 import com.blue.media.repository.entity.Attachment;
 import com.blue.media.repository.entity.DownloadHistory;
 
+import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * model converters in media project
@@ -20,6 +25,24 @@ import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavadocDeclaration"})
 public final class MediaModelConverters {
+
+    /**
+     * attachment -> attachment upload info
+     */
+    public static final Function<Attachment, AttachmentUploadInfo> ATTACHMENT_2_ATTACHMENT_UPLOAD_INFO_CONVERTER = attachment -> {
+        if (isNull(attachment))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new AttachmentUploadInfo(attachment.getId(), attachment.getName(), attachment.getSize());
+    };
+
+    /**
+     * attachments -> attachment upload infos
+     */
+    public static final Function<List<Attachment>, List<AttachmentUploadInfo>> ATTACHMENTS_2_ATTACHMENT_UPLOAD_INFOS_CONVERTER = attachments ->
+            attachments != null && attachments.size() > 0 ? attachments.stream()
+                    .map(ATTACHMENT_2_ATTACHMENT_UPLOAD_INFO_CONVERTER)
+                    .collect(toList()) : emptyList();
 
     /**
      * attachment -> attachment info

@@ -179,30 +179,29 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     }
 
     /**
-     * update member's summary
+     * update member's profile
      *
      * @param id
      * @param stringDataParam
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> updateMemberBasicSummary(Long id, StringDataParam stringDataParam) {
-        LOGGER.info("Mono<MemberBasicInfo> updateMemberBasicSummary(Long id, StringDataParam stringDataParam), id = {}, stringDataParam = {}",
-                id, stringDataParam);
+    public Mono<MemberBasicInfo> updateMemberBasicProfile(Long id, StringDataParam stringDataParam) {
+        LOGGER.info("Mono<MemberBasicInfo> updateMemberBasicProfile(Long id, StringDataParam stringDataParam), id = {}, stringDataParam = {}", id, stringDataParam);
         if (isInvalidIdentity(id))
             throw new BlueException(UNAUTHORIZED);
         if (isNull(stringDataParam))
             throw new BlueException(EMPTY_PARAM);
 
-        String summary = stringDataParam.getData();
-        if (isBlank(summary))
+        String profile = stringDataParam.getData();
+        if (isBlank(profile))
             throw new BlueException(EMPTY_PARAM);
 
         return justOrEmpty(memberBasicMapper.selectByPrimaryKey(id))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(mb -> {
-                    memberBasicMapper.updateSummary(id, summary);
-                    mb.setSummary(summary);
+                    memberBasicMapper.updateProfile(id, profile);
+                    mb.setProfile(profile);
                     return just(mb);
                 })
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO);

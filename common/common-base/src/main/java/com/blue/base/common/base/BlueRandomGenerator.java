@@ -41,7 +41,7 @@ public final class BlueRandomGenerator {
      * @param length
      * @return
      */
-    public static String generateRandom(RandomType type, int length) {
+    public static String generate(RandomType type, int length) {
         if (isNull(type) || length < 1)
             throw new BlueException(BAD_REQUEST);
 

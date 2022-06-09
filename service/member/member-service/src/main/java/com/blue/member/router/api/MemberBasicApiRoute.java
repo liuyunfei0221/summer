@@ -30,7 +30,7 @@ public class MemberBasicApiRoute {
         RouterFunction<ServerResponse> routerFunction = route()
                 .GET("", memberBasicApiHandler::getMemberBasicInfo)
                 .PUT("/icon", accept(APPLICATION_JSON), memberBasicApiHandler::updateIcon)
-                .PUT("/summary", accept(APPLICATION_JSON), memberBasicApiHandler::updateSummary)
+                .PUT("/profile", accept(APPLICATION_JSON), memberBasicApiHandler::updateProfile)
                 .build();
 
         return nest(pathPredicate, routerFunction);

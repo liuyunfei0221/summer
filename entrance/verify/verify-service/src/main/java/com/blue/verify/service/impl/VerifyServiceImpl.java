@@ -1,5 +1,6 @@
 package com.blue.verify.service.impl;
 
+import com.blue.base.common.base.BlueRandomGenerator;
 import com.blue.base.constant.common.RandomType;
 import com.blue.base.constant.verify.VerifyType;
 import com.blue.base.model.exps.BlueException;
@@ -16,7 +17,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
 import static com.blue.base.constant.common.ResponseElement.ILLEGAL_REQUEST;
 import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -165,10 +165,10 @@ public class VerifyServiceImpl implements VerifyService {
             return error(() -> new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type can't be null"));
 
 
-        String v = generateRandom(type.randomType, isNotNull(length) && length >= MIN_LEN && length <= MAX_LEN ? length : VERIFY_LEN);
+        String v = BlueRandomGenerator.generate(type.randomType, isNotNull(length) && length >= MIN_LEN && length <= MAX_LEN ? length : VERIFY_LEN);
         LOGGER.info("Mono<VerifyPair> generate(RandomType type, int length, Duration expire), key = {}, v = {}", key, v);
 
-        return blueValidator.setKeyValueWithExpire(KEY_WRAPPER.apply(type, isNotBlank(key) ? key : generateRandom(RANDOM_TYPE, KEY_LEN)), v, isNotNull(expire) ? expire : DEFAULT_DURATION)
+        return blueValidator.setKeyValueWithExpire(KEY_WRAPPER.apply(type, isNotBlank(key) ? key : BlueRandomGenerator.generate(RANDOM_TYPE, KEY_LEN)), v, isNotNull(expire) ? expire : DEFAULT_DURATION)
                 .flatMap(ignore -> just(v));
     }
 

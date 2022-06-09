@@ -8,7 +8,7 @@
         <result column="member_id" jdbcType="BIGINT" property="memberId"/>
         <result column="qr_code" jdbcType="VARCHAR" property="qrCode"/>
         <result column="profile" jdbcType="VARCHAR" property="profile"
-                typeHandler="com.blue.database.type.EncodeStringTypeHandler"/>
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="extra" jdbcType="VARCHAR" property="extra"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
@@ -25,7 +25,7 @@
                                      profile, extra, status,
                                      create_time, update_time)
         values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{qrCode,jdbcType=VARCHAR},
-                #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{extra,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
                 #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
     </insert>
@@ -69,7 +69,7 @@
                 #{qrCode,jdbcType=VARCHAR},
             </if>
             <if test="profile != null">
-                #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="extra != null">
                 #{extra,jdbcType=VARCHAR},
@@ -90,7 +90,7 @@
         update member_business
         set member_id   = #{memberId,jdbcType=BIGINT},
             qr_code     = #{qrCode,jdbcType=VARCHAR},
-            profile     = #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+            profile     = #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             extra       = #{extra,jdbcType=VARCHAR},
             status      = #{status,jdbcType=TINYINT},
             create_time = #{createTime,jdbcType=BIGINT},
@@ -109,7 +109,7 @@
             </if>
             <if test="profile != null">
                 profile =
-                #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.EncodeStringTypeHandler},
+                #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="extra != null">
                 extra = #{extra,jdbcType=VARCHAR},

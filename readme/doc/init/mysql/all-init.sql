@@ -463,8 +463,8 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'member basic info', 'member basic info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180003, 'PUT', 'blue-member', '/basic/icon', b'1', b'1', b'1', b'0', b'1', 1,
         'update member icon', 'update member icon', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180004, 'PUT', 'blue-member', '/basic/summary', b'1', b'1', b'1', b'0', b'1', 1,
-        'update member summary', 'update member summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180004, 'PUT', 'blue-member', '/basic/profile', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member profile', 'update member profile', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180005, 'POST', 'blue-member', '/address', b'1', b'1', b'1', b'1', b'1', 1,
         'add address', 'add address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180006, 'PUT', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
@@ -533,9 +533,9 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- media manage
 
-       (230006, 'POST', 'blue-media', '/manager/attachments', b'0', b'1', b'1', b'0', b'1', 2,
+       (230006, 'POST', 'blue-media', '/manager/attachments', b'1', b'1', b'1', b'0', b'1', 2,
         'attachment list of manager', 'attachment list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (230007, 'POST', 'blue-media', '/manager/downloadHistories', b'0', b'1', b'1', b'0', b'1', 2,
+       (230007, 'POST', 'blue-media', '/manager/downloadHistories', b'1', b'1', b'1', b'0', b'1', 2,
         'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
 
@@ -678,86 +678,6 @@ DATABASE media_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 media_0;
 
-CREATE TABLE `attachment_0`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `link`        varchar(256) NOT NULL COMMENT 'attachment link',
-    `name`        varchar(256) NOT NULL COMMENT 'resource name',
-    `file_type`   varchar(64)  NOT NULL COMMENT 'attachment type/suffix',
-    `size`        bigint       NOT NULL COMMENT 'attachment length',
-    `status`      tinyint      NOT NULL COMMENT 'attachment status: 1-active 2-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `creator`     bigint       NOT NULL COMMENT 'creator id',
-    PRIMARY KEY (`id`),
-    KEY           `idx_name`(`name`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of attachment 0';
-
-CREATE TABLE `attachment_1`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `link`        varchar(256) NOT NULL COMMENT 'attachment link',
-    `name`        varchar(256) NOT NULL COMMENT 'resource name',
-    `file_type`   varchar(64)  NOT NULL COMMENT 'attachment type/suffix',
-    `size`        bigint       NOT NULL COMMENT 'attachment length',
-    `status`      tinyint      NOT NULL COMMENT 'attachment status: 1-active 2-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `creator`     bigint       NOT NULL COMMENT 'creator id',
-    PRIMARY KEY (`id`),
-    KEY           `idx_name`(`name`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of attachment 1';
-
-CREATE TABLE `download_history_0`
-(
-    `id`            bigint NOT NULL COMMENT 'id',
-    `attachment_id` bigint NOT NULL COMMENT 'attachment id',
-    `create_time`   bigint NOT NULL COMMENT 'data create time',
-    `creator`       bigint NOT NULL COMMENT 'creator id',
-    PRIMARY KEY (`id`),
-    KEY             `idx_attachment_id`(`attachment_id`) USING BTREE,
-    KEY             `idx_create_time`(`create_time`) USING BTREE,
-    KEY             `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of download history 0';
-
-CREATE TABLE `download_history_1`
-(
-    `id`            bigint NOT NULL COMMENT 'id',
-    `attachment_id` bigint NOT NULL COMMENT 'attachment id',
-    `create_time`   bigint NOT NULL COMMENT 'data create time',
-    `creator`       bigint NOT NULL COMMENT 'creator id',
-    PRIMARY KEY (`id`),
-    KEY             `idx_attachment_id`(`attachment_id`) USING BTREE,
-    KEY             `idx_create_time`(`create_time`) USING BTREE,
-    KEY             `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of download history 1';
-
-CREATE TABLE `undo_log_0`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table 0';
-
-CREATE TABLE `undo_log_1`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table 1';
-
 -- media1
 
 CREATE
@@ -765,85 +685,6 @@ DATABASE media_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 media_1;
 
-CREATE TABLE `attachment_0`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `link`        varchar(256) NOT NULL COMMENT 'attachment link',
-    `name`        varchar(256) NOT NULL COMMENT 'resource name',
-    `file_type`   varchar(64)  NOT NULL COMMENT 'attachment type/suffix',
-    `size`        bigint       NOT NULL COMMENT 'attachment length',
-    `status`      tinyint      NOT NULL COMMENT 'attachment status: 1-active 2-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `creator`     bigint       NOT NULL COMMENT 'creator id',
-    PRIMARY KEY (`id`),
-    KEY           `idx_name`(`name`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of attachment 0';
-
-CREATE TABLE `attachment_1`
-(
-    `id`          bigint       NOT NULL COMMENT 'id',
-    `link`        varchar(256) NOT NULL COMMENT 'attachment link',
-    `name`        varchar(256) NOT NULL COMMENT 'resource name',
-    `file_type`   varchar(64)  NOT NULL COMMENT 'attachment type/suffix',
-    `size`        bigint       NOT NULL COMMENT 'attachment length',
-    `status`      tinyint      NOT NULL COMMENT 'attachment status: 1-active 2-invalid',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `creator`     bigint       NOT NULL COMMENT 'creator id',
-    PRIMARY KEY (`id`),
-    KEY           `idx_name`(`name`) USING BTREE,
-    KEY           `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of attachment 1';
-
-CREATE TABLE `download_history_0`
-(
-    `id`            bigint NOT NULL COMMENT 'id',
-    `attachment_id` bigint NOT NULL COMMENT 'attachment id',
-    `create_time`   bigint NOT NULL COMMENT 'data create time',
-    `creator`       bigint NOT NULL COMMENT 'creator id',
-    PRIMARY KEY (`id`),
-    KEY             `idx_attachment_id`(`attachment_id`) USING BTREE,
-    KEY             `idx_create_time`(`create_time`) USING BTREE,
-    KEY             `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of download history 0';
-
-CREATE TABLE `download_history_1`
-(
-    `id`            bigint NOT NULL COMMENT 'id',
-    `attachment_id` bigint NOT NULL COMMENT 'attachment id',
-    `create_time`   bigint NOT NULL COMMENT 'data create time',
-    `creator`       bigint NOT NULL COMMENT 'creator id',
-    PRIMARY KEY (`id`),
-    KEY             `idx_attachment_id`(`attachment_id`) USING BTREE,
-    KEY             `idx_create_time`(`create_time`) USING BTREE,
-    KEY             `idx_creator`(`creator`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of download history 1';
-
-CREATE TABLE `undo_log_0`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table 0';
-
-CREATE TABLE `undo_log_1`
-(
-    `branch_id`     bigint       NOT NULL COMMENT 'branch transaction id',
-    `xid`           VARCHAR(128) NOT NULL COMMENT 'global transaction id',
-    `context`       VARCHAR(128) NOT NULL COMMENT 'undo_log context,such as serialization',
-    `rollback_info` LONGBLOB     NOT NULL COMMENT 'rollback info',
-    `log_status`    INT(11) NOT NULL COMMENT '0:normal status,1:defense status',
-    `log_created`   DATETIME(6) NOT NULL COMMENT 'create datetime',
-    `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
-    PRIMARY KEY (`branch_id`),
-    UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table 1';
 
 -- finance
 
@@ -1521,7 +1362,7 @@ CREATE TABLE `member_basic_0`
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(256) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
     `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
@@ -1541,7 +1382,7 @@ CREATE TABLE `member_basic_1`
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
     `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
@@ -1727,7 +1568,7 @@ CREATE TABLE `member_basic_0`
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(256) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
     `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
@@ -1747,7 +1588,7 @@ CREATE TABLE `member_basic_1`
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `summary`     varchar(128) DEFAULT '' COMMENT 'summary',
+    `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
     `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
     `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',

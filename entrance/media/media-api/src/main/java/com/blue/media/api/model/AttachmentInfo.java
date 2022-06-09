@@ -3,7 +3,7 @@ package com.blue.media.api.model;
 import java.io.Serializable;
 
 /**
- * attachment info
+ * attachment detail info
  *
  * @author liuyunfei
  */

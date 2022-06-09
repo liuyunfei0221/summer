@@ -173,8 +173,8 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'member basic info', 'member basic info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180003, 'PUT', 'blue-member', '/basic/icon', b'1', b'1', b'1', b'0', b'1', 1,
         'update member icon', 'update member icon', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180004, 'PUT', 'blue-member', '/basic/summary', b'1', b'1', b'1', b'0', b'1', 1,
-        'update member summary', 'update member summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180004, 'PUT', 'blue-member', '/basic/profile', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member profile', 'update member profile', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180005, 'POST', 'blue-member', '/address', b'1', b'1', b'1', b'1', b'1', 1,
         'add address', 'add address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180006, 'PUT', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
@@ -242,9 +242,9 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- media manage
 
-       (230006, 'POST', 'blue-media', '/manager/attachments', b'0', b'1', b'1', b'0', b'1', 2,
+       (230006, 'POST', 'blue-media', '/manager/attachments', b'1', b'1', b'1', b'0', b'1', 2,
         'attachment list of manager', 'attachment list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (230007, 'POST', 'blue-media', '/manager/downloadHistories', b'0', b'1', b'1', b'0', b'1', 2,
+       (230007, 'POST', 'blue-media', '/manager/downloadHistories', b'1', b'1', b'1', b'0', b'1', 2,
         'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
 

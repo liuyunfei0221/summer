@@ -18,8 +18,13 @@ import static java.util.Optional.ofNullable;
  * encode string type handler
  *
  * @author liuyunfei
+ *
+ * <p>
+ * actived by
+ * @see com.blue.base.component.encoder.api.conf.EncoderConf
+ * @see com.blue.base.component.encoder.api.conf.EncoderConfParams
  */
-public final class EncodeStringTypeHandler extends BaseTypeHandler<String> {
+public final class StringColumnEncodeTypeHandler extends BaseTypeHandler<String> {
 
     @Override
     public void setNonNullParameter(PreparedStatement preparedStatement, int i, String parameter, JdbcType jdbcType) throws SQLException {

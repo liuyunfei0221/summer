@@ -3,11 +3,11 @@ package com.blue.media.service.impl;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
+import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.api.model.DownloadHistoryInfo;
 import com.blue.media.constant.DownloadHistorySortAttribute;
 import com.blue.media.model.DownloadHistoryCondition;
 import com.blue.media.remote.consumer.RpcMemberBasicServiceConsumer;
-import com.blue.media.repository.entity.Attachment;
 import com.blue.media.repository.entity.DownloadHistory;
 import com.blue.media.repository.template.DownloadHistoryRepository;
 import com.blue.media.service.inter.AttachmentService;
@@ -16,7 +16,6 @@ import com.blue.member.api.model.MemberBasicInfo;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -31,6 +30,8 @@ import java.util.stream.Stream;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.media.constant.ColumnName.CREATE_TIME;
+import static com.blue.media.constant.ColumnName.ID;
 import static com.blue.media.converter.MediaModelConverters.downloadHistoryToDownloadHistoryInfo;
 import static com.blue.mongo.common.SortConverter.convert;
 import static java.util.Collections.emptyList;
@@ -101,15 +102,12 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         ofNullable(condition.getId()).ifPresent(probe::setId);
         ofNullable(condition.getAttachmentId()).ifPresent(probe::setAttachmentId);
         ofNullable(condition.getCreator()).ifPresent(probe::setCreator);
+        ofNullable(condition.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+                query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
+        ofNullable(condition.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+                query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
 
-        Criteria criteria = byExample(probe);
-
-        ofNullable(condition.getCreateTimeBegin())
-                .ifPresent(ctb -> criteria.andOperator(where("createTime").gte(ctb)));
-        ofNullable(condition.getCreateTimeEnd())
-                .ifPresent(cte -> criteria.andOperator(where("createTime").lte(cte)));
-
-        query.addCriteria(criteria);
+        query.addCriteria(byExample(probe));
 
         query.with(SORTER_CONVERTER.apply(condition));
 
@@ -136,7 +134,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
      */
     @Override
     public Optional<DownloadHistory> getDownloadHistory(Long id) {
-        return this.getDownloadHistoryMono(id).toFuture().join();
+        return ofNullable(this.getDownloadHistoryMono(id).toFuture().join());
     }
 
     /**
@@ -146,12 +144,12 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
      * @return
      */
     @Override
-    public Mono<Optional<DownloadHistory>> getDownloadHistoryMono(Long id) {
-        LOGGER.info("Mono<Optional<DownloadHistory>> getDownloadHistoryMono(Long id), id = {}", id);
+    public Mono<DownloadHistory> getDownloadHistoryMono(Long id) {
+        LOGGER.info("Mono<DownloadHistory> getDownloadHistoryMono(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return downloadHistoryRepository.findById(id).map(Optional::ofNullable);
+        return downloadHistoryRepository.findById(id);
     }
 
     /**
@@ -165,13 +163,14 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     @Override
     public Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndMemberId(Long limit, Long rows, Long memberId) {
         LOGGER.info("Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndMemberId(Long limit, Long rows, Long memberId), limit = {}, rows = {}, memberId = {}", limit, rows, memberId);
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
+        if (isInvalidLimit(limit) || isInvalidRows(rows) || isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_PARAM);
 
-        DownloadHistory ex = new DownloadHistory();
-        ex.setCreator(memberId);
+        DownloadHistory probe = new DownloadHistory();
+        probe.setCreator(memberId);
 
-        return downloadHistoryRepository.findAll(Example.of(ex), Sort.by(Sort.Order.desc("id")))
+        return downloadHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.name)))
+                .skip(limit).take(rows)
                 .collectList();
     }
 
@@ -187,10 +186,10 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
-        DownloadHistory ex = new DownloadHistory();
-        ex.setCreator(memberId);
+        DownloadHistory probe = new DownloadHistory();
+        probe.setCreator(memberId);
 
-        return downloadHistoryRepository.count(Example.of(ex));
+        return downloadHistoryRepository.count(Example.of(probe));
     }
 
     /**
@@ -220,7 +219,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
             return isNotEmpty(downloadHistories) ?
                     attachmentService.selectAttachmentMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
                             .flatMap(attachments -> {
-                                Map<Long, String> idAndNameMapping = attachments.parallelStream().collect(toMap(Attachment::getId, Attachment::getName, (a, b) -> a));
+                                Map<Long, String> idAndNameMapping = attachments.parallelStream().collect(toMap(AttachmentInfo::getId, AttachmentInfo::getName, (a, b) -> a));
                                 return just(downloadHistories.stream().map(dh ->
                                                 downloadHistoryToDownloadHistoryInfo(dh, ofNullable(idAndNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_DATA.value), memberName))
                                         .collect(toList()));
@@ -287,7 +286,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
             return isNotEmpty(downloadHistories) ?
                     zip(attachmentService.selectAttachmentMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
-                                    .map(attachments -> attachments.parallelStream().collect(toMap(Attachment::getId, Attachment::getName, (a, b) -> a)))
+                                    .map(attachments -> attachments.parallelStream().collect(toMap(AttachmentInfo::getId, AttachmentInfo::getName, (a, b) -> a)))
                             ,
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getCreator).collect(toList()))
                                     .map(memberBasicInfos -> memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a)))

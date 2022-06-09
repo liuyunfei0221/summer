@@ -55,88 +55,6 @@ web:
   maxInMemorySize: 8388608
 
 
-data:
-  shardingDatabases:
-    - url: jdbc:mysql://192.168.182.132:3306/media_0
-      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: 1024
-      driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 30000
-      maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
-      idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
-
-    - url: jdbc:mysql://192.168.182.132:3306/media_1
-      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: 1024
-      driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 30000
-      maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
-      idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
-  shardingTables:
-    - tableName: attachment
-      shardingColumn: id
-
-  shardingTableSizePerDataBase: 2
-  dataCenterToDatabaseMappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
-  workerToTableMappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
-  broadcastTables: [ ]
-  singleDatabasesWithTables:
-  safeRowBoundsEnabled: false
-  safeResultHandlerEnabled: false
-  mapUnderscoreToCamelCase: false
-  aggressiveLazyLoading: false
-  multipleResultSetsEnabled: false
-  useGeneratedKeys: false
-  useColumnLabel: true
-  cacheEnabled: false
-  callSettersOnNulls: false
-  useActualParamName: false
-  returnInstanceForEmptyRow: false
-  shrinkWhitespacesInSql: false
-  nullableOnForEach: false
-  localCacheScope: SESSION
-  jdbcTypeForNull:
-  defaultStatementTimeout: 30000
-  defaultFetchSize: 100
-  defaultResultSetType: DEFAULT
-  defaultExecutorType: BATCH
-  autoMappingBehavior: FULL
-  autoMappingUnknownColumnBehavior: FAILING
-  lazyLoadingEnabled: false
-  mapperLocation: classpath:mapper/*.xml
-  props:
-    sql.show: true
-    sql.simple: false
-    executor.size: 128
-    max.connections.size.per.query: 2
-    check.table.metadata.enabled: true
-    query.with.cipher.column: false
-    xa.transaction.manager.type: Atomikos
-  debugLogging: true
-
-
 identity:
   dataCenter: 0
   worker: 0
@@ -156,7 +74,7 @@ identity:
 
 mongo:
   addressAttrs:
-    - address: 192.168.182.132
+    - address: 172.16.203.216
       port: 27017
   auth: false
   userName:
@@ -204,7 +122,7 @@ cache:
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
   password: sfakjfiju99jjf87LJSDDU8
   maxRedirects: 4
-  host: 192.168.182.132
+  host: 172.16.203.216
   port: 6379
   minIdle: 4
   maxIdle: 64
@@ -314,7 +232,7 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://192.168.182.132:2181
+    address: zookeeper://172.16.203.216:2181
     group: summer
     file: D:/locallogs/dubbo/media/registry.properties
     check: false
@@ -346,7 +264,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.182.132:6650 ]
+      services: [ 172.16.203.216:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -402,7 +320,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.182.132:6650 ]
+      services: [ 172.16.203.216:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

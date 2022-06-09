@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.BlueRandomGenerator.generateRandom;
+import static com.blue.base.common.base.BlueRandomGenerator.generate;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER;
 import static com.blue.base.constant.common.BlueHeader.VERIFY_KEY;
 import static com.blue.base.constant.common.RateLimitKeyPrefix.IMAGE_VERIFY_RATE_LIMIT_KEY_PRE;
@@ -162,7 +162,7 @@ public class ImageVerifyHandler implements VerifyHandler {
 
     @Override
     public Mono<ServerResponse> handle(BusinessType businessType, String destination, ServerRequest serverRequest) {
-        String verifyKey = isNotBlank(destination) ? destination : generateRandom(KEY_RANDOM_TYPE, KEY_LEN);
+        String verifyKey = isNotBlank(destination) ? destination : generate(KEY_RANDOM_TYPE, KEY_LEN);
 
         return SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER.apply(serverRequest)
                 .flatMap(identity -> blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(identity), ALLOW, SEND_INTERVAL_MILLIS))

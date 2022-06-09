@@ -9,31 +9,46 @@ import com.blue.media.constant.AttachmentSortAttribute;
 import com.blue.media.model.AttachmentCondition;
 import com.blue.media.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.media.repository.entity.Attachment;
-import com.blue.media.repository.mapper.AttachmentMapper;
+import com.blue.media.repository.template.AttachmentRepository;
 import com.blue.media.service.inter.AttachmentService;
 import com.blue.member.api.model.MemberBasicInfo;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.BlueNumericalValue.DB_WRITE;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.media.constant.ColumnName.*;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER;
+import static com.blue.mongo.common.SortConverter.convert;
+import static com.blue.mongo.constant.LikeElement.PREFIX;
+import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.domain.Sort.unsorted;
+import static org.springframework.data.mongodb.core.query.Criteria.byExample;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static reactor.core.publisher.Flux.fromIterable;
+import static reactor.core.publisher.Flux.fromStream;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
@@ -43,7 +58,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class AttachmentServiceImpl implements AttachmentService {
 
@@ -51,33 +66,60 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
-    private final AttachmentMapper attachmentMapper;
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public AttachmentServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, AttachmentMapper attachmentMapper) {
+    private final AttachmentRepository attachmentRepository;
+
+    public AttachmentServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, ReactiveMongoTemplate reactiveMongoTemplate, AttachmentRepository attachmentRepository) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
-        this.attachmentMapper = attachmentMapper;
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
+        this.attachmentRepository = attachmentRepository;
     }
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(AttachmentSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<AttachmentCondition> CONDITION_PROCESSOR = condition -> {
+    private static final Function<AttachmentCondition, Sort> SORTER_CONVERTER = condition -> {
         if (isNull(condition))
-            return new AttachmentCondition();
+            return unsorted();
 
-        process(condition, SORT_ATTRIBUTE_MAPPING, AttachmentSortAttribute.ID.column);
+        String sortAttribute = condition.getSortAttribute();
+        if (isBlank(sortAttribute)) {
+            condition.setSortAttribute(AttachmentSortAttribute.ID.column);
+        } else {
+            if (!SORT_ATTRIBUTE_MAPPING.containsValue(sortAttribute))
+                throw new BlueException(INVALID_PARAM);
+        }
 
-        ofNullable(condition.getLinkLike())
-                .filter(BlueChecker::isNotBlank)
-                        .ifPresent(linkLike-> condition.setLinkLike("%" + linkLike + "%"));
-
-        ofNullable(condition.getNameLike())
-                .filter(BlueChecker::isNotBlank)
-                .ifPresent(nameLike-> condition.setNameLike("%" + nameLike + "%"));
-
-        return condition;
+        return convert(condition.getSortType(), singletonList(condition.getSortAttribute()));
     };
+
+    private static final Function<AttachmentCondition, Query> CONDITION_PROCESSOR = condition -> {
+        Query query = new Query();
+
+        if (condition == null)
+            return query;
+
+        Attachment probe = new Attachment();
+
+        ofNullable(condition.getId()).ifPresent(probe::setId);
+        ofNullable(condition.getLinkLike()).filter(BlueChecker::isNotBlank).ifPresent(linkLike ->
+                query.addCriteria(where(LINK.name).regex(compile(PREFIX.element + linkLike + SUFFIX.element, CASE_INSENSITIVE))));
+        ofNullable(condition.getNameLike()).filter(BlueChecker::isNotBlank).ifPresent(nameLike ->
+                query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+        ofNullable(condition.getFileType()).filter(BlueChecker::isNotBlank).ifPresent(probe::setFileType);
+        ofNullable(condition.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+                query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
+        ofNullable(condition.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+                query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
+
+        query.addCriteria(byExample(probe));
+
+        query.with(SORTER_CONVERTER.apply(condition));
+
+        return query;
+    };
+
 
     /**
      * insert attachment
@@ -86,11 +128,12 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public int insertAttachment(Attachment attachment) {
-        LOGGER.info("int insert(Attachment attachment), attachment = {}", attachment);
-        return ofNullable(attachment)
-                .map(attachmentMapper::insert)
-                .orElse(0);
+    public Mono<Attachment> insertAttachment(Attachment attachment) {
+        LOGGER.info("Mono<Attachment> insert(Attachment attachment), attachment = {}", attachment);
+        if (attachment == null)
+            throw new BlueException(EMPTY_PARAM);
+
+        return attachmentRepository.insert(attachment);
     }
 
     /**
@@ -100,27 +143,16 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public int insertAttachments(List<Attachment> attachments) {
-        LOGGER.info("int insertBatch(List<Attachment> attachments), attachments = {}", attachments);
-        return ofNullable(attachments)
-                .filter(as -> as.size() > 0)
-                .map(attachmentMapper::insertBatch)
-                .orElse(0);
-    }
+    public Mono<List<Attachment>> insertAttachments(List<Attachment> attachments) {
+        LOGGER.info("Mono<List<Attachment>> insertBatch(List<Attachment> attachments), attachments = {}", attachments);
 
-    /**
-     * get attachment by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public Optional<Attachment> getAttachment(Long id) {
-        LOGGER.info("Optional<Attachment> getAttachment(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return ofNullable(attachmentMapper.selectByPrimaryKey(id));
+        return isNotEmpty(attachments) ?
+                fromIterable(allotByMax(attachments, (int) DB_WRITE.value, false))
+                        .map(attachmentRepository::saveAll)
+                        .reduce(Flux::concat)
+                        .flatMap(Flux::collectList)
+                :
+                just(emptyList());
     }
 
     /**
@@ -130,8 +162,12 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<Optional<Attachment>> getAttachmentMono(Long id) {
-        return just(this.getAttachment(id));
+    public Mono<Attachment> getAttachmentMono(Long id) {
+        LOGGER.info("Mono<Optional<Attachment>> getAttachmentMono(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return attachmentRepository.findById(id);
     }
 
     /**
@@ -141,25 +177,22 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public List<Attachment> selectAttachmentByIds(List<Long> ids) {
-        LOGGER.info("List<Attachment> selectAttachmentByIds(List<Long> ids), ids = {}", ids);
-        return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(attachmentMapper::selectByIds)
-                .flatMap(List::stream)
-                .collect(toList())
-                :
-                emptyList();
-    }
+    public Mono<List<AttachmentInfo>> selectAttachmentMonoByIds(List<Long> ids) {
+        LOGGER.info("Mono<List<Attachment>> selectAttachmentMonoByIds(List<Long> ids), ids = {}", ids);
 
-    /**
-     * select attachments by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public Mono<List<Attachment>> selectAttachmentMonoByIds(List<Long> ids) {
-        return just(this.selectAttachmentByIds(ids));
+        return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
+                .map(shardIds -> attachmentRepository.findAllById(ids)
+                        .collectList()
+                        .flatMap(attachments ->
+                                zip(rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(attachments.stream().map(Attachment::getCreator).collect(toList()))
+                                                .flatMap(memberBasicInfos -> just(memberBasicInfos.stream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a)))),
+                                        just(attachments))
+                        ).flatMapMany(tuple2 -> {
+                            Map<Long, String> idAndNameMapping = tuple2.getT1();
+                            return fromStream(tuple2.getT2().stream().map(attachment -> ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER.apply(attachment, idAndNameMapping.get(attachment.getCreator()))));
+                        }))
+                .reduce(Flux::concat)
+                .flatMap(Flux::collectList);
     }
 
     /**
@@ -174,7 +207,15 @@ public class AttachmentServiceImpl implements AttachmentService {
     public Mono<List<Attachment>> selectAttachmentMonoByLimitAndMemberId(Long limit, Long rows, Long memberId) {
         LOGGER.info("Mono<List<Attachment>> selectAttachmentMonoByLimitAndMemberId(Long limit, Long rows, Long memberId), " +
                 "limit = {}, rows = {}, memberId = {}", limit, rows, memberId);
-        return just(attachmentMapper.selectByLimitAndMemberId(limit, rows, memberId));
+        if (isInvalidLimit(limit) || isInvalidRows(rows) || isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_PARAM);
+
+        Attachment probe = new Attachment();
+        probe.setCreator(memberId);
+
+        return attachmentRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.name)))
+                .skip(limit).take(rows)
+                .collectList();
     }
 
     /**
@@ -186,7 +227,11 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Override
     public Mono<Long> countAttachmentMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Long> countAttachmentMonoByMemberId(Long memberId), memberId = {}", memberId);
-        return just(ofNullable(attachmentMapper.countByMemberId(memberId)).orElse(0L));
+
+        Attachment probe = new Attachment();
+        probe.setCreator(memberId);
+
+        return attachmentRepository.count(Example.of(probe));
     }
 
     /**
@@ -227,26 +272,33 @@ public class AttachmentServiceImpl implements AttachmentService {
      *
      * @param limit
      * @param rows
-     * @param attachmentCondition
+     * @param query
      * @return
      */
     @Override
-    public Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, AttachmentCondition attachmentCondition) {
-        LOGGER.info("Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, AttachmentCondition attachmentCondition), " +
-                "limit = {}, rows = {}, attachmentCondition = {}", limit, rows, attachmentCondition);
-        return just(attachmentMapper.selectByLimitAndCondition(limit, rows, attachmentCondition));
+    public Mono<List<Attachment>> selectAttachmentMonoByLimitAndQuery(Long limit, Long rows, Query query) {
+        LOGGER.info("Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, Query query), " +
+                "limit = {}, rows = {}, query = {}", limit, rows, query);
+
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
+        Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
+        listQuery.skip(limit).limit(rows.intValue());
+
+        return reactiveMongoTemplate.find(listQuery, Attachment.class).collectList();
     }
 
     /**
      * count attachment by condition
      *
-     * @param attachmentCondition
+     * @param query
      * @return
      */
     @Override
-    public Mono<Long> countAttachmentMonoByCondition(AttachmentCondition attachmentCondition) {
-        LOGGER.info("Mono<Long> countAttachmentMonoByCondition(AttachmentCondition attachmentCondition), attachmentCondition = {}", attachmentCondition);
-        return just(ofNullable(attachmentMapper.countByCondition(attachmentCondition)).orElse(0L));
+    public Mono<Long> countAttachmentMonoByQuery(Query query) {
+        LOGGER.info("Mono<Long> countAttachmentMonoByCondition(Query query), query = {}", query);
+        return reactiveMongoTemplate.count(query, Attachment.class);
     }
 
     /**
@@ -262,9 +314,9 @@ public class AttachmentServiceImpl implements AttachmentService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        AttachmentCondition attachmentCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 
-        return zip(selectAttachmentMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), attachmentCondition), countAttachmentMonoByCondition(attachmentCondition))
+        return zip(selectAttachmentMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countAttachmentMonoByQuery(query))
                 .flatMap(tuple2 -> {
                     List<Attachment> attachments = tuple2.getT1();
                     return isNotEmpty(attachments) ?

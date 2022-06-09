@@ -53,6 +53,10 @@ db.memberAddress.createIndex({"createTime":-1});
 -- media
 use media;
 
+db.attachment.createIndex({"id":1});
+db.attachment.createIndex({"createTime":-1});
+db.attachment.createIndex({"creator":1});
+
 db.downloadHistory.createIndex({"id":1});
 db.downloadHistory.createIndex({"attachmentId":1});
 db.downloadHistory.createIndex({"createTime":-1});
