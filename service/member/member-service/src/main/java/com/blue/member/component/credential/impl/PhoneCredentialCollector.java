@@ -7,7 +7,7 @@ import com.blue.member.repository.entity.MemberBasic;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiPredicate;
+import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
@@ -29,8 +29,8 @@ public final class PhoneCredentialCollector implements CredentialCollector {
             PHONE_VERIFY_AUTO_REGISTER, LOCAL_PHONE_AUTO_REGISTER, WECHAT_AUTO_REGISTER, MINI_PRO_AUTO_REGISTER, PHONE_PWD
     ).map(t -> t.identity).collect(toSet());
 
-    private static final BiPredicate<String, String> STATUS_GETTER = (type, access) ->
-            !PHONE_PWD.identity.equals(type) || isNotBlank(access);
+    private static final BiFunction<String, String, Integer> STATUS_GETTER = (type, access) ->
+            !PHONE_PWD.identity.equals(type) || isNotBlank(access) ? VALID.status : INVALID.status;
 
     /**
      * collect credential
@@ -53,7 +53,7 @@ public final class PhoneCredentialCollector implements CredentialCollector {
 
         String tarAccess = isNotNull(access) ? access : EMPTY_DATA.value;
         TAR_TYPES.stream()
-                .map(type -> new CredentialInfo(phone, type, tarAccess, STATUS_GETTER.test(type, tarAccess) ? VALID.status : INVALID.status, "from registry"))
+                .map(type -> new CredentialInfo(phone, type, tarAccess, STATUS_GETTER.apply(type, tarAccess), "from registry"))
                 .forEach(credentials::add);
     }
 

@@ -243,8 +243,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      */
     @Override
     public Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId) {
-        LOGGER.info("Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId), pageModelRequest = {}, memberId = {}",
-                pageModelRequest, memberId);
+        LOGGER.info("Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId), " +
+                "pageModelRequest = {}, memberId = {}", pageModelRequest, memberId);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(memberId))
@@ -277,8 +277,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      */
     @Override
     public Mono<List<Attachment>> selectAttachmentMonoByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, Query query), " +
-                "limit = {}, rows = {}, query = {}", limit, rows, query);
+        LOGGER.info("Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, Query query)," +
+                " limit = {}, rows = {}, query = {}", limit, rows, query);
 
         if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
