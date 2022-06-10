@@ -41,8 +41,8 @@ public interface CredentialMapper {
 
     int insertBatch(@Param("list") List<Credential> list);
 
-    int updateAccessByMemberAndTypes(@Param("memberId") Long memberId, @Param("credentialTypes") List<String> credentialTypes, @Param("access") String access, @Param("status") Integer status);
+    int updateAccessByMemberAndTypes(@Param("access") String access, @Param("status") Integer status, @Param("updateTime") Long updateTime, @Param("memberId") Long memberId, @Param("credentialTypes") List<String> credentialTypes);
 
-    int updateCredentialByIds(@Param("credential") String credential, @Param("ids") List<Long> ids);
+    int updateCredentialByIds(@Param("credential") String credential, @Param("updateTime") Long updateTime, @Param("ids") List<Long> ids);
 
 }

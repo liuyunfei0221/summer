@@ -1,18 +1,17 @@
 package com.blue.auth.remote.provider;
 
+import com.blue.auth.api.inter.RpcRoleService;
+import com.blue.auth.api.model.MemberRoleInfo;
+import com.blue.auth.api.model.RoleInfo;
 import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.repository.entity.MemberRoleRelation;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.service.inter.MemberRoleRelationService;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.base.model.exps.BlueException;
-import com.blue.auth.api.inter.RpcRoleService;
-import com.blue.auth.api.model.MemberRoleInfo;
-import com.blue.auth.api.model.RoleInfo;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,6 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc role provider
@@ -39,8 +37,6 @@ import static reactor.util.Loggers.getLogger;
                 @Method(name = "selectRoleInfoByMemberIds", async = true)
         })
 public class RpcRoleServiceProvider implements RpcRoleService {
-
-    private static final Logger LOGGER = getLogger(RpcRoleServiceProvider.class);
 
     private final RoleService roleService;
 
@@ -61,7 +57,6 @@ public class RpcRoleServiceProvider implements RpcRoleService {
      */
     @Override
     public CompletableFuture<List<RoleInfo>> selectRoleInfo() {
-        LOGGER.info("CompletableFuture<RoleInfo> selectRoleInfo()");
         return just(true)
                 .subscribeOn(scheduler)
                 .flatMap(v -> roleService.selectRole())
@@ -77,7 +72,6 @@ public class RpcRoleServiceProvider implements RpcRoleService {
      */
     @Override
     public CompletableFuture<MemberRoleInfo> selectRoleInfoByMemberId(Long memberId) {
-        LOGGER.info("CompletableFuture<MemberRoleRelationInfo> selectRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
         return just(memberId).subscribeOn(scheduler)
                 .flatMap(memberRoleRelationService::getRoleIdMonoByMemberId)
                 .flatMap(roleIdOpt ->
@@ -99,7 +93,6 @@ public class RpcRoleServiceProvider implements RpcRoleService {
      */
     @Override
     public CompletableFuture<List<MemberRoleInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
-        LOGGER.info("CompletableFuture<List<MemberRoleRelationInfo>> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
         return just(memberIds).subscribeOn(scheduler)
                 .flatMap(memberRoleRelationService::selectRelationMonoByMemberIds)
                 .flatMap(relations ->
@@ -117,7 +110,6 @@ public class RpcRoleServiceProvider implements RpcRoleService {
                                                     return memberRoleInfo;
                                                 }
 
-                                                LOGGER.error("the role with id {} can't be null", rel.getRoleId());
                                                 throw new BlueException(INTERNAL_SERVER_ERROR);
                                             }).collect(toList()));
                                 })).toFuture();

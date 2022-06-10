@@ -28,7 +28,7 @@ public class MemberBasicApiRoute {
         RequestPredicate pathPredicate = path("/blue-member/basic");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("", memberBasicApiHandler::getMemberBasicInfo)
+                .GET("", memberBasicApiHandler::getByAccess)
                 .PUT("/icon", accept(APPLICATION_JSON), memberBasicApiHandler::updateIcon)
                 .PUT("/profile", accept(APPLICATION_JSON), memberBasicApiHandler::updateProfile)
                 .build();

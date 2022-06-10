@@ -198,8 +198,8 @@ public class SignInServiceImpl implements SignInService {
      * @return
      */
     @Override
-    public Mono<SignInReward> insertSignIn(Long memberId) {
-        LOGGER.info("Mono<SignInReward> insertSignIn(Long memberId), memberId = {}", memberId);
+    public Mono<SignInReward> signIn(Long memberId) {
+        LOGGER.info("Mono<SignInReward> signIn(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 

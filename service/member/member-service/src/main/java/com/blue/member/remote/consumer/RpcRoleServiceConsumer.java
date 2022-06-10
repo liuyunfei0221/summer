@@ -7,12 +7,10 @@ import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import java.util.List;
 
 import static reactor.core.publisher.Mono.fromFuture;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc role consumer
@@ -22,8 +20,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcRoleServiceConsumer {
-
-    private static final Logger LOGGER = getLogger(RpcRoleServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-auth"},
@@ -46,7 +42,6 @@ public class RpcRoleServiceConsumer {
      * @return
      */
     public Mono<MemberRoleInfo> selectRoleInfoByMemberId(Long memberId) {
-        LOGGER.info("Mono<MemberRoleInfo> selectRoleInfoByMemberId(Long memberId), memberId = {}", memberId);
         return fromFuture(rpcRoleService.selectRoleInfoByMemberId(memberId)).subscribeOn(scheduler);
     }
 
@@ -57,7 +52,6 @@ public class RpcRoleServiceConsumer {
      * @return
      */
     public Mono<List<MemberRoleInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
-        LOGGER.info("Mono<List<MemberRoleInfo>> selectRoleInfoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
         return fromFuture(rpcRoleService.selectRoleInfoByMemberIds(memberIds)).subscribeOn(scheduler);
     }
 

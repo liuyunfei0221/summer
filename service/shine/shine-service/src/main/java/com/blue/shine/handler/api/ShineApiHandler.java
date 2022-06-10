@@ -36,12 +36,12 @@ public final class ShineApiHandler {
     }
 
     /**
-     * get shine info
+     * select shine info
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> getShineInfo(ServerRequest serverRequest) {
+    public Mono<ServerResponse> select(ServerRequest serverRequest) {
         String ip = getRequestIp(serverRequest);
 
         LOGGER.warn("client ip = {}", ip);

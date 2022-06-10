@@ -8,7 +8,6 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -16,7 +15,6 @@ import java.util.concurrent.CompletableFuture;
 import static com.blue.base.constant.common.ResponseElement.DATA_NOT_EXIST;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc member basic provider
@@ -33,8 +31,6 @@ import static reactor.util.Loggers.getLogger;
                 @Method(name = "getMemberBasicInfoByEmail", async = true)
         })
 public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
-
-    private static final Logger LOGGER = getLogger(RpcMemberBasicServiceProvider.class);
 
     private final MemberBasicService memberBasicService;
 
@@ -53,7 +49,6 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoMonoByPrimaryKey(Long id) {
-        LOGGER.info("CompletableFuture<Optional<MemberBasicInfo>> getMemberBasicInfoMonoByPrimaryKey(Long id), id = {},", id);
         return just(id).subscribeOn(scheduler)
                 .flatMap(memberBasicService::getMemberBasicMono)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
@@ -70,7 +65,6 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids), ids = {},", ids);
         return just(ids).subscribeOn(scheduler)
                 .flatMap(memberBasicService::selectMemberBasicInfoMonoByIds)
                 .toFuture();
@@ -84,7 +78,6 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByPhone(String phone) {
-        LOGGER.info("CompletableFuture<MemberBasicInfo> getMemberBasicInfoByPhone(String phone), phone = {},", phone);
         return just(phone).subscribeOn(scheduler)
                 .flatMap(memberBasicService::getMemberBasicMonoByPhone)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
@@ -101,7 +94,6 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByEmail(String email) {
-        LOGGER.info("CompletableFuture<MemberBasicInfo> getMemberBasicInfoByEmail(String email), email = {},", email);
         return just(email).subscribeOn(scheduler)
                 .flatMap(memberBasicService::getMemberBasicMonoByEmail)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)

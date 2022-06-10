@@ -7,12 +7,10 @@ import com.blue.verify.service.inter.VerifyHandleService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
 
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc verify provider
@@ -27,8 +25,6 @@ import static reactor.util.Loggers.getLogger;
                 @Method(name = "validate", async = true)
         })
 public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
-
-    private static final Logger LOGGER = getLogger(RpcVerifyHandleServiceProvider.class);
 
     private final VerifyHandleService verifyHandleService;
 
@@ -49,9 +45,6 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
      */
     @Override
     public CompletableFuture<String> generate(VerifyType verifyType, BusinessType businessType, String destination) {
-        LOGGER.info("CompletableFuture<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination), verifyType = {}, verifyBusinessType = {}, destination = {}",
-                verifyType, businessType, destination);
-
         return just(true).subscribeOn(scheduler).flatMap(v -> verifyHandleService.generate(verifyType, businessType, destination)).toFuture();
     }
 
@@ -67,9 +60,6 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
      */
     @Override
     public CompletableFuture<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
-        LOGGER.info("CompletableFuture<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable), " +
-                "verifyType = {}, verifyBusinessType = {}, key = {}, verify = {}, repeatable = {}", verifyType, businessType, key, verify, repeatable);
-
         return just(true).subscribeOn(scheduler).flatMap(v -> verifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).toFuture();
     }
 
@@ -82,8 +72,6 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
      */
     @Override
     public CompletableFuture<Boolean> turingValidate(String key, String verify) {
-        LOGGER.info("CompletableFuture<Boolean> turingValidate(String key, String verify), key = {}, verify = {}", key, verify);
-
         return just(true).subscribeOn(scheduler).flatMap(v -> verifyHandleService.turingValidate(key, verify)).toFuture();
     }
 

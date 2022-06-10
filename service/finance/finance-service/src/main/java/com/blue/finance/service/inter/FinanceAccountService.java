@@ -1,7 +1,9 @@
 package com.blue.finance.service.inter;
 
 
+import com.blue.finance.api.model.FinanceInfo;
 import com.blue.finance.repository.entity.FinanceAccount;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -28,5 +30,13 @@ public interface FinanceAccountService {
      * @return
      */
     Optional<FinanceAccount> getFinanceAccountByMemberId(Long memberId);
+
+    /**
+     * get balance by member id
+     *
+     * @param memberId
+     * @return
+     */
+    Mono<FinanceInfo> getBalanceByMemberId(Long memberId);
 
 }

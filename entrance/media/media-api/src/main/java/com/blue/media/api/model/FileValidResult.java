@@ -1,18 +1,25 @@
 package com.blue.media.api.model;
 
+import java.io.Serializable;
+
 /**
  * media valid result
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class FileValidResult {
+public final class FileValidResult implements Serializable {
 
-    private final Boolean valid;
+    private static final long serialVersionUID = -189012325018732536L;
 
-    private final String name;
+    private Boolean valid;
 
-    private final String message;
+    private String name;
+
+    private String message;
+
+    public FileValidResult() {
+    }
 
     public FileValidResult(Boolean valid, String name, String message) {
         this.valid = valid;
@@ -24,12 +31,24 @@ public final class FileValidResult {
         return valid;
     }
 
+    public void setValid(Boolean valid) {
+        this.valid = valid;
+    }
+
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override

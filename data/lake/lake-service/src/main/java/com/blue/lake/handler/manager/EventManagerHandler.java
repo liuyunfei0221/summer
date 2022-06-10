@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
@@ -17,7 +16,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.error;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * @author liuyunfei
@@ -25,8 +23,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc"})
 @Component
 public class EventManagerHandler {
-
-    private static final Logger LOGGER = getLogger(EventManagerHandler.class);
 
     private final LakeService lakeService;
 

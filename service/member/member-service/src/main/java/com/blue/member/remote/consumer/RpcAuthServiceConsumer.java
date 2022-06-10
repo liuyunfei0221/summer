@@ -8,10 +8,8 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import static reactor.core.publisher.Mono.fromFuture;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc auth reference
@@ -21,8 +19,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
 @Component
 public class RpcAuthServiceConsumer {
-
-    private static final Logger LOGGER = getLogger(RpcAuthServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-auth"},
@@ -41,7 +37,6 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<AccessAsserted> assertAccess(AccessAssert accessAssert) {
-        LOGGER.info("Mono<AuthAsserted> assertAccess(AssertAuth assertAuth), assertAuth = {}", accessAssert);
         return fromFuture(rpcAuthService.assertAccess(accessAssert));
     }
 
@@ -52,7 +47,6 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<Boolean> invalidateAuthByAccess(Access access) {
-        LOGGER.info("Mono<Boolean> invalidateAuthByAccess(Access access), access = {}", access);
         return fromFuture(rpcAuthService.invalidateAuthByAccess(access));
     }
 
@@ -63,7 +57,6 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<Boolean> invalidateAuthByJwt(String jwt) {
-        LOGGER.info("Mono<Boolean> invalidateAuthByJwt(String jwt), jwt = {}", jwt);
         return fromFuture(rpcAuthService.invalidateAuthByJwt(jwt));
     }
 
@@ -74,7 +67,6 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<Boolean> invalidateAuthByMemberId(Long memberId) {
-        LOGGER.info("Mono<Boolean> invalidateAuthByMemberId(Long memberId), memberId = {}", memberId);
         return fromFuture(rpcAuthService.invalidateAuthByMemberId(memberId));
     }
 

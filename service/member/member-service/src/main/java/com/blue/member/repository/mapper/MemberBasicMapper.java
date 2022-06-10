@@ -24,11 +24,11 @@ public interface MemberBasicMapper {
 
     int deleteByPrimaryKey(Long id);
 
-    int updateIcon(@Param("id") Long id, @Param("icon") String icon);
+    int updateIcon(@Param("id") Long id, @Param("icon") String icon, @Param("updateTime") Long updateTime);
 
-    int updateProfile(@Param("id") Long id, @Param("profile") String profile);
+    int updateProfile(@Param("id") Long id, @Param("profile") String profile, @Param("updateTime") Long updateTime);
 
-    int updateStatus(@Param("id") Long id, @Param("status") Integer status);
+    int updateStatus(@Param("id") Long id, @Param("status") Integer status, @Param("updateTime") Long updateTime);
 
     MemberBasic selectByPrimaryKey(Long id);
 

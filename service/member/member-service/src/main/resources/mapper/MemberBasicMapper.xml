@@ -174,21 +174,24 @@
     </delete>
 
     <update id="updateIcon">
-        update member_basic
-        set icon = #{icon,jdbcType=VARCHAR}
-        where id = #{id,jdbcType=BIGINT}
+        UPDATE member_basic
+        SET icon        = #{icon,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
     </update>
 
     <update id="updateProfile">
-        update member_basic
-        set `profile` = #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
-        where id = #{id,jdbcType=BIGINT}
+        UPDATE member_basic
+        SET `profile`   = #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
     </update>
 
     <update id="updateStatus">
-        update member_basic
-        set status = #{status,jdbcType=TINYINT}
-        where id = #{id,jdbcType=BIGINT}
+        UPDATE member_basic
+        SET status      = #{status,jdbcType=TINYINT},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
     </update>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

@@ -2,6 +2,7 @@ package com.blue.media.service.inter;
 
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
+import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.model.AttachmentCondition;
 import com.blue.media.repository.entity.Attachment;
@@ -43,12 +44,28 @@ public interface AttachmentService {
     Mono<Attachment> getAttachmentMono(Long id);
 
     /**
-     * select attachments mono by ids
+     * get attachment info mono by id
+     *
+     * @param id
+     * @return
+     */
+    Mono<AttachmentInfo> getAttachmentInfoMono(Long id);
+
+    /**
+     * select attachment info mono by ids
      *
      * @param ids
      * @return
      */
-    Mono<List<AttachmentInfo>> selectAttachmentMonoByIds(List<Long> ids);
+    Mono<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids);
+
+    /**
+     * select attachments detail info mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    Mono<List<AttachmentDetailInfo>> selectAttachmentDetailInfoMonoByIds(List<Long> ids);
 
     /**
      * select attachment by limit and member id
@@ -69,13 +86,13 @@ public interface AttachmentService {
     Mono<Long> countAttachmentMonoByMemberId(Long memberId);
 
     /**
-     * select attachment info by page and member id
+     * select attachment detail info by page and member id
      *
      * @param pageModelRequest
      * @param memberId
      * @return
      */
-    Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId);
+    Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId);
 
     /**
      * select attachment by page and condition
@@ -96,11 +113,11 @@ public interface AttachmentService {
     Mono<Long> countAttachmentMonoByQuery(Query query);
 
     /**
-     * select attachment info page by condition
+     * select attachment detail info page by condition
      *
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest);
+    Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest);
 
 }

@@ -1,6 +1,7 @@
 package com.blue.media.converter;
 
 import com.blue.base.model.exps.BlueException;
+import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.api.model.AttachmentUploadInfo;
 import com.blue.media.api.model.DownloadHistoryInfo;
@@ -47,11 +48,21 @@ public final class MediaModelConverters {
     /**
      * attachment -> attachment info
      */
-    public static final BiFunction<Attachment, String, AttachmentInfo> ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER = (attachment, creatorName) -> {
+    public static final Function<Attachment, AttachmentInfo> ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER = attachment -> {
         if (isNull(attachment))
             throw new BlueException(EMPTY_PARAM);
 
-        return new AttachmentInfo(attachment.getId(), attachment.getName(), attachment.getSize(),
+        return new AttachmentInfo(attachment.getId(), attachment.getLink(), attachment.getName(), attachment.getFileType(), attachment.getSize(), attachment.getStatus(), attachment.getCreateTime(), attachment.getCreator());
+    };
+
+    /**
+     * attachment -> attachment detail info
+     */
+    public static final BiFunction<Attachment, String, AttachmentDetailInfo> ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER = (attachment, creatorName) -> {
+        if (isNull(attachment))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new AttachmentDetailInfo(attachment.getId(), attachment.getName(), attachment.getSize(),
                 attachment.getStatus(), attachment.getCreateTime(), attachment.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value);
     };
 

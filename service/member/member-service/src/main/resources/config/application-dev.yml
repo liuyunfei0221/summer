@@ -444,6 +444,10 @@ address:
   max: 8
 
 
+card:
+  max: 8
+
+
 producers:
   configs:
     invalidAuth:

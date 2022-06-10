@@ -7,6 +7,7 @@ import com.blue.member.api.model.*;
 import com.blue.member.repository.entity.*;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
@@ -15,6 +16,7 @@ import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
 import static com.blue.base.constant.auth.CredentialType.PHONE_PWD;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.member.Gender.UNKNOWN;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -92,20 +94,46 @@ public final class MemberModelConverters {
         throw new BlueException(EMPTY_PARAM);
     };
 
-    public static final Function<MemberAddress, MemberAddressInfo> MEMBER_ADDRESS_2_MEMBER_ADDRESS_INFO = memberAddress -> {
-        if (memberAddress != null)
-            return new MemberAddressInfo(memberAddress.getId(), memberAddress.getMemberId(), memberAddress.getMemberName(), memberAddress.getGender(),
-                    memberAddress.getPhone(), memberAddress.getEmail(), memberAddress.getCountryId(), memberAddress.getCountry(), memberAddress.getStateId(),
-                    memberAddress.getState(), memberAddress.getCityId(), memberAddress.getCity(), memberAddress.getAreaId(), memberAddress.getArea(),
-                    memberAddress.getDetail(), memberAddress.getReference(), memberAddress.getExtra());
+    public static final Function<Address, AddressInfo> ADDRESS_2_ADDRESS_INFO = address -> {
+        if (address != null)
+            return new AddressInfo(address.getId(), address.getMemberId(), address.getMemberName(), address.getGender(),
+                    address.getPhone(), address.getEmail(), address.getCountryId(), address.getCountry(), address.getStateId(),
+                    address.getState(), address.getCityId(), address.getCity(), address.getAreaId(), address.getArea(),
+                    address.getDetail(), address.getReference(), address.getExtra());
 
         throw new BlueException(EMPTY_PARAM);
     };
 
-    public static final Function<List<MemberAddress>, List<MemberAddressInfo>> MEMBER_ADDRESSES_2_MEMBER_ADDRESSES_INFO = mas ->
+    public static final Function<List<Address>, List<AddressInfo>> ADDRESSES_2_ADDRESSES_INFO = mas ->
             mas != null && mas.size() > 0 ? mas.stream()
-                    .map(MEMBER_ADDRESS_2_MEMBER_ADDRESS_INFO)
+                    .map(ADDRESS_2_ADDRESS_INFO)
                     .collect(toList()) : emptyList();
+
+
+    public static final Function<Card, CardInfo> CARD_2_CARD_INFO = card -> {
+        if (card != null)
+            return new CardInfo(card.getId(), card.getMemberId(), card.getName(), card.getDetail(), card.getCoverId(),
+                    card.getCoverLink(), card.getContentId(), card.getContentLink(), card.getExtra(), card.getCreateTime(), card.getUpdateTime());
+
+        throw new BlueException(EMPTY_PARAM);
+    };
+
+    public static final Function<List<Card>, List<CardInfo>> CARDS_2_CARDS_INFO = cards ->
+            cards != null && cards.size() > 0 ? cards.stream()
+                    .map(CARD_2_CARD_INFO)
+                    .collect(toList()) : emptyList();
+
+    /**
+     * card -> card detail info
+     */
+    public static final BiFunction<Card, String, CardDetailInfo> CARD_2_CARD_DETAIL_INFO_CONVERTER = (card, creatorName) -> {
+        if (isNull(card))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new CardDetailInfo(card.getId(), card.getMemberId(), card.getName(), card.getDetail(), card.getCoverId(),
+                card.getCoverLink(), card.getContentId(), card.getContentLink(), card.getExtra(), card.getCreateTime(), card.getUpdateTime(),
+                isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value);
+    };
 
     public static final Function<MemberBusiness, MemberBusinessInfo> MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO = memberBusiness -> {
         if (memberBusiness != null)

@@ -38,6 +38,16 @@ public enum ColumnName {
     DETAIL("detail"),
 
     /**
+     * coverLink
+     */
+    COVER_LINK("coverLink"),
+
+    /**
+     * contentLink
+     */
+    CONTENT_LINK("contentLink"),
+
+    /**
      * reference
      */
     REFERENCE("reference"),

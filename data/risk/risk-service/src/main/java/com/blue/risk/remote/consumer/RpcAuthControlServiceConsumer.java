@@ -7,10 +7,9 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
+import reactor.core.scheduler.Scheduler;
 
 import static reactor.core.publisher.Mono.fromFuture;
-import static reactor.util.Loggers.getLogger;
 
 
 /**
@@ -18,11 +17,9 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "FieldCanBeLocal"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "FieldCanBeLocal", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcAuthControlServiceConsumer {
-
-    private static final Logger LOGGER = getLogger(RpcAuthControlServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-auth"},
@@ -32,6 +29,12 @@ public class RpcAuthControlServiceConsumer {
             })
     private RpcAuthControlService rpcAuthControlService;
 
+    private final Scheduler scheduler;
+
+    public RpcAuthControlServiceConsumer(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
     /**
      * query authority by access
      *
@@ -39,8 +42,7 @@ public class RpcAuthControlServiceConsumer {
      * @return
      */
     public Mono<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByAccess(Access access), access = {}", access);
-        return fromFuture(rpcAuthControlService.getAuthorityByAccess(access));
+        return fromFuture(rpcAuthControlService.getAuthorityByAccess(access)).subscribeOn(scheduler);
     }
 
     /**
@@ -50,8 +52,7 @@ public class RpcAuthControlServiceConsumer {
      * @return
      */
     public Mono<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId), memberId = {}", memberId);
-        return fromFuture(rpcAuthControlService.getAuthorityByMemberId(memberId));
+        return fromFuture(rpcAuthControlService.getAuthorityByMemberId(memberId)).subscribeOn(scheduler);
     }
 
 }

@@ -8,14 +8,12 @@ import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static reactor.core.publisher.Mono.fromFuture;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc city consumer
@@ -25,8 +23,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcCityServiceConsumer {
-
-    private static final Logger LOGGER = getLogger(RpcCityServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-base"},

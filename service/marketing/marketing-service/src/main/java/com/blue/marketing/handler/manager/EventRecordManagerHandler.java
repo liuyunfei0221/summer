@@ -38,7 +38,7 @@ public final class EventRecordManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> listEventRecord(ServerRequest serverRequest) {
+    public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_EVENT_RECORD_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(eventRecordService::selectEventRecordInfoPageMonoByPageAndCondition)

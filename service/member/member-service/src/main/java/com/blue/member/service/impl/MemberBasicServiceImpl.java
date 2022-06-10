@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertStatus;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
@@ -171,7 +172,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         return justOrEmpty(memberBasicMapper.selectByPrimaryKey(id))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(mb -> {
-                    memberBasicMapper.updateIcon(id, icon);
+                    memberBasicMapper.updateIcon(id, icon, TIME_STAMP_GETTER.get());
                     mb.setIcon(icon);
                     return just(mb);
                 })
@@ -200,7 +201,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         return justOrEmpty(memberBasicMapper.selectByPrimaryKey(id))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(mb -> {
-                    memberBasicMapper.updateProfile(id, profile);
+                    memberBasicMapper.updateProfile(id, profile, TIME_STAMP_GETTER.get());
                     mb.setProfile(profile);
                     return just(mb);
                 })
@@ -230,7 +231,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
         memberBasic.setStatus(status);
-        memberBasicMapper.updateStatus(id, status);
+        memberBasicMapper.updateStatus(id, status, TIME_STAMP_GETTER.get());
 
         if (VALID.status != status)
             invalidAuthProducer.send(new InvalidAuthEvent(id));

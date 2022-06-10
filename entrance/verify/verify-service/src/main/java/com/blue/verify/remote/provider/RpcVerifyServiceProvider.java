@@ -7,13 +7,11 @@ import com.blue.verify.service.inter.VerifyService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc verify provider
@@ -28,8 +26,6 @@ import static reactor.util.Loggers.getLogger;
                 @Method(name = "validate", async = true)
         })
 public class RpcVerifyServiceProvider implements RpcVerifyService {
-
-    private static final Logger LOGGER = getLogger(RpcVerifyServiceProvider.class);
 
     private final VerifyService verifyService;
 
@@ -51,8 +47,6 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      */
     @Override
     public CompletableFuture<String> generate(VerifyType type, String key, Integer length, Duration expire) {
-        LOGGER.info("CompletableFuture<String> generate(VerifyType type, String key, Integer length, Duration expire), type = {}, key = {}, length = {}, toUpperCase = {}, expire = {}",
-                type, key, length, expire);
         return just(true).subscribeOn(scheduler).flatMap(v -> verifyService.generate(type, key, length, expire)).toFuture();
     }
 
@@ -67,8 +61,6 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      */
     @Override
     public CompletableFuture<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable) {
-        LOGGER.info("CompletableFuture<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable), type = {}, key = {}, verify = {}, repeatable = {}",
-                type, key, verify, repeatable);
         return just(true).subscribeOn(scheduler).flatMap(v -> verifyService.validate(type, key, verify, repeatable)).toFuture();
     }
 

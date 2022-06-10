@@ -8,10 +8,8 @@ import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import static reactor.core.publisher.Mono.fromFuture;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * @author liuyunfei
@@ -19,8 +17,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcVerifyHandleServiceConsumer {
-
-    private static final Logger LOGGER = getLogger(RpcVerifyHandleServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-verify"},
@@ -45,9 +41,6 @@ public class RpcVerifyHandleServiceConsumer {
      * @return
      */
     public Mono<String> generate(VerifyType verifyType, BusinessType businessType, String destination) {
-        LOGGER.info("Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination), verifyType = {}, verifyBusinessType = {}, destination = {}",
-                verifyType, businessType, destination);
-
         return fromFuture(rpcVerifyHandleService.generate(verifyType, businessType, destination)).subscribeOn(scheduler);
     }
 
@@ -62,9 +55,6 @@ public class RpcVerifyHandleServiceConsumer {
      * @return
      */
     public Mono<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
-        LOGGER.info("Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable), " +
-                "verifyType = {}, verifyBusinessType = {}, key = {}, verify = {}, repeatable = {}", verifyType, businessType, key, verify, repeatable);
-
         return fromFuture(rpcVerifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).subscribeOn(scheduler);
     }
 
@@ -76,9 +66,7 @@ public class RpcVerifyHandleServiceConsumer {
      * @return
      */
     public Mono<Boolean> turingValidate(String key, String verify) {
-        LOGGER.info("Mono<Boolean> turingValidate(String key, String verify), key = {}, verify = {}", key, verify);
-
-        return fromFuture(rpcVerifyHandleService.turingValidate( key, verify)).subscribeOn(scheduler);
+        return fromFuture(rpcVerifyHandleService.turingValidate(key, verify)).subscribeOn(scheduler);
     }
 
 }

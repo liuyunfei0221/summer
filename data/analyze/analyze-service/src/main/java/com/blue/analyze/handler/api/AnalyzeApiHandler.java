@@ -27,7 +27,7 @@ public final class AnalyzeApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> getData(ServerRequest serverRequest) {
+    public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(ai ->
                         ok()

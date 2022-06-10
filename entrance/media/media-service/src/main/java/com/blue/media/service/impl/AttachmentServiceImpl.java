@@ -4,6 +4,7 @@ import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
+import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.constant.AttachmentSortAttribute;
 import com.blue.media.model.AttachmentCondition;
@@ -33,6 +34,7 @@ import static com.blue.base.constant.common.BlueNumericalValue.DB_WRITE;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.constant.ColumnName.*;
+import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER;
 import static com.blue.mongo.common.SortConverter.convert;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
@@ -163,11 +165,38 @@ public class AttachmentServiceImpl implements AttachmentService {
      */
     @Override
     public Mono<Attachment> getAttachmentMono(Long id) {
-        LOGGER.info("Mono<Optional<Attachment>> getAttachmentMono(Long id), id = {}", id);
+        LOGGER.info("Mono<Attachment> getAttachmentMono(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
         return attachmentRepository.findById(id);
+    }
+
+    /**
+     * get attachment info mono by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Mono<AttachmentInfo> getAttachmentInfoMono(Long id) {
+        return getAttachmentMono(id).map(ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER);
+    }
+
+    /**
+     * select attachment info mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Mono<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids) {
+        LOGGER.info("Mono<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids), ids = {}", ids);
+
+        return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
+                .map(shardIds -> attachmentRepository.findAllById(shardIds).map(ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER))
+                .reduce(Flux::concat)
+                .flatMap(Flux::collectList);
     }
 
     /**
@@ -177,11 +206,11 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<List<AttachmentInfo>> selectAttachmentMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<Attachment>> selectAttachmentMonoByIds(List<Long> ids), ids = {}", ids);
+    public Mono<List<AttachmentDetailInfo>> selectAttachmentDetailInfoMonoByIds(List<Long> ids) {
+        LOGGER.info("Mono<List<Attachment>> selectAttachmentDetailInfoMonoByIds(List<Long> ids), ids = {}", ids);
 
         return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
-                .map(shardIds -> attachmentRepository.findAllById(ids)
+                .map(shardIds -> attachmentRepository.findAllById(shardIds)
                         .collectList()
                         .flatMap(attachments ->
                                 zip(rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(attachments.stream().map(Attachment::getCreator).collect(toList()))
@@ -189,7 +218,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                                         just(attachments))
                         ).flatMapMany(tuple2 -> {
                             Map<Long, String> idAndNameMapping = tuple2.getT1();
-                            return fromStream(tuple2.getT2().stream().map(attachment -> ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER.apply(attachment, idAndNameMapping.get(attachment.getCreator()))));
+                            return fromStream(tuple2.getT2().stream().map(attachment -> ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(attachment, idAndNameMapping.get(attachment.getCreator()))));
                         }))
                 .reduce(Flux::concat)
                 .flatMap(Flux::collectList);
@@ -242,8 +271,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId) {
-        LOGGER.info("Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId), " +
+    public Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId) {
+        LOGGER.info("Mono<PageModelResponse<AttachmentInfo>> selectAttachmentDetailInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId), " +
                 "pageModelRequest = {}, memberId = {}", pageModelRequest, memberId);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
@@ -259,7 +288,7 @@ public class AttachmentServiceImpl implements AttachmentService {
             String memberName = tuple3.getT3().getName();
 
             return isNotEmpty(attachments) ?
-                    just(attachments.stream().map(a -> ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER.apply(a, memberName)).collect(toList()))
+                    just(attachments.stream().map(a -> ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(a, memberName)).collect(toList()))
                             .flatMap(attachmentInfos ->
                                     just(new PageModelResponse<>(attachmentInfos, tuple3.getT2())))
                     :
@@ -308,8 +337,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<AttachmentInfo>> selectAttachmentInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectAttachmentInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest), " +
+    public Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest) {
+        LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
@@ -324,10 +353,10 @@ public class AttachmentServiceImpl implements AttachmentService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(attachments.stream().map(a ->
-                                                        ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER.apply(a, ofNullable(idAndNameMapping.get(a.getCreator())).orElse(EMPTY_DATA.value)))
+                                                        ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(a, ofNullable(idAndNameMapping.get(a.getCreator())).orElse(EMPTY_DATA.value)))
                                                 .collect(toList()));
-                                    }).flatMap(attachmentInfos ->
-                                            just(new PageModelResponse<>(attachmentInfos, tuple2.getT2())))
+                                    }).flatMap(attachmentDetailInfos ->
+                                            just(new PageModelResponse<>(attachmentDetailInfos, tuple2.getT2())))
                             :
                             just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
                 });

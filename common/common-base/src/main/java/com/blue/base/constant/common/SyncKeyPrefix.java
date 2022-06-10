@@ -34,6 +34,11 @@ public enum SyncKeyPrefix {
     ADDRESS_UPDATE_PRE("ADDRESS_UPDATE:"),
 
     /**
+     * operate card sync key pre
+     */
+    CARD_UPDATE_PRE("CARD_UPDATE:"),
+
+    /**
      * question insert key pre
      */
     QUESTION_INSERT_PRE("QUESTION_INSERT_PRE:");

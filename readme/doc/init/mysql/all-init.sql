@@ -481,12 +481,14 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'member list', 'member list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (190002, 'POST', 'blue-member', '/manager/authorities', b'1', b'1', b'1', b'1', b'1', 2,
         'authority list', 'authority list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (190003, 'POST', 'blue-member', '/manager/address', b'1', b'1', b'1', b'1', b'1', 2,
+       (190003, 'POST', 'blue-member', '/manager/cards', b'1', b'1', b'1', b'1', b'1', 2,
+        'select card for manager', 'select card for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (190004, 'POST', 'blue-member', '/manager/addresses', b'1', b'1', b'1', b'1', b'1', 2,
         'select address for manager', 'select address for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- finance api
-       (200001, 'GET', 'blue-finance', '/finance/balance', b'1', b'1', b'1', b'0', b'1', 1,
+       (200001, 'GET', 'blue-finance', '/balance', b'1', b'1', b'1', b'0', b'1', 1,
         'query balance', 'query balance', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (200002, 'POST', 'blue-finance', '/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
         'withdraw/test encrypt in finance', 'withdraw/test encrypt in finance', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,

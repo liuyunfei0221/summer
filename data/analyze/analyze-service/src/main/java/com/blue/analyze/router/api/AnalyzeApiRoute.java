@@ -26,7 +26,7 @@ public class AnalyzeApiRoute {
         RequestPredicate pathPredicate = path("/blue-analyze/analyze");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("", analyzeApiHandler::getData)
+                .GET("", analyzeApiHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

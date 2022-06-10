@@ -41,7 +41,7 @@ public final class AttachmentManagerHandler {
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_ATTACHMENT_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(attachmentService::selectAttachmentInfoPageMonoByPageAndCondition)
+                .flatMap(attachmentService::selectAttachmentDetailInfoPageMonoByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));

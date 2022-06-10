@@ -1,28 +1,25 @@
 package com.blue.risk.remote.consumer;
 
-import com.blue.base.model.common.Access;
 import com.blue.auth.api.inter.RpcAuthService;
 import com.blue.auth.api.model.AccessAssert;
 import com.blue.auth.api.model.AccessAsserted;
+import com.blue.base.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
+import reactor.core.scheduler.Scheduler;
 
 import static reactor.core.publisher.Mono.fromFuture;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc auth reference
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcAuthServiceConsumer {
-
-    private static final Logger LOGGER = getLogger(RpcAuthServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-auth"},
@@ -34,6 +31,12 @@ public class RpcAuthServiceConsumer {
             })
     private RpcAuthService rpcAuthService;
 
+    private final Scheduler scheduler;
+
+    public RpcAuthServiceConsumer(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
     /**
      * authentication and authorization
      *
@@ -41,8 +44,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<AccessAsserted> assertAccess(AccessAssert accessAssert) {
-        LOGGER.info("Mono<AuthAsserted> assertAccess(AssertAuth assertAuth), assertAuth = {}", accessAssert);
-        return fromFuture(rpcAuthService.assertAccess(accessAssert));
+        return fromFuture(rpcAuthService.assertAccess(accessAssert)).subscribeOn(scheduler);
     }
 
     /**
@@ -52,8 +54,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<Boolean> invalidateAuthByAccess(Access access) {
-        LOGGER.info("Mono<Boolean> invalidateAuthByAccess(Access access), access = {}", access);
-        return fromFuture(rpcAuthService.invalidateAuthByAccess(access));
+        return fromFuture(rpcAuthService.invalidateAuthByAccess(access)).subscribeOn(scheduler);
     }
 
     /**
@@ -63,8 +64,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<Boolean> invalidateAuthByJwt(String jwt) {
-        LOGGER.info("Mono<Boolean> invalidateAuthByJwt(String jwt), jwt = {}", jwt);
-        return fromFuture(rpcAuthService.invalidateAuthByJwt(jwt));
+        return fromFuture(rpcAuthService.invalidateAuthByJwt(jwt)).subscribeOn(scheduler);
     }
 
     /**
@@ -74,8 +74,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<Boolean> invalidateAuthByMemberId(Long memberId) {
-        LOGGER.info("Mono<Boolean> invalidateAuthByMemberId(Long memberId), memberId = {}", memberId);
-        return fromFuture(rpcAuthService.invalidateAuthByMemberId(memberId));
+        return fromFuture(rpcAuthService.invalidateAuthByMemberId(memberId)).subscribeOn(scheduler);
     }
 
 }

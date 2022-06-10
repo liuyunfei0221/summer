@@ -7,23 +7,19 @@ import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import java.util.List;
 
 import static reactor.core.publisher.Mono.fromFuture;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc member reference
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcMemberBasicServiceConsumer {
-
-    private static final Logger LOGGER = getLogger(RpcMemberBasicServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-member"},
@@ -48,7 +44,6 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     public Mono<MemberBasicInfo> getMemberBasicInfoMonoByPrimaryKey(Long id) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoMonoByPrimaryKey(Long id), id = {}", id);
         return fromFuture(rpcMemberBasicService.getMemberBasicInfoMonoByPrimaryKey(id)).subscribeOn(scheduler);
     }
 
@@ -59,7 +54,6 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     public Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return fromFuture(rpcMemberBasicService.selectMemberBasicInfoMonoByIds(ids)).subscribeOn(scheduler);
     }
 
@@ -70,7 +64,6 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     public Mono<MemberBasicInfo> getMemberBasicInfoByPhone(String phone) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoByPhone(String phone), phone = {}", phone);
         return fromFuture(rpcMemberBasicService.getMemberBasicInfoByPhone(phone)).subscribeOn(scheduler);
     }
 
@@ -81,7 +74,6 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     public Mono<MemberBasicInfo> getMemberBasicInfoByEmail(String email) {
-        LOGGER.info("Mono<MemberBasicInfo> getMemberBasicInfoByEmail(String email), email = {}", email);
         return fromFuture(rpcMemberBasicService.getMemberBasicInfoByEmail(email)).subscribeOn(scheduler);
     }
 

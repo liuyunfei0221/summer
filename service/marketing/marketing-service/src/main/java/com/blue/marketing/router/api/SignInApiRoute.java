@@ -28,7 +28,7 @@ public class SignInApiRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("", accept(APPLICATION_JSON), signInApiHandler::signIn)
-                .GET("", signInApiHandler::getSignInRecord)
+                .GET("", signInApiHandler::selectRecords)
                 .build();
 
         return nest(pathPredicate, routerFunction);

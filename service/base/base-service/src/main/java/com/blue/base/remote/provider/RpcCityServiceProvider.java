@@ -7,7 +7,6 @@ import com.blue.base.service.inter.CityService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc city provider
@@ -40,8 +38,6 @@ import static reactor.util.Loggers.getLogger;
         })
 public class RpcCityServiceProvider implements RpcCityService {
 
-    private static final Logger LOGGER = getLogger(RpcCityServiceProvider.class);
-
     private final CityService cityService;
 
     private final Scheduler scheduler;
@@ -59,7 +55,6 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public Optional<CityInfo> getCityInfoOptById(Long id) {
-        LOGGER.info("Optional<CityInfo> getCityInfoOptById(Long id), id = {}", id);
         return cityService.getCityInfoOptById(id);
     }
 
@@ -71,7 +66,6 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CityInfo getCityInfoById(Long id) {
-        LOGGER.info("CityInfo getCityInfoById(Long id), id = {}", id);
         return cityService.getCityInfoById(id);
     }
 
@@ -83,7 +77,6 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CompletableFuture<CityInfo> getCityInfoMonoById(Long id) {
-        LOGGER.info("CompletableFuture<CityInfo> getCityInfoMonoById(Long id), id = {}", id);
         return just(id)
                 .subscribeOn(scheduler)
                 .flatMap(cityService::getCityInfoMonoById)
@@ -98,7 +91,6 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public List<CityInfo> selectCityInfoByStateId(Long stateId) {
-        LOGGER.info("List<CityInfo> selectCityInfoByStateId(Long stateId), countryId = {}", stateId);
         return cityService.selectCityInfoByStateId(stateId);
     }
 
@@ -110,7 +102,6 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CompletableFuture<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId) {
-        LOGGER.info("CompletableFuture<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId), countryId = {}", stateId);
         return just(stateId)
                 .subscribeOn(scheduler)
                 .flatMap(cityService::selectCityInfoMonoByStateId)
@@ -125,7 +116,6 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public Map<Long, CityInfo> selectCityInfoByIds(List<Long> ids) {
-        LOGGER.info("Map<Long, CityInfo> selectStateInfoByIds(List<Long> ids), ids = {}", ids);
         return cityService.selectCityInfoByIds(ids);
     }
 
@@ -137,7 +127,6 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CompletableFuture<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("CompletableFuture<Map<Long, CityInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
                 .subscribeOn(scheduler)
                 .flatMap(cityService::selectCityInfoMonoByIds)
@@ -152,7 +141,6 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CityRegion getCityRegionById(Long id) {
-        LOGGER.info("CityRegion getCityRegionById(Long id), id = {}", id);
         return cityService.getCityRegionById(id);
     }
 
@@ -164,7 +152,6 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CompletableFuture<CityRegion> getCityRegionMonoById(Long id) {
-        LOGGER.info("CompletableFuture<CityRegion> getCityRegionMonoById(Long id), id = {}", id);
         return just(id)
                 .subscribeOn(scheduler)
                 .flatMap(cityService::getCityRegionMonoById)
@@ -179,7 +166,6 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public Map<Long, CityRegion> selectCityRegionByIds(List<Long> ids) {
-        LOGGER.info("Map<Long, CityRegion> selectCityRegionByIds(List<Long> ids), ids = {}", ids);
         return cityService.selectCityRegionByIds(ids);
     }
 
@@ -191,7 +177,6 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CompletableFuture<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids) {
-        LOGGER.info("CompletableFuture<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
                 .subscribeOn(scheduler)
                 .flatMap(cityService::selectCityRegionMonoByIds)

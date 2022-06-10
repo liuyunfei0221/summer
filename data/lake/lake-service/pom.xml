@@ -61,6 +61,21 @@
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
+            <artifactId>base-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.blue</groupId>
+            <artifactId>media-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.blue</groupId>
+            <artifactId>member-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.blue</groupId>
             <artifactId>lake-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

@@ -28,7 +28,7 @@ public class EventRecordManagerRoute {
         RequestPredicate pathPredicate = path("/blue-marketing/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/eventRecords", accept(APPLICATION_JSON), eventRecordManagerHandler::listEventRecord)
+                .POST("/eventRecords", accept(APPLICATION_JSON), eventRecordManagerHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

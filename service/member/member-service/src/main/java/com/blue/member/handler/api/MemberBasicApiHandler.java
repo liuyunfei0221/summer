@@ -38,7 +38,7 @@ public final class MemberBasicApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> getMemberBasicInfo(ServerRequest serverRequest) {
+    public Mono<ServerResponse> getByAccess(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(ai ->
                         memberBasicService.getMemberBasicInfoMonoWithAssert(ai.getId())

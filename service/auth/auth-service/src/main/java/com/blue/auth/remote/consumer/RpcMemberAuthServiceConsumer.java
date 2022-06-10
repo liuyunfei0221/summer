@@ -6,11 +6,8 @@ import com.blue.member.api.model.MemberRegistryParam;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
-import reactor.util.Logger;
 
 import java.util.List;
-
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc member registry reference
@@ -20,8 +17,6 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam"})
 @Component
 public class RpcMemberAuthServiceConsumer {
-
-    private static final Logger LOGGER = getLogger(RpcMemberAuthServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-member"},
@@ -38,7 +33,6 @@ public class RpcMemberAuthServiceConsumer {
      * @return
      */
     public MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
-        LOGGER.info("MemberInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryParam = {}", memberRegistryParam);
         return rpcMemberAuthService.autoRegisterMemberBasic(memberRegistryParam);
     }
 
@@ -51,8 +45,6 @@ public class RpcMemberAuthServiceConsumer {
      * @return
      */
     public MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId) {
-        LOGGER.info("MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId), memberRegistryParam = {}, credentialTypes = {}, credential = {}, memberId = {}",
-                credentialTypes, credential, memberId);
         return rpcMemberAuthService.updateMemberCredentialAttr(credentialTypes, credential, memberId);
     }
 

@@ -18,7 +18,7 @@ public interface SignInService {
      * @param memberId
      * @return
      */
-    Mono<SignInReward> insertSignIn(Long memberId);
+    Mono<SignInReward> signIn(Long memberId);
 
     /**
      * query sign in records

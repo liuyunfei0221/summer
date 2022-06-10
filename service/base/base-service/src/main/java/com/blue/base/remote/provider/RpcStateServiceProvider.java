@@ -7,7 +7,6 @@ import com.blue.base.service.inter.StateService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc state provider
@@ -40,8 +38,6 @@ import static reactor.util.Loggers.getLogger;
         })
 public class RpcStateServiceProvider implements RpcStateService {
 
-    private static final Logger LOGGER = getLogger(RpcStateServiceProvider.class);
-
     private final StateService stateService;
 
     private final Scheduler scheduler;
@@ -59,7 +55,6 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public Optional<StateInfo> getStateInfoOptById(Long id) {
-        LOGGER.info("Optional<StateInfo> getStateInfoOptById(Long id), id = {}", id);
         return stateService.getStateInfoOptById(id);
     }
 
@@ -71,7 +66,6 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public StateInfo getStateInfoById(Long id) {
-        LOGGER.info("StateInfo getStateInfoById(Long id), id = {}", id);
         return stateService.getStateInfoById(id);
     }
 
@@ -83,7 +77,6 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public CompletableFuture<StateInfo> getStateInfoMonoById(Long id) {
-        LOGGER.info("CompletableFuture<StateInfo> getStateInfoMonoById(Long id), id = {}", id);
         return just(id)
                 .subscribeOn(scheduler)
                 .flatMap(stateService::getStateInfoMonoById)
@@ -98,7 +91,6 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public List<StateInfo> selectStateInfoByCountryId(Long countryId) {
-        LOGGER.info("List<StateInfo> selectStateInfoByCountryId(Long countryId), countryId = {}", countryId);
         return stateService.selectStateInfoByCountryId(countryId);
     }
 
@@ -110,7 +102,6 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public CompletableFuture<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId) {
-        LOGGER.info("CompletableFuture<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId), countryId = {}", countryId);
         return just(countryId)
                 .subscribeOn(scheduler)
                 .flatMap(stateService::selectStateInfoMonoByCountryId)
@@ -125,7 +116,6 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public Map<Long, StateInfo> selectStateInfoByIds(List<Long> ids) {
-        LOGGER.info("Map<Long, StateInfo> selectStateInfoByIds(List<Long> ids), ids = {}", ids);
         return stateService.selectStateInfoByIds(ids);
     }
 
@@ -137,7 +127,6 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public CompletableFuture<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("CompletableFuture<Map<Long,StateInfo>> selectStateInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
                 .subscribeOn(scheduler)
                 .flatMap(stateService::selectStateInfoMonoByIds)
@@ -152,7 +141,6 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public StateRegion getStateRegionById(Long id) {
-        LOGGER.info("StateRegion getStateRegionById(Long id), id = {}", id);
         return stateService.getStateRegionById(id);
     }
 
@@ -164,7 +152,6 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public CompletableFuture<StateRegion> getStateRegionMonoById(Long id) {
-        LOGGER.info("CompletableFuture<StateRegion> getStateRegionMonoById(Long id), id = {}", id);
         return just(id)
                 .subscribeOn(scheduler)
                 .flatMap(stateService::getStateRegionMonoById)
@@ -179,7 +166,6 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public Map<Long, StateRegion> selectStateRegionByIds(List<Long> ids) {
-        LOGGER.info("Map<Long, StateRegion> selectStateRegionByIds(List<Long> ids), ids = {}", ids);
         return stateService.selectStateRegionByIds(ids);
     }
 
@@ -191,7 +177,6 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public CompletableFuture<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids) {
-        LOGGER.info("CompletableFuture<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
                 .subscribeOn(scheduler)
                 .flatMap(stateService::selectStateRegionMonoByIds)

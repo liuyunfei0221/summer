@@ -3,7 +3,7 @@ package com.blue.media.service.impl;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
-import com.blue.media.api.model.AttachmentInfo;
+import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.DownloadHistoryInfo;
 import com.blue.media.constant.DownloadHistorySortAttribute;
 import com.blue.media.model.DownloadHistoryCondition;
@@ -217,9 +217,9 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
             String memberName = tuple3.getT3().getName();
 
             return isNotEmpty(downloadHistories) ?
-                    attachmentService.selectAttachmentMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
+                    attachmentService.selectAttachmentDetailInfoMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
                             .flatMap(attachments -> {
-                                Map<Long, String> idAndNameMapping = attachments.parallelStream().collect(toMap(AttachmentInfo::getId, AttachmentInfo::getName, (a, b) -> a));
+                                Map<Long, String> idAndNameMapping = attachments.parallelStream().collect(toMap(AttachmentDetailInfo::getId, AttachmentDetailInfo::getName, (a, b) -> a));
                                 return just(downloadHistories.stream().map(dh ->
                                                 downloadHistoryToDownloadHistoryInfo(dh, ofNullable(idAndNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_DATA.value), memberName))
                                         .collect(toList()));
@@ -285,8 +285,8 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
             List<DownloadHistory> downloadHistories = tuple2.getT1();
 
             return isNotEmpty(downloadHistories) ?
-                    zip(attachmentService.selectAttachmentMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
-                                    .map(attachments -> attachments.parallelStream().collect(toMap(AttachmentInfo::getId, AttachmentInfo::getName, (a, b) -> a)))
+                    zip(attachmentService.selectAttachmentDetailInfoMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
+                                    .map(attachments -> attachments.parallelStream().collect(toMap(AttachmentDetailInfo::getId, AttachmentDetailInfo::getName, (a, b) -> a)))
                             ,
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getCreator).collect(toList()))
                                     .map(memberBasicInfos -> memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a)))

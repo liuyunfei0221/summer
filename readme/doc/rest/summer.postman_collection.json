@@ -2467,7 +2467,7 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"memberId\":null,\r\n        \"memberNameLike\":\"\",\r\n        \"gender\":null,\r\n        \"phoneLike\":\"\",\r\n        \"emailLike\":null,\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"areaId\":null,\r\n        \"detailLike\":\"柏林\",\r\n        \"referenceLike\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-member/manager/address",
+							"raw": "localhost:10000/blue-member/manager/addresses",
 							"host": [
 								"localhost"
 							],
@@ -2475,7 +2475,7 @@
 							"path": [
 								"blue-member",
 								"manager",
-								"address"
+								"addresses"
 							]
 						}
 					},

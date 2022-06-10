@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 import static com.blue.auth.common.AccessEncoder.encryptAccess;
 import static com.blue.auth.converter.AuthModelConverters.CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER;
 import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.base.constant.common.BlueNumericalValue.ACS_LEN_MAX;
 import static com.blue.base.constant.common.BlueNumericalValue.ACS_LEN_MIN;
@@ -297,7 +298,7 @@ public class CredentialServiceImpl implements CredentialService {
         if (isNotEmpty(credentialMapper.selectByCredentials(singletonList(credential))))
             throw new BlueException(DATA_ALREADY_EXIST);
 
-        credentialMapper.updateCredentialByIds(credential, ids);
+        credentialMapper.updateCredentialByIds(credential, TIME_STAMP_GETTER.get(), ids);
         LOGGER.info("update batch credential = {}", credential);
     }
 
@@ -338,7 +339,7 @@ public class CredentialServiceImpl implements CredentialService {
         if (isEmpty(credentialTypes))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "credentialTypes is empty");
 
-        int updates = credentialMapper.updateAccessByMemberAndTypes(memberId, credentialTypes, encryptAccess(access), VALID.status);
+        int updates = credentialMapper.updateAccessByMemberAndTypes(encryptAccess(access), VALID.status, TIME_STAMP_GETTER.get(), memberId, credentialTypes);
 
         LOGGER.info("updates = {}", updates);
 

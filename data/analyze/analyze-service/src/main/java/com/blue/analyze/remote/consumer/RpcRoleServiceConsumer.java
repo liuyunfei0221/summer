@@ -7,23 +7,19 @@ import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import java.util.List;
 
 import static reactor.core.publisher.Mono.fromFuture;
-import static reactor.util.Loggers.getLogger;
 
 /**
- * rpc auth reference
+ * rpc role reference
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "unused"})
+@SuppressWarnings({"JavaDoc", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
 @Component
 public class RpcRoleServiceConsumer {
-
-    private static final Logger LOGGER = getLogger(RpcRoleServiceConsumer.class);
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-auth"},
@@ -44,7 +40,6 @@ public class RpcRoleServiceConsumer {
      * @return
      */
     public Mono<List<RoleInfo>> selectRoleInfo() {
-        LOGGER.info("Mono<List<RoleInfo>> selectRoleInfo()");
         return fromFuture(rpcRoleService.selectRoleInfo()).subscribeOn(scheduler);
     }
 

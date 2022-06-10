@@ -7,7 +7,6 @@ import com.blue.base.service.inter.AreaService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc city provider
@@ -40,8 +38,6 @@ import static reactor.util.Loggers.getLogger;
         })
 public class RpcAreaServiceProvider implements RpcAreaService {
 
-    private static final Logger LOGGER = getLogger(RpcAreaServiceProvider.class);
-
     private final AreaService areaService;
 
     private final Scheduler scheduler;
@@ -59,7 +55,6 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public Optional<AreaInfo> getAreaInfoOptById(Long id) {
-        LOGGER.info("Optional<AreaInfo> getAreaInfoOptById(Long id), id = {}", id);
         return areaService.getAreaInfoOptById(id);
     }
 
@@ -71,7 +66,6 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public AreaInfo getAreaInfoById(Long id) {
-        LOGGER.info("AreaInfo getAreaInfoById(Long id), id = {}", id);
         return areaService.getAreaInfoById(id);
     }
 
@@ -83,7 +77,6 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public CompletableFuture<AreaInfo> getAreaInfoMonoById(Long id) {
-        LOGGER.info("CompletableFuture<AreaInfo> getAreaInfoMonoById(Long id), id = {}", id);
         return just(id)
                 .subscribeOn(scheduler)
                 .flatMap(areaService::getAreaInfoMonoById)
@@ -98,7 +91,6 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public List<AreaInfo> selectAreaInfoByCityId(Long cityId) {
-        LOGGER.info("List<AreaInfo> selectAreaInfoByCityId(Long cityId), countryId = {}", cityId);
         return areaService.selectAreaInfoByCityId(cityId);
     }
 
@@ -110,7 +102,6 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public CompletableFuture<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId) {
-        LOGGER.info("CompletableFuture<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId), countryId = {}", cityId);
         return just(cityId)
                 .subscribeOn(scheduler)
                 .flatMap(areaService::selectAreaInfoMonoByCityId)
@@ -125,7 +116,6 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids) {
-        LOGGER.info("Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids), ids = {}", ids);
         return areaService.selectAreaInfoByIds(ids);
     }
 
@@ -137,7 +127,6 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
                 .subscribeOn(scheduler)
                 .flatMap(areaService::selectAreaInfoMonoByIds)
@@ -152,7 +141,6 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public AreaRegion getAreaRegionById(Long id) {
-        LOGGER.info("AreaRegion getAreaRegionById(Long id), id = {}", id);
         return areaService.getAreaRegionById(id);
     }
 
@@ -164,7 +152,6 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public CompletableFuture<AreaRegion> getAreaRegionMonoById(Long id) {
-        LOGGER.info("CompletableFuture<AreaRegion> getAreaRegionMonoById(Long id), id = {}", id);
         return just(id)
                 .subscribeOn(scheduler)
                 .flatMap(areaService::getAreaRegionMonoById)
@@ -179,7 +166,6 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public Map<Long, AreaRegion> selectAreaRegionByIds(List<Long> ids) {
-        LOGGER.info("Map<Long, AreaRegion> selectAreaRegionByIds(List<Long> ids), ids = {}", ids);
         return areaService.selectAreaRegionByIds(ids);
     }
 
@@ -191,7 +177,6 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids) {
-        LOGGER.info("CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids), ids = {}", ids);
         return just(ids)
                 .subscribeOn(scheduler)
                 .flatMap(areaService::selectAreaRegionMonoByIds)

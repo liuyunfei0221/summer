@@ -44,7 +44,7 @@ public final class AttachmentApiHandler {
         return zip(serverRequest.bodyToMono(PageModelRequest.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> attachmentService.selectAttachmentInfoByPageAndMemberId(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> attachmentService.selectAttachmentDetailInfoByPageAndMemberId(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));
