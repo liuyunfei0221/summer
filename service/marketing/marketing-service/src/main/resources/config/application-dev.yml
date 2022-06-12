@@ -43,10 +43,10 @@ eureka:
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://172.16.203.216:3306/marketing_0
+    - url: jdbc:mysql://101.43.192.155:3306/marketing_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
-      password: 1024
+      password: LiuZhiyi20200805
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 30000
       maxLifetime: 1800000
@@ -57,10 +57,10 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://172.16.203.216:3306/marketing_1
+    - url: jdbc:mysql://43.138.44.171:3306/marketing_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
-      password: 1024
+      password: LiuZhiyi20200805
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 30000
       maxLifetime: 1800000
@@ -89,10 +89,10 @@ data:
       index: 1
   broadcastTables: [ ]
   singleDatabasesWithTables:
-    - url: jdbc:mysql://172.16.203.216:3306/marketing
+    - url: jdbc:mysql://43.138.111.53:3306/marketing
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
-      password: 1024
+      password: LiuZhiyi20200805
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 30000
       maxLifetime: 1800000
@@ -157,7 +157,7 @@ identity:
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  password: sfakjfiju99jjf87LJSDDU8
+  password: LiuZhiyi20200805
   maxRedirects: 4
   host: 172.16.203.216
   port: 6379
@@ -200,7 +200,7 @@ scheduler:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  password: sfakjfiju99jjf87LJSDDU8
+  password: LiuZhiyi20200805
   host: 172.16.203.216
   port: 6379
   scanInterval: 8000
@@ -236,7 +236,7 @@ blocking:
 producers:
   configs:
     marketing:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 43.138.111.53:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -292,7 +292,7 @@ producers:
 consumers:
   configs:
     marketing:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 43.138.111.53:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -365,7 +365,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     requestEvent:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 43.138.111.53:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -445,7 +445,7 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://172.16.203.216:2181
+    address: zookeeper://43.138.111.53:2181
     group: summer
     file: D:/locallogs/dubbo/marketing/registry.properties
     check: false

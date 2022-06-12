@@ -435,6 +435,8 @@ public final class BlueRedisGenerator {
                 .ifPresent(redisStandaloneConfiguration::setHostName);
         ofNullable(redisConf.getPort())
                 .ifPresent(redisStandaloneConfiguration::setPort);
+        ofNullable(redisConf.getPassword())
+                .ifPresent(redisStandaloneConfiguration::setPassword);
 
         return redisStandaloneConfiguration;
     }

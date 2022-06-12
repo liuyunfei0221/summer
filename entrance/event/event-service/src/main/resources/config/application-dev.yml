@@ -73,7 +73,7 @@ scheduler:
 cache:
   serverMode: SINGLE
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
-  password: sfakjfiju99jjf87LJSDDU8
+  password: LiuZhiyi20200805
   maxRedirects: 4
   host: 172.16.203.216
   port: 6379
@@ -121,7 +121,7 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://172.16.203.216:2181
+    address: zookeeper://43.138.111.53:2181
     group: summer
     file: D:/locallogs/dubbo/event/registry.properties
     check: false
@@ -153,7 +153,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 43.138.111.53:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -209,7 +209,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 43.138.111.53:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

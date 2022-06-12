@@ -1,5 +1,12 @@
 -- -------------------------------- The script used when storeMode is 'db' --------------------------------
 -- the table to store GlobalSession data
+
+CREATE
+DATABASE seata CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+USE
+seata;
+
 CREATE TABLE IF NOT EXISTS `global_table`
 (
     `xid`                       VARCHAR(128) NOT NULL,
