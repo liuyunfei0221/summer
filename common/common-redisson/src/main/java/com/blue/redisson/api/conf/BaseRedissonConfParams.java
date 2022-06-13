@@ -18,8 +18,6 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
 
     //<editor-fold desc="cluster conf">
     protected transient List<String> nodes;
-
-    protected transient String password;
     //</editor-fold>
 
     //<editor-fold desc="standalone conf">
@@ -27,6 +25,8 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
 
     protected transient Integer port;
     //</editor-fold>
+
+    protected transient String password;
 
     protected Integer scanInterval;
 
@@ -96,11 +96,6 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
     }
 
     @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public String getHost() {
         return host;
     }
@@ -108,6 +103,11 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
     @Override
     public Integer getPort() {
         return port;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -253,16 +253,16 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
         this.nodes = nodes;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public void setHost(String host) {
         this.host = host;
     }
 
     public void setPort(Integer port) {
         this.port = port;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setScanInterval(Integer scanInterval) {
@@ -378,9 +378,9 @@ public abstract class BaseRedissonConfParams implements RedissonConf {
         return "BaseRedissonConfParams{" +
                 "serverMode=" + serverMode +
                 ", nodes=" + nodes +
-                ", password='" + password + '\'' +
                 ", host='" + host + '\'' +
                 ", port=" + port +
+                ", password='" + ":)" + '\'' +
                 ", scanInterval=" + scanInterval +
                 ", checkSlotsCoverage=" + checkSlotsCoverage +
                 ", tcpNoDelay=" + tcpNoDelay +

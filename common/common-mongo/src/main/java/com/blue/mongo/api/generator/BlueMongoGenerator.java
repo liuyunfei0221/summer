@@ -44,7 +44,7 @@ public final class BlueMongoGenerator {
         MongoClientSettings.Builder builder = MongoClientSettings.builder();
 
         if (ofNullable(mongoConf.getAuth()).orElse(false))
-            builder.credential(MongoCredential.createCredential(mongoConf.getUserName(), mongoConf.getDatabase(), mongoConf.getPassword().toCharArray()));
+            builder.credential(MongoCredential.createCredential(mongoConf.getUserName(), mongoConf.getAuthBase(), mongoConf.getPassword().toCharArray()));
 
         builder.applyToClusterSettings(b -> {
             b.hosts(mongoConf.getAddressAttrs().stream().map(aa -> new ServerAddress(aa.getAddress(), aa.getPort())).collect(toList()));

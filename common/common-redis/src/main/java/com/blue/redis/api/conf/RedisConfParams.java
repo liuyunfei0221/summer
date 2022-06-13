@@ -16,8 +16,6 @@ public class RedisConfParams implements RedisConf {
 
     //<editor-fold desc="cluster conf">
     protected transient List<String> nodes;
-
-    protected transient String password;
     //</editor-fold>
 
     //<editor-fold desc="standalone conf">
@@ -25,6 +23,8 @@ public class RedisConfParams implements RedisConf {
 
     protected transient Integer port;
     //</editor-fold>
+
+    protected transient String password;
 
     protected Integer maxRedirects;
 
@@ -84,11 +84,6 @@ public class RedisConfParams implements RedisConf {
     }
 
     @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public String getHost() {
         return host;
     }
@@ -96,6 +91,11 @@ public class RedisConfParams implements RedisConf {
     @Override
     public Integer getPort() {
         return port;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -216,16 +216,16 @@ public class RedisConfParams implements RedisConf {
         this.nodes = nodes;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public void setHost(String host) {
         this.host = host;
     }
 
     public void setPort(Integer port) {
         this.port = port;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setMaxRedirects(Integer maxRedirects) {
@@ -321,9 +321,9 @@ public class RedisConfParams implements RedisConf {
         return "RedisConfParams{" +
                 "serverMode=" + serverMode +
                 ", nodes=" + nodes +
-                ", password='" + password + '\'' +
                 ", host='" + host + '\'' +
                 ", port=" + port +
+                ", password='" + password + '\'' +
                 ", maxRedirects=" + maxRedirects +
                 ", minIdle=" + minIdle +
                 ", maxIdle=" + maxIdle +

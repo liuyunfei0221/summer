@@ -20,8 +20,6 @@ public interface RedissonConf {
 
     //<editor-fold desc="cluster conf">
     List<String> getNodes();
-
-    String getPassword();
     //</editor-fold>
 
     //<editor-fold desc="standalone conf">
@@ -29,6 +27,8 @@ public interface RedissonConf {
 
     Integer getPort();
     //</editor-fold>
+
+    String getPassword();
 
     Integer getScanInterval();
 

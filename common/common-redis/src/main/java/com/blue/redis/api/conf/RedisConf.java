@@ -17,8 +17,6 @@ public interface RedisConf {
 
     //<editor-fold desc="cluster conf">
     List<String> getNodes();
-
-    String getPassword();
     //</editor-fold>
 
     //<editor-fold desc="standalone conf">
@@ -26,6 +24,8 @@ public interface RedisConf {
 
     Integer getPort();
     //</editor-fold>
+
+    String getPassword();
 
     Integer getMaxRedirects();
 

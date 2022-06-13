@@ -187,6 +187,8 @@ public final class BlueRedissonGenerator {
                 .ifPresent(serverConfig::setDnsMonitoringInterval);
         ofNullable(redissonConf.getPingConnectionInterval())
                 .ifPresent(serverConfig::setPingConnectionInterval);
+        ofNullable(redissonConf.getPassword())
+                .ifPresent(serverConfig::setPassword);
     }
 
     /**

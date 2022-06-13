@@ -24,6 +24,8 @@ public interface MongoConf {
 
     Boolean getAuth();
 
+    String getAuthBase();
+
     String getUserName();
 
     String getPassword();

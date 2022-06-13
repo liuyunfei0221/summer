@@ -158,7 +158,8 @@ mongo:
   addressAttrs:
     - address: 172.16.203.216
       port: 27017
-  auth: false
+  auth: true
+  authBase: admin
   userName:
   password:
   database: message

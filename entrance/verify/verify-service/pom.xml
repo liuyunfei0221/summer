@@ -31,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
-            <artifactId>common-database</artifactId>
+            <artifactId>common-identity</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

@@ -163,11 +163,12 @@ identity:
 
 mongo:
   addressAttrs:
-    - address: 172.16.203.216
+    - address: 43.138.44.171
       port: 27017
-  auth: false
-  userName:
-  password:
+  auth: true
+  authBase: admin
+  userName: blue
+  password: LiuZhiyi20200805
   database: auth
   retryReads: true
   retryWrites: false
@@ -215,8 +216,8 @@ seata:
       saga-retry-persist-mode-update: false
       saga-compensate-persist-mode-update: false
       tcc-action-interceptor-order: -2147482648
-      branch-execution-timeout-XA: 60000
-      connection-two-phase-hold-timeout-XA: 60000
+      branch-execution-timeout-XA: 120000
+      connection-two-phase-hold-timeout-XA: 120000
       sql-parser-type: druid
       lock:
         retry-interval: 10
@@ -225,7 +226,7 @@ seata:
     tm:
       commit-retry-count: 5
       rollback-retry-count: 5
-      default-global-transaction-timeout: 60000
+      default-global-transaction-timeout: 120000
       degrade-check: false
       degrade-check-allow-times: 10
       degrade-check-period: 2000
@@ -273,19 +274,19 @@ seata:
     enable-tm-client-batch-send-request: false
     enable-rm-client-batch-send-request: false
     enable-tc-server-batch-send-response: false
-    rpc-rm-request-timeout: 60000
-    rpc-tm-request-timeout: 60000
-    rpc-tc-request-timeout: 60000
+    rpc-rm-request-timeout: 120000
+    rpc-tm-request-timeout: 120000
+    rpc-tc-request-timeout: 120000
   config:
     custom:
       name: ""
     type: zk
     zk:
-      server-addr: 172.16.203.216:2181
-      session-timeout: 60000
-      connect-timeout: 60000
-      username: ""
-      password: ""
+      server-addr: 43.138.44.171:2181
+      session-timeout: 120000
+      connect-timeout: 120000
+      username: "blue"
+      password: "LiuZhiyi20200805"
       nodePath: /seata/seata.properties
   registry:
     custom:
@@ -293,20 +294,20 @@ seata:
     type: zk
     zk:
       cluster: default
-      server-addr: 172.16.203.216:2181
-      session-timeout: 60000
-      connect-timeout: 60000
-      username: ""
-      password: ""
+      server-addr: 43.138.44.171:2181
+      session-timeout: 120000
+      connect-timeout: 120000
+      username: "blue"
+      password: "LiuZhiyi20200805"
 
 
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  password: LiuZhiyi20200805
-  maxRedirects: 4
   host: 43.138.44.171
   port: 6379
+  password: LiuZhiyi20200805
+  maxRedirects: 4
   minIdle: 4
   maxIdle: 64
   maxTotal: 128
@@ -879,14 +880,20 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://43.138.111.53:2181
+    address: zookeeper://43.138.44.171
+    port: 2181
+    username: blue
+    password: LiuZhiyi20200805
     group: summer
     file: D:/locallogs/dubbo/auth/registry.properties
     check: false
     timeout: 60000
     simplified: true
   metadata-report:
-    address: zookeeper://43.138.111.53:2181
+    address: zookeeper://43.138.44.171
+    port: 2181
+    username: blue
+    password: LiuZhiyi20200805
     timeout: 60000
     default: true
     check: false
@@ -917,10 +924,10 @@ dubbo:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  password: LiuZhiyi20200805
-  host: 172.16.203.216
+  host: 101.43.192.155
   port: 6379
-  scanInterval: 8000
+  password: LiuZhiyi20200805
+  scanInterval: 120000
   checkSlotsCoverage: false
   tcpNoDelay: true
   masterConnectionMinimumIdleSize: 2
@@ -935,7 +942,7 @@ redisson:
   connectTimeout: 60000
   idleConnectionTimeout: 32000
   retryAttempts: 2
-  retryInterval: 4000
+  retryInterval: 8000
   keepAlive: true
   dnsMonitoringInterval: -1
   pingConnectionInterval: 300000
@@ -943,11 +950,11 @@ redisson:
   executorMaximumPoolSize: 8
   executorkeepAliveSeconds: 64
   executorBlockingQueueCapacity: 128
-  maxTryLockWaitingMillis: 10000
+  maxTryLockWaitingMillis: 100000
 
 
 encode:
   salt: I'm a salt :)
 
 
-debug: false
+debug: true

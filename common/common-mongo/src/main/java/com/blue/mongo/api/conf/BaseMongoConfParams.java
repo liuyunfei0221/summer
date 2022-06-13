@@ -18,6 +18,8 @@ public abstract class BaseMongoConfParams implements MongoConf {
 
     protected transient Boolean auth;
 
+    protected transient String authBase;
+
     protected transient String userName;
 
     protected transient String password;
@@ -79,6 +81,11 @@ public abstract class BaseMongoConfParams implements MongoConf {
     @Override
     public Boolean getAuth() {
         return auth;
+    }
+
+    @Override
+    public String getAuthBase() {
+        return authBase;
     }
 
     @Override
@@ -214,6 +221,10 @@ public abstract class BaseMongoConfParams implements MongoConf {
         this.auth = auth;
     }
 
+    public void setAuthBase(String authBase) {
+        this.authBase = authBase;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -319,6 +330,7 @@ public abstract class BaseMongoConfParams implements MongoConf {
         return "BaseMongoConfParams{" +
                 "addressAttrs=" + addressAttrs +
                 ", auth=" + auth +
+                ", authBase=" + authBase +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", database='" + database + '\'' +
