@@ -184,7 +184,6 @@ ldfiles:
   descPath: E:\\tempFile\\disc
 
 
-
 cosfiles:
   handlerType: cos
   attrName: attachments
@@ -195,7 +194,6 @@ cosfiles:
   singleFileSizeThreshold: 4294967296000
   currentSizeThreshold: 32
   descPath: E:\\tempFile\\disc
-
 
 
 encrypt:
