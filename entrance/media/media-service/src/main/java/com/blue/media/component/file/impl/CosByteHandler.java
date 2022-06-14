@@ -23,7 +23,7 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.common.Symbol.SCHEME_SEPARATOR;
-import static com.blue.base.constant.media.ByteHandlerType.LOCAL_DISK;
+import static com.blue.base.constant.media.ByteHandlerType.COS;
 import static com.blue.media.common.MediaCommonFunctions.BUFFER_SIZE;
 import static com.blue.media.common.MediaCommonFunctions.DATA_BUFFER_FACTORY;
 import static java.lang.System.currentTimeMillis;
@@ -44,11 +44,11 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
-public final class LocalDiskByteHandler implements ByteHandler {
+public final class CosByteHandler implements ByteHandler {
 
-    private static final Logger LOGGER = getLogger(LocalDiskByteHandler.class);
+    private static final Logger LOGGER = getLogger(CosByteHandler.class);
 
-    public LocalDiskByteHandler(LocalDiskFileDeploy localDiskFileDeploy) {
+    public CosByteHandler(LocalDiskFileDeploy localDiskFileDeploy) {
         validTypes = new HashSet<>(localDiskFileDeploy.getValidTypes());
         invalidPres = new HashSet<>(localDiskFileDeploy.getInvalidPres());
         nameLenThreshold = localDiskFileDeploy.getNameLenThreshold();
@@ -215,7 +215,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
      */
     @Override
     public ByteHandlerType handlerType() {
-        return LOCAL_DISK;
+        return COS;
     }
 
 }

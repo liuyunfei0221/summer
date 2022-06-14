@@ -24,13 +24,11 @@ public class WebConfig {
 
     @Bean
     WebServerFactoryCustomizer<UndertowServletWebServerFactory> publicWebServerFactoryCustomizer() {
-
         return factory -> factory.addDeploymentInfoCustomizers(deploymentInfo -> {
             WebSocketDeploymentInfo webSocketDeploymentInfo = new WebSocketDeploymentInfo();
             webSocketDeploymentInfo.setBuffers(new DefaultByteBufferPool(webSocketDeploy.getDirect(), webSocketDeploy.getBufferSize()));
             deploymentInfo.addServletContextAttribute("io.undertow.websockets.jsr.WebSocketDeploymentInfo", webSocketDeploymentInfo);
         });
-
     }
 
 }

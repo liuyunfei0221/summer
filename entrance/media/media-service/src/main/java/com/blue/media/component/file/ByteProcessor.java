@@ -4,7 +4,7 @@ import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.FileUploadResult;
 import com.blue.media.component.file.inter.ByteHandler;
-import com.blue.media.config.deploy.FileDeploy;
+import com.blue.media.config.deploy.LocalDiskFileDeploy;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -16,7 +16,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.nio.file.Path;
 import java.util.Map;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
@@ -47,16 +46,16 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
         if (isEmpty(beansOfType))
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "byteHandlers is empty");
 
-        FileDeploy fileDeploy;
+        LocalDiskFileDeploy localDiskFileDeploy;
         try {
-            fileDeploy = applicationContext.getBean(FileDeploy.class);
-            LOGGER.info("ByteProcessor onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent), fileDeploy = {}", fileDeploy);
+            localDiskFileDeploy = applicationContext.getBean(LocalDiskFileDeploy.class);
+            LOGGER.info("ByteProcessor onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent), fileDeploy = {}", localDiskFileDeploy);
         } catch (BeansException e) {
             LOGGER.error("applicationContext.getBean(FileDeploy.class), e = {}", e);
             throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "applicationContext.getBean(FileDeploy.class) failed");
         }
 
-        String handlerType = ofNullable(fileDeploy.getHandlerType())
+        String handlerType = ofNullable(localDiskFileDeploy.getHandlerType())
                 .filter(BlueChecker::isNotBlank)
                 .orElseThrow(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "handlerType is blank"));
 
@@ -69,20 +68,22 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
      * write
      *
      * @param part
+     * @param memberId
      * @return
      */
-    public Mono<FileUploadResult> write(Part part) {
-        return byteHandler.write(part);
+    public Mono<FileUploadResult> write(Part part, Long memberId) {
+        return byteHandler.write(part, memberId);
     }
 
     /**
      * read
      *
-     * @param path
+     * @param link
+     * @param memberId
      * @return
      */
-    public Flux<DataBuffer> read(Path path) {
-        return byteHandler.read(path);
+    public Flux<DataBuffer> read(String link, Long memberId) {
+        return byteHandler.read(link, memberId);
     }
 
 }

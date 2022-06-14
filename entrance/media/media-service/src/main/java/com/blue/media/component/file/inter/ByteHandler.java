@@ -7,8 +7,6 @@ import org.springframework.http.codec.multipart.Part;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.nio.file.Path;
-
 /**
  * byte operate processor
  *
@@ -21,17 +19,19 @@ public interface ByteHandler {
      * write
      *
      * @param part
+     * @param memberId
      * @return
      */
-    Mono<FileUploadResult> write(Part part);
+    Mono<FileUploadResult> write(Part part, Long memberId);
 
     /**
      * read
      *
-     * @param path
+     * @param link
+     * @param memberId
      * @return
      */
-    Flux<DataBuffer> read(Path path);
+    Flux<DataBuffer> read(String link, Long memberId);
 
     /**
      * byte handler type

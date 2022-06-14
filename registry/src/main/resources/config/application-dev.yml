@@ -24,7 +24,19 @@ server:
       worker: 2
 
 
+spring:
+  security:
+    user:
+      name: blue
+      password: LiuZhiyi20200805
+
+
 eureka:
+  server:
+    enable-self-preservation: true
+    expected-client-renewal-interval-seconds: 10
+    eviction-interval-timer-in-ms: 30000
+    response-cache-update-interval-ms: 30000
   instance:
     hostname: localhost
     lease-expiration-duration-in-seconds: 300000
@@ -33,12 +45,7 @@ eureka:
     fetch-registry: false
     service-url:
       defaultZone:
-        http://${eureka.instance.hostname}:${server.port}/eureka/
-  server:
-    enable-self-preservation: true
-    expected-client-renewal-interval-seconds: 10
-    eviction-interval-timer-in-ms: 30000
-    response-cache-update-interval-ms: 30000
+        http://${spring.security.user.name}:${spring.security.user.password}@${eureka.instance.hostname}:${server.port}/eureka/
 
 
 websocket:

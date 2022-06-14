@@ -11,7 +11,12 @@ public enum ByteHandlerType {
     /**
      * local disk
      */
-    LOCAL_DISK("ld");
+    LOCAL_DISK("ld"),
+
+    /**
+     * tencent cos
+     */
+    COS("cos");
 
     public final String identity;
 

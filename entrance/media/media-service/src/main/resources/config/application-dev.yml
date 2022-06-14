@@ -172,7 +172,7 @@ error:
   errorReportWithRequestBodyContentTypes: [ application/json,multipart/form-data ]
 
 
-files:
+ldfiles:
   handlerType: ld
   attrName: attachments
   validTypes: [ .JPG,.JPEG,.PNG,.RMVB,.MKV,.MP4,.ZIP ]
@@ -182,6 +182,20 @@ files:
   singleFileSizeThreshold: 4294967296000
   currentSizeThreshold: 32
   descPath: E:\\tempFile\\disc
+
+
+
+cosfiles:
+  handlerType: cos
+  attrName: attachments
+  validTypes: [ .JPG,.JPEG,.PNG,.RMVB,.MKV,.MP4,.ZIP ]
+  invalidPres: [ .,/,^ ]
+  nameLenThreshold: 256
+  allFileSizeThreshold: 4294967296000
+  singleFileSizeThreshold: 4294967296000
+  currentSizeThreshold: 32
+  descPath: E:\\tempFile\\disc
+
 
 
 encrypt:

@@ -6,13 +6,13 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * media deploy
+ * local disk media deploy
  *
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "files")
-public class FileDeploy {
+@ConfigurationProperties(prefix = "ldfiles")
+public class LocalDiskFileDeploy {
 
     private String handlerType;
 
@@ -32,7 +32,7 @@ public class FileDeploy {
 
     private String descPath;
 
-    public FileDeploy() {
+    public LocalDiskFileDeploy() {
     }
 
     public String getHandlerType() {
