@@ -1,6 +1,6 @@
 server:
   address: 127.0.0.1
-  port: 53500
+  port: 53000
   netty:
     connection-timeout: 6s
     h2c-max-content-length: 0B
@@ -37,7 +37,7 @@ eureka:
     hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@localhost:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
     registry-fetch-interval-seconds: 300
 
 

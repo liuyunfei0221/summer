@@ -39,7 +39,7 @@
         <zkclient.version>0.11</zkclient.version>
         <seata-spring.version>1.4.2</seata-spring.version>
         <spring-mybatis.version>2.2.2</spring-mybatis.version>
-        <groovy.version>3.0.10</groovy.version>
+        <groovy.version>3.0.11</groovy.version>
         <apache.curator.version>5.2.1</apache.curator.version>
         <commons-pool2.version>2.11.1</commons-pool2.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
@@ -54,7 +54,7 @@
         <pulsar.version>2.10.0</pulsar.version>
         <affinity.version>3.21ea83</affinity.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <apollo.version>2.0.0</apollo.version>
+        <apollo.version>2.0.1</apollo.version>
         <kaptcha.version>2.3.2</kaptcha.version>
         <jakarta.version>2.0.1</jakarta.version>
     </properties>

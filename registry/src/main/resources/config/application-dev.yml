@@ -14,7 +14,7 @@ server:
     always-set-keep-alive: true
     no-request-timeout: 256s
     preserve-path-on-forward: false
-    accesslog:
+    access-log:
       enabled: false
       pattern: common
       prefix: access_log

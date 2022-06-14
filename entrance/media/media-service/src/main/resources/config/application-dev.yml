@@ -1,5 +1,5 @@
 server:
-  # address: 127.0.0.1
+  address: 127.0.0.1
   port: 13000
   netty:
     connection-timeout: 16s
@@ -37,7 +37,7 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
   client:
     service-url:
-      defaultZone: http://localhost:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
     registry-fetch-interval-seconds: 16
 
 
