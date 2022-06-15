@@ -26,6 +26,10 @@ public class ProducerConfParams implements ProducerConf {
 
     protected Boolean tlsHostnameVerificationEnable;
 
+    protected Boolean enableJwtAuth;
+
+    protected String jwt;
+
     protected transient String listenerName;
 
     protected Integer operationTimeoutMillis;
@@ -118,7 +122,7 @@ public class ProducerConfParams implements ProducerConf {
     }
 
     public ProducerConfParams(List<String> services, Boolean enableTls, String tlsTrustCertsFilePath, String tlsCertFilePath, String tlsKeyFilePath,
-                              Boolean tlsAllowInsecureConnection, Boolean tlsHostnameVerificationEnable, String listenerName, Integer operationTimeoutMillis, Long statsIntervalMillis,
+                              Boolean tlsAllowInsecureConnection, Boolean tlsHostnameVerificationEnable, Boolean enableJwtAuth, String jwt, String listenerName, Integer operationTimeoutMillis, Long statsIntervalMillis,
                               Integer ioThreads, Integer listenerThreads, Integer connectionsPerBroker, Boolean useTcpNoDelay, Integer memoryLimitKiloBytes, Integer maxConcurrentLookupRequests,
                               Integer maxLookupRequest, Integer maxLookupRedirects, Integer maxNumberOfRejectedRequestPerConnection, Integer keepAliveIntervalMillis, Integer connectionTimeoutMillis,
                               Long startingBackoffIntervalMillis, Long maxBackoffIntervalMillis, Boolean enableBusyWait, String clockZoneId, Boolean enableTransaction, Boolean enableProxy,
@@ -133,6 +137,8 @@ public class ProducerConfParams implements ProducerConf {
         this.tlsKeyFilePath = tlsKeyFilePath;
         this.tlsAllowInsecureConnection = tlsAllowInsecureConnection;
         this.tlsHostnameVerificationEnable = tlsHostnameVerificationEnable;
+        this.enableJwtAuth = enableJwtAuth;
+        this.jwt = jwt;
         this.listenerName = listenerName;
         this.operationTimeoutMillis = operationTimeoutMillis;
         this.statsIntervalMillis = statsIntervalMillis;
@@ -212,6 +218,16 @@ public class ProducerConfParams implements ProducerConf {
     @Override
     public Boolean getTlsHostnameVerificationEnable() {
         return tlsHostnameVerificationEnable;
+    }
+
+    @Override
+    public Boolean getEnableJwtAuth() {
+        return enableJwtAuth;
+    }
+
+    @Override
+    public String getJwt() {
+        return jwt;
     }
 
     @Override
@@ -462,6 +478,14 @@ public class ProducerConfParams implements ProducerConf {
         this.tlsHostnameVerificationEnable = tlsHostnameVerificationEnable;
     }
 
+    public void setEnableJwtAuth(Boolean enableJwtAuth) {
+        this.enableJwtAuth = enableJwtAuth;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
+    }
+
     public void setListenerName(String listenerName) {
         this.listenerName = listenerName;
     }
@@ -648,6 +672,8 @@ public class ProducerConfParams implements ProducerConf {
                 ", tlsKeyFilePath='" + tlsKeyFilePath + '\'' +
                 ", tlsAllowInsecureConnection=" + tlsAllowInsecureConnection +
                 ", tlsHostnameVerificationEnable=" + tlsHostnameVerificationEnable +
+                ", enableJwtAuth=" + enableJwtAuth +
+                ", jwt='" + jwt + '\'' +
                 ", listenerName='" + listenerName + '\'' +
                 ", operationTimeoutMillis=" + operationTimeoutMillis +
                 ", statsIntervalMillis=" + statsIntervalMillis +

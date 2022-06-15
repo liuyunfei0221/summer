@@ -39,6 +39,10 @@ public class ConsumerConfParams implements ConsumerConf {
 
     protected Boolean tlsHostnameVerificationEnable;
 
+    protected Boolean enableJwtAuth;
+
+    protected String jwt;
+
     protected Integer memoryLimitKiloBytes;
 
     protected Long statsIntervalMillis;
@@ -161,7 +165,7 @@ public class ConsumerConfParams implements ConsumerConf {
     public ConsumerConfParams(List<String> services, String listenerName, Integer operationTimeoutMillis, Integer ioThreads,
                               Integer listenerThreads, Integer connectionsPerBroker, Boolean useTcpNoDelay, Boolean enableTls,
                               String tlsTrustCertsFilePath, String tlsCertFilePath, String tlsKeyFilePath, Boolean tlsAllowInsecureConnection,
-                              Boolean tlsHostnameVerificationEnable, Integer memoryLimitKiloBytes, Long statsIntervalMillis, Integer maxConcurrentLookupRequests,
+                              Boolean tlsHostnameVerificationEnable, Boolean enableJwtAuth, String jwt, Integer memoryLimitKiloBytes, Long statsIntervalMillis, Integer maxConcurrentLookupRequests,
                               Integer maxLookupRequest, Integer maxLookupRedirects, Integer maxNumberOfRejectedRequestPerConnection, Integer keepAliveIntervalMillis,
                               Integer connectionTimeoutMillis, Long startingBackoffIntervalMillis, Long maxBackoffIntervalMillis, Boolean enableBusyWait,
                               String clockZoneId, Boolean enableProxy, String proxyServiceUrl, ProxyProtocol proxyProtocol, Boolean enableTransaction,
@@ -188,6 +192,8 @@ public class ConsumerConfParams implements ConsumerConf {
         this.tlsKeyFilePath = tlsKeyFilePath;
         this.tlsAllowInsecureConnection = tlsAllowInsecureConnection;
         this.tlsHostnameVerificationEnable = tlsHostnameVerificationEnable;
+        this.enableJwtAuth = enableJwtAuth;
+        this.jwt = jwt;
         this.memoryLimitKiloBytes = memoryLimitKiloBytes;
         this.statsIntervalMillis = statsIntervalMillis;
         this.maxConcurrentLookupRequests = maxConcurrentLookupRequests;
@@ -311,6 +317,16 @@ public class ConsumerConfParams implements ConsumerConf {
     @Override
     public Boolean getTlsHostnameVerificationEnable() {
         return tlsHostnameVerificationEnable;
+    }
+
+    @Override
+    public Boolean getEnableJwtAuth() {
+        return enableJwtAuth;
+    }
+
+    @Override
+    public String getJwt() {
+        return jwt;
     }
 
     @Override
@@ -655,6 +671,14 @@ public class ConsumerConfParams implements ConsumerConf {
         this.tlsHostnameVerificationEnable = tlsHostnameVerificationEnable;
     }
 
+    public void setEnableJwtAuth(Boolean enableJwtAuth) {
+        this.enableJwtAuth = enableJwtAuth;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
+    }
+
     public void setMemoryLimitKiloBytes(Integer memoryLimitKiloBytes) {
         this.memoryLimitKiloBytes = memoryLimitKiloBytes;
     }
@@ -903,6 +927,8 @@ public class ConsumerConfParams implements ConsumerConf {
                 ", tlsKeyFilePath='" + tlsKeyFilePath + '\'' +
                 ", tlsAllowInsecureConnection=" + tlsAllowInsecureConnection +
                 ", tlsHostnameVerificationEnable=" + tlsHostnameVerificationEnable +
+                ", enableJwtAuth=" + enableJwtAuth +
+                ", jwt='" + jwt + '\'' +
                 ", memoryLimitKiloBytes=" + memoryLimitKiloBytes +
                 ", statsIntervalMillis=" + statsIntervalMillis +
                 ", maxConcurrentLookupRequests=" + maxConcurrentLookupRequests +

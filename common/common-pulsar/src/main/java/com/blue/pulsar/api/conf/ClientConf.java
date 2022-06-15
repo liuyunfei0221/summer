@@ -38,6 +38,10 @@ public interface ClientConf {
 
     Boolean getTlsHostnameVerificationEnable();
 
+    Boolean getEnableJwtAuth();
+
+    String getJwt();
+
     Integer getMemoryLimitKiloBytes();
 
     Long getStatsIntervalMillis();

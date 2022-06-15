@@ -85,6 +85,9 @@ public final class PulsarCommonsGenerator {
                 builder.serviceUrl(serviceUrl);
             }
 
+            if (ofNullable(conf.getEnableJwtAuth()).orElse(false))
+                builder.authentication(AuthenticationFactory.token(conf.getJwt()));
+
             ofNullable(conf.getOperationTimeoutMillis())
                     .ifPresent(otm -> builder.operationTimeout(otm, MILLISECONDS));
             ofNullable(conf.getStatsIntervalMillis())
