@@ -36,6 +36,7 @@ import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.INVALID;
 import static com.blue.base.constant.common.Status.VALID;
+import static java.util.Collections.singletonList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -118,7 +119,7 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
                                     extra.put(NEW_MEMBER.key, true);
                                     return just(roleService.getDefaultRole().getId())
                                             .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, WECHAT_AUTO_REGISTER.source))
-                                                    .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), roleId, WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
+                                                    .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), singletonList(roleId), WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
                                 })
                 )
                 .flatMap(ma ->

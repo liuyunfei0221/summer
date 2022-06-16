@@ -23,11 +23,15 @@ public interface MemberRoleRelationMapper {
 
     int deleteByPrimaryKey(Long id);
 
+    int deleteByMemberId(@Param("memberId") Long memberId);
+
+    int insertBatch(@Param("list") List<MemberRoleRelation> list);
+
     MemberRoleRelation selectByPrimaryKey(Long id);
 
-    Long getRoleIdByMemberId(@Param("memberId") Long memberId);
+    List<Long> selectRoleIdsByMemberId(@Param("memberId") Long memberId);
 
-    MemberRoleRelation getByMemberId(@Param("memberId") Long memberId);
+    List<MemberRoleRelation> selectByMemberId(@Param("memberId") Long memberId);
 
     List<MemberRoleRelation> selectByMemberIds(@Param("memberIds") List<Long> memberIds);
 

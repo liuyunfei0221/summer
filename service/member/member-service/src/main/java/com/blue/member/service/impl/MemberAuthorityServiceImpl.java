@@ -95,7 +95,7 @@ public class MemberAuthorityServiceImpl implements MemberAuthorityService {
                     Mono<List<MemberAuthorityInfo>> memberAuthorityInfosMono = members.size() > 0 ?
                             rpcRoleServiceConsumer.selectRoleInfoByMemberIds(members.stream().map(MemberBasic::getId).collect(toList()))
                                     .flatMap(relationInfos -> {
-                                        Map<Long, RoleInfo> memberIdAndRoleInfoMapping = relationInfos.stream().collect(toMap(MemberRoleInfo::getMemberId, MemberRoleInfo::getRoleInfo, (a, b) -> b));
+                                        Map<Long, List<RoleInfo>> memberIdAndRoleInfoMapping = relationInfos.stream().collect(toMap(MemberRoleInfo::getMemberId, MemberRoleInfo::getRoleInfos, (a, b) -> b));
                                         return just(members.stream()
                                                 .map(memberBasic ->
                                                         new MemberAuthorityInfo(MEMBER_BASIC_2_MEMBER_INFO.apply(memberBasic), memberIdAndRoleInfoMapping.get(memberBasic.getId()))

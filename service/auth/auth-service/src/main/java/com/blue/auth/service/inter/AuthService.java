@@ -9,6 +9,8 @@ import com.blue.auth.model.MemberAuth;
 import com.blue.base.model.common.Access;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 /**
  * auth service
  *
@@ -46,12 +48,12 @@ public interface AuthService {
      * generate member auth with auto register
      *
      * @param memberId
-     * @param roleId
+     * @param roleIds
      * @param credentialType
      * @param deviceType
      * @return
      */
-    Mono<MemberAuth> generateAuthMono(Long memberId, Long roleId, String credentialType, String deviceType);
+    Mono<MemberAuth> generateAuthMono(Long memberId, List<Long> roleIds, String credentialType, String deviceType);
 
     /**
      * generate member access
@@ -115,11 +117,11 @@ public interface AuthService {
      * update member role info by member id
      *
      * @param memberId
-     * @param roleId
+     * @param roleIds
      * @param operatorId
      * @return
      */
-    Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId);
+    Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds, Long operatorId);
 
     /**
      * update member sec key by access
@@ -135,7 +137,7 @@ public interface AuthService {
      * @param access
      * @return
      */
-    Mono<AuthorityBaseOnRole> getAuthorityMonoByAccess(Access access);
+    Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByAccess(Access access);
 
     /**
      * get member's authority by member id
@@ -143,6 +145,6 @@ public interface AuthService {
      * @param memberId
      * @return
      */
-    Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId);
+    Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByMemberId(Long memberId);
 
 }

@@ -39,6 +39,7 @@ import static com.blue.base.constant.common.Status.INVALID;
 import static com.blue.base.constant.common.Status.VALID;
 import static com.blue.base.constant.verify.BusinessType.PHONE_VERIFY_LOGIN_WITH_AUTO_REGISTER;
 import static com.blue.base.constant.verify.VerifyType.SMS;
+import static java.util.Collections.singletonList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.error;
@@ -125,7 +126,7 @@ public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
                                                             extra.put(NEW_MEMBER.key, true);
                                                             return just(roleService.getDefaultRole().getId())
                                                                     .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, PHONE_VERIFY_AUTO_REGISTER.source))
-                                                                            .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), roleId, PHONE_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
+                                                                            .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), singletonList(roleId), PHONE_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
                                                         })
                                         )
                                         .flatMap(ma ->

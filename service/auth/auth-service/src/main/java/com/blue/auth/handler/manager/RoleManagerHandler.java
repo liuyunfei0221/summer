@@ -132,7 +132,7 @@ public final class RoleManagerHandler {
         return serverRequest.bodyToMono(IdentityParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(ip ->
-                        roleResRelationService.selectAuthorityMonoByRoleId(ip.getId()))
+                        roleResRelationService.getAuthorityMonoByRoleId(ip.getId()))
                 .flatMap(auth ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, auth, serverRequest), BlueResponse.class));

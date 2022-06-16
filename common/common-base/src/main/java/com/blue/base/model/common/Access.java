@@ -1,6 +1,7 @@
 package com.blue.base.model.common;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * access info
@@ -18,9 +19,9 @@ public final class Access implements Serializable {
     private long id;
 
     /**
-     * role id
+     * role ids
      */
-    private long roleId;
+    private List<Long> roleIds;
 
     /**
      * credential type
@@ -44,9 +45,9 @@ public final class Access implements Serializable {
     public Access() {
     }
 
-    public Access(long id, long roleId, String credentialType, String deviceType, long loginTime) {
+    public Access(long id, List<Long> roleIds, String credentialType, String deviceType, long loginTime) {
         this.id = id;
-        this.roleId = roleId;
+        this.roleIds = roleIds;
         this.credentialType = credentialType;
         this.deviceType = deviceType;
         this.loginTime = loginTime;
@@ -60,12 +61,12 @@ public final class Access implements Serializable {
         this.id = id;
     }
 
-    public long getRoleId() {
-        return roleId;
+    public List<Long> getRoleIds() {
+        return roleIds;
     }
 
-    public void setRoleId(long roleId) {
-        this.roleId = roleId;
+    public void setRoleIds(List<Long> roleIds) {
+        this.roleIds = roleIds;
     }
 
     public String getCredentialType() {
@@ -96,7 +97,7 @@ public final class Access implements Serializable {
     public String toString() {
         return "Access{" +
                 "id=" + id +
-                ", roleId=" + roleId +
+                ", roleIds=" + roleIds +
                 ", credentialType='" + credentialType + '\'' +
                 ", deviceType='" + deviceType + '\'' +
                 ", loginTime='" + loginTime + '\'' +

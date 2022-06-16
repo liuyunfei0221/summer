@@ -57,7 +57,15 @@ public interface RoleResRelationService {
      * @param roleId
      * @return
      */
-    Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId);
+    Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId);
+
+    /**
+     * get authorities base on role by role ids
+     *
+     * @param roleIds
+     * @return
+     */
+    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByRoleIds(List<Long> roleIds);
 
     /**
      * get authority base on resource by res id

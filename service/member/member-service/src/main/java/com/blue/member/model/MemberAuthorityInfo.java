@@ -1,9 +1,10 @@
 package com.blue.member.model;
 
-import com.blue.member.api.model.MemberInfo;
 import com.blue.auth.api.model.RoleInfo;
+import com.blue.member.api.model.MemberInfo;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * member authority info
@@ -17,14 +18,14 @@ public final class MemberAuthorityInfo implements Serializable {
 
     private MemberInfo memberInfo;
 
-    private RoleInfo roleInfo;
+    private List<RoleInfo> roleInfos;
 
     public MemberAuthorityInfo() {
     }
 
-    public MemberAuthorityInfo(MemberInfo memberInfo, RoleInfo roleInfo) {
+    public MemberAuthorityInfo(MemberInfo memberInfo, List<RoleInfo> roleInfos) {
         this.memberInfo = memberInfo;
-        this.roleInfo = roleInfo;
+        this.roleInfos = roleInfos;
     }
 
     public MemberInfo getMemberInfo() {
@@ -35,19 +36,19 @@ public final class MemberAuthorityInfo implements Serializable {
         this.memberInfo = memberInfo;
     }
 
-    public RoleInfo getRoleInfo() {
-        return roleInfo;
+    public List<RoleInfo> getRoleInfos() {
+        return roleInfos;
     }
 
-    public void setRoleInfo(RoleInfo roleInfo) {
-        this.roleInfo = roleInfo;
+    public void setRoleInfos(List<RoleInfo> roleInfos) {
+        this.roleInfos = roleInfos;
     }
 
     @Override
     public String toString() {
         return "MemberAuthorityInfo{" +
                 "memberInfo=" + memberInfo +
-                ", roleInfo=" + roleInfo +
+                ", roleInfos=" + roleInfos +
                 '}';
     }
 

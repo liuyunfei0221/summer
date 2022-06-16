@@ -9,6 +9,11 @@ package com.blue.base.constant.common;
 public enum SyncKeyPrefix {
 
     /**
+     * refresh role ids / secKey of access
+     */
+    ACCESS_ELE_REFRESH_PRE("ACCESS_ELE_REFRESH_PRE:"),
+
+    /**
      * bulletins cache sync key prefix
      */
     BULLETINS_CACHE_PRE("BULLETINS_CACHE_PRE:"),

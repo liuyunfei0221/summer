@@ -1,6 +1,7 @@
 package com.blue.auth.api.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * member and role info
@@ -14,14 +15,14 @@ public final class MemberRoleInfo implements Serializable {
 
     private Long memberId;
 
-    private RoleInfo roleInfo;
+    private List<RoleInfo> roleInfos;
 
     public MemberRoleInfo() {
     }
 
-    public MemberRoleInfo(Long memberId, RoleInfo roleInfo) {
+    public MemberRoleInfo(Long memberId, List<RoleInfo> roleInfos) {
         this.memberId = memberId;
-        this.roleInfo = roleInfo;
+        this.roleInfos = roleInfos;
     }
 
     public Long getMemberId() {
@@ -32,19 +33,19 @@ public final class MemberRoleInfo implements Serializable {
         this.memberId = memberId;
     }
 
-    public RoleInfo getRoleInfo() {
-        return roleInfo;
+    public List<RoleInfo> getRoleInfos() {
+        return roleInfos;
     }
 
-    public void setRoleInfo(RoleInfo roleInfo) {
-        this.roleInfo = roleInfo;
+    public void setRoleInfos(List<RoleInfo> roleInfos) {
+        this.roleInfos = roleInfos;
     }
 
     @Override
     public String toString() {
         return "MemberRoleRelationInfo{" +
                 "memberId=" + memberId +
-                ", roleInfo=" + roleInfo +
+                ", roleInfos=" + roleInfos +
                 '}';
     }
 }

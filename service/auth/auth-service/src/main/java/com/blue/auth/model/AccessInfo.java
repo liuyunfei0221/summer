@@ -3,9 +3,9 @@ package com.blue.auth.model;
 import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
+import java.util.List;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
@@ -26,7 +26,7 @@ public final class AccessInfo implements Serializable {
     /**
      * role id
      */
-    private Long roleId;
+    private List<Long> roleIds;
 
     /**
      * public key used for encrypt rest
@@ -36,16 +36,16 @@ public final class AccessInfo implements Serializable {
     public AccessInfo() {
     }
 
-    public AccessInfo(String jwt, Long roleId, String pubKey) {
+    public AccessInfo(String jwt, List<Long> roleIds, String pubKey) {
         if (isBlank(jwt))
             throw new BlueException(BAD_REQUEST);
-        if (isNull(roleId) || roleId < 1L)
+        if (isInvalidIdentities(roleIds))
             throw new BlueException(BAD_REQUEST);
         if (isBlank(pubKey))
             throw new BlueException(BAD_REQUEST);
 
         this.jwt = jwt;
-        this.roleId = roleId;
+        this.roleIds = roleIds;
         this.pubKey = pubKey;
     }
 
@@ -60,15 +60,15 @@ public final class AccessInfo implements Serializable {
         this.jwt = jwt;
     }
 
-    public Long getRoleId() {
-        return roleId;
+    public List<Long> getRoleIds() {
+        return roleIds;
     }
 
-    public void setRoleId(Long roleId) {
-        if (isNull(roleId) || roleId < 1L)
+    public void setRoleIds(List<Long> roleIds) {
+        if (isInvalidIdentities(roleIds))
             throw new BlueException(BAD_REQUEST);
 
-        this.roleId = roleId;
+        this.roleIds = roleIds;
     }
 
     public String getPubKey() {
@@ -86,7 +86,7 @@ public final class AccessInfo implements Serializable {
     public String toString() {
         return "AccessInfo{" +
                 "jwt='" + jwt + '\'' +
-                ", roleId=" + roleId +
+                ", roleIds=" + roleIds +
                 ", pubKey='" + pubKey + '\'' +
                 '}';
     }

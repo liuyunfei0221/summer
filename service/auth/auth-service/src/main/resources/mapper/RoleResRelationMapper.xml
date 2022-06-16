@@ -163,6 +163,18 @@
         WHERE role_id = #{roleId,jdbcType=BIGINT}
     </select>
 
+    <select id="selectResIdsByRoleIds" parameterType="java.lang.Long" resultType="java.lang.Long">
+        SELECT
+        res_id
+        FROM
+        role_res_relation FORCE INDEX(idx_res_role)
+        WHERE
+        role_id IN
+        <foreach collection="roleIds" open="(" close=")" separator="," item="roleId" index="index">
+            #{roleId,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
     <select id="selectRoleIdsByResId" parameterType="java.lang.Long" resultType="java.lang.Long">
         SELECT role_id
         FROM role_res_relation FORCE INDEX(idx_res_role)
@@ -237,8 +249,8 @@
         role_res_relation FORCE INDEX(idx_res_role)
         WHERE
         res_id IN
-        <foreach collection="resIds" open="(" close=")" separator="," item="id" index="index">
-            #{id,jdbcType=BIGINT}
+        <foreach collection="resIds" open="(" close=")" separator="," item="resId" index="index">
+            #{resId,jdbcType=BIGINT}
         </foreach>
     </select>
 

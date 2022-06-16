@@ -24,11 +24,6 @@ public enum CacheKeyPrefix {
     SESSION_PRE("B_SN_P:"),
 
     /**
-     * access refresh key prefix
-     */
-    ACCESS_REFRESH_PRE("ACC_R_P:"),
-
-    /**
      * verify key prefix
      */
     VERIFY_PRE("VF_P:"),

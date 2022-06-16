@@ -5,6 +5,7 @@ import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.api.model.MemberRoleRelationParam;
 import com.blue.base.model.common.Access;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -28,17 +29,17 @@ public interface RpcAuthControlService {
      * @param memberRoleRelationParam
      * @return
      */
-    AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam);
+    List<AuthorityBaseOnRole> updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam);
 
     /**
      * update member's auth by member id
      *
      * @param memberId
-     * @param roleId
+     * @param roleIds
      * @param operatorId
      * @return
      */
-    CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId);
+    CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds, Long operatorId);
 
     /**
      * query authority by access
@@ -46,7 +47,7 @@ public interface RpcAuthControlService {
      * @param access
      * @return
      */
-    CompletableFuture<AuthorityBaseOnRole> getAuthorityByAccess(Access access);
+    CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByAccess(Access access);
 
     /**
      * query authority by member id
@@ -54,6 +55,6 @@ public interface RpcAuthControlService {
      * @param memberId
      * @return
      */
-    CompletableFuture<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId);
+    CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByMemberId(Long memberId);
 
 }

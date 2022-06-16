@@ -59,7 +59,7 @@ public class RelationManagerHandler {
         return zip(serverRequest.bodyToMono(MemberRoleRelationParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> authControlService.updateAuthorityByMember(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.updateAuthoritiesByMember(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ri, serverRequest), BlueResponse.class));

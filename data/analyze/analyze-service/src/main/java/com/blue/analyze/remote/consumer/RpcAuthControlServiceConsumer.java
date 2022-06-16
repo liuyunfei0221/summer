@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.util.List;
+
 import static reactor.core.publisher.Mono.fromFuture;
 
 
@@ -24,8 +26,8 @@ public class RpcAuthControlServiceConsumer {
     @DubboReference(version = "1.0",
             providedBy = {"summer-auth"},
             methods = {
-                    @Method(name = "getAuthorityByAccess", async = true),
-                    @Method(name = "getAuthorityByMemberId", async = true)
+                    @Method(name = "selectAuthorityByAccess", async = true),
+                    @Method(name = "selectAuthorityByMemberId", async = true)
             })
     private RpcAuthControlService rpcAuthControlService;
 
@@ -41,8 +43,8 @@ public class RpcAuthControlServiceConsumer {
      * @param access
      * @return
      */
-    public Mono<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
-        return fromFuture(rpcAuthControlService.getAuthorityByAccess(access)).subscribeOn(scheduler);
+    public Mono<List<AuthorityBaseOnRole>> selectAuthorityByAccess(Access access) {
+        return fromFuture(rpcAuthControlService.selectAuthorityByAccess(access)).subscribeOn(scheduler);
     }
 
     /**
@@ -51,8 +53,8 @@ public class RpcAuthControlServiceConsumer {
      * @param memberId
      * @return
      */
-    public Mono<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
-        return fromFuture(rpcAuthControlService.getAuthorityByMemberId(memberId)).subscribeOn(scheduler);
+    public Mono<List<AuthorityBaseOnRole>> selectAuthorityByMemberId(Long memberId) {
+        return fromFuture(rpcAuthControlService.selectAuthorityByMemberId(memberId)).subscribeOn(scheduler);
     }
 
 }

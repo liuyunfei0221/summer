@@ -222,7 +222,7 @@ public final class AuthApiHandler {
     public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        authControlService.getAuthorityMonoByAccess(acc)
+                        authControlService.selectAuthoritiesMonoByAccess(acc)
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(generate(OK.code, authority, serverRequest)

@@ -1,6 +1,7 @@
 package com.blue.lake.repository.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * option event
@@ -42,7 +43,7 @@ public class OptEvent implements Serializable {
 
     private Long memberId;
 
-    private Long roleId;
+    private List<Long> roleIds;
 
     private String credentialType;
 
@@ -186,12 +187,12 @@ public class OptEvent implements Serializable {
         this.memberId = memberId;
     }
 
-    public Long getRoleId() {
-        return roleId;
+    public List<Long> getRoleIds() {
+        return roleIds;
     }
 
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
+    public void setRoleIds(List<Long> roleIds) {
+        this.roleIds = roleIds;
     }
 
     public String getCredentialType() {
@@ -300,7 +301,7 @@ public class OptEvent implements Serializable {
                 ", metadata='" + metadata + '\'' +
                 ", jwt='" + jwt + '\'' +
                 ", memberId=" + memberId +
-                ", roleId=" + roleId +
+                ", roleIds=" + roleIds +
                 ", credentialType='" + credentialType + '\'' +
                 ", deviceType='" + deviceType + '\'' +
                 ", loginTime=" + loginTime +

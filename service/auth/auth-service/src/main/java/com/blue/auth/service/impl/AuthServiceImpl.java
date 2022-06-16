@@ -15,7 +15,6 @@ import com.blue.auth.repository.entity.Role;
 import com.blue.auth.repository.entity.RoleResRelation;
 import com.blue.auth.service.inter.*;
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.constant.auth.AccessInfoRefreshElementType;
 import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.auth.DeviceType;
 import com.blue.base.constant.common.CacheKeyPrefix;
@@ -46,20 +45,19 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.common.base.RsaProcessor.initKeyPair;
-import static com.blue.base.constant.auth.AccessInfoRefreshElementType.PUB_KEY;
-import static com.blue.base.constant.auth.AccessInfoRefreshElementType.ROLE;
 import static com.blue.base.constant.auth.CredentialType.NOT_LOGGED_IN;
 import static com.blue.base.constant.auth.DeviceType.UNKNOWN;
 import static com.blue.base.constant.common.BlueNumericalValue.*;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.SyncKeyPrefix.ACCESS_ELE_REFRESH_PRE;
 import static com.blue.base.constant.common.SyncKeyPrefix.AUTH_INVALID_BY_MEMBER_ID_PRE;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
-import static java.util.Collections.emptyMap;
+import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -75,7 +73,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "AlibabaAvoidComplexCondition"})
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -136,7 +134,6 @@ public class AuthServiceImpl implements AuthService {
 
     public static final String
             SESSION_KEY_PRE = CacheKeyPrefix.SESSION_PRE.prefix,
-            ACCESS_REFRESH_KEY_PRE = CacheKeyPrefix.ACCESS_REFRESH_PRE.prefix,
             PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity,
             PATH_SEPARATOR = Symbol.PATH_SEPARATOR.identity;
 
@@ -231,9 +228,13 @@ public class AuthServiceImpl implements AuthService {
     /**
      * authorization checker
      */
-    private final BiFunction<Long, String, Boolean> AUTHORIZATION_RES_CHECKER = (roleId, resourceKey) -> {
+    private final BiFunction<List<Long>, String, Boolean> AUTHORIZATION_RES_CHECKER = (roleIds, resourceKey) -> {
+        if (isEmpty(roleIds) || isBlank(resourceKey))
+            return false;
+
         RES_OR_REL_REFRESHING_BLOCKER.get();
-        return ofNullable(roleAndResourcesKeyMapping.get(roleId)).map(set -> set.contains(resourceKey)).orElse(false);
+
+        return roleIds.stream().anyMatch(roleId -> ofNullable(roleAndResourcesKeyMapping.get(roleId)).map(set -> set.contains(resourceKey)).orElse(false));
     };
 
     /**
@@ -246,7 +247,7 @@ public class AuthServiceImpl implements AuthService {
      * UN_AUTH
      */
     private static final Access NO_AUTH_ACCESS = new Access(NOT_LOGGED_IN_MEMBER_ID.value,
-            NOT_LOGGED_IN_ROLE_ID.value, NOT_LOGGED_IN.identity, UNKNOWN.identity, NOT_LOGGED_IN_TIME.value);
+            singletonList(NOT_LOGGED_IN_ROLE_ID.value), NOT_LOGGED_IN.identity, UNKNOWN.identity, NOT_LOGGED_IN_TIME.value);
 
     /**
      * Resources do not require authentication access
@@ -257,54 +258,20 @@ public class AuthServiceImpl implements AuthService {
                     NOT_LOGGED_IN_SEC_KEY.value, NO_AUTH_ACCESS, NO_AUTH_REQUIRED_RESOURCE.message));
 
     /**
-     * refresh element type -> authInfo packagers
-     */
-    private static final Map<AccessInfoRefreshElementType, BiConsumer<AccessInfo, String>> RE_PACKAGERS = new HashMap<>(4, 1.0f);
-
-    /**
-     * generate access refresh sync key
-     */
-    private static final Map<AccessInfoRefreshElementType, BinaryOperator<String>> ACCESS_REFRESH_KEY_GENS = new HashMap<>(4, 1.0f);
-
-    static {
-        RE_PACKAGERS.put(ROLE, (ai, ele) -> {
-            if (isNull(ai) || isNull(ele) || EMPTY_DATA.value.equals(ele))
-                throw new BlueException(BAD_REQUEST);
-
-            long roleId;
-            try {
-                roleId = parseLong(ele);
-            } catch (NumberFormatException e) {
-                throw new BlueException(BAD_REQUEST);
-            }
-            ai.setRoleId(roleId);
-        });
-        RE_PACKAGERS.put(PUB_KEY, (ai, ele) -> {
-            if (isNull(ai) || isNull(ele) || EMPTY_DATA.value.equals(ele))
-                throw new BlueException(BAD_REQUEST);
-            ai.setPubKey(ele);
-        });
-
-        ACCESS_REFRESH_KEY_GENS.put(ROLE, (snKey, eleValue) ->
-                ACCESS_REFRESH_KEY_PRE + snKey + PAR_CONCATENATION + ROLE.name() + PAR_CONCATENATION + eleValue);
-        ACCESS_REFRESH_KEY_GENS.put(PUB_KEY, (snKey, eleValue) ->
-                ACCESS_REFRESH_KEY_PRE + snKey + PAR_CONCATENATION + PUB_KEY.name() + PAR_CONCATENATION + eleValue.hashCode());
-
-        LOGGER.info("static codes, RE_PACKAGERS = {}, ACCESS_REFRESH_KEY_GENS = {}", RE_PACKAGERS, ACCESS_REFRESH_KEY_GENS);
-    }
-
-    /**
      * get role info by role id
      */
-    private final Function<Long, Optional<RoleInfo>> ROLE_INFO_BY_ID_GETTER = roleId -> {
+    private final Function<List<Long>, List<RoleInfo>> ROLES_INFO_BY_IDS_GETTER = roleIds -> {
+        if (isEmpty(roleIds))
+            return emptyList();
+
         ROLE_REFRESHING_BLOCKER.get();
-        return ofNullable(idAndRoleInfoMapping.get(roleId));
+        return roleIds.stream().map(idAndRoleInfoMapping::get).collect(toList());
     };
 
     /**
      * get resource info list by role id
      */
-    private final Function<Long, List<ResourceInfo>> RESOURCE_INFOS_BY_ROLE_ID_GETTER = roleId -> {
+    private final Function<Long, List<ResourceInfo>> RESOURCES_INFO_BY_ROLE_IDS_GETTER = roleId -> {
         RES_OR_REL_REFRESHING_BLOCKER.get();
         return roleAndResourceInfosMapping.get(roleId);
     };
@@ -330,21 +297,13 @@ public class AuthServiceImpl implements AuthService {
      */
     private static final UnaryOperator<String> GLOBAL_LOCK_KEY_GEN = keyId -> valueOf(keyId.hashCode());
 
-    /**
-     * generate auth refresh sync key
-     *
-     * @param snKey
-     * @param elementType
-     * @param elementValue
-     * @return
-     */
-    private static String genAccessInfoRefreshLockKey(String snKey, AccessInfoRefreshElementType elementType, String elementValue) {
-        LOGGER.info("String genAccessInfoRefreshLockKey(String snKey, AuthInfoRefreshElementType elementType, String elementValue), snKey = {}, elementType = {}, elementValue = {}", snKey, elementType, elementValue);
-        if (isBlank(snKey) || isNull(elementType) || isBlank(elementValue))
+    private static final UnaryOperator<String> ACCESS_ELE_REFRESH_SYNC_KEY_GEN = keyId -> {
+        if (isBlank(keyId))
             throw new BlueException(BAD_REQUEST);
 
-        return ACCESS_REFRESH_KEY_GENS.get(elementType).apply(snKey, elementValue);
-    }
+        return ACCESS_ELE_REFRESH_PRE.prefix + keyId;
+    };
+
 
     /**
      * delete all refresh token info by key id
@@ -401,14 +360,14 @@ public class AuthServiceImpl implements AuthService {
     /**
      * generate access
      */
-    private final BiFunction<MemberPayload, Long, Mono<MemberAccess>> ACCESS_GENERATOR = (memberPayload, roleId) -> {
-        LOGGER.info("BiFunction<MemberPayload, Long, Mono<MemberAccess>> ACCESS_GENERATOR, memberPayload = {}, roleId = {}", memberPayload, roleId);
-        if (isNull(memberPayload) || isInvalidIdentity(roleId))
+    private final BiFunction<MemberPayload, List<Long>, Mono<MemberAccess>> ACCESS_GENERATOR = (memberPayload, roleIds) -> {
+        LOGGER.info("BiFunction<MemberPayload, List<Long>, Mono<MemberAccess>> ACCESS_GENERATOR, memberPayload = {}, roleIds = {}", memberPayload, roleIds);
+        if (isNull(memberPayload) || isInvalidIdentities(roleIds))
             return error(() -> new BlueException(BAD_REQUEST));
 
         String jwt = jwtProcessor.create(memberPayload);
         KeyPair keyPair = initKeyPair();
-        String authInfoJson = GSON.toJson(new AccessInfo(jwt, roleId, keyPair.getPubKey()));
+        String authInfoJson = GSON.toJson(new AccessInfo(jwt, roleIds, keyPair.getPubKey()));
 
         return accessInfoCache.setAccessInfo(memberPayload.getKeyId(), authInfoJson)
                 .flatMap(b -> {
@@ -416,7 +375,7 @@ public class AuthServiceImpl implements AuthService {
                     if (b)
                         return just(new MemberAccess(jwt, keyPair.getPriKey()));
 
-                    LOGGER.error("authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson), failed, memberPayload = {}, roleId = {}, keyPair = {}, authInfoJson = {}", memberPayload, roleId, keyPair, authInfoJson);
+                    LOGGER.error("authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson), failed, memberPayload = {}, roleIds = {}, keyPair = {}, authInfoJson = {}", memberPayload, roleIds, keyPair, authInfoJson);
                     return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
                 });
     };
@@ -424,18 +383,18 @@ public class AuthServiceImpl implements AuthService {
     /**
      * generate auth(access and refresh)
      */
-    private final BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR = (memberPayload, roleId) -> {
-        LOGGER.info("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, memberPayload = {}, roleId = {}", memberPayload, roleId);
+    private final BiFunction<MemberPayload, List<Long>, Mono<MemberAuth>> AUTH_GENERATOR = (memberPayload, roleIds) -> {
+        LOGGER.info("BiFunction<MemberPayload, List<Long>, Mono<MemberAuth>> AUTH_GENERATOR, memberPayload = {}, roleIds = {}", memberPayload, roleIds);
 
-        return ACCESS_GENERATOR.apply(memberPayload, roleId)
+        return ACCESS_GENERATOR.apply(memberPayload, roleIds)
                 .flatMap(access -> {
                     memberPayload.setGamma(randomAlphanumeric(randomIdLen));
 
                     return refreshInfoService.insertRefreshInfo(new RefreshInfo(memberPayload.getKeyId(), memberPayload.getGamma(), memberPayload.getId(),
                                     memberPayload.getCredentialType().intern(), memberPayload.getDeviceType().intern(), memberPayload.getLoginTime(), REFRESH_EXPIRE_AT_GETTER.get()))
                             .onErrorResume(throwable -> {
-                                LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoService.insertRefreshInfo(refreshInfo) failed, memberPayload = {}, roleId = {}, throwable = {}",
-                                        memberPayload, roleId, throwable);
+                                LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoService.insertRefreshInfo(refreshInfo) failed, memberPayload = {}, roleIds = {}, throwable = {}",
+                                        memberPayload, roleIds, throwable);
                                 return just(new RefreshInfo());
                             })
                             .flatMap(ig -> just(jwtProcessor.create(memberPayload)))
@@ -472,34 +431,40 @@ public class AuthServiceImpl implements AuthService {
     };
 
     /**
-     * refresh access info (role id/sec key) by key id
+     * refresh access info role ids or pub key by key id
      *
      * @param keyId
-     * @param elementType
-     * @param elementValue
+     * @param roleIds
      */
-    private void refreshAccessInfoElementByKeyId(String keyId, AccessInfoRefreshElementType elementType, String elementValue) {
-        LOGGER.info("void refreshAccessInfoElementByKeyId(String keyId, AuthInfoRefreshElementType elementType, String elementValue), keyId = {}, elementType = {}, elementValue = {}", keyId, elementType, elementValue);
-        String originalAuthInfoJson = ofNullable(stringRedisTemplate.opsForValue().get(keyId))
-                .orElse(EMPTY_DATA.value);
-
-        if (isBlank(originalAuthInfoJson)) {
-            LOGGER.info("member's authInfo is blank, can't refresh");
+    private void refreshAccessRoleIdsOrPubKeyByKeyId(String keyId, List<Long> roleIds, String pubKey) {
+        LOGGER.info("void refreshAccessRoleIdsOrPubKeyByKeyId(String keyId, List<Long> roleIds, String pubKey), keyId = {}, roleIds = {}, pubKey = {}", keyId, roleIds, pubKey);
+        if (isBlank(keyId) || (isInvalidIdentities(roleIds) && isBlank(pubKey)))
             return;
-        }
 
-        AccessInfo accessInfo;
-        try {
-            accessInfo = GSON.fromJson(originalAuthInfoJson, AccessInfo.class);
-        } catch (JsonSyntaxException e) {
-            LOGGER.info("member's authInfo is invalid, can't refresh");
-            return;
-        }
-
-        synchronizedProcessor.handleTaskWithTryLock(genAccessInfoRefreshLockKey(keyId, elementType, elementValue), () ->
+        synchronizedProcessor.handleTaskWithTryLock(ACCESS_ELE_REFRESH_SYNC_KEY_GEN.apply(keyId), () ->
                         synchronizedProcessor.handleTaskWithLock(GLOBAL_LOCK_KEY_GEN.apply(keyId), () -> {
+                            String originalAuthInfoJson = ofNullable(stringRedisTemplate.opsForValue().get(keyId))
+                                    .orElse(EMPTY_DATA.value);
+
+                            if (isBlank(originalAuthInfoJson)) {
+                                LOGGER.info("member's authInfo is blank, can't refresh");
+                                return;
+                            }
+
+                            AccessInfo accessInfo;
                             try {
-                                RE_PACKAGERS.get(elementType).accept(accessInfo, elementValue);
+                                accessInfo = GSON.fromJson(originalAuthInfoJson, AccessInfo.class);
+                            } catch (JsonSyntaxException e) {
+                                LOGGER.info("member's authInfo is invalid, can't refresh");
+                                return;
+                            }
+
+                            if (isValidIdentities(roleIds))
+                                accessInfo.setRoleIds(roleIds);
+                            if (isNotBlank(pubKey))
+                                accessInfo.setPubKey(pubKey);
+
+                            try {
                                 stringRedisTemplate.opsForValue()
                                         .set(keyId, GSON.toJson(accessInfo), Duration.of(ofNullable(stringRedisTemplate.getExpire(keyId, SECONDS)).orElse(0L), ChronoUnit.SECONDS));
 
@@ -518,18 +483,15 @@ public class AuthServiceImpl implements AuthService {
      * @param authInfoRefreshElement
      */
     private void refreshAuthElementByMultiTypes(AuthInfoRefreshElement authInfoRefreshElement) {
-        LOGGER.info("void refreshAuthElementByMultiTypes(AuthInfoRefreshParam authInfoRefreshParam), authInfoRefreshParam = {}", authInfoRefreshElement);
+        LOGGER.info("void refreshAuthElementByMultiTypes(AuthInfoRefreshElement authInfoRefreshElement), authInfoRefreshElement = {}", authInfoRefreshElement);
         Long memberId = authInfoRefreshElement.getMemberId();
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
 
-        AccessInfoRefreshElementType elementType = authInfoRefreshElement.getElementType();
-        if (isNull(elementType))
-            throw new BlueException(BAD_REQUEST);
-
-        String elementValue = authInfoRefreshElement.getElementValue();
-        if (isBlank(elementValue))
-            throw new BlueException(BAD_REQUEST);
+        List<Long> roleIds = authInfoRefreshElement.getRoleIds();
+        String pubKey = authInfoRefreshElement.getPubKey();
+        if (isEmpty(roleIds) || isBlank(pubKey))
+            return;
 
         List<String> credentialTypes = ofNullable(authInfoRefreshElement.getCredentialTypes())
                 .filter(lts -> lts.size() > 0)
@@ -557,8 +519,8 @@ public class AuthServiceImpl implements AuthService {
 
         for (String credentialType : credentialTypes)
             for (String deviceType : deviceTypes)
-                refreshAccessInfoElementByKeyId(
-                        genSessionKey(memberId, credentialType.intern(), deviceType.intern()), elementType, elementValue);
+                refreshAccessRoleIdsOrPubKeyByKeyId(
+                        genSessionKey(memberId, credentialType.intern(), deviceType.intern()), roleIds, pubKey);
     }
 
     /**
@@ -599,15 +561,11 @@ public class AuthServiceImpl implements AuthService {
     /**
      * get authority by role id
      */
-    private final Function<Long, Mono<AuthorityBaseOnRole>> AUTHORITY_MONO_BY_ROLE_ID_GETTER = roleId -> {
-        LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityByRoleOpt(Long roleId), roleId = {}", roleId);
-        return just(ROLE_INFO_BY_ID_GETTER.apply(roleId)
-                .map(role ->
-                        new AuthorityBaseOnRole(role, RESOURCE_INFOS_BY_ROLE_ID_GETTER.apply(roleId)))
-                .orElseThrow(() -> {
-                    LOGGER.error("role info doesn't exist, roleId = {}", roleId);
-                    return new BlueException(BAD_REQUEST);
-                }));
+    private final Function<List<Long>, Mono<List<AuthorityBaseOnRole>>> AUTHORITIES_MONO_BY_ROLE_ID_GETTER = roleIds -> {
+        LOGGER.info("Function<List<Long>, Mono<List<AuthorityBaseOnRole>>> AUTHORITIES_MONO_BY_ROLE_ID_GETTER, roleIds = {}", roleIds);
+        return just(ROLES_INFO_BY_IDS_GETTER.apply(roleIds).stream()
+                .map(roleInfo -> new AuthorityBaseOnRole(roleInfo, RESOURCES_INFO_BY_ROLE_IDS_GETTER.apply(roleInfo.getId())))
+                .collect(toList()));
     };
 
     /**
@@ -723,7 +681,7 @@ public class AuthServiceImpl implements AuthService {
                                 AccessInfo accessInfo = ACCESS_INFO_PARSER.apply(v);
                                 if (!jwt.equals(accessInfo.getJwt()))
                                     return error(() -> new BlueException(UNAUTHORIZED));
-                                if (!AUTHORIZATION_RES_CHECKER.apply(accessInfo.getRoleId(), resourceKey))
+                                if (!AUTHORIZATION_RES_CHECKER.apply(accessInfo.getRoleIds(), resourceKey))
                                     return error(() -> new BlueException(FORBIDDEN.status, FORBIDDEN.code, FORBIDDEN.message));
 
                                 boolean reqUnDecryption = resource.getRequestUnDecryption();
@@ -731,7 +689,7 @@ public class AuthServiceImpl implements AuthService {
 
                                 return just(new AccessAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                                         reqUnDecryption && resUnEncryption ? EMPTY_DATA.value : accessInfo.getPubKey(),
-                                        new Access(parseLong(memberPayload.getId()), accessInfo.getRoleId(), memberPayload.getCredentialType().intern(),
+                                        new Access(parseLong(memberPayload.getId()), accessInfo.getRoleIds(), memberPayload.getCredentialType().intern(),
                                                 memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), OK.message));
                             });
                 });
@@ -750,8 +708,7 @@ public class AuthServiceImpl implements AuthService {
         LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, String credentialType, String deviceType), memberId = {}, credentialType = {}, deviceType", memberId, credentialType, deviceType);
         return isValidIdentity(memberId) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 zip(genMemberPayloadMono(memberId, credentialType, deviceType),
-                        memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
-                                .map(ridOpt -> ridOpt.orElseThrow(() -> new BlueException(MEMBER_NOT_HAS_A_ROLE)))
+                        memberRoleRelationService.selectRoleIdsMonoByMemberId(memberId)
                 ).flatMap(tuple2 ->
                         AUTH_GENERATOR.apply(tuple2.getT1(), tuple2.getT2()))
                 :
@@ -762,18 +719,18 @@ public class AuthServiceImpl implements AuthService {
      * generate member auth with auto register
      *
      * @param memberId
-     * @param roleId
+     * @param roleIds
      * @param credentialType
      * @param deviceType
      * @return
      */
     @Override
-    public Mono<MemberAuth> generateAuthMono(Long memberId, Long roleId, String credentialType, String deviceType) {
-        LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, Long roleId, String credentialType, String deviceType) , memberId = {}, roleId = {}, credentialType = {}, deviceType", memberId, roleId, credentialType, deviceType);
-        return isValidIdentity(memberId) && isValidIdentity(roleId) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
+    public Mono<MemberAuth> generateAuthMono(Long memberId, List<Long> roleIds, String credentialType, String deviceType) {
+        LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, List<Long> roleIds, String credentialType, String deviceType) , memberId = {}, roleIds = {}, credentialType = {}, deviceType", memberId, roleIds, credentialType, deviceType);
+        return isValidIdentity(memberId) && isValidIdentities(roleIds) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 genMemberPayloadMono(memberId, credentialType, deviceType)
                         .flatMap(memberPayload ->
-                                AUTH_GENERATOR.apply(memberPayload, roleId))
+                                AUTH_GENERATOR.apply(memberPayload, roleIds))
                 :
                 error(() -> new BlueException(BAD_REQUEST));
     }
@@ -791,8 +748,7 @@ public class AuthServiceImpl implements AuthService {
         LOGGER.info("Mono<MemberAccess> generateAccessMono(Long memberId, String credentialType, String deviceType), memberId = {}, credentialType = {}, deviceType", memberId, credentialType, deviceType);
         return isValidIdentity(memberId) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 zip(genMemberPayloadMono(memberId, credentialType, deviceType),
-                        memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
-                                .map(ridOpt -> ridOpt.orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))
+                        memberRoleRelationService.selectRoleIdsMonoByMemberId(memberId)
                 ).flatMap(tuple2 ->
                         ACCESS_GENERATOR.apply(tuple2.getT1(), tuple2.getT2()))
                 :
@@ -911,18 +867,18 @@ public class AuthServiceImpl implements AuthService {
      * update member role info by member id
      *
      * @param memberId
-     * @param roleId
+     * @param roleIds
      * @param operatorId
      * @return
      */
     @Override
-    public Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
-        LOGGER.info("void refreshMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
-        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
+    public Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds, Long operatorId) {
+        LOGGER.info("Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds, Long operatorId), memberId = {}, roleIds = {}", memberId, roleIds);
+        if (isInvalidIdentity(memberId) || isInvalidIdentities(roleIds) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
         AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId,
-                VALID_CREDENTIAL_TYPES, VALID_DEVICE_TYPES, ROLE, valueOf(roleId).intern());
+                VALID_CREDENTIAL_TYPES, VALID_DEVICE_TYPES, roleIds, null);
         return fromRunnable(() -> executorService.execute(() ->
                 refreshAuthElementByMultiTypes(authInfoRefreshElement))).then(just(true));
     }
@@ -936,12 +892,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<String> updateSecKeyByAccess(Access access) {
         LOGGER.info("Mono<String> updateSecKeyByAccess(Access access), access = {}", access);
+        
         return isNotNull(access) ?
                 just(initKeyPair())
                         .flatMap(keyPair -> {
-                            refreshAccessInfoElementByKeyId(
-                                    genSessionKey(access.getId(), access.getCredentialType().intern(), access.getDeviceType().intern()),
-                                    PUB_KEY, keyPair.getPubKey());
+                            refreshAccessRoleIdsOrPubKeyByKeyId(genSessionKey(access.getId(), access.getCredentialType().intern(), access.getDeviceType().intern()),
+                                    null, keyPair.getPubKey());
                             return just(keyPair.getPriKey());
                         })
                 :
@@ -955,10 +911,10 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<AuthorityBaseOnRole> getAuthorityMonoByAccess(Access access) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityMonoByAccess(Access access), access = {}", access);
+    public Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByAccess(Access access) {
+        LOGGER.info("Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByAccess(Access access), access = {}", access);
         return isNotNull(access) ?
-                AUTHORITY_MONO_BY_ROLE_ID_GETTER.apply(access.getRoleId())
+                AUTHORITIES_MONO_BY_ROLE_ID_GETTER.apply(access.getRoleIds())
                 :
                 error(() -> new BlueException(UNAUTHORIZED));
     }
@@ -970,16 +926,11 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId) {
-        LOGGER.info("Mono<Authority> getAuthorityMonoByMemberId(Long memberId), memberId = {}", memberId);
+    public Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByMemberId(Long memberId) {
+        LOGGER.info("Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByMemberId(Long memberId), memberId = {}", memberId);
         return isValidIdentity(memberId) ?
-                memberRoleRelationService.getRoleIdMonoByMemberId(memberId)
-                        .flatMap(roleIdOpt ->
-                                roleIdOpt.map(AUTHORITY_MONO_BY_ROLE_ID_GETTER)
-                                        .orElseGet(() -> {
-                                            LOGGER.error("Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId), role id of the member id -> {} not found", memberId);
-                                            return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
-                                        }))
+                memberRoleRelationService.selectRoleIdsMonoByMemberId(memberId)
+                        .flatMap(AUTHORITIES_MONO_BY_ROLE_ID_GETTER)
                 :
                 error(() -> new BlueException(INVALID_IDENTITY));
     }

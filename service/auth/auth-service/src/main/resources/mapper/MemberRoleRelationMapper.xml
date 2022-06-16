@@ -118,6 +118,25 @@
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
+    <insert id="insertBatch" parameterType="java.util.List">
+        <if test="list != null and list.size > 0">
+            INSERT INTO member_role_relation (
+            <include refid="Base_Column_List"/>
+            ) values
+            <foreach collection="list" index="index" item="item" separator=",">
+                (
+                #{item.id,jdbcType=BIGINT},
+                #{item.memberId,jdbcType=BIGINT},
+                #{item.roleId,jdbcType=BIGINT},
+                #{item.createTime,jdbcType=BIGINT},
+                #{item.updateTime,jdbcType=BIGINT},
+                #{item.creator,jdbcType=BIGINT},
+                #{item.updater,jdbcType=BIGINT}
+                )
+            </foreach>
+        </if>
+    </insert>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -125,14 +144,20 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
-    <select id="getRoleIdByMemberId" parameterType="java.lang.Long" resultType="java.lang.Long">
+    <delete id="deleteByMemberId" parameterType="java.lang.Long">
+        DELETE
+        FROM member_role_relation
+        WHERE member_id = #{memberId,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectRoleIdsByMemberId" parameterType="java.lang.Long" resultType="java.lang.Long">
         SELECT role_id
         FROM member_role_relation FORCE INDEX(idx_member_role)
         WHERE
             member_id = #{memberId,jdbcType=BIGINT}
     </select>
 
-    <select id="getByMemberId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="selectByMemberId" parameterType="java.lang.Long" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM

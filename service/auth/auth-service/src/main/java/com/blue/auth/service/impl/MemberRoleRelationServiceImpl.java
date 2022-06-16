@@ -20,7 +20,6 @@ import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
@@ -62,14 +61,15 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
             throw new BlueException(DATA_NOT_EXIST);
 
         Long memberId = memberRoleRelation.getMemberId();
-        if (isInvalidIdentity(memberId))
+        Long roleId = memberRoleRelation.getRoleId();
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId))
             throw new BlueException(INVALID_IDENTITY);
 
-        memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
-
-        MemberRoleRelation existRelation = memberRoleRelationMapper.getByMemberId(memberId);
-        if (isNotNull(existRelation))
+        List<Long> existRoleIds = memberRoleRelationMapper.selectRoleIdsByMemberId(memberId);
+        if (isNotNull(existRoleIds) && existRoleIds.stream().anyMatch(rid -> rid.equals(roleId)))
             throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
+
+        memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
 
         return memberRoleRelationMapper.insertSelective(memberRoleRelation);
     }
@@ -90,24 +90,64 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        long epochSecond = TIME_STAMP_GETTER.get();
+        List<Long> existRoleIds = memberRoleRelationMapper.selectRoleIdsByMemberId(memberId);
+        if (isNotNull(existRoleIds) && existRoleIds.stream().anyMatch(rid -> rid.equals(roleId)))
+            throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
+
+        Long timeStamp = TIME_STAMP_GETTER.get();
 
         MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
 
+        memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
         memberRoleRelation.setMemberId(memberId);
         memberRoleRelation.setRoleId(roleId);
-        memberRoleRelation.setCreateTime(epochSecond);
-        memberRoleRelation.setUpdateTime(epochSecond);
+        memberRoleRelation.setCreateTime(timeStamp);
+        memberRoleRelation.setUpdateTime(timeStamp);
         memberRoleRelation.setCreator(operatorId);
         memberRoleRelation.setUpdater(operatorId);
 
-        memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
-
-        MemberRoleRelation existRelation = memberRoleRelationMapper.getByMemberId(memberId);
-        if (isNotNull(existRelation))
-            throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
-
         return memberRoleRelationMapper.insertSelective(memberRoleRelation);
+    }
+
+    /**
+     * update member role relation
+     *
+     * @param memberId
+     * @param roleIds
+     * @param operatorId
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public int updateMemberRoleRelations(Long memberId, List<Long> roleIds, Long operatorId) {
+        LOGGER.info("int updateMemberRoleRelations(Long memberId, List<Long> roleIds, Long operatorId), memberId = {}, roleIds = {}, operatorId = {}", memberId, roleIds, operatorId);
+        if (isInvalidIdentity(memberId) || isInvalidIdentities(roleIds) || isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        List<Long> distinctRoleIds = roleIds.stream().distinct().collect(toList());
+
+        Long timeStamp = TIME_STAMP_GETTER.get();
+        List<MemberRoleRelation> memberRoleRelations = distinctRoleIds.stream()
+                .map(roleId -> {
+                    MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
+
+                    memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
+                    memberRoleRelation.setMemberId(memberId);
+                    memberRoleRelation.setRoleId(roleId);
+                    memberRoleRelation.setCreateTime(timeStamp);
+                    memberRoleRelation.setUpdateTime(timeStamp);
+                    memberRoleRelation.setCreator(operatorId);
+                    memberRoleRelation.setUpdater(operatorId);
+
+                    return memberRoleRelation;
+                }).collect(toList());
+
+        int deleted = memberRoleRelationMapper.deleteByMemberId(memberId);
+        int inserted = memberRoleRelationMapper.insertBatch(memberRoleRelations);
+
+        LOGGER.info("deleted = {}, inserted = {}", deleted, inserted);
+
+        return inserted;
     }
 
     /**
@@ -119,23 +159,16 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
+    public int deleteMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
         LOGGER.info("int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        MemberRoleRelation memberRoleRelation = memberRoleRelationMapper.getByMemberId(memberId);
-        if (isNull(memberRoleRelation))
+        Optional<MemberRoleRelation> optional = memberRoleRelationMapper.selectByMemberId(memberId).stream().filter(rel -> rel.getRoleId().equals(roleId)).findAny();
+        if (optional.isEmpty())
             throw new BlueException(MEMBER_NOT_HAS_A_ROLE);
 
-        if (memberRoleRelation.getRoleId().equals(roleId))
-            throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
-
-        memberRoleRelation.setRoleId(roleId);
-        memberRoleRelation.setUpdateTime(TIME_STAMP_GETTER.get());
-        memberRoleRelation.setUpdater(operatorId);
-
-        return memberRoleRelationMapper.updateByPrimaryKeySelective(memberRoleRelation);
+        return memberRoleRelationMapper.deleteByPrimaryKey(optional.get().getId());
     }
 
     /**
@@ -145,12 +178,12 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      * @return
      */
     @Override
-    public Optional<Long> getRoleIdByMemberId(Long memberId) {
-        LOGGER.info("Optional<Long> getRoleIdByMemberId(Long memberId), memberId = {}", memberId);
+    public List<Long> selectRoleIdsByMemberId(Long memberId) {
+        LOGGER.info("List<Long> selectRoleIdsByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return ofNullable(memberRoleRelationMapper.getRoleIdByMemberId(memberId));
+        return memberRoleRelationMapper.selectRoleIdsByMemberId(memberId);
     }
 
     /**
@@ -160,10 +193,10 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      * @return
      */
     @Override
-    public Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId) {
-        LOGGER.info("Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId), memberId = {}", memberId);
+    public Mono<List<Long>> selectRoleIdsMonoByMemberId(Long memberId) {
+        LOGGER.info("Mono<List<Long>> selectRoleIdsMonoByMemberId(Long memberId), memberId = {}", memberId);
 
-        return just(getRoleIdByMemberId(memberId));
+        return just(selectRoleIdsByMemberId(memberId));
     }
 
     /**

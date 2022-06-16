@@ -100,16 +100,6 @@ public interface AuthControlService {
     Mono<Void> refreshSystemAuthorityInfos();
 
     /**
-     * update member role info by member id
-     *
-     * @param memberId
-     * @param roleId
-     * @param operatorId
-     * @return
-     */
-    boolean updateMemberRoleById(Long memberId, Long roleId, Long operatorId);
-
-    /**
      * init auth info for a new member
      *
      * @param memberCredentialInfo
@@ -146,11 +136,11 @@ public interface AuthControlService {
      * update member role info by member id
      *
      * @param memberId
-     * @param roleId
+     * @param roleIds
      * @param operatorId
      * @return
      */
-    Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId);
+    Mono<Boolean> refreshMemberRoleByIds(Long memberId, List<Long> roleIds, Long operatorId);
 
     /**
      * update default role by role id
@@ -210,7 +200,7 @@ public interface AuthControlService {
      * @param access
      * @return
      */
-    Mono<AuthorityBaseOnRole> getAuthorityMonoByAccess(Access access);
+    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access);
 
     /**
      * get member's authority by member id
@@ -218,7 +208,7 @@ public interface AuthControlService {
      * @param memberId
      * @return
      */
-    Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId);
+    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId);
 
     /**
      * insert a new role
@@ -284,13 +274,33 @@ public interface AuthControlService {
     Mono<AuthorityBaseOnRole> updateAuthorityByRole(RoleResRelationParam roleResRelationParam, Long operatorId);
 
     /**
+     * add authority base on member / update member-role-relations
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     * @return
+     */
+    Mono<AuthorityBaseOnRole> insertAuthoritiesByMember(Long memberId, Long roleId, Long operatorId);
+
+    /**
      * update authority base on member / update member-role-relations
      *
      * @param memberRoleRelationParam
      * @param operatorId
      * @return
      */
-    Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId);
+    Mono<List<AuthorityBaseOnRole>> updateAuthoritiesByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId);
+
+    /**
+     * delete authority base on member / update member-role-relations
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     * @return
+     */
+    Mono<AuthorityBaseOnRole> deleteAuthoritiesByMember(Long memberId, Long roleId, Long operatorId);
 
     /**
      * update authority base on role / generate role-resource-relations sync with trans / not support for manager
@@ -306,7 +316,7 @@ public interface AuthControlService {
      * @param memberRoleRelationParam
      * @return
      */
-    AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam);
+    List<AuthorityBaseOnRole> updateAuthoritiesByMemberSync(MemberRoleRelationParam memberRoleRelationParam);
 
     /**
      * select security question mono by member id

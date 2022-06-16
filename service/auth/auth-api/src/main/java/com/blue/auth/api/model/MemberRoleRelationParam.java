@@ -4,7 +4,9 @@ import com.blue.base.inter.Asserter;
 import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
+import java.util.List;
 
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentities;
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 
@@ -20,16 +22,16 @@ public final class MemberRoleRelationParam implements Serializable, Asserter {
 
     private Long memberId;
 
-    private Long roleId;
+    private List<Long> roleIds;
 
-    public MemberRoleRelationParam(Long memberId, Long roleId) {
+    public MemberRoleRelationParam(Long memberId, List<Long> roleIds) {
         this.memberId = memberId;
-        this.roleId = roleId;
+        this.roleIds = roleIds;
     }
 
     @Override
     public void asserts() {
-        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId))
+        if (isInvalidIdentity(memberId) || isInvalidIdentities(roleIds))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -41,19 +43,19 @@ public final class MemberRoleRelationParam implements Serializable, Asserter {
         this.memberId = memberId;
     }
 
-    public Long getRoleId() {
-        return roleId;
+    public List<Long> getRoleIds() {
+        return roleIds;
     }
 
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
+    public void setRoleIds(List<Long> roleIds) {
+        this.roleIds = roleIds;
     }
 
     @Override
     public String toString() {
         return "MemberRoleRelationParam{" +
                 "memberId=" + memberId +
-                ", roleId=" + roleId +
+                ", roleIds=" + roleIds +
                 '}';
     }
 

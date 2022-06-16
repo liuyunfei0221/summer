@@ -26,6 +26,7 @@ import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.common.SpecialAccess.VISITOR;
 import static com.blue.event.constant.EventTypeReference.EVENT_MODEL_FOR_RESOURCE_CONDITION_TYPE;
 import static java.lang.Long.parseLong;
+import static java.util.Collections.singletonList;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -71,7 +72,7 @@ public class EventReportServiceImpl implements EventReportService {
                         dataEvent.addData(JWT.key, jwt);
                         try {
                             MemberPayload memberPayload = jwtProcessor.parse(jwt);
-                            dataEvent.addData(ACCESS.key, accessToJson(new Access(parseLong(memberPayload.getId()), UNKNOWN_LOGGED_IN_ROLE_ID.value, memberPayload.getCredentialType().intern(),
+                            dataEvent.addData(ACCESS.key, accessToJson(new Access(parseLong(memberPayload.getId()), singletonList(UNKNOWN_LOGGED_IN_ROLE_ID.value), memberPayload.getCredentialType().intern(),
                                     memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime()))));
                         } catch (Exception e) {
                             LOGGER.error("parse jwt failed, jwt = {}", jwt);

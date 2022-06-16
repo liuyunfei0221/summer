@@ -3,12 +3,9 @@ package com.blue.auth.remote.provider;
 import com.blue.auth.api.inter.RpcRoleService;
 import com.blue.auth.api.model.MemberRoleInfo;
 import com.blue.auth.api.model.RoleInfo;
-import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.repository.entity.MemberRoleRelation;
-import com.blue.auth.repository.entity.Role;
 import com.blue.auth.service.inter.MemberRoleRelationService;
 import com.blue.auth.service.inter.RoleService;
-import com.blue.base.model.exps.BlueException;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
@@ -17,11 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static com.blue.base.constant.common.ResponseElement.*;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-import static reactor.core.publisher.Mono.error;
+import static com.blue.auth.converter.AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
+import static java.util.stream.Collectors.*;
 import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.zip;
 
 /**
  * rpc role provider
@@ -60,7 +56,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
         return just(true)
                 .subscribeOn(scheduler)
                 .flatMap(v -> roleService.selectRole())
-                .flatMap(roles -> just(roles.stream().map(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))
+                .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))
                 .toFuture();
     }
 
@@ -73,15 +69,10 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     @Override
     public CompletableFuture<MemberRoleInfo> selectRoleInfoByMemberId(Long memberId) {
         return just(memberId).subscribeOn(scheduler)
-                .flatMap(memberRoleRelationService::getRoleIdMonoByMemberId)
-                .flatMap(roleIdOpt ->
-                        roleIdOpt.map(roleService::getRoleMono).orElseGet(() -> error(() -> new BlueException(INVALID_IDENTITY)))
-                )
-                .flatMap(roleOpt ->
-                        roleOpt.map(role -> just(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(role))).orElseGet(() -> error(() -> new BlueException(DATA_NOT_EXIST)))
-                )
-                .flatMap(roleInfo ->
-                        just(new MemberRoleInfo(memberId, roleInfo)))
+                .flatMap(memberRoleRelationService::selectRoleIdsMonoByMemberId)
+                .flatMap(roleService::selectRoleMonoByIds)
+                .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))
+                .flatMap(roleInfos -> just(new MemberRoleInfo(memberId, roleInfos)))
                 .toFuture();
     }
 
@@ -96,23 +87,17 @@ public class RpcRoleServiceProvider implements RpcRoleService {
         return just(memberIds).subscribeOn(scheduler)
                 .flatMap(memberRoleRelationService::selectRelationMonoByMemberIds)
                 .flatMap(relations ->
-                        roleService.selectRoleMonoByIds(relations.stream().map(MemberRoleRelation::getRoleId).collect(toList()))
-                                .flatMap(roles -> {
-                                    Map<Long, Role> idAndRoleMapping = roles.stream().collect(toMap(Role::getId, r -> r, (a, b) -> a));
-                                    return just(relations.stream()
-                                            .map(rel -> {
-                                                MemberRoleInfo memberRoleInfo = new MemberRoleInfo();
-                                                memberRoleInfo.setMemberId(rel.getMemberId());
-
-                                                Role role = idAndRoleMapping.get(rel.getRoleId());
-                                                if (role != null) {
-                                                    memberRoleInfo.setRoleInfo(new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault()));
-                                                    return memberRoleInfo;
-                                                }
-
-                                                throw new BlueException(INTERNAL_SERVER_ERROR);
-                                            }).collect(toList()));
-                                })).toFuture();
+                        zip(roleService.selectRoleMonoByIds(relations.stream().map(MemberRoleRelation::getRoleId).collect(toList()))
+                                        .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toMap(RoleInfo::getId, r -> r, (a, b) -> a)))),
+                                just(relations.stream().collect(groupingBy(MemberRoleRelation::getMemberId))))
+                                .flatMap(tuple2 -> {
+                                    Map<Long, RoleInfo> roleInfoMapping = tuple2.getT1();
+                                    return just(tuple2.getT2().entrySet()
+                                            .stream().map(entry -> new MemberRoleInfo(entry.getKey(),
+                                                    entry.getValue().stream().map(rel -> roleInfoMapping.get(rel.getRoleId())).collect(toList())
+                                            )).collect(toList()));
+                                })
+                ).toFuture();
     }
 
 }

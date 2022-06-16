@@ -5,7 +5,6 @@ import com.blue.auth.repository.entity.MemberRoleRelation;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * member role relation service
@@ -37,11 +36,21 @@ public interface MemberRoleRelationService {
      * update member role relation
      *
      * @param memberId
+     * @param roleIds
+     * @param operatorId
+     * @return
+     */
+    int updateMemberRoleRelations(Long memberId, List<Long> roleIds, Long operatorId);
+
+    /**
+     * update member role relation
+     *
+     * @param memberId
      * @param roleId
      * @param operatorId
      * @return
      */
-    int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
+    int deleteMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
 
     /**
      * get role id by member id
@@ -49,7 +58,7 @@ public interface MemberRoleRelationService {
      * @param memberId
      * @return
      */
-    Optional<Long> getRoleIdByMemberId(Long memberId);
+    List<Long> selectRoleIdsByMemberId(Long memberId);
 
     /**
      * get role id mono by member id
@@ -57,7 +66,7 @@ public interface MemberRoleRelationService {
      * @param memberId
      * @return
      */
-    Mono<Optional<Long>> getRoleIdMonoByMemberId(Long memberId);
+    Mono<List<Long>> selectRoleIdsMonoByMemberId(Long memberId);
 
     /**
      * select member-role-relation by member ids

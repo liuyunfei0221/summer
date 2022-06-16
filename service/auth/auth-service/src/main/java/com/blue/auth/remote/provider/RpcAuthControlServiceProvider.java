@@ -10,6 +10,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static reactor.core.publisher.Mono.just;
@@ -27,8 +28,8 @@ import static reactor.core.publisher.Mono.just;
                 @Method(name = "initMemberAuthInfo", async = false, timeout = 60000, retries = 0),
                 @Method(name = "updateAuthorityByMemberSync", async = false, timeout = 60000, retries = 0),
                 @Method(name = "refreshMemberRoleById", async = false),
-                @Method(name = "getAuthorityByAccess", async = true),
-                @Method(name = "getAuthorityByMemberId", async = true)
+                @Method(name = "selectAuthorityByAccess", async = true),
+                @Method(name = "selectAuthorityByMemberId", async = true)
         })
 public class RpcAuthControlServiceProvider implements RpcAuthControlService {
 
@@ -58,21 +59,21 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      * @return
      */
     @Override
-    public AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
-        return authControlService.updateAuthorityByMemberSync(memberRoleRelationParam);
+    public List<AuthorityBaseOnRole> updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
+        return authControlService.updateAuthoritiesByMemberSync(memberRoleRelationParam);
     }
 
     /**
      * update member's auth by member id
      *
      * @param memberId
-     * @param roleId
+     * @param roleIds
      * @param operatorId
      * @return
      */
     @Override
-    public CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
-        return authControlService.refreshMemberRoleById(memberId, roleId, operatorId).subscribeOn(scheduler).toFuture();
+    public CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds, Long operatorId) {
+        return authControlService.refreshMemberRoleByIds(memberId, roleIds, operatorId).subscribeOn(scheduler).toFuture();
     }
 
     /**
@@ -82,8 +83,8 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      * @return
      */
     @Override
-    public CompletableFuture<AuthorityBaseOnRole> getAuthorityByAccess(Access access) {
-        return just(access).subscribeOn(scheduler).flatMap(authControlService::getAuthorityMonoByAccess).toFuture();
+    public CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByAccess(Access access) {
+        return just(access).subscribeOn(scheduler).flatMap(authControlService::selectAuthoritiesMonoByAccess).toFuture();
     }
 
     /**
@@ -93,8 +94,8 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      * @return
      */
     @Override
-    public CompletableFuture<AuthorityBaseOnRole> getAuthorityByMemberId(Long memberId) {
-        return just(memberId).subscribeOn(scheduler).flatMap(authControlService::getAuthorityMonoByMemberId).toFuture();
+    public CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByMemberId(Long memberId) {
+        return just(memberId).subscribeOn(scheduler).flatMap(authControlService::selectAuthoritiesMonoByMemberId).toFuture();
     }
 
 }

@@ -2,6 +2,8 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.AuthorityBaseOnResource;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
+import com.blue.auth.api.model.ResourceInfo;
+import com.blue.auth.api.model.RoleInfo;
 import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.entity.Role;
@@ -24,6 +26,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.blue.auth.converter.AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER;
+import static com.blue.auth.converter.AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
@@ -33,12 +37,10 @@ import static com.blue.base.constant.common.CacheKey.ROLE_RES_RELS;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 
@@ -267,8 +269,8 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         this.insertRelationBatch(roleResRelations);
         CACHE_DELETER.accept(ROLE_RES_RELS.key);
 
-        return new AuthorityBaseOnRole(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(roleOpt.get()),
-                resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList()));
+        return new AuthorityBaseOnRole(ROLE_2_ROLE_INFO_CONVERTER.apply(roleOpt.get()),
+                resources.stream().map(RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList()));
     }
 
     /**
@@ -278,7 +280,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      * @return
      */
     @Override
-    public Mono<AuthorityBaseOnRole> selectAuthorityMonoByRoleId(Long roleId) {
+    public Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId) {
         LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId), roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
             throw new BlueException(INVALID_IDENTITY);
@@ -300,6 +302,35 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     }
 
     /**
+     * get authority base on role by role id
+     *
+     * @param roleIds
+     * @return
+     */
+    @Override
+    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByRoleIds(List<Long> roleIds) {
+        LOGGER.info("Mono<List<AuthorityBaseOnRole>> selectAuthorityMonoByRoleId(List<Long> roleIds), roleIds = {}", roleIds);
+        if (isInvalidIdentities(roleIds))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return zip(roleService.selectRoleMonoByIds(roleIds).flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toMap(RoleInfo::getId, r -> r, (a, b) -> a)))),
+                this.selectRelationByRoleIds(roleIds))
+                .flatMap(tuple2 -> {
+                    List<RoleResRelation> resRelations = tuple2.getT2();
+                    return zip(just(tuple2.getT1()),
+                            just(resourceService.selectResourceByIds(resRelations.stream().map(RoleResRelation::getResId).collect(toList())))
+                                    .flatMap(resources -> just(resources.stream().map(RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toMap(ResourceInfo::getId, r -> r, (a, b) -> a)))),
+                            just(resRelations.stream().collect(groupingBy(RoleResRelation::getRoleId))));
+                }).flatMap(tuple3 -> {
+                    Map<Long, RoleInfo> roleInfoMapping = tuple3.getT1();
+                    Map<Long, ResourceInfo> resourceInfoMapping = tuple3.getT2();
+                    return just(tuple3.getT3().entrySet().stream()
+                            .map(entry -> new AuthorityBaseOnRole(roleInfoMapping.get(entry.getKey()),
+                                    entry.getValue().stream().map(rel -> resourceInfoMapping.get(rel.getResId())).collect(toList()))).collect(toList()));
+                });
+    }
+
+    /**
      * get authority base on resource by res id
      *
      * @param resId
@@ -314,7 +345,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         return resourceService.getResourceMono(resId)
                 .flatMap(resOpt ->
                         resOpt.map(res ->
-                                        just(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(res)))
+                                        just(RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(res)))
                                 .orElseGet(() -> {
                                     LOGGER.error("res info doesn't exist, resId = {}", resId);
                                     return error(() -> new BlueException(DATA_NOT_EXIST));
@@ -322,7 +353,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
                 ).flatMap(resourceInfo ->
                         this.selectRoleIdsMonoByResId(resId)
                                 .flatMap(roleService::selectRoleMonoByIds)
-                                .flatMap(roles -> just(roles.stream().map(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))
+                                .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))
                                 .flatMap(roleInfos -> just(new AuthorityBaseOnResource(resourceInfo, roleInfos)))
                 );
     }

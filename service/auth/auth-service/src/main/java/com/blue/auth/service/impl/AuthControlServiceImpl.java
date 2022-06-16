@@ -216,10 +216,20 @@ public class AuthControlServiceImpl implements AuthControlService {
         return roleService.getRole(roleId).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     }
 
-    private Role getRoleByMemberId(Long memberId) {
-        return memberRoleRelationService.getRoleIdByMemberId(memberId)
-                .map(roleService::getRole).filter(Optional::isPresent).map(Optional::get)
-                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+    private List<Role> selectRoleByRoleIds(List<Long> roleIds) {
+        return roleService.selectRoleByIds(roleIds);
+    }
+
+    private Role getMaxLevelRoleByRoleIds(List<Long> roleIds) {
+        return selectRoleByRoleIds(roleIds).stream().max((a, b) -> Integer.compare(b.getLevel(), a.getLevel())).orElseThrow(() -> new BlueException(MEMBER_NOT_HAS_A_ROLE));
+    }
+
+    private List<Role> selectRoleByMemberId(Long memberId) {
+        return roleService.selectRoleByIds(memberRoleRelationService.selectRoleIdsByMemberId(memberId));
+    }
+
+    private Role getMaxLevelRoleByMemberId(Long memberId) {
+        return selectRoleByMemberId(memberId).stream().max((a, b) -> Integer.compare(b.getLevel(), a.getLevel())).orElseThrow(() -> new BlueException(MEMBER_NOT_HAS_A_ROLE));
     }
 
     private static final BiFunction<Integer, Integer, Boolean> ROLE_LEVEL_VALIDATOR = (tarLevel, operatorLevel) -> {
@@ -241,20 +251,16 @@ public class AuthControlServiceImpl implements AuthControlService {
         LOGGER.info("BiFunction<Long, Long, Boolean> MEMBER_ROLE_LEVEL_VALIDATOR, targetMemberId = {}, operatorMemberId = {}",
                 targetMemberId, operatorMemberId);
 
-        return ROLE_LEVEL_VALIDATOR.apply(ofNullable(getRoleByMemberId(targetMemberId))
-                        .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)),
-                ofNullable(getRoleByMemberId(operatorMemberId))
-                        .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)));
+        return ROLE_LEVEL_VALIDATOR.apply(getMaxLevelRoleByMemberId(targetMemberId).getLevel(),
+                getMaxLevelRoleByMemberId(operatorMemberId).getLevel());
     };
 
     private final BiFunction<Long, Long, Boolean> TAR_ROLE_LEVEL_VALIDATOR = (targetRoleId, operatorMemberId) -> {
         LOGGER.info("BiFunction<Long, Long, Boolean> TAR_ROLE_LEVEL_VALIDATOR, targetRoleId = {}, operatorMemberId = {}",
                 targetRoleId, operatorMemberId);
 
-        return ROLE_LEVEL_VALIDATOR.apply(ofNullable(getRoleByRoleId(targetRoleId))
-                        .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)),
-                ofNullable(getRoleByMemberId(operatorMemberId))
-                        .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)));
+        return ROLE_LEVEL_VALIDATOR.apply(getRoleByRoleId(targetRoleId).getLevel(),
+                getMaxLevelRoleByMemberId(operatorMemberId).getLevel());
     };
 
     private final BiConsumer<Long, Long> MEMBER_ROLE_LEVEL_ASSERTER = (targetMemberId, operatorMemberId) -> {
@@ -461,34 +467,34 @@ public class AuthControlServiceImpl implements AuthControlService {
         return fromRunnable(authService::refreshSystemAuthorityInfos).then();
     }
 
-    /**
-     * update member role info by member id
-     *
-     * @param memberId
-     * @param roleId
-     * @param operatorId
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public boolean updateMemberRoleById(Long memberId, Long roleId, Long operatorId) {
-        LOGGER.info("void updateMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
-
-        Integer operatorLevel = ofNullable(getRoleByMemberId(operatorId))
-                .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
-
-        ROLE_LEVEL_ASSERTER.accept(ofNullable(getRoleByMemberId(memberId))
-                .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
-        ROLE_LEVEL_ASSERTER.accept(ofNullable(getRoleByRoleId(roleId))
-                .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
-
-        boolean updated = synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
-                memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId)) > 0;
-        if (updated)
-            authService.refreshMemberRoleById(memberId, roleId, operatorId).toFuture().join();
-
-        return updated;
-    }
+//    /**
+//     * update member role info by member id
+//     *
+//     * @param memberId
+//     * @param roleId
+//     * @param operatorId
+//     * @return
+//     */
+//    @Override
+//    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+//    public boolean updateMemberRoleById(Long memberId, Long roleId, Long operatorId) {
+//        LOGGER.info("void updateMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
+//
+//        Integer operatorLevel = ofNullable(getMaxLevelRoleByMemberId(operatorId))
+//                .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+//
+//        ROLE_LEVEL_ASSERTER.accept(ofNullable(getMaxLevelRoleByMemberId(memberId))
+//                .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
+//        ROLE_LEVEL_ASSERTER.accept(ofNullable(getRoleByRoleId(roleId))
+//                .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
+//
+//        boolean updated = synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+//                memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId)) > 0;
+//        if (updated)
+//            authService.refreshMemberRoleById(memberId, roleId, operatorId).toFuture().join();
+//
+//        return updated;
+//    }
 
     /**
      * init auth info for a new member
@@ -648,13 +654,13 @@ public class AuthControlServiceImpl implements AuthControlService {
      * update member role info by member id
      *
      * @param memberId
-     * @param roleId
+     * @param roleIds
      * @param operatorId
      * @return
      */
     @Override
-    public Mono<Boolean> refreshMemberRoleById(Long memberId, Long roleId, Long operatorId) {
-        return authService.refreshMemberRoleById(memberId, roleId, operatorId);
+    public Mono<Boolean> refreshMemberRoleByIds(Long memberId, List<Long> roleIds, Long operatorId) {
+        return authService.refreshMemberRoleById(memberId, roleIds, operatorId);
     }
 
     /**
@@ -674,11 +680,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         if (isNull(targetRole))
             throw new BlueException(DATA_NOT_EXIST);
 
-        Role operatorRole = this.getRoleByMemberId(operatorId);
-        if (isNull(operatorRole))
-            throw new BlueException(DATA_NOT_EXIST);
-
-        ROLE_LEVEL_ASSERTER.accept(targetRole.getLevel(), operatorRole.getLevel());
+        ROLE_LEVEL_ASSERTER.accept(targetRole.getLevel(), this.getMaxLevelRoleByMemberId(operatorId).getLevel());
 
         return just(synchronizedProcessor.handleSupWithLock(DEFAULT_ROLE_UPDATE_SYNC.key, () ->
                 roleService.updateDefaultRole(id, operatorId)));
@@ -806,8 +808,8 @@ public class AuthControlServiceImpl implements AuthControlService {
      * @return
      */
     @Override
-    public Mono<AuthorityBaseOnRole> getAuthorityMonoByAccess(Access access) {
-        return authService.getAuthorityMonoByAccess(access);
+    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access) {
+        return authService.getAuthoritiesMonoByAccess(access);
     }
 
     /**
@@ -817,8 +819,8 @@ public class AuthControlServiceImpl implements AuthControlService {
      * @return
      */
     @Override
-    public Mono<AuthorityBaseOnRole> getAuthorityMonoByMemberId(Long memberId) {
-        return authService.getAuthorityMonoByMemberId(memberId);
+    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId) {
+        return authService.getAuthoritiesMonoByMemberId(memberId);
     }
 
     /**
@@ -835,7 +837,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
         return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
             ROLE_LEVEL_ASSERTER.accept(roleInsertParam.getLevel(),
-                    ofNullable(getRoleByMemberId(operatorId)).map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)));
+                    getMaxLevelRoleByMemberId(operatorId).getLevel());
             return roleService.insertRole(roleInsertParam, operatorId);
         })).doOnSuccess(ri -> {
             LOGGER.info("ri = {}", ri);
@@ -857,7 +859,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
         return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
             ROLE_LEVEL_ASSERTER.accept(roleUpdateParam.getLevel(),
-                    ofNullable(getRoleByMemberId(operatorId)).map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)));
+                    getMaxLevelRoleByMemberId(operatorId).getLevel());
             return roleService.updateRole(roleUpdateParam, operatorId);
         })).doOnSuccess(ri -> {
             LOGGER.info("ri = {}", ri);
@@ -929,13 +931,12 @@ public class AuthControlServiceImpl implements AuthControlService {
         return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
             ofNullable(roleResRelationService.selectRelationByResId(resId))
                     .filter(BlueChecker::isNotEmpty)
-                    .map(rels -> rels.stream().map(RoleResRelation::getRoleId).collect(toList()))
+                    .map(rs -> rs.stream().map(RoleResRelation::getRoleId).collect(toList()))
                     .filter(BlueChecker::isNotEmpty)
                     .map(roleService::selectRoleByIds)
                     .filter(BlueChecker::isNotEmpty)
                     .map(relRoles -> {
-                        Role operatorRole = ofNullable(getRoleByMemberId(operatorId))
-                                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+                        Role operatorRole = getMaxLevelRoleByMemberId(operatorId);
                         Integer operatorLevel = operatorRole.getLevel();
 
                         return relRoles.stream().filter(role ->
@@ -1009,6 +1010,33 @@ public class AuthControlServiceImpl implements AuthControlService {
     }
 
     /**
+     * add authority base on member / update member-role-relations
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public Mono<AuthorityBaseOnRole> insertAuthoritiesByMember(Long memberId, Long roleId, Long operatorId) {
+        LOGGER.info("Mono<AuthorityBaseOnRole> insertAuthoritiesByMember(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
+            throw new BlueException(EMPTY_PARAM);
+
+        return fromFuture(supplyAsync(() ->
+                synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
+                    Integer operatorLevel = getMaxLevelRoleByMemberId(operatorId).getLevel();
+
+                    ROLE_LEVEL_ASSERTER.accept(getMaxLevelRoleByMemberId(memberId).getLevel(), operatorLevel);
+                    ROLE_LEVEL_ASSERTER.accept(getRoleByRoleId(roleId).getLevel(), operatorLevel);
+
+                    return memberRoleRelationService.insertMemberRoleRelation(memberId, roleId, operatorId);
+                }), executorService))
+                .flatMap(ig -> authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId), operatorId))
+                .flatMap(ig -> roleResRelationService.getAuthorityMonoByRoleId(roleId));
+    }
+
+    /**
      * update authority base on member / update member-role-relations
      *
      * @param memberRoleRelationParam
@@ -1016,29 +1044,53 @@ public class AuthControlServiceImpl implements AuthControlService {
      * @return
      */
     @Override
-    public Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId), memberRoleRelationParam = {}, operatorId = {}", memberRoleRelationParam, operatorId);
+    public Mono<List<AuthorityBaseOnRole>> updateAuthoritiesByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId) {
+        LOGGER.info("Mono<List<AuthorityBaseOnRole>> updateAuthoritiesByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId), memberRoleRelationParam = {}, operatorId = {}", memberRoleRelationParam, operatorId);
         if (isNull(memberRoleRelationParam))
             throw new BlueException(EMPTY_PARAM);
         memberRoleRelationParam.asserts();
 
         Long memberId = memberRoleRelationParam.getMemberId();
-        Long roleId = memberRoleRelationParam.getRoleId();
+        List<Long> roleIds = memberRoleRelationParam.getRoleIds();
 
         return fromFuture(supplyAsync(() ->
                 synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
-                    Integer operatorLevel = ofNullable(getRoleByMemberId(operatorId))
-                            .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+                    Integer operatorLevel = getMaxLevelRoleByMemberId(operatorId).getLevel();
 
-                    ROLE_LEVEL_ASSERTER.accept(ofNullable(getRoleByMemberId(memberId))
-                            .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
-                    ROLE_LEVEL_ASSERTER.accept(ofNullable(getRoleByRoleId(roleId))
-                            .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
+                    ROLE_LEVEL_ASSERTER.accept(getMaxLevelRoleByMemberId(memberId).getLevel(), operatorLevel);
+                    ROLE_LEVEL_ASSERTER.accept(getMaxLevelRoleByRoleIds(roleIds).getLevel(), operatorLevel);
 
-                    return memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId);
+                    return memberRoleRelationService.updateMemberRoleRelations(memberId, roleIds, operatorId);
                 }), executorService))
-                .flatMap(ig -> authService.refreshMemberRoleById(memberId, roleId, operatorId))
-                .flatMap(ig -> roleResRelationService.selectAuthorityMonoByRoleId(roleId));
+                .flatMap(ig -> authService.refreshMemberRoleById(memberId, roleIds, operatorId))
+                .flatMap(ig -> roleResRelationService.selectAuthoritiesMonoByRoleIds(roleIds));
+    }
+
+    /**
+     * delete authority base on member / update member-role-relations
+     *
+     * @param memberId
+     * @param roleId
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public Mono<AuthorityBaseOnRole> deleteAuthoritiesByMember(Long memberId, Long roleId, Long operatorId) {
+        LOGGER.info("Mono<AuthorityBaseOnRole> deleteAuthoritiesByMember(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
+        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
+            throw new BlueException(EMPTY_PARAM);
+
+        return fromFuture(supplyAsync(() ->
+                synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
+                    Integer operatorLevel = getMaxLevelRoleByMemberId(operatorId).getLevel();
+
+                    ROLE_LEVEL_ASSERTER.accept(getMaxLevelRoleByMemberId(memberId).getLevel(), operatorLevel);
+                    ROLE_LEVEL_ASSERTER.accept(getRoleByRoleId(roleId).getLevel(), operatorLevel);
+
+                    return memberRoleRelationService.deleteMemberRoleRelation(memberId, roleId, operatorId);
+                }), executorService))
+                .flatMap(ig -> authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId), operatorId))
+                .flatMap(ig -> roleResRelationService.getAuthorityMonoByRoleId(roleId));
     }
 
     /**
@@ -1072,22 +1124,22 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
+    public List<AuthorityBaseOnRole> updateAuthoritiesByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
         LOGGER.info("AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam), memberRoleRelationParam = {}", memberRoleRelationParam);
         if (isNull(memberRoleRelationParam))
             throw new BlueException(EMPTY_PARAM);
         memberRoleRelationParam.asserts();
 
         Long memberId = memberRoleRelationParam.getMemberId();
-        Long roleId = memberRoleRelationParam.getRoleId();
+        List<Long> roleIds = memberRoleRelationParam.getRoleIds();
 
         if (synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
-                memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, BLUE_ID.value)) < 1)
+                memberRoleRelationService.updateMemberRoleRelations(memberId, roleIds, BLUE_ID.value)) < 1)
             throw new BlueException(DATA_NOT_EXIST);
 
-        authService.refreshMemberRoleById(memberId, roleId, BLUE_ID.value).toFuture().join();
+        authService.refreshMemberRoleById(memberId, roleIds, BLUE_ID.value).toFuture().join();
 
-        return roleResRelationService.selectAuthorityMonoByRoleId(roleId).toFuture().join();
+        return roleResRelationService.selectAuthoritiesMonoByRoleIds(roleIds).toFuture().join();
     }
 
     /**

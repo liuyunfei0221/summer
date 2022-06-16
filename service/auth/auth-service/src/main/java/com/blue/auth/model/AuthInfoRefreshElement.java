@@ -1,6 +1,5 @@
 package com.blue.auth.model;
 
-import com.blue.base.constant.auth.AccessInfoRefreshElementType;
 import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.auth.DeviceType;
 
@@ -20,18 +19,19 @@ public final class AuthInfoRefreshElement implements Serializable {
     private Long memberId;
     private List<CredentialType> credentialTypes;
     private List<DeviceType> deviceTypes;
-    private AccessInfoRefreshElementType elementType;
-    private String elementValue;
+
+    private List<Long> roleIds;
+    private String pubKey;
 
     public AuthInfoRefreshElement() {
     }
 
-    public AuthInfoRefreshElement(Long memberId, List<CredentialType> credentialTypes, List<DeviceType> deviceTypes, AccessInfoRefreshElementType elementType, String elementValue) {
+    public AuthInfoRefreshElement(Long memberId, List<CredentialType> credentialTypes, List<DeviceType> deviceTypes, List<Long> roleIds, String pubKey) {
         this.memberId = memberId;
         this.credentialTypes = credentialTypes;
         this.deviceTypes = deviceTypes;
-        this.elementType = elementType;
-        this.elementValue = elementValue;
+        this.roleIds = roleIds;
+        this.pubKey = pubKey;
     }
 
     public Long getMemberId() {
@@ -58,30 +58,30 @@ public final class AuthInfoRefreshElement implements Serializable {
         this.deviceTypes = deviceTypes;
     }
 
-    public AccessInfoRefreshElementType getElementType() {
-        return elementType;
+    public List<Long> getRoleIds() {
+        return roleIds;
     }
 
-    public void setElementType(AccessInfoRefreshElementType elementType) {
-        this.elementType = elementType;
+    public void setRoleIds(List<Long> roleIds) {
+        this.roleIds = roleIds;
     }
 
-    public String getElementValue() {
-        return elementValue;
+    public String getPubKey() {
+        return pubKey;
     }
 
-    public void setElementValue(String elementValue) {
-        this.elementValue = elementValue;
+    public void setPubKey(String pubKey) {
+        this.pubKey = pubKey;
     }
 
     @Override
     public String toString() {
-        return "AuthInfoRefreshParam{" +
+        return "AuthInfoRefreshElement{" +
                 "memberId=" + memberId +
                 ", credentialTypes=" + credentialTypes +
                 ", deviceTypes=" + deviceTypes +
-                ", elementType=" + elementType +
-                ", elementValue='" + elementValue + '\'' +
+                ", roleIds=" + roleIds +
+                ", pubKey='" + pubKey + '\'' +
                 '}';
     }
 
