@@ -45,7 +45,7 @@ public final class GatewayCommonFunctions extends ReactiveCommonFunctions {
         if (throwable instanceof BlueException)
             throw (BlueException) throwable;
 
-        throw (RuntimeException) throwable;
+        throw new RuntimeException(throwable);
     };
 
     /**

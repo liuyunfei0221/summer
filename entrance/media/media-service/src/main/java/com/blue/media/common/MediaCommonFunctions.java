@@ -71,7 +71,7 @@ public final class MediaCommonFunctions extends ReactiveCommonFunctions {
         if (throwable instanceof BlueException)
             throw (BlueException) throwable;
 
-        throw (RuntimeException) throwable;
+        throw new RuntimeException(throwable);
     };
 
     /**

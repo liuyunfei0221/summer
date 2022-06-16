@@ -56,7 +56,7 @@ public final class VerifyCommonFactory extends ReactiveCommonFunctions {
         if (throwable instanceof BlueException)
             throw (BlueException) throwable;
 
-        throw (RuntimeException) throwable;
+        throw new RuntimeException(throwable);
     };
 
     /**

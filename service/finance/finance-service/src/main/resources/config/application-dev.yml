@@ -408,4 +408,4 @@ dubbo:
     check: false
 
 
-debug: true
+debug: false
