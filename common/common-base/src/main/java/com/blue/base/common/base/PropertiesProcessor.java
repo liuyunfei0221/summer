@@ -86,4 +86,21 @@ public final class PropertiesProcessor {
         return getFiles(uri, recursive).stream().map(PropertiesProcessor::loadProp).collect(toList());
     }
 
+    /**
+     * find props by uri
+     *
+     * @param propName
+     * @return
+     */
+    public static Properties loadProps(String propName) {
+        Properties properties = new Properties();
+        try (InputStream inputStream = PropertiesProcessor.class.getClassLoader().getResourceAsStream(propName)) {
+            properties.load(inputStream);
+        } catch (Exception e) {
+            throw new RuntimeException("propName load failed, e = " + e);
+        }
+
+        return properties;
+    }
+
 }

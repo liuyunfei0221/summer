@@ -2,16 +2,12 @@ package com.blue.base.constant.common;
 
 import com.blue.base.model.common.EmptyEvent;
 
-import java.io.File;
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Properties;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.common.base.FileGetter.getFiles;
-import static com.blue.base.common.base.PropertiesProcessor.loadProp;
+import static com.blue.base.common.base.PropertiesProcessor.loadProps;
 import static com.blue.base.common.base.TimeUnity.convertStrToEpochSecond;
 import static java.time.Clock.system;
 import static java.time.ZoneId.of;
@@ -69,7 +65,7 @@ public final class SummerAttr {
      * config prop location
      */
     private static final String
-            MESSAGES_URI = "classpath:config/summer.properties";
+            SUMMER_ATTR_URI = "config/summer.properties";
 
     /**
      * config keys
@@ -82,11 +78,7 @@ public final class SummerAttr {
             ONLINE_TIME_STR_KEY = "onlineTime";
 
     static {
-        List<File> files = getFiles(MESSAGES_URI, false);
-        if (isEmpty(files))
-            throw new RuntimeException("summer.properties is not exist");
-
-        Properties properties = loadProp(files.get(0));
+        Properties properties = loadProps(SUMMER_ATTR_URI);
 
         String identity = properties.getProperty(IDENTITY_ATTR_KEY);
         if (isBlank(identity))
