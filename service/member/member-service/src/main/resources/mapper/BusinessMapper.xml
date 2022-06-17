@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
-<mapper namespace="com.blue.member.repository.mapper.MemberBusinessMapper">
+<mapper namespace="com.blue.member.repository.mapper.BusinessMapper">
 
-    <resultMap id="BaseResultMap" type="com.blue.member.repository.entity.MemberBusiness">
+    <resultMap id="BaseResultMap" type="com.blue.member.repository.entity.Business">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="member_id" jdbcType="BIGINT" property="memberId"/>
         <result column="qr_code" jdbcType="VARCHAR" property="qrCode"/>
@@ -20,18 +20,18 @@
         , member_id, qr_code, profile, extra, status, create_time, update_time
     </sql>
 
-    <insert id="insert" parameterType="com.blue.member.repository.entity.MemberBusiness">
-        insert into member_business (id, member_id, qr_code,
-                                     profile, extra, status,
-                                     create_time, update_time)
+    <insert id="insert" parameterType="com.blue.member.repository.entity.Business">
+        insert into business (id, member_id, qr_code,
+                              profile, extra, status,
+                              create_time, update_time)
         values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{qrCode,jdbcType=VARCHAR},
                 #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{extra,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
                 #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
     </insert>
 
-    <insert id="insertSelective" parameterType="com.blue.member.repository.entity.MemberBusiness">
-        insert into member_business
+    <insert id="insertSelective" parameterType="com.blue.member.repository.entity.Business">
+        insert into business
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -86,8 +86,8 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.MemberBusiness">
-        update member_business
+    <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.Business">
+        update business
         set member_id   = #{memberId,jdbcType=BIGINT},
             qr_code     = #{qrCode,jdbcType=VARCHAR},
             profile     = #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
@@ -98,8 +98,8 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKeySelective" parameterType="com.blue.member.repository.entity.MemberBusiness">
-        update member_business
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.member.repository.entity.Business">
+        update business
         <set>
             <if test="memberId != null">
                 member_id = #{memberId,jdbcType=BIGINT},
@@ -129,14 +129,14 @@
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
-        from member_business
+        from business
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from member_business
+        from business
         where id = #{id,jdbcType=BIGINT}
     </select>
 
@@ -144,7 +144,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        member_business FORCE INDEX(idx_member)
+        business FORCE INDEX(idx_member)
         WHERE
         `member_id` = #{memberId,jdbcType=BIGINT}
         LIMIT 1;
@@ -154,7 +154,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        member_business
+        business
         WHERE
         id IN
         <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">

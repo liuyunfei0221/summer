@@ -2,7 +2,6 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.*;
 import com.blue.auth.component.access.AccessInfoCache;
-import com.blue.auth.config.deploy.BlockingDeploy;
 import com.blue.auth.config.deploy.SessionKeyDeploy;
 import com.blue.auth.event.producer.InvalidLocalAccessProducer;
 import com.blue.auth.model.AccessInfo;
@@ -55,8 +54,6 @@ import static com.blue.base.constant.common.SyncKeyPrefix.ACCESS_ELE_REFRESH_PRE
 import static com.blue.base.constant.common.SyncKeyPrefix.AUTH_INVALID_BY_MEMBER_ID_PRE;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
-import static java.lang.System.currentTimeMillis;
-import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -104,8 +101,7 @@ public class AuthServiceImpl implements AuthService {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public AuthServiceImpl(RefreshInfoService refreshInfoService, JwtProcessor<MemberPayload> jwtProcessor, AccessInfoCache accessInfoCache, StringRedisTemplate stringRedisTemplate,
                            RoleService roleService, ResourceService resourceService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
-                           InvalidLocalAccessProducer invalidLocalAccessProducer, ExecutorService executorService, SynchronizedProcessor synchronizedProcessor,
-                           SessionKeyDeploy sessionKeyDeploy, BlockingDeploy blockingDeploy) {
+                           InvalidLocalAccessProducer invalidLocalAccessProducer, ExecutorService executorService, SynchronizedProcessor synchronizedProcessor, SessionKeyDeploy sessionKeyDeploy) {
         this.refreshInfoService = refreshInfoService;
         this.jwtProcessor = jwtProcessor;
         this.accessInfoCache = accessInfoCache;
@@ -119,13 +115,10 @@ public class AuthServiceImpl implements AuthService {
         this.synchronizedProcessor = synchronizedProcessor;
 
         this.randomIdLen = sessionKeyDeploy.getRanLen();
-        this.maxWaitingMillisForRefresh = blockingDeploy.getBlockingMillis();
         this.refreshExpireMillis = this.jwtProcessor.getRefreshExpireMillis();
     }
 
     private int randomIdLen;
-
-    private long maxWaitingMillisForRefresh;
 
     private long refreshExpireMillis;
 
@@ -150,11 +143,6 @@ public class AuthServiceImpl implements AuthService {
      */
     private static final Function<Resource, String> REAL_URI_GETTER = resource ->
             PATH_SEPARATOR + resource.getModule().intern() + resource.getUri().intern();
-
-    /**
-     * auth info refreshing mark
-     */
-    private volatile boolean authorityInfosRefreshing = true;
 
     /**
      * role id -> resource keys
@@ -188,54 +176,17 @@ public class AuthServiceImpl implements AuthService {
     };
 
     /**
-     * blocker when resource or relation refreshing
-     */
-    private final Supplier<Boolean> RES_OR_REL_REFRESHING_BLOCKER = () -> {
-        if (authorityInfosRefreshing) {
-            long start = currentTimeMillis();
-            while (authorityInfosRefreshing) {
-                if (currentTimeMillis() - start > maxWaitingMillisForRefresh)
-                    throw new BlueException(INTERNAL_SERVER_ERROR);
-                onSpinWait();
-            }
-        }
-        return true;
-    };
-
-    /**
-     * blocker when role info refreshing
-     */
-    private final Supplier<Boolean> ROLE_REFRESHING_BLOCKER = () -> {
-        if (authorityInfosRefreshing) {
-            long start = currentTimeMillis();
-            while (authorityInfosRefreshing) {
-                if (currentTimeMillis() - start > maxWaitingMillisForRefresh)
-                    throw new BlueException(INTERNAL_SERVER_ERROR);
-                onSpinWait();
-            }
-        }
-        return true;
-    };
-
-    /**
      * get resource by resKey
      */
-    private final Function<String, Resource> RESOURCE_GETTER = resourceKey -> {
-        RES_OR_REL_REFRESHING_BLOCKER.get();
-        return keyAndResourceMapping.get(resourceKey);
-    };
+    private final Function<String, Resource> RESOURCE_GETTER = resourceKey ->
+            isNotBlank(resourceKey) ? keyAndResourceMapping.get(resourceKey) : null;
 
     /**
      * authorization checker
      */
-    private final BiFunction<List<Long>, String, Boolean> AUTHORIZATION_RES_CHECKER = (roleIds, resourceKey) -> {
-        if (isEmpty(roleIds) || isBlank(resourceKey))
-            return false;
-
-        RES_OR_REL_REFRESHING_BLOCKER.get();
-
-        return roleIds.stream().anyMatch(roleId -> ofNullable(roleAndResourcesKeyMapping.get(roleId)).map(set -> set.contains(resourceKey)).orElse(false));
-    };
+    private final BiFunction<List<Long>, String, Boolean> AUTHORIZATION_RES_CHECKER = (roleIds, resourceKey) ->
+            isNotEmpty(roleIds) && isNotBlank(resourceKey) &&
+                    roleIds.stream().anyMatch(roleId -> ofNullable(roleAndResourcesKeyMapping.get(roleId)).map(set -> set.contains(resourceKey)).orElse(false));
 
     /**
      * credential type identity -> credential type nature
@@ -260,21 +211,14 @@ public class AuthServiceImpl implements AuthService {
     /**
      * get role info by role id
      */
-    private final Function<List<Long>, List<RoleInfo>> ROLES_INFO_BY_IDS_GETTER = roleIds -> {
-        if (isEmpty(roleIds))
-            return emptyList();
-
-        ROLE_REFRESHING_BLOCKER.get();
-        return roleIds.stream().map(idAndRoleInfoMapping::get).collect(toList());
-    };
+    private final Function<List<Long>, List<RoleInfo>> ROLES_INFO_BY_IDS_GETTER = roleIds ->
+            isNotEmpty(roleIds) ? roleIds.stream().map(idAndRoleInfoMapping::get).collect(toList()) : emptyList();
 
     /**
      * get resource info list by role id
      */
-    private final Function<Long, List<ResourceInfo>> RESOURCES_INFO_BY_ROLE_IDS_GETTER = roleId -> {
-        RES_OR_REL_REFRESHING_BLOCKER.get();
-        return roleAndResourceInfosMapping.get(roleId);
-    };
+    private final Function<Long, List<ResourceInfo>> RESOURCES_INFO_BY_ROLE_IDS_GETTER = roleId ->
+            roleAndResourceInfosMapping.get(roleId);
 
     /**
      * generate redis sessionKey
@@ -298,12 +242,11 @@ public class AuthServiceImpl implements AuthService {
     private static final UnaryOperator<String> GLOBAL_LOCK_KEY_GEN = keyId -> valueOf(keyId.hashCode());
 
     private static final UnaryOperator<String> ACCESS_ELE_REFRESH_SYNC_KEY_GEN = keyId -> {
-        if (isBlank(keyId))
-            throw new BlueException(BAD_REQUEST);
+        if (isNotBlank(keyId))
+            return ACCESS_ELE_REFRESH_PRE.prefix + keyId;
 
-        return ACCESS_ELE_REFRESH_PRE.prefix + keyId;
+        throw new BlueException(BAD_REQUEST);
     };
-
 
     /**
      * delete all refresh token info by key id
@@ -637,14 +580,10 @@ public class AuthServiceImpl implements AuthService {
                 .map(ROLE_2_ROLE_INFO_CONVERTER)
                 .collect(toMap(RoleInfo::getId, r -> r, (a, b) -> a));
 
-        authorityInfosRefreshing = true;
-
         keyAndResourceMapping = tempKeyAndResourceMapping;
         roleAndResourcesKeyMapping = tempRoleAndResourcesKeyMapping;
         roleAndResourceInfosMapping = tempRoleAndResourceInfosMapping;
         idAndRoleInfoMapping = tempIdAndRoleInfoMapping;
-
-        authorityInfosRefreshing = false;
     }
 
     /**
@@ -868,17 +807,34 @@ public class AuthServiceImpl implements AuthService {
      *
      * @param memberId
      * @param roleIds
-     * @param operatorId
      * @return
      */
     @Override
-    public Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds, Long operatorId) {
-        LOGGER.info("Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds, Long operatorId), memberId = {}, roleIds = {}", memberId, roleIds);
-        if (isInvalidIdentity(memberId) || isInvalidIdentities(roleIds) || isInvalidIdentity(operatorId))
+    public Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds) {
+        LOGGER.info("Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds), memberId = {}, roleIds = {}", memberId, roleIds);
+        if (isInvalidIdentity(memberId) || isInvalidIdentities(roleIds))
             throw new BlueException(INVALID_IDENTITY);
 
         AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId,
                 VALID_CREDENTIAL_TYPES, VALID_DEVICE_TYPES, roleIds, null);
+        return fromRunnable(() -> executorService.execute(() ->
+                refreshAuthElementByMultiTypes(authInfoRefreshElement))).then(just(true));
+    }
+
+    /**
+     * update member role info by member id
+     *
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<Boolean> refreshMemberRoleById(Long memberId) {
+        LOGGER.info("Mono<Boolean> refreshMemberRoleById(Long memberId), memberId = {}", memberId);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId,
+                VALID_CREDENTIAL_TYPES, VALID_DEVICE_TYPES, memberRoleRelationService.selectRoleIdsByMemberId(memberId), null);
         return fromRunnable(() -> executorService.execute(() ->
                 refreshAuthElementByMultiTypes(authInfoRefreshElement))).then(just(true));
     }
@@ -892,7 +848,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<String> updateSecKeyByAccess(Access access) {
         LOGGER.info("Mono<String> updateSecKeyByAccess(Access access), access = {}", access);
-        
+
         return isNotNull(access) ?
                 just(initKeyPair())
                         .flatMap(keyPair -> {

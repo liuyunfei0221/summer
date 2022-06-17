@@ -11,12 +11,12 @@ import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 
 /**
- * member-role-relation param
+ * member-role-relation update param
  *
  * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
-public final class MemberRoleRelationParam implements Serializable, Asserter {
+public final class MemberRoleRelationUpdateParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -2777562063739105469L;
 
@@ -24,7 +24,7 @@ public final class MemberRoleRelationParam implements Serializable, Asserter {
 
     private List<Long> roleIds;
 
-    public MemberRoleRelationParam(Long memberId, List<Long> roleIds) {
+    public MemberRoleRelationUpdateParam(Long memberId, List<Long> roleIds) {
         this.memberId = memberId;
         this.roleIds = roleIds;
     }

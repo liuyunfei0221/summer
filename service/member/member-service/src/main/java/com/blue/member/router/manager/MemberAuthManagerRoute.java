@@ -1,6 +1,6 @@
 package com.blue.member.router.manager;
 
-import com.blue.member.handler.manager.MemberAuthorityManagerHandler;
+import com.blue.member.handler.manager.MemberAuthManagerHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -19,16 +19,16 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
  * @author liuyunfei
  */
 @Configuration
-public class MemberAuthorityManagerRoute {
+public class MemberAuthManagerRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> memberAuthorityManagerRouter(MemberAuthorityManagerHandler memberAuthorityManagerHandler) {
+    RouterFunction<ServerResponse> memberAuthManagerRouter(MemberAuthManagerHandler memberAuthManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-member/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/authorities", accept(APPLICATION_JSON), memberAuthorityManagerHandler::selectAuthority)
+                .POST("/authorities", accept(APPLICATION_JSON), memberAuthManagerHandler::selectAuthority)
                 .build();
 
         return nest(pathPredicate, routerFunction);

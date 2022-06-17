@@ -5,12 +5,12 @@ import java.io.Serializable;
 import static com.blue.base.common.base.BlueChecker.isNull;
 
 /**
- * member business entity
+ * business entity
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class MemberBusiness implements Serializable {
+public final class Business implements Serializable {
 
     private static final long serialVersionUID = -3568992912805360682L;
 
@@ -96,7 +96,7 @@ public final class MemberBusiness implements Serializable {
 
     @Override
     public String toString() {
-        return "MemberBusiness{" +
+        return "Business{" +
                 "id=" + id +
                 ", memberId=" + memberId +
                 ", qrCode='" + qrCode + '\'' +

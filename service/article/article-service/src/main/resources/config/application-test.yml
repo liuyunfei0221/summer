@@ -1,6 +1,6 @@
 server:
-  # address: 127.0.0.1
-  port: 29000
+  address: 127.0.0.1
+  port: 41000
   netty:
     connection-timeout: 6s
     h2c-max-content-length: 0B
@@ -37,16 +37,16 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
   client:
     service-url:
-      defaultZone: http://localhost:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
     registry-fetch-interval-seconds: 300
 
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://192.168.182.132:3306/finance_0
+    - url: jdbc:mysql://101.43.192.155:3306/article_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
-      password: 1024
+      password: LiuZhiyi20200805
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 30000
       maxLifetime: 1800000
@@ -57,10 +57,10 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://192.168.182.132:3306/finance_1
+    - url: jdbc:mysql://43.138.44.171:3306/article_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
-      password: 1024
+      password: LiuZhiyi20200805
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 30000
       maxLifetime: 1800000
@@ -71,16 +71,16 @@ data:
       readOnly: false
       autoCommit: false
   shardingTables:
-    - tableName: finance_account
+    - tableName: article
       shardingColumn: id
 
-    - tableName: organization
+    - tableName: link
       shardingColumn: id
 
-    - tableName: dynamic_handler
+    - tableName: comment
       shardingColumn: id
 
-    - tableName: dynamic_resource
+    - tableName: reply
       shardingColumn: id
   shardingTableSizePerDataBase: 2
   dataCenterToDatabaseMappings:
@@ -95,10 +95,6 @@ data:
 
     - id: 1
       index: 1
-  forceWriteTables:
-    - tableName: undo_log
-      dataCenter: 0
-      worker: 0
   broadcastTables: [ ]
   safeRowBoundsEnabled: false
   safeResultHandlerEnabled: false
@@ -137,7 +133,7 @@ data:
 identity:
   dataCenter: 0
   worker: 0
-  serviceName: blue-finance
+  serviceName: blue-article
   bootSeconds: 1618790400
   bufferPower: 3
   paddingFactor: 50
@@ -151,126 +147,61 @@ identity:
   paddingScheduledDelayMillis: 15000
 
 
-dynamicapi:
-  path: /blue-finance/dynamic
-  blockingMillis: 5000
+mongo:
+  addressAttrs:
+    - address: 43.138.44.171
+      port: 27017
+  auth: true
+  authBase: admin
+  userName: blue
+  password: LiuZhiyi20200805
+  database: article
+  retryReads: true
+  retryWrites: false
+  applicationName: blue-article
+  uuidRepresentation: JAVA_LEGACY
+  socketConnectTimeoutMillis: 5000
+  socketReadTimeoutMillis: 5000
+  socketReceiveBufferSize: 1000000
+  socketSendBufferSize: 1024
+  clusterConnectionMode: MULTIPLE
+  clusterType: STANDALONE
+  clusterLocalThresholdMillis: 5000
+  serverSelectionTimeoutMillis: 5000
+  poolMaxSize: 12
+  poolMinSize: 4
+  poolMaxWaitTimeMillis: 3000
+  poolMaxConnectionLifeTimeMillis: 60000
+  poolMaxConnectionIdleTimeMillis: 60000
+  poolMaintenanceInitialDelayMillis: 3000
+  poolMaintenanceFrequencyMillis: 60000
+  sslEnabled: false
 
 
-seata:
-  enabled: true
-  application-id: finance_trans
-  tx-service-group: summer_group
-  enable-auto-data-source-proxy: false
-  data-source-proxy-mode: AT
-  use-jdk-proxy: false
-  scan-packages: [ com.blue.finance.service.impl ]
-  excludes-for-scanning:
-  excludes-for-auto-proxying: com.zaxxer.hikari.HikariDataSource
-  access-key:
-  secret-key:
-  client:
-    rm:
-      async-commitbuffer-limit: 10000
-      report-retry-count: 5
-      table-meta-check-enable: false
-      table-meta-checker-interval: 60000
-      report-success-enable: false
-      saga-branch-register-enable: false
-      saga-json-parser: jackson
-      saga-retry-persist-mode-update: false
-      saga-compensate-persist-mode-update: false
-      tcc-action-interceptor-order: -2147482648
-      branch-execution-timeout-XA: 60000
-      connection-two-phase-hold-timeout-XA: 60000
-      sql-parser-type: druid
-      lock:
-        retry-interval: 10
-        retry-times: 30
-        retry-policy-branch-rollback-on-conflict: true
-    tm:
-      commit-retry-count: 5
-      rollback-retry-count: 5
-      default-global-transaction-timeout: 60000
-      degrade-check: false
-      degrade-check-allow-times: 10
-      degrade-check-period: 2000
-      interceptor-order: -2147482648
-    undo:
-      data-validation: true
-      log-serialization: jackson
-      log-table: undo_log
-      only-care-update-columns: true
-      compress:
-        enable: true
-        type: zip
-        threshold: 64k
-    load-balance:
-      type: RandomLoadBalance
-      virtual-nodes: 10
-  service:
-    vgroup-mapping:
-      summer_group: default
-    grouplist:
-      default: 192.168.182.132:8091
-    enable-degrade: false
-    disable-global-transaction: false
-  log:
-    exception-rate: 100
-  shutdown:
-    wait: 3
-  thread-factory:
-    boss-thread-prefix: NettyBoss
-    worker-thread-prefix: NettyServerNIOWorker
-    server-executor-thread-prefix: NettyServerBizHandler
-    share-boss-worker: false
-    client-selector-thread-prefix: NettyClientSelector
-    client-selector-thread-size: 1
-    client-worker-thread-prefix: NettyClientWorkerThread
-    boss-thread-size: 1
-    worker-thread-size: default
-  transport:
-    type: TCP
-    server: NIO
-    heartbeat: true
-    serialization: seata
-    compressor: none
-    enable-client-batch-send-request: false
-    enable-tm-client-batch-send-request: false
-    enable-rm-client-batch-send-request: false
-    enable-tc-server-batch-send-response: false
-    rpc-rm-request-timeout: 60000
-    rpc-tm-request-timeout: 60000
-    rpc-tc-request-timeout: 60000
-  config:
-    custom:
-      name: ""
-    type: zk
-    zk:
-      server-addr: 192.168.182.132:2181
-      session-timeout: 60000
-      connect-timeout: 60000
-      username: ""
-      password: ""
-      nodePath: /seata/seata.properties
-  registry:
-    custom:
-      name: ""
-    type: zk
-    zk:
-      cluster: default
-      server-addr: 192.168.182.132:2181
-      session-timeout: 60000
-      connect-timeout: 60000
-      username: ""
-      password: ""
+es:
+  esNodes:
+    - server:
+        host: 127.0.0.1
+        port: 9200
+        schema: http
+      boundServers: [ ]
+      name: blue-es
+      version: 7.14.1
+      roles: [ ]
+      attributes: [ ]
+  defaultHeaders:
+  pathPrefix: /
+  strictDeprecationMode: false
+  metaHeaderEnabled: false
+  compressionEnabled: false
 
 
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 192.168.182.132
+  host: 43.138.44.171
   port: 6379
-  password:
+  password: LiuZhiyi20200805
   maxRedirects: 4
   minIdle: 4
   maxIdle: 64
@@ -290,8 +221,12 @@ cache:
   commandTimeout: 4
   shutdownTimeout: 8
   shutdownQuietPeriod: 4
-  shareNativeConnection: false
   entryTtl: 60
+
+
+localcache:
+  size: 300
+  expireTime: 120
 
 
 executor:
@@ -309,23 +244,12 @@ scheduler:
   ttlSeconds: 128
 
 
-curator:
-  connectString: 192.168.182.132:2181
-  connectionTimeoutMs: 60000
-  sessionTimeoutMs: 60000
-  maxCloseWaitMs: 12000
-  namespace: finance
-  retryBaseSleepTimeMs: 3000
-  retryMaxSleepTimeMs: 5000
-  retryMaxRetries: 2
-
-
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 192.168.182.132
+  host: 43.138.44.171
   port: 6379
-  password:
+  password: LiuZhiyi20200805
   scanInterval: 8000
   checkSlotsCoverage: false
   tcpNoDelay: true
@@ -371,35 +295,28 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://192.168.182.132
+    address: zookeeper://43.138.44.171
     port: 2181
-    username:
-    password:
+    username: blue
+    password: LiuZhiyi20200805
     group: summer
-    file: D:/locallogs/dubbo/finance/registry.properties
+    file: D:/locallogs/dubbo/article/registry.properties
     check: false
     timeout: 60000
     simplified: true
   metadata-report:
-    address: zookeeper://192.168.182.132
+    address: zookeeper://43.138.44.171
     port: 2181
     username: blue
     password: LiuZhiyi20200805
     timeout: 60000
     default: true
     check: false
-  application:
-    id: summer-finance
-    name: summer-finance
-    owner: blue
-    organization: blue
-    shutwait: 20s
-    enable-file-cache: false
   protocol:
     name: dubbo
     host: localhost
-    port: 30000
-    accesslog: D:/locallogs/dubbo/finance/access.log
+    port: 42000
+    accesslog: D:/locallogs/dubbo/article/access.log
   provider:
     retries: 0
     timeout: 10000

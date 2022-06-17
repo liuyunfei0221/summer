@@ -1,8 +1,8 @@
 server:
-  # address: 127.0.0.1
-  port: 16000
+  address: 127.0.0.1
+  port: 21000
   netty:
-    connection-timeout: 16s
+    connection-timeout: 6s
     h2c-max-content-length: 0B
     initial-buffer-size: 128B
     max-chunk-size: 8KB
@@ -37,74 +37,26 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
   client:
     service-url:
-      defaultZone: http://localhost:3000/eureka/
-    registry-fetch-interval-seconds: 16
-
-
-cors:
-  allowedOrigins: [ "*" ]
-  allowedMethods: [ "*" ]
-  allowedHeaders: [ "*" ]
-  exposedHeaders: [ "*" ]
-  allowCredentials: true
-  maxAgeSeconds: 1728000
-  allowedOriginPatterns: [ /** ]
-
-
-web:
-  maxInMemorySize: 4096
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
+    registry-fetch-interval-seconds: 300
 
 
 data:
-  shardingDatabases:
-    - url: jdbc:mysql://192.168.182.132:3306/media_0
-      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: 1024
-      driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 30000
-      maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
-      idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
-
-    - url: jdbc:mysql://192.168.182.132:3306/media_1
-      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: 1024
-      driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 30000
-      maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
-      idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
-  shardingTables:
-    - tableName: attachment
-      shardingColumn: id
-
-    - tableName: download_history
-      shardingColumn: id
-  shardingTableSizePerDataBase: 2
-  dataCenterToDatabaseMappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
-  workerToTableMappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
-  broadcastTables: [ ]
   singleDatabasesWithTables:
+    - url: jdbc:mysql://43.138.111.53:3306/base
+      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: LiuZhiyi20200805
+      driverClassName: com.mysql.cj.jdbc.Driver
+      connectionTimeout: 30000
+      maxLifetime: 1800000
+      maximumPoolSize: 4
+      minimumIdle: 2
+      idleTimeout: 5
+      testQuery: SELECT 1 FROM DUAL
+      readOnly: false
+      autoCommit: false
+      singleTables: [ style ]
   safeRowBoundsEnabled: false
   safeResultHandlerEnabled: false
   mapUnderscoreToCamelCase: false
@@ -142,7 +94,7 @@ data:
 identity:
   dataCenter: 0
   worker: 0
-  serviceName: blue-verify
+  serviceName: blue-base
   bootSeconds: 1618790400
   bufferPower: 3
   paddingFactor: 50
@@ -156,28 +108,44 @@ identity:
   paddingScheduledDelayMillis: 15000
 
 
-executor:
-  corePoolSize: 2
-  maximumPoolSize: 8
-  keepAliveSeconds: 64
-  blockingQueueCapacity: 2048
-  threadNamePre: blue-summer
-
-
-scheduler:
-  threadCap: 4
-  queuedTaskCap: 4096
-  threadNamePre: blue-summer-scheduler
-  ttlSeconds: 128
+mongo:
+  addressAttrs:
+    - address: 101.43.192.155
+      port: 27017
+  auth: true
+  authBase: admin
+  userName: blue
+  password: LiuZhiyi20200805
+  database: base
+  retryReads: true
+  retryWrites: false
+  applicationName: blue-base
+  uuidRepresentation: JAVA_LEGACY
+  socketConnectTimeoutMillis: 5000
+  socketReadTimeoutMillis: 5000
+  socketReceiveBufferSize: 1000000
+  socketSendBufferSize: 1024
+  clusterConnectionMode: MULTIPLE
+  clusterType: STANDALONE
+  clusterLocalThresholdMillis: 5000
+  serverSelectionTimeoutMillis: 5000
+  poolMaxSize: 12
+  poolMinSize: 4
+  poolMaxWaitTimeMillis: 3000
+  poolMaxConnectionLifeTimeMillis: 60000
+  poolMaxConnectionIdleTimeMillis: 60000
+  poolMaintenanceInitialDelayMillis: 3000
+  poolMaintenanceFrequencyMillis: 60000
+  sslEnabled: false
 
 
 cache:
   serverMode: SINGLE
-  nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
-  password: sfakjfiju99jjf87LJSDDU8
-  maxRedirects: 4
-  host: 192.168.182.132
+  nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
+  host: 43.138.44.171
   port: 6379
+  password: LiuZhiyi20200805
+  maxRedirects: 4
   minIdle: 4
   maxIdle: 64
   maxTotal: 128
@@ -199,25 +167,64 @@ cache:
   entryTtl: 60
 
 
-limit:
-  replenishRate: 1
-  burstCapacity: 3
+executor:
+  corePoolSize: 4
+  maximumPoolSize: 8
+  keepAliveSeconds: 64
+  blockingQueueCapacity: 128
+  threadNamePre: blue-summer
 
 
-risk:
-  illegalExpireSeconds: 10
+scheduler:
+  threadCap: 4
+  queuedTaskCap: 4096
+  threadNamePre: blue-summer-scheduler
+  ttlSeconds: 128
 
 
-request:
-  validContentTypes: [ application/json ]
-  maxUriLength: 256
-  maxHeaderCount: 16
-  maxHeaderLength: 2048
-  maxContentLength: 2048
+redisson:
+  serverMode: SINGLE
+  nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
+  host: 43.138.44.171
+  port: 6379
+  password: LiuZhiyi20200805
+  scanInterval: 8000
+  checkSlotsCoverage: false
+  tcpNoDelay: true
+  masterConnectionMinimumIdleSize: 2
+  slaveConnectionMinimumIdleSize: 2
+  masterConnectionPoolSize: 2
+  slaveConnectionPoolSize: 2
+  subscriptionConnectionMinimumIdleSize: 2
+  subscriptionConnectionPoolSize: 2
+  subscriptionsPerConnection: 2
+  subscriptionMode: MASTER
+  timeout: 60000
+  connectTimeout: 60000
+  idleConnectionTimeout: 32000
+  retryAttempts: 2
+  retryInterval: 4000
+  keepAlive: true
+  dnsMonitoringInterval: -1
+  pingConnectionInterval: 300000
+  executorCorePoolSize: 4
+  executorMaximumPoolSize: 8
+  executorkeepAliveSeconds: 64
+  executorBlockingQueueCapacity: 128
+  maxTryLockWaitingMillis: 10000
 
 
-response:
-  existenceBodyTypes: [ application/json ]
+rest:
+  maxConnections: 64
+  workerCount: 64
+  useGlobalResources: false
+  connectTimeoutMillis: 7000
+  useTcpNoDelay: false
+  protocols: [ HTTP11,H2,H2C ]
+  responseTimeoutMillis: 3000
+  readTimeoutMillis: 3000
+  writeTimeoutMillis: 3000
+  maxByteInMemorySize: 1048576
 
 
 dubbo:
@@ -226,14 +233,26 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://192.168.182.132:2181
+    address: zookeeper://43.138.44.171
+    port: 2181
+    username: blue
+    password: LiuZhiyi20200805
     group: summer
-    file: D:/locallogs/dubbo/verify/registry.properties
+    file: D:/locallogs/dubbo/base/registry.properties
     check: false
     timeout: 60000
+    simplified: true
+  metadata-report:
+    address: zookeeper://43.138.44.171
+    port: 2181
+    username: blue
+    password: LiuZhiyi20200805
+    timeout: 60000
+    default: true
+    check: false
   application:
-    id: summer-verify
-    name: summer-verify
+    id: summer-base
+    name: summer-base
     owner: blue
     organization: blue
     shutwait: 20s
@@ -241,8 +260,8 @@ dubbo:
   protocol:
     name: dubbo
     host: localhost
-    port: 17000
-    accesslog: D:/locallogs/dubbo/verify/access.log
+    port: 22000
+    accesslog: D:/locallogs/dubbo/base/access.log
   provider:
     retries: 0
     timeout: 10000
@@ -255,10 +274,25 @@ dubbo:
     check: false
 
 
+caffeine:
+  countryMaximumSize: 1
+  stateMaximumSize: 1024
+  cityMaximumSize: 32768
+  areaMaximumSize: 65536
+  styleMaximumSize: 32
+  expireSeconds: 30
+
+
+dict:
+  dictTypeMaximumSize: 1
+  dictMaximumSize: 1024
+  expireSeconds: 259200
+
+
 producers:
   configs:
-    requestEvent:
-      services: [ 192.168.182.132:6650 ]
+    regionInfosInvalid:
+      services: [ 43.138.111.53:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -287,8 +321,8 @@ producers:
       enableProxy: false
       proxyServiceUrl:
       proxyProtocol: SNI
-      topic: requestEvent
-      producerName: verifyRequestEventProducer000
+      topic: regionInfosInvalid
+      producerName: regionInfosInvalidProducer000
       accessMode: Shared
       sendTimeoutMillis: 30000
       maxPendingMessages: 1000
@@ -313,8 +347,8 @@ producers:
 
 consumers:
   configs:
-    illegalMark:
-      services: [ 192.168.182.132:6650 ]
+    regionInfosInvalid:
+      services: [ 43.138.111.53:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -343,20 +377,20 @@ consumers:
       enableProxy: false
       proxyServiceUrl:
       proxyProtocol: SNI
-      topics: [ illegalMark ]
+      topics: [ regionInfosInvalid ]
       topicsPattern:
-      subscriptionName: illegalMarkSubscription
+      subscriptionName: regionInfosInvalidSubscription
       ackTimeoutMillis: 2000
       enableAckReceipt: true
       ackTimeoutTickTimeMillis: 1000
       negativeAckRedeliveryDelayMillis: 100
-      subscriptionType: Failover
+      subscriptionType: Shared
       subscriptionMode: Durable
       receiverQueueSize: 1000
       acknowledgementsGroupTimeMillis: 100
       replicateSubscriptionState: false
       maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: verifyIllegalMarkConsumer000
+      consumerName: regionInfosInvalidConsumer000
       readCompacted: false
       patternAutoDiscoveryPeriodMillis: 1
       priorityLevel: 0
@@ -371,12 +405,16 @@ consumers:
       autoAckOldestChunkedMessageOnQueueFull: true
       expireTimeOfIncompleteChunkedMessageMillis: 2000
       poolMessages: false
+      enableMessageListener: false
+      enableConsumerEventListener: false
+      enableIntercept: false
+      interceptors:
       enableEncrypt: false
       encryptionKey:
       consumerCryptoFailureAction: FAIL
       enableDeadLetter: true
-      deadLetterTopic: illegalMark
-      retryLetterTopic: illegalMark
+      deadLetterTopic: regionInfosInvalid
+      retryLetterTopic: regionInfosInvalid
       maxRedeliverCount: 1000
       startMessageIdInclusive: false
       enableBatchReceive: false
@@ -386,88 +424,6 @@ consumers:
       pollDurationMills: 1000
       workingThreads: 2
       enableNegativeAcknowledge: true
-
-
-verify:
-  keyLength: 16
-  randomType: ALPHANUMERIC
-  verifyLength: 16
-  minLength: 4
-  maxLength: 32
-  expireMillis: 300000
-  repeatable: true
-
-
-imagev:
-  keyLength: 16
-  keyRandomType: ALPHANUMERIC
-  randomType: ALPHANUMERIC
-  imageType: png
-  verifyLength: 7
-  expireMillis: 300000
-  allow: 10
-  sendIntervalMillis: 30000
-
-smsv:
-  verifyLength: 7
-  expireMillis: 300000
-  allow: 1
-  sendIntervalMillis: 30000
-
-mailv:
-  verifyLength: 7
-  expireMillis: 300000
-  allow: 1
-  sendIntervalMillis: 30000
-
-
-image:
-  border: true
-  borderColor: green
-  borderThickness: 1
-  producerImpl: com.google.code.kaptcha.impl.DefaultKaptcha
-  textProducerImpl: com.google.code.kaptcha.text.impl.DefaultTextCreator
-  textProducerChar: blue summer
-  textProducerCharLength: 5
-  textProducerFontNames: Arial,Courier
-  textProducerFontSize: 40
-  textProducerFontColor: cyan
-  textProducerCharSpace: 2
-  noiseImpl: com.google.code.kaptcha.impl.DefaultNoise
-  noiseColor: cyan
-  obscurificatorImpl: com.google.code.kaptcha.impl.WaterRipple
-  wordImpl: com.google.code.kaptcha.text.impl.DefaultWordRenderer
-  backgroundImpl: com.google.code.kaptcha.impl.DefaultBackground
-  backgroundClearFrom: red
-  backgroundClearTo: yellow
-  imageWidth: 200
-  imageHeight: 50
-
-
-sender:
-  smtpAttrs:
-    - user: yunfei0221@outlook.com
-      password: Fei19890116
-      props:
-        mail.smtp.auth: true
-        mail.smtp.host: smtp.office365.com
-        mail.smtp.port: 587
-        mail.smtp.ssl: true
-        mail.smtp.starttls.enable: true
-        mail.debug: false
-
-  corePoolSize: 2
-  maximumPoolSize: 8
-  keepAliveSeconds: 64
-  blockingQueueCapacity: 2048
-  threadNamePre: blue-mail-sender
-  bufferSize: 2
-  throwableForRetry: [ jakarta.mail.FolderClosedException ]
-  retryTimes: 1
-  withDKIM: false
-  domainKeyFile: classpath:dkim/selector1.pem
-  domain: outlook.com
-  selector: selector1
 
 
 debug: false

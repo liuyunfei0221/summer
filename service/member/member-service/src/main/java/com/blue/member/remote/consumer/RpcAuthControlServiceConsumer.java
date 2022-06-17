@@ -54,11 +54,10 @@ public class RpcAuthControlServiceConsumer {
      *
      * @param memberId
      * @param roleIds
-     * @param operatorId
      * @return
      */
-    Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds, Long operatorId) {
-        return fromFuture(rpcAuthControlService.refreshMemberRoleById(memberId, roleIds, operatorId)).subscribeOn(scheduler).subscribeOn(scheduler);
+    Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds) {
+        return fromFuture(rpcAuthControlService.refreshMemberRoleById(memberId, roleIds)).subscribeOn(scheduler).subscribeOn(scheduler);
     }
 
     /**

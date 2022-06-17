@@ -1,6 +1,7 @@
 package com.blue.auth.handler.manager;
 
-import com.blue.auth.api.model.MemberRoleRelationParam;
+import com.blue.auth.api.model.MemberRoleRelationInsertOrDeleteParam;
+import com.blue.auth.api.model.MemberRoleRelationUpdateParam;
 import com.blue.auth.api.model.RoleResRelationParam;
 import com.blue.auth.service.inter.AuthControlService;
 import com.blue.base.model.common.BlueResponse;
@@ -44,9 +45,25 @@ public class RelationManagerHandler {
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> authControlService.updateAuthorityByRole(tuple2.getT1(), tuple2.getT2().getId()))
-                .flatMap(ri ->
+                .flatMap(a ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, a, serverRequest), BlueResponse.class));
+    }
+
+    /**
+     * insert member-role-relation
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> insertAuthorityByMember(ServerRequest serverRequest) {
+        return zip(serverRequest.bodyToMono(MemberRoleRelationInsertOrDeleteParam.class)
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 -> authControlService.insertAuthorityByMember(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(a ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, a, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -55,14 +72,30 @@ public class RelationManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> updateAuthorityByMember(ServerRequest serverRequest) {
-        return zip(serverRequest.bodyToMono(MemberRoleRelationParam.class)
+    public Mono<ServerResponse> updateAuthoritiesByMember(ServerRequest serverRequest) {
+        return zip(serverRequest.bodyToMono(MemberRoleRelationUpdateParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> authControlService.updateAuthoritiesByMember(tuple2.getT1(), tuple2.getT2().getId()))
-                .flatMap(ri ->
+                .flatMap(a ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, a, serverRequest), BlueResponse.class));
+    }
+
+    /**
+     * delete member-role-relation
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> deleteAuthorityByMember(ServerRequest serverRequest) {
+        return zip(serverRequest.bodyToMono(MemberRoleRelationInsertOrDeleteParam.class)
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
+                getAccessReact(serverRequest))
+                .flatMap(tuple2 -> authControlService.deleteAuthorityByMember(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(a ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, a, serverRequest), BlueResponse.class));
     }
 
 }

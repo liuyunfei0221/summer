@@ -29,6 +29,8 @@ public interface MemberRoleRelationMapper {
 
     MemberRoleRelation selectByPrimaryKey(Long id);
 
+    MemberRoleRelation selectByMemberIdAndRoleId(@Param("memberId") Long memberId, @Param("roleId") Long roleId);
+
     List<Long> selectRoleIdsByMemberId(@Param("memberId") Long memberId);
 
     List<MemberRoleRelation> selectByMemberId(@Param("memberId") Long memberId);

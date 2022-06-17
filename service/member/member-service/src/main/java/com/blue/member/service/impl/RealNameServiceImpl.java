@@ -4,9 +4,9 @@ import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberRealNameInfo;
-import com.blue.member.repository.entity.MemberRealName;
-import com.blue.member.repository.mapper.MemberRealNameMapper;
-import com.blue.member.service.inter.MemberRealNameService;
+import com.blue.member.repository.entity.RealName;
+import com.blue.member.repository.mapper.RealNameMapper;
+import com.blue.member.service.inter.RealNameService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -36,28 +36,28 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
-public class MemberRealNameServiceImpl implements MemberRealNameService {
+public class RealNameServiceImpl implements RealNameService {
 
-    private static final Logger LOGGER = getLogger(MemberRealNameServiceImpl.class);
+    private static final Logger LOGGER = getLogger(RealNameServiceImpl.class);
 
-    private MemberRealNameMapper memberRealNameMapper;
+    private RealNameMapper realNameMapper;
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public MemberRealNameServiceImpl(MemberRealNameMapper memberRealNameMapper, BlueIdentityProcessor blueIdentityProcessor) {
-        this.memberRealNameMapper = memberRealNameMapper;
+    public RealNameServiceImpl(RealNameMapper realNameMapper, BlueIdentityProcessor blueIdentityProcessor) {
+        this.realNameMapper = realNameMapper;
         this.blueIdentityProcessor = blueIdentityProcessor;
     }
 
     /**
      * is a number detail exist?
      */
-    private final Consumer<MemberRealName> MEMBER_REAL_NAME_EXIST_VALIDATOR = mrn ->
+    private final Consumer<RealName> MEMBER_REAL_NAME_EXIST_VALIDATOR = mrn ->
             ofNullable(mrn.getMemberId())
                     .filter(BlueChecker::isValidIdentity)
                     .ifPresent(memberId -> {
-                        if (isNotNull(memberRealNameMapper.selectByMemberId(memberId)))
+                        if (isNotNull(realNameMapper.selectByMemberId(memberId)))
                             throw new BlueException(DATA_ALREADY_EXIST);
                     });
 
@@ -68,12 +68,12 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
      * @return
      */
     @Override
-    public Optional<MemberRealName> getMemberRealName(Long id) {
+    public Optional<RealName> getMemberRealName(Long id) {
         LOGGER.info("Optional<MemberRealName> selectMemberRealNameByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return ofNullable(memberRealNameMapper.selectByPrimaryKey(id));
+        return ofNullable(realNameMapper.selectByPrimaryKey(id));
     }
 
     /**
@@ -83,12 +83,12 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberRealName>> getMemberRealNameMono(Long id) {
+    public Mono<Optional<RealName>> getMemberRealNameMono(Long id) {
         LOGGER.info("Mono<Optional<MemberRealName>> selectMemberRealNameMonoByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(ofNullable(memberRealNameMapper.selectByPrimaryKey(id)));
+        return just(ofNullable(realNameMapper.selectByPrimaryKey(id)));
     }
 
     /**
@@ -98,12 +98,12 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
      * @return
      */
     @Override
-    public Optional<MemberRealName> getMemberRealNameByMemberId(Long memberId) {
+    public Optional<RealName> getMemberRealNameByMemberId(Long memberId) {
         LOGGER.info("Optional<MemberRealName> selectMemberRealNameByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
 
-        return ofNullable(memberRealNameMapper.selectByMemberId(memberId));
+        return ofNullable(realNameMapper.selectByMemberId(memberId));
     }
 
     /**
@@ -113,12 +113,12 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberRealName>> getMemberRealNameMonoByMemberId(Long memberId) {
+    public Mono<Optional<RealName>> getMemberRealNameMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Optional<MemberRealName>> selectMemberRealNameMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
 
-        return just(ofNullable(memberRealNameMapper.selectByMemberId(memberId)));
+        return just(ofNullable(realNameMapper.selectByMemberId(memberId)));
     }
 
     /**
@@ -182,24 +182,24 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
     /**
      * insert member real name
      *
-     * @param memberRealName
+     * @param realName
      * @return
      */
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
-    public MemberRealNameInfo insertMemberRealName(MemberRealName memberRealName) {
-        LOGGER.info("MemberRealNameInfo insertMemberRealName(MemberRealName memberRealName), memberRealName = {}", memberRealName);
-        if (isNull(memberRealName))
+    public MemberRealNameInfo insertMemberRealName(RealName realName) {
+        LOGGER.info("MemberRealNameInfo insertMemberRealName(MemberRealName memberRealName), memberRealName = {}", realName);
+        if (isNull(realName))
             throw new BlueException(EMPTY_PARAM);
 
-        MEMBER_REAL_NAME_EXIST_VALIDATOR.accept(memberRealName);
+        MEMBER_REAL_NAME_EXIST_VALIDATOR.accept(realName);
 
-        if (isInvalidIdentity(memberRealName.getId()))
-            memberRealName.setId(blueIdentityProcessor.generate(MemberRealName.class));
+        if (isInvalidIdentity(realName.getId()))
+            realName.setId(blueIdentityProcessor.generate(RealName.class));
 
-        memberRealNameMapper.insert(memberRealName);
+        realNameMapper.insert(realName);
 
-        return MEMBER_REAL_NAME_2_MEMBER_REAL_NAME_INFO.apply(memberRealName);
+        return MEMBER_REAL_NAME_2_MEMBER_REAL_NAME_INFO.apply(realName);
     }
 
     /**
@@ -212,7 +212,7 @@ public class MemberRealNameServiceImpl implements MemberRealNameService {
     public Mono<List<MemberRealNameInfo>> selectMemberRealNameInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberRealNameInfo>> selectMemberRealNameInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(memberRealNameMapper::selectByIds)
+                .stream().map(realNameMapper::selectByIds)
                 .flatMap(l -> l.stream().map(MEMBER_REAL_NAME_2_MEMBER_REAL_NAME_INFO))
                 .collect(toList()))
                 :

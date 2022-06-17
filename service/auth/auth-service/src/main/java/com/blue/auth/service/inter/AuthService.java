@@ -118,10 +118,17 @@ public interface AuthService {
      *
      * @param memberId
      * @param roleIds
-     * @param operatorId
      * @return
      */
-    Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds, Long operatorId);
+    Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds);
+
+    /**
+     * update member role info by member id
+     *
+     * @param memberId
+     * @return
+     */
+    Mono<Boolean> refreshMemberRoleById(Long memberId);
 
     /**
      * update member sec key by access

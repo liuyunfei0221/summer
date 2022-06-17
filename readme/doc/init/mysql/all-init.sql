@@ -448,8 +448,12 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
        (170013, 'PUT', 'blue-auth', '/manager/relation/role-res', b'1', b'1', b'1', b'1', b'1', 2,
         'update role-resources-relation', 'update role-resources-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (170014, 'PUT', 'blue-auth', '/manager/relation/mem-role', b'1', b'1', b'1', b'1', b'1', 2,
+       (170014, 'PUT', 'blue-auth', '/manager/relation/mem-role-insert', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert member-role-relation', 'insert member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (170015, 'PUT', 'blue-auth', '/manager/relation/mem-role-update', b'1', b'1', b'1', b'1', b'1', 2,
         'update member-role-relation', 'update member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (170016, 'PUT', 'blue-auth', '/manager/relation/mem-role-delete', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete member-role-relation', 'delete member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (170015, 'GET', 'blue-auth', '/manager/auth/security/{mid}', b'1', b'1', b'1', b'0', b'1', 2,
         'select members security info', 'select members security info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -1396,7 +1400,7 @@ CREATE TABLE `member_basic_1`
     KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
-CREATE TABLE `member_real_name_0`
+CREATE TABLE `real_name_0`
 (
     `id`                bigint NOT NULL COMMENT 'id',
     `member_id`         bigint NOT NULL COMMENT 'member id',
@@ -1419,9 +1423,9 @@ CREATE TABLE `member_real_name_0`
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
     KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member real name detail 0';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 0';
 
-CREATE TABLE `member_real_name_1`
+CREATE TABLE `real_name_1`
 (
     `id`                bigint NOT NULL COMMENT 'id',
     `member_id`         bigint NOT NULL COMMENT 'member id',
@@ -1444,7 +1448,7 @@ CREATE TABLE `member_real_name_1`
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
     KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member real name detail 1';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 1';
 
 CREATE TABLE `member_detail_0`
 (
@@ -1602,7 +1606,7 @@ CREATE TABLE `member_basic_1`
     KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
-CREATE TABLE `member_real_name_0`
+CREATE TABLE `real_name_0`
 (
     `id`                bigint NOT NULL COMMENT 'id',
     `member_id`         bigint NOT NULL COMMENT 'member id',
@@ -1625,9 +1629,9 @@ CREATE TABLE `member_real_name_0`
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
     KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member real name 0';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 0';
 
-CREATE TABLE `member_real_name_1`
+CREATE TABLE `real_name_1`
 (
     `id`                bigint NOT NULL COMMENT 'id',
     `member_id`         bigint NOT NULL COMMENT 'member id',
@@ -1650,7 +1654,7 @@ CREATE TABLE `member_real_name_1`
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
     KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member real name 1';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 1';
 
 CREATE TABLE `member_detail_0`
 (

@@ -4,9 +4,9 @@ import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBusinessInfo;
-import com.blue.member.repository.entity.MemberBusiness;
-import com.blue.member.repository.mapper.MemberBusinessMapper;
-import com.blue.member.service.inter.MemberBusinessService;
+import com.blue.member.repository.entity.Business;
+import com.blue.member.repository.mapper.BusinessMapper;
+import com.blue.member.service.inter.BusinessService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -36,28 +36,28 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
-public class MemberBusinessServiceImpl implements MemberBusinessService {
+public class BusinessServiceImpl implements BusinessService {
 
-    private static final Logger LOGGER = getLogger(MemberBusinessServiceImpl.class);
+    private static final Logger LOGGER = getLogger(BusinessServiceImpl.class);
 
-    private MemberBusinessMapper memberBusinessMapper;
+    private BusinessMapper businessMapper;
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public MemberBusinessServiceImpl(MemberBusinessMapper memberBusinessMapper, BlueIdentityProcessor blueIdentityProcessor) {
-        this.memberBusinessMapper = memberBusinessMapper;
+    public BusinessServiceImpl(BusinessMapper businessMapper, BlueIdentityProcessor blueIdentityProcessor) {
+        this.businessMapper = businessMapper;
         this.blueIdentityProcessor = blueIdentityProcessor;
     }
 
     /**
      * is a number business exist?
      */
-    private final Consumer<MemberBusiness> MEMBER_BUSINESS_EXIST_VALIDATOR = mb ->
+    private final Consumer<Business> MEMBER_BUSINESS_EXIST_VALIDATOR = mb ->
             ofNullable(mb.getMemberId())
                     .filter(BlueChecker::isValidIdentity)
                     .ifPresent(memberId -> {
-                        if (isNotNull(memberBusinessMapper.selectByMemberId(memberId)))
+                        if (isNotNull(businessMapper.selectByMemberId(memberId)))
                             throw new BlueException(DATA_ALREADY_EXIST);
                     });
 
@@ -68,12 +68,12 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
      * @return
      */
     @Override
-    public Optional<MemberBusiness> getMemberBusiness(Long id) {
+    public Optional<Business> getMemberBusiness(Long id) {
         LOGGER.info("Optional<MemberBusiness> selectMemberBusinessByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return ofNullable(memberBusinessMapper.selectByPrimaryKey(id));
+        return ofNullable(businessMapper.selectByPrimaryKey(id));
     }
 
     /**
@@ -83,12 +83,12 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBusiness>> getMemberBusinessMono(Long id) {
+    public Mono<Optional<Business>> getMemberBusinessMono(Long id) {
         LOGGER.info("Mono<Optional<MemberBusiness>> selectMemberBusinessMonoByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(ofNullable(memberBusinessMapper.selectByPrimaryKey(id)));
+        return just(ofNullable(businessMapper.selectByPrimaryKey(id)));
     }
 
     /**
@@ -98,12 +98,12 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
      * @return
      */
     @Override
-    public Optional<MemberBusiness> getMemberBusinessByMemberId(Long memberId) {
+    public Optional<Business> getMemberBusinessByMemberId(Long memberId) {
         LOGGER.info("Optional<MemberBusiness> selectMemberBusinessByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
 
-        return ofNullable(memberBusinessMapper.selectByMemberId(memberId));
+        return ofNullable(businessMapper.selectByMemberId(memberId));
     }
 
     /**
@@ -113,12 +113,12 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBusiness>> getMemberBusinessMonoByMemberId(Long memberId) {
+    public Mono<Optional<Business>> getMemberBusinessMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Optional<MemberBusiness>> selectMemberAddressMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
 
-        return just(ofNullable(memberBusinessMapper.selectByMemberId(memberId)));
+        return just(ofNullable(businessMapper.selectByMemberId(memberId)));
     }
 
     /**
@@ -182,24 +182,24 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
     /**
      * insert member business
      *
-     * @param memberBusiness
+     * @param business
      * @return
      */
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
-    public MemberBusinessInfo insertMemberBusiness(MemberBusiness memberBusiness) {
-        LOGGER.info("MemberBusinessInfo insertMemberBusiness(MemberBusiness memberBusiness), memberBusiness = {}", memberBusiness);
-        if (isNull(memberBusiness))
+    public MemberBusinessInfo insertMemberBusiness(Business business) {
+        LOGGER.info("MemberBusinessInfo insertMemberBusiness(MemberBusiness memberBusiness), memberBusiness = {}", business);
+        if (isNull(business))
             throw new BlueException(EMPTY_PARAM);
 
-        MEMBER_BUSINESS_EXIST_VALIDATOR.accept(memberBusiness);
+        MEMBER_BUSINESS_EXIST_VALIDATOR.accept(business);
 
-        if (isInvalidIdentity(memberBusiness.getId()))
-            memberBusiness.setId(blueIdentityProcessor.generate(MemberBusiness.class));
+        if (isInvalidIdentity(business.getId()))
+            business.setId(blueIdentityProcessor.generate(Business.class));
 
-        memberBusinessMapper.insert(memberBusiness);
+        businessMapper.insert(business);
 
-        return MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO.apply(memberBusiness);
+        return MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO.apply(business);
     }
 
     /**
@@ -212,7 +212,7 @@ public class MemberBusinessServiceImpl implements MemberBusinessService {
     public Mono<List<MemberBusinessInfo>> selectMemberBusinessInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberBusiness>> selectMemberBusinessInfoMonoByIds(List<Long> ids), ids = {}", ids);
         return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(memberBusinessMapper::selectByIds)
+                .stream().map(businessMapper::selectByIds)
                 .flatMap(l -> l.stream().map(MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO))
                 .collect(toList()))
                 :

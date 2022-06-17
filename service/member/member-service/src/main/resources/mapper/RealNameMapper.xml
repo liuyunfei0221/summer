@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
-<mapper namespace="com.blue.member.repository.mapper.MemberRealNameMapper">
+<mapper namespace="com.blue.member.repository.mapper.RealNameMapper">
 
-    <resultMap id="BaseResultMap" type="com.blue.member.repository.entity.MemberRealName">
+    <resultMap id="BaseResultMap" type="com.blue.member.repository.entity.RealName">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="member_id" jdbcType="BIGINT" property="memberId"/>
         <result column="real_name" jdbcType="VARCHAR" property="realName"
@@ -33,17 +33,17 @@
     <sql id="Base_Column_List">
         id
         , member_id, real_name, gender, birthday, nationality_id, ethnic_id, id_card_no,
-    residence_address, issuing_authority, since_date, expire_date, extra, status, create_time, 
-    update_time
+        residence_address, issuing_authority, since_date, expire_date, extra, status, create_time,
+        update_time
     </sql>
 
-    <insert id="insert" parameterType="com.blue.member.repository.entity.MemberRealName">
-        insert into member_real_name (id, member_id, real_name,
-                                      gender, birthday, nationality_id,
-                                      ethnic_id, id_card_no, residence_address,
-                                      issuing_authority, since_date, expire_date,
-                                      extra, status, create_time,
-                                      update_time)
+    <insert id="insert" parameterType="com.blue.member.repository.entity.RealName">
+        insert into real_name (id, member_id, real_name,
+                               gender, birthday, nationality_id,
+                               ethnic_id, id_card_no, residence_address,
+                               issuing_authority, since_date, expire_date,
+                               extra, status, create_time,
+                               update_time)
         values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
                 #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{gender,jdbcType=TINYINT},
@@ -60,8 +60,8 @@
                 #{updateTime,jdbcType=BIGINT})
     </insert>
 
-    <insert id="insertSelective" parameterType="com.blue.member.repository.entity.MemberRealName">
-        insert into member_real_name
+    <insert id="insertSelective" parameterType="com.blue.member.repository.entity.RealName">
+        insert into real_name
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -164,8 +164,8 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.MemberRealName">
-        update member_real_name
+    <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.RealName">
+        update real_name
         set member_id         = #{memberId,jdbcType=BIGINT},
             real_name         = #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             gender            = #{gender,jdbcType=TINYINT},
@@ -184,8 +184,8 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKeySelective" parameterType="com.blue.member.repository.entity.MemberRealName">
-        update member_real_name
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.member.repository.entity.RealName">
+        update real_name
         <set>
             <if test="memberId != null">
                 member_id = #{memberId,jdbcType=BIGINT},
@@ -245,14 +245,14 @@
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
-        from member_real_name
+        from real_name
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from member_real_name
+        from real_name
         where id = #{id,jdbcType=BIGINT}
     </select>
 
@@ -260,7 +260,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        member_real_name FORCE INDEX(idx_member)
+        real_name FORCE INDEX(idx_member)
         WHERE
         `member_id` = #{memberId,jdbcType=BIGINT}
         LIMIT 1;
@@ -270,7 +270,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        member_real_name
+        real_name
         WHERE
         id IN
         <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">

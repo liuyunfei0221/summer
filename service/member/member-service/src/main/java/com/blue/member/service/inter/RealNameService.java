@@ -1,7 +1,7 @@
 package com.blue.member.service.inter;
 
 import com.blue.member.api.model.MemberRealNameInfo;
-import com.blue.member.repository.entity.MemberRealName;
+import com.blue.member.repository.entity.RealName;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public interface MemberRealNameService {
+public interface RealNameService {
 
     /**
      * query member real name by id
@@ -21,7 +21,7 @@ public interface MemberRealNameService {
      * @param id
      * @return
      */
-    Optional<MemberRealName> getMemberRealName(Long id);
+    Optional<RealName> getMemberRealName(Long id);
 
     /**
      * query member real name mono by id
@@ -29,7 +29,7 @@ public interface MemberRealNameService {
      * @param id
      * @return
      */
-    Mono<Optional<MemberRealName>> getMemberRealNameMono(Long id);
+    Mono<Optional<RealName>> getMemberRealNameMono(Long id);
 
     /**
      * query member real name by member id
@@ -37,7 +37,7 @@ public interface MemberRealNameService {
      * @param memberId
      * @return
      */
-    Optional<MemberRealName> getMemberRealNameByMemberId(Long memberId);
+    Optional<RealName> getMemberRealNameByMemberId(Long memberId);
 
     /**
      * query member real name mono by member id
@@ -45,7 +45,7 @@ public interface MemberRealNameService {
      * @param memberId
      * @return
      */
-    Mono<Optional<MemberRealName>> getMemberRealNameMonoByMemberId(Long memberId);
+    Mono<Optional<RealName>> getMemberRealNameMonoByMemberId(Long memberId);
 
     /**
      * query member real name by id with assert
@@ -66,10 +66,10 @@ public interface MemberRealNameService {
     /**
      * insert member real name
      *
-     * @param memberRealName
+     * @param realName
      * @return
      */
-    MemberRealNameInfo insertMemberRealName(MemberRealName memberRealName);
+    MemberRealNameInfo insertMemberRealName(RealName realName);
 
     /**
      * select member real name by ids

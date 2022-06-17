@@ -1,6 +1,6 @@
 server:
-  # address: 127.0.0.1
-  port: 16000
+  address: 127.0.0.1
+  port: 15000
   netty:
     connection-timeout: 16s
     h2c-max-content-length: 0B
@@ -37,7 +37,7 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
   client:
     service-url:
-      defaultZone: http://localhost:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
     registry-fetch-interval-seconds: 16
 
 
@@ -53,90 +53,6 @@ cors:
 
 web:
   maxInMemorySize: 4096
-
-
-data:
-  shardingDatabases:
-    - url: jdbc:mysql://192.168.182.132:3306/media_0
-      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: 1024
-      driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 30000
-      maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
-      idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
-
-    - url: jdbc:mysql://192.168.182.132:3306/media_1
-      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: 1024
-      driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 30000
-      maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
-      idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
-  shardingTables:
-    - tableName: attachment
-      shardingColumn: id
-
-    - tableName: download_history
-      shardingColumn: id
-  shardingTableSizePerDataBase: 2
-  dataCenterToDatabaseMappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
-  workerToTableMappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
-  broadcastTables: [ ]
-  singleDatabasesWithTables:
-  safeRowBoundsEnabled: false
-  safeResultHandlerEnabled: false
-  mapUnderscoreToCamelCase: false
-  aggressiveLazyLoading: false
-  multipleResultSetsEnabled: false
-  useGeneratedKeys: false
-  useColumnLabel: true
-  cacheEnabled: false
-  callSettersOnNulls: false
-  useActualParamName: false
-  returnInstanceForEmptyRow: false
-  shrinkWhitespacesInSql: false
-  nullableOnForEach: false
-  localCacheScope: SESSION
-  jdbcTypeForNull:
-  defaultStatementTimeout: 30000
-  defaultFetchSize: 100
-  defaultResultSetType: DEFAULT
-  defaultExecutorType: BATCH
-  autoMappingBehavior: FULL
-  autoMappingUnknownColumnBehavior: FAILING
-  lazyLoadingEnabled: false
-  mapperLocation: classpath:mapper/*.xml
-  props:
-    sql.show: true
-    sql.simple: false
-    executor.size: 128
-    max.connections.size.per.query: 2
-    check.table.metadata.enabled: true
-    query.with.cipher.column: false
-    xa.transaction.manager.type: Atomikos
-  debugLogging: true
 
 
 identity:
@@ -174,10 +90,10 @@ scheduler:
 cache:
   serverMode: SINGLE
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
-  password: sfakjfiju99jjf87LJSDDU8
-  maxRedirects: 4
-  host: 192.168.182.132
+  host: 101.43.192.155
   port: 6379
+  password: LiuZhiyi20200805
+  maxRedirects: 4
   minIdle: 4
   maxIdle: 64
   maxTotal: 128
@@ -226,11 +142,23 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://192.168.182.132:2181
+    address: zookeeper://43.138.44.171
+    port: 2181
+    username: blue
+    password: LiuZhiyi20200805
     group: summer
     file: D:/locallogs/dubbo/verify/registry.properties
     check: false
     timeout: 60000
+    simplified: true
+  metadata-report:
+    address: zookeeper://43.138.44.171
+    port: 2181
+    username: blue
+    password: LiuZhiyi20200805
+    timeout: 60000
+    default: true
+    check: false
   application:
     id: summer-verify
     name: summer-verify
@@ -241,7 +169,7 @@ dubbo:
   protocol:
     name: dubbo
     host: localhost
-    port: 17000
+    port: 16000
     accesslog: D:/locallogs/dubbo/verify/access.log
   provider:
     retries: 0
@@ -258,7 +186,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.182.132:6650 ]
+      services: [ 43.138.111.53:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -314,7 +242,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.182.132:6650 ]
+      services: [ 43.138.111.53:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

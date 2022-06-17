@@ -3,7 +3,8 @@ package com.blue.auth.remote.provider;
 import com.blue.auth.api.inter.RpcAuthControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.api.model.MemberCredentialInfo;
-import com.blue.auth.api.model.MemberRoleRelationParam;
+import com.blue.auth.api.model.MemberRoleRelationInsertOrDeleteParam;
+import com.blue.auth.api.model.MemberRoleRelationUpdateParam;
 import com.blue.auth.service.inter.AuthControlService;
 import com.blue.base.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -26,7 +27,9 @@ import static reactor.core.publisher.Mono.just;
         version = "1.0",
         methods = {
                 @Method(name = "initMemberAuthInfo", async = false, timeout = 60000, retries = 0),
-                @Method(name = "updateAuthorityByMemberSync", async = false, timeout = 60000, retries = 0),
+                @Method(name = "insertAuthorityByMemberSync", async = false, timeout = 60000, retries = 0),
+                @Method(name = "updateAuthoritiesByMemberSync", async = false, timeout = 60000, retries = 0),
+                @Method(name = "deleteAuthorityByMemberSync", async = false, timeout = 60000, retries = 0),
                 @Method(name = "refreshMemberRoleById", async = false),
                 @Method(name = "selectAuthorityByAccess", async = true),
                 @Method(name = "selectAuthorityByMemberId", async = true)
@@ -53,14 +56,36 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
     }
 
     /**
-     * update authority base on member / update member-role-relations sync with trans / not support for manager
+     * add authority base on member / insert member-role-relations sync
      *
-     * @param memberRoleRelationParam
+     * @param memberRoleRelationInsertOrDeleteParam
      * @return
      */
     @Override
-    public List<AuthorityBaseOnRole> updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
-        return authControlService.updateAuthoritiesByMemberSync(memberRoleRelationParam);
+    public AuthorityBaseOnRole insertAuthorityByMemberSync(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam) {
+        return authControlService.insertAuthorityByMemberSync(memberRoleRelationInsertOrDeleteParam);
+    }
+
+    /**
+     * update authority base on member / update member-role-relations sync with trans / not support for manager
+     *
+     * @param memberRoleRelationUpdateParam
+     * @return
+     */
+    @Override
+    public List<AuthorityBaseOnRole> updateAuthoritiesByMemberSync(MemberRoleRelationUpdateParam memberRoleRelationUpdateParam) {
+        return authControlService.updateAuthoritiesByMemberSync(memberRoleRelationUpdateParam);
+    }
+
+    /**
+     * delete authority base on member / delete member-role-relations sync
+     *
+     * @param memberRoleRelationInsertOrDeleteParam
+     * @return
+     */
+    @Override
+    public AuthorityBaseOnRole deleteAuthorityByMemberSync(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam) {
+        return authControlService.deleteAuthorityByMemberSync(memberRoleRelationInsertOrDeleteParam);
     }
 
     /**
@@ -68,12 +93,11 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      *
      * @param memberId
      * @param roleIds
-     * @param operatorId
      * @return
      */
     @Override
-    public CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds, Long operatorId) {
-        return authControlService.refreshMemberRoleByIds(memberId, roleIds, operatorId).subscribeOn(scheduler).toFuture();
+    public CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds) {
+        return authControlService.refreshMemberRoleByIds(memberId, roleIds).subscribeOn(scheduler).toFuture();
     }
 
     /**

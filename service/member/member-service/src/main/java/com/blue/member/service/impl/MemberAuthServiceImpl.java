@@ -1,14 +1,23 @@
 package com.blue.member.service.impl;
 
 import com.blue.auth.api.model.MemberCredentialInfo;
+import com.blue.auth.api.model.MemberRoleInfo;
+import com.blue.auth.api.model.RoleInfo;
+import com.blue.base.common.base.BlueChecker;
+import com.blue.base.model.common.PageModelRequest;
+import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.finance.api.model.MemberFinanceInfo;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
 import com.blue.member.component.credential.CredentialCollectProcessor;
+import com.blue.member.constant.MemberBasicSortAttribute;
+import com.blue.member.model.MemberAuthorityInfo;
+import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.remote.consumer.RpcAuthControlServiceConsumer;
 import com.blue.member.remote.consumer.RpcFinanceControlServiceConsumer;
+import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
 import com.blue.member.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberAuthService;
@@ -16,20 +25,31 @@ import com.blue.member.service.inter.MemberBasicService;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.auth.CredentialType.PHONE_PWD;
+import static com.blue.base.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.verify.BusinessType.REGISTER;
 import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static com.blue.base.constant.verify.VerifyType.SMS;
+import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -49,6 +69,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     private final CredentialCollectProcessor credentialCollectProcessor;
 
+    private final RpcRoleServiceConsumer rpcRoleServiceConsumer;
+
     private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
 
     private final RpcAuthControlServiceConsumer rpcAuthControlServiceConsumer;
@@ -56,18 +78,37 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     private final RpcFinanceControlServiceConsumer rpcFinanceControlServiceConsumer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public MemberAuthServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor,
-                                 CredentialCollectProcessor credentialCollectProcessor, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
+    public MemberAuthServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor, CredentialCollectProcessor credentialCollectProcessor,
+                                 RpcRoleServiceConsumer rpcRoleServiceConsumer, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
                                  RpcAuthControlServiceConsumer rpcAuthControlServiceConsumer, RpcFinanceControlServiceConsumer rpcFinanceControlServiceConsumer) {
         this.memberBasicService = memberBasicService;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.credentialCollectProcessor = credentialCollectProcessor;
+        this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcAuthControlServiceConsumer = rpcAuthControlServiceConsumer;
         this.rpcFinanceControlServiceConsumer = rpcFinanceControlServiceConsumer;
     }
 
-    private static final String DEFAULT_SOURCE = PHONE_PWD.source;
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())
+            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
+
+    private static final UnaryOperator<MemberBasicCondition> CONDITION_PROCESSOR = condition -> {
+        if (isNull(condition))
+            return new MemberBasicCondition();
+
+        condition.setSortAttribute(
+                ofNullable(condition.getSortAttribute())
+                        .filter(BlueChecker::isNotBlank)
+                        .map(SORT_ATTRIBUTE_MAPPING::get)
+                        .filter(BlueChecker::isNotBlank)
+                        .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+
+        condition.setSortType(getSortTypeByIdentity(condition.getSortType()).identity);
+
+        return condition;
+    };
+
 
     /**
      * member registry
@@ -85,7 +126,6 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
         memberRegistryParam.asserts();
-        memberRegistryParam.setSource(DEFAULT_SOURCE);
 
         if (!rpcVerifyHandleServiceConsumer.validate(SMS, REGISTER, memberRegistryParam.getPhone(), memberRegistryParam.getPhoneVerify(), true)
                 .toFuture().join())
@@ -108,8 +148,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         @SuppressWarnings("UnnecessaryLocalVariable")
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
 
-        if (1 == 1)
-            throw new BlueException(666, 666, "test rollback");
+//        if (1 == 1)
+//            throw new BlueException(666, 666, "test rollback");
 
         return memberBasicInfo;
     }
@@ -172,6 +212,42 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         credentialCollectProcessor.packageCredentialAttr(credentialTypes, credential, memberBasic);
 
         return memberBasicService.updateMemberBasic(memberBasic);
+    }
+
+    /**
+     * select member's authority info by page and condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    @Override
+    public Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
+        LOGGER.info("Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
+                "pageModelRequest = {}", pageModelRequest);
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        MemberBasicCondition memberBasicCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+
+        return zip(memberBasicService.selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), memberBasicService.countMemberBasicMonoByCondition(memberBasicCondition))
+                .flatMap(tuple2 -> {
+                    List<MemberBasic> members = tuple2.getT1();
+                    Mono<List<MemberAuthorityInfo>> memberAuthorityInfosMono = members.size() > 0 ?
+                            rpcRoleServiceConsumer.selectRoleInfoByMemberIds(members.stream().map(MemberBasic::getId).collect(toList()))
+                                    .flatMap(relationInfos -> {
+                                        Map<Long, List<RoleInfo>> memberIdAndRoleInfoMapping = relationInfos.stream().collect(toMap(MemberRoleInfo::getMemberId, MemberRoleInfo::getRoleInfos, (a, b) -> b));
+                                        return just(members.stream()
+                                                .map(memberBasic ->
+                                                        new MemberAuthorityInfo(MEMBER_BASIC_2_MEMBER_INFO.apply(memberBasic), memberIdAndRoleInfoMapping.get(memberBasic.getId()))
+                                                ).collect(toList()));
+                                    })
+                            :
+                            just(emptyList());
+
+                    return memberAuthorityInfosMono
+                            .flatMap(memberAuthorityInfos ->
+                                    just(new PageModelResponse<>(memberAuthorityInfos, tuple2.getT2())));
+                });
     }
 
 }

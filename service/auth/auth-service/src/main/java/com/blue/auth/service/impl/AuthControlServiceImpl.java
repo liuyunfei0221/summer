@@ -467,35 +467,6 @@ public class AuthControlServiceImpl implements AuthControlService {
         return fromRunnable(authService::refreshSystemAuthorityInfos).then();
     }
 
-//    /**
-//     * update member role info by member id
-//     *
-//     * @param memberId
-//     * @param roleId
-//     * @param operatorId
-//     * @return
-//     */
-//    @Override
-//    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-//    public boolean updateMemberRoleById(Long memberId, Long roleId, Long operatorId) {
-//        LOGGER.info("void updateMemberRoleById(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}", memberId, roleId);
-//
-//        Integer operatorLevel = ofNullable(getMaxLevelRoleByMemberId(operatorId))
-//                .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
-//
-//        ROLE_LEVEL_ASSERTER.accept(ofNullable(getMaxLevelRoleByMemberId(memberId))
-//                .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
-//        ROLE_LEVEL_ASSERTER.accept(ofNullable(getRoleByRoleId(roleId))
-//                .map(Role::getLevel).orElseThrow(() -> new BlueException(DATA_NOT_EXIST)), operatorLevel);
-//
-//        boolean updated = synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
-//                memberRoleRelationService.updateMemberRoleRelation(memberId, roleId, operatorId)) > 0;
-//        if (updated)
-//            authService.refreshMemberRoleById(memberId, roleId, operatorId).toFuture().join();
-//
-//        return updated;
-//    }
-
     /**
      * init auth info for a new member
      *
@@ -649,18 +620,16 @@ public class AuthControlServiceImpl implements AuthControlService {
         return memberBasicInfo;
     }
 
-
     /**
      * update member role info by member id
      *
      * @param memberId
      * @param roleIds
-     * @param operatorId
      * @return
      */
     @Override
-    public Mono<Boolean> refreshMemberRoleByIds(Long memberId, List<Long> roleIds, Long operatorId) {
-        return authService.refreshMemberRoleById(memberId, roleIds, operatorId);
+    public Mono<Boolean> refreshMemberRoleByIds(Long memberId, List<Long> roleIds) {
+        return authService.refreshMemberRoleById(memberId, roleIds);
     }
 
     /**
@@ -1010,18 +979,22 @@ public class AuthControlServiceImpl implements AuthControlService {
     }
 
     /**
-     * add authority base on member / update member-role-relations
+     * add authority base on member / insert member-role-relations
      *
-     * @param memberId
-     * @param roleId
+     * @param memberRoleRelationInsertOrDeleteParam
      * @param operatorId
      * @return
      */
     @Override
-    public Mono<AuthorityBaseOnRole> insertAuthoritiesByMember(Long memberId, Long roleId, Long operatorId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> insertAuthoritiesByMember(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
-        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
+    public Mono<AuthorityBaseOnRole> insertAuthorityByMember(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam, Long operatorId) {
+        LOGGER.info("Mono<AuthorityBaseOnRole> insertAuthoritiesByMember(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam, Long operatorId), memberRoleRelationInsertOrDeleteParam = {}, operatorId = {}",
+                memberRoleRelationInsertOrDeleteParam, operatorId);
+        if (isNull(memberRoleRelationInsertOrDeleteParam) || isInvalidIdentity(operatorId))
             throw new BlueException(EMPTY_PARAM);
+        memberRoleRelationInsertOrDeleteParam.asserts();
+
+        Long memberId = memberRoleRelationInsertOrDeleteParam.getMemberId();
+        Long roleId = memberRoleRelationInsertOrDeleteParam.getRoleId();
 
         return fromFuture(supplyAsync(() ->
                 synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
@@ -1032,26 +1005,27 @@ public class AuthControlServiceImpl implements AuthControlService {
 
                     return memberRoleRelationService.insertMemberRoleRelation(memberId, roleId, operatorId);
                 }), executorService))
-                .flatMap(ig -> authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId), operatorId))
+                .flatMap(ig -> authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId)))
                 .flatMap(ig -> roleResRelationService.getAuthorityMonoByRoleId(roleId));
     }
 
     /**
      * update authority base on member / update member-role-relations
      *
-     * @param memberRoleRelationParam
+     * @param memberRoleRelationUpdateParam
      * @param operatorId
      * @return
      */
     @Override
-    public Mono<List<AuthorityBaseOnRole>> updateAuthoritiesByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId) {
-        LOGGER.info("Mono<List<AuthorityBaseOnRole>> updateAuthoritiesByMember(MemberRoleRelationParam memberRoleRelationParam, Long operatorId), memberRoleRelationParam = {}, operatorId = {}", memberRoleRelationParam, operatorId);
-        if (isNull(memberRoleRelationParam))
+    public Mono<List<AuthorityBaseOnRole>> updateAuthoritiesByMember(MemberRoleRelationUpdateParam memberRoleRelationUpdateParam, Long operatorId) {
+        LOGGER.info("Mono<List<AuthorityBaseOnRole>> updateAuthoritiesByMember(MemberRoleRelationUpdateParam memberRoleRelationUpdateParam, Long operatorId), memberRoleRelationUpdateParam = {}, operatorId = {}",
+                memberRoleRelationUpdateParam, operatorId);
+        if (isNull(memberRoleRelationUpdateParam))
             throw new BlueException(EMPTY_PARAM);
-        memberRoleRelationParam.asserts();
+        memberRoleRelationUpdateParam.asserts();
 
-        Long memberId = memberRoleRelationParam.getMemberId();
-        List<Long> roleIds = memberRoleRelationParam.getRoleIds();
+        Long memberId = memberRoleRelationUpdateParam.getMemberId();
+        List<Long> roleIds = memberRoleRelationUpdateParam.getRoleIds();
 
         return fromFuture(supplyAsync(() ->
                 synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
@@ -1062,23 +1036,27 @@ public class AuthControlServiceImpl implements AuthControlService {
 
                     return memberRoleRelationService.updateMemberRoleRelations(memberId, roleIds, operatorId);
                 }), executorService))
-                .flatMap(ig -> authService.refreshMemberRoleById(memberId, roleIds, operatorId))
+                .flatMap(ig -> authService.refreshMemberRoleById(memberId, roleIds))
                 .flatMap(ig -> roleResRelationService.selectAuthoritiesMonoByRoleIds(roleIds));
     }
 
     /**
-     * delete authority base on member / update member-role-relations
+     * delete authority base on member / delete member-role-relations
      *
-     * @param memberId
-     * @param roleId
+     * @param memberRoleRelationInsertOrDeleteParam
      * @param operatorId
      * @return
      */
     @Override
-    public Mono<AuthorityBaseOnRole> deleteAuthoritiesByMember(Long memberId, Long roleId, Long operatorId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> deleteAuthoritiesByMember(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
-        if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
+    public Mono<AuthorityBaseOnRole> deleteAuthorityByMember(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam, Long operatorId) {
+        LOGGER.info("Mono<AuthorityBaseOnRole> deleteAuthoritiesByMember(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam, Long operatorId), memberRoleRelationInsertOrDeleteParam = {}, operatorId = {}",
+                memberRoleRelationInsertOrDeleteParam, operatorId);
+        if (isNull(memberRoleRelationInsertOrDeleteParam) || isInvalidIdentity(operatorId))
             throw new BlueException(EMPTY_PARAM);
+        memberRoleRelationInsertOrDeleteParam.asserts();
+
+        Long memberId = memberRoleRelationInsertOrDeleteParam.getMemberId();
+        Long roleId = memberRoleRelationInsertOrDeleteParam.getRoleId();
 
         return fromFuture(supplyAsync(() ->
                 synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
@@ -1089,7 +1067,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
                     return memberRoleRelationService.deleteMemberRoleRelation(memberId, roleId, operatorId);
                 }), executorService))
-                .flatMap(ig -> authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId), operatorId))
+                .flatMap(ig -> authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId)))
                 .flatMap(ig -> roleResRelationService.getAuthorityMonoByRoleId(roleId));
     }
 
@@ -1117,29 +1095,81 @@ public class AuthControlServiceImpl implements AuthControlService {
     }
 
     /**
+     * add authority base on member / insert member-role-relations sync
+     *
+     * @param memberRoleRelationInsertOrDeleteParam
+     * @return
+     */
+    @Override
+    public AuthorityBaseOnRole insertAuthorityByMemberSync(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam) {
+        LOGGER.info("AuthorityBaseOnRole insertAuthorityByMemberSync(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam), memberRoleRelationInsertOrDeleteParam = {}",
+                memberRoleRelationInsertOrDeleteParam);
+        if (isNull(memberRoleRelationInsertOrDeleteParam))
+            throw new BlueException(EMPTY_PARAM);
+        memberRoleRelationInsertOrDeleteParam.asserts();
+
+        Long memberId = memberRoleRelationInsertOrDeleteParam.getMemberId();
+        Long roleId = memberRoleRelationInsertOrDeleteParam.getRoleId();
+
+        if (synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+                memberRoleRelationService.insertMemberRoleRelation(memberId, roleId, BLUE_ID.value)) < 1)
+            throw new BlueException(DATA_NOT_EXIST);
+
+        authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId)).toFuture().join();
+
+        return roleResRelationService.getAuthorityMonoByRoleId(roleId).toFuture().join();
+    }
+
+    /**
      * update authority base on member / update member-role-relations sync with trans / not support for manager
      *
-     * @param memberRoleRelationParam
+     * @param memberRoleRelationUpdateParam
      * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public List<AuthorityBaseOnRole> updateAuthoritiesByMemberSync(MemberRoleRelationParam memberRoleRelationParam) {
-        LOGGER.info("AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam), memberRoleRelationParam = {}", memberRoleRelationParam);
-        if (isNull(memberRoleRelationParam))
+    public List<AuthorityBaseOnRole> updateAuthoritiesByMemberSync(MemberRoleRelationUpdateParam memberRoleRelationUpdateParam) {
+        LOGGER.info("AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam), memberRoleRelationParam = {}", memberRoleRelationUpdateParam);
+        if (isNull(memberRoleRelationUpdateParam))
             throw new BlueException(EMPTY_PARAM);
-        memberRoleRelationParam.asserts();
+        memberRoleRelationUpdateParam.asserts();
 
-        Long memberId = memberRoleRelationParam.getMemberId();
-        List<Long> roleIds = memberRoleRelationParam.getRoleIds();
+        Long memberId = memberRoleRelationUpdateParam.getMemberId();
+        List<Long> roleIds = memberRoleRelationUpdateParam.getRoleIds();
 
         if (synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
                 memberRoleRelationService.updateMemberRoleRelations(memberId, roleIds, BLUE_ID.value)) < 1)
             throw new BlueException(DATA_NOT_EXIST);
 
-        authService.refreshMemberRoleById(memberId, roleIds, BLUE_ID.value).toFuture().join();
+        authService.refreshMemberRoleById(memberId, roleIds).toFuture().join();
 
         return roleResRelationService.selectAuthoritiesMonoByRoleIds(roleIds).toFuture().join();
+    }
+
+    /**
+     * delete authority base on member / delete member-role-relations sync
+     *
+     * @param memberRoleRelationInsertOrDeleteParam
+     * @return
+     */
+    @Override
+    public AuthorityBaseOnRole deleteAuthorityByMemberSync(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam) {
+        LOGGER.info("AuthorityBaseOnRole deleteAuthorityByMemberSync(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam), memberRoleRelationInsertOrDeleteParam = {}",
+                memberRoleRelationInsertOrDeleteParam);
+        if (isNull(memberRoleRelationInsertOrDeleteParam))
+            throw new BlueException(EMPTY_PARAM);
+        memberRoleRelationInsertOrDeleteParam.asserts();
+
+        Long memberId = memberRoleRelationInsertOrDeleteParam.getMemberId();
+        Long roleId = memberRoleRelationInsertOrDeleteParam.getRoleId();
+
+        if (synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+                memberRoleRelationService.deleteMemberRoleRelation(memberId, roleId, BLUE_ID.value)) < 1)
+            throw new BlueException(DATA_NOT_EXIST);
+
+        authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId)).toFuture().join();
+
+        return roleResRelationService.getAuthorityMonoByRoleId(roleId).toFuture().join();
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.blue.member.service.inter;
 
 import com.blue.member.api.model.MemberBusinessInfo;
-import com.blue.member.repository.entity.MemberBusiness;
+import com.blue.member.repository.entity.Business;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public interface MemberBusinessService {
+public interface BusinessService {
 
     /**
      * get member business by id
@@ -21,7 +21,7 @@ public interface MemberBusinessService {
      * @param id
      * @return
      */
-    Optional<MemberBusiness> getMemberBusiness(Long id);
+    Optional<Business> getMemberBusiness(Long id);
 
     /**
      * get member business mono by id
@@ -29,7 +29,7 @@ public interface MemberBusinessService {
      * @param id
      * @return
      */
-    Mono<Optional<MemberBusiness>> getMemberBusinessMono(Long id);
+    Mono<Optional<Business>> getMemberBusinessMono(Long id);
 
     /**
      * get member business by member id
@@ -37,7 +37,7 @@ public interface MemberBusinessService {
      * @param memberId
      * @return
      */
-    Optional<MemberBusiness> getMemberBusinessByMemberId(Long memberId);
+    Optional<Business> getMemberBusinessByMemberId(Long memberId);
 
     /**
      * query member business mono by member id
@@ -45,7 +45,7 @@ public interface MemberBusinessService {
      * @param memberId
      * @return
      */
-    Mono<Optional<MemberBusiness>> getMemberBusinessMonoByMemberId(Long memberId);
+    Mono<Optional<Business>> getMemberBusinessMonoByMemberId(Long memberId);
 
     /**
      * query member business by id with assert
@@ -66,10 +66,10 @@ public interface MemberBusinessService {
     /**
      * insert member business
      *
-     * @param memberBusiness
+     * @param business
      * @return
      */
-    MemberBusinessInfo insertMemberBusiness(MemberBusiness memberBusiness);
+    MemberBusinessInfo insertMemberBusiness(Business business);
 
     /**
      * select business by ids

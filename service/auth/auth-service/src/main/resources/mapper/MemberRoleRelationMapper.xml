@@ -150,6 +150,17 @@
         WHERE member_id = #{memberId,jdbcType=BIGINT}
     </delete>
 
+    <select id="selectByMemberIdAndRoleId" resultType="java.lang.Long">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM member_role_relation FORCE INDEX(idx_member_role)
+        WHERE
+        member_id = #{memberId,jdbcType=BIGINT}
+        AND
+        role_id = #{roleId,jdbcType=BIGINT}
+        LIMIT 1;
+    </select>
+
     <select id="selectRoleIdsByMemberId" parameterType="java.lang.Long" resultType="java.lang.Long">
         SELECT role_id
         FROM member_role_relation FORCE INDEX(idx_member_role)

@@ -10,7 +10,7 @@ import static com.blue.base.common.base.BlueChecker.isNull;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class MemberRealName implements Serializable {
+public final class RealName implements Serializable {
 
     private static final long serialVersionUID = -2653604103780424227L;
 
@@ -176,7 +176,7 @@ public final class MemberRealName implements Serializable {
 
     @Override
     public String toString() {
-        return "MemberRealName{" +
+        return "RealName{" +
                 "id=" + id +
                 ", memberId=" + memberId +
                 ", realName='" + realName + '\'' +

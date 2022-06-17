@@ -20,6 +20,7 @@ import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
@@ -90,8 +91,8 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        List<Long> existRoleIds = memberRoleRelationMapper.selectRoleIdsByMemberId(memberId);
-        if (isNotNull(existRoleIds) && existRoleIds.stream().anyMatch(rid -> rid.equals(roleId)))
+        Optional<MemberRoleRelation> existRelationOpt = ofNullable(memberRoleRelationMapper.selectByMemberIdAndRoleId(memberId, roleId));
+        if (existRelationOpt.isPresent())
             throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
 
         Long timeStamp = TIME_STAMP_GETTER.get();
@@ -164,11 +165,11 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        Optional<MemberRoleRelation> optional = memberRoleRelationMapper.selectByMemberId(memberId).stream().filter(rel -> rel.getRoleId().equals(roleId)).findAny();
-        if (optional.isEmpty())
+        Optional<MemberRoleRelation> existRelationOpt = ofNullable(memberRoleRelationMapper.selectByMemberIdAndRoleId(memberId, roleId));
+        if (existRelationOpt.isEmpty())
             throw new BlueException(MEMBER_NOT_HAS_A_ROLE);
 
-        return memberRoleRelationMapper.deleteByPrimaryKey(optional.get().getId());
+        return memberRoleRelationMapper.deleteByPrimaryKey(existRelationOpt.get().getId());
     }
 
     /**
