@@ -150,7 +150,7 @@
         WHERE member_id = #{memberId,jdbcType=BIGINT}
     </delete>
 
-    <select id="selectByMemberIdAndRoleId" resultType="java.lang.Long">
+    <select id="selectByMemberIdAndRoleId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM member_role_relation FORCE INDEX(idx_member_role)
