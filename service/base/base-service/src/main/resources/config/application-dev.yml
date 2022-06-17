@@ -235,8 +235,8 @@ dubbo:
     protocol: zookeeper
     address: zookeeper://192.168.182.132
     port: 2181
-    username: blue
-    password: LiuZhiyi20200805
+    username:
+    password:
     group: summer
     file: D:/locallogs/dubbo/base/registry.properties
     check: false
@@ -245,8 +245,8 @@ dubbo:
   metadata-report:
     address: zookeeper://192.168.182.132
     port: 2181
-    username: blue
-    password: LiuZhiyi20200805
+    username:
+    password:
     timeout: 60000
     default: true
     check: false

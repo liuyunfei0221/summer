@@ -166,6 +166,7 @@ mongo:
     - address: 172.16.203.216
       port: 27017
   auth: false
+  authBase: admin
   userName:
   password:
   database: auth
@@ -303,10 +304,10 @@ seata:
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  password: sfakjfiju99jjf87LJSDDU8
-  maxRedirects: 4
   host: 172.16.203.216
   port: 6379
+  password:
+  maxRedirects: 4
   minIdle: 4
   maxIdle: 64
   maxTotal: 128
