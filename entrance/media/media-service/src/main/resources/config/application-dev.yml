@@ -55,88 +55,6 @@ web:
   maxInMemorySize: 8388608
 
 
-data:
-  shardingDatabases:
-    - url: jdbc:mysql://192.168.182.132:3306/media_0
-      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: 1024
-      driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 30000
-      maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
-      idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
-
-    - url: jdbc:mysql://192.168.182.132:3306/media_1
-      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: 1024
-      driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 30000
-      maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
-      idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
-  shardingTables:
-    - tableName: attachment
-      shardingColumn: id
-
-  shardingTableSizePerDataBase: 2
-  dataCenterToDatabaseMappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
-  workerToTableMappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
-  broadcastTables: [ ]
-  singleDatabasesWithTables:
-  safeRowBoundsEnabled: false
-  safeResultHandlerEnabled: false
-  mapUnderscoreToCamelCase: false
-  aggressiveLazyLoading: false
-  multipleResultSetsEnabled: false
-  useGeneratedKeys: false
-  useColumnLabel: true
-  cacheEnabled: false
-  callSettersOnNulls: false
-  useActualParamName: false
-  returnInstanceForEmptyRow: false
-  shrinkWhitespacesInSql: false
-  nullableOnForEach: false
-  localCacheScope: SESSION
-  jdbcTypeForNull:
-  defaultStatementTimeout: 30000
-  defaultFetchSize: 100
-  defaultResultSetType: DEFAULT
-  defaultExecutorType: BATCH
-  autoMappingBehavior: FULL
-  autoMappingUnknownColumnBehavior: FAILING
-  lazyLoadingEnabled: false
-  mapperLocation: classpath:mapper/*.xml
-  props:
-    sql.show: true
-    sql.simple: false
-    executor.size: 128
-    max.connections.size.per.query: 2
-    check.table.metadata.enabled: true
-    query.with.cipher.column: false
-    xa.transaction.manager.type: Atomikos
-  debugLogging: true
-
-
 identity:
   dataCenter: 0
   worker: 0
@@ -159,6 +77,7 @@ mongo:
     - address: 192.168.182.132
       port: 27017
   auth: false
+  authBase: admin
   userName:
   password:
   database: media
@@ -202,10 +121,10 @@ scheduler:
 cache:
   serverMode: SINGLE
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
-  password: sfakjfiju99jjf87LJSDDU8
-  maxRedirects: 4
-  host: 192.168.182.132
+  host: 101.43.192.155
   port: 6379
+  password:
+  maxRedirects: 4
   minIdle: 4
   maxIdle: 64
   maxTotal: 128
@@ -253,8 +172,20 @@ error:
   errorReportWithRequestBodyContentTypes: [ application/json,multipart/form-data ]
 
 
-files:
+ldfiles:
   handlerType: ld
+  attrName: attachments
+  validTypes: [ .JPG,.JPEG,.PNG,.RMVB,.MKV,.MP4,.ZIP ]
+  invalidPres: [ .,/,^ ]
+  nameLenThreshold: 256
+  allFileSizeThreshold: 4294967296000
+  singleFileSizeThreshold: 4294967296000
+  currentSizeThreshold: 32
+  descPath: E:\\tempFile\\disc
+
+
+cosfiles:
+  handlerType: cos
   attrName: attachments
   validTypes: [ .JPG,.JPEG,.PNG,.RMVB,.MKV,.MP4,.ZIP ]
   invalidPres: [ .,/,^ ]
@@ -314,11 +245,23 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://192.168.182.132:2181
+    address: zookeeper://192.168.182.132
+    port: 2181
+    username: blue
+    password: LiuZhiyi20200805
     group: summer
     file: D:/locallogs/dubbo/media/registry.properties
     check: false
     timeout: 60000
+    simplified: true
+  metadata-report:
+    address: zookeeper://192.168.182.132
+    port: 2181
+    username: blue
+    password: LiuZhiyi20200805
+    timeout: 60000
+    default: true
+    check: false
   application:
     id: summer-media
     name: summer-media

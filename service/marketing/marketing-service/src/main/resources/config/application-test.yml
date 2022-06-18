@@ -224,7 +224,7 @@ redisson:
   pingConnectionInterval: 300000
   executorCorePoolSize: 4
   executorMaximumPoolSize: 8
-  executorkeepAliveSeconds: 64
+  executorKeepAliveSeconds: 64
   executorBlockingQueueCapacity: 128
   maxTryLockWaitingMillis: 10000
 
