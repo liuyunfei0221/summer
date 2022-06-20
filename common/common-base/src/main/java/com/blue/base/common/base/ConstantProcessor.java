@@ -6,6 +6,7 @@ import com.blue.base.constant.common.*;
 import com.blue.base.constant.article.ArticleType;
 import com.blue.base.constant.article.SubjectType;
 import com.blue.base.constant.member.Gender;
+import com.blue.base.constant.member.SourceType;
 import com.blue.base.constant.portal.BulletinType;
 import com.blue.base.constant.auth.DeviceType;
 import com.blue.base.constant.auth.CredentialType;
@@ -93,6 +94,12 @@ public final class ConstantProcessor {
      */
     private static final Map<Integer, Gender> GENDER_MAPPING =
             of(Gender.values()).collect(toMap(g -> g.identity, g -> g, (a, b) -> a));
+
+    /**
+     * valid source type identity and type mapping
+     */
+    private static final Map<String, SourceType> SOURCE_MAPPING =
+            of(SourceType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
 
     /**
      * valid status type identity and type mapping
@@ -261,6 +268,19 @@ public final class ConstantProcessor {
             return;
 
         if (!GENDER_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert source type
+     *
+     * @param identity
+     */
+    public static void assertSource(String identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!SOURCE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -562,6 +582,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         return gender;
+    }
+
+    /**
+     * get source type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static SourceType getSourceTypeByIdentity(String identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        SourceType sourceType = SOURCE_MAPPING.get(identity);
+        if (isNull(sourceType))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return sourceType;
     }
 
     /**

@@ -37,5 +37,4 @@ public class MetadataGetterForReactive {
         return just(getMetadata(serverRequest));
     }
 
-
 }

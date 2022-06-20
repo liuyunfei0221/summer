@@ -41,7 +41,7 @@ public final class MemberRegistryParam implements Serializable, Asserter {
     private Integer gender;
 
     /**
-     * @see com.blue.base.constant.auth.CredentialType
+     * @see com.blue.base.constant.member.SourceType
      */
     private String source;
 

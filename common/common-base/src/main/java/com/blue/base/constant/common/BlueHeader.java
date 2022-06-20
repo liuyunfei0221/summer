@@ -40,6 +40,11 @@ public enum BlueHeader {
     METADATA("Metadata"),
 
     /**
+     * member source
+     */
+    SOURCE("Source"),
+
+    /**
      * verify key
      */
     VERIFY_KEY("Verify-Key"),

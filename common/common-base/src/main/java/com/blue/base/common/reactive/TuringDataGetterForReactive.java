@@ -57,5 +57,4 @@ public final class TuringDataGetterForReactive {
         return just(jsonToTuringData(serverHttpRequest.getHeaders().getFirst(TURING_DATA.name)));
     }
 
-
 }

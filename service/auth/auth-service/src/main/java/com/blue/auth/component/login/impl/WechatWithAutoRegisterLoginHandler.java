@@ -9,6 +9,7 @@ import com.blue.auth.service.inter.AuthService;
 import com.blue.auth.service.inter.AutoRegisterService;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.auth.service.inter.RoleService;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.exps.BlueException;
@@ -28,7 +29,9 @@ import java.util.function.Function;
 import static com.blue.base.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.GSON;
+import static com.blue.base.common.base.ConstantProcessor.assertSource;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.base.common.reactive.SourceGetterForReactive.getSource;
 import static com.blue.base.constant.auth.CredentialType.*;
 import static com.blue.base.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.base.constant.common.BlueHeader.*;
@@ -36,7 +39,9 @@ import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.INVALID;
 import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.base.constant.member.SourceType.WE;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.ofNullable;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -101,6 +106,10 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
 
         String phone = EMPTY_DATA.value;
 
+        String source = ofNullable(getSource(serverRequest))
+                .filter(BlueChecker::isNotBlank).orElse(WE.identity);
+        assertSource(source, false);
+
         Map<String, Object> extra = new HashMap<>(2);
 
         //TODO
@@ -118,7 +127,7 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
                                 .orElseGet(() -> {
                                     extra.put(NEW_MEMBER.key, true);
                                     return just(roleService.getDefaultRole().getId())
-                                            .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, WECHAT_AUTO_REGISTER.source))
+                                            .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
                                                     .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), singletonList(roleId), WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
                                 })
                 )

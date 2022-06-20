@@ -1,6 +1,6 @@
 package com.blue.member.converter;
 
-import com.blue.base.constant.auth.CredentialType;
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.constant.common.BlueNumericalValue;
 import com.blue.base.constant.common.Status;
 import com.blue.base.model.exps.BlueException;
@@ -8,23 +8,21 @@ import com.blue.member.api.model.*;
 import com.blue.member.repository.entity.*;
 
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
-import static com.blue.base.constant.auth.CredentialType.PHONE_VERIFY_AUTO_REGISTER;
+import static com.blue.base.common.base.ConstantProcessor.assertSource;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.member.Gender.UNKNOWN;
+import static com.blue.base.constant.member.SourceType.APP;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
-import static java.util.stream.Stream.of;
 
 /**
  * model converters in member project
@@ -33,11 +31,6 @@ import static java.util.stream.Stream.of;
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class MemberModelConverters {
-
-    private static final Set<String> CREDENTIAL_SOURCES =
-            of(CredentialType.values()).map(ct -> ct.source).collect(toSet());
-
-    private static final String DEFAULT_SOURCE = PHONE_VERIFY_AUTO_REGISTER.source;
 
     public static final Function<MemberRegistryParam, MemberBasic> MEMBER_REGISTRY_INFO_2_MEMBER_BASIC = memberRegistryParam -> {
         if (isNull(memberRegistryParam))
@@ -78,10 +71,9 @@ public final class MemberModelConverters {
                 }).orElseGet(() -> UNKNOWN.identity));
         memberBasic.setStatus(Status.VALID.status);
 
-        String source = memberRegistryParam.getSource();
-        if (isBlank(source) || !CREDENTIAL_SOURCES.contains(source))
-            source = DEFAULT_SOURCE;
-
+        String source = ofNullable(memberRegistryParam.getSource())
+                .filter(BlueChecker::isNotBlank).orElse(APP.identity);
+        assertSource(source, false);
         memberBasic.setSource(source);
 
         memberBasic.setCreateTime(stamp);
