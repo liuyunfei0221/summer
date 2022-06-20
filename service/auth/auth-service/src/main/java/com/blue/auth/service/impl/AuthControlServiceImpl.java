@@ -725,14 +725,14 @@ public class AuthControlServiceImpl implements AuthControlService {
     }
 
     /**
-     * update member sec key by access
+     * refresh member sec key by access
      *
      * @param access
      * @return
      */
     @Override
-    public Mono<String> updateSecKeyByAccess(Access access) {
-        LOGGER.info("Mono<String> updateSecKeyByAccess(Access access), access = {}", access);
+    public Mono<String> refreshSecKeyByAccess(Access access) {
+        LOGGER.info("Mono<String> refreshSecKeyByAccess(Access access), access = {}", access);
         return isNotNull(access) ?
                 blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(access)), ALLOW, SEND_INTERVAL_MILLIS)
                         .flatMap(allowed ->

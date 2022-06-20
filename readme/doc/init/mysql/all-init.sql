@@ -394,9 +394,9 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
        (160001, 'POST', 'blue-auth', '/auth/login', b'0', b'1', b'1', b'1', b'1', 1,
         'login', 'login', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160002, 'POST', 'blue-auth', '/auth/access/refresh', b'0', b'1', b'1', b'1', b'1', 1,
+       (160002, 'PATCH', 'blue-auth', '/auth/access', b'0', b'1', b'1', b'1', b'1', 1,
         'refresh access', 'refresh access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160003, 'PUT', 'blue-auth', '/auth/secret', b'1', b'1', b'1', b'0', b'1', 1,
+       (160003, 'PATCH', 'blue-auth', '/auth/secret', b'1', b'1', b'1', b'0', b'1', 1,
         'refresh private key', 'refresh private key', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (160004, 'POST', 'blue-auth', '/auth/credential', b'1', b'1', b'1', b'0', b'1', 1,
         'credential setting up', 'credential setting up', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -448,14 +448,14 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
        (170013, 'PUT', 'blue-auth', '/manager/relation/role-res', b'1', b'1', b'1', b'1', b'1', 2,
         'update role-resources-relation', 'update role-resources-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (170014, 'PUT', 'blue-auth', '/manager/relation/mem-role-insert', b'1', b'1', b'1', b'1', b'1', 2,
+       (170014, 'PATCH', 'blue-auth', '/manager/relation/mem-role-insert', b'1', b'1', b'1', b'1', b'1', 2,
         'insert member-role-relation', 'insert member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (170015, 'PUT', 'blue-auth', '/manager/relation/mem-role-update', b'1', b'1', b'1', b'1', b'1', 2,
         'update member-role-relation', 'update member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (170016, 'PUT', 'blue-auth', '/manager/relation/mem-role-delete', b'1', b'1', b'1', b'1', b'1', 2,
+       (170016, 'PATCH', 'blue-auth', '/manager/relation/mem-role-delete', b'1', b'1', b'1', b'1', b'1', 2,
         'delete member-role-relation', 'delete member-role-relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
-       (170015, 'GET', 'blue-auth', '/manager/auth/security/{mid}', b'1', b'1', b'1', b'0', b'1', 2,
+       (170017, 'GET', 'blue-auth', '/manager/auth/security/{mid}', b'1', b'1', b'1', b'0', b'1', 2,
         'select members security info', 'select members security info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
@@ -465,9 +465,9 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'member registry', 'member registry', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180002, 'GET', 'blue-member', '/basic', b'1', b'1', b'1', b'0', b'1', 1,
         'member basic info', 'member basic info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180003, 'PUT', 'blue-member', '/basic/icon', b'1', b'1', b'1', b'0', b'1', 1,
+       (180003, 'PATCH', 'blue-member', '/basic/icon', b'1', b'1', b'1', b'0', b'1', 1,
         'update member icon', 'update member icon', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180004, 'PUT', 'blue-member', '/basic/profile', b'1', b'1', b'1', b'0', b'1', 1,
+       (180004, 'PATCH', 'blue-member', '/basic/profile', b'1', b'1', b'1', b'0', b'1', 1,
         'update member profile', 'update member profile', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180005, 'POST', 'blue-member', '/address', b'1', b'1', b'1', b'1', b'1', 1,
         'add address', 'add address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -676,21 +676,6 @@ WHERE `type` = 1;
 -- noinspection SqlDialectInspectionForFile
 
 -- noinspection SqlNoDataSourceInspectionForFile
-
--- media0
-
-CREATE
-DATABASE media_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-USE
-media_0;
-
--- media1
-
-CREATE
-DATABASE media_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-USE
-media_1;
-
 
 -- finance
 
@@ -1346,13 +1331,6 @@ VALUES (1, 1, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 1,
        (31, 31, DATE_FORMAT(NOW(), '%Y'), DATE_FORMAT(NOW(), '%m'), 31,
         UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
--- member
-
-CREATE
-DATABASE member CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-USE
-member;
-
 -- member0
 
 CREATE
@@ -1883,12 +1861,6 @@ VALUES (1, 'popular bulletin 2', 'test data', 'www.baidu.com', 1, 1, 2, UNIX_TIM
        (6, 'recommend bulletin 1', 'test data', 'cn.bing.com', 3, 1, 1, UNIX_TIMESTAMP() - 2678400,
         UNIX_TIMESTAMP() + 2678400, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
-
--- article
-
-CREATE
-DATABASE article CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 -- article0
 
 CREATE
@@ -2361,16 +2333,6 @@ VALUES (1, 'blue1', '{}', 1, b'1', 1, 1, 1, 1, 1),
        (4, 'blue4', '{}', 1, b'0', 1, 1, 1, 1, 1),
        (5, 'blue5', '{}', 2, b'0', 1, 1, 1, 1, 1),
        (6, 'blue6', '{}', 3, b'0', 1, 1, 1, 1, 1);
-
-CREATE
-DATABASE base_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-USE
-base_0;
-
-CREATE
-DATABASE base_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-USE
-base_1;
 
 
 

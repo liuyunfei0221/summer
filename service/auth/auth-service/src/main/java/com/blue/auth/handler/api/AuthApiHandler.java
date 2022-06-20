@@ -65,15 +65,15 @@ public final class AuthApiHandler {
 
 
     /**
-     * update member's private key(client) and member's public key(server->redis)
+     * refresh member's private key(client) and member's public key(server->redis)
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> updateSecret(ServerRequest serverRequest) {
+    public Mono<ServerResponse> refreshSecret(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        authControlService.updateSecKeyByAccess(acc)
+                        authControlService.refreshSecKeyByAccess(acc)
                                 .flatMap(secKey ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(SECRET.name, secKey)

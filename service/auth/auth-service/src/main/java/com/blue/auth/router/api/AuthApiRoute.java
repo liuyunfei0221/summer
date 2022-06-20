@@ -28,9 +28,9 @@ public class AuthApiRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/login", accept(APPLICATION_JSON), authApiHandler::login)
-                .POST("/access/refresh", authApiHandler::refreshAccess)
-                .PUT("/secret", accept(APPLICATION_JSON), authApiHandler::updateSecret)
-                .PUT("/logout", authApiHandler::logout)
+                .PATCH("/access", authApiHandler::refreshAccess)
+                .PATCH("/secret", accept(APPLICATION_JSON), authApiHandler::refreshSecret)
+                .PATCH("/logout", authApiHandler::logout)
                 .DELETE("/logout", authApiHandler::logoutEverywhere)
                 .PUT("/access", accept(APPLICATION_JSON), authApiHandler::updateAccess)
                 .POST("/access", accept(APPLICATION_JSON), authApiHandler::resetAccess)

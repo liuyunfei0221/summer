@@ -1,5 +1,6 @@
 package com.blue.redisson.api.generator;
 
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.exps.BlueException;
 import com.blue.redisson.api.conf.RedissonConf;
 import com.blue.redisson.component.SynchronizedProcessor;
@@ -188,6 +189,7 @@ public final class BlueRedissonGenerator {
         ofNullable(redissonConf.getPingConnectionInterval())
                 .ifPresent(serverConfig::setPingConnectionInterval);
         ofNullable(redissonConf.getPassword())
+                .filter(BlueChecker::isNotBlank)
                 .ifPresent(serverConfig::setPassword);
     }
 

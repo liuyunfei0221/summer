@@ -1,6 +1,6 @@
 server:
   # address: 127.0.0.1
-  port: 16000
+  port: 16100
   netty:
     connection-timeout: 16s
     h2c-max-content-length: 0B
@@ -37,7 +37,7 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
   client:
     service-url:
-      defaultZone: http://localhost:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
     registry-fetch-interval-seconds: 16
 
 
@@ -90,9 +90,9 @@ scheduler:
 cache:
   serverMode: SINGLE
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
-  host: localhost
+  host: 192.168.182.132
   port: 6379
-  password: LiuZhiyi20200805
+  password:
   maxRedirects: 4
   minIdle: 4
   maxIdle: 64
@@ -144,8 +144,8 @@ dubbo:
     protocol: zookeeper
     address: zookeeper://192.168.182.132
     port: 2181
-    username: blue
-    password: LiuZhiyi20200805
+    username:
+    password:
     group: summer
     file: D:/locallogs/dubbo/verify/registry.properties
     check: false
@@ -154,11 +154,13 @@ dubbo:
   metadata-report:
     address: zookeeper://192.168.182.132
     port: 2181
-    username: blue
-    password: LiuZhiyi20200805
-    timeout: 60000
+    username:
+    password:
+    timeout:
     default: true
     check: false
+    sync-report: false
+    report-metadata: false
   application:
     id: summer-verify
     name: summer-verify

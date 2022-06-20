@@ -1,5 +1,5 @@
 server:
-  # address: 127.0.0.1
+  address: 127.0.0.1
   port: 57000
   netty:
     connection-timeout: 6s
@@ -37,7 +37,7 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
   client:
     service-url:
-      defaultZone: http://localhost:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
     registry-fetch-interval-seconds: 300
 
 
@@ -127,9 +127,10 @@ mongo:
     - address: 192.168.182.132
       port: 27017
   auth: false
+  authBase:
   userName:
   password:
-  database: shine
+  database: analyze
   retryReads: true
   retryWrites: false
   applicationName: blue-shine
@@ -172,10 +173,10 @@ identity:
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  password: sfakjfiju99jjf87LJSDDU8
-  maxRedirects: 4
   host: 192.168.182.132
   port: 6379
+  password:
+  maxRedirects: 4
   minIdle: 4
   maxIdle: 64
   maxTotal: 128
@@ -215,10 +216,10 @@ scheduler:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  password: sfakjfiju99jjf87LJSDDU8
   host: 192.168.182.132
   port: 6379
-  scanInterval: 8000
+  password:
+  scanInterval: 120000
   checkSlotsCoverage: false
   tcpNoDelay: true
   masterConnectionMinimumIdleSize: 2
@@ -396,11 +397,25 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://192.168.182.132:2181
+    address: zookeeper://192.168.182.132
+    port: 2181
+    username:
+    password:
     group: summer
     file: D:/locallogs/dubbo/data/registry.properties
     check: false
     timeout: 60000
+    simplified: true
+  metadata-report:
+    address: zookeeper://192.168.182.132
+    port: 2181
+    username:
+    password:
+    timeout:
+    default: true
+    check: false
+    sync-report: false
+    report-metadata: false
   application:
     id: summer-analyze
     name: summer-analyze

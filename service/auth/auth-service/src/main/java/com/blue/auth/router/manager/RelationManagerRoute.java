@@ -29,9 +29,9 @@ public class RelationManagerRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .PUT("/role-res", accept(APPLICATION_JSON), relationManagerHandler::updateAuthorityByRole)
-                .PUT("/mem-role-insert", accept(APPLICATION_JSON), relationManagerHandler::insertAuthorityByMember)
+                .PATCH("/mem-role-insert", accept(APPLICATION_JSON), relationManagerHandler::insertAuthorityByMember)
                 .PUT("/mem-role-update", accept(APPLICATION_JSON), relationManagerHandler::updateAuthoritiesByMember)
-                .PUT("/mem-role-delete", accept(APPLICATION_JSON), relationManagerHandler::deleteAuthorityByMember)
+                .PATCH("/mem-role-delete", accept(APPLICATION_JSON), relationManagerHandler::deleteAuthorityByMember)
                 .build();
 
         return nest(pathPredicate, routerFunction);

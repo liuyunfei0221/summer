@@ -168,12 +168,12 @@ public interface AuthControlService {
     Mono<Boolean> resetAccessByAccess(AccessResetParam accessResetParam);
 
     /**
-     * update member sec key by access
+     * refresh member sec key by access
      *
      * @param access
      * @return
      */
-    Mono<String> updateSecKeyByAccess(Access access);
+    Mono<String> refreshSecKeyByAccess(Access access);
 
     /**
      * insert security question

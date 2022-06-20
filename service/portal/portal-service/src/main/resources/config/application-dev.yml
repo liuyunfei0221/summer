@@ -37,7 +37,7 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
   client:
     service-url:
-      defaultZone: http://localhost:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
     registry-fetch-interval-seconds: 300
 
 
@@ -224,11 +224,13 @@ dubbo:
   metadata-report:
     address: zookeeper://192.168.182.132
     port: 2181
-    username: blue
-    password: LiuZhiyi20200805
-    timeout: 60000
+    username:
+    password:
+    timeout:
     default: true
     check: false
+    sync-report: false
+    report-metadata: false
   application:
     id: summer-portal
     name: summer-portal

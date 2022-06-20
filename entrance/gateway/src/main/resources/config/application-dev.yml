@@ -37,7 +37,7 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
   client:
     service-url:
-      defaultZone: http://localhost:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
     registry-fetch-interval-seconds: 10
 
 
@@ -60,7 +60,7 @@ cache:
   nodes: [ 172.18.7.1:6379, 172.18.7.1:6380, 172.18.7.2:6379, 172.18.7.2:6380, 172.18.7.3:6379, 172.18.7.3:6380 ]
   host: 192.168.182.132
   port: 6379
-  password: LiuZhiyi20200805
+  password:
   maxRedirects: 4
   minIdle: 4
   maxIdle: 64
@@ -141,8 +141,8 @@ dubbo:
     protocol: zookeeper
     address: zookeeper://192.168.182.132
     port: 2181
-    username: blue
-    password: LiuZhiyi20200805
+    username:
+    password:
     group: summer
     file: D:/locallogs/dubbo/gateway/registry.properties
     check: false
@@ -151,8 +151,8 @@ dubbo:
   metadata-report:
     address: zookeeper://192.168.182.132
     port: 2181
-    username: blue
-    password: LiuZhiyi20200805
+    username:
+    password:
     timeout: 60000
     default: true
     check: false

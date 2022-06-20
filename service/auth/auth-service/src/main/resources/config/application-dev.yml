@@ -37,13 +37,13 @@ eureka:
     hostname: ${spring.cloud.client.ip-address}
   client:
     service-url:
-      defaultZone: http://localhost:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
     registry-fetch-interval-seconds: 10
 
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://172.16.203.216:3306/auth_0
+    - url: jdbc:mysql://192.168.182.132:3306/auth_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -57,7 +57,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://172.16.203.216:3306/auth_1
+    - url: jdbc:mysql://192.168.182.132:3306/auth_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -96,7 +96,7 @@ data:
       worker: 0
   broadcastTables: [ ]
   singleDatabasesWithTables:
-    - url: jdbc:mysql://172.16.203.216:3306/auth
+    - url: jdbc:mysql://192.168.182.132:3306/auth
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -163,7 +163,7 @@ identity:
 
 mongo:
   addressAttrs:
-    - address: 172.16.203.216
+    - address: 192.168.182.132
       port: 27017
   auth: false
   authBase: admin
@@ -247,7 +247,7 @@ seata:
     vgroup-mapping:
       summer_group: default
     grouplist:
-      default: 172.16.203.216:8091
+      default: 192.168.182.132:8091
     enable-degrade: false
     disable-global-transaction: false
   log:
@@ -282,7 +282,7 @@ seata:
       name: ""
     type: zk
     zk:
-      server-addr: 172.16.203.216:2181
+      server-addr: 192.168.182.132:2181
       session-timeout: 60000
       connect-timeout: 60000
       username: ""
@@ -294,7 +294,7 @@ seata:
     type: zk
     zk:
       cluster: default
-      server-addr: 172.16.203.216:2181
+      server-addr: 192.168.182.132:2181
       session-timeout: 60000
       connect-timeout: 60000
       username: ""
@@ -304,7 +304,7 @@ seata:
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 172.16.203.216
+  host: 192.168.182.132
   port: 6379
   password:
   maxRedirects: 4
@@ -393,7 +393,7 @@ history:
 producers:
   configs:
     accessExpire:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 192.168.182.132:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -445,7 +445,7 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     invalidLocalAccess:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 192.168.182.132:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -497,7 +497,7 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     systemAuthorityInfosRefresh:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 192.168.182.132:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -552,7 +552,7 @@ producers:
 consumers:
   configs:
     accessExpire:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 192.168.182.132:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -629,7 +629,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     invalidLocalAccess:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 192.168.182.132:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -706,7 +706,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     systemAuthorityInfosRefresh:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 192.168.182.132:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -783,7 +783,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     invalidAuth:
-      services: [ 172.16.203.216:6650 ]
+      services: [ 192.168.182.132:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -880,14 +880,18 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://172.16.203.216:2181
+    address: zookeeper://192.168.182.132
+    port: 2181
+    username:
+    password:
     group: summer
     file: D:/locallogs/dubbo/auth/registry.properties
     check: false
     timeout: 60000
     simplified: true
   metadata-report:
-    address: zookeeper://172.16.203.216:2181
+    address: zookeeper://192.168.182.132
+    port: 2181
     timeout: 60000
     default: true
     check: false
@@ -918,10 +922,10 @@ dubbo:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  password: sfakjfiju99jjf87LJSDDU8
-  host: 172.16.203.216
+  host: 192.168.182.132
   port: 6379
-  scanInterval: 8000
+  password:
+  scanInterval: 120000
   checkSlotsCoverage: false
   tcpNoDelay: true
   masterConnectionMinimumIdleSize: 2
