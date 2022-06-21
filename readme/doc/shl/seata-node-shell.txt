@@ -13,7 +13,7 @@ create /seata/transport.threadFactory.bossThreadSize 1
 create /seata/transport.threadFactory.workerThreadSize default
 create /seata/transport.shutdown.wait 3
 create /seata/service.vgroupMapping.summer_group default
-create /seata/service.default.grouplist 43.138.44.171:8091
+create /seata/service.default.grouplist 127.0.0.1:8091
 create /seata/service.enableDegrade false
 create /seata/service.disableGlobalTransaction false
 create /seata/client.rm.asyncCommitBufferLimit 10000
@@ -39,9 +39,9 @@ create /seata/store.publicKey
 create /seata/store.db.datasource druid
 create /seata/store.db.dbType mysql
 create /seata/store.db.driverClassName com.mysql.cj.jdbc.Driver
-create /seata/store.db.url jdbc:mysql://43.138.111.53:3306/seata?useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+create /seata/store.db.url jdbc:mysql://127.0.0.1:3306/seata?useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
 create /seata/store.db.user root
-create /seata/store.db.password LiuZhiyi20200805
+create /seata/store.db.password 1024
 create /seata/store.db.minConn 5
 create /seata/store.db.maxConn 30
 create /seata/store.db.globalTable global_table

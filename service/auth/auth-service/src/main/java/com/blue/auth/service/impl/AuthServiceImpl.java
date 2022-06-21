@@ -236,14 +236,9 @@ public class AuthServiceImpl implements AuthService {
         return SESSION_KEY_PRE + id + PAR_CONCATENATION + CREDENTIAL_TYPE_2_NATURE_CONVERTER.apply(credentialTypeIdentity).intern() + PAR_CONCATENATION + deviceTypeIdentity;
     }
 
-    /**
-     * generate global sync key
-     */
-    private static final UnaryOperator<String> GLOBAL_LOCK_KEY_GEN = keyId -> valueOf(keyId.hashCode());
-
-    private static final UnaryOperator<String> ACCESS_ELE_REFRESH_SYNC_KEY_GEN = keyId -> {
-        if (isNotBlank(keyId))
-            return ACCESS_ELE_REFRESH_PRE.prefix + keyId;
+    private static final Function<Long, String> ACCESS_ELE_REFRESH_SYNC_KEY_GEN = memberId -> {
+        if (isValidIdentity(memberId))
+            return ACCESS_ELE_REFRESH_PRE.prefix + memberId;
 
         throw new BlueException(BAD_REQUEST);
     };
@@ -384,40 +379,36 @@ public class AuthServiceImpl implements AuthService {
         if (isBlank(keyId) || (isInvalidIdentities(roleIds) && isBlank(pubKey)))
             return;
 
-        synchronizedProcessor.handleTaskWithTryLock(ACCESS_ELE_REFRESH_SYNC_KEY_GEN.apply(keyId), () ->
-                        synchronizedProcessor.handleTaskWithLock(GLOBAL_LOCK_KEY_GEN.apply(keyId), () -> {
-                            String originalAuthInfoJson = ofNullable(stringRedisTemplate.opsForValue().get(keyId))
-                                    .orElse(EMPTY_DATA.value);
+        String originalAuthInfoJson = ofNullable(stringRedisTemplate.opsForValue().get(keyId))
+                .orElse(EMPTY_DATA.value);
 
-                            if (isBlank(originalAuthInfoJson)) {
-                                LOGGER.info("member's authInfo is blank, can't refresh");
-                                return;
-                            }
+        if (isBlank(originalAuthInfoJson)) {
+            LOGGER.info("member's authInfo is blank, can't refresh");
+            return;
+        }
 
-                            AccessInfo accessInfo;
-                            try {
-                                accessInfo = GSON.fromJson(originalAuthInfoJson, AccessInfo.class);
-                            } catch (JsonSyntaxException e) {
-                                LOGGER.info("member's authInfo is invalid, can't refresh");
-                                return;
-                            }
+        AccessInfo accessInfo;
+        try {
+            accessInfo = GSON.fromJson(originalAuthInfoJson, AccessInfo.class);
+        } catch (JsonSyntaxException e) {
+            LOGGER.info("member's authInfo is invalid, can't refresh");
+            return;
+        }
 
-                            if (isValidIdentities(roleIds))
-                                accessInfo.setRoleIds(roleIds);
-                            if (isNotBlank(pubKey))
-                                accessInfo.setPubKey(pubKey);
+        if (isValidIdentities(roleIds))
+            accessInfo.setRoleIds(roleIds);
+        if (isNotBlank(pubKey))
+            accessInfo.setPubKey(pubKey);
 
-                            try {
-                                stringRedisTemplate.opsForValue()
-                                        .set(keyId, GSON.toJson(accessInfo), Duration.of(ofNullable(stringRedisTemplate.getExpire(keyId, SECONDS)).orElse(0L), ChronoUnit.SECONDS));
+        try {
+            stringRedisTemplate.opsForValue()
+                    .set(keyId, GSON.toJson(accessInfo), Duration.of(ofNullable(stringRedisTemplate.getExpire(keyId, SECONDS)).orElse(0L), ChronoUnit.SECONDS));
 
-                                Boolean localAddressInvalid = this.invalidateLocalAccessByKeyId(keyId).toFuture().join();
-                                LOGGER.info("this.invalidateLocalAccessByKeyId(keyId).toFuture().join(), localAddressInvalid = {}", localAddressInvalid);
-                            } catch (Exception e) {
-                                LOGGER.error("invalidLocalAuthProducer send failed, keyId = {}, e = {}", keyId, e);
-                            }
-                        })
-                , true);
+            Boolean localAddressInvalid = this.invalidateLocalAccessByKeyId(keyId).toFuture().join();
+            LOGGER.info("this.invalidateLocalAccessByKeyId(keyId).toFuture().join(), localAddressInvalid = {}", localAddressInvalid);
+        } catch (Exception e) {
+            LOGGER.error("invalidLocalAuthProducer send failed, keyId = {}, e = {}", keyId, e);
+        }
     }
 
     /**
@@ -433,7 +424,7 @@ public class AuthServiceImpl implements AuthService {
 
         List<Long> roleIds = authInfoRefreshElement.getRoleIds();
         String pubKey = authInfoRefreshElement.getPubKey();
-        if (isEmpty(roleIds) || isBlank(pubKey))
+        if (isEmpty(roleIds) && isBlank(pubKey))
             return;
 
         List<String> credentialTypes = ofNullable(authInfoRefreshElement.getCredentialTypes())
@@ -460,10 +451,29 @@ public class AuthServiceImpl implements AuthService {
         if (isEmpty(deviceTypes))
             return;
 
-        for (String credentialType : credentialTypes)
-            for (String deviceType : deviceTypes)
-                refreshAccessRoleIdsOrPubKeyByKeyId(
-                        genSessionKey(memberId, credentialType.intern(), deviceType.intern()), roleIds, pubKey);
+        synchronizedProcessor.handleTaskWithLock(ACCESS_ELE_REFRESH_SYNC_KEY_GEN.apply(memberId), () -> {
+            for (String credentialType : credentialTypes)
+                for (String deviceType : deviceTypes)
+                    refreshAccessRoleIdsOrPubKeyByKeyId(
+                            genSessionKey(memberId, credentialType.intern(), deviceType.intern()), roleIds, pubKey);
+        });
+    }
+
+    /**
+     * refresh auth pubKey
+     *
+     * @param access
+     * @param pubKey
+     */
+    private void refreshAuthPubKeyByAccess(Access access, String pubKey) {
+        LOGGER.info("void refreshAuthElementBySimple(Access access, String pubKey), access = {}, pubKey = {}", access, pubKey);
+        if (isNull(access) || isBlank(pubKey))
+            throw new BlueException(BAD_REQUEST);
+
+        long memberId = access.getId();
+        synchronizedProcessor.handleTaskWithLock(ACCESS_ELE_REFRESH_SYNC_KEY_GEN.apply(memberId), () ->
+                refreshAccessRoleIdsOrPubKeyByKeyId(genSessionKey(memberId, access.getCredentialType().intern(), access.getDeviceType().intern()),
+                        null, pubKey));
     }
 
     /**
@@ -852,8 +862,7 @@ public class AuthServiceImpl implements AuthService {
         return isNotNull(access) ?
                 just(initKeyPair())
                         .flatMap(keyPair -> {
-                            refreshAccessRoleIdsOrPubKeyByKeyId(genSessionKey(access.getId(), access.getCredentialType().intern(), access.getDeviceType().intern()),
-                                    null, keyPair.getPubKey());
+                            refreshAuthPubKeyByAccess(access, keyPair.getPubKey());
                             return just(keyPair.getPriKey());
                         })
                 :

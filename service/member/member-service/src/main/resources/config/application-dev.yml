@@ -1,6 +1,6 @@
 server:
-  # address: 127.0.0.1
-  port: 26010
+  address: localhost
+  port: 25000
   netty:
     connection-timeout: 6s
     h2c-max-content-length: 0B
@@ -31,19 +31,19 @@ server:
 
 eureka:
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: false
     lease-renewal-interval-in-seconds: 300
-    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
-    hostname: ${spring.cloud.client.ip-address}
+    instance-id: ${server.address}:${spring.application.name}:${server.port}
+    hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@127.0.0.1:3000/eureka/
     registry-fetch-interval-seconds: 300
 
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://192.168.182.132:3306/member_0
+    - url: jdbc:mysql://172.16.204.75:3306/member_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -57,7 +57,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://192.168.182.132:3306/member_1
+    - url: jdbc:mysql://172.16.204.75:3306/member_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -151,7 +151,7 @@ identity:
 
 mongo:
   addressAttrs:
-    - address: 192.168.182.132
+    - address: 172.16.204.75
       port: 27017
   auth: false
   authBase:
@@ -194,7 +194,7 @@ seata:
   secret-key:
   client:
     rm:
-      async-commitbuffer-limit: 10000
+      async-commit-buffer-limit: 10000
       report-retry-count: 5
       table-meta-check-enable: false
       table-meta-checker-interval: 60000
@@ -234,8 +234,8 @@ seata:
   service:
     vgroup-mapping:
       summer_group: default
-    grouplist:
-      default: 192.168.182.132:8091
+    group-list:
+      default: 172.16.204.75:8091
     enable-degrade: false
     disable-global-transaction: false
   log:
@@ -270,7 +270,7 @@ seata:
       name: ""
     type: zk
     zk:
-      server-addr: 192.168.182.132:2181
+      server-addr: 172.16.204.75:2181
       session-timeout: 60000
       connect-timeout: 60000
       username: ""
@@ -282,7 +282,7 @@ seata:
     type: zk
     zk:
       cluster: default
-      server-addr: 192.168.182.132:2181
+      server-addr: 172.16.204.75:2181
       session-timeout: 60000
       connect-timeout: 60000
       username: ""
@@ -292,7 +292,7 @@ seata:
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 192.168.182.132
+  host: 172.16.204.75
   port: 6379
   maxRedirects: 4
   minIdle: 4
@@ -334,7 +334,7 @@ scheduler:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 192.168.182.132
+  host: 172.16.204.75
   port: 6379
   password:
   scanInterval: 8000
@@ -369,22 +369,22 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://192.168.182.132:2181
+    address: zookeeper://172.16.204.75:2181
     group: summer
     file: D:/locallogs/dubbo/member/registry.properties
     check: false
     timeout: 60000
-    simplified: true
-  metadata-report:
-    address: zookeeper://192.168.182.132
-    port: 2181
-    username:
-    password:
-    timeout:
-    default: true
-    check: false
-    sync-report: false
-    report-metadata: false
+    simplified: false
+#  metadata-report:
+#    address: zookeeper://172.16.204.75
+#    port: 2181
+#    username:
+#    password:
+#    timeout:
+#    default: true
+#    check: false
+#    sync-report: false
+#    report-metadata: false
   application:
     id: summer-member
     name: summer-member
@@ -395,7 +395,7 @@ dubbo:
   protocol:
     name: dubbo
     host: localhost
-    port: 26005
+    port: 26000
     accesslog: D:/locallogs/dubbo/member/access.log
   provider:
     retries: 0
@@ -441,7 +441,7 @@ card:
 producers:
   configs:
     invalidAuth:
-      services: [ 192.168.182.132:6650 ]
+      services: [ 172.16.204.75:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

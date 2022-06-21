@@ -1,5 +1,5 @@
 server:
-  address: 127.0.0.1
+  address: localhost
   port: 11000
   netty:
     connection-timeout: 6s
@@ -31,13 +31,13 @@ server:
 
 eureka:
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: false
     lease-renewal-interval-in-seconds: 10
-    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
-    hostname: ${spring.cloud.client.ip-address}
+    instance-id: ${server.address}:${spring.application.name}:${server.port}
+    hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@127.0.0.1:3000/eureka/
     registry-fetch-interval-seconds: 10
 
 
@@ -147,15 +147,15 @@ dubbo:
     file: D:/locallogs/dubbo/gateway/registry.properties
     check: false
     timeout: 60000
-    simplified: true
-  metadata-report:
-    address: zookeeper://43.138.44.171
-    port: 2181
-    username: blue
-    password: LiuZhiyi20200805
-    timeout: 60000
-    default: true
-    check: false
+    simplified: false
+#  metadata-report:
+#    address: zookeeper://43.138.44.171
+#    port: 2181
+#    username: blue
+#    password: LiuZhiyi20200805
+#    timeout: 60000
+#    default: true
+#    check: false
   application:
     id: summer-gateway
     name: summer-gateway

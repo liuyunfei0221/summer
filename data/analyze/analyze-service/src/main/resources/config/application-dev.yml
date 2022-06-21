@@ -1,5 +1,5 @@
 server:
-  address: 127.0.0.1
+  address: localhost
   port: 57000
   netty:
     connection-timeout: 6s
@@ -31,19 +31,19 @@ server:
 
 eureka:
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: false
     lease-renewal-interval-in-seconds: 300
-    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
-    hostname: ${spring.cloud.client.ip-address}
+    instance-id: ${server.address}:${spring.application.name}:${server.port}
+    hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@127.0.0.1:3000/eureka/
     registry-fetch-interval-seconds: 300
 
 
 data:
   shardingDatabases:
-    - url: jdbc:clickhouse://192.168.182.132:8123/ldap_analyze_0
+    - url: jdbc:clickhouse://172.16.204.75:8123/ldap_analyze_0
       dataBaseConf:
       username: default
       password: 1024
@@ -57,7 +57,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:clickhouse://192.168.182.132:8123/ldap_analyze_1
+    - url: jdbc:clickhouse://172.16.204.75:8123/ldap_analyze_1
       dataBaseConf:
       username: default
       password: 1024
@@ -124,7 +124,7 @@ data:
 
 mongo:
   addressAttrs:
-    - address: 192.168.182.132
+    - address: 172.16.204.75
       port: 27017
   auth: false
   authBase:
@@ -173,7 +173,7 @@ identity:
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 192.168.182.132
+  host: 172.16.204.75
   port: 6379
   password:
   maxRedirects: 4
@@ -216,7 +216,7 @@ scheduler:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 192.168.182.132
+  host: 172.16.204.75
   port: 6379
   password:
   scanInterval: 120000
@@ -249,7 +249,7 @@ redisson:
 producers:
   configs:
     illegalMark:
-      services: [ 192.168.182.132:6650 ]
+      services: [ 172.16.204.75:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -305,7 +305,7 @@ producers:
 consumers:
   configs:
     requestEvent:
-      services: [ 192.168.182.132:6650 ]
+      services: [ 172.16.204.75:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -397,7 +397,7 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://192.168.182.132
+    address: zookeeper://172.16.204.75
     port: 2181
     username:
     password:
@@ -405,17 +405,17 @@ dubbo:
     file: D:/locallogs/dubbo/data/registry.properties
     check: false
     timeout: 60000
-    simplified: true
-  metadata-report:
-    address: zookeeper://192.168.182.132
-    port: 2181
-    username:
-    password:
-    timeout:
-    default: true
-    check: false
-    sync-report: false
-    report-metadata: false
+    simplified: false
+#  metadata-report:
+#    address: zookeeper://172.16.204.75
+#    port: 2181
+#    username:
+#    password:
+#    timeout:
+#    default: true
+#    check: false
+#    sync-report: false
+#    report-metadata: false
   application:
     id: summer-analyze
     name: summer-analyze

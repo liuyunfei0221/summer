@@ -28,7 +28,7 @@ public class RelationManagerRoute {
         RequestPredicate pathPredicate = path("/blue-auth/manager/relation");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .PUT("/role-res", accept(APPLICATION_JSON), relationManagerHandler::updateAuthorityByRole)
+                .PUT("/role-res-update", accept(APPLICATION_JSON), relationManagerHandler::updateAuthorityByRole)
                 .PATCH("/mem-role-insert", accept(APPLICATION_JSON), relationManagerHandler::insertAuthorityByMember)
                 .PUT("/mem-role-update", accept(APPLICATION_JSON), relationManagerHandler::updateAuthoritiesByMember)
                 .PATCH("/mem-role-delete", accept(APPLICATION_JSON), relationManagerHandler::deleteAuthorityByMember)

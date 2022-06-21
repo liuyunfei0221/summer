@@ -1,6 +1,6 @@
 server:
-  # address: 127.0.0.1
-  port: 16000
+  address: localhost
+  port: 59000
   netty:
     connection-timeout: 16s
     h2c-max-content-length: 0B
@@ -31,13 +31,13 @@ server:
 
 eureka:
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: false
     lease-renewal-interval-in-seconds: 300
-    instance-id: ${spring.cloud.client.ip-address}:${spring.application.name}:${server.port}
-    hostname: ${spring.cloud.client.ip-address}
+    instance-id: ${server.address}:${spring.application.name}:${server.port}
+    hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@127.0.0.1:3000/eureka/
     registry-fetch-interval-seconds: 16
 
 
@@ -73,7 +73,7 @@ scheduler:
 cache:
   serverMode: SINGLE
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
-  host: 192.168.182.132
+  host: 172.16.204.75
   port: 6379
   password:
   maxRedirects: 4
@@ -121,7 +121,7 @@ dubbo:
     client: curator
     zone: summer
     protocol: zookeeper
-    address: zookeeper://192.168.182.132
+    address: zookeeper://172.16.204.75
     port: 2181
     username: blue
     password: LiuZhiyi20200805
@@ -129,17 +129,17 @@ dubbo:
     file: D:/locallogs/dubbo/event/registry.properties
     check: false
     timeout: 60000
-    simplified: true
-  metadata-report:
-    address: zookeeper://192.168.182.132
-    port: 2181
-    username:
-    password:
-    timeout:
-    default: true
-    check: false
-    sync-report: false
-    report-metadata: false
+    simplified: false
+#  metadata-report:
+#    address: zookeeper://172.16.204.75
+#    port: 2181
+#    username:
+#    password:
+#    timeout:
+#    default: true
+#    check: false
+#    sync-report: false
+#    report-metadata: false
   application:
     id: summer-event
     name: summer-event
@@ -150,7 +150,7 @@ dubbo:
   protocol:
     name: dubbo
     host: localhost
-    port: 17500
+    port: 60000
     accesslog: D:/locallogs/dubbo/event/access.log
   provider:
     retries: 0
@@ -167,7 +167,7 @@ dubbo:
 producers:
   configs:
     requestEvent:
-      services: [ 192.168.182.132:6650 ]
+      services: [ 172.16.204.75:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -223,7 +223,7 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 192.168.182.132:6650 ]
+      services: [ 172.16.204.75:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

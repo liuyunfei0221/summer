@@ -103,7 +103,8 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
                 .map(AccessProcessor::jsonToAccess)
                 .ifPresent(access -> {
                     optEvent.setMemberId(access.getId());
-                    optEvent.setRoleIds(access.getRoleIds());
+                    optEvent.setRoleIds(ofNullable(access.getRoleIds())
+                            .filter(BlueChecker::isNotEmpty).map(l -> l.toArray(Long[]::new)).orElseGet(() -> new Long[0]));
                     optEvent.setCredentialType(access.getCredentialType());
                     optEvent.setDeviceType(access.getDeviceType());
                     optEvent.setLoginTime(access.getLoginTime());

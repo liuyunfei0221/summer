@@ -18,7 +18,8 @@
         <result column="metadata" jdbcType="VARCHAR" property="metadata"/>
         <result column="jwt" jdbcType="VARCHAR" property="jwt"/>
         <result column="member_id" jdbcType="BIGINT" property="memberId"/>
-        <result column="role_id" jdbcType="BIGINT" property="roleId"/>
+        <result column="role_ids" jdbcType="ARRAY" property="roleIds"
+                typeHandler="com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler"/>
         <result column="credential_type" jdbcType="VARCHAR" property="credentialType"/>
         <result column="device_type" jdbcType="VARCHAR" property="deviceType"/>
         <result column="login_time" jdbcType="BIGINT" property="loginTime"/>
@@ -34,7 +35,7 @@
 
     <sql id="Base_Column_List">
         id
-        , data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, response_status,response_body,request_id, metadata, jwt, member_id, role_id, credential_type,
+        , data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, response_status,response_body,request_id, metadata, jwt, member_id, role_ids, credential_type,
         device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body, duration_seconds
     </sql>
 
@@ -55,7 +56,7 @@
         insert into opt_event (id, data_event_type, data_event_op_type, stamp, create_date,
                                method, uri, real_uri, request_body, response_status,
                                response_body, request_id, metadata, jwt, member_id,
-                               role_id, credential_type, device_type, login_time, client_ip,
+                               role_ids, credential_type, device_type, login_time, client_ip,
                                user_agent, sec_key, request_un_decryption,
                                response_un_encryption, existence_request_body,
                                existence_response_body, duration_seconds)
@@ -65,7 +66,8 @@
                 #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
                 #{requestBody,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR},
                 #{requestId,jdbcType=VARCHAR}, #{metadata,jdbcType=VARCHAR},
-                #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT},
+                #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT},
+                #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
                 #{credentialType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
                 #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
                 #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
@@ -78,7 +80,7 @@
             INSERT INTO opt_event (id, data_event_type, data_event_op_type,
             stamp, create_date, method, uri, real_uri, request_body, response_status,
             response_body, request_id, metadata, jwt, member_id,
-            role_id, credential_type, device_type, login_time, client_ip,
+            role_ids, credential_type, device_type, login_time, client_ip,
             user_agent, sec_key, request_un_decryption,
             response_un_encryption, existence_request_body,
             existence_response_body, duration_seconds)
@@ -91,7 +93,8 @@
                 #{requestBody,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER},
                 #{responseBody,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR},
                 #{metadata,jdbcType=VARCHAR}, #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT},
-                #{roleId,jdbcType=BIGINT}, #{credentialType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
+                #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
+                #{credentialType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
                 #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
                 #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
                 #{responseUnEncryption,jdbcType=INTEGER}, #{existenceRequestBody,jdbcType=INTEGER},
@@ -148,8 +151,8 @@
             <if test="memberId != null">
                 member_id,
             </if>
-            <if test="roleId != null">
-                role_id,
+            <if test="roleIds != null">
+                role_ids,
             </if>
             <if test="credentialType != null">
                 credential_type,
@@ -231,8 +234,8 @@
             <if test="memberId != null">
                 #{memberId,jdbcType=BIGINT},
             </if>
-            <if test="roleId != null">
-                #{roleId,jdbcType=BIGINT},
+            <if test="roleIds != null">
+                #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
             </if>
             <if test="credentialType != null">
                 #{credentialType,jdbcType=VARCHAR},
@@ -316,7 +319,7 @@
                 member_id = #{memberId,jdbcType=BIGINT},
             </if>
             <if test="roleId != null">
-                role_id = #{roleId,jdbcType=BIGINT},
+                role_ids = #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
             </if>
             <if test="credentialType != null">
                 credential_type = #{credentialType,jdbcType=VARCHAR},
@@ -371,7 +374,7 @@
             metadata                = #{metadata,jdbcType=VARCHAR},
             jwt                     = #{jwt,jdbcType=VARCHAR},
             member_id               = #{memberId,jdbcType=BIGINT},
-            role_id                 = #{roleId,jdbcType=BIGINT},
+            role_ids                = #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
             credential_type         = #{credentialType,jdbcType=VARCHAR},
             device_type             = #{deviceType,jdbcType=VARCHAR},
             login_time              = #{loginTime,jdbcType=BIGINT},
