@@ -247,7 +247,7 @@ seata:
     vgroup-mapping:
       summer_group: default
     group-list:
-      default: 172.16.204.75:8091
+      default: 43.138.44.171:8091
     enable-degrade: false
     disable-global-transaction: false
   log:

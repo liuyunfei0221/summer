@@ -1,0 +1,53 @@
+server:
+  port: 3000
+  undertow:
+    max-http-post-size: -1B
+    buffer-size: 256
+    direct-buffers: true
+    eager-filter-init: true
+    max-parameters: 1000
+    max-headers: 200
+    max-cookies: 200
+    allow-encoded-slash: false
+    decode-url: true
+    url-charset: UTF-8
+    always-set-keep-alive: true
+    no-request-timeout: 256s
+    preserve-path-on-forward: false
+    access-log:
+      enabled: false
+      pattern: common
+      prefix: access_log
+      suffix: log
+    threads:
+      io: 4
+      worker: 2
+
+
+spring:
+  security:
+    user:
+      name: blue
+      password: LiuZhiyi20200805
+
+
+eureka:
+  server:
+    enable-self-preservation: true
+    expected-client-renewal-interval-seconds: 10
+    eviction-interval-timer-in-ms: 30000
+    response-cache-update-interval-ms: 30000
+  instance:
+    hostname: localhost
+    lease-expiration-duration-in-seconds: 300000
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone:
+        http://${spring.security.user.name}:${spring.security.user.password}@${eureka.instance.hostname}:${server.port}/eureka/
+
+
+websocket:
+  direct: false
+  bufferSize: 1024
