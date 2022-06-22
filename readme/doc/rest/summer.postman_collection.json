@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a03efa41-5459-40b7-b83d-e76c2c8c66a8",
+		"_postman_id": "cdbf1aa5-7ae6-454b-8528-6104366de3b3",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11135497"
@@ -21,11 +21,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/languages",
+							"raw": "localhost:11000/blue-base/languages",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"languages"
@@ -46,11 +46,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/language",
+							"raw": "localhost:11000/blue-base/language",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"language"
@@ -76,11 +76,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/element",
+							"raw": "localhost:11000/blue-base/element",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"element"
@@ -110,11 +110,11 @@
 							"raw": "{\r\n    \"keys\":[\"PHONE\",\"ROLE\",\"\"]\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/element",
+							"raw": "localhost:11000/blue-base/element",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"element"
@@ -135,11 +135,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/countries",
+							"raw": "localhost:11000/blue-base/countries",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"countries"
@@ -160,11 +160,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:20000/blue-base/states/45",
+							"raw": "localhost:11000/blue-base/states/45",
 							"host": [
 								"localhost"
 							],
-							"port": "20000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"states",
@@ -186,11 +186,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/cities/2257",
+							"raw": "localhost:11000/blue-base/cities/2257",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"cities",
@@ -212,11 +212,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/areas/19332",
+							"raw": "localhost:11000/blue-base/areas/19332",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"areas",
@@ -238,11 +238,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/style/1",
+							"raw": "localhost:11000/blue-base/style/1",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"style",
@@ -264,11 +264,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:20000/blue-base/test/region",
+							"raw": "localhost:21000/blue-base/test/region",
 							"host": [
 								"localhost"
 							],
-							"port": "20000",
+							"port": "21000",
 							"path": [
 								"blue-base",
 								"test",
@@ -290,40 +290,14 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/dictType",
+							"raw": "localhost:11000/blue-base/dictType",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"dictType"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "测试基础服务数据",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "localhost:10000/blue-base/bulletin/1",
-							"host": [
-								"localhost"
-							],
-							"port": "10000",
-							"path": [
-								"blue-base",
-								"bulletin",
-								"1"
 							]
 						}
 					},
@@ -341,20 +315,20 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMTg4MGQ3Mjg1YTU5ZDQ4MjZhMzA2MGI5N2U0NGJlNWNjZjgzZjI2NWE5ZDM1M2EyNDUyMzEwYmU5ODQxY2U3MDI2NDNlYTJlZmFhNDljYWJjMjRiMWRkZDE0MGVhMzg4YjRjODBkMThiNDJkNzhlNDdkMTU2NTk3OTM1OTE2YTAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MzgxMjQ1MCIsIm5iZiI6MTY1MzgxMjQ1MCwidCI6ImlaNVM0elk2cVVmIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM3NjAxMzkyODUxOTQzNDI1X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYxNTg4NDUwMDk1LCJpIjoiMzc2MDEzOTI4NTE5NDM0MjUiLCJleHAiOjE2NjE1ODg0NTAsImlhdCI6MTY1MzgxMjQ1MCwianRpIjoib3V2R3lrUmxnallTWWxZUXhCM0xOTnU3Uk9UeHZsclEiLCJuIjoiUFZBUiJ9.HRhnBsMlA5wUSRQMsXSitTBUkzG5H6Sg0OGd2-0zW_aeLaUdgnttLwFNpwoZV7x_zwS_BWjuxNJNBW1E_9wBtw",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMDg2MTQxZTE4ZmEyMmY1MTBhOTNjZWM0MWQ3ODlkN2E0YzM4ODNlNjUxNWJmZDg5NTZmYWFlMjkwMWRhYzMxOTQyNTdiYjM0YTAxNDk1OTZmYWIwM2UxZWQ1YjUyMDJkYzEwZjcyMmUwNTVlOTZhNzFiNWVhYzBmNDI3YTczMWQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg4NzU0OCIsIm5iZiI6MTY1NTg4NzU0OCwidCI6Ik5QTGNjNXBDWFlvIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ1MjkzNDIzNDc2NzM3X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjYzNTQ4NzU2LCJpIjoiMzk3NDUyOTM0MjM0NzY3MzciLCJleHAiOjE2NjM2NjM1NDgsImlhdCI6MTY1NTg4NzU0OCwianRpIjoibFB3TUY0Rk5yeEJ6eUF0SzFmeTVST285bTdTU2ZLWnMiLCJuIjoiUFZBUiJ9.rGtVeApGAPvL_9NDLAC-iS82jotdIZD__fIZaXQ-XDLDtoBgUCNWcl7o6z9szCbi13dSHOSRrjAS2aM_lwx7iw",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":50,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"nativeNameLike\":null,\r\n        \"numericCodeLike\":null,\r\n        \"countryCodeLike\":null,\r\n        \"phoneCodeLike\":null,\r\n        \"capitalLike\":null,\r\n        \"currency\":null,\r\n        \"currencySymbol\":null,\r\n        \"topLevelDomainLike\":null,\r\n        \"regionLike\":null,\r\n        \"status\":null\r\n    }\r\n}"
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"nativeNameLike\":null,\r\n        \"numericCodeLike\":null,\r\n        \"countryCodeLike\":null,\r\n        \"phoneCodeLike\":null,\r\n        \"capitalLike\":null,\r\n        \"currency\":null,\r\n        \"currencySymbol\":null,\r\n        \"topLevelDomainLike\":null,\r\n        \"regionLike\":null,\r\n        \"status\":null\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/countries",
+							"raw": "localhost:11000/blue-base/manager/countries",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -385,11 +359,11 @@
 							"raw": "{\r\n    \"name\":\"Datong\",\r\n    \"nativeName\":\"Datong\",\r\n    \"numericCode\":\"861\",\r\n    \"countryCode\":\"DT\",\r\n    \"phoneCode\":\"861\",\r\n    \"capital\":\"Datong\",\r\n    \"currency\":\"Y\",\r\n    \"currencySymbol\":\"Y\",\r\n    \"topLevelDomain\":\".cnd\",\r\n    \"region\":\"Asia\",\r\n    \"emoji\":\"AA\",\r\n    \"emojiu\":\"AA\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/country",
+							"raw": "localhost:11000/blue-base/manager/country",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -420,11 +394,11 @@
 							"raw": "{\r\n    \"id\":37606066850110471,\r\n    \"name\":\"DatongA\",\r\n    \"nativeName\":\"DatongA\",\r\n    \"numericCode\":\"86\",\r\n    \"countryCode\":\"DT\",\r\n    \"phoneCode\":\"861\",\r\n    \"capital\":\"Datong\",\r\n    \"currency\":\"Y\",\r\n    \"currencySymbol\":\"Y\",\r\n    \"topLevelDomain\":\".cnd\",\r\n    \"region\":\"Asia\",\r\n    \"emoji\":\"AA\",\r\n    \"emojiu\":\"AA\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/country",
+							"raw": "localhost:11000/blue-base/manager/country",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -451,11 +425,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/country/37606066850110471",
+							"raw": "localhost:11000/blue-base/manager/country/37606066850110471",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -487,11 +461,11 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"countryId\":45,\r\n        \"nameLike\":\"tong\",\r\n        \"status\":null\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/states",
+							"raw": "localhost:11000/blue-base/manager/states",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -522,11 +496,11 @@
 							"raw": "{\r\n    \"countryId\":45,\r\n    \"name\":\"Datong\",\r\n    \"fipsCode\":\"Datong\",\r\n    \"stateCode\":\"861\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/state",
+							"raw": "localhost:11000/blue-base/manager/state",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -557,11 +531,11 @@
 							"raw": "{\r\n    \"id\":37606036785332226,\r\n    \"countryId\":45,\r\n    \"name\":\"Datongkkk\",\r\n    \"fipsCode\":\"Datongkkk\",\r\n    \"stateCode\":\"861\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/state",
+							"raw": "localhost:11000/blue-base/manager/state",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -588,11 +562,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/state/37606036785332227",
+							"raw": "localhost:11000/blue-base/manager/state/37606036785332227",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -624,11 +598,11 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"countryId\":null,\r\n        \"stateId\":45,\r\n        \"nameLike\":null,\r\n        \"status\":null\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/cities",
+							"raw": "localhost:11000/blue-base/manager/cities",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -659,11 +633,11 @@
 							"raw": "{\r\n    \"stateId\":45,\r\n    \"name\":\"Datong\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/city",
+							"raw": "localhost:11000/blue-base/manager/city",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -694,11 +668,11 @@
 							"raw": "{\r\n    \"id\":37606016384237569,\r\n    \"stateId\":45,\r\n    \"name\":\"DatongXXXXXX\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/city",
+							"raw": "localhost:11000/blue-base/manager/city",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -725,11 +699,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/city/37606016384237570",
+							"raw": "localhost:11000/blue-base/manager/city/37606016384237570",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -761,11 +735,11 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":45,\r\n        \"nameLike\":null,\r\n        \"status\":null\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/areas",
+							"raw": "localhost:11000/blue-base/manager/areas",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -796,11 +770,11 @@
 							"raw": "{\r\n    \"cityId\":45,\r\n    \"name\":\"Datong\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/area",
+							"raw": "localhost:11000/blue-base/manager/area",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -831,11 +805,11 @@
 							"raw": "{\r\n    \"id\":37606074366296065,\r\n    \"cityId\":45,\r\n    \"name\":\"DatongXXXXXX\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/area",
+							"raw": "localhost:11000/blue-base/manager/area",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -862,11 +836,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/area/37606074366296065",
+							"raw": "localhost:11000/blue-base/manager/area/37606074366296065",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -898,11 +872,11 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"isActive\":null,\r\n        \"type\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/styles",
+							"raw": "localhost:11000/blue-base/manager/styles",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -933,11 +907,11 @@
 							"raw": "{\r\n    \"name\":\"blue style\",\r\n    \"attributes\":\"blue attributes\",\r\n    \"type\":1\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/style",
+							"raw": "localhost:11000/blue-base/manager/style",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -968,11 +942,11 @@
 							"raw": "{\r\n    \"id\":38010776249701370,\r\n    \"name\":\"blue style ccc\",\r\n    \"attributes\":\"blue attributes ccc\",\r\n    \"type\":1\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/style",
+							"raw": "localhost:11000/blue-base/manager/style",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -999,11 +973,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/style/1",
+							"raw": "localhost:11000/blue-base/manager/style/1",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -1035,11 +1009,11 @@
 							"raw": "{\r\n    \"id\":1\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-base/manager/style/active",
+							"raw": "localhost:11000/blue-base/manager/style/active",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-base",
 								"manager",
@@ -1071,11 +1045,11 @@
 							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"PVL_WAR\",\r\n    \"destination\":\"18633783158\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -1101,11 +1075,11 @@
 							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"businessType\":\"REG\",\r\n    \"destination\":\"liuyunfei0221@outloot.com\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -1131,11 +1105,11 @@
 							"raw": "{\r\n    \"verifyType\":\"IMAGE\",\r\n    \"businessType\":\"REG\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -1166,11 +1140,11 @@
 							"raw": "{\r\n    \"credentialType\":\"EP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"liuyunfei19890221@gmail.com\",\r\n        \"access\":\"password\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/login",
+							"raw": "localhost:11000/blue-auth/auth/login",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1196,11 +1170,11 @@
 							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"0540170\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/login",
+							"raw": "localhost:11000/blue-auth/auth/login",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1213,7 +1187,7 @@
 				{
 					"name": "使用refresh token刷新access token",
 					"request": {
-						"method": "POST",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -1222,16 +1196,16 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZTgyYWMwN2Y2N2U5MDExMjExNWMxNWJjM2Q0NmVjOWM2MGZlZWIwZDRmMWU4NWM1OWNhMjZjYjczOTUwNTNmYzU4ZTZlZGVlOTU2MTkyNzc3ODYwOGQ2NGZlNjZhZTBhOGMwODVmMGYxNzgzNzU1YzMwZmFmMTVmNGRmMDgyOTMiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDgwMTczMiIsIm5iZiI6MTY1MDgwMTczMiwidCI6IlViTDlDTk5VY3JSIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDM1MjU1NTAzNTE5NzQ1OV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MTA2OTU3MjI4NSwiaSI6IjM0MzUyNTU1MDM1MTk3NDU5IiwiZXhwIjoxNjUxMDY5NTcyLCJpYXQiOjE2NTA4MDE3MzIsImp0aSI6IkFQRnRwbE80MDVkR202aW94SVd1NUpFaHRTajkyTFkzIiwibiI6IlBQIn0.wtYYJp1e_JovqrmW7iKh5rynHjMRYlwPMUyib6kQ9XJiF3czUFbapwtay2bsBoQ23rMUqOC_uDH_HP37XZC_BA",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMDdjMTJhY2FjMmFkY2ZmYTAxZTFkY2Y3ZDJjM2UwZDk5MDRlZmZkMzhlN2IyMjk2NTZmMGE1MTE1YjU1OWRiMjZiMTI1NGUyM2JiZDVkMDI2ODkyOGQwYTllNGVhZDM2MDlmNTkwNWJhZjIxNDk1OTMzNWU0MDgwMjc5MjQ3NTciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxMjUyMSIsIm5iZiI6MTY1NTgxMjUyMSwidCI6IkNQTGlFblhLUXdoIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ5MDQyOTI5OTM3MDAxX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTg4NTIxOTMxLCJpIjoiMzk3NDkwNDI5Mjk5MzcwMDEiLCJleHAiOjE2NjM1ODg1MjEsImlhdCI6MTY1NTgxMjUyMSwianRpIjoiV1dIcWZVMm1mYUZhT2hsTkRaSjg3azdsWlJBZnBxcUwiLCJuIjoiUFZBUiJ9.FuFOxHTD5FeXP1jThVAj5O24qVjAh1BBYWSb9Q_Do_l341zJ4GL-vE4sowcls0asBRO9RvzeTBPdUv7hzFZt3w",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/access",
+							"raw": "localhost:11000/blue-auth/auth/access",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1244,7 +1218,7 @@
 				{
 					"name": "刷新密钥",
 					"request": {
-						"method": "POST",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -1253,16 +1227,16 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiOGE4OGMxN2JhNDlmNjVkODQ1NjkwMzM1MDQ3OTRmNzVmYWY2NzVjM2ZjOTg4ODVjNDFlZDk2OTFjNDVlYWRhZjE0ZDM5NTM1NmI5OTUzNTI2NGUyZmZmMDMwMDVkZGQ5Y2YxYjE0MGIxZTdlOGU2MDhhMmE2ZDNlMDkxNWFhNDQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxMjUyMSIsIm5iZiI6MTY1NTgxMjUyMSwidCI6ImNrcTJ4cWJKbnBYIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ5MDQyOTI5OTM3MDAxX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTg4NTIxOTA5LCJpIjoiMzk3NDkwNDI5Mjk5MzcwMDEiLCJleHAiOjE2NjM1ODg1MjEsImlhdCI6MTY1NTgxMjUyMSwianRpIjoicmRLTFJMa0M5QWdueDRBblVOaXpaZ2w4UW9iRlJzOWoiLCJuIjoiUFZBUiJ9._9M-RVRZe19HEEz6tNG9PlGo7Js_j9t6jftMv5Z99yFlJkchaccdjGI-zA2HMpY41DYODMJpunM_TFaHE1hQqg",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/secret",
+							"raw": "localhost:11000/blue-auth/auth/secret",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1293,11 +1267,11 @@
 							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"credential\":\"yunfei0221@outloot.com\",\r\n    \"verificationCode\":\"3726094\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/credential",
+							"raw": "localhost:11000/blue-auth/auth/credential",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1328,11 +1302,11 @@
 							"raw": "{\r\n    \"currentVerifyType\":\"SMS\",\r\n    \"currentVerificationCode\":\"1443590\",\r\n    \"destinationVerifyType\":\"MAIL\",\r\n    \"destinationCredential\":\"liuyunfei19890221@gmail.com\",\r\n    \"destinationVerificationCode\":\"1267784\"\r\n    \r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/credential",
+							"raw": "localhost:11000/blue-auth/auth/credential",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1363,11 +1337,11 @@
 							"raw": "{\r\n    \"question\":\"11111111\",\r\n    \"answer\":\"12345678\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/question",
+							"raw": "localhost:11000/blue-auth/auth/question",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1398,11 +1372,11 @@
 							"raw": "{\r\n    \"data\":[\r\n        {\r\n            \"question\":\"11111111\",\r\n            \"answer\":\"12345678\"\r\n        },\r\n        {\r\n            \"question\":\"33333333\",\r\n            \"answer\":\"12345678\"\r\n        },\r\n        {\r\n            \"question\":\"55555555\",\r\n            \"answer\":\"12345678\"\r\n        },\r\n        {\r\n            \"question\":\"66666666\",\r\n            \"answer\":\"12345678\"\r\n        }\r\n    ]\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/questions",
+							"raw": "localhost:11000/blue-auth/auth/questions",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1415,11 +1389,11 @@
 				{
 					"name": "注销登录",
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMDA3MzUzYWY5YTU1NDNlYWYzYjY2ZjI2NzQ0YjM3NzgyNmM1OGRlNTdiNDgzMjYwY2M2NTlhM2RhMWUzZTY1YTA5ZmJjNzk2YzljNzFhZDFiZjkzNmQxNDNhNTE4ZjIwYjUyNWE5YWEwNDI1MDI1ZmNhZDZjODBiOTE1M2Q1ZWIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDY5MTUyMCIsIm5iZiI6MTY1NDY5MTUyMCwidCI6ImtIZURacTZtelV5IiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4NTQ4NDIzNDc3MDM1MDA5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYyNDY3NTIwMTU5LCJpIjoiMzg1NDg0MjM0NzcwMzUwMDkiLCJleHAiOjE2NjI0Njc1MjAsImlhdCI6MTY1NDY5MTUyMCwianRpIjoiNGRzZjZuaXY2VmFWMTNVNEJSaWZIVWRDS0FEWkhrU3UiLCJuIjoiUFZBUiJ9.rpYomXCtW1AMl4qOIg9fW9h36dDhw0_FfgTWK_cJhsQisIjGf9NtN-_PDK1NHxzfmwVbeacYo-G_wFnwCpWo7Q",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMmRlODFkNTA2MmI5MTAyOTY4NTlhMmEyMDAwZWY1ZDBhOWE4OGNlMDliNWQxYzA4NTdkM2I5NjhlYzJhZDQ4OGY1NTIxMDI3NDM5YmZkZThlYzFkNDdhMzRkOTAwODg5ODZjMTM4NTI0Yjc0MjBiN2U3YTUzYmZlOTY2NWVmNDciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxNjg3NiIsIm5iZiI6MTY1NTgxNjg3NiwidCI6ImNtWUxJcUVPaXdUIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ5MDQyOTI5OTM3MDAxX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTkyODc2Mzg2LCJpIjoiMzk3NDkwNDI5Mjk5MzcwMDEiLCJleHAiOjE2NjM1OTI4NzYsImlhdCI6MTY1NTgxNjg3NiwianRpIjoiWXVEdk95ZUtOYTNycFlmQUxRUFZFVEZRSFhjNGp5cTciLCJuIjoiUFZBUiJ9.18W38i43zFLezElSE4mTbipczrKSABHmMYVhvaaYOSo-ilTud6q3FBGodzXGcBvulYfoZFNzBEcY0MDGhOWQkg",
 								"type": "text"
 							},
 							{
@@ -1429,11 +1403,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/logout",
+							"raw": "localhost:11000/blue-auth/auth/logout",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1460,11 +1434,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/logout",
+							"raw": "localhost:11000/blue-auth/auth/logout",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1495,11 +1469,11 @@
 							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"verificationCode\":\"123456\",\r\n    \"access\":\"password\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/access",
+							"raw": "localhost:11000/blue-auth/auth/access",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1530,11 +1504,11 @@
 							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"credential\":\"18633783158\",\r\n    \"verificationCode\":\"123456\",\r\n    \"access\":\"password\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/access",
+							"raw": "localhost:11000/blue-auth/auth/access",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1556,16 +1530,16 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjhlZDI0OGQ0ZDNiYTJiMDQ3NmNlNDgzYjMyZjdlZDlmZDJmOTRhNmMwNGMwNzNiYTNlOGE2MTA3YTc1YzhlNDE3YTlkNzIxZjkwZjNiOTZiYWZkZTJmYmQ1MTdhNWY1MjQ0NzM1NGI3MDAxZGJkZWE3MWYyM2Y2YmM3MGQwYmUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjgwNTQ3MDU5NzYzNzczNDVfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ3NTk5NDY1Nzg3LCJpIjoiMjgwNTQ3MDU5NzYzNzczNDUiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQ0OTIxMDY1IiwibmJmIjoxNjQ0OTIxMDY1LCJ0Ijoid1FKZnljMWdXVGwiLCJleHAiOjE2NDc1OTk0NjUsImlhdCI6MTY0NDkyMTA2NSwianRpIjoiYk5VNDliZVB3ZExGeGFqa2pnMGhtZnRNRzBiaHJaV0cifQ.v4KJIVU8Fm-0xcs7XEf71j24XB7-1IM8he8q6chc2JKWu2SQBVTaJGbFtYb9oQcCylMpl8vlMYT7jtY_wHcqEA",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjUyYTM1OWQxN2ZjYmVmZTQxYjJhZWYyODJmOTc3ODI0MGU1ODE0Y2Y0MDg1YzUxN2M2YTM2OTM1YTAwYWJhOGYzNjUyNDUyOTMwMTdjNjE3YWZlNzkzYTcwMmZkMmJjN2JlNjYzNThhN2M3MDQ0MGM4MTFkOGIzZjMwOTk5MmQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg5Mzk2OSIsIm5iZiI6MTY1NTg5Mzk2OSwidCI6ImxQaWxPcGFTMjdVIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjY5OTY5NDI0LCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM2Njk5NjksImlhdCI6MTY1NTg5Mzk2OSwianRpIjoid2xXbzl0TGlJWWM3NUNreUVHTzJaQ255cmh0cmVxeGkiLCJuIjoiUFZBUiJ9.1x0TOyZQk4keRWtSOHC4e-diR4DTLMKzOmlVmGLYazEnUfk_GIsj6FPEcXLBYI2F3HCh1-cy9WQiUHc6q9UaOA",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/authority",
+							"raw": "localhost:11000/blue-auth/auth/authority",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -1596,11 +1570,11 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/auth/34438574640201730",
+							"raw": "localhost:11000/blue-auth/manager/auth/34438574640201730",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -1632,11 +1606,11 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"requestMethod\":null,\r\n        \"module\":null,\r\n        \"uriLike\":\"\",\r\n        \"authenticate\":null,\r\n        \"requestUnDecryption\":null,\r\n        \"responseUnEncryption\":null,\r\n        \"existenceRequestBody\":null,\r\n        \"existenceResponseBody\":null,\r\n        \"type\":2,\r\n        \"nameLike\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/resources",
+							"raw": "localhost:11000/blue-auth/manager/resources",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -1667,11 +1641,11 @@
 							"raw": "{\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue_auth\",\r\n    \"uri\":\"/test/test\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource\",\r\n    \"description\":\"a test resource\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/resource",
+							"raw": "localhost:11000/blue-auth/manager/resource",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -1702,11 +1676,11 @@
 							"raw": "{\r\n    \"id\":25556541469884418,\r\n    \"requestMethod\":\"POST\",\r\n    \"module\":\"blue-lake\",\r\n    \"uri\":\"/event/list\",\r\n    \"authenticate\":true,\r\n    \"requestUnDecryption\":true,\r\n    \"responseUnEncryption\":true,\r\n    \"existenceRequestBody\":true,\r\n    \"existenceResponseBody\":true,\r\n    \"type\":2,\r\n    \"name\":\"test resource111\",\r\n    \"description\":\"a test resource\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/resource",
+							"raw": "localhost:11000/blue-auth/manager/resource",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -1733,11 +1707,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/resource/320004",
+							"raw": "localhost:11000/blue-auth/manager/resource/320004",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -1769,11 +1743,11 @@
 							"raw": "{\r\n    \"id\":9506121983229956\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/resource/auth",
+							"raw": "localhost:11000/blue-auth/manager/resource/auth",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -1796,7 +1770,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGIwZmY1Y2RkMDk0ZWM0YTc2MWE1M2QwZTQwZjFmYmM0ZjZmNWNiYTk5NTA5ZjYzYWIyOWUzNDlkNjFmZjk0Nzk2ZWRkZWJhZjdiMmUxNDUwZTk5MWFiYzFkMDY1OTAxOTM3YmMzMzYwMGZkY2M0ZDhkYWY4YTQzMmVmOTFlYjciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1Mjk1OTIxMCIsIm5iZiI6MTY1Mjk1OTIxMCwidCI6IkpzV0h5bVczRFU5IiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM2Njg1NjA0ODkyNzA0NzY5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYwNzM1MjEwMDIxLCJpIjoiMzY2ODU2MDQ4OTI3MDQ3NjkiLCJleHAiOjE2NjA3MzUyMTAsImlhdCI6MTY1Mjk1OTIxMCwianRpIjoiVWRCdmRJeHB4OXNHRUNHNkhLUTFKSFpMaERYM1E1OTUiLCJuIjoiUFZBUiJ9.dZF4l0KO4TqJYD3rwlnIvJOPPR6MAdxDB0X__Uja9JdzyXrPo4K-itaiNtz70krnjQgyiQL7KOSMpyvaFwtuJA",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjJiNjM0YzJlNTIwZDQ2MWYzMzU5NTk2NzAxYmUzNDRmZDc2MDEzNjY0MmVmZjNkZDA1YTk0MDA4YmEyYzg0MWQzMzgyNzc4MDlkYzliMjg2MzRkZGNjMThlZGJkODk5MWY3NzZjZGY4OWYzYmZlMDczMGU3MjM4MmY4YzhkNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxMDQyMyIsIm5iZiI6MTY1NTgxMDQyMywidCI6ImFyMEU3bXFEUkRzIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ1MjkzNDIzNDc2NzM3X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTg2NDIzNzAwLCJpIjoiMzk3NDUyOTM0MjM0NzY3MzciLCJleHAiOjE2NjM1ODY0MjMsImlhdCI6MTY1NTgxMDQyMywianRpIjoidTgzN3ozc0VFUkpVZk5nY2hOanF6QklSMER0MGtJZGUiLCJuIjoiUFZBUiJ9.SwXmwpe4PtHF2gb4H8xii1P3Ed-t4z6V2NZob7M3Ee2MsxioQRDTOR43V5NdOxke8snmvyQhdgdt2lrCnvwEDQ",
 								"type": "text"
 							}
 						],
@@ -1805,11 +1779,11 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n\r\n        \"sortAttribute\":\"level\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/roles",
+							"raw": "localhost:11000/blue-auth/manager/roles",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -1840,11 +1814,11 @@
 							"raw": "{\r\n    \"name\":\"testaac\",\r\n    \"description\":\"test aaaaaaa\",\r\n    \"level\":10002\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/role",
+							"raw": "localhost:11000/blue-auth/manager/role",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -1875,11 +1849,11 @@
 							"raw": "{\r\n    \"id\":25548860994617345,\r\n    \"name\":\"testabcD\",\r\n    \"description\":\"test abcdefg\",\r\n    \"level\":10002\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/role",
+							"raw": "localhost:11000/blue-auth/manager/role",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -1906,11 +1880,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/role/25618703605301249",
+							"raw": "localhost:11000/blue-auth/manager/role/25618703605301249",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -1942,11 +1916,11 @@
 							"raw": "{\r\n    \"id\":6\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/role/default",
+							"raw": "localhost:11000/blue-auth/manager/role/default",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -1981,11 +1955,11 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/auth/security/34746053496406021",
+							"raw": "localhost:11000/blue-auth/manager/auth/security/34746053496406021",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -2018,11 +1992,11 @@
 							"raw": "{\r\n    \"id\":9507591944175638\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/role/auth",
+							"raw": "localhost:11000/blue-auth/manager/role/auth",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
@@ -2045,7 +2019,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDRlNmI0ZTNkMGY2YmY1NzUyN2ZlN2ZiNzlhOGNhNGZmMGUyNGVmMGRjNTg4MjhmOGMyMWQ3Y2YwZGMwMjBjOWQ4YjgzZmJmNWE5MzEwZmRiY2MyYzE5MTMwODIzM2RkMmQzNjBhNjc2N2ZlYWRmNjYzNzcyMWJiZTc3NjUzYjEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhdSIsImciOiJNIiwiaCI6IkJfU046MjQ5MDY4NzUwNTMwMTUwNDFfQ0xJX00iLCJpc3MiOiJibHVlIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjQ1MjY3MDIxNzQwLCJpIjoiMjQ5MDY4NzUwNTMwMTUwNDEiLCJuIjoiRVAiLCJhdWQiOiJjbiIsInMiOiIxNjQyNTg4NjIxIiwibmJmIjoxNjQyNTg4NjIxLCJ0IjoiOUtrVmtKcE9wRW4iLCJleHAiOjE2NDUyNjcwMjEsImlhdCI6MTY0MjU4ODYyMSwianRpIjoiZ3luOWFjS1hKalQ2ZFpBejJ3RE40d2RMblEyYXdtR28ifQ.sp1uCh7aw-izyVX0Js4ECrdB3YZU-ubatxkOuRdaB0uQUawCOPFIGSIl5qL_esur3AAmDqHKQuEZGVUN3G1hQw",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjJiNjM0YzJlNTIwZDQ2MWYzMzU5NTk2NzAxYmUzNDRmZDc2MDEzNjY0MmVmZjNkZDA1YTk0MDA4YmEyYzg0MWQzMzgyNzc4MDlkYzliMjg2MzRkZGNjMThlZGJkODk5MWY3NzZjZGY4OWYzYmZlMDczMGU3MjM4MmY4YzhkNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxMDQyMyIsIm5iZiI6MTY1NTgxMDQyMywidCI6ImFyMEU3bXFEUkRzIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ1MjkzNDIzNDc2NzM3X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTg2NDIzNzAwLCJpIjoiMzk3NDUyOTM0MjM0NzY3MzciLCJleHAiOjE2NjM1ODY0MjMsImlhdCI6MTY1NTgxMDQyMywianRpIjoidTgzN3ozc0VFUkpVZk5nY2hOanF6QklSMER0MGtJZGUiLCJuIjoiUFZBUiJ9.SwXmwpe4PtHF2gb4H8xii1P3Ed-t4z6V2NZob7M3Ee2MsxioQRDTOR43V5NdOxke8snmvyQhdgdt2lrCnvwEDQ",
 								"type": "text"
 							}
 						],
@@ -2054,16 +2028,94 @@
 							"raw": "{\r\n    \"roleId\":9507591944175638,\r\n    \"resIds\":[9505726846205953,9505726846205965]\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/manager/relation/role-res",
+							"raw": "localhost:11000/blue-auth/manager/relation/role-res",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
 								"relation",
 								"role-res"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "为成员添加角色",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjJiNjM0YzJlNTIwZDQ2MWYzMzU5NTk2NzAxYmUzNDRmZDc2MDEzNjY0MmVmZjNkZDA1YTk0MDA4YmEyYzg0MWQzMzgyNzc4MDlkYzliMjg2MzRkZGNjMThlZGJkODk5MWY3NzZjZGY4OWYzYmZlMDczMGU3MjM4MmY4YzhkNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxMDQyMyIsIm5iZiI6MTY1NTgxMDQyMywidCI6ImFyMEU3bXFEUkRzIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ1MjkzNDIzNDc2NzM3X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTg2NDIzNzAwLCJpIjoiMzk3NDUyOTM0MjM0NzY3MzciLCJleHAiOjE2NjM1ODY0MjMsImlhdCI6MTY1NTgxMDQyMywianRpIjoidTgzN3ozc0VFUkpVZk5nY2hOanF6QklSMER0MGtJZGUiLCJuIjoiUFZBUiJ9.SwXmwpe4PtHF2gb4H8xii1P3Ed-t4z6V2NZob7M3Ee2MsxioQRDTOR43V5NdOxke8snmvyQhdgdt2lrCnvwEDQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"memberId\":39749042929937001,\r\n    \"roleId\":4\r\n}"
+						},
+						"url": {
+							"raw": "127.0.0.1:11000/blue-auth/manager/relation/mem-role-insert",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "11000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"relation",
+								"mem-role-insert"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "为成员删减角色",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjJiNjM0YzJlNTIwZDQ2MWYzMzU5NTk2NzAxYmUzNDRmZDc2MDEzNjY0MmVmZjNkZDA1YTk0MDA4YmEyYzg0MWQzMzgyNzc4MDlkYzliMjg2MzRkZGNjMThlZGJkODk5MWY3NzZjZGY4OWYzYmZlMDczMGU3MjM4MmY4YzhkNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxMDQyMyIsIm5iZiI6MTY1NTgxMDQyMywidCI6ImFyMEU3bXFEUkRzIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ1MjkzNDIzNDc2NzM3X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTg2NDIzNzAwLCJpIjoiMzk3NDUyOTM0MjM0NzY3MzciLCJleHAiOjE2NjM1ODY0MjMsImlhdCI6MTY1NTgxMDQyMywianRpIjoidTgzN3ozc0VFUkpVZk5nY2hOanF6QklSMER0MGtJZGUiLCJuIjoiUFZBUiJ9.SwXmwpe4PtHF2gb4H8xii1P3Ed-t4z6V2NZob7M3Ee2MsxioQRDTOR43V5NdOxke8snmvyQhdgdt2lrCnvwEDQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"memberId\":39749042929937001,\r\n    \"roleId\":5\r\n}"
+						},
+						"url": {
+							"raw": "127.0.0.1:11000/blue-auth/manager/relation/mem-role-delete",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "11000",
+							"path": [
+								"blue-auth",
+								"manager",
+								"relation",
+								"mem-role-delete"
 							]
 						}
 					},
@@ -2081,28 +2133,28 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZThmNjA4YzA3MjZhZDdiNmZiMjZiYzkxYmQwY2E2Y2Y4NDAxZDU4ZGI2ZTMxYWYxMDgzYWM4NDM5YWNjNTEyODI1ODRhM2Y4NmU0MmUxMjJjYmE5YWIzNzM4MDBkZGQ0NmJjYTU4NDAzZDgxMDYyNzJhYTZiOTE0ZDFiM2Q4YmMiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDk0NTUwNiIsIm5iZiI6MTY1MDk0NTUwNiwidCI6InhoR0tIcEwzYUYyIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDQzODU3NDY0MDIwMTcyOV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1ODcyMTUwNjU1NywiaSI6IjM0NDM4NTc0NjQwMjAxNzI5IiwiZXhwIjoxNjU4NzIxNTA2LCJpYXQiOjE2NTA5NDU1MDYsImp0aSI6ImV4eHBVUVdMMTZzOVdSVXJXUVhjVjZoeVAzQVBQdUtkIiwibiI6IlBWQVIifQ.DTXrHr_ugtO6DvXc2J29mu9Pw1mpnJ1KxNmnhoDUhzdz2KHRdq5IT6tYCq8BkTMIIP3ZnkeW08MlaJeWaAAVwA",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjJiNjM0YzJlNTIwZDQ2MWYzMzU5NTk2NzAxYmUzNDRmZDc2MDEzNjY0MmVmZjNkZDA1YTk0MDA4YmEyYzg0MWQzMzgyNzc4MDlkYzliMjg2MzRkZGNjMThlZGJkODk5MWY3NzZjZGY4OWYzYmZlMDczMGU3MjM4MmY4YzhkNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxMDQyMyIsIm5iZiI6MTY1NTgxMDQyMywidCI6ImFyMEU3bXFEUkRzIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ1MjkzNDIzNDc2NzM3X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTg2NDIzNzAwLCJpIjoiMzk3NDUyOTM0MjM0NzY3MzciLCJleHAiOjE2NjM1ODY0MjMsImlhdCI6MTY1NTgxMDQyMywianRpIjoidTgzN3ozc0VFUkpVZk5nY2hOanF6QklSMER0MGtJZGUiLCJuIjoiUFZBUiJ9.SwXmwpe4PtHF2gb4H8xii1P3Ed-t4z6V2NZob7M3Ee2MsxioQRDTOR43V5NdOxke8snmvyQhdgdt2lrCnvwEDQ",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"memberId\":34519543363665921,\r\n    \"roleId\":6\r\n}"
+							"raw": "{\r\n    \"memberId\":39749042929937001,\r\n    \"roleIds\":[5,6]\r\n}"
 						},
 						"url": {
-							"raw": "127.0.0.1:10000/blue-auth/manager/relation/mem-role",
+							"raw": "127.0.0.1:11000/blue-auth/manager/relation/mem-role-update",
 							"host": [
 								"127",
 								"0",
 								"0",
 								"1"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"manager",
 								"relation",
-								"mem-role"
+								"mem-role-update"
 							]
 						}
 					},
@@ -2129,11 +2181,11 @@
 							"raw": "{\r\n    \"phone\":\"13131693996\",\r\n    \"phoneVerify\":\"2248833\",\r\n    \"email\":\"yunfei0221@outloot.com\",\r\n    \"emailVerify\":\"8314555\",\r\n    \"access\":\"12345678\",\r\n    \"name\":\"刘云飞\",\r\n    \"gender\":1\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-member/registry",
+							"raw": "localhost:11000/blue-member/registry",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"registry"
@@ -2154,19 +2206,18 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMDliYjkwOWIyYzE0NWQzY2Y0MDY2YjhmZGI0YTg3ZDNhYWM5YTFhN2UzYWFlODg4NmFjYTQ2YmU0Yzc3ZjNiOTJiYTlhNTg1ZWYwYmMxMWMyNzgzN2QyN2IxNDgxNDBiZmU1MTA3NDUwOGFlMGE4ZTliNDQ3YWU2ZjhiOTc5Y2IiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MTE1MTIzOSIsIm5iZiI6MTY1MTE1MTIzOSwidCI6IjZjY1puY202czRVIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDc0NjA1MzQ5NjQwNjAyMF9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1ODkyNzIzOTI1MywiaSI6IjM0NzQ2MDUzNDk2NDA2MDIwIiwiZXhwIjoxNjU4OTI3MjM5LCJpYXQiOjE2NTExNTEyMzksImp0aSI6ImJZRlVBSHllMG1YMnpibXF6dUFWblBPbmZzSFFncnU0IiwibiI6IlBWQVIifQ.pSFP1_ygM3QX53kx3jnPSP91gr_0OyL8Fk5dygHPWBDLbHCPQaPvRhqLK2jkTvKVcFY_0ittVfXUE-nRsVy1qw",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMmRlODFkNTA2MmI5MTAyOTY4NTlhMmEyMDAwZWY1ZDBhOWE4OGNlMDliNWQxYzA4NTdkM2I5NjhlYzJhZDQ4OGY1NTIxMDI3NDM5YmZkZThlYzFkNDdhMzRkOTAwODg5ODZjMTM4NTI0Yjc0MjBiN2U3YTUzYmZlOTY2NWVmNDciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxNjg3NiIsIm5iZiI6MTY1NTgxNjg3NiwidCI6ImNtWUxJcUVPaXdUIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ5MDQyOTI5OTM3MDAxX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTkyODc2Mzg2LCJpIjoiMzk3NDkwNDI5Mjk5MzcwMDEiLCJleHAiOjE2NjM1OTI4NzYsImlhdCI6MTY1NTgxNjg3NiwianRpIjoiWXVEdk95ZUtOYTNycFlmQUxRUFZFVEZRSFhjNGp5cTciLCJuIjoiUFZBUiJ9.18W38i43zFLezElSE4mTbipczrKSABHmMYVhvaaYOSo-ilTud6q3FBGodzXGcBvulYfoZFNzBEcY0MDGhOWQkg",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-member/member/basic",
+							"raw": "localhost:11000/blue-member/basic",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
-								"member",
 								"basic"
 							]
 						}
@@ -2194,11 +2245,11 @@
 							"raw": "{\r\n    \"data\":\"www.blue.icon/blue-icon-888\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-member/basic/icon",
+							"raw": "localhost:11000/blue-member/basic/icon",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"basic",
@@ -2229,11 +2280,11 @@
 							"raw": "{\r\n    \"data\":\"一个深蓝蓝\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-member/basic/profile",
+							"raw": "localhost:11000/blue-member/basic/profile",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"basic",
@@ -2255,16 +2306,16 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZDI1YzAyOTAyY2I0ZTliZTc5OTQ5OGY4ZDhkMmMyOGFmMmE4YjFkMWYyZjZlNmIwYzNlYjdiMjE5OWUyYmQ2ZmZmYWY5NDNlZWI0NTA1NGI4MGNkZjdmZTRjZDliNjIzZjE3ZWQ3ZjZmNWViNDYxMDY2OTQwNzZmY2M1ZWUyNjgiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDY5MTc4MSIsIm5iZiI6MTY1NDY5MTc4MSwidCI6IkZjbm5iVHNLQmg5IiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4NTQ4NDIzNDc3MDM1MDA5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYyNDY3NzgxNTkzLCJpIjoiMzg1NDg0MjM0NzcwMzUwMDkiLCJleHAiOjE2NjI0Njc3ODEsImlhdCI6MTY1NDY5MTc4MSwianRpIjoicWtZSWpScUFuUkZ4eTBPQ2dLWVMwaUtLZTJOTDBydGgiLCJuIjoiUFZBUiJ9.ZAjP9REwcgH7BpUbvydGWBP0jnrbNF-JAKQ4o-0vdz-P0NOwKL2dUX5sSgZdYxkSEg_OZUCKaKLJiGW65X4LFA",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNzJkNDFhYTUxYjg0MGM4MTRhOGU0YzkyYTMxMDJiMzZmNjIxNzJlNWZmNGI0YjgyY2ZhY2EzNDllZDNmZDAyMjlmMjkwZDgwZjliNzlhN2Y4ZTJlOTA3OTU2OWZhYzNiMzEwZDVlZjU2ZmIyNjE5NjRmMDNmNWMyYjNlMmJjY2YiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg5MjU5MyIsIm5iZiI6MTY1NTg5MjU5MywidCI6IlpnMEFCT09WeldlIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM4MDI2MDYyMzY0NjczX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjY4NTkzNjI3LCJpIjoiMzk4MzgwMjYwNjIzNjQ2NzMiLCJleHAiOjE2NjM2Njg1OTMsImlhdCI6MTY1NTg5MjU5MywianRpIjoiSW5zbm5LN0Vha3hBZWtFMVpoQlB2Q2RxcE9FWGtrVmMiLCJuIjoiUFZBUiJ9.qoxOL3D9mvF0PPjMWG4NnvDZbCg3eAEqs1_cIskTyEVb82zd8rS81qFNfSkETGFyGkFkkSZorOIOhqetOtdJug",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-member/address",
+							"raw": "localhost:11000/blue-member/address",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"address"
@@ -2285,7 +2336,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiOWVlZWMzNzE4ZGIyNWQyYTJjMWJiMzFlZGNlNmU0NjFkMjQ0YWYzZjE5YmIwNTVkMTIyNTAwMWNkZmJhNjE2YjhiMjYwMDhiYmRiNWNhMGIwNzU0NTkzMDIzMzdjMThkY2Y0MDlkZjk0NDYxMjE2MmE0MDg2N2RlNzMxMjNiZDgiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDc3NTQxOSIsIm5iZiI6MTY1NDc3NTQxOSwidCI6Ilo0QzFNaDVRclllIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4NjM4NTgxMjgzMDI4OTkzX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYyNTUxNDE5NDgwLCJpIjoiMzg2Mzg1ODEyODMwMjg5OTMiLCJleHAiOjE2NjI1NTE0MTksImlhdCI6MTY1NDc3NTQxOSwianRpIjoiUkRNRHRsWmtTWlpGN3ZTR244RkIzbndDUGhIZXdSZ1kiLCJuIjoiUFZBUiJ9.D1taxfYpGBmDMpQwBb986ZZymlQZZdgmjBmvOLT0A7c1yO-zWML2ubkYsTJMbrUfuZito5IKN7adsHMjN_fcmw",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNzJkNDFhYTUxYjg0MGM4MTRhOGU0YzkyYTMxMDJiMzZmNjIxNzJlNWZmNGI0YjgyY2ZhY2EzNDllZDNmZDAyMjlmMjkwZDgwZjliNzlhN2Y4ZTJlOTA3OTU2OWZhYzNiMzEwZDVlZjU2ZmIyNjE5NjRmMDNmNWMyYjNlMmJjY2YiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg5MjU5MyIsIm5iZiI6MTY1NTg5MjU5MywidCI6IlpnMEFCT09WeldlIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM4MDI2MDYyMzY0NjczX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjY4NTkzNjI3LCJpIjoiMzk4MzgwMjYwNjIzNjQ2NzMiLCJleHAiOjE2NjM2Njg1OTMsImlhdCI6MTY1NTg5MjU5MywianRpIjoiSW5zbm5LN0Vha3hBZWtFMVpoQlB2Q2RxcE9FWGtrVmMiLCJuIjoiUFZBUiJ9.qoxOL3D9mvF0PPjMWG4NnvDZbCg3eAEqs1_cIskTyEVb82zd8rS81qFNfSkETGFyGkFkkSZorOIOhqetOtdJug",
 								"type": "text"
 							}
 						],
@@ -2294,11 +2345,11 @@
 							"raw": "{\r\n    \"memberName\":\"云飞\",\r\n    \"gender\":1,\r\n    \"phone\":\"13131693996\",\r\n    \"email\":\"liuyunfei@outlook.com\",\r\n    \"cityId\":19332,\r\n    \"detail\":\"柏林爱乐3期5-6-802\",\r\n    \"reference\":\"家\",\r\n    \"extra\":\"AAA\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-member/address",
+							"raw": "localhost:11000/blue-member/address",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"address"
@@ -2328,11 +2379,11 @@
 							"raw": "{\r\n    \"id\":38548437435678722,\r\n    \"memberName\":\"刘云飞\",\r\n    \"gender\":1,\r\n    \"phone\":\"18633783158\",\r\n    \"email\":\"liuyunfei@outlook.com\",\r\n    \"cityId\":19332,\r\n    \"detail\":\"柏林爱乐3期5-6-802\",\r\n    \"reference\":\"家\",\r\n    \"extra\":\"AAA\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-member/address",
+							"raw": "localhost:11000/blue-member/address",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"address"
@@ -2357,20 +2408,145 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\"memberName\":\"云飞\",\r\n\"gender\":1,\r\n\"phone\":\"13131693996\",\r\n\"email\":\"liuyunfei@outlook.com\",\r\n\"cityId\":19332,\r\n\"address\":\"柏林爱乐3期5-6-802\",\r\n\"reference\":\"家\",\r\n\"extra\":\"AAA\"\r\n}"
-						},
 						"url": {
-							"raw": "localhost:10000/blue-member/address/38548437435678730",
+							"raw": "localhost:11000/blue-member/address/38548437435678730",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"address",
 								"38548437435678730"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "查询卡片",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjUyYTM1OWQxN2ZjYmVmZTQxYjJhZWYyODJmOTc3ODI0MGU1ODE0Y2Y0MDg1YzUxN2M2YTM2OTM1YTAwYWJhOGYzNjUyNDUyOTMwMTdjNjE3YWZlNzkzYTcwMmZkMmJjN2JlNjYzNThhN2M3MDQ0MGM4MTFkOGIzZjMwOTk5MmQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg5Mzk2OSIsIm5iZiI6MTY1NTg5Mzk2OSwidCI6ImxQaWxPcGFTMjdVIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjY5OTY5NDI0LCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM2Njk5NjksImlhdCI6MTY1NTg5Mzk2OSwianRpIjoid2xXbzl0TGlJWWM3NUNreUVHTzJaQ255cmh0cmVxeGkiLCJuIjoiUFZBUiJ9.1x0TOyZQk4keRWtSOHC4e-diR4DTLMKzOmlVmGLYazEnUfk_GIsj6FPEcXLBYI2F3HCh1-cy9WQiUHc6q9UaOA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:11000/blue-member/card",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-member",
+								"card"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "添加卡片",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjUyYTM1OWQxN2ZjYmVmZTQxYjJhZWYyODJmOTc3ODI0MGU1ODE0Y2Y0MDg1YzUxN2M2YTM2OTM1YTAwYWJhOGYzNjUyNDUyOTMwMTdjNjE3YWZlNzkzYTcwMmZkMmJjN2JlNjYzNThhN2M3MDQ0MGM4MTFkOGIzZjMwOTk5MmQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg5Mzk2OSIsIm5iZiI6MTY1NTg5Mzk2OSwidCI6ImxQaWxPcGFTMjdVIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjY5OTY5NDI0LCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM2Njk5NjksImlhdCI6MTY1NTg5Mzk2OSwianRpIjoid2xXbzl0TGlJWWM3NUNreUVHTzJaQ255cmh0cmVxeGkiLCJuIjoiUFZBUiJ9.1x0TOyZQk4keRWtSOHC4e-diR4DTLMKzOmlVmGLYazEnUfk_GIsj6FPEcXLBYI2F3HCh1-cy9WQiUHc6q9UaOA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"我的卡片1\",\r\n    \"detail\":\"卡片卡片卡片...\",\r\n    \"coverId\":39840536470754415,\r\n    \"contentId\":39840536470749193,\r\n    \"extra\":\"\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-member/card",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-member",
+								"card"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "修改卡片",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjUyYTM1OWQxN2ZjYmVmZTQxYjJhZWYyODJmOTc3ODI0MGU1ODE0Y2Y0MDg1YzUxN2M2YTM2OTM1YTAwYWJhOGYzNjUyNDUyOTMwMTdjNjE3YWZlNzkzYTcwMmZkMmJjN2JlNjYzNThhN2M3MDQ0MGM4MTFkOGIzZjMwOTk5MmQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg5Mzk2OSIsIm5iZiI6MTY1NTg5Mzk2OSwidCI6ImxQaWxPcGFTMjdVIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjY5OTY5NDI0LCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM2Njk5NjksImlhdCI6MTY1NTg5Mzk2OSwianRpIjoid2xXbzl0TGlJWWM3NUNreUVHTzJaQ255cmh0cmVxeGkiLCJuIjoiUFZBUiJ9.1x0TOyZQk4keRWtSOHC4e-diR4DTLMKzOmlVmGLYazEnUfk_GIsj6FPEcXLBYI2F3HCh1-cy9WQiUHc6q9UaOA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":39839499236147206,\r\n    \"name\":\"我的卡片111111111\",\r\n    \"detail\":\"卡片卡片卡片111111111111...\",\r\n    \"coverId\":39840536470749191,\r\n    \"contentId\":39840536470749190,\r\n    \"extra\":\"\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-member/card",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-member",
+								"card"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "删除卡片",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjUyYTM1OWQxN2ZjYmVmZTQxYjJhZWYyODJmOTc3ODI0MGU1ODE0Y2Y0MDg1YzUxN2M2YTM2OTM1YTAwYWJhOGYzNjUyNDUyOTMwMTdjNjE3YWZlNzkzYTcwMmZkMmJjN2JlNjYzNThhN2M3MDQ0MGM4MTFkOGIzZjMwOTk5MmQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg5Mzk2OSIsIm5iZiI6MTY1NTg5Mzk2OSwidCI6ImxQaWxPcGFTMjdVIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjY5OTY5NDI0LCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM2Njk5NjksImlhdCI6MTY1NTg5Mzk2OSwianRpIjoid2xXbzl0TGlJWWM3NUNreUVHTzJaQ255cmh0cmVxeGkiLCJuIjoiUFZBUiJ9.1x0TOyZQk4keRWtSOHC4e-diR4DTLMKzOmlVmGLYazEnUfk_GIsj6FPEcXLBYI2F3HCh1-cy9WQiUHc6q9UaOA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:11000/blue-member/card/39839499236147206",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-member",
+								"card",
+								"39839499236147206"
 							]
 						}
 					},
@@ -2397,11 +2573,11 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"phone\":null,\r\n        \"email\":null,\r\n        \"name\":null,\r\n        \"gender\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-member/manager/basic",
+							"raw": "localhost:11000/blue-member/manager/basic",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"manager",
@@ -2432,11 +2608,11 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-member/manager/authorities",
+							"raw": "localhost:11000/blue-member/manager/authorities",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"manager",
@@ -2467,11 +2643,11 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"memberId\":null,\r\n        \"memberNameLike\":\"\",\r\n        \"gender\":null,\r\n        \"phoneLike\":\"\",\r\n        \"emailLike\":null,\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"areaId\":null,\r\n        \"detailLike\":\"柏林\",\r\n        \"referenceLike\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-member/manager/addresses",
+							"raw": "localhost:11000/blue-member/manager/addresses",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"manager",
@@ -2503,11 +2679,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-finance/finance/balance",
+							"raw": "localhost:11000/blue-finance/finance/balance",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-finance",
 								"finance",
@@ -2538,11 +2714,11 @@
 							"raw": "{\r\n    \"encrypted\":\"o5KwtOWW1f4eC7Pvso6hnaOawG6EDYrQv1c7ZQOMkySVWxwmozjtSvk02WzAtGfczQtwjtGGGhcseOL55cFaxGJgU1sHFc4JOaAWLUKTs6iErR6KKEvR/+0kwqaO9MLbJgIS0GJYhgbQ5/a4VAFQHJgwpRg1lHkOlpW2MT2PdnsbHHz6Vv/kNh7LruBDAAsNil59APZJtZjONP3+uToprLJeqi/QokFuplYOn3CL3Q+7TJjl9qZvnUNPRQKpgW1NduAPFq9cEsVdk+NN4ssVDJpiX5bSBX3voFzlom0WIMH56mkrT/nUQbXXRqTO15u69cKfjyzi6V4Edy3udKzEvA==\",\r\n    \"signature\":\"Hq3yNe85NqwaeJvxcRkevBmOnVoMD/X9uw6ENlXTQbQK4vl+A4VGmU9624pGdZSrPa3obomoqv52Z7qNB8MZmw==\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-finance/withdraw",
+							"raw": "localhost:11000/blue-finance/withdraw",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-finance",
 								"withdraw"
@@ -2564,11 +2740,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-finance/dynamic/1",
+							"raw": "localhost:11000/blue-finance/dynamic/1",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-finance",
 								"dynamic",
@@ -2605,11 +2781,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-portal/bulletins/1",
+							"raw": "localhost:11000/blue-portal/bulletins/1",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-portal",
 								"bulletins",
@@ -2636,11 +2812,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-portal/formatter/index.html",
+							"raw": "localhost:11000/blue-portal/formatter/index.html",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-portal",
 								"formatter",
@@ -2671,11 +2847,11 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"titleLike\":null,\r\n        \"linkLike\":null,\r\n        \"type\":null,\r\n        \"status\":null,\r\n        \"activeTimeBegin\":null,\r\n        \"activeTimeEnd\":null,\r\n        \"expireTimeBegin\":null,\r\n        \"expireTimeEnd\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-portal/manager/bulletins",
+							"raw": "localhost:11000/blue-portal/manager/bulletins",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-portal",
 								"manager",
@@ -2706,11 +2882,11 @@
 							"raw": "{\r\n    \"title\":\"blue\",\r\n    \"content\":\"blue bulletin\",\r\n    \"link\":\"www.bing.con\",\r\n    \"type\":1,\r\n    \"priority\":1,\r\n    \"activeTime\":1650277489,\r\n    \"expireTime\":1655634289\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-portal/manager/bulletin",
+							"raw": "localhost:11000/blue-portal/manager/bulletin",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-portal",
 								"manager",
@@ -2741,11 +2917,11 @@
 							"raw": "{\r\n    \"id\":36692475766657163,\r\n    \"title\":\"blueaaa\",\r\n    \"content\":\"blue bulletinaaa\",\r\n    \"link\":\"www.bing.con\",\r\n    \"type\":1,\r\n    \"priority\":1,\r\n    \"activeTime\":1650277489,\r\n    \"expireTime\":1655634289\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-portal/manager/bulletin",
+							"raw": "localhost:11000/blue-portal/manager/bulletin",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-portal",
 								"manager",
@@ -2772,11 +2948,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-portal/manager/bulletin/36692475766657163",
+							"raw": "localhost:11000/blue-portal/manager/bulletin/36692475766657163",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-portal",
 								"manager",
@@ -2816,11 +2992,11 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:10000/blue-marketing/signIn",
+							"raw": "localhost:11000/blue-marketing/signIn",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-marketing",
 								"signIn"
@@ -2846,11 +3022,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-marketing/signIn",
+							"raw": "localhost:11000/blue-marketing/signIn",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-marketing",
 								"signIn"
@@ -2880,11 +3056,11 @@
 							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"titleLike\":null,\r\n        \"linkLike\":null,\r\n        \"type\":null,\r\n        \"status\":null,\r\n        \"activeTimeBegin\":null,\r\n        \"activeTimeEnd\":null,\r\n        \"expireTimeBegin\":null,\r\n        \"expireTimeEnd\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-marketing/manager/eventRecords",
+							"raw": "localhost:11000/blue-marketing/manager/eventRecords",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-marketing",
 								"manager",
@@ -2911,7 +3087,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiOWVlZWMzNzE4ZGIyNWQyYTJjMWJiMzFlZGNlNmU0NjFkMjQ0YWYzZjE5YmIwNTVkMTIyNTAwMWNkZmJhNjE2YjhiMjYwMDhiYmRiNWNhMGIwNzU0NTkzMDIzMzdjMThkY2Y0MDlkZjk0NDYxMjE2MmE0MDg2N2RlNzMxMjNiZDgiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDc3NTQxOSIsIm5iZiI6MTY1NDc3NTQxOSwidCI6Ilo0QzFNaDVRclllIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4NjM4NTgxMjgzMDI4OTkzX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYyNTUxNDE5NDgwLCJpIjoiMzg2Mzg1ODEyODMwMjg5OTMiLCJleHAiOjE2NjI1NTE0MTksImlhdCI6MTY1NDc3NTQxOSwianRpIjoiUkRNRHRsWmtTWlpGN3ZTR244RkIzbndDUGhIZXdSZ1kiLCJuIjoiUFZBUiJ9.D1taxfYpGBmDMpQwBb986ZZymlQZZdgmjBmvOLT0A7c1yO-zWML2ubkYsTJMbrUfuZito5IKN7adsHMjN_fcmw",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjUyYTM1OWQxN2ZjYmVmZTQxYjJhZWYyODJmOTc3ODI0MGU1ODE0Y2Y0MDg1YzUxN2M2YTM2OTM1YTAwYWJhOGYzNjUyNDUyOTMwMTdjNjE3YWZlNzkzYTcwMmZkMmJjN2JlNjYzNThhN2M3MDQ0MGM4MTFkOGIzZjMwOTk5MmQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg5Mzk2OSIsIm5iZiI6MTY1NTg5Mzk2OSwidCI6ImxQaWxPcGFTMjdVIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjY5OTY5NDI0LCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM2Njk5NjksImlhdCI6MTY1NTg5Mzk2OSwianRpIjoid2xXbzl0TGlJWWM3NUNreUVHTzJaQ255cmh0cmVxeGkiLCJuIjoiUFZBUiJ9.1x0TOyZQk4keRWtSOHC4e-diR4DTLMKzOmlVmGLYazEnUfk_GIsj6FPEcXLBYI2F3HCh1-cy9WQiUHc6q9UaOA",
 								"type": "text"
 							}
 						],
@@ -2922,11 +3098,11 @@
 									"key": "attachments",
 									"type": "file",
 									"src": [
-										"/E:/tempFile/source/walls/woman_lying_on_the_bed-wallpaper-2560x1440.jpg",
-										"/E:/tempFile/source/walls/woman_sitting_on_chair-wallpaper-2560x1440.jpg",
-										"/E:/tempFile/source/walls/woman_with_green_eyes-wallpaper-2560x1440.jpg",
-										"/E:/tempFile/source/walls/woman-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/women_model-wallpaper-1920x1080.jpg"
+										"/E:/tempFile/source/walls/a_mid_summers_sunrise-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_poolside_view_of_a_crystal_las_vegas-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_private_road-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/a_quiet_place_infrared_photography-wallpaper-1920x1080.jpg",
+										"/E:/tempFile/source/walls/a_spring_afternoon-wallpaper-3840x2160.jpg"
 									]
 								}
 							]
@@ -2958,7 +3134,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZWExY2VhZjQ4MzE5OGRlN2EwYTVjNjJlZjdkNmJjMzRhMDI5NDU2N2ViYzk5Nzk4OGY3ZjEwZWM3ZTJjYTFiMjViZTRhODIwNGI3M2MxNzNjNGI5ZjBiMGNlZjk4NjQzZjg2NTc1YTExZDMyNmRiMWNkYzAzYmNjMzFkOWQwNmIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDc3ODkxMSIsIm5iZiI6MTY1NDc3ODkxMSwidCI6Ik85QlFCaFFpZ0VYIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4NjM4NTgxMjgzMDI4OTkzX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYyNTU0OTExODM1LCJpIjoiMzg2Mzg1ODEyODMwMjg5OTMiLCJleHAiOjE2NjI1NTQ5MTEsImlhdCI6MTY1NDc3ODkxMSwianRpIjoiemg2NW9CS0FHWWFFNE9sczlvZWNnYXFRNm9keTg2VGciLCJuIjoiUFZBUiJ9.MEKozSdk7pSo0BdEp9MT39HQcNnPc-cWFg9eT0L2RqEkI5kbznvc8PyAyvY6O5Mt7uxqiQg2iosgO_gLIKyA8w",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjUyYTM1OWQxN2ZjYmVmZTQxYjJhZWYyODJmOTc3ODI0MGU1ODE0Y2Y0MDg1YzUxN2M2YTM2OTM1YTAwYWJhOGYzNjUyNDUyOTMwMTdjNjE3YWZlNzkzYTcwMmZkMmJjN2JlNjYzNThhN2M3MDQ0MGM4MTFkOGIzZjMwOTk5MmQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg5Mzk2OSIsIm5iZiI6MTY1NTg5Mzk2OSwidCI6ImxQaWxPcGFTMjdVIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjY5OTY5NDI0LCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM2Njk5NjksImlhdCI6MTY1NTg5Mzk2OSwianRpIjoid2xXbzl0TGlJWWM3NUNreUVHTzJaQ255cmh0cmVxeGkiLCJuIjoiUFZBUiJ9.1x0TOyZQk4keRWtSOHC4e-diR4DTLMKzOmlVmGLYazEnUfk_GIsj6FPEcXLBYI2F3HCh1-cy9WQiUHc6q9UaOA",
 								"type": "text"
 							}
 						],
@@ -3232,11 +3408,11 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-shine/shine",
+							"raw": "localhost:11000/blue-shine/shine",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-shine",
 								"shine"
@@ -3266,11 +3442,11 @@
 							"raw": "{\r\n    \"statisticsType\":\"MA\",\r\n    \"statisticsRange\":\"D\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-analyze/statistics/active/simple",
+							"raw": "localhost:11000/blue-analyze/statistics/active/simple",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-analyze",
 								"statistics",
@@ -3297,11 +3473,11 @@
 							"raw": "{\r\n    \"statisticsTypes\":[\"MA\"],\r\n    \"statisticsRanges\":[\"D\"]\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-analyze/statistics/active/merge",
+							"raw": "localhost:11000/blue-analyze/statistics/active/merge",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-analyze",
 								"statistics",
@@ -3328,11 +3504,11 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:10000/blue-analyze/statistics/active/summary",
+							"raw": "localhost:11000/blue-analyze/statistics/active/summary",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-analyze",
 								"statistics",
@@ -3355,7 +3531,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNzNjZTcyODIzZjgwYzdmMDFiOGU2YzQwNTk1Mzc3NDFiNjdiMmMyNDEzMThlNGE4NmU1OGZiNmEyYjI3ZGIxOGYyZWUzMzI0NjQ3OTg2NDlhYzAxNzhlZWViMzgzMjVhMGZhMTliZTdhNmFhZDBiYjMwZTcxYzQ0ZTlkOTQzY2MiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY0NzU4MDcxNiIsIm5iZiI6MTY0NzU4MDcxNiwidCI6ImRCc1Zid3o4V0hXIiwiZyI6Ik0iLCJoIjoiQl9TTjozMDU2ODY3MDU5MzgxMDQzM19DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MDI1OTExNjA1OSwiaSI6IjMwNTY4NjcwNTkzODEwNDMzIiwiZXhwIjoxNjUwMjU5MTE2LCJpYXQiOjE2NDc1ODA3MTYsImp0aSI6Ik9nTkFzWU4ybTgwaHU0ekRvYjBPWTZ4MGRIbVVoNGtHIiwibiI6IlBWQVIifQ.-hrKAvKMf6wMlIsB6ZEkPv5ygE0_yLVisr_0PQ4zJKtNUmn2ORXzbXxacYroVwIIoKbyB6014Ey6U5ZMuqtkpQ",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjJiNjM0YzJlNTIwZDQ2MWYzMzU5NTk2NzAxYmUzNDRmZDc2MDEzNjY0MmVmZjNkZDA1YTk0MDA4YmEyYzg0MWQzMzgyNzc4MDlkYzliMjg2MzRkZGNjMThlZGJkODk5MWY3NzZjZGY4OWYzYmZlMDczMGU3MjM4MmY4YzhkNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxMDQyMyIsIm5iZiI6MTY1NTgxMDQyMywidCI6ImFyMEU3bXFEUkRzIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ1MjkzNDIzNDc2NzM3X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTg2NDIzNzAwLCJpIjoiMzk3NDUyOTM0MjM0NzY3MzciLCJleHAiOjE2NjM1ODY0MjMsImlhdCI6MTY1NTgxMDQyMywianRpIjoidTgzN3ozc0VFUkpVZk5nY2hOanF6QklSMER0MGtJZGUiLCJuIjoiUFZBUiJ9.SwXmwpe4PtHF2gb4H8xii1P3Ed-t4z6V2NZob7M3Ee2MsxioQRDTOR43V5NdOxke8snmvyQhdgdt2lrCnvwEDQ",
 								"type": "text"
 							}
 						],
@@ -3364,11 +3540,11 @@
 							"raw": "{\r\n    \"limit\":0,\r\n    \"rows\":100\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-lake/events",
+							"raw": "localhost:11000/blue-lake/events",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-lake",
 								"events"
@@ -3398,11 +3574,11 @@
 							"raw": "{\r\n    \"durationSeconds\":111,\r\n    \"col2\":\"222\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-event/event/report",
+							"raw": "localhost:15000/blue-event/event/report",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-event",
 								"event",
@@ -3433,11 +3609,11 @@
 							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"PVL_WAR\",\r\n    \"destination\":\"13131693996\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -3460,14 +3636,14 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"6497027\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"4300245\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/login",
+							"raw": "localhost:11000/blue-auth/auth/login",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -3489,16 +3665,16 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiOWVlZWMzNzE4ZGIyNWQyYTJjMWJiMzFlZGNlNmU0NjFkMjQ0YWYzZjE5YmIwNTVkMTIyNTAwMWNkZmJhNjE2YjhiMjYwMDhiYmRiNWNhMGIwNzU0NTkzMDIzMzdjMThkY2Y0MDlkZjk0NDYxMjE2MmE0MDg2N2RlNzMxMjNiZDgiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NDc3NTQxOSIsIm5iZiI6MTY1NDc3NTQxOSwidCI6Ilo0QzFNaDVRclllIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM4NjM4NTgxMjgzMDI4OTkzX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYyNTUxNDE5NDgwLCJpIjoiMzg2Mzg1ODEyODMwMjg5OTMiLCJleHAiOjE2NjI1NTE0MTksImlhdCI6MTY1NDc3NTQxOSwianRpIjoiUkRNRHRsWmtTWlpGN3ZTR244RkIzbndDUGhIZXdSZ1kiLCJuIjoiUFZBUiJ9.D1taxfYpGBmDMpQwBb986ZZymlQZZdgmjBmvOLT0A7c1yO-zWML2ubkYsTJMbrUfuZito5IKN7adsHMjN_fcmw",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjUyYTM1OWQxN2ZjYmVmZTQxYjJhZWYyODJmOTc3ODI0MGU1ODE0Y2Y0MDg1YzUxN2M2YTM2OTM1YTAwYWJhOGYzNjUyNDUyOTMwMTdjNjE3YWZlNzkzYTcwMmZkMmJjN2JlNjYzNThhN2M3MDQ0MGM4MTFkOGIzZjMwOTk5MmQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg5Mzk2OSIsIm5iZiI6MTY1NTg5Mzk2OSwidCI6ImxQaWxPcGFTMjdVIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjY5OTY5NDI0LCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM2Njk5NjksImlhdCI6MTY1NTg5Mzk2OSwianRpIjoid2xXbzl0TGlJWWM3NUNreUVHTzJaQ255cmh0cmVxeGkiLCJuIjoiUFZBUiJ9.1x0TOyZQk4keRWtSOHC4e-diR4DTLMKzOmlVmGLYazEnUfk_GIsj6FPEcXLBYI2F3HCh1-cy9WQiUHc6q9UaOA",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "localhost:10000/blue-member/basic",
+							"raw": "localhost:11000/blue-member/basic",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"basic"
@@ -3523,11 +3699,11 @@
 							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"businessType\":\"CSU\",\r\n    \"destination\":\"liuyunfei0221@outloot.com\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -3558,11 +3734,11 @@
 							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"credential\":\"liuyunfei0221@outloot.com\",\r\n    \"verificationCode\":\"6836431\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/credential",
+							"raw": "localhost:11000/blue-auth/auth/credential",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -3588,11 +3764,11 @@
 							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"businessType\":\"EVL_WAR\",\r\n    \"destination\":\"liuyunfei0221@outloot.com\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -3618,11 +3794,11 @@
 							"raw": "{\r\n    \"credentialType\":\"EVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"liuyunfei0221@outloot.com\",\r\n        \"access\":\"6249429\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/login",
+							"raw": "localhost:11000/blue-auth/auth/login",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -3648,11 +3824,11 @@
 							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"UPD_ACC\",\r\n    \"destination\":\"18633783158\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -3683,11 +3859,11 @@
 							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"verificationCode\":\"1324177\",\r\n    \"access\":\"11111111\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/access",
+							"raw": "localhost:11000/blue-auth/auth/access",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -3713,11 +3889,11 @@
 							"raw": "{\r\n    \"credentialType\":\"PP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"verificationKey\":\"AnrfjECjY1rEzMBp\",\r\n        \"verificationCode\":\"PQMakXS\",\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"11111111\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/login",
+							"raw": "localhost:11000/blue-auth/auth/login",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -3743,11 +3919,11 @@
 							"raw": "{\r\n    \"verifyType\":\"IMAGE\",\r\n    \"businessType\":\"CAL\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -3773,11 +3949,11 @@
 							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"RST_ACC\",\r\n    \"destination\":\"18633783158\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -3808,11 +3984,11 @@
 							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"credential\":\"18633783158\",\r\n    \"verificationCode\":\"5440257\",\r\n    \"access\":\"password\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/access",
+							"raw": "localhost:11000/blue-auth/auth/access",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -3838,11 +4014,11 @@
 							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"CUP\",\r\n    \"destination\":\"13131693996\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -3868,11 +4044,11 @@
 							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"businessType\":\"CUP\",\r\n    \"destination\":\"liuyunfei19890221@gmail.com\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -3903,11 +4079,11 @@
 							"raw": "{\r\n    \"currentVerifyType\":\"SMS\",\r\n    \"currentVerificationCode\":\"1443590\",\r\n    \"destinationVerifyType\":\"MAIL\",\r\n    \"destinationCredential\":\"liuyunfei19890221@gmail.com\",\r\n    \"destinationVerificationCode\":\"1267784\"\r\n    \r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-auth/auth/credential",
+							"raw": "localhost:11000/blue-auth/auth/credential",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-auth",
 								"auth",
@@ -3938,11 +4114,11 @@
 							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"REG\",\r\n    \"destination\":\"15933160669\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -3968,11 +4144,11 @@
 							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"businessType\":\"REG\",\r\n    \"destination\":\"yunfei0221@outloot.com\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:16000/blue-verify/verify/generate",
+							"raw": "localhost:15000/blue-verify/verify/generate",
 							"host": [
 								"localhost"
 							],
-							"port": "16000",
+							"port": "15000",
 							"path": [
 								"blue-verify",
 								"verify",
@@ -3998,11 +4174,11 @@
 							"raw": "{\r\n    \"phone\":\"15933160669\",\r\n    \"phoneVerify\":\"5616612\",\r\n    \"email\":\"yunfei0221@outloot.com\",\r\n    \"emailVerify\":\"3744976\",\r\n    \"access\":\"12345678\",\r\n    \"name\":\"刘云飞\",\r\n    \"gender\":1\r\n}"
 						},
 						"url": {
-							"raw": "localhost:10000/blue-member/registry",
+							"raw": "localhost:11000/blue-member/registry",
 							"host": [
 								"localhost"
 							],
-							"port": "10000",
+							"port": "11000",
 							"path": [
 								"blue-member",
 								"registry"
