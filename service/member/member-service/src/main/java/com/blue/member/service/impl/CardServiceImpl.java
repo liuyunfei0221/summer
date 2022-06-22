@@ -102,8 +102,12 @@ public class CardServiceImpl implements CardService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(CardSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private Mono<Card> packageCoverAndContent(Long coverId, Long contentId, Long memberId, Card card) {
-        if (isInvalidIdentity(contentId) || isInvalidIdentity(memberId) || isNull(card))
+    private Mono<Card> packageCoverAndContent(Long coverId, Long contentId, Card card) {
+        if (isInvalidIdentity(contentId) || isNull(card))
+            throw new BlueException(EMPTY_PARAM);
+
+        Long memberId = card.getMemberId();
+        if (isInvalidIdentity(memberId))
             throw new BlueException(EMPTY_PARAM);
 
         return rpcAttachmentServiceConsumer.selectAttachmentInfoMonoByIds(Stream.of(coverId, contentId)
@@ -158,7 +162,7 @@ public class CardServiceImpl implements CardService {
         Long coverId = cardInsertParam.getCoverId();
         Long contentId = cardInsertParam.getContentId();
 
-        return packageCoverAndContent(coverId, contentId, memberId, card);
+        return packageCoverAndContent(coverId, contentId, card);
     };
 
     private final BiFunction<CardUpdateParam, Card, Mono<Card>> CARD_UPDATE_PARAM_2_MEMBER_ADDRESS = (cardUpdateParam, card) -> {
@@ -181,7 +185,7 @@ public class CardServiceImpl implements CardService {
         if (card.getCoverId().equals(contentId) && card.getContentId().equals(contentId))
             return just(card);
 
-        return packageCoverAndContent(coverId, contentId, card.getMemberId(), card);
+        return packageCoverAndContent(coverId, contentId, card);
     };
 
     private static final Function<Long, String> CARD_UPDATE_SYNC_KEY_GEN = memberId -> CARD_UPDATE_PRE.prefix + memberId;

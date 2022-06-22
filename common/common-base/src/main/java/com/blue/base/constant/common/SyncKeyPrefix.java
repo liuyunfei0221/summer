@@ -9,9 +9,9 @@ package com.blue.base.constant.common;
 public enum SyncKeyPrefix {
 
     /**
-     * refresh role ids / secKey of access
+     * access update sync prefix
      */
-    ACCESS_ELE_REFRESH_PRE("ACCESS_ELE_REFRESH_PRE:"),
+    ACCESS_UPDATE_PRE("ACCESS_UPDATE_PRE:"),
 
     /**
      * bulletins cache sync key prefix
@@ -27,11 +27,6 @@ public enum SyncKeyPrefix {
      * member role relation update sync key prefix
      */
     MEMBER_ROLE_REL_UPDATE_PRE("MEMBER_ROLE_REL_UPDATING_PRE:"),
-
-    /**
-     * invalid member auth key pre
-     */
-    AUTH_INVALID_BY_MEMBER_ID_PRE("AUTH_INVALID_BY_MEMBER_ID_PRE:"),
 
     /**
      * operate address sync key pre

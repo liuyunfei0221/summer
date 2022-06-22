@@ -30,7 +30,6 @@ import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
@@ -203,12 +202,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         LOGGER.info("MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId), credentialTypes = {}, credential = {}, memberId = {}",
                 credentialTypes, credential, memberId);
 
-        Optional<MemberBasic> memberBasicOpt = memberBasicService.getMemberBasic(memberId);
-        if (memberBasicOpt.isEmpty())
-            throw new BlueException(DATA_NOT_EXIST);
-
-        MemberBasic memberBasic = memberBasicOpt.get();
-
+        MemberBasic memberBasic = memberBasicService.getMemberBasic(memberId);
         credentialCollectProcessor.packageCredentialAttr(credentialTypes, credential, memberBasic);
 
         return memberBasicService.updateMemberBasic(memberBasic);

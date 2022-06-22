@@ -8,6 +8,11 @@ package com.blue.base.constant.common;
 public enum BlueDataAttrKey {
 
     /**
+     * request id
+     */
+    REQUEST_ID("requestId"),
+
+    /**
      * request method
      */
     METHOD("method"),
@@ -38,14 +43,14 @@ public enum BlueDataAttrKey {
     RESPONSE_BODY("responseBody"),
 
     /**
-     * request id
-     */
-    REQUEST_ID("requestId"),
-
-    /**
      * request metadata
      */
     METADATA("metadata"),
+
+    /**
+     * member source
+     */
+    SOURCE("Source"),
 
     /**
      * original json web token

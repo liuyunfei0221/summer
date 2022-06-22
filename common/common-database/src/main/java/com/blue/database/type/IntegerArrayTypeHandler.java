@@ -7,8 +7,6 @@ import java.sql.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-
 /**
  * int array type handler
  *
@@ -19,11 +17,9 @@ public final class IntegerArrayTypeHandler extends BaseTypeHandler<Integer[]> {
 
     private static final String JDBC_TYPE_NAME = JdbcType.INTEGER.name();
 
-    private static final Object[] NULL_PARAM = null;
-
     private static final BiFunction<Object[], PreparedStatement, Array> ARRAY_GEN = (parameter, preparedStatement) -> {
         try {
-            return preparedStatement.getConnection().createArrayOf(JDBC_TYPE_NAME, isNotNull(parameter) ? parameter : NULL_PARAM);
+            return preparedStatement.getConnection().createArrayOf(JDBC_TYPE_NAME, parameter);
         } catch (SQLException e) {
             throw new RuntimeException("IntegerArrayTypeHandler, ARRAY_GEN failed, e = " + e);
         }

@@ -1,5 +1,5 @@
 server:
-  address: localhost
+  address: 127.0.0.1
   port: 53000
   netty:
     connection-timeout: 6s
@@ -37,7 +37,7 @@ eureka:
     hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@127.0.0.1:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
     registry-fetch-interval-seconds: 300
 
 
@@ -48,7 +48,7 @@ data:
       username: default
       password: LiuZhiyi20200805
       driverClassName: ru.yandex.clickhouse.ClickHouseDriver
-      connectionTimeout: 30000
+      connectionTimeout: 120000
       maxLifetime: 1800000
       maximumPoolSize: 4
       minimumIdle: 2
@@ -62,7 +62,7 @@ data:
       username: default
       password: LiuZhiyi20200805
       driverClassName: ru.yandex.clickhouse.ClickHouseDriver
-      connectionTimeout: 30000
+      connectionTimeout: 120000
       maxLifetime: 1800000
       maximumPoolSize: 4
       minimumIdle: 2
@@ -360,14 +360,14 @@ dubbo:
     group: summer
     file: D:/locallogs/dubbo/lake/registry.properties
     check: false
-    timeout: 60000
+    timeout: 120000
     simplified: false
 #  metadata-report:
 #    address: zookeeper://43.138.44.171
 #    port: 2181
 #    username: blue
 #    password: LiuZhiyi20200805
-#    timeout: 60000
+#    timeout: 120000
 #    default: true
 #    check: false
   application:

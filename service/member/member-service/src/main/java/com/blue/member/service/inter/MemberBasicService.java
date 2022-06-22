@@ -68,7 +68,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    Optional<MemberBasic> getMemberBasic(Long id);
+    MemberBasic getMemberBasic(Long id);
 
     /**
      * get member by id
@@ -76,7 +76,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    Mono<Optional<MemberBasic>> getMemberBasicMono(Long id);
+    Mono<MemberBasic> getMemberBasicMono(Long id);
 
     /**
      * query member by phone

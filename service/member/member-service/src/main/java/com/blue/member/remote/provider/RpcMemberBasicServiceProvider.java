@@ -51,9 +51,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoMonoByPrimaryKey(Long id) {
         return just(id).subscribeOn(scheduler)
                 .flatMap(memberBasicService::getMemberBasicMono)
-                .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
-                        .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))
+                .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                 .toFuture();
     }
 

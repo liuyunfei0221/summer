@@ -46,7 +46,6 @@ import static com.blue.base.constant.common.CacheKeyPrefix.BULLETINS_PRE;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.VALID;
-import static com.blue.base.constant.common.SyncKeyPrefix.BULLETINS_CACHE_PRE;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
@@ -67,7 +66,7 @@ import static reactor.core.publisher.Mono.zip;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class BulletinServiceImpl implements BulletinService {
 
@@ -109,8 +108,6 @@ public class BulletinServiceImpl implements BulletinService {
     private static Cache<Integer, List<BulletinInfo>> LOCAL_CACHE;
 
     private static final Function<Integer, String> BULLETIN_CACHE_KEY_GENERATOR = type -> BULLETINS_PRE.prefix + type;
-
-    private static final Function<Integer, String> PORTAL_LOAD_SYNC_KEY_GEN = type -> BULLETINS_CACHE_PRE.prefix + type;
 
     private final Consumer<Integer> REDIS_CACHE_DELETER = type ->
             stringRedisTemplate.delete(BULLETIN_CACHE_KEY_GENERATOR.apply(type));

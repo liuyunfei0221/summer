@@ -44,12 +44,12 @@ public final class SynchronizedProcessor {
      * @param firstSup
      * @param validator
      * @param secondSup
-     * @param firstSupStoragor
+     * @param firstSupStorage
      * @param <T>
      * @return
      */
-    public <T> T handleSupByOrderedWithSetter(Supplier<T> firstSup, Predicate<T> validator, Supplier<T> secondSup, Consumer<T> firstSupStoragor) {
-        if (isNull(firstSup) || isNull(validator) || isNull(secondSup) || isNull(firstSupStoragor))
+    public <T> T handleSupByOrderedWithSetter(Supplier<T> firstSup, Predicate<T> validator, Supplier<T> secondSup, Consumer<T> firstSupStorage) {
+        if (isNull(firstSup) || isNull(validator) || isNull(secondSup) || isNull(firstSupStorage))
             throw new BlueException();
 
         return ofNullable(firstSup.get())
@@ -67,7 +67,7 @@ public final class SynchronizedProcessor {
                         if (tryLock) {
                             res = secondSup.get();
                             if (validator.test(res))
-                                firstSupStoragor.accept(res);
+                                firstSupStorage.accept(res);
 
                             return res;
                         }
@@ -80,16 +80,14 @@ public final class SynchronizedProcessor {
 
                         return validator.test(res) ? res : secondSup.get();
                     } catch (Exception e) {
-                        LOGGER.error("selectGenericsWithCache(Supplier<List<T>> firstSup, Supplier<List<T>> dbSup, Consumer<List<T>> cacheSetter) failed," +
-                                "cacheSup = {}, secondSup = {}, firstSupStoragor = {}, e = {}", firstSup, secondSup, firstSupStoragor, e);
+                        LOGGER.error("handleSupByOrderedWithSetter(Supplier<T> firstSup, Predicate<T> validator, Supplier<T> secondSup, Consumer<T> firstSupStorage) failed, e = {}", e);
                         return secondSup.get();
                     } finally {
                         if (tryLock)
                             try {
                                 lock.unlock();
                             } catch (Exception e) {
-                                LOGGER.warn("selectGenericsWithCache(Supplier<List<T>> cacheSup, Supplier<List<T>> dbSup, Consumer<List<T>> cacheSetter) lock.unlock() failed," +
-                                        "cacheSup = {}, dbSup = {}, cacheSetter = {}, e = {}", firstSup, secondSup, firstSupStoragor, e);
+                                LOGGER.warn("handleSupByOrderedWithSetter(Supplier<T> firstSup, Predicate<T> validator, Supplier<T> secondSup, Consumer<T> firstSupStorage) lock.unlock() failed, e = {}", e);
                             }
                     }
                 });

@@ -5,7 +5,6 @@ import com.blue.auth.component.access.AccessInfoCache;
 import com.blue.auth.config.deploy.SessionKeyDeploy;
 import com.blue.auth.event.producer.InvalidLocalAccessProducer;
 import com.blue.auth.model.AccessInfo;
-import com.blue.auth.model.AuthInfoRefreshElement;
 import com.blue.auth.model.MemberAccess;
 import com.blue.auth.model.MemberAuth;
 import com.blue.auth.repository.entity.RefreshInfo;
@@ -23,6 +22,7 @@ import com.blue.base.model.common.InvalidLocalAccessEvent;
 import com.blue.base.model.common.KeyPair;
 import com.blue.base.model.exps.BlueException;
 import com.blue.jwt.common.JwtProcessor;
+import com.blue.redisson.api.inter.HandleTask;
 import com.blue.redisson.component.SynchronizedProcessor;
 import com.google.gson.JsonSyntaxException;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -50,8 +50,7 @@ import static com.blue.base.constant.common.BlueNumericalValue.*;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.base.constant.common.SyncKeyPrefix.ACCESS_ELE_REFRESH_PRE;
-import static com.blue.base.constant.common.SyncKeyPrefix.AUTH_INVALID_BY_MEMBER_ID_PRE;
+import static com.blue.base.constant.common.SyncKeyPrefix.ACCESS_UPDATE_PRE;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
 import static java.util.Collections.*;
@@ -236,9 +235,9 @@ public class AuthServiceImpl implements AuthService {
         return SESSION_KEY_PRE + id + PAR_CONCATENATION + CREDENTIAL_TYPE_2_NATURE_CONVERTER.apply(credentialTypeIdentity).intern() + PAR_CONCATENATION + deviceTypeIdentity;
     }
 
-    private static final Function<Long, String> ACCESS_ELE_REFRESH_SYNC_KEY_GEN = memberId -> {
+    private static final Function<Long, String> ACCESS_UPDATE_SYNC_KEY_GEN = memberId -> {
         if (isValidIdentity(memberId))
-            return ACCESS_ELE_REFRESH_PRE.prefix + memberId;
+            return ACCESS_UPDATE_PRE.prefix + memberId;
 
         throw new BlueException(BAD_REQUEST);
     };
@@ -373,6 +372,7 @@ public class AuthServiceImpl implements AuthService {
      *
      * @param keyId
      * @param roleIds
+     * @param pubKey
      */
     private void refreshAccessRoleIdsOrPubKeyByKeyId(String keyId, List<Long> roleIds, String pubKey) {
         LOGGER.info("void refreshAccessRoleIdsOrPubKeyByKeyId(String keyId, List<Long> roleIds, String pubKey), keyId = {}, roleIds = {}, pubKey = {}", keyId, roleIds, pubKey);
@@ -412,104 +412,73 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * refresh auth elements
-     *
-     * @param authInfoRefreshElement
+     * handle task sync by member
      */
-    private void refreshAuthElementByMultiTypes(AuthInfoRefreshElement authInfoRefreshElement) {
-        LOGGER.info("void refreshAuthElementByMultiTypes(AuthInfoRefreshElement authInfoRefreshElement), authInfoRefreshElement = {}", authInfoRefreshElement);
-        Long memberId = authInfoRefreshElement.getMemberId();
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST);
-
-        List<Long> roleIds = authInfoRefreshElement.getRoleIds();
-        String pubKey = authInfoRefreshElement.getPubKey();
-        if (isEmpty(roleIds) && isBlank(pubKey))
+    private final BiConsumer<Long, HandleTask> ACCESS_SYNC_UPDATER = (memberId, handleTask) -> {
+        if (isInvalidIdentity(memberId) || isNull(handleTask))
             return;
 
-        List<String> credentialTypes = ofNullable(authInfoRefreshElement.getCredentialTypes())
-                .filter(lts -> lts.size() > 0)
-                .map(lts ->
-                        lts.stream()
-                                .map(lt -> lt.identity)
-                                .distinct()
-                                .filter(lti -> !lti.equals(NOT_LOGGED_IN.identity))
-                                .collect(toList())
-                ).orElseGet(Collections::emptyList);
-        if (isEmpty(credentialTypes))
-            return;
-
-        List<String> deviceTypes = ofNullable(authInfoRefreshElement.getDeviceTypes())
-                .filter(dts -> dts.size() > 0)
-                .map(dts ->
-                        dts.stream()
-                                .map(dt -> dt.identity)
-                                .distinct()
-                                .filter(dti -> !dti.equals(UNKNOWN.identity))
-                                .collect(toList())
-                ).orElseGet(Collections::emptyList);
-        if (isEmpty(deviceTypes))
-            return;
-
-        synchronizedProcessor.handleTaskWithLock(ACCESS_ELE_REFRESH_SYNC_KEY_GEN.apply(memberId), () -> {
-            for (String credentialType : credentialTypes)
-                for (String deviceType : deviceTypes)
-                    refreshAccessRoleIdsOrPubKeyByKeyId(
-                            genSessionKey(memberId, credentialType.intern(), deviceType.intern()), roleIds, pubKey);
-        });
-    }
+        synchronizedProcessor.handleTaskWithLock(ACCESS_UPDATE_SYNC_KEY_GEN.apply(memberId), handleTask);
+    };
 
     /**
-     * refresh auth pubKey
-     *
-     * @param access
-     * @param pubKey
+     * update all access roles with sync by member
      */
-    private void refreshAuthPubKeyByAccess(Access access, String pubKey) {
-        LOGGER.info("void refreshAuthElementBySimple(Access access, String pubKey), access = {}, pubKey = {}", access, pubKey);
+    private final BiConsumer<Long, List<Long>> ALL_ACCESS_ROLES_REFRESHER = (memberId, roleIds) -> {
+        LOGGER.info("BiConsumer<Long,List<Long>> ALL_ACCESS_ROLES_REFRESHER, memberId = {}, roleIds = {}", memberId, roleIds);
+        if (isInvalidIdentity(memberId) || isEmpty(roleIds))
+            return;
+
+        ACCESS_SYNC_UPDATER.accept(memberId, () -> {
+            for (CredentialType credentialType : VALID_CREDENTIAL_TYPES)
+                for (DeviceType deviceType : VALID_DEVICE_TYPES)
+                    refreshAccessRoleIdsOrPubKeyByKeyId(
+                            genSessionKey(memberId, credentialType.identity.intern(), deviceType.identity.intern()), roleIds, null);
+        });
+    };
+
+    /**
+     * update target access pub key with sync by member
+     */
+    private final BiConsumer<Access, String> ACCESS_PUB_KEY_REFRESHER = (access, pubKey) -> {
+        LOGGER.info("BiConsumer<Access,String> ACCESS_PUB_KEY_REFRESHER, access = {}, pubKey = {}", access, pubKey);
         if (isNull(access) || isBlank(pubKey))
             throw new BlueException(BAD_REQUEST);
 
         long memberId = access.getId();
-        synchronizedProcessor.handleTaskWithLock(ACCESS_ELE_REFRESH_SYNC_KEY_GEN.apply(memberId), () ->
+        ACCESS_SYNC_UPDATER.accept(memberId, () ->
                 refreshAccessRoleIdsOrPubKeyByKeyId(genSessionKey(memberId, access.getCredentialType().intern(), access.getDeviceType().intern()),
                         null, pubKey));
-    }
+    };
 
     /**
-     * generate auth invalid sync key
+     * auth info invalid
      */
-    private static final Function<Long, String> AUTH_INVALID_BY_MID_SYNC_KEY_GEN = memberId -> AUTH_INVALID_BY_MEMBER_ID_PRE.prefix + memberId;
+    private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_TASK = memberId -> {
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
 
-    /**
-     * auth info invalid task
-     */
-    private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_TASK = memberId ->
-            REFRESH_INFOS_BY_MEMBER_ID_DELETER.apply(memberId)
-                    .flatMap(b -> {
-                        if (!b)
-                            LOGGER.error("REFRESH_INFOS_BY_MEMBER_ID_DELETER.apply(memberId), result is false");
+        return synchronizedProcessor.handleSupWithLock(ACCESS_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
+                REFRESH_INFOS_BY_MEMBER_ID_DELETER.apply(memberId)
+                        .flatMap(b -> {
+                            if (!b)
+                                LOGGER.error("REFRESH_INFOS_BY_MEMBER_ID_DELETER.apply(memberId), result is false");
 
-                        String keyId;
-                        for (CredentialType credentialType : VALID_CREDENTIAL_TYPES)
-                            for (DeviceType deviceType : VALID_DEVICE_TYPES) {
-                                keyId = genSessionKey(memberId, credentialType.identity, deviceType.identity);
-                                accessInfoCache.invalidAccessInfo(keyId).toFuture().join();
-                                this.invalidateLocalAccessByKeyId(keyId).toFuture().join();
-                            }
+                            String keyId;
+                            for (CredentialType credentialType : VALID_CREDENTIAL_TYPES)
+                                for (DeviceType deviceType : VALID_DEVICE_TYPES) {
+                                    keyId = genSessionKey(memberId, credentialType.identity, deviceType.identity);
+                                    accessInfoCache.invalidAccessInfo(keyId).toFuture().join();
+                                    this.invalidateLocalAccessByKeyId(keyId).toFuture().join();
+                                }
 
-                        return just(true);
-                    }).onErrorResume(throwable -> {
-                        LOGGER.error("REFRESH_INFOS_BY_MEMBER_ID_DELETER failed, throwable = {}", throwable);
-                        return just(false);
-                    }).toFuture().join();
-
-    /**
-     * auth delete task
-     */
-    private final Function<Long, Boolean> INVALID_AUTH_BY_MEMBER_ID_SYNC_TASK = memberId ->
-            synchronizedProcessor.handleSupWithTryLock(AUTH_INVALID_BY_MID_SYNC_KEY_GEN.apply(memberId),
-                    () -> INVALID_AUTH_BY_MEMBER_ID_TASK.apply(memberId), () -> true, () -> false);
+                            return just(true);
+                        }).onErrorResume(throwable -> {
+                            LOGGER.error("REFRESH_INFOS_BY_MEMBER_ID_DELETER failed, throwable = {}", throwable);
+                            return just(false);
+                        }).toFuture().join()
+        );
+    };
 
     /**
      * get authority by role id
@@ -797,7 +766,7 @@ public class AuthServiceImpl implements AuthService {
         if (isInvalidIdentity(memberId))
             return error(() -> new BlueException(INVALID_IDENTITY));
 
-        return fromFuture(supplyAsync(() -> INVALID_AUTH_BY_MEMBER_ID_SYNC_TASK.apply(memberId), executorService));
+        return fromFuture(supplyAsync(() -> INVALID_AUTH_BY_MEMBER_ID_TASK.apply(memberId), executorService));
     }
 
     /**
@@ -825,10 +794,9 @@ public class AuthServiceImpl implements AuthService {
         if (isInvalidIdentity(memberId) || isInvalidIdentities(roleIds))
             throw new BlueException(INVALID_IDENTITY);
 
-        AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId,
-                VALID_CREDENTIAL_TYPES, VALID_DEVICE_TYPES, roleIds, null);
         return fromRunnable(() -> executorService.execute(() ->
-                refreshAuthElementByMultiTypes(authInfoRefreshElement))).then(just(true));
+                ALL_ACCESS_ROLES_REFRESHER.accept(memberId, roleIds)))
+                .then(just(true));
     }
 
     /**
@@ -843,10 +811,9 @@ public class AuthServiceImpl implements AuthService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
-        AuthInfoRefreshElement authInfoRefreshElement = new AuthInfoRefreshElement(memberId,
-                VALID_CREDENTIAL_TYPES, VALID_DEVICE_TYPES, memberRoleRelationService.selectRoleIdsByMemberId(memberId), null);
         return fromRunnable(() -> executorService.execute(() ->
-                refreshAuthElementByMultiTypes(authInfoRefreshElement))).then(just(true));
+                ALL_ACCESS_ROLES_REFRESHER.accept(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId))))
+                .then(just(true));
     }
 
     /**
@@ -862,7 +829,7 @@ public class AuthServiceImpl implements AuthService {
         return isNotNull(access) ?
                 just(initKeyPair())
                         .flatMap(keyPair -> {
-                            refreshAuthPubKeyByAccess(access, keyPair.getPubKey());
+                            ACCESS_PUB_KEY_REFRESHER.accept(access, keyPair.getPubKey());
                             return just(keyPair.getPriKey());
                         })
                 :

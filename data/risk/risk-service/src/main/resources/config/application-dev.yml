@@ -1,5 +1,5 @@
 server:
-  address: localhost
+  address: 127.0.0.1
   port: 55000
   netty:
     connection-timeout: 6s
@@ -37,7 +37,7 @@ eureka:
     hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@127.0.0.1:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@172.16.204.75:3000/eureka/
     registry-fetch-interval-seconds: 300
 
 
@@ -48,7 +48,7 @@ data:
       username: default
       password: 1024
       driverClassName: ru.yandex.clickhouse.ClickHouseDriver
-      connectionTimeout: 30000
+      connectionTimeout: 120000
       maxLifetime: 1800000
       maximumPoolSize: 4
       minimumIdle: 2
@@ -62,7 +62,7 @@ data:
       username: default
       password: 1024
       driverClassName: ru.yandex.clickhouse.ClickHouseDriver
-      connectionTimeout: 30000
+      connectionTimeout: 120000
       maxLifetime: 1800000
       maximumPoolSize: 4
       minimumIdle: 2
@@ -131,26 +131,25 @@ mongo:
   userName:
   password:
   database: risk
-  retryReads: true
+  retryReads: false
   retryWrites: false
-  applicationName: blue-shine
+  applicationName: blue-risk
   uuidRepresentation: JAVA_LEGACY
-  socketConnectTimeoutMillis: 5000
-  socketReadTimeoutMillis: 5000
-  socketReceiveBufferSize: 1000000
-  socketSendBufferSize: 1024
-  clusterConnectionMode: MULTIPLE
+  socketConnectTimeoutMillis: 60000
+  socketReadTimeoutMillis: 60000
+  socketReceiveBufferSize: 10000
+  socketSendBufferSize: 256
+  clusterConnectionMode: SINGLE
   clusterType: STANDALONE
-  clusterLocalThresholdMillis: 5000
-  serverSelectionTimeoutMillis: 5000
+  clusterLocalThresholdMillis: 60000
+  serverSelectionTimeoutMillis: 60000
   poolMaxSize: 12
-  poolMinSize: 4
-  poolMaxWaitTimeMillis: 3000
+  poolMinSize: 2
+  poolMaxWaitTimeMillis: 60000
   poolMaxConnectionLifeTimeMillis: 60000
   poolMaxConnectionIdleTimeMillis: 60000
-  poolMaintenanceInitialDelayMillis: 3000
+  poolMaintenanceInitialDelayMillis: 60000
   poolMaintenanceFrequencyMillis: 60000
-  sslEnabled: false
 
 
 identity:
@@ -391,7 +390,7 @@ dubbo:
     group: summer
     file: D:/locallogs/dubbo/risk/registry.properties
     check: false
-    timeout: 60000
+    timeout: 120000
     simplified: false
 #  metadata-report:
 #    address: zookeeper://172.16.204.75

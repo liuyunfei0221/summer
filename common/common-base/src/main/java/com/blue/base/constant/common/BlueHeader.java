@@ -45,6 +45,11 @@ public enum BlueHeader {
     SOURCE("Source"),
 
     /**
+     * host
+     */
+    HOST(HttpHeaders.HOST),
+
+    /**
      * verify key
      */
     VERIFY_KEY("Verify-Key"),
@@ -68,11 +73,6 @@ public enum BlueHeader {
      * content
      */
     CONTENT_DISPOSITION(HttpHeaders.CONTENT_DISPOSITION),
-
-    /**
-     * host
-     */
-    HOST(HttpHeaders.HOST),
 
     /**
      * EXTRA

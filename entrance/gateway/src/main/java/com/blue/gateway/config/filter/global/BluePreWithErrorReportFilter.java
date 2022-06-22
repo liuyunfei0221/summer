@@ -94,14 +94,16 @@ public final class BluePreWithErrorReportFilter implements GlobalFilter, Ordered
         attributes.put(REAL_URI.key, realUri);
         attributes.put(URI.key, REQUEST_REST_URI_PROCESSOR.apply(realUri).intern());
 
-        ofNullable(request.getHeaders().getFirst(BlueHeader.METADATA.name))
-                .ifPresent(metadata -> attributes.put(METADATA.key, metadata));
         ofNullable(request.getHeaders().getFirst(AUTHORIZATION.name))
                 .ifPresent(jwt -> attributes.put(JWT.key, jwt));
-        ofNullable(request.getHeaders().getFirst(BlueHeader.HOST.name))
-                .ifPresent(host -> attributes.put(HOST.key, host));
         ofNullable(request.getHeaders().getFirst(BlueHeader.USER_AGENT.name))
                 .ifPresent(userAgent -> attributes.put(USER_AGENT.key, userAgent));
+        ofNullable(request.getHeaders().getFirst(BlueHeader.METADATA.name))
+                .ifPresent(metadata -> attributes.put(METADATA.key, metadata));
+        ofNullable(request.getHeaders().getFirst(BlueHeader.SOURCE.name))
+                .ifPresent(source -> attributes.put(SOURCE.key, source));
+        ofNullable(request.getHeaders().getFirst(BlueHeader.HOST.name))
+                .ifPresent(host -> attributes.put(HOST.key, host));
 
         REQUEST_IP_REPACKAGER.accept(request, ip);
     }

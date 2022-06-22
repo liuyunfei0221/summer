@@ -1,5 +1,5 @@
 server:
-  address: localhost
+  address: 127.0.0.1
   port: 41000
   netty:
     connection-timeout: 6s
@@ -37,7 +37,7 @@ eureka:
     hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@127.0.0.1:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
     registry-fetch-interval-seconds: 300
 
 
@@ -48,7 +48,7 @@ data:
       username: root
       password: LiuZhiyi20200805
       driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 30000
+      connectionTimeout: 120000
       maxLifetime: 1800000
       maximumPoolSize: 4
       minimumIdle: 2
@@ -62,7 +62,7 @@ data:
       username: root
       password: LiuZhiyi20200805
       driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 30000
+      connectionTimeout: 120000
       maxLifetime: 1800000
       maximumPoolSize: 4
       minimumIdle: 2
@@ -156,26 +156,25 @@ mongo:
   userName: blue
   password: LiuZhiyi20200805
   database: article
-  retryReads: true
+  retryReads: false
   retryWrites: false
   applicationName: blue-article
   uuidRepresentation: JAVA_LEGACY
-  socketConnectTimeoutMillis: 5000
-  socketReadTimeoutMillis: 5000
-  socketReceiveBufferSize: 1000000
-  socketSendBufferSize: 1024
-  clusterConnectionMode: MULTIPLE
+  socketConnectTimeoutMillis: 60000
+  socketReadTimeoutMillis: 60000
+  socketReceiveBufferSize: 10000
+  socketSendBufferSize: 256
+  clusterConnectionMode: SINGLE
   clusterType: STANDALONE
-  clusterLocalThresholdMillis: 5000
-  serverSelectionTimeoutMillis: 5000
+  clusterLocalThresholdMillis: 60000
+  serverSelectionTimeoutMillis: 60000
   poolMaxSize: 12
-  poolMinSize: 4
-  poolMaxWaitTimeMillis: 3000
+  poolMinSize: 2
+  poolMaxWaitTimeMillis: 60000
   poolMaxConnectionLifeTimeMillis: 60000
   poolMaxConnectionIdleTimeMillis: 60000
-  poolMaintenanceInitialDelayMillis: 3000
+  poolMaintenanceInitialDelayMillis: 60000
   poolMaintenanceFrequencyMillis: 60000
-  sslEnabled: false
 
 
 es:
@@ -199,7 +198,7 @@ es:
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 43.138.44.171
+  host: 43.138.111.53
   port: 6379
   password: LiuZhiyi20200805
   maxRedirects: 4
@@ -247,7 +246,7 @@ scheduler:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 43.138.44.171
+  host: 43.138.111.53
   port: 6379
   password: LiuZhiyi20200805
   scanInterval: 8000
@@ -302,14 +301,14 @@ dubbo:
     group: summer
     file: D:/locallogs/dubbo/article/registry.properties
     check: false
-    timeout: 60000
+    timeout: 120000
     simplified: false
 #  metadata-report:
 #    address: zookeeper://43.138.44.171
 #    port: 2181
 #    username: blue
 #    password: LiuZhiyi20200805
-#    timeout: 60000
+#    timeout: 120000
 #    default: true
 #    check: false
   protocol:

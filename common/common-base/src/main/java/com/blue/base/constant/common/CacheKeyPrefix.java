@@ -24,6 +24,11 @@ public enum CacheKeyPrefix {
     SESSION_PRE("B_SN_P:"),
 
     /**
+     * member id key prefix
+     */
+    MEMBER_PRE("MB_P:"),
+
+    /**
      * verify key prefix
      */
     VERIFY_PRE("VF_P:"),

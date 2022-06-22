@@ -30,6 +30,7 @@ import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -80,9 +81,9 @@ public class AddressServiceImpl implements AddressService {
 
     private final SynchronizedProcessor synchronizedProcessor;
 
-    private final RpcAreaServiceConsumer rpcAreaServiceConsumer;
+    private RpcAreaServiceConsumer rpcAreaServiceConsumer;
 
-    private final RpcCityServiceConsumer rpcCityServiceConsumer;
+    private RpcCityServiceConsumer rpcCityServiceConsumer;
 
     private final AddressRepository addressRepository;
 
@@ -103,6 +104,69 @@ public class AddressServiceImpl implements AddressService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(AddressSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
+    private final BiConsumer<Long, Address> ADDRESS_AREA_PACKAGER = (areaId, address) -> {
+        if (isInvalidIdentity(areaId) || isNull(address))
+            return;
+
+        AreaRegion areaRegion = rpcAreaServiceConsumer.getAreaRegionMonoById(areaId)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .toFuture().join();
+
+        ofNullable(areaRegion.getCountry())
+                .ifPresent(countryInfo -> {
+                    address.setCountryId(countryInfo.getId());
+                    address.setCountry(countryInfo.getName());
+                });
+
+        ofNullable(areaRegion.getState())
+                .ifPresent(stateInfo -> {
+                    address.setStateId(stateInfo.getId());
+                    address.setState(stateInfo.getName());
+                });
+
+        ofNullable(areaRegion.getCity())
+                .ifPresent(cityInfo -> {
+                    address.setCityId(cityInfo.getId());
+                    address.setCity(cityInfo.getName());
+                });
+
+        ofNullable(areaRegion.getArea())
+                .ifPresent(areaInfo -> {
+                    address.setAreaId(areaInfo.getId());
+                    address.setArea(areaInfo.getName());
+                });
+    };
+
+    private final BiConsumer<Long, Address> ADDRESS_CITY_PACKAGER = (cityId, address) -> {
+        if (isInvalidIdentity(cityId) || isNull(address))
+            return;
+
+        CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionMonoById(cityId)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .toFuture().join();
+
+        ofNullable(cityRegion.getCountry())
+                .ifPresent(countryInfo -> {
+                    address.setCountryId(countryInfo.getId());
+                    address.setCountry(countryInfo.getName());
+                });
+
+        ofNullable(cityRegion.getState())
+                .ifPresent(stateInfo -> {
+                    address.setStateId(stateInfo.getId());
+                    address.setState(stateInfo.getName());
+                });
+
+        ofNullable(cityRegion.getCity())
+                .ifPresent(cityInfo -> {
+                    address.setCityId(cityInfo.getId());
+                    address.setCity(cityInfo.getName());
+                });
+
+        address.setAreaId(BLUE_ID.value);
+        address.setArea(EMPTY_DATA.value);
+    };
+
     private void packageAddressRegion(Long areaId, Long cityId, Address address) {
         if (isNull(address))
             throw new BlueException(EMPTY_PARAM);
@@ -110,58 +174,9 @@ public class AddressServiceImpl implements AddressService {
             throw new BlueException(EMPTY_PARAM);
 
         if (isValidIdentity(areaId)) {
-            AreaRegion areaRegion = rpcAreaServiceConsumer.getAreaRegionMonoById(areaId)
-                    .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                    .toFuture().join();
-
-            ofNullable(areaRegion.getCountry())
-                    .ifPresent(countryInfo -> {
-                        address.setCountryId(countryInfo.getId());
-                        address.setCountry(countryInfo.getName());
-                    });
-
-            ofNullable(areaRegion.getState())
-                    .ifPresent(stateInfo -> {
-                        address.setStateId(stateInfo.getId());
-                        address.setState(stateInfo.getName());
-                    });
-
-            ofNullable(areaRegion.getCity())
-                    .ifPresent(cityInfo -> {
-                        address.setCityId(cityInfo.getId());
-                        address.setCity(cityInfo.getName());
-                    });
-
-            ofNullable(areaRegion.getArea())
-                    .ifPresent(areaInfo -> {
-                        address.setAreaId(areaInfo.getId());
-                        address.setArea(areaInfo.getName());
-                    });
+            ADDRESS_AREA_PACKAGER.accept(areaId, address);
         } else {
-            CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionMonoById(cityId)
-                    .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                    .toFuture().join();
-
-            ofNullable(cityRegion.getCountry())
-                    .ifPresent(countryInfo -> {
-                        address.setCountryId(countryInfo.getId());
-                        address.setCountry(countryInfo.getName());
-                    });
-
-            ofNullable(cityRegion.getState())
-                    .ifPresent(stateInfo -> {
-                        address.setStateId(stateInfo.getId());
-                        address.setState(stateInfo.getName());
-                    });
-
-            ofNullable(cityRegion.getCity())
-                    .ifPresent(cityInfo -> {
-                        address.setCityId(cityInfo.getId());
-                        address.setCity(cityInfo.getName());
-                    });
-
-            address.setAreaId(BLUE_ID.value);
-            address.setArea(EMPTY_DATA.value);
+            ADDRESS_CITY_PACKAGER.accept(cityId, address);
         }
     }
 

@@ -29,6 +29,7 @@ import static com.blue.base.common.base.CommonFunctions.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
 import static com.blue.base.constant.common.BlueDataAttrKey.*;
+import static com.blue.base.constant.common.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.common.BlueHeader.REQUEST_IP;
 import static com.blue.base.constant.common.DataEventOpType.CLICK;
 import static com.blue.base.constant.common.DataEventType.UNIFIED;
@@ -72,8 +73,6 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
         REQUEST_BODY_READER_HOLDER.put(jsonRequestBodyReader.getContentType(), jsonRequestBodyReader);
         REQUEST_BODY_READER_HOLDER.put(multipartRequestBodyReader.getContentType(), multipartRequestBodyReader);
     }
-
-    private static final String AUTHORIZATION = BlueHeader.AUTHORIZATION.name;
 
     private static Set<String> withRequestBodyContentTypes;
 
@@ -121,20 +120,22 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
         String realUri = request.getPath().value();
         String ip = getIp(request);
 
-        attributes.put(REQUEST_ID.key, ip);
-        attributes.put(CLIENT_IP.key, getIp(request));
+        attributes.put(REQUEST_ID.key, request.getId());
+        attributes.put(CLIENT_IP.key, ip);
         attributes.put(METHOD.key, method);
         attributes.put(REAL_URI.key, realUri);
         attributes.put(URI.key, REQUEST_REST_URI_PROCESSOR.apply(realUri).intern());
 
-        ofNullable(request.getHeaders().getFirst(BlueHeader.METADATA.name))
-                .ifPresent(metadata -> attributes.put(METADATA.key, metadata));
-        ofNullable(request.getHeaders().getFirst(AUTHORIZATION))
+        ofNullable(request.getHeaders().getFirst(AUTHORIZATION.name))
                 .ifPresent(jwt -> attributes.put(JWT.key, jwt));
-        ofNullable(request.getHeaders().getFirst(BlueHeader.HOST.name))
-                .ifPresent(host -> attributes.put(HOST.key, host));
         ofNullable(request.getHeaders().getFirst(BlueHeader.USER_AGENT.name))
                 .ifPresent(userAgent -> attributes.put(USER_AGENT.key, userAgent));
+        ofNullable(request.getHeaders().getFirst(BlueHeader.METADATA.name))
+                .ifPresent(metadata -> attributes.put(METADATA.key, metadata));
+        ofNullable(request.getHeaders().getFirst(BlueHeader.SOURCE.name))
+                .ifPresent(source -> attributes.put(SOURCE.key, source));
+        ofNullable(request.getHeaders().getFirst(BlueHeader.HOST.name))
+                .ifPresent(host -> attributes.put(HOST.key, host));
 
         REQUEST_IP_REPACKAGER.accept(request, ip);
     }

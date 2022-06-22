@@ -8,34 +8,42 @@ import com.blue.base.model.common.StringDataParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
+import com.blue.member.config.blue.BlueRedisConfig;
 import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.event.producer.InvalidAuthProducer;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.repository.mapper.MemberBasicMapper;
 import com.blue.member.service.inter.MemberBasicService;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertStatus;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.CacheKeyPrefix.MEMBER_PRE;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.Status.VALID;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -61,12 +69,54 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
+    private StringRedisTemplate stringRedisTemplate;
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public MemberBasicServiceImpl(InvalidAuthProducer invalidAuthProducer, MemberBasicMapper memberBasicMapper, BlueIdentityProcessor blueIdentityProcessor) {
+    public MemberBasicServiceImpl(InvalidAuthProducer invalidAuthProducer, MemberBasicMapper memberBasicMapper, BlueIdentityProcessor blueIdentityProcessor,
+                                  StringRedisTemplate stringRedisTemplate, BlueRedisConfig blueRedisConfig) {
         this.invalidAuthProducer = invalidAuthProducer;
         this.memberBasicMapper = memberBasicMapper;
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.stringRedisTemplate = stringRedisTemplate;
+
+        this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
     }
+
+    private Duration expireDuration;
+
+    private static final Function<Long, String> MEMBER_CACHE_KEY_GENERATOR = id -> MEMBER_PRE.prefix + id;
+
+    private final Consumer<Long> REDIS_CACHE_DELETER = id ->
+            stringRedisTemplate.delete(MEMBER_CACHE_KEY_GENERATOR.apply(id));
+
+    private final Function<Long, MemberBasic> MEMBER_BASIC_DB_GETTER = id -> {
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return ofNullable(memberBasicMapper.selectByPrimaryKey(id)).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+    };
+
+    private final BiConsumer<Long, MemberBasic> MEMBER_BASIC_REDIS_SETTER = (id, memberBasic) -> {
+        if (isInvalidIdentity(id) || isNull(memberBasic))
+            throw new BlueException(EMPTY_PARAM);
+
+        stringRedisTemplate.opsForValue().set(MEMBER_CACHE_KEY_GENERATOR.apply(id), GSON.toJson(memberBasic), expireDuration);
+    };
+
+    private final Function<Long, MemberBasic> MEMBER_WITH_REDIS_CACHE_GETTER = id -> {
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return ofNullable(stringRedisTemplate.opsForValue().get(MEMBER_CACHE_KEY_GENERATOR.apply(id)))
+                .filter(BlueChecker::isNotBlank)
+                .map(s -> GSON.fromJson(s, MemberBasic.class))
+                .orElseGet(() -> {
+                    MemberBasic memberBasic = MEMBER_BASIC_DB_GETTER.apply(id);
+                    MEMBER_BASIC_REDIS_SETTER.accept(id, memberBasic);
+
+                    return memberBasic;
+                });
+    };
 
     /**
      * is a number exist?
@@ -141,10 +191,13 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         LOGGER.info("void insert(MemberBasic memberBasic), memberBasic = {}", memberBasic);
         if (isNull(memberBasic))
             throw new BlueException(EMPTY_PARAM);
-        if (isInvalidIdentity(memberBasic.getId()))
+        Long id = memberBasic.getId();
+        if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
+        REDIS_CACHE_DELETER.accept(id);
         memberBasicMapper.updateByPrimaryKey(memberBasic);
+        REDIS_CACHE_DELETER.accept(id);
 
         return MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(memberBasic);
     }
@@ -172,7 +225,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         return justOrEmpty(memberBasicMapper.selectByPrimaryKey(id))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(mb -> {
+                    REDIS_CACHE_DELETER.accept(id);
                     memberBasicMapper.updateIcon(id, icon, TIME_STAMP_GETTER.get());
+                    REDIS_CACHE_DELETER.accept(id);
+
                     mb.setIcon(icon);
                     return just(mb);
                 })
@@ -201,7 +257,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         return justOrEmpty(memberBasicMapper.selectByPrimaryKey(id))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(mb -> {
+                    REDIS_CACHE_DELETER.accept(id);
                     memberBasicMapper.updateProfile(id, profile, TIME_STAMP_GETTER.get());
+                    REDIS_CACHE_DELETER.accept(id);
+
                     mb.setProfile(profile);
                     return just(mb);
                 })
@@ -231,7 +290,10 @@ public class MemberBasicServiceImpl implements MemberBasicService {
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
         memberBasic.setStatus(status);
+
+        REDIS_CACHE_DELETER.accept(id);
         memberBasicMapper.updateStatus(id, status, TIME_STAMP_GETTER.get());
+        REDIS_CACHE_DELETER.accept(id);
 
         if (VALID.status != status)
             invalidAuthProducer.send(new InvalidAuthEvent(id));
@@ -246,12 +308,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Optional<MemberBasic> getMemberBasic(Long id) {
-        LOGGER.info("Optional<MemberBasic> getMemberBasicByPrimaryKey(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return ofNullable(memberBasicMapper.selectByPrimaryKey(id));
+    public MemberBasic getMemberBasic(Long id) {
+        LOGGER.info("MemberBasic getMemberBasicByPrimaryKey(Long id), id = {}", id);
+        return MEMBER_WITH_REDIS_CACHE_GETTER.apply(id);
     }
 
     /**
@@ -261,7 +320,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> getMemberBasicMono(Long id) {
+    public Mono<MemberBasic> getMemberBasicMono(Long id) {
         LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
         return just(getMemberBasic(id));
     }
@@ -340,11 +399,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
         return just(id)
                 .flatMap(this::getMemberBasicMono)
-                .flatMap(mbOpt ->
-                        mbOpt.map(Mono::just)
-                                .orElseGet(() ->
-                                        error(() -> new BlueException(DATA_NOT_EXIST)))
-                ).flatMap(mb -> {
+                .flatMap(mb -> {
                     if (isInvalidStatus(mb.getStatus()))
                         return error(() -> new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
                     LOGGER.info("mb = {}", mb);

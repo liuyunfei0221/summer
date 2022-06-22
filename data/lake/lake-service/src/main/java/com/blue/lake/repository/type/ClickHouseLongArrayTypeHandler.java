@@ -24,7 +24,7 @@ public final class ClickHouseLongArrayTypeHandler extends BaseTypeHandler<Long[]
         try {
             return obj != null ? stream((BigInteger[]) ((ClickHouseArray) obj).getArray()).map(BigInteger::longValue).toArray(Long[]::new) : null;
         } catch (SQLException e) {
-            throw new RuntimeException("parseArray(Array array) failed, e = " + e);
+            throw new RuntimeException("ClickHouseLongArrayTypeHandler, ARRAY_PARSER failed, e = " + e);
         }
     };
 

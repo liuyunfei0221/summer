@@ -187,6 +187,14 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'delete address', 'delete address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180008, 'GET', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
         'select address for api', 'select address for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180009, 'POST', 'blue-member', '/card', b'1', b'1', b'1', b'1', b'1', 1,
+        'add card', 'add card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180010, 'PUT', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
+        'update card', 'update card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180011, 'DELETE', 'blue-member', '/card/{id}', b'1', b'1', b'1', b'0', b'1', 1,
+        'delete card', 'delete card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180012, 'GET', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
+        'select card for api', 'select card for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- member manage
 
@@ -194,10 +202,10 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'member list', 'member list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (190002, 'POST', 'blue-member', '/manager/authorities', b'1', b'1', b'1', b'1', b'1', 2,
         'authority list', 'authority list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (190003, 'POST', 'blue-member', '/manager/cards', b'1', b'1', b'1', b'1', b'1', 2,
-        'select card for manager', 'select card for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (190004, 'POST', 'blue-member', '/manager/addresses', b'1', b'1', b'1', b'1', b'1', 2,
+       (190003, 'POST', 'blue-member', '/manager/addresses', b'1', b'1', b'1', b'1', b'1', 2,
         'select address for manager', 'select address for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (190004, 'POST', 'blue-member', '/manager/cards', b'1', b'1', b'1', b'1', b'1', 2,
+        'select card for manager', 'select card for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- finance api
