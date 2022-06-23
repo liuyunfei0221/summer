@@ -166,13 +166,12 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         List<MemberBasic> result = new ArrayList<>(idAndCacheKeyMapping.size());
 
         MemberBasic memberBasic;
-        for (Object strObj : strObjs) {
+        for (Object strObj : strObjs)
             if (isNotNull(strObj)) {
                 memberBasic = GSON.fromJson(String.valueOf(strObj), MemberBasic.class);
                 result.add(memberBasic);
                 idAndCacheKeyMapping.remove(memberBasic.getId());
             }
-        }
 
         if (idAndCacheKeyMapping.size() == 0)
             return result;
