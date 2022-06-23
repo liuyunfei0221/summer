@@ -376,7 +376,7 @@ dubbo:
     group: summer
     file: D:/locallogs/dubbo/member/registry.properties
     check: false
-    timeout: 120000
+    timeout: 60000
     simplified: false
 #  metadata-report:
 #    address: zookeeper://43.138.44.171
@@ -429,6 +429,10 @@ qr:
   strokesWidth: 1
   protected Color logoFrameColor: Color.WHITE
   protected Color frameColor: Color.CYAN
+
+
+member:
+  cacheExpireSeconds: 21600
 
 
 address:

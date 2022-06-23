@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO;
 import static java.util.Collections.emptyList;
@@ -34,7 +35,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service
 public class BusinessServiceImpl implements BusinessService {
 
@@ -211,12 +212,15 @@ public class BusinessServiceImpl implements BusinessService {
     @Override
     public Mono<List<MemberBusinessInfo>> selectMemberBusinessInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberBusiness>> selectMemberBusinessInfoMonoByIds(List<Long> ids), ids = {}", ids);
-        return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
+        if (isEmpty(ids))
+            return just(emptyList());
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            return error(() -> new BlueException(PAYLOAD_TOO_LARGE));
+
+        return just(allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(businessMapper::selectByIds)
                 .flatMap(l -> l.stream().map(MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO))
-                .collect(toList()))
-                :
-                just(emptyList());
+                .collect(toList()));
     }
 
 }

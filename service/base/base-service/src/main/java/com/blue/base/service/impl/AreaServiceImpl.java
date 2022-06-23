@@ -133,11 +133,10 @@ public class AreaServiceImpl implements AreaService {
             cityIdAreasCache.get(cid, DB_AREAS_BY_CITY_ID_GETTER);
 
     private final Function<List<Long>, Map<Long, AreaInfo>> CACHE_AREAS_BY_IDS_GETTER = ids -> {
-        if (isInvalidIdentities(ids))
+        if (isEmpty(ids))
             return emptyMap();
-
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(INVALID_PARAM);
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
@@ -170,11 +169,10 @@ public class AreaServiceImpl implements AreaService {
     };
 
     private final Function<List<Long>, Map<Long, AreaRegion>> AREA_REGIONS_GETTER = ids -> {
-        if (isInvalidIdentities(ids))
+        if (isEmpty(ids))
             return emptyMap();
-
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(INVALID_PARAM);
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
@@ -283,7 +281,6 @@ public class AreaServiceImpl implements AreaService {
     public final BiFunction<AreaUpdateParam, Area, Boolean> UPDATE_AREA_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
-
         if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);
 
@@ -404,7 +401,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     /**
-     * invalid chche
+     * invalid cache
      */
     @Override
     public void invalidCache() {
@@ -450,8 +447,10 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public List<Area> selectAreaByIds(List<Long> ids) {
-        if (isInvalidIdentities(ids) || ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(INVALID_PARAM);
+        if (isEmpty(ids))
+            return emptyList();
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream()
@@ -594,7 +593,6 @@ public class AreaServiceImpl implements AreaService {
     public Mono<List<Area>> selectAreaMonoByLimitAndQuery(Long limit, Long rows, Query query) {
         LOGGER.info("Mono<List<Area>> selectAreaMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
                 "limit = {}, rows = {}, query = {}", limit, rows, query);
-
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 

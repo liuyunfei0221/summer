@@ -311,14 +311,6 @@ DATABASE media_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 media_1;
 
-
--- finance
-
-CREATE
-DATABASE finance CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-USE
-finance;
-
 -- finance0
 
 CREATE
@@ -806,13 +798,6 @@ CREATE TABLE `undo_log_1`
     PRIMARY KEY (`branch_id`),
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table 1';
-
--- member
-
-CREATE
-DATABASE member CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-USE
-member;
 
 -- member0
 

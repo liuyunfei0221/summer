@@ -58,7 +58,7 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         Map<String, VerifyHandler> beansOfType = applicationContext.getBeansOfType(VerifyHandler.class);
         if (isEmpty(beansOfType))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "verifyHandlers is empty");
+            throw new RuntimeException("verifyHandlers is empty");
 
         verifyHandlers = beansOfType.values().stream()
                 .collect(toMap(vh -> vh.targetType().identity, vh -> vh, (a, b) -> a));

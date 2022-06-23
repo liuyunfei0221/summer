@@ -35,6 +35,7 @@ import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.CacheKey.DEFAULT_ROLE;
 import static com.blue.base.constant.common.CacheKey.ROLES;
 import static com.blue.base.constant.common.Default.DEFAULT;
@@ -47,8 +48,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -105,9 +105,9 @@ public class RoleServiceImpl implements RoleService {
     private final Supplier<Role> DEFAULT_ROLE_DB_SUP = () -> {
         List<Role> defaultRoles = roleMapper.selectDefault();
         if (isEmpty(defaultRoles))
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("defaultRoles is empty");
         if (defaultRoles.size() > 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("defaultRoles more than 1");
 
         Role defaultRole = defaultRoles.get(0);
 
@@ -393,14 +393,9 @@ public class RoleServiceImpl implements RoleService {
         LOGGER.info("Role getDefaultRole()");
 
         Role defaultRole = DEFAULT_ROLE_WITH_CACHE_SUP.get();
-
         LOGGER.info("defaultRole = {}", defaultRole);
-        if (isNull(defaultRole)) {
-            LOGGER.error("Role getDefaultRole(), default role not exist");
-            throw new BlueException(INTERNAL_SERVER_ERROR);
-        }
 
-        return defaultRole;
+        return ofNullable(defaultRole).orElseThrow(() -> new RuntimeException("default role not exist"));
     }
 
     /**
@@ -427,12 +422,15 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public List<Role> selectRoleByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Role>> selectRoleMonoByIds(List<Long> ids), ids = {}", ids);
-        return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
+        if (isEmpty(ids))
+            return emptyList();
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
+
+        return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(roleMapper::selectByIds)
                 .flatMap(List::stream)
-                .collect(toList())
-                :
-                emptyList();
+                .collect(toList());
     }
 
     /**
@@ -444,6 +442,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Mono<List<Role>> selectRoleMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Role>> selectRoleMonoByIds(List<Long> ids), ids = {}", ids);
+
         return just(this.selectRoleByIds(ids));
     }
 

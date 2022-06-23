@@ -360,7 +360,7 @@ dubbo:
     group: summer
     file: D:/locallogs/dubbo/lake/registry.properties
     check: false
-    timeout: 120000
+    timeout: 60000
     simplified: false
 #  metadata-report:
 #    address: zookeeper://43.138.44.171

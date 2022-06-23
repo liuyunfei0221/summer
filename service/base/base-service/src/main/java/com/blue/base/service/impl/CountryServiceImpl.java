@@ -117,11 +117,10 @@ public class CountryServiceImpl implements CountryService {
             allCountriesCache.get(ALL_COUNTRIES_CACHE_ID, DB_COUNTRIES_GETTER);
 
     private final Function<List<Long>, Map<Long, CountryInfo>> CACHE_COUNTRIES_BY_IDS_GETTER = ids -> {
-        if (isInvalidIdentities(ids))
+        if (isEmpty(ids))
             return emptyMap();
-
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(INVALID_PARAM);
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
@@ -259,7 +258,6 @@ public class CountryServiceImpl implements CountryService {
     public final BiFunction<CountryUpdateParam, Country, Boolean> UPDATE_COUNTRY_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
-
         if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);
 
@@ -417,7 +415,7 @@ public class CountryServiceImpl implements CountryService {
     }
 
     /**
-     * invalid chche
+     * invalid cache
      */
     @Override
     public void invalidCache() {
@@ -454,8 +452,10 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public List<Country> selectCountryByIds(List<Long> ids) {
-        if (isInvalidIdentities(ids) || ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(INVALID_PARAM);
+        if (isEmpty(ids))
+            return emptyList();
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream()
@@ -550,7 +550,6 @@ public class CountryServiceImpl implements CountryService {
     public Mono<List<Country>> selectCountryMonoByLimitAndQuery(Long limit, Long rows, Query query) {
         LOGGER.info("Mono<List<Country>> selectCountryMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
                 "limit = {}, rows = {}, query = {}", limit, rows, query);
-
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 

@@ -1,6 +1,5 @@
 package com.blue.mail.component;
 
-import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailSenderConf;
 import com.blue.mail.api.conf.SenderAttr;
 import com.sun.mail.util.MailSSLSocketFactory;
@@ -23,7 +22,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.FileGetter.getFile;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static jakarta.mail.Session.getInstance;
 import static java.util.Optional.ofNullable;
@@ -123,12 +121,12 @@ public final class SenderComponentProcessor {
                 else if (isNotNull(sb)) sb.append(line);
 
             if (isNull(sb) || isNull(line))
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "private key is invalid");
+                throw new RuntimeException("private key is invalid");
 
             return Base64.getDecoder().decode(sb.toString());
         } catch (Exception e) {
             LOGGER.error("get domain key failed， e = {]", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "get domain key failed");
+            throw new RuntimeException("get domain key failed");
         }
     }
 
@@ -153,40 +151,40 @@ public final class SenderComponentProcessor {
      */
     public static void confAsserter(MailSenderConf conf) {
         if (isNull(conf))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+            throw new RuntimeException("conf can't be null");
 
         if (isEmpty(conf.getSmtpAttrs()))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "smtpAttrs can't be blank");
+            throw new RuntimeException("smtpAttrs can't be blank");
 
         Integer corePoolSize = conf.getCorePoolSize();
         if (isNull(corePoolSize) || corePoolSize < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "corePoolSize can't be null or less than 1");
+            throw new RuntimeException("corePoolSize can't be null or less than 1");
 
         Integer maximumPoolSize = conf.getMaximumPoolSize();
         if (isNull(maximumPoolSize) || maximumPoolSize < 1 || maximumPoolSize < corePoolSize)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maximumPoolSize can't be null or less than 1 or less than corePoolSize");
+            throw new RuntimeException("maximumPoolSize can't be null or less than 1 or less than corePoolSize");
 
         Long keepAliveTime = conf.getKeepAliveSeconds();
         if (isNull(keepAliveTime) || keepAliveTime < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keepAliveTime can't be null or less than 1");
+            throw new RuntimeException("keepAliveTime can't be null or less than 1");
 
         Integer blockingQueueCapacity = conf.getBlockingQueueCapacity();
         if (isNull(blockingQueueCapacity) || blockingQueueCapacity < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "blockingQueueCapacity can't be null or less than 1");
+            throw new RuntimeException("blockingQueueCapacity can't be null or less than 1");
 
         if (isNull(conf.getBufferSize()))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "bufferSize can't be null");
+            throw new RuntimeException("bufferSize can't be null");
 
         Boolean withDKIM = ofNullable(conf.getWithDKIM()).orElse(false);
         if (withDKIM) {
             if (isBlank(conf.getDomainKeyFile()))
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "domain key file path can't be blank");
+                throw new RuntimeException("domain key file path can't be blank");
 
             if (isBlank(conf.getDomain()))
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "domain can't be blank");
+                throw new RuntimeException("domain can't be blank");
 
             if (isBlank(conf.getSelector()))
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "selector can't be blank");
+                throw new RuntimeException("selector can't be blank");
         }
     }
 

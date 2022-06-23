@@ -1,7 +1,6 @@
 package com.blue.base.component.rest.api.generator;
 
 import com.blue.base.component.rest.api.conf.RestConf;
-import com.blue.base.model.exps.BlueException;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -18,7 +17,6 @@ import java.time.Duration;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
 import static io.netty.channel.ChannelOption.TCP_NODELAY;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -44,7 +42,7 @@ public final class BlueRestGenerator {
 
     public static WebClient generateWebClient(RestConf restConf) {
         if (isNull(restConf))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "restConf can't be null");
+            throw new RuntimeException("restConf can't be null");
 
         LOGGER.info("WebClient generateWebClient(RestConf restConf), restConf = {}", restConf);
 

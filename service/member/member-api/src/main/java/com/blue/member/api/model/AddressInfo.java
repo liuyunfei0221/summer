@@ -16,7 +16,7 @@ public final class AddressInfo implements Serializable {
 
     private Long memberId;
 
-    private String memberName;
+    private String contact;
 
     /**
      * @see com.blue.base.constant.member.Gender
@@ -55,12 +55,12 @@ public final class AddressInfo implements Serializable {
     public AddressInfo() {
     }
 
-    public AddressInfo(Long id, Long memberId, String memberName, Integer gender, String phone, String email,
+    public AddressInfo(Long id, Long memberId, String contact, Integer gender, String phone, String email,
                        Long countryId, String country, Long stateId, String state, Long cityId, String city, Long areaId, String area,
                        String detail, String reference, String extra) {
         this.id = id;
         this.memberId = memberId;
-        this.memberName = memberName;
+        this.contact = contact;
         this.gender = gender;
         this.phone = phone;
         this.email = email;
@@ -93,12 +93,12 @@ public final class AddressInfo implements Serializable {
         this.memberId = memberId;
     }
 
-    public String getMemberName() {
-        return memberName;
+    public String getContact() {
+        return contact;
     }
 
-    public void setMemberName(String memberName) {
-        this.memberName = memberName;
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public Integer getGender() {
@@ -218,7 +218,7 @@ public final class AddressInfo implements Serializable {
         return "AddressInfo{" +
                 "id=" + id +
                 ", memberId=" + memberId +
-                ", memberName='" + memberName + '\'' +
+                ", contact='" + contact + '\'' +
                 ", gender=" + gender +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +

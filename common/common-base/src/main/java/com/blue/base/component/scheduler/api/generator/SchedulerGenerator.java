@@ -1,13 +1,11 @@
 package com.blue.base.component.scheduler.api.generator;
 
 import com.blue.base.component.scheduler.api.conf.SchedulerConf;
-import com.blue.base.model.exps.BlueException;
 import net.openhft.affinity.AffinityThreadFactory;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.util.Optional.ofNullable;
 import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
@@ -50,15 +48,15 @@ public final class SchedulerGenerator {
     private static void assertConf(SchedulerConf schedulerConf) {
         Integer threadCap = schedulerConf.getThreadCap();
         if (isNull(threadCap) || threadCap < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "threadCap can't be null or less than 1");
+            throw new RuntimeException("threadCap can't be null or less than 1");
 
         Integer queuedTaskCap = schedulerConf.getQueuedTaskCap();
         if (isNull(queuedTaskCap) || queuedTaskCap < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "queuedTaskCap can't be null or less than 1");
+            throw new RuntimeException("queuedTaskCap can't be null or less than 1");
 
         Integer ttlSeconds = schedulerConf.getTtlSeconds();
         if (isNull(ttlSeconds) || ttlSeconds < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "ttlSeconds can't be null or less than 1");
+            throw new RuntimeException("ttlSeconds can't be null or less than 1");
     }
 
 }

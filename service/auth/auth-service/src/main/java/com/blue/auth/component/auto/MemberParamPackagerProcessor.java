@@ -16,7 +16,6 @@ import java.util.function.BiConsumer;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
@@ -43,7 +42,7 @@ public class MemberParamPackagerProcessor implements ApplicationListener<Context
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         Map<String, MemberParamByAutoLoginPackager> beansOfType = applicationContext.getBeansOfType(MemberParamByAutoLoginPackager.class);
         if (isEmpty(beansOfType))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "packagers is empty");
+            throw new RuntimeException("packagers is empty");
 
         packagers = beansOfType.values().stream()
                 .collect(toMap(lh -> lh.targetType().identity, lh -> lh, (a, b) -> a));

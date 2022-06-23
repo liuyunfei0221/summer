@@ -1,6 +1,5 @@
 package com.blue.redis.api.generator;
 
-import com.blue.base.model.exps.BlueException;
 import com.blue.redis.api.conf.RedisConf;
 import com.blue.redis.constant.ServerMode;
 import io.lettuce.core.ClientOptions;
@@ -34,7 +33,6 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.common.CacheKeyPrefix.CACHE_MANAGER_PRE;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redis.constant.ServerMode.CLUSTER;
 import static com.blue.redis.constant.ServerMode.SINGLE;
 import static io.lettuce.core.protocol.DecodeBufferPolicies.ratio;
@@ -68,20 +66,20 @@ public final class BlueRedisGenerator {
     static {
         SERVER_MODE_ASSERTERS.put(CLUSTER, conf -> {
             if (isNull(conf))
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+                throw new RuntimeException("conf can't be null");
 
             List<String> nodes = conf.getNodes();
             if (isEmpty(nodes))
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty");
+                throw new RuntimeException("nodes can't be null or empty");
         });
 
         SERVER_MODE_ASSERTERS.put(SINGLE, conf -> {
             if (isNull(conf))
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+                throw new RuntimeException("conf can't be null");
 
             Integer port = conf.getPort();
             if (isBlank(conf.getHost()) || isNull(port) || port < 1)
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1");
+                throw new RuntimeException("host can't be null or '', port can't be null or less than 1");
         });
 
         CONF_GENERATORS.put(CLUSTER, BlueRedisGenerator::generateClusterConfiguration);
@@ -90,30 +88,30 @@ public final class BlueRedisGenerator {
 
     private static final Consumer<RedisConf> SERVER_MODE_ASSERTER = conf -> {
         if (isNull(conf))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+            throw new RuntimeException("conf can't be null");
 
         ServerMode serverMode = conf.getServerMode();
         if (isNull(serverMode))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
+            throw new RuntimeException("serverMode can't be null");
 
         Consumer<RedisConf> asserter = SERVER_MODE_ASSERTERS.get(serverMode);
         if (isNull(asserter))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
+            throw new RuntimeException("unknown serverMode -> " + serverMode);
 
         asserter.accept(conf);
     };
 
     private static final Function<RedisConf, RedisConfiguration> CONF_GENERATOR = conf -> {
         if (isNull(conf))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+            throw new RuntimeException("conf can't be null");
 
         ServerMode serverMode = conf.getServerMode();
         if (isNull(serverMode))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
+            throw new RuntimeException("serverMode can't be null");
 
         Function<RedisConf, RedisConfiguration> generator = CONF_GENERATORS.get(serverMode);
         if (isNull(generator))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
+            throw new RuntimeException("unknown serverMode -> " + serverMode);
 
         return generator.apply(conf);
     };
@@ -125,7 +123,7 @@ public final class BlueRedisGenerator {
      */
     private static void confAsserter(RedisConf conf) {
         if (isNull(conf))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+            throw new RuntimeException("conf can't be null");
 
         SERVER_MODE_ASSERTER.accept(conf);
     }
@@ -216,9 +214,9 @@ public final class BlueRedisGenerator {
     public static LettuceClientConfiguration generateLettuceClientConfiguration(RedisConf redisConf, GenericObjectPoolConfig<ReactiveRedisConnection> genericObjectPoolConfig, ClientOptions clientOptions) {
         confAsserter(redisConf);
         if (isNull(genericObjectPoolConfig))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "genericObjectPoolConfig can't be null");
+            throw new RuntimeException("genericObjectPoolConfig can't be null");
         if (isNull(clientOptions))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clientOptions can't be null");
+            throw new RuntimeException("clientOptions can't be null");
 
         LettucePoolingClientConfiguration.LettucePoolingClientConfigurationBuilder builder = LettucePoolingClientConfiguration.builder()
                 .poolConfig(genericObjectPoolConfig).clientOptions(clientOptions);
@@ -243,9 +241,9 @@ public final class BlueRedisGenerator {
     public static LettuceConnectionFactory generateConnectionFactory(RedisConf redisConf, RedisConfiguration redisConfiguration, LettuceClientConfiguration lettuceClientConfiguration) {
         confAsserter(redisConf);
         if (isNull(redisConfiguration))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redisConfiguration can't be null");
+            throw new RuntimeException("redisConfiguration can't be null");
         if (isNull(lettuceClientConfiguration))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "lettuceClientConfiguration can't be null");
+            throw new RuntimeException("lettuceClientConfiguration can't be null");
 
         LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisConfiguration, lettuceClientConfiguration);
         ofNullable(redisConf.getShareNativeConnection())
@@ -262,7 +260,7 @@ public final class BlueRedisGenerator {
      */
     public static StringRedisTemplate generateStringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
         if (isNull(redisConnectionFactory))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redisConnectionFactory can't be null");
+            throw new RuntimeException("redisConnectionFactory can't be null");
 
         return new StringRedisTemplate(redisConnectionFactory);
     }
@@ -276,7 +274,7 @@ public final class BlueRedisGenerator {
     public static ReactiveStringRedisTemplate generateReactiveStringRedisTemplate(RedisConf redisConf, ReactiveRedisConnectionFactory reactiveRedisConnectionFactory) {
         confAsserter(redisConf);
         if (isNull(reactiveRedisConnectionFactory))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveRedisConnectionFactory can't be null");
+            throw new RuntimeException("reactiveRedisConnectionFactory can't be null");
 
         RedisSerializationContext.RedisSerializationContextBuilder<String, String> contextBuilder =
                 RedisSerializationContext.newSerializationContext();
@@ -299,7 +297,7 @@ public final class BlueRedisGenerator {
     public static RedisTemplate<Object, Object> generateObjectRedisTemplate(RedisConf redisConf, RedisConnectionFactory redisConnectionFactory) {
         confAsserter(redisConf);
         if (isNull(redisConnectionFactory))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redisConnectionFactory can't be null");
+            throw new RuntimeException("redisConnectionFactory can't be null");
 
         RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
@@ -326,12 +324,12 @@ public final class BlueRedisGenerator {
     public static <T> RedisTemplate<String, T> generateGenericsRedisTemplate(RedisConf redisConf, RedisConnectionFactory redisConnectionFactory, Class<T> clz) {
         confAsserter(redisConf);
         if (isNull(redisConnectionFactory))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redisConnectionFactory can't be null");
+            throw new RuntimeException("redisConnectionFactory can't be null");
         if (isNull(clz))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz can't be null");
+            throw new RuntimeException("clz can't be null");
 
         if (Stream.of(clz.getInterfaces()).noneMatch(inter -> Serializable.class.getName().equals(inter.getName())))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz must be a implemented of serializable");
+            throw new RuntimeException("clz must be a implemented of serializable");
 
         RedisTemplate<String, T> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
@@ -358,12 +356,12 @@ public final class BlueRedisGenerator {
     public static <T> ReactiveRedisTemplate<String, T> generateReactiveRedisTemplate(RedisConf redisConf, ReactiveRedisConnectionFactory reactiveRedisConnectionFactory, Class<T> clz) {
         confAsserter(redisConf);
         if (isNull(reactiveRedisConnectionFactory))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveRedisConnectionFactory can't be null");
+            throw new RuntimeException("reactiveRedisConnectionFactory can't be null");
         if (isNull(clz))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz can't be null");
+            throw new RuntimeException("clz can't be null");
 
         if (Stream.of(clz.getInterfaces()).noneMatch(inter -> Serializable.class.getName().equals(inter.getName())))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "clz must be a implemented of serializable");
+            throw new RuntimeException("clz must be a implemented of serializable");
 
         RedisSerializationContext<String, T> objectRedisSerializationContext = generateObjectRedisSerializationContext();
 
@@ -380,7 +378,7 @@ public final class BlueRedisGenerator {
     public static <T> CacheManager generateCacheManager(RedisConf redisConf, RedisConnectionFactory redisConnectionFactory) {
         confAsserter(redisConf);
         if (isNull(redisConnectionFactory))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redisConnectionFactory can't be null");
+            throw new RuntimeException("redisConnectionFactory can't be null");
 
         RedisSerializationContext<String, T> objectRedisSerializationContext = generateObjectRedisSerializationContext();
 
@@ -409,7 +407,7 @@ public final class BlueRedisGenerator {
                 return new RedisNode(hostAndPort[0], parseInt(hostAndPort[1]));
             }).forEach(redisClusterConfiguration::addClusterNode);
         } catch (Exception e) {
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redis init error, check args, e = " + e);
+            throw new RuntimeException("redis init error, check args, e = " + e);
         }
 
         ofNullable(redisConf.getMaxRedirects())

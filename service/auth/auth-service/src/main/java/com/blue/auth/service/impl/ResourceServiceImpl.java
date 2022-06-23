@@ -36,6 +36,7 @@ import static com.blue.base.common.base.CommonFunctions.REST_URI_ASSERTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.CacheKey.RESOURCES;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
@@ -45,8 +46,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -399,14 +399,15 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public List<Resource> selectResourceByIds(List<Long> ids) {
         LOGGER.info("List<Resource> selectResourceByIds(List<Long> ids), ids = {}", ids);
+        if (isEmpty(ids))
+            return emptyList();
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
-        return isValidIdentities(ids) ?
-                allotByMax(ids, (int) DB_SELECT.value, false)
-                        .stream().map(resourceMapper::selectByIds)
-                        .flatMap(List::stream)
-                        .collect(toList())
-                :
-                emptyList();
+        return allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(resourceMapper::selectByIds)
+                .flatMap(List::stream)
+                .collect(toList());
     }
 
     /**

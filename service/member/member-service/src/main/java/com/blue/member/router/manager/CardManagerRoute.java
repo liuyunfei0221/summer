@@ -1,6 +1,6 @@
 package com.blue.member.router.manager;
 
-import com.blue.member.handler.manager.AddressManagerHandler;
+import com.blue.member.handler.manager.CardManagerHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -23,12 +23,12 @@ public class CardManagerRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> cardManagerRouter(AddressManagerHandler addressManagerHandler) {
+    RouterFunction<ServerResponse> cardManagerRouter(CardManagerHandler cardManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-member/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/cards", accept(APPLICATION_JSON), addressManagerHandler::select)
+                .POST("/cards", accept(APPLICATION_JSON), cardManagerHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

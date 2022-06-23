@@ -1,6 +1,5 @@
 package com.blue.mongo.api.generator;
 
-import com.blue.base.model.exps.BlueException;
 import com.blue.mongo.api.conf.AddressAttr;
 import com.blue.mongo.api.conf.MongoConf;
 import com.mongodb.MongoClientSettings;
@@ -14,7 +13,6 @@ import reactor.util.Logger;
 import java.util.List;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toList;
@@ -110,7 +108,7 @@ public final class BlueMongoGenerator {
     public static MongoClient generateMongoClient(MongoClientSettings mongoClientSettings) {
         LOGGER.info("MongoClient generateMongoClient(MongoClientSettings mongoClientSettings), mongoClientSettings = {}", mongoClientSettings);
         if (isNull(mongoClientSettings))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "mongoClientSettings can't be null");
+            throw new RuntimeException("mongoClientSettings can't be null");
 
         return MongoClients.create(mongoClientSettings);
     }
@@ -136,18 +134,18 @@ public final class BlueMongoGenerator {
      */
     private static void confAsserter(MongoConf conf) {
         if (isNull(conf))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+            throw new RuntimeException("conf can't be null");
 
         List<AddressAttr> addressAttrs = conf.getAddressAttrs();
         if (isEmpty(addressAttrs))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "addressAttrs can't be null or empty");
+            throw new RuntimeException("addressAttrs can't be null or empty");
 
         String database = conf.getDatabase();
         if (isBlank(database))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "database can't be null or ''");
+            throw new RuntimeException("database can't be null or ''");
 
         if (ofNullable(conf.getAuth()).orElse(false) && (isBlank(conf.getUserName()) || isBlank(conf.getPassword())))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "if auth, username and password can't be blank");
+            throw new RuntimeException("if auth, username and password can't be blank");
     }
 
 }

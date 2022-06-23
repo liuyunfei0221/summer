@@ -28,7 +28,6 @@ import reactor.util.Logger;
 
 import java.net.SocketTimeoutException;
 
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.nio.charset.CodingErrorAction.IGNORE;
 import static java.util.Optional.ofNullable;
 import static org.apache.http.client.config.CookieSpecs.STANDARD;
@@ -122,7 +121,7 @@ public class BlueSyncRestGenerator {
             return new RestTemplate(requestFactory);
         } catch (Exception e) {
             LOGGER.error("restTemplate init failed, e = {0}", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "restTemplate init failed, e = " + e);
+            throw new RuntimeException("restTemplate init failed, e = " + e);
         }
     }
 

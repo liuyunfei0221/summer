@@ -1,7 +1,6 @@
 package com.blue.redisson.api.generator;
 
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.exps.BlueException;
 import com.blue.redisson.api.conf.RedissonConf;
 import com.blue.redisson.component.SynchronizedProcessor;
 import com.blue.redisson.constant.ServerMode;
@@ -20,7 +19,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redisson.constant.ServerMode.CLUSTER;
 import static com.blue.redisson.constant.ServerMode.SINGLE;
 import static java.util.Optional.ofNullable;
@@ -53,14 +51,14 @@ public final class BlueRedissonGenerator {
         SERVER_MODE_ASSERTERS.put(CLUSTER, redissonConf -> {
             List<String> nodes = redissonConf.getNodes();
             if (isEmpty(nodes))
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "nodes can't be null or empty");
+                throw new RuntimeException("nodes can't be null or empty");
         });
 
         SERVER_MODE_ASSERTERS.put(SINGLE, redissonConf -> {
             String host = redissonConf.getHost();
             Integer port = redissonConf.getPort();
             if (isBlank(host) || isNull(port) || port < 1)
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "host can't be null or '', port can't be null or less than 1");
+                throw new RuntimeException("host can't be null or '', port can't be null or less than 1");
         });
 
         CONF_PACKAGERS.put(CLUSTER, BlueRedissonGenerator::configClusterServer);
@@ -69,30 +67,30 @@ public final class BlueRedissonGenerator {
 
     private static final Consumer<RedissonConf> SERVER_MODE_ASSERTER = redissonConf -> {
         if (isNull(redissonConf))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redissonConf can't be null");
+            throw new RuntimeException("redissonConf can't be null");
 
         ServerMode serverMode = redissonConf.getServerMode();
         if (isNull(serverMode))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
+            throw new RuntimeException("serverMode can't be null");
 
         Consumer<RedissonConf> asserter = SERVER_MODE_ASSERTERS.get(serverMode);
         if (isNull(asserter))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
+            throw new RuntimeException("unknown serverMode -> " + serverMode);
 
         asserter.accept(redissonConf);
     };
 
     private static final BiConsumer<RedissonConf, Config> CONF_PACKAGER = (redissonConf, conf) -> {
         if (isNull(redissonConf) || isNull(conf))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redissonConf or conf can't be null");
+            throw new RuntimeException("redissonConf or conf can't be null");
 
         ServerMode serverMode = redissonConf.getServerMode();
         if (isNull(serverMode))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
+            throw new RuntimeException("serverMode can't be null");
 
         BiConsumer<RedissonConf, Config> packager = CONF_PACKAGERS.get(serverMode);
         if (isNull(packager))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unknown serverMode -> " + serverMode);
+            throw new RuntimeException("unknown serverMode -> " + serverMode);
 
         packager.accept(redissonConf, conf);
     };
@@ -231,7 +229,7 @@ public final class BlueRedissonGenerator {
      */
     public static SynchronizedProcessor generateSynchronizedProcessor(RedissonClient redissonClient, RedissonConf redissonConf) {
         if (isNull(redissonClient))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redissonClient can't be null");
+            throw new RuntimeException("redissonClient can't be null");
         confAsserter(redissonConf);
 
         return new SynchronizedProcessor(redissonClient, redissonConf.getMaxTryLockWaitingMillis());
@@ -244,17 +242,17 @@ public final class BlueRedissonGenerator {
      */
     private static void confAsserter(RedissonConf redissonConf) {
         if (isNull(redissonConf))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "redissonConf can't be null");
+            throw new RuntimeException("redissonConf can't be null");
 
         ServerMode serverMode = redissonConf.getServerMode();
         if (isNull(serverMode))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "serverMode can't be null");
+            throw new RuntimeException("serverMode can't be null");
 
         SERVER_MODE_ASSERTER.accept(redissonConf);
 
         Long maxTryLockWaitingMillis = redissonConf.getMaxTryLockWaitingMillis();
         if (isNull(maxTryLockWaitingMillis) || redissonConf.getMaxTryLockWaitingMillis() < 0L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxTryLockWaitingMillis can't be null or less than 0");
+            throw new RuntimeException("maxTryLockWaitingMillis can't be null or less than 0");
     }
 
 }

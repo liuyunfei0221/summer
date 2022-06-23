@@ -20,8 +20,7 @@ import java.util.Set;
 import java.util.function.*;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.Symbol.SCHEME_SEPARATOR;
 import static com.blue.base.constant.media.ByteHandlerType.LOCAL_DISK;
 import static com.blue.media.common.MediaCommonFunctions.BUFFER_SIZE;
@@ -122,7 +121,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
         try {
             return open(new File(descName).toPath(), CREATE_NEW, WRITE);
         } catch (Exception e) {
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new BlueException(BAD_REQUEST);
         }
     };
 
@@ -141,11 +140,10 @@ public final class LocalDiskByteHandler implements ByteHandler {
                         try {
                             channel.write(dataBuffer.asByteBuffer());
                         } catch (Exception e) {
-                            LOGGER.error("upload failed, e -> " + e);
-                            throw new BlueException(INTERNAL_SERVER_ERROR);
+                            throw new RuntimeException("upload failed, e = " + e);
                         }
                     } else {
-                        throw new BlueException(INTERNAL_SERVER_ERROR);
+                        throw new BlueException(PAYLOAD_TOO_LARGE);
                     }
                 }).collectList()
                 .flatMap(v ->
@@ -162,12 +160,12 @@ public final class LocalDiskByteHandler implements ByteHandler {
 
     private final BiFunction<String, Long, Flux<DataBuffer>> DATA_BUFFERS_READER = (link, memberId) -> {
         if (isBlank(link) || isInvalidIdentity(memberId))
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new BlueException(BAD_REQUEST);
 
         try {
             return readByteChannel(() -> open(new File(link).toPath(), READ), DATA_BUFFER_FACTORY, BUFFER_SIZE);
         } catch (Exception e) {
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new BlueException(BAD_REQUEST);
         }
     };
 
@@ -181,7 +179,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
     @Override
     public Mono<FileUploadResult> write(Part part, Long memberId) {
         if (isInvalidIdentity(memberId))
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new BlueException(BAD_REQUEST);
 
         String name = PART_NAME_GETTER.apply(part);
         String descName = NAME_COMBINER.apply(descPath, name);

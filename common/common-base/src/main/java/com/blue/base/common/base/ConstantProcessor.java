@@ -22,8 +22,7 @@ import java.util.Map;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -462,7 +461,7 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         ResponseElement responseElement = RESPONSE_ELEMENT_MAPPING.get(identity);
-        return isNotNull(responseElement) ? responseElement : INTERNAL_SERVER_ERROR;
+        return isNotNull(responseElement) ? responseElement : BAD_REQUEST;
     }
 
     /**

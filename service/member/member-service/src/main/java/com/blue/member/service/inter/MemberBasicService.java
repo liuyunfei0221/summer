@@ -124,6 +124,22 @@ public interface MemberBasicService {
      * @param ids
      * @return
      */
+    List<MemberBasic> selectMemberBasicByIds(List<Long> ids);
+
+    /**
+     * select members mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids);
+
+    /**
+     * select members by ids
+     *
+     * @param ids
+     * @return
+     */
     Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids);
 
     /**

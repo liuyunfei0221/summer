@@ -20,8 +20,8 @@ server:
       prefix: access_log
       suffix: log
     threads:
-      io: 4
-      worker: 2
+      io: 8
+      worker: 4
 
 
 spring:
@@ -39,7 +39,7 @@ eureka:
     response-cache-update-interval-ms: 30000
   instance:
     hostname: localhost
-    lease-expiration-duration-in-seconds: 300000
+    lease-expiration-duration-in-seconds: 300
   client:
     register-with-eureka: false
     fetch-registry: false

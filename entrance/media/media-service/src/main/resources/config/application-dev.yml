@@ -38,7 +38,7 @@ eureka:
   client:
     service-url:
       defaultZone: http://blue:LiuZhiyi20200805@172.16.204.75:3000/eureka/
-    registry-fetch-interval-seconds: 16
+    registry-fetch-interval-seconds: 300
 
 
 cors:
@@ -251,7 +251,7 @@ dubbo:
     group: summer
     file: D:/locallogs/dubbo/media/registry.properties
     check: false
-    timeout: 120000
+    timeout: 60000
     simplified: false
 #  metadata-report:
 #    address: zookeeper://172.16.204.75

@@ -19,7 +19,7 @@ public final class Address implements Serializable {
 
     private Long memberId;
 
-    private String memberName;
+    private String contact;
 
     private Integer gender;
 
@@ -74,12 +74,12 @@ public final class Address implements Serializable {
         this.memberId = memberId;
     }
 
-    public String getMemberName() {
-        return memberName;
+    public String getContact() {
+        return contact;
     }
 
-    public void setMemberName(String memberName) {
-        this.memberName = memberName;
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public Integer getGender() {
@@ -223,7 +223,7 @@ public final class Address implements Serializable {
         return "MemberAddress{" +
                 "id=" + id +
                 ", memberId=" + memberId +
-                ", memberName='" + memberName + '\'' +
+                ", contact='" + contact + '\'' +
                 ", gender=" + gender +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +

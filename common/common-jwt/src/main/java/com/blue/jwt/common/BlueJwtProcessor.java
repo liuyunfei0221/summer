@@ -19,7 +19,6 @@ import java.util.function.*;
 import static com.auth0.jwt.JWT.require;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static com.blue.jwt.constant.JwtConfSchema.*;
-import static com.blue.jwt.constant.JwtResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.jwt.constant.JwtResponseElement.UNAUTHORIZED;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
@@ -206,7 +205,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     public String create(T t) {
         if (isNull(t)) {
             LOGGER.error("String create(T t), t can't be null");
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR);
+            throw new AuthenticationException(UNAUTHORIZED);
         }
 
         long currentStamp = MILLIS_STAMP_SUP.get();
@@ -227,7 +226,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
             return builder.sign(ALGORITHM);
         } catch (Exception e) {
             LOGGER.error("String create(T t), failed, t = {}, e = {}", t, e);
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("String create(T t), failed, t = " + t + ", e = " + e);
         }
     }
 
@@ -294,45 +293,45 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     private static <T> void assertConf(JwtConf<T> conf) {
         Long minExpireMillis = conf.getMinExpireMillis();
         if (isNull(minExpireMillis) || minExpireMillis < 0L)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "minExpireMillis can't be null or less than 0L");
+            throw new RuntimeException("minExpireMillis can't be null or less than 0L");
         Long maxExpireMillis = conf.getMaxExpireMillis();
         if (isNull(maxExpireMillis) || maxExpireMillis < 0L)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxExpireMillis can't be null or less than 0L");
+            throw new RuntimeException("maxExpireMillis can't be null or less than 0L");
         if (maxExpireMillis <= minExpireMillis)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxExpireMillis can't less than minExpireMillis");
+            throw new RuntimeException("maxExpireMillis can't less than minExpireMillis");
 
         String signKey = conf.getSignKey();
         if (isBlank(signKey))
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "signKey can't be blank");
+            throw new RuntimeException("signKey can't be blank");
         int secKeyLen = signKey.length();
         if (secKeyLen < SEC_KEY_STR_MIN_LEN || secKeyLen > SEC_KEY_STR_MAX_LEN)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "signKey len can't less than " + SEC_KEY_STR_MIN_LEN + " or greater than " + SEC_KEY_STR_MAX_LEN);
+            throw new RuntimeException("signKey len can't less than " + SEC_KEY_STR_MIN_LEN + " or greater than " + SEC_KEY_STR_MAX_LEN);
 
         List<String> gammaSecrets = conf.getGammaSecrets();
         if (isNull(gammaSecrets) || gammaSecrets.size() < 1)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets can't be empty");
+            throw new RuntimeException("gammaSecrets can't be empty");
 
         int gammaSecretSize = gammaSecrets.size();
         if (gammaSecretSize < GAMMA_SECRETS_MIN_LEN || gammaSecretSize > GAMMA_SECRETS_MAX_LEN)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's element size can't be less than " + GAMMA_SECRETS_MIN_LEN + " or greater than " + GAMMA_SECRETS_MAX_LEN);
+            throw new RuntimeException("gammaSecret's element size can't be less than " + GAMMA_SECRETS_MIN_LEN + " or greater than " + GAMMA_SECRETS_MAX_LEN);
         if (Integer.bitCount(gammaSecretSize) != 1)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's size must be power of 2");
+            throw new RuntimeException("gammaSecret's size must be power of 2");
 
         gammaSecrets = gammaSecrets.stream()
                 .peek(gs -> {
                     if (isBlank(gs))
-                        throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets can't contains null element");
+                        throw new RuntimeException("gammaSecrets can't contains null element");
                     int gsLen = gs.length();
                     if (gsLen < GAMMA_KEY_STR_MIN_LEN || gsLen > GAMMA_KEY_STR_MAX_LEN)
-                        throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecret's element length can't less than " + GAMMA_KEY_STR_MIN_LEN + " or greater than " + GAMMA_KEY_STR_MAX_LEN + ", gammaSecret -> " + gs);
+                        throw new RuntimeException("gammaSecret's element length can't less than " + GAMMA_KEY_STR_MIN_LEN + " or greater than " + GAMMA_KEY_STR_MAX_LEN + ", gammaSecret -> " + gs);
                 }).distinct().collect(toList());
         if (gammaSecrets.size() != gammaSecretSize)
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "gammaSecrets elements can't be same");
+            throw new RuntimeException("gammaSecrets elements can't be same");
 
         if (isNull(conf.getDataToClaimProcessor()))
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "dataToClaimProcessor can't be null");
+            throw new RuntimeException("dataToClaimProcessor can't be null");
         if (isNull(conf.getClaimToDataProcessor()))
-            throw new AuthenticationException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "claimToDataProcessor can't be null");
+            throw new RuntimeException("claimToDataProcessor can't be null");
     }
 
 }

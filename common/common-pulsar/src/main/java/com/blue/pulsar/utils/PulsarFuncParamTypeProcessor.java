@@ -10,7 +10,7 @@ import java.util.function.Supplier;
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "unused"})
-public final class FunctionParameterClzGetter {
+public final class PulsarFuncParamTypeProcessor {
 
     private static final String OVERRIDE_NAME = "override";
     private static final String GET_CONSTANT_POOL_NAME = "getConstantPool";
@@ -39,7 +39,7 @@ public final class FunctionParameterClzGetter {
         for (Method method : objClass.getDeclaredMethods())
             if (methodName.equals(method.getName()))
                 return method;
-        throw new RuntimeException("getMethod(Class<?> objClass, String methodName), Method not found");
+        throw new RuntimeException("Method getMethod(Class<?> objClass, String methodName) failed, method not found, objClass = " + objClass + ", methodName = " + methodName);
     }
 
     private static Object invoke(Object obj, String methodName, Object... args) {
@@ -50,7 +50,7 @@ public final class FunctionParameterClzGetter {
             overrideField.set(targetMethod, true);
             return targetMethod.invoke(obj, args);
         } catch (Exception e) {
-            throw new RuntimeException("invoke(Object obj, String methodName, Object... args), e = {}", e);
+            throw new RuntimeException("Object invoke(Object obj, String methodName, Object... args) failed, e = {}", e);
         }
     }
 
@@ -66,7 +66,7 @@ public final class FunctionParameterClzGetter {
                     return ((Method) member).getParameterTypes()[0];
             } catch (Exception ignored) {
             }
-        throw new RuntimeException("getConsumerLambdaParameterType(Consumer<?> consumer) failed, Class<?> not found");
+        throw new RuntimeException("Class<?> getConsumerLambdaParameterType(Consumer<?> consumer) failed, Class<?> not found");
     }
 
     private static Class<?> getSupplierLambdaParameterType(Supplier<?> supplier) {
@@ -81,7 +81,7 @@ public final class FunctionParameterClzGetter {
                     return ((Method) member).getParameterTypes()[0];
             } catch (Exception ignored) {
             }
-        throw new RuntimeException("getConsumerLambdaParameterType(Consumer<?> consumer) failed, Class<?> not found");
+        throw new RuntimeException("Class<?> getSupplierLambdaParameterType(Supplier<?> supplier) failed, Class<?> not found");
     }
 
     public static Class<?> getConsumerParameterType(Consumer<?> consumer) {
@@ -91,7 +91,7 @@ public final class FunctionParameterClzGetter {
         }
         if (consumer.getClass().isSynthetic())
             return getConsumerLambdaParameterType(consumer);
-        throw new RuntimeException("getConsumerParameterType(Consumer<?> consumer) failed, Class<?> not found");
+        throw new RuntimeException("Class<?> getConsumerParameterType(Consumer<?> consumer) failed, Class<?> not found");
     }
 
     public static Class<?> getSupplierParameterType(Supplier<?> supplier) {
@@ -101,7 +101,7 @@ public final class FunctionParameterClzGetter {
         }
         if (supplier.getClass().isSynthetic())
             return getSupplierLambdaParameterType(supplier);
-        throw new RuntimeException("getConsumerParameterType(Consumer<?> consumer) failed, Class<?> not found");
+        throw new RuntimeException("Class<?> getSupplierParameterType(Supplier<?> supplier) failed, Class<?> not found");
     }
 
 }

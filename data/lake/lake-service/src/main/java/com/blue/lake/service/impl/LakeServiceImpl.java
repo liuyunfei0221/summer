@@ -46,8 +46,13 @@ public class LakeServiceImpl implements LakeService {
      */
     @Override
     public void insertEvent(DataEvent dataEvent) {
+        LOGGER.info("void insertEvent(DataEvent dataEvent), dataEvent = {}", dataEvent);
+
         OptEvent optEvent = DATA_EVENT_2_OPT_EVENT.apply(dataEvent);
         optEvent.setId(blueIdentityProcessor.generate(OptEvent.class));
+
+        //TODO delete
+        LOGGER.warn("optEvent = {}", optEvent);
         optEventMapper.insert(optEvent);
     }
 

@@ -38,7 +38,7 @@ public final class BlueBitMarker {
 
     public BlueBitMarker(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
         if (isNull(reactiveStringRedisTemplate))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveStringRedisTemplate can't be null");
+            throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.scheduler = isNotNull(scheduler) ? scheduler : boundedElastic();

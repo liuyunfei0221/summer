@@ -1,7 +1,9 @@
 package com.blue.mail.core;
 
-import com.blue.base.model.exps.BlueException;
-import jakarta.mail.*;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import reactor.util.Logger;
@@ -9,7 +11,6 @@ import reactor.util.Logger;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.lang.Thread.onSpinWait;
 import static reactor.util.Loggers.getLogger;
 
@@ -47,7 +48,7 @@ final class Transporter {
             LOGGER.warn("Transporter connect");
         } catch (MessagingException e) {
             LOGGER.error("transport connect failed, e = {}", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "transport connect failed, e = " + e);
+            throw new RuntimeException("transport connect failed, e = " + e);
         }
     };
 
@@ -60,13 +61,13 @@ final class Transporter {
         }
     };
 
-    private void reConnect(){
+    private void reConnect() {
         if (TRANSPORT_CONTROL.compareAndSet(true, false)) {
             try {
                 TRANSPORT_CONNECTOR.accept(this.session);
                 TRANSPORT_CONTROL.compareAndSet(false, true);
             } catch (Exception e) {
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "transport connect failed, e = " + e);
+                throw new RuntimeException("transport connect failed, e = " + e);
             } finally {
                 TRANSPORT_CONTROL.set(true);
             }
@@ -87,7 +88,7 @@ final class Transporter {
             try {
                 this.transport.sendMessage(message, message.getAllRecipients());
             } catch (MessagingException ex) {
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "sendMsg(Message message), failed, e = " + e);
+                throw new RuntimeException("sendMsg(Message message), failed, e = " + e);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

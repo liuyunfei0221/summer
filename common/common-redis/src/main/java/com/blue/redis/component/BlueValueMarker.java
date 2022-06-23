@@ -40,7 +40,7 @@ public final class BlueValueMarker {
 
     public BlueValueMarker(StringRedisTemplate stringRedisTemplate) {
         if (isNull(stringRedisTemplate))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stringRedisTemplate can't be null");
+            throw new RuntimeException("stringRedisTemplate can't be null");
 
         this.stringRedisTemplate = stringRedisTemplate;
     }
@@ -65,7 +65,7 @@ public final class BlueValueMarker {
             return ofNullable(stringRedisTemplate.execute(EXPIRE_HLL_OR_WITH_INIT_SCRIPT, SCRIPT_KEYS_WRAPPER.apply(key),
                     SCRIPT_ARGS_WRAPPER.apply(initValue, expireMillis))).orElse(false);
 
-        throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key or initValue can't be blank, expireMillis can't be null or less than 1");
+        throw new RuntimeException("key or initValue can't be blank, expireMillis can't be null or less than 1");
     }
 
 

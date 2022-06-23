@@ -8,14 +8,16 @@ import com.blue.base.model.common.StringDataParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.member.config.blue.BlueRedisConfig;
+import com.blue.member.config.deploy.MemberDeploy;
 import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.event.producer.InvalidAuthProducer;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.repository.mapper.MemberBasicMapper;
 import com.blue.member.service.inter.MemberBasicService;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +25,10 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -39,16 +42,19 @@ import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertStatus;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.CacheKeyPrefix.MEMBER_PRE;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.Status.VALID;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
-import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.redis.connection.RedisStringCommands.SetOption.UPSERT;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
+import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -71,18 +77,27 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
     private StringRedisTemplate stringRedisTemplate;
 
+    private ExecutorService executorService;
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MemberBasicServiceImpl(InvalidAuthProducer invalidAuthProducer, MemberBasicMapper memberBasicMapper, BlueIdentityProcessor blueIdentityProcessor,
-                                  StringRedisTemplate stringRedisTemplate, BlueRedisConfig blueRedisConfig) {
+                                  StringRedisTemplate stringRedisTemplate, ExecutorService executorService, MemberDeploy memberDeploy) {
         this.invalidAuthProducer = invalidAuthProducer;
         this.memberBasicMapper = memberBasicMapper;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.stringRedisTemplate = stringRedisTemplate;
+        this.executorService = executorService;
 
-        this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
+        Long cacheExpireSeconds = memberDeploy.getCacheExpireSeconds();
+        if (isNull(cacheExpireSeconds) || cacheExpireSeconds < 1L)
+            throw new RuntimeException("cacheExpireSeconds can't be null or less than 1");
+
+        this.expireDuration = Duration.of(cacheExpireSeconds, ChronoUnit.SECONDS);
+        this.expiration = Expiration.from(cacheExpireSeconds, TimeUnit.SECONDS);
     }
 
     private Duration expireDuration;
+    private Expiration expiration;
 
     private static final Function<Long, String> MEMBER_CACHE_KEY_GENERATOR = id -> MEMBER_PRE.prefix + id;
 
@@ -103,7 +118,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         stringRedisTemplate.opsForValue().set(MEMBER_CACHE_KEY_GENERATOR.apply(id), GSON.toJson(memberBasic), expireDuration);
     };
 
-    private final Function<Long, MemberBasic> MEMBER_WITH_REDIS_CACHE_GETTER = id -> {
+    private final Function<Long, MemberBasic> MEMBER_BASIC_WITH_REDIS_CACHE_GETTER = id -> {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -116,6 +131,57 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
                     return memberBasic;
                 });
+    };
+
+    private final Function<List<Long>, List<MemberBasic>> MEMBER_BASICS_DB_GETTER = ids ->
+            isNotEmpty(ids) ? memberBasicMapper.selectByIds(ids) : emptyList();
+
+    private final BiConsumer<List<MemberBasic>, Map<Long, String>> MEMBERS_BASIC_REDIS_SETTER = (memberBasics, idAndCacheKeyMapping) -> {
+        if (isEmpty(memberBasics) || isEmpty(idAndCacheKeyMapping))
+            return;
+
+        stringRedisTemplate.executePipelined((RedisCallback<Void>) connection -> {
+            for (MemberBasic memberBasic : memberBasics)
+                connection.set(idAndCacheKeyMapping.get(memberBasic.getId()).getBytes(UTF_8),
+                        GSON.toJson(memberBasic).getBytes(UTF_8), expiration, UPSERT);
+
+            return null;
+        });
+    };
+
+    private final Function<List<Long>, List<MemberBasic>> MEMBER_BASICS_WITH_REDIS_CACHE_GETTER = ids -> {
+        if (isEmpty(ids))
+            return emptyList();
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
+
+        Map<Long, String> idAndCacheKeyMapping = ids.stream().distinct().collect(toMap(id -> id, MEMBER_CACHE_KEY_GENERATOR, (a, b) -> a));
+
+        List<Object> strObjs = stringRedisTemplate.executePipelined((RedisCallback<String>) connection -> {
+            for (String cacheKey : idAndCacheKeyMapping.values())
+                connection.get(cacheKey.getBytes(UTF_8));
+            return null;
+        });
+
+        List<MemberBasic> result = new ArrayList<>(idAndCacheKeyMapping.size());
+
+        MemberBasic memberBasic;
+        for (Object strObj : strObjs) {
+            if (isNotNull(strObj)) {
+                memberBasic = GSON.fromJson(String.valueOf(strObj), MemberBasic.class);
+                result.add(memberBasic);
+                idAndCacheKeyMapping.remove(memberBasic.getId());
+            }
+        }
+
+        if (idAndCacheKeyMapping.size() == 0)
+            return result;
+
+        List<MemberBasic> missCacheMemberBasics = MEMBER_BASICS_DB_GETTER.apply(new ArrayList<>(idAndCacheKeyMapping.keySet()));
+        executorService.execute(() -> MEMBERS_BASIC_REDIS_SETTER.accept(missCacheMemberBasics, idAndCacheKeyMapping));
+        result.addAll(missCacheMemberBasics);
+
+        return result;
     };
 
     /**
@@ -310,7 +376,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public MemberBasic getMemberBasic(Long id) {
         LOGGER.info("MemberBasic getMemberBasicByPrimaryKey(Long id), id = {}", id);
-        return MEMBER_WITH_REDIS_CACHE_GETTER.apply(id);
+        return MEMBER_BASIC_WITH_REDIS_CACHE_GETTER.apply(id);
     }
 
     /**
@@ -397,8 +463,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(id)
-                .flatMap(this::getMemberBasicMono)
+        return getMemberBasicMono(id)
                 .flatMap(mb -> {
                     if (isInvalidStatus(mb.getStatus()))
                         return error(() -> new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
@@ -416,14 +481,62 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
+    public List<MemberBasic> selectMemberBasicByIds(List<Long> ids) {
+        LOGGER.info("List<MemberBasic> selectMemberBasicByIds(List<Long> ids), ids = {}", ids);
+        if (isEmpty(ids))
+            return emptyList();
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
+
+        return allotByMax(ids, (int) DB_SELECT.value, false)
+                .parallelStream().map(MEMBER_BASICS_WITH_REDIS_CACHE_GETTER)
+                .flatMap(List::stream)
+                .collect(toList());
+    }
+
+    /**
+     * select members mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids) {
+        LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids), ids = {}", ids);
+        if (isValidIdentities(ids))
+            return just(emptyList());
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            return error(() -> new BlueException(PAYLOAD_TOO_LARGE));
+
+        return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
+                .map(MEMBER_BASICS_WITH_REDIS_CACHE_GETTER)
+                .reduceWith(LinkedList::new, (a, b) -> {
+                    a.addAll(b);
+                    return a;
+                });
+    }
+
+    /**
+     * select members by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
     public Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids), ids = {}", ids);
-        return isValidIdentities(ids) ? just(allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(memberBasicMapper::selectByIds)
-                .flatMap(l -> l.stream().map(MEMBER_BASIC_2_MEMBER_BASIC_INFO))
-                .collect(toList()))
-                :
-                just(emptyList());
+        if (isEmpty(ids))
+            return just(emptyList());
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            return error(() -> new BlueException(PAYLOAD_TOO_LARGE));
+
+        return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
+                .map(shardIds -> MEMBER_BASICS_WITH_REDIS_CACHE_GETTER.apply(shardIds)
+                        .stream().map(MEMBER_BASIC_2_MEMBER_BASIC_INFO).collect(toList()))
+                .reduceWith(LinkedList::new, (a, b) -> {
+                    a.addAll(b);
+                    return a;
+                });
     }
 
     /**
@@ -475,8 +588,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                 .flatMap(tuple2 -> {
                     List<MemberBasic> members = tuple2.getT1();
                     Mono<List<MemberBasicInfo>> memberInfosMono = members.size() > 0 ?
-                            just(members.stream()
-                                    .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO).collect(toList()))
+                            just(members.stream().map(MEMBER_BASIC_2_MEMBER_BASIC_INFO).collect(toList()))
                             :
                             just(emptyList());
 

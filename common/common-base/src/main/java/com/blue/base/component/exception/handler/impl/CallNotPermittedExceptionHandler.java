@@ -4,7 +4,7 @@ import com.blue.base.component.exception.handler.inter.ExceptionHandler;
 import com.blue.base.component.exception.handler.model.ExceptionInfo;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.REQUEST_TIMEOUT;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -19,7 +19,7 @@ public final class CallNotPermittedExceptionHandler implements ExceptionHandler 
 
     private static final String EXP_NAME = "io.github.resilience4j.circuitbreaker.CallNotPermittedException";
 
-    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(INTERNAL_SERVER_ERROR);
+    private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(REQUEST_TIMEOUT);
 
     @Override
     public String exceptionName() {

@@ -143,7 +143,7 @@ public class CommonFunctions {
 
         int lastPartIdx = lastIndexOf(uri, PATH_SEPARATOR);
         if (lastPartIdx == NON_EXIST_INDEX)
-            throw new BlueException(BAD_REQUEST.status, INTERNAL_SERVER_ERROR.code, "invalid uri, not contains / -> " + uri);
+            throw new RuntimeException("invalid uri, not contains / -> " + uri);
 
         String maybePathVariable = substring(uri, lastPartIdx);
 

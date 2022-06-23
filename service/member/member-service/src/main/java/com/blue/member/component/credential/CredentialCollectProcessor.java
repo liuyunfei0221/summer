@@ -1,7 +1,6 @@
 package com.blue.member.component.credential;
 
 import com.blue.auth.api.model.CredentialInfo;
-import com.blue.base.model.exps.BlueException;
 import com.blue.member.component.credential.inter.CredentialCollector;
 import com.blue.member.repository.entity.MemberBasic;
 import org.springframework.context.ApplicationContext;
@@ -17,7 +16,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -38,7 +36,7 @@ public class CredentialCollectProcessor implements ApplicationListener<ContextRe
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         Map<String, CredentialCollector> beansOfType = applicationContext.getBeansOfType(CredentialCollector.class);
         if (isEmpty(beansOfType))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "collectors is empty");
+            throw new RuntimeException("collectors is empty");
 
         collectors = new ArrayList<>(beansOfType.values());
     }

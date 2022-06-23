@@ -313,7 +313,7 @@ public class AuthServiceImpl implements AuthService {
                         return just(new MemberAccess(jwt, keyPair.getPriKey()));
 
                     LOGGER.error("authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson), failed, memberPayload = {}, roleIds = {}, keyPair = {}, authInfoJson = {}", memberPayload, roleIds, keyPair, authInfoJson);
-                    return error(() -> new BlueException(INTERNAL_SERVER_ERROR));
+                    return error(() -> new RuntimeException("accessInfoCache.setAccessInfo(memberPayload.getKeyId(), authInfoJson) failed"));
                 });
     };
 

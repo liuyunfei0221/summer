@@ -1,14 +1,15 @@
 package com.blue.base.component.executor.api.generator;
 
 import com.blue.base.component.executor.api.conf.ExecutorConf;
-import com.blue.base.model.exps.BlueException;
 import net.openhft.affinity.AffinityThreadFactory;
 import reactor.util.Logger;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -53,23 +54,23 @@ public final class BlueExecutorGenerator {
     private static void assertConf(ExecutorConf executorConf) {
         Integer corePoolSize = executorConf.getCorePoolSize();
         if (isNull(corePoolSize) || corePoolSize < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "corePoolSize can't be null or less than 1");
+            throw new RuntimeException("corePoolSize can't be null or less than 1");
 
         Integer maximumPoolSize = executorConf.getMaximumPoolSize();
         if (isNull(maximumPoolSize) || maximumPoolSize < 1 || maximumPoolSize < corePoolSize)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maximumPoolSize can't be null or less than 1 or less than corePoolSize");
+            throw new RuntimeException("maximumPoolSize can't be null or less than 1 or less than corePoolSize");
 
         Long keepAliveSeconds = executorConf.getKeepAliveSeconds();
         if (isNull(keepAliveSeconds) || keepAliveSeconds < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keepAliveSeconds can't be null or less than 1");
+            throw new RuntimeException("keepAliveSeconds can't be null or less than 1");
 
         Integer blockingQueueCapacity = executorConf.getBlockingQueueCapacity();
         if (isNull(blockingQueueCapacity) || blockingQueueCapacity < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "blockingQueueCapacity can't be null or less than 1");
+            throw new RuntimeException("blockingQueueCapacity can't be null or less than 1");
 
         RejectedExecutionHandler rejectedExecutionHandler = executorConf.getRejectedExecutionHandler();
         if (isNull(rejectedExecutionHandler))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "rejectedExecutionHandler can't be null");
+            throw new RuntimeException("rejectedExecutionHandler can't be null");
     }
 
 }

@@ -1,6 +1,5 @@
 package com.blue.mail.component;
 
-import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailReaderConf;
 import com.sun.mail.util.MailSSLSocketFactory;
 import jakarta.mail.*;
@@ -9,7 +8,6 @@ import reactor.util.Logger;
 import java.util.Properties;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static jakarta.mail.Session.getInstance;
 import static reactor.util.Loggers.getLogger;
 
@@ -106,23 +104,23 @@ public final class ReaderComponentProcessor {
      */
     public static void confAsserter(MailReaderConf conf) {
         if (isNull(conf))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "conf can't be null");
+            throw new RuntimeException("conf can't be null");
 
         if (isBlank(conf.getUser()))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "user can't be blank");
+            throw new RuntimeException("user can't be blank");
 
         if (isBlank(conf.getPassword()))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "password can't be blank");
+            throw new RuntimeException("password can't be blank");
 
         if (isEmpty(conf.getProps()))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "props can't be empty");
+            throw new RuntimeException("props can't be empty");
 
         if (isBlank(conf.getFolderName()))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "folder name can't be empty");
+            throw new RuntimeException("folder name can't be empty");
 
         Integer maxWaitingMillisForRefresh = conf.getMaxWaitingMillisForRefresh();
         if (isNull(maxWaitingMillisForRefresh) || maxWaitingMillisForRefresh < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "maxWaitingMillisForRefresh can't be null or empty");
+            throw new RuntimeException("maxWaitingMillisForRefresh can't be null or empty");
     }
 
 }

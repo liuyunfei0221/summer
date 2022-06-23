@@ -14,7 +14,6 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.REPEATABLE_UNTIL_SUCCESS_OR_TIMEOUT_VALIDATION;
 import static com.blue.redis.constant.RedisScripts.UNREPEATABLE_VALIDATION;
@@ -36,7 +35,7 @@ public final class BlueValidator {
 
     public BlueValidator(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
         if (isNull(reactiveStringRedisTemplate))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveStringRedisTemplate can't be null");
+            throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.scheduler = isNotNull(scheduler) ? scheduler : boundedElastic();
@@ -71,7 +70,7 @@ public final class BlueValidator {
     public Mono<Boolean> setKeyValueWithExpire(String key, String value, Duration expire) {
         assertParam(key, value);
         if (isNull(expire))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "expire can't be null");
+            throw new RuntimeException("expire can't be null");
 
         return reactiveStringRedisTemplate.opsForValue()
                 .set(KEY_WRAPPER.apply(key), value, expire)
@@ -149,9 +148,9 @@ public final class BlueValidator {
      */
     private void assertParam(String key, String value) {
         if (isNull(key))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
+            throw new RuntimeException("key can't be null");
         if (isNull(value))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "value can't be null");
+            throw new RuntimeException("value can't be null");
     }
 
 }

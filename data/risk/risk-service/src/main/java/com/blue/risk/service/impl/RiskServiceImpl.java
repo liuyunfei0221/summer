@@ -1,7 +1,6 @@
 package com.blue.risk.service.impl;
 
 import com.blue.base.model.common.DataEvent;
-import com.blue.base.model.exps.BlueException;
 import com.blue.risk.component.risk.inter.RiskHandler;
 import com.blue.risk.service.inter.RiskService;
 import org.springframework.context.ApplicationContext;
@@ -17,7 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Comparator.comparingInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
@@ -51,7 +49,7 @@ public class RiskServiceImpl implements RiskService, ApplicationListener<Context
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         Map<String, RiskHandler> beansOfType = applicationContext.getBeansOfType(RiskHandler.class);
         if (isEmpty(beansOfType))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "riskHandlers is empty");
+            throw new RuntimeException("riskHandlers is empty");
 
         riskHandlers = beansOfType.values().stream()
                 .sorted(comparingInt(RiskHandler::precedence))

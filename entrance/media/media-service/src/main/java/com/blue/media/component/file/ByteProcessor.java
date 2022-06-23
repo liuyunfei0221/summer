@@ -1,7 +1,6 @@
 package com.blue.media.component.file;
 
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.FileUploadResult;
 import com.blue.media.component.file.inter.ByteHandler;
 import com.blue.media.config.deploy.LocalDiskFileDeploy;
@@ -19,7 +18,6 @@ import reactor.util.Logger;
 import java.util.Map;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -44,7 +42,7 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         Map<String, ByteHandler> beansOfType = applicationContext.getBeansOfType(ByteHandler.class);
         if (isEmpty(beansOfType))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "byteHandlers is empty");
+            throw new RuntimeException("byteHandlers is empty");
 
         LocalDiskFileDeploy localDiskFileDeploy;
         try {
@@ -52,16 +50,16 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
             LOGGER.info("ByteProcessor onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent), fileDeploy = {}", localDiskFileDeploy);
         } catch (BeansException e) {
             LOGGER.error("applicationContext.getBean(FileDeploy.class), e = {}", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "applicationContext.getBean(FileDeploy.class) failed");
+            throw new RuntimeException("applicationContext.getBean(FileDeploy.class) failed");
         }
 
         String handlerType = ofNullable(localDiskFileDeploy.getHandlerType())
                 .filter(BlueChecker::isNotBlank)
-                .orElseThrow(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "handlerType is blank"));
+                .orElseThrow(() -> new RuntimeException("handlerType is blank"));
 
         byteHandler = beansOfType.values().stream()
                 .filter(bh -> handlerType.equals(bh.handlerType().identity))
-                .findAny().orElseThrow(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "handler with target type " + handlerType + " not found"));
+                .findAny().orElseThrow(() -> new RuntimeException("handler with target type " + handlerType + " not found"));
     }
 
     /**

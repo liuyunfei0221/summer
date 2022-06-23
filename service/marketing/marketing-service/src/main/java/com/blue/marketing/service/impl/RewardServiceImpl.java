@@ -12,10 +12,14 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Optional;
 
+import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.ResponseElement.*;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -63,10 +67,15 @@ public class RewardServiceImpl implements RewardService {
     @Override
     public List<Reward> selectRewardByIds(List<Long> ids) {
         LOGGER.info("List<Reward> listRewardByIds(List<Long> ids), ids = {}", ids);
-        if (isInvalidIdentitiesWithMaxRows(ids, DB_SELECT.value))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ids can't be empty or size can't be greater than " + DB_SELECT.value);
+        if (isEmpty(ids))
+            return emptyList();
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
-        return rewardMapper.selectByIds(ids);
+        return allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(rewardMapper::selectByIds)
+                .flatMap(List::stream)
+                .collect(toList());
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.blue.base.component.lifecycle.ioc;
 
 import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.exps.BlueException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -14,7 +13,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Comparator.comparingInt;
 import static reactor.util.Loggers.getLogger;
 
@@ -54,7 +52,7 @@ public class BlueSmartLifecycleController implements ApplicationContextAware, Sm
             String beanName = entry.getKey();
             int precedence = blueLifecycle.startPrecedence();
             LOGGER.error("start() failed, {} start failed, precedence is {}, e = {}", beanName, precedence, e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stop() failed, " + beanName + " start failed, precedence is " + precedence + ", e = " + e);
+            throw new RuntimeException("stop() failed, " + beanName + " start failed, precedence is " + precedence + ", e = " + e);
         }
     },
             ACTION_FOR_STOP = entry -> {
@@ -66,7 +64,7 @@ public class BlueSmartLifecycleController implements ApplicationContextAware, Sm
                     String beanName = entry.getKey();
                     int precedence = blueLifecycle.startPrecedence();
                     LOGGER.error("stop() failed, {} stop failed, precedence is {}, e = {}", beanName, precedence, e);
-                    throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stop() failed, " + beanName + " stop failed, precedence is " + precedence + ", e = " + e);
+                    throw new RuntimeException("stop() failed, " + beanName + " stop failed, precedence is " + precedence + ", e = " + e);
                 }
             };
 

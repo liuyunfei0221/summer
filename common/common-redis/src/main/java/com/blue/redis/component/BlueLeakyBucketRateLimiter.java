@@ -14,7 +14,6 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.LEAKY_BUCKET_RATE_LIMITER;
 import static java.util.Arrays.asList;
@@ -36,7 +35,7 @@ public final class BlueLeakyBucketRateLimiter {
 
     public BlueLeakyBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
         if (isNull(reactiveStringRedisTemplate))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveStringRedisTemplate can't be null");
+            throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.scheduler = isNotNull(scheduler) ? scheduler : boundedElastic();
@@ -110,10 +109,10 @@ public final class BlueLeakyBucketRateLimiter {
      */
     private void assertParam(String limitKey, Integer allow, Long expireMillis) {
         if (isBlank(limitKey))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "limitKey can't be null");
+            throw new RuntimeException("limitKey can't be null");
 
         if (isNull(allow) || isNull(expireMillis) || allow < 1 || expireMillis < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "allow and expireMillis can't be null or less than 1");
+            throw new RuntimeException("allow and expireMillis can't be null or less than 1");
     }
 
 }

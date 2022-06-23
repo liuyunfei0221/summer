@@ -44,7 +44,7 @@ public class AddressUpdateParam extends AddressInsertParam {
     public String toString() {
         return "AddressUpdateParam{" +
                 "id=" + id +
-                ", memberName='" + super.getMemberName() + '\'' +
+                ", contact='" + super.getContact() + '\'' +
                 ", gender=" + super.getGender() +
                 ", phone='" + super.getPhone() + '\'' +
                 ", email='" + super.getEmail() + '\'' +

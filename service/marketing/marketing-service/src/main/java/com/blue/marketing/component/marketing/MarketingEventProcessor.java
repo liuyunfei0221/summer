@@ -40,7 +40,7 @@ public class MarketingEventProcessor implements ApplicationListener<ContextRefre
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         Map<String, EventHandler> beansOfType = applicationContext.getBeansOfType(EventHandler.class);
         if (isEmpty(beansOfType))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "marketingEventHandlers is empty");
+            throw new RuntimeException("marketingEventHandlers is empty");
 
         eventHandlers = beansOfType.values().stream()
                 .collect(toMap(EventHandler::targetType, eh -> eh, (a, b) -> a));

@@ -310,7 +310,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     @Override
     public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByRoleIds(List<Long> roleIds) {
         LOGGER.info("Mono<List<AuthorityBaseOnRole>> selectAuthorityMonoByRoleId(List<Long> roleIds), roleIds = {}", roleIds);
-        if (isInvalidIdentities(roleIds))
+        if (isEmpty(roleIds))
             throw new BlueException(INVALID_IDENTITY);
 
         return zip(roleService.selectRoleMonoByIds(roleIds).flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toMap(RoleInfo::getId, r -> r, (a, b) -> a)))),

@@ -390,7 +390,7 @@ dubbo:
     group: summer
     file: D:/locallogs/dubbo/risk/registry.properties
     check: false
-    timeout: 120000
+    timeout: 60000
     simplified: false
 #  metadata-report:
 #    address: zookeeper://172.16.204.75

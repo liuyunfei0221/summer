@@ -95,7 +95,7 @@ public class SignInServiceImpl implements SignInService {
     private final BiConsumer<Integer, Integer> DAY_REWARD_INITIALIZER = (year, month) -> {
         List<SignRewardTodayRelation> relations = rewardService.selectRelationByYearAndMonth(year, month);
         if (isEmpty(relations))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "The reward information of the current month is not configured");
+            throw new RuntimeException("The reward information of the current month is not configured");
 
         List<Reward> rewards = rewardService.selectRewardByIds(relations.stream()
                 .map(SignRewardTodayRelation::getRewardId).collect(toList()));
@@ -126,7 +126,7 @@ public class SignInServiceImpl implements SignInService {
             long start = currentTimeMillis();
             while (rewardInfoRefreshing) {
                 if (currentTimeMillis() - start > MAX_WAITING_FOR_REFRESH)
-                    throw new BlueException(INTERNAL_SERVER_ERROR);
+                    throw new BlueException(REQUEST_TIMEOUT);
                 onSpinWait();
             }
         }

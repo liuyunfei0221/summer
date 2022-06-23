@@ -20,7 +20,7 @@ public class AddressInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -2573029715775428776L;
 
-    private String memberName;
+    private String contact;
 
     private Integer gender;
 
@@ -44,8 +44,8 @@ public class AddressInsertParam implements Serializable, Asserter {
     public AddressInsertParam() {
     }
 
-    public AddressInsertParam(String memberName, Integer gender, String phone, String email, Long cityId, Long areaId, String detail, String reference, String extra) {
-        this.memberName = memberName;
+    public AddressInsertParam(String contact, Integer gender, String phone, String email, Long cityId, Long areaId, String detail, String reference, String extra) {
+        this.contact = contact;
         this.gender = gender;
         this.phone = phone;
         this.email = email;
@@ -58,8 +58,8 @@ public class AddressInsertParam implements Serializable, Asserter {
 
     @Override
     public void asserts() {
-        if (isBlank(this.memberName))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "memberName can't be blank");
+        if (isBlank(this.contact))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "contact can't be blank");
         assertGenderIdentity(this.gender, false);
         if (isBlank(this.phone))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
@@ -71,12 +71,12 @@ public class AddressInsertParam implements Serializable, Asserter {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "reference can't be blank");
     }
 
-    public String getMemberName() {
-        return memberName;
+    public String getContact() {
+        return contact;
     }
 
-    public void setMemberName(String memberName) {
-        this.memberName = memberName;
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public Integer getGender() {
@@ -146,7 +146,7 @@ public class AddressInsertParam implements Serializable, Asserter {
     @Override
     public String toString() {
         return "AddressInsertParam{" +
-                "memberName='" + memberName + '\'' +
+                "contact='" + contact + '\'' +
                 ", gender=" + gender +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +

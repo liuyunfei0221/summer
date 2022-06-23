@@ -14,7 +14,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static java.io.File.separator;
 import static java.lang.Class.forName;
@@ -163,7 +163,7 @@ public final class ClassGetter {
             clazzName = path.substring(indexOf(path, CLASS_PREFIX) + CLASS_PREFIX.length())
                     .replace(separator, PACKAGE_SEPARATOR);
         } else {
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "handlePath(String path, List<String> clzNames) failed, path = " + path);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "handlePath(String path, List<String> clzNames) failed, path = " + path);
         }
         if (!clazzName.contains(INNER_CLASS_IDENTITY))
             clzNames.add(clazzName);

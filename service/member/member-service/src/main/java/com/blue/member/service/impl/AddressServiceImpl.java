@@ -39,8 +39,7 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
-import static com.blue.base.constant.common.BlueNumericalValue.BLUE_ID;
-import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.BlueNumericalValue.*;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.VALID;
@@ -195,7 +194,7 @@ public class AddressServiceImpl implements AddressService {
 
         address.setMemberId(memberId);
 
-        address.setMemberName(addressInsertParam.getMemberName());
+        address.setContact(addressInsertParam.getContact());
         address.setGender(addressInsertParam.getGender());
         address.setPhone(addressInsertParam.getPhone());
         address.setEmail(addressInsertParam.getEmail());
@@ -218,8 +217,8 @@ public class AddressServiceImpl implements AddressService {
 
         packageAddressRegion(addressUpdateParam.getAreaId(), addressUpdateParam.getCityId(), address);
 
-        ofNullable(addressUpdateParam.getMemberName())
-                .filter(BlueChecker::isNotBlank).ifPresent(address::setMemberName);
+        ofNullable(addressUpdateParam.getContact())
+                .filter(BlueChecker::isNotBlank).ifPresent(address::setContact);
         ofNullable(addressUpdateParam.getGender())
                 .ifPresent(gi -> {
                     assertGenderIdentity(gi, true);
@@ -479,15 +478,16 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Mono<List<AddressInfo>> selectAddressInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<AddressInfo>> selectAddressInfoMonoByIds(List<Long> ids), ids = {}", ids);
+        if (isEmpty(ids))
+            return just(emptyList());
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            return error(() -> new BlueException(PAYLOAD_TOO_LARGE));
 
-        return isValidIdentities(ids) ?
-                fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
-                        .map(shardIds -> addressRepository.findAllById(shardIds)
-                                .map(ADDRESS_2_ADDRESS_INFO))
-                        .reduce(Flux::concat)
-                        .flatMap(Flux::collectList)
-                :
-                just(emptyList());
+        return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
+                .map(shardIds -> addressRepository.findAllById(shardIds)
+                        .map(ADDRESS_2_ADDRESS_INFO))
+                .reduce(Flux::concat)
+                .flatMap(Flux::collectList);
     }
 
     /**
@@ -502,7 +502,6 @@ public class AddressServiceImpl implements AddressService {
     public Mono<List<Address>> selectAddressMonoByLimitAndQuery(Long limit, Long rows, Query query) {
         LOGGER.info("Mono<List<Address>> selectAddressMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
                 "limit = {}, rows = {}, query = {}", limit, rows, query);
-
         if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 

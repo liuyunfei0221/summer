@@ -100,7 +100,7 @@ public final class BlueRequestAttrFilter implements WebFilter, Ordered {
                     ?
                     zip(URI_ASSERTER.apply(request), HEADER_ASSERTER.apply(request), CONTENT_ASSERTER.apply(request)).flatMap(tuple3 -> just(true))
                     :
-                    error(() -> new BlueException(INTERNAL_SERVER_ERROR));
+                    error(() -> new BlueException(BAD_REQUEST));
 
     @SuppressWarnings("NullableProblems")
     @Override

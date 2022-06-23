@@ -39,7 +39,6 @@ public class IllegalRequestValidateRiskHandler implements RiskHandler {
 
         if (Integer.parseInt(dataEvent.getData(RESPONSE_STATUS.key)) != 200) {
             i++;
-            System.err.println(ip);
             if (i % 9 == 0) {
                 illegalMarkProducer.send(new IllegalMarkEvent(EMPTY_DATA.value, ip, REQ_RES_KEY_GENERATOR.apply(
                         ofNullable(dataEvent.getData(METHOD.key)).map(String::valueOf).orElse(EMPTY_DATA.value),

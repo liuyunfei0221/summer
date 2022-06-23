@@ -76,7 +76,7 @@ public class LoginProcessor implements ApplicationListener<ContextRefreshedEvent
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         Map<String, LoginHandler> beansOfType = applicationContext.getBeansOfType(LoginHandler.class);
         if (isEmpty(beansOfType))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "loginHandlers is empty");
+            throw new RuntimeException("loginHandlers is empty");
 
         loginHandlers = beansOfType.values().stream().collect(toMap(lh -> lh.targetType().identity, lh -> lh, (a, b) -> a));
     }

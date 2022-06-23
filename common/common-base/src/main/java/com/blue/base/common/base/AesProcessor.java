@@ -43,7 +43,7 @@ public final class AesProcessor {
 
     public AesProcessor(String salt) {
         if (isBlank(salt))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "salt can't be blank");
+            throw new RuntimeException("salt can't be blank");
 
         try {
             SecureRandom secureRandom = SecureRandom.getInstance(RAN_ALGORITHM);
@@ -62,7 +62,7 @@ public final class AesProcessor {
             DECRYPT.init(DECRYPT_MODE, key);
         } catch (Exception e) {
             LOGGER.error("AesProcessor(String salt) failed, e = {}", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "AesProcessor(String salt) failed, e = " + e);
+            throw new RuntimeException("AesProcessor(String salt) failed, e = " + e);
         }
     }
 

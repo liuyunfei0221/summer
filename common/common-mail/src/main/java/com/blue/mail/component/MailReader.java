@@ -1,7 +1,6 @@
 package com.blue.mail.component;
 
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.exps.BlueException;
 import com.blue.mail.api.conf.MailReaderConf;
 import jakarta.mail.*;
 import jakarta.mail.event.ConnectionListener;
@@ -18,7 +17,6 @@ import java.util.function.Supplier;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.mail.component.ReaderComponentProcessor.*;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
@@ -65,7 +63,7 @@ public final class MailReader {
         long start = currentTimeMillis();
         while (!folderComplete) {
             if (currentTimeMillis() - start > maxWaitingMillisForRefresh)
-                throw new BlueException(INTERNAL_SERVER_ERROR);
+                throw new RuntimeException("FOLDER_SUP failed");
             onSpinWait();
         }
 

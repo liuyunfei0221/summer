@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
-import static com.blue.pulsar.utils.FunctionParameterClzGetter.getConsumerParameterType;
+import static com.blue.pulsar.utils.PulsarFuncParamTypeProcessor.getConsumerParameterType;
 import static java.time.Clock.system;
 import static java.time.ZoneId.of;
 import static java.util.Optional.ofNullable;

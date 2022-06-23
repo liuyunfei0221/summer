@@ -85,14 +85,14 @@ public class MailVerifyHandler implements VerifyHandler {
 
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
         if (isBlank(key))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
+            throw new RuntimeException("key can't be null");
 
         return MAIL_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
     private static final BiFunction<BusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
         if (isNull(type) || isBlank(key))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
+            throw new RuntimeException("type or key can't be null");
 
         return type.identity + PAR_CONCATENATION.identity + key;
     };
@@ -101,7 +101,7 @@ public class MailVerifyHandler implements VerifyHandler {
     public Mono<String> handle(BusinessType businessType, String destination) {
         LOGGER.info("MailVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", businessType, destination);
         if (isNull(businessType) || isBlank(destination))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "businessType or destination can't be null");
+            throw new BlueException(BAD_REQUEST);
 
         //TODO verify destination/email
 
@@ -114,7 +114,7 @@ public class MailVerifyHandler implements VerifyHandler {
                                                         .flatMap(success -> success ?
                                                                 just(verify)
                                                                 :
-                                                                error(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "send email verify failed"))))
+                                                                error(() -> new RuntimeException("send email verify failed"))))
                                 :
                                 error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently")));
     }
@@ -133,7 +133,7 @@ public class MailVerifyHandler implements VerifyHandler {
                                                                 , BlueResponse.class)
                                         )
                                 :
-                                error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently")));
+                                error(() -> new BlueException(TOO_MANY_REQUESTS)));
     }
 
     @Override

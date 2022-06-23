@@ -1,7 +1,6 @@
 package com.blue.auth.component.access;
 
 import com.blue.base.model.common.KeyExpireEvent;
-import com.blue.base.model.exps.BlueException;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
@@ -17,7 +16,6 @@ import java.util.function.Supplier;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.of;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -60,17 +58,17 @@ public final class AccessBatchExpireProcessor {
                                       Long batchExpireScheduledInitialDelayMillis,
                                       Long batchExpireScheduledDelayMillis, Integer batchExpireQueueCapacity) {
         if (isNull(stringRedisTemplate))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "stringRedisTemplate can't be null");
+            throw new RuntimeException("stringRedisTemplate can't be null");
         if (isNull(batchExpireMaxPerHandle) || batchExpireMaxPerHandle < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireMaxPerHandle can't be null");
+            throw new RuntimeException("batchExpireMaxPerHandle can't be null");
         if (isNull(batchExpireScheduledCorePoolSize) || batchExpireScheduledCorePoolSize < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireScheduledCorePoolSize can't be null");
+            throw new RuntimeException("batchExpireScheduledCorePoolSize can't be null");
         if (isNull(batchExpireScheduledInitialDelayMillis) || batchExpireScheduledInitialDelayMillis < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireScheduledInitialDelayMillis can't be null or less than 1");
+            throw new RuntimeException("batchExpireScheduledInitialDelayMillis can't be null or less than 1");
         if (isNull(batchExpireScheduledDelayMillis) || batchExpireScheduledDelayMillis < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireScheduledDelayMillis can't be null or less than 1");
+            throw new RuntimeException("batchExpireScheduledDelayMillis can't be null or less than 1");
         if (isNull(batchExpireQueueCapacity) || batchExpireQueueCapacity < 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "batchExpireQueueCapacity can't be null or less than 1");
+            throw new RuntimeException("batchExpireQueueCapacity can't be null or less than 1");
 
         this.stringRedisTemplate = stringRedisTemplate;
 
@@ -134,7 +132,7 @@ public final class AccessBatchExpireProcessor {
         if (isNull(firstData))
             return;
 
-        stringRedisTemplate.executePipelined((RedisCallback<Boolean>) connection -> {
+        stringRedisTemplate.executePipelined((RedisCallback<Void>) connection -> {
             DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(firstData, connection);
 
             int size = 1;
@@ -165,17 +163,17 @@ public final class AccessBatchExpireProcessor {
      */
     private static final Consumer<KeyExpireEvent> DATA_ASSERTER = keyExpireEvent -> {
         if (isNull(keyExpireEvent))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "keyExpireEvent can't be null");
+            throw new RuntimeException("keyExpireEvent can't be null");
 
         if (isBlank(keyExpireEvent.getKey()))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null or ''");
+            throw new RuntimeException("key can't be null or ''");
 
         Long expire = keyExpireEvent.getExpire();
         if (isNull(expire) || expire < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "expire can't be null or less than 1");
+            throw new RuntimeException("expire can't be null or less than 1");
 
         if (isNull(keyExpireEvent.getUnit()))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "unit can't be null");
+            throw new RuntimeException("unit can't be null");
     };
 
     /**

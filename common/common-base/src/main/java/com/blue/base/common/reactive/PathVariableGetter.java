@@ -121,7 +121,7 @@ public class PathVariableGetter {
             throw new BlueException(EMPTY_PATH_VARIABLE);
 
         if (isNull(serverRequest))
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new BlueException(BAD_REQUEST);
     }
 
     /**

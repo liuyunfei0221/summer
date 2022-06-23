@@ -29,8 +29,7 @@ import static com.blue.base.common.base.BlueRandomGenerator.generate;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER;
 import static com.blue.base.constant.common.BlueHeader.VERIFY_KEY;
 import static com.blue.base.constant.common.RateLimitKeyPrefix.IMAGE_VERIFY_RATE_LIMIT_KEY_PRE;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.base.constant.common.ResponseElement.TOO_MANY_REQUESTS;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.base.constant.verify.VerifyType.IMAGE;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -114,14 +113,14 @@ public class ImageVerifyHandler implements VerifyHandler {
 
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
         if (isBlank(key))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be null");
+            throw new RuntimeException("key can't be null");
 
         return IMAGE_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
     private static final BiFunction<BusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
         if (isNull(type) || isBlank(key))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "type or key can't be null");
+            throw new RuntimeException("type or key can't be null");
 
         return type.identity + PAR_CONCATENATION.identity + key;
     };
@@ -141,7 +140,7 @@ public class ImageVerifyHandler implements VerifyHandler {
                     .flatMap(b ->
                             b ? just(new ByteArrayResource(outputStream.toByteArray()))
                                     :
-                                    error(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "IMAGE_WRITER handle failed")));
+                                    error(() -> new RuntimeException("IMAGE_WRITER handle failed")));
 
     private final Consumer<FastByteArrayOutputStream> STREAM_CLOSER = stream -> {
         try {
@@ -155,7 +154,7 @@ public class ImageVerifyHandler implements VerifyHandler {
     public Mono<String> handle(BusinessType businessType, String destination) {
         LOGGER.info("ImageVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", businessType, destination);
         if (isNull(businessType) || isBlank(destination))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "businessType or destination can't be null");
+            throw new BlueException(BAD_REQUEST);
 
         return verifyService.generate(IMAGE, BUSINESS_KEY_WRAPPER.apply(businessType, destination), VERIFY_LEN, DEFAULT_DURATION);
     }
@@ -183,7 +182,7 @@ public class ImageVerifyHandler implements VerifyHandler {
                                                     );
                                         })
                                 :
-                                error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently")));
+                                error(() -> new BlueException(TOO_MANY_REQUESTS)));
     }
 
     @Override

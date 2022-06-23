@@ -13,7 +13,6 @@ import java.util.function.Supplier;
 
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.TOKEN_BUCKET_RATE_LIMITER;
@@ -115,10 +114,10 @@ public final class BlueFixedTokenBucketRateLimiter {
      */
     private void assertParam(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Integer replenishRate, Integer burstCapacity) {
         if (isNull(reactiveStringRedisTemplate))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "reactiveStringRedisTemplate can't be null");
+            throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
         if (isNull(replenishRate) || isNull(burstCapacity) || replenishRate < 1 || burstCapacity < replenishRate)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "replenishRate and burstCapacity can't be null or less than 1, burstCapacity can't be less than replenishRate");
+            throw new RuntimeException("replenishRate and burstCapacity can't be null or less than 1, burstCapacity can't be less than replenishRate");
     }
 
 }

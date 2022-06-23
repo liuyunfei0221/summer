@@ -373,18 +373,18 @@ dubbo:
     group: summer
     file: D:/locallogs/dubbo/member/registry.properties
     check: false
-    timeout: 120000
+    timeout: 60000
     simplified: false
-#  metadata-report:
-#    address: zookeeper://172.16.204.75
-#    port: 2181
-#    username:
-#    password:
-#    timeout:
-#    default: true
-#    check: false
-#    sync-report: false
-#    report-metadata: false
+  #  metadata-report:
+  #    address: zookeeper://172.16.204.75
+  #    port: 2181
+  #    username:
+  #    password:
+  #    timeout:
+  #    default: true
+  #    check: false
+  #    sync-report: false
+  #    report-metadata: false
   application:
     id: summer-member
     name: summer-member
@@ -428,6 +428,10 @@ qr:
   strokesWidth: 1
   protected Color logoFrameColor: Color.WHITE
   protected Color frameColor: Color.CYAN
+
+
+member:
+  cacheExpireSeconds: 21600
 
 
 address:

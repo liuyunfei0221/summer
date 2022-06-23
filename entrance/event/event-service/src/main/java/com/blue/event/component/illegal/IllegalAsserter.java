@@ -2,7 +2,6 @@ package com.blue.event.component.illegal;
 
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.common.IllegalMarkEvent;
-import com.blue.base.model.exps.BlueException;
 import com.blue.event.config.deploy.RiskControlDeploy;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -22,7 +21,6 @@ import static com.blue.base.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
 import static com.blue.base.constant.common.BlueDataAttrKey.*;
 import static com.blue.base.constant.common.CacheKeyPrefix.ILLEGAL_IP_PRE;
 import static com.blue.base.constant.common.CacheKeyPrefix.ILLEGAL_JWT_PRE;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Symbol.WILDCARD;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -46,7 +44,7 @@ public final class IllegalAsserter {
 
         Long illegalExpireSeconds = riskControlDeploy.getIllegalExpireSeconds();
         if (isNull(illegalExpireSeconds) || illegalExpireSeconds < 1L)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "illegalExpireSeconds can't be null or less than 1");
+            throw new RuntimeException("illegalExpireSeconds can't be null or less than 1");
 
         defaultIllegalExpireDuration = Duration.of(illegalExpireSeconds, SECONDS);
 

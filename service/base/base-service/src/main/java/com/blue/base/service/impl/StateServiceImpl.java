@@ -127,11 +127,10 @@ public class StateServiceImpl implements StateService {
             countryIdStatesCache.get(cid, DB_STATES_BY_COUNTRY_ID_GETTER);
 
     private final Function<List<Long>, Map<Long, StateInfo>> CACHE_STATES_BY_IDS_GETTER = ids -> {
-        if (isInvalidIdentities(ids))
+        if (isEmpty(ids))
             return emptyMap();
-
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(INVALID_PARAM);
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
@@ -162,11 +161,10 @@ public class StateServiceImpl implements StateService {
     };
 
     private final Function<List<Long>, Map<Long, StateRegion>> STATE_REGIONS_GETTER = ids -> {
-        if (isInvalidIdentities(ids))
+        if (isEmpty(ids))
             return emptyMap();
-
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(INVALID_PARAM);
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
@@ -268,7 +266,6 @@ public class StateServiceImpl implements StateService {
     public final BiFunction<StateUpdateParam, State, Boolean> UPDATE_STATE_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
-
         if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);
 
@@ -420,7 +417,7 @@ public class StateServiceImpl implements StateService {
     }
 
     /**
-     * invalid chche
+     * invalid cache
      */
     @Override
     public void invalidCache() {
@@ -521,8 +518,10 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public List<State> selectStateByIds(List<Long> ids) {
-        if (isInvalidIdentities(ids) || ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(INVALID_PARAM);
+        if (isEmpty(ids))
+            return emptyList();
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream()
@@ -665,7 +664,6 @@ public class StateServiceImpl implements StateService {
     public Mono<List<State>> selectStateMonoByLimitAndQuery(Long limit, Long rows, Query query) {
         LOGGER.info("Mono<List<State>> selectStateMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
                 "limit = {}, rows = {}, query = {}", limit, rows, query);
-
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 

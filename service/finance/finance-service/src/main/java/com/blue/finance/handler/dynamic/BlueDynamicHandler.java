@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
@@ -66,15 +66,15 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
 
         Map<String, DynamicHandlerService> beansOfDynamicHandlerService = applicationContext.getBeansOfType(DynamicHandlerService.class);
         if (beansOfDynamicHandlerService.values().size() != 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicHandlerService can't be empty or more than 1");
+            throw new RuntimeException("beans of dynamicHandlerService can't be empty or more than 1");
 
         Map<String, DynamicResourceService> beansOfDynamicResourceService = applicationContext.getBeansOfType(DynamicResourceService.class);
         if (beansOfDynamicResourceService.values().size() != 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicResourceService can't be empty or more than 1");
+            throw new RuntimeException("beans of dynamicResourceService can't be empty or more than 1");
 
         Map<String, DynamicApiDeploy> beansOfDynamicApiDeploy = applicationContext.getBeansOfType(DynamicApiDeploy.class);
         if (beansOfDynamicApiDeploy.values().size() != 1)
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "beans of dynamicApiDeploy can't be empty or more than 1");
+            throw new RuntimeException("beans of dynamicApiDeploy can't be empty or more than 1");
 
         this.dynamicHandlerService = new ArrayList<>(beansOfDynamicHandlerService.values()).get(0);
         this.dynamicResourceService = new ArrayList<>(beansOfDynamicResourceService.values()).get(0);
@@ -94,7 +94,7 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
             long start = currentTimeMillis();
             while (dynamicInfoRefreshing) {
                 if (currentTimeMillis() - start > maxWaitingForRefresh)
-                    throw new BlueException(INTERNAL_SERVER_ERROR);
+                    throw new BlueException(REQUEST_TIMEOUT);
                 onSpinWait();
             }
         }
@@ -103,7 +103,7 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
 
     private static final BinaryOperator<String> DYNAMIC_KEY_GENERATOR = (placeholder, method) -> {
         if (isBlank(placeholder) || isBlank(method))
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("placeholder or method can't be blank");
 
         return placeholder + PAR_CONCATENATION + method.toUpperCase();
     };
@@ -113,7 +113,7 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
 
         int index = lastIndexOf(path, PATH_SEPARATOR);
         if (index == -1)
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new BlueException(NOT_FOUND);
 
         String maybePlaceholder = substring(path, index + 1);
 
@@ -124,7 +124,7 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
         if (isNotNull(dynamicEndPointHandler))
             return dynamicEndPointHandler;
 
-        throw new BlueException(INTERNAL_SERVER_ERROR);
+        throw new BlueException(NOT_FOUND);
     };
 
     public void refreshHandlers() {
@@ -139,7 +139,7 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
                         ofNullable(r.getHandlerId())
                                 .map(handlerIdWithBeanNameMapping::get)
                                 .map(clzWithHandlerMapping::get)
-                                .orElseThrow(() -> new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "the handler with resource = {} not exist, r = " + r)), (a, b) -> a));
+                                .orElseThrow(() -> new RuntimeException("the handler with resource = {} not exist, r = " + r)), (a, b) -> a));
 
         dynamicInfoRefreshing = true;
         placeHolderHandlerMapping = tempPlaceHolderHandlerMapping;

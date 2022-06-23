@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.mail.component.SenderComponentProcessor.*;
 import static java.lang.Integer.bitCount;
 import static java.lang.Integer.numberOfLeadingZeros;
@@ -125,7 +125,7 @@ public final class BatchSender {
                     }
             }
             LOGGER.error("CompletableFuture<Void> sendMessage(Message message) failed, throwable = {0}", throwable);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "Consumer<Message> MESSAGE_SENDER, failed");
+            throw new RuntimeException("Consumer<Message> MESSAGE_SENDER, failed");
         }
     };
 
@@ -140,7 +140,7 @@ public final class BatchSender {
 
     public CompletableFuture<Void> sendMessage(Message message) {
         if (isNull(message))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "message can't be null");
+            throw new BlueException(BAD_REQUEST);
 
         signDkim(message);
         return runAsync(() -> MESSAGE_SENDER.accept(transporters[indexMask & CURSOR.incrementAndGet()], message), executorService);

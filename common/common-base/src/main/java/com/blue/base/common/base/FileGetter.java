@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.util.ResourceUtils.getURL;
@@ -79,7 +79,7 @@ public final class FileGetter {
             return new File(getURL(uri).getPath());
         } catch (Exception e) {
             LOGGER.error("File getFile(String uri) failed, uri = {}, e = {0}", uri, e);
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "load file error");
+            throw new BlueException(BAD_REQUEST);
         }
     }
 

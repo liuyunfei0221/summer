@@ -100,7 +100,7 @@ public final class MemberModelConverters {
 
     public static final Function<Address, AddressInfo> ADDRESS_2_ADDRESS_INFO = address -> {
         if (address != null)
-            return new AddressInfo(address.getId(), address.getMemberId(), address.getMemberName(), address.getGender(),
+            return new AddressInfo(address.getId(), address.getMemberId(), address.getContact(), address.getGender(),
                     address.getPhone(), address.getEmail(), address.getCountryId(), address.getCountry(), address.getStateId(),
                     address.getState(), address.getCityId(), address.getCity(), address.getAreaId(), address.getArea(),
                     address.getDetail(), address.getReference(), address.getExtra());

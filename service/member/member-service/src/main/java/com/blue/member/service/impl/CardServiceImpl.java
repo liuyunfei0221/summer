@@ -39,6 +39,7 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.VALID;
@@ -111,7 +112,7 @@ public class CardServiceImpl implements CardService {
             throw new BlueException(EMPTY_PARAM);
 
         return rpcAttachmentServiceConsumer.selectAttachmentInfoMonoByIds(Stream.of(coverId, contentId)
-                        .filter(BlueChecker::isNotNull).collect(toList()))
+                        .filter(BlueChecker::isValidIdentity).collect(toList()))
                 .map(attachmentInfos -> attachmentInfos.stream().collect(toMap(AttachmentInfo::getId, a -> a, (a, b) -> a)))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(attachmentMapping -> {
@@ -421,15 +422,16 @@ public class CardServiceImpl implements CardService {
     @Override
     public Mono<List<CardInfo>> selectCardInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<CardInfo>> selectCardInfoMonoByIds(List<Long> ids), ids = {}", ids);
+        if (isEmpty(ids))
+            return just(emptyList());
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            return error(() -> new BlueException(PAYLOAD_TOO_LARGE));
 
-        return isValidIdentities(ids) ?
-                fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
-                        .map(shardIds -> cardRepository.findAllById(shardIds)
-                                .map(CARD_2_CARD_INFO))
-                        .reduce(Flux::concat)
-                        .flatMap(Flux::collectList)
-                :
-                just(emptyList());
+        return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
+                .map(shardIds -> cardRepository.findAllById(shardIds)
+                        .map(CARD_2_CARD_INFO))
+                .reduce(Flux::concat)
+                .flatMap(Flux::collectList);
     }
 
     /**
@@ -444,7 +446,6 @@ public class CardServiceImpl implements CardService {
     public Mono<List<Card>> selectCardMonoByLimitAndQuery(Long limit, Long rows, Query query) {
         LOGGER.info("Mono<List<Card>> selectCardMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
                 "limit = {}, rows = {}, query = {}", limit, rows, query);
-
         if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 

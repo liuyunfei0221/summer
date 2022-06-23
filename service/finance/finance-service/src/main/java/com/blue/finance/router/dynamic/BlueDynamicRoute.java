@@ -1,6 +1,5 @@
 package com.blue.finance.router.dynamic;
 
-import com.blue.base.model.exps.BlueException;
 import com.blue.finance.config.deploy.DynamicApiDeploy;
 import com.blue.finance.handler.dynamic.BlueDynamicHandler;
 import com.blue.finance.repository.entity.DynamicResource;
@@ -16,7 +15,6 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.ConstantProcessor.getMediaTypeByIdentity;
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.base.constant.common.Symbol.PATH_SEPARATOR;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
@@ -41,7 +39,7 @@ public class BlueDynamicRoute {
     public BlueDynamicRoute(DynamicApiDeploy dynamicApiDeploy) {
         String path = dynamicApiDeploy.getPath();
         if (isBlank(path))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "path can't be null or ''");
+            throw new RuntimeException("path can't be null or ''");
 
         this.PATH = PATH_PARSER.apply(path);
     }
@@ -63,7 +61,7 @@ public class BlueDynamicRoute {
         Long uriPlaceholder = dynamicResource.getUriPlaceholder();
 
         if (isNull(uriPlaceholder))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "uriPlaceholder can't be null");
+            throw new RuntimeException("uriPlaceholder can't be null");
 
         switch (requestMethod) {
             case "GET":
@@ -95,7 +93,7 @@ public class BlueDynamicRoute {
                 break;
 
             default:
-                throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "not support method -> " + requestMethod);
+                throw new RuntimeException("not support method -> " + requestMethod);
         }
 
         LOGGER.info("generate endPoint, dynamicResource = {}", dynamicResource);

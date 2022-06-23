@@ -27,8 +27,8 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELECT;
+import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.marketing.converter.MarketingModelConverters.EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER;
 import static java.util.Collections.emptyList;
@@ -37,8 +37,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -146,12 +145,15 @@ public class EventRecordServiceImpl implements EventRecordService {
     @Override
     public List<EventRecord> selectEventRecordByIds(List<Long> ids) {
         LOGGER.info("List<EventRecord> selectEventRecordByIds(List<Long> ids), ids = {}", ids);
-        return isValidIdentities(ids) ? allotByMax(ids, (int) DB_SELECT.value, false)
+        if (isEmpty(ids))
+            return emptyList();
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
+
+        return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(eventRecordMapper::selectByIds)
                 .flatMap(List::stream)
-                .collect(toList())
-                :
-                emptyList();
+                .collect(toList());
     }
 
     /**

@@ -133,11 +133,10 @@ public class CityServiceImpl implements CityService {
             stateIdCitiesCache.get(sid, DB_CITIES_BY_STATE_ID_GETTER);
 
     private final Function<List<Long>, Map<Long, CityInfo>> CACHE_CITIES_BY_IDS_GETTER = ids -> {
-        if (isInvalidIdentities(ids))
+        if (isEmpty(ids))
             return emptyMap();
-
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(INVALID_PARAM);
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
@@ -170,11 +169,10 @@ public class CityServiceImpl implements CityService {
     };
 
     private final Function<List<Long>, Map<Long, CityRegion>> CITY_REGIONS_GETTER = ids -> {
-        if (isInvalidIdentities(ids))
+        if (isEmpty(ids))
             return emptyMap();
-
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(INVALID_PARAM);
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
@@ -279,7 +277,6 @@ public class CityServiceImpl implements CityService {
     public final BiFunction<CityUpdateParam, City, Boolean> UPDATE_CITY_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
-
         if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);
 
@@ -422,7 +419,7 @@ public class CityServiceImpl implements CityService {
     }
 
     /**
-     * invalid chche
+     * invalid cache
      */
     @Override
     public void invalidCache() {
@@ -498,8 +495,10 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public List<City> selectCityByIds(List<Long> ids) {
-        if (isInvalidIdentities(ids) || ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(INVALID_PARAM);
+        if (isEmpty(ids))
+            return emptyList();
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream()
@@ -642,7 +641,6 @@ public class CityServiceImpl implements CityService {
     public Mono<List<City>> selectCityMonoByLimitAndQuery(Long limit, Long rows, Query query) {
         LOGGER.info("Mono<List<City>> selectCityMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
                 "limit = {}, rows = {}, query = {}", limit, rows, query);
-
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 

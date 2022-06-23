@@ -29,8 +29,7 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.common.BlueNumericalValue.DB_WRITE;
+import static com.blue.base.constant.common.BlueNumericalValue.*;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.constant.ColumnName.*;
@@ -51,8 +50,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Flux.fromStream;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -192,6 +190,10 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Override
     public Mono<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids), ids = {}", ids);
+        if (isEmpty(ids))
+            return just(emptyList());
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            return error(() -> new BlueException(PAYLOAD_TOO_LARGE));
 
         return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
                 .map(shardIds -> attachmentRepository.findAllById(shardIds).map(ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER))
@@ -208,6 +210,10 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Override
     public Mono<List<AttachmentDetailInfo>> selectAttachmentDetailInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Attachment>> selectAttachmentDetailInfoMonoByIds(List<Long> ids), ids = {}", ids);
+        if (isEmpty(ids))
+            return just(emptyList());
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            return error(() -> new BlueException(PAYLOAD_TOO_LARGE));
 
         return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
                 .map(shardIds -> attachmentRepository.findAllById(shardIds)

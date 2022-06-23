@@ -49,8 +49,7 @@ public final class RsaProcessor {
         try {
             return Cipher.getInstance(KEY_ALGORITHM);
         } catch (Exception e) {
-            LOGGER.error("CIPHER_SUP get(), failed, e = {}", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("CIPHER_SUP get(), failed , e = " + e);
         }
     };
 
@@ -58,8 +57,7 @@ public final class RsaProcessor {
         try {
             return KeyFactory.getInstance(KEY_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("KEY_FACTORY_SUP get(), failed, e = {}", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("KEY_FACTORY_SUP get(), failed , e = " + e);
         }
     };
 
@@ -67,8 +65,7 @@ public final class RsaProcessor {
         try {
             return Signature.getInstance(SIGN_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("SIGNATURE_SUP get(), failed, e = {}", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("SIGNATURE_SUP get(), failed , e = " + e);
         }
     };
 
@@ -77,8 +74,7 @@ public final class RsaProcessor {
         try {
             return KeyPairGenerator.getInstance(KEY_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("KEY_PAIR_GEN_SUP get(), failed, e = {}", e);
-            throw new BlueException(INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("KEY_PAIR_GEN_SUP get(), failed , e = " + e);
         }
     };
 

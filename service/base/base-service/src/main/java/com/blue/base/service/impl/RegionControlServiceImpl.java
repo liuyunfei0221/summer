@@ -287,7 +287,7 @@ public class RegionControlServiceImpl implements RegionControlService {
     }
 
     /**
-     * invalid all chche
+     * invalid all cache
      *
      * @return
      */

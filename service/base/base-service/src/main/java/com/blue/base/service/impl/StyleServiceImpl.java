@@ -144,9 +144,8 @@ public class StyleServiceImpl implements StyleService {
                     .map(s -> GSON.fromJson(s, StyleInfo.class)).orElse(null);
 
     private final BiConsumer<Integer, StyleInfo> ACTIVE_STYLE_INFO_REDIS_SETTER = (type, styleInfo) -> {
-        String cacheKey = STYLE_CACHE_KEY_GENERATOR.apply(type);
         REDIS_CACHE_DELETER.accept(type);
-        stringRedisTemplate.opsForValue().set(cacheKey, GSON.toJson(styleInfo), expireDuration);
+        stringRedisTemplate.opsForValue().set(STYLE_CACHE_KEY_GENERATOR.apply(type), GSON.toJson(styleInfo), expireDuration);
     };
 
     private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_WITH_REDIS_CACHE_GETTER = type ->
@@ -231,7 +230,6 @@ public class StyleServiceImpl implements StyleService {
     public static final BiFunction<StyleUpdateParam, Style, Boolean> UPDATE_STYLE_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
-
         if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);
 

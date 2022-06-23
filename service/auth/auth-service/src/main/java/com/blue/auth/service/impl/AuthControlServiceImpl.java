@@ -294,7 +294,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
         if (isBlank(key))
-            throw new BlueException(INTERNAL_SERVER_ERROR.status, INTERNAL_SERVER_ERROR.code, "key can't be blank");
+            throw new RuntimeException("key can't be blank");
 
         return ACCESS_UPDATE_RATE_LIMIT_KEY_PRE.prefix + key;
     };
