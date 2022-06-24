@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -28,7 +29,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc"})
 @Service
 public class ShineServiceImpl implements ShineService {
 
@@ -40,10 +41,14 @@ public class ShineServiceImpl implements ShineService {
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ShineRepository shineRepository, ReactiveMongoTemplate reactiveMongoTemplate) {
+    private final Scheduler scheduler;
+
+    public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ShineRepository shineRepository,
+                            ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.shineRepository = shineRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
+        this.scheduler = scheduler;
     }
 
 
@@ -77,7 +82,7 @@ public class ShineServiceImpl implements ShineService {
 
         query.skip(5).limit(3);
 
-        Flux<Shine> shineFlux = reactiveMongoTemplate.find(query, Shine.class);
+        Flux<Shine> shineFlux = reactiveMongoTemplate.find(query, Shine.class).subscribeOn(scheduler);
         List<Shine> shineList = shineFlux.collectList().toFuture().join();
         System.err.println(shineList);
 

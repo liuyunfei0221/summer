@@ -16,7 +16,7 @@ import org.springframework.lang.NonNull;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 /**
- * byte handler registrar
+ * pre and post write processor registrar
  *
  * @author liuyunfei
  */

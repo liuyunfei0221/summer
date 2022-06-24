@@ -7,7 +7,7 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
+import reactor.core.scheduler.Scheduler;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -28,23 +28,23 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * illegal request asserter
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal"})
 @Component
 public final class IllegalAsserter {
 
-    private static final Logger LOGGER = getLogger(IllegalAsserter.class);
-
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    public IllegalAsserter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, RiskControlDeploy riskControlDeploy) {
+    private Scheduler scheduler;
+
+    public IllegalAsserter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, RiskControlDeploy riskControlDeploy) {
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
+        this.scheduler = scheduler;
 
         Long illegalExpireSeconds = riskControlDeploy.getIllegalExpireSeconds();
         if (isNull(illegalExpireSeconds) || illegalExpireSeconds < 1L)
@@ -74,18 +74,22 @@ public final class IllegalAsserter {
                 .opsForSet().members(key)
                 .any(s -> s.equals(ALL_RESOURCE) || s.equals(resKey))
                 .flatMap(b ->
-                        b ? just(false) :
+                        b ? just(false)
+                                .subscribeOn(scheduler)
+                                :
                                 this.reactiveStringRedisTemplate
                                         .opsForSet().add(key, resKey)
                                         .flatMap(l -> this.reactiveStringRedisTemplate.expire(key,
-                                                ofNullable(expireSeconds).map(s -> Duration.of(s, SECONDS)).orElse(defaultIllegalExpireDuration))));
+                                                ofNullable(expireSeconds).map(s -> Duration.of(s, SECONDS))
+                                                        .orElse(defaultIllegalExpireDuration))))
+                .subscribeOn(scheduler);
     }
 
     private Mono<Boolean> clearMark(String key, String resKey) {
         return isBlank(resKey) || ALL_RESOURCE.equals(resKey) ?
-                this.reactiveStringRedisTemplate.delete(key).map(l -> l > 0)
+                this.reactiveStringRedisTemplate.delete(key).map(l -> l > 0).subscribeOn(scheduler)
                 :
-                this.reactiveStringRedisTemplate.opsForSet().remove(key, resKey).map(l -> l > 0);
+                this.reactiveStringRedisTemplate.opsForSet().remove(key, resKey).map(l -> l > 0).subscribeOn(scheduler);
     }
 
     /**
@@ -134,7 +138,7 @@ public final class IllegalAsserter {
     private final BiFunction<String, String, Mono<Boolean>> KEY_VALIDATOR = (key, res) ->
             this.reactiveStringRedisTemplate.opsForSet()
                     .members(key).collectList()
-                    .flatMap(s -> RES_VALIDATOR.apply(s, res));
+                    .flatMap(s -> RES_VALIDATOR.apply(s, res)).subscribeOn(scheduler);
 
     /**
      * validator
@@ -148,12 +152,14 @@ public final class IllegalAsserter {
 
         return zip(
                 ofNullable(attributes.get(JWT.key))
-                        .map(String::valueOf).filter(BlueChecker::isNotBlank)
+                        .map(String::valueOf)
+                        .filter(BlueChecker::isNotBlank)
                         .map(JWT_KEY_WRAPPER)
                         .map(key -> KEY_VALIDATOR.apply(key, resKey))
                         .orElseGet(() -> just(true)),
                 ofNullable(attributes.get(CLIENT_IP.key))
-                        .map(String::valueOf).filter(BlueChecker::isNotBlank)
+                        .map(String::valueOf)
+                        .filter(BlueChecker::isNotBlank)
                         .map(IP_KEY_WRAPPER)
                         .map(key -> KEY_VALIDATOR.apply(key, resKey))
                         .orElseGet(() -> just(true))
@@ -182,7 +188,6 @@ public final class IllegalAsserter {
      * @param event
      */
     public Mono<Boolean> handleIllegalMarkEvent(IllegalMarkEvent event) {
-        LOGGER.info("Mono<Boolean> handleIllegalMarkEvent(IllegalMarkEvent event), event = {}", event);
         return ILLEGAL_MARKER.apply(event);
     }
 

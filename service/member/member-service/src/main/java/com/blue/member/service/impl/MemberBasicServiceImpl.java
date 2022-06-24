@@ -43,6 +43,8 @@ import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELEC
 import static com.blue.base.constant.common.CacheKeyPrefix.MEMBER_PRE;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.base.constant.media.AttachmentType.ICON;
+import static com.blue.base.constant.media.AttachmentType.QR_CODE;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
@@ -309,6 +311,8 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
                     if (!id.equals(attachmentInfo.getCreator()))
                         return error(new BlueException(DATA_NOT_BELONG_TO_YOU));
+                    if (ICON.identity != attachmentInfo.getType())
+                        return error(new BlueException(BAD_REQUEST));
 
                     String link = attachmentInfo.getLink();
 
@@ -347,6 +351,8 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
                     if (!id.equals(attachmentInfo.getCreator()))
                         return error(new BlueException(DATA_NOT_BELONG_TO_YOU));
+                    if (QR_CODE.identity != attachmentInfo.getType())
+                        return error(new BlueException(BAD_REQUEST));
 
                     String link = attachmentInfo.getLink();
 

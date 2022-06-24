@@ -1,6 +1,7 @@
 package com.blue.media.component.file;
 
 import com.blue.base.common.base.BlueChecker;
+import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.FileUploadResult;
 import com.blue.media.component.file.preprocessor.inter.PreAndPostWriteProcessorHandler;
 import com.blue.media.component.file.processor.inter.ByteHandler;
@@ -16,12 +17,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toMap;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -38,8 +40,7 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
     /**
      * around handler
      */
-    //TODO
-    private Map<Integer, PreAndPostWriteProcessorHandler> preAndPostWriteProcessorHandlers = new HashMap<>();
+    private Map<Integer, PreAndPostWriteProcessorHandler> preAndPostWriteProcessorHandlers;
 
     /**
      * target byte handler
@@ -49,8 +50,16 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
-        Map<String, ByteHandler> beansOfType = applicationContext.getBeansOfType(ByteHandler.class);
-        if (isEmpty(beansOfType))
+
+        Map<String, PreAndPostWriteProcessorHandler> processorHandlerOfType = applicationContext.getBeansOfType(PreAndPostWriteProcessorHandler.class);
+        if (isNotEmpty(processorHandlerOfType)) {
+            preAndPostWriteProcessorHandlers = processorHandlerOfType.values().stream().collect(toMap(p -> p.handlerType().identity, p -> p, (a, b) -> a));
+        } else {
+            preAndPostWriteProcessorHandlers = emptyMap();
+        }
+
+        Map<String, ByteHandler> byteHandlerOfType = applicationContext.getBeansOfType(ByteHandler.class);
+        if (isEmpty(byteHandlerOfType))
             throw new RuntimeException("byteHandlers is empty");
 
         LocalDiskFileDeploy localDiskFileDeploy;
@@ -66,7 +75,7 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
                 .filter(BlueChecker::isNotBlank)
                 .orElseThrow(() -> new RuntimeException("handlerType is blank"));
 
-        byteHandler = beansOfType.values().stream()
+        byteHandler = byteHandlerOfType.values().stream()
                 .filter(bh -> handlerType.equals(bh.handlerType().identity))
                 .findAny().orElseThrow(() -> new RuntimeException("handler with target type " + handlerType + " not found"));
     }
@@ -80,14 +89,19 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
      * @return
      */
     public Mono<FileUploadResult> write(Part part, Integer type, Long memberId) {
+        LOGGER.info("Mono<FileUploadResult> write(Part part, Integer type, Long memberId), part = {}, type = {}, memberId = {}",
+                part, type, memberId);
+        if (isNull(part) || isNull(type) || isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+
         PreAndPostWriteProcessorHandler preAndPostWriteProcessorHandler = preAndPostWriteProcessorHandlers.get(type);
 
-        return isNull(preAndPostWriteProcessorHandler)
-                ?
+        return isNull(preAndPostWriteProcessorHandler) ?
                 byteHandler.write(part, type, memberId)
                 :
-                byteHandler.write(preAndPostWriteProcessorHandler.preHandle(part, type, memberId), type, memberId)
-                        .flatMap(fur -> preAndPostWriteProcessorHandler.postHandle(fur, type, memberId));
+                preAndPostWriteProcessorHandler.preHandle(part, memberId)
+                        .flatMap(p -> byteHandler.write(p, type, memberId))
+                        .flatMap(fur -> preAndPostWriteProcessorHandler.postHandle(fur, memberId));
     }
 
     /**

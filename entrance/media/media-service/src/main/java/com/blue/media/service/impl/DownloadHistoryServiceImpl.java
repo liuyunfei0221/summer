@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -51,7 +52,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
@@ -59,15 +60,18 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
+    private final Scheduler scheduler;
+
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
     private final AttachmentService attachmentService;
 
     private final DownloadHistoryRepository downloadHistoryRepository;
 
-    public DownloadHistoryServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
+    public DownloadHistoryServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
                                       AttachmentService attachmentService, DownloadHistoryRepository downloadHistoryRepository) {
         this.reactiveMongoTemplate = reactiveMongoTemplate;
+        this.scheduler = scheduler;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.attachmentService = attachmentService;
         this.downloadHistoryRepository = downloadHistoryRepository;
@@ -123,7 +127,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     @Override
     public Mono<DownloadHistory> insertDownloadHistory(DownloadHistory downloadHistory) {
         LOGGER.info("Mono<DownloadHistory> insert(DownloadHistory downloadHistory), downloadHistory = {}", downloadHistory);
-        return downloadHistoryRepository.insert(downloadHistory);
+        return downloadHistoryRepository.insert(downloadHistory).subscribeOn(scheduler);
     }
 
     /**
@@ -149,7 +153,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return downloadHistoryRepository.findById(id);
+        return downloadHistoryRepository.findById(id).subscribeOn(scheduler);
     }
 
     /**
@@ -171,7 +175,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
         return downloadHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.name)))
                 .skip(limit).take(rows)
-                .collectList();
+                .collectList().subscribeOn(scheduler);
     }
 
     /**
@@ -189,7 +193,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         DownloadHistory probe = new DownloadHistory();
         probe.setCreator(memberId);
 
-        return downloadHistoryRepository.count(Example.of(probe));
+        return downloadHistoryRepository.count(Example.of(probe)).subscribeOn(scheduler);
     }
 
     /**
@@ -248,7 +252,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, DownloadHistory.class).collectList();
+        return reactiveMongoTemplate.find(listQuery, DownloadHistory.class).collectList().subscribeOn(scheduler);
     }
 
     /**
@@ -260,7 +264,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     @Override
     public Mono<Long> countDownloadHistoryMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countDownloadHistoryMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, DownloadHistory.class);
+        return reactiveMongoTemplate.count(query, DownloadHistory.class).subscribeOn(scheduler);
     }
 
     /**

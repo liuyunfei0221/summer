@@ -27,6 +27,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -68,13 +69,15 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode", "SpringJavaInjectionPointsAutowiringInspection", "AlibabaAvoidComplexCondition"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode", "AlibabaAvoidComplexCondition"})
 @Service
 public class CardServiceImpl implements CardService {
 
     private static final Logger LOGGER = getLogger(CardServiceImpl.class);
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
+
+    private final Scheduler scheduler;
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
@@ -86,9 +89,10 @@ public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
 
-    public CardServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor,
+    public CardServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor,
                            RpcAttachmentServiceConsumer rpcAttachmentServiceConsumer, MemberBasicService memberBasicService, CardRepository cardRepository, CardDeploy cardDeploy) {
         this.reactiveMongoTemplate = reactiveMongoTemplate;
+        this.scheduler = scheduler;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.synchronizedProcessor = synchronizedProcessor;
         this.rpcAttachmentServiceConsumer = rpcAttachmentServiceConsumer;
@@ -275,7 +279,8 @@ public class CardServiceImpl implements CardService {
                                 return CARD_INSERT_PARAM_2_MEMBER_ADDRESS.apply(cardInsertParam, memberId);
                             })
                             .flatMap(cardRepository::insert)
-                            .flatMap(c -> just(CARD_2_CARD_INFO.apply(c)));
+                            .flatMap(c -> just(CARD_2_CARD_INFO.apply(c)))
+                            .subscribeOn(scheduler);
                 }
         );
     }
@@ -307,6 +312,7 @@ public class CardServiceImpl implements CardService {
                         })
                         .flatMap(cardRepository::save)
                         .flatMap(c -> just(CARD_2_CARD_INFO.apply(c)))
+                        .subscribeOn(scheduler)
         );
     }
 
@@ -336,6 +342,7 @@ public class CardServiceImpl implements CardService {
                                     .then(just(card));
                         })
                         .flatMap(c -> just(CARD_2_CARD_INFO.apply(c)))
+                        .subscribeOn(scheduler)
         );
     }
 
@@ -351,7 +358,7 @@ public class CardServiceImpl implements CardService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return cardRepository.findById(id);
+        return cardRepository.findById(id).subscribeOn(scheduler);
     }
 
     /**
@@ -369,7 +376,7 @@ public class CardServiceImpl implements CardService {
         Card probe = new Card();
         probe.setMemberId(memberId);
 
-        return cardRepository.findAll(Example.of(probe)).collectList();
+        return cardRepository.findAll(Example.of(probe)).collectList().subscribeOn(scheduler);
     }
 
     /**
@@ -431,7 +438,8 @@ public class CardServiceImpl implements CardService {
                 .map(shardIds -> cardRepository.findAllById(shardIds)
                         .map(CARD_2_CARD_INFO))
                 .reduce(Flux::concat)
-                .flatMap(Flux::collectList);
+                .flatMap(Flux::collectList)
+                .subscribeOn(scheduler);
     }
 
     /**
@@ -452,7 +460,7 @@ public class CardServiceImpl implements CardService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, Card.class).collectList();
+        return reactiveMongoTemplate.find(listQuery, Card.class).collectList().subscribeOn(scheduler);
     }
 
     /**
@@ -464,7 +472,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public Mono<Long> countCardMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countCardMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, Card.class);
+        return reactiveMongoTemplate.count(query, Card.class).subscribeOn(scheduler);
     }
 
     /**

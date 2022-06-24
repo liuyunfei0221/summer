@@ -25,6 +25,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
@@ -67,7 +68,7 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection", "DuplicatedCode"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service
 public class StateServiceImpl implements StateService {
 
@@ -81,12 +82,15 @@ public class StateServiceImpl implements StateService {
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
+    private Scheduler scheduler;
+
     public StateServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CountryService countryService, StateRepository stateRepository,
-                            ExecutorService executorService, ReactiveMongoTemplate reactiveMongoTemplate, CaffeineDeploy caffeineDeploy) {
+                            ExecutorService executorService, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.countryService = countryService;
         this.stateRepository = stateRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
+        this.scheduler = scheduler;
 
         idStateCache = generateCache(new CaffeineConfParams(
                 caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
@@ -136,7 +140,7 @@ public class StateServiceImpl implements StateService {
                 .stream().map(l ->
                         idStateCache.getAll(l, is -> stateRepository.findAllById(l)
                                         .flatMap(s -> just(STATE_2_STATE_INFO_CONVERTER.apply(s)))
-                                        .collectList().toFuture().join()
+                                        .collectList().subscribeOn(scheduler).toFuture().join()
                                         .parallelStream()
                                         .collect(toMap(StateInfo::getId, ci -> ci, (a, b) -> a)))
                                 .entrySet()
@@ -200,7 +204,7 @@ public class StateServiceImpl implements StateService {
         probe.setCountryId(param.getCountryId());
         probe.setName(param.getName());
 
-        if (ofNullable(stateRepository.count(Example.of(probe)).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(stateRepository.count(Example.of(probe)).subscribeOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(STATE_ALREADY_EXIST);
     };
 
@@ -247,7 +251,7 @@ public class StateServiceImpl implements StateService {
         probe.setCountryId(param.getCountryId());
         probe.setName(param.getName());
 
-        List<State> states = ofNullable(stateRepository.findAll(Example.of(probe)).collectList().toFuture().join())
+        List<State> states = ofNullable(stateRepository.findAll(Example.of(probe)).collectList().subscribeOn(scheduler).toFuture().join())
                 .orElseGet(Collections::emptyList);
 
         if (states.stream().anyMatch(c -> !id.equals(c.getId())))
@@ -340,7 +344,7 @@ public class StateServiceImpl implements StateService {
                 .doOnSuccess(si -> {
                     LOGGER.info("si = {}", si);
                     invalidCache();
-                });
+                }).subscribeOn(scheduler);
     }
 
     /**
@@ -377,7 +381,7 @@ public class StateServiceImpl implements StateService {
                     }
 
                     invalidCache();
-                });
+                }).subscribeOn(scheduler);
     }
 
     /**
@@ -392,28 +396,28 @@ public class StateServiceImpl implements StateService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        State state = stateRepository.findById(id).toFuture().join();
-        if (isNull(state))
-            throw new BlueException(DATA_NOT_EXIST);
+       return stateRepository.findById(id)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .flatMap(state -> {
+                    City probe = new City();
+                    probe.setStateId(id);
 
-        City probe = new City();
-        probe.setStateId(id);
+                    Query query = new Query();
+                    query.addCriteria(byExample(probe));
 
-        Query query = new Query();
-        query.addCriteria(byExample(probe));
-
-        return reactiveMongoTemplate.count(query, City.class)
-                .flatMap(cityCount ->
-                        cityCount <= 0L ?
-                                stateRepository.delete(state)
-                                :
-                                error(new BlueException(REGION_DATA_STILL_USED))
-                )
-                .then(just(STATE_2_STATE_INFO_CONVERTER.apply(state)))
-                .doOnSuccess(si -> {
-                    LOGGER.info("si = {}", si);
-                    invalidCache();
-                });
+                    return reactiveMongoTemplate.count(query, City.class)
+                            .flatMap(cityCount ->
+                                    cityCount <= 0L ?
+                                            stateRepository.delete(state)
+                                            :
+                                            error(new BlueException(REGION_DATA_STILL_USED))
+                            )
+                            .then(just(STATE_2_STATE_INFO_CONVERTER.apply(state)))
+                            .doOnSuccess(si -> {
+                                LOGGER.info("si = {}", si);
+                                invalidCache();
+                            });
+                }).subscribeOn(scheduler);
     }
 
     /**
@@ -451,7 +455,7 @@ public class StateServiceImpl implements StateService {
                             countryId, stateId, updateResult.getMatchedCount(), modifiedCount, updateResult.wasAcknowledged());
 
                     return just(modifiedCount);
-                });
+                }).subscribeOn(scheduler);
     }
 
     /**
@@ -479,7 +483,7 @@ public class StateServiceImpl implements StateService {
                             countryId, stateId, updateResult.getMatchedCount(), modifiedCount, updateResult.wasAcknowledged());
 
                     return just(modifiedCount);
-                });
+                }).subscribeOn(scheduler);
     }
 
     /**
@@ -490,7 +494,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Optional<State> getStateById(Long id) {
-        return ofNullable(stateRepository.findById(id).toFuture().join());
+        return ofNullable(stateRepository.findById(id).subscribeOn(scheduler).toFuture().join());
     }
 
     /**
@@ -508,7 +512,7 @@ public class StateServiceImpl implements StateService {
         probe.setCountryId(countryId);
 
         return stateRepository.findAll(Example.of(probe), by(Sort.Order.asc(NAME.name)))
-                .collectList().toFuture().join();
+                .collectList().subscribeOn(scheduler).toFuture().join();
     }
 
     /**
@@ -526,7 +530,7 @@ public class StateServiceImpl implements StateService {
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream()
                 .map(l -> stateRepository.findAllById(l)
-                        .collectList().toFuture().join())
+                        .collectList().subscribeOn(scheduler).toFuture().join())
                 .flatMap(List::stream)
                 .collect(toList());
     }
@@ -670,7 +674,7 @@ public class StateServiceImpl implements StateService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, State.class).collectList();
+        return reactiveMongoTemplate.find(listQuery, State.class).collectList().subscribeOn(scheduler);
     }
 
     /**
@@ -682,7 +686,7 @@ public class StateServiceImpl implements StateService {
     @Override
     public Mono<Long> countStateMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countStateMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, State.class);
+        return reactiveMongoTemplate.count(query, State.class).subscribeOn(scheduler);
     }
 
     /**

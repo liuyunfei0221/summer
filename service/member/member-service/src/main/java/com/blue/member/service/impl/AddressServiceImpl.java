@@ -26,6 +26,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -68,13 +69,15 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service
 public class AddressServiceImpl implements AddressService {
 
     private static final Logger LOGGER = getLogger(AddressServiceImpl.class);
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
+
+    private final Scheduler scheduler;
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
@@ -86,9 +89,10 @@ public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
 
-    public AddressServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor, RpcAreaServiceConsumer rpcAreaServiceConsumer,
-                              RpcCityServiceConsumer rpcCityServiceConsumer, AddressRepository addressRepository, AddressDeploy addressDeploy) {
+    public AddressServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor,
+                              RpcAreaServiceConsumer rpcAreaServiceConsumer, RpcCityServiceConsumer rpcCityServiceConsumer, AddressRepository addressRepository, AddressDeploy addressDeploy) {
         this.reactiveMongoTemplate = reactiveMongoTemplate;
+        this.scheduler = scheduler;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.synchronizedProcessor = synchronizedProcessor;
         this.rpcAreaServiceConsumer = rpcAreaServiceConsumer;
@@ -331,7 +335,8 @@ public class AddressServiceImpl implements AddressService {
                                 return ADDRESS_INSERT_PARAM_2_MEMBER_ADDRESS.apply(addressInsertParam, memberId);
                             })
                             .flatMap(addressRepository::insert)
-                            .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a)));
+                            .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a)))
+                            .subscribeOn(scheduler);
                 }
         );
     }
@@ -363,6 +368,7 @@ public class AddressServiceImpl implements AddressService {
                         })
                         .flatMap(addressRepository::save)
                         .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a)))
+                        .subscribeOn(scheduler)
         );
     }
 
@@ -392,6 +398,7 @@ public class AddressServiceImpl implements AddressService {
                                     .then(just(address));
                         })
                         .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a)))
+                        .subscribeOn(scheduler)
         );
     }
 
@@ -407,7 +414,7 @@ public class AddressServiceImpl implements AddressService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return addressRepository.findById(id);
+        return addressRepository.findById(id).subscribeOn(scheduler);
     }
 
     /**
@@ -425,7 +432,7 @@ public class AddressServiceImpl implements AddressService {
         Address probe = new Address();
         probe.setMemberId(memberId);
 
-        return addressRepository.findAll(Example.of(probe)).collectList();
+        return addressRepository.findAll(Example.of(probe)).collectList().subscribeOn(scheduler);
     }
 
     /**
@@ -487,7 +494,7 @@ public class AddressServiceImpl implements AddressService {
                 .map(shardIds -> addressRepository.findAllById(shardIds)
                         .map(ADDRESS_2_ADDRESS_INFO))
                 .reduce(Flux::concat)
-                .flatMap(Flux::collectList);
+                .flatMap(Flux::collectList).subscribeOn(scheduler);
     }
 
     /**
@@ -508,7 +515,7 @@ public class AddressServiceImpl implements AddressService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, Address.class).collectList();
+        return reactiveMongoTemplate.find(listQuery, Address.class).collectList().subscribeOn(scheduler);
     }
 
     /**
@@ -520,7 +527,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Mono<Long> countAddressMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countAddressMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, Address.class);
+        return reactiveMongoTemplate.count(query, Address.class).subscribeOn(scheduler);
     }
 
     /**
