@@ -64,6 +64,7 @@ public final class MemberModelConverters {
 
         memberBasic.setName(name);
         memberBasic.setIcon(memberRegistryParam.getIcon());
+        memberBasic.setQrCode(EMPTY_DATA.value);
         memberBasic.setGender(ofNullable(memberRegistryParam.getGender())
                 .map(gender -> {
                     assertGenderIdentity(gender, false);
@@ -85,15 +86,8 @@ public final class MemberModelConverters {
     public static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = memberBasic -> {
         if (memberBasic != null)
             return new MemberBasicInfo(memberBasic.getId(), memberBasic.getPhone(), memberBasic.getEmail(),
-                    memberBasic.getName(), memberBasic.getIcon(), memberBasic.getGender(), memberBasic.getProfile(),
+                    memberBasic.getName(), memberBasic.getIcon(), memberBasic.getQrCode(), memberBasic.getGender(), memberBasic.getProfile(),
                     memberBasic.getStatus(), memberBasic.getCreateTime(), memberBasic.getUpdateTime());
-
-        throw new BlueException(EMPTY_PARAM);
-    };
-
-    public static final Function<MemberBasic, MemberInfo> MEMBER_BASIC_2_MEMBER_INFO = memberBasic -> {
-        if (memberBasic != null)
-            return new MemberInfo(memberBasic.getId(), memberBasic.getName(), memberBasic.getIcon(), memberBasic.getGender());
 
         throw new BlueException(EMPTY_PARAM);
     };
@@ -137,14 +131,6 @@ public final class MemberModelConverters {
         return new CardDetailInfo(card.getId(), card.getMemberId(), card.getName(), card.getDetail(), card.getCoverId(),
                 card.getCoverLink(), card.getContentId(), card.getContentLink(), card.getExtra(), card.getCreateTime(), card.getUpdateTime(),
                 isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value);
-    };
-
-    public static final Function<Business, MemberBusinessInfo> MEMBER_BUSINESS_2_MEMBER_BUSINESS_INFO = business -> {
-        if (business != null)
-            return new MemberBusinessInfo(business.getId(), business.getMemberId(), business.getQrCode(), business.getProfile(),
-                    business.getExtra(), business.getStatus(), business.getCreateTime(), business.getUpdateTime());
-
-        throw new BlueException(EMPTY_PARAM);
     };
 
     public static final Function<MemberDetail, MemberDetailInfo> MEMBER_DETAIL_2_MEMBER_DETAIL_INFO = memberDetail -> {

@@ -18,13 +18,14 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import static com.blue.auth.constant.CredentialHistorySortAttribute.CREATE_TIME;
 import static com.blue.auth.converter.AuthModelConverters.CREDENTIAL_HISTORY_2_CREDENTIAL_HISTORY_INFO_CONVERTER;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.component.encoder.api.common.StringColumnEncoder.decryptString;
 import static com.blue.base.component.encoder.api.common.StringColumnEncoder.encryptString;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
@@ -56,7 +57,6 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
     }
 
     private final int HISTORY_SELECT_LIMIT;
-    private final String ORDER_COLUMN = "createTime";
 
     /**
      * insert credential history
@@ -162,7 +162,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
         CredentialHistory probe = new CredentialHistory();
         probe.setMemberId(memberId);
 
-        return credentialHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ORDER_COLUMN))).take(tarLimit)
+        return credentialHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(CREATE_TIME.attribute))).take(tarLimit)
                 .flatMap(credentialHistory -> {
                     credentialHistory.setCredential(decryptString(credentialHistory.getCredential()));
                     return just(credentialHistory);
@@ -185,7 +185,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
         CredentialHistory probe = new CredentialHistory();
         probe.setMemberId(memberId);
 
-        return credentialHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ORDER_COLUMN))).take(HISTORY_SELECT_LIMIT)
+        return credentialHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(CREATE_TIME.attribute))).take(HISTORY_SELECT_LIMIT)
                 .flatMap(credentialHistory -> {
                     credentialHistory.setCredential(decryptString(credentialHistory.getCredential()));
                     return just(CREDENTIAL_HISTORY_2_CREDENTIAL_HISTORY_INFO_CONVERTER.apply(credentialHistory));

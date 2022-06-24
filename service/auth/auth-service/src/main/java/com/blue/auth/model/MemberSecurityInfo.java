@@ -1,5 +1,7 @@
 package com.blue.auth.model;
 
+import com.blue.member.api.model.MemberBasicInfo;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public final class MemberSecurityInfo implements Serializable {
 
     private Long memberId;
 
-    private String memberName;
+    private MemberBasicInfo memberBasicInfo;
 
     private List<CredentialHistoryInfo> credentialHistoryInfos;
 
@@ -24,9 +26,9 @@ public final class MemberSecurityInfo implements Serializable {
     public MemberSecurityInfo() {
     }
 
-    public MemberSecurityInfo(Long memberId, String memberName, List<CredentialHistoryInfo> credentialHistoryInfos, List<SecurityQuestionInfo> securityQuestionInfos) {
+    public MemberSecurityInfo(Long memberId, MemberBasicInfo memberBasicInfo, List<CredentialHistoryInfo> credentialHistoryInfos, List<SecurityQuestionInfo> securityQuestionInfos) {
         this.memberId = memberId;
-        this.memberName = memberName;
+        this.memberBasicInfo = memberBasicInfo;
         this.credentialHistoryInfos = credentialHistoryInfos;
         this.securityQuestionInfos = securityQuestionInfos;
     }
@@ -39,12 +41,12 @@ public final class MemberSecurityInfo implements Serializable {
         this.memberId = memberId;
     }
 
-    public String getMemberName() {
-        return memberName;
+    public MemberBasicInfo getMemberBasicInfo() {
+        return memberBasicInfo;
     }
 
-    public void setMemberName(String memberName) {
-        this.memberName = memberName;
+    public void setMemberBasicInfo(MemberBasicInfo memberBasicInfo) {
+        this.memberBasicInfo = memberBasicInfo;
     }
 
     public List<CredentialHistoryInfo> getCredentialHistoryInfos() {
@@ -67,7 +69,7 @@ public final class MemberSecurityInfo implements Serializable {
     public String toString() {
         return "MemberSecurityInfo{" +
                 "memberId=" + memberId +
-                ", memberName='" + memberName + '\'' +
+                ", memberBasicInfo=" + memberBasicInfo +
                 ", credentialHistoryInfos=" + credentialHistoryInfos +
                 ", securityQuestionInfos=" + securityQuestionInfos +
                 '}';

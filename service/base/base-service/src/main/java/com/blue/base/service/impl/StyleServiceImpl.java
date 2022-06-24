@@ -48,6 +48,7 @@ import static com.blue.base.constant.common.BlueBoolean.TRUE;
 import static com.blue.base.constant.common.CacheKeyPrefix.ACTIVE_STYLE_PRE;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Symbol.DATABASE_WILDCARD;
 import static com.blue.base.constant.common.SyncKeyPrefix.STYLES_CACHE_PRE;
 import static com.blue.base.converter.BaseModelConverters.*;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
@@ -170,7 +171,7 @@ public class StyleServiceImpl implements StyleService {
         process(condition, SORT_ATTRIBUTE_MAPPING, StyleSortAttribute.ID.column);
 
         ofNullable(condition.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(titleLike -> condition.setNameLike("%" + titleLike + "%"));
+                .filter(StringUtils::hasText).ifPresent(titleLike -> condition.setNameLike(DATABASE_WILDCARD.identity + titleLike + DATABASE_WILDCARD.identity));
 
         return condition;
     };

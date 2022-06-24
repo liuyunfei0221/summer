@@ -73,7 +73,7 @@ public final class AesProcessor {
      * @return
      */
     public String encrypt(String originalData) {
-        if (isBlank(originalData))
+        if (isNull(originalData))
             throw new BlueException(EMPTY_PARAM);
 
         try {
@@ -91,7 +91,7 @@ public final class AesProcessor {
      * @return
      */
     public String decrypt(String encryptData) {
-        if (isBlank(encryptData))
+        if (isNull(encryptData))
             throw new BlueException(EMPTY_PARAM);
 
         try {

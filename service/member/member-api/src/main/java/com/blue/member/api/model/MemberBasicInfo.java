@@ -22,6 +22,8 @@ public final class MemberBasicInfo implements Serializable {
 
     private String icon;
 
+    private String qrCode;
+
     /**
      * @see com.blue.base.constant.member.Gender
      */
@@ -41,13 +43,13 @@ public final class MemberBasicInfo implements Serializable {
     public MemberBasicInfo() {
     }
 
-    public MemberBasicInfo(Long id, String phone, String email, String name, String icon, Integer gender,
-                           String profile, Integer status, Long createTime, Long updateTime) {
+    public MemberBasicInfo(Long id, String phone, String email, String name, String icon, String qrCode, Integer gender, String profile, Integer status, Long createTime, Long updateTime) {
         this.id = id;
         this.phone = phone;
         this.email = email;
         this.name = name;
         this.icon = icon;
+        this.qrCode = qrCode;
         this.gender = gender;
         this.profile = profile;
         this.status = status;
@@ -93,6 +95,14 @@ public final class MemberBasicInfo implements Serializable {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 
     public Integer getGender() {
@@ -143,8 +153,9 @@ public final class MemberBasicInfo implements Serializable {
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", icon='" + icon + '\'' +
+                ", qrCode='" + qrCode + '\'' +
                 ", gender=" + gender +
-                ", profile=" + profile +
+                ", profile='" + profile + '\'' +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

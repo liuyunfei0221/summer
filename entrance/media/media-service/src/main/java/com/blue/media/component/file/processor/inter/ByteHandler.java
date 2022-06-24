@@ -1,4 +1,4 @@
-package com.blue.media.component.file.inter;
+package com.blue.media.component.file.processor.inter;
 
 import com.blue.base.constant.media.ByteHandlerType;
 import com.blue.media.api.model.FileUploadResult;
@@ -8,7 +8,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * byte operate processor
+ * byte operate handler
  *
  * @author liuyunfei
  */
@@ -19,10 +19,11 @@ public interface ByteHandler {
      * write
      *
      * @param part
+     * @param type
      * @param memberId
      * @return
      */
-    Mono<FileUploadResult> write(Part part, Long memberId);
+    Mono<FileUploadResult> write(Part part, Integer type, Long memberId);
 
     /**
      * read

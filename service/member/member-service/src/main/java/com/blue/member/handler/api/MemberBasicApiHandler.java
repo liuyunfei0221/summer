@@ -1,6 +1,7 @@
 package com.blue.member.handler.api;
 
 import com.blue.base.model.common.BlueResponse;
+import com.blue.base.model.common.IdentityParam;
 import com.blue.base.model.common.StringDataParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.service.inter.MemberBasicService;
@@ -56,7 +57,24 @@ public final class MemberBasicApiHandler {
      */
     public Mono<ServerResponse> updateIcon(ServerRequest serverRequest) {
         return zip(getAccessReact(serverRequest),
-                serverRequest.bodyToMono(StringDataParam.class)
+                serverRequest.bodyToMono(IdentityParam.class)
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))))
+                .flatMap(tuple2 ->
+                        memberBasicService.updateMemberBasicIcon(tuple2.getT1().getId(), tuple2.getT2()))
+                .flatMap(mbi ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
+    }
+
+    /**
+     * update member's qrCode
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> updateQrCode(ServerRequest serverRequest) {
+        return zip(getAccessReact(serverRequest),
+                serverRequest.bodyToMono(IdentityParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))))
                 .flatMap(tuple2 ->
                         memberBasicService.updateMemberBasicIcon(tuple2.getT1().getId(), tuple2.getT2()))

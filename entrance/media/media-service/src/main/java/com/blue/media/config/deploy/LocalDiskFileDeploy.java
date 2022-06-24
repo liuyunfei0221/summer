@@ -18,6 +18,8 @@ public class LocalDiskFileDeploy {
 
     private String attrName;
 
+    private String typeName;
+
     private List<String> validTypes;
 
     private List<Character> invalidPres;
@@ -49,6 +51,14 @@ public class LocalDiskFileDeploy {
 
     public void setAttrName(String attrName) {
         this.attrName = attrName;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public List<String> getValidTypes() {
@@ -109,9 +119,10 @@ public class LocalDiskFileDeploy {
 
     @Override
     public String toString() {
-        return "FileDeploy{" +
+        return "LocalDiskFileDeploy{" +
                 "handlerType='" + handlerType + '\'' +
                 ", attrName='" + attrName + '\'' +
+                ", typeName='" + typeName + '\'' +
                 ", validTypes=" + validTypes +
                 ", invalidPres=" + invalidPres +
                 ", nameLenThreshold=" + nameLenThreshold +

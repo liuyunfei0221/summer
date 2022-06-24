@@ -1,10 +1,10 @@
-package com.blue.media.component.file.impl;
+package com.blue.media.component.file.processor.impl;
 
 import com.blue.base.common.base.Monitor;
 import com.blue.base.constant.media.ByteHandlerType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.FileUploadResult;
-import com.blue.media.component.file.inter.ByteHandler;
+import com.blue.media.component.file.processor.inter.ByteHandler;
 import com.blue.media.config.deploy.LocalDiskFileDeploy;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.codec.multipart.FilePart;
@@ -39,7 +39,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * local disk byte operate processor
+ * local disk byte operate handler
  *
  * @author liuyunfei
  */
@@ -175,11 +175,12 @@ public final class CosByteHandler implements ByteHandler {
      * write for upload
      *
      * @param part
+     * @param type
      * @param memberId
      * @return
      */
     @Override
-    public Mono<FileUploadResult> write(Part part, Long memberId) {
+    public Mono<FileUploadResult> write(Part part, Integer type, Long memberId) {
         if (isInvalidIdentity(memberId))
             throw new BlueException(INTERNAL_SERVER_ERROR);
 
@@ -192,7 +193,7 @@ public final class CosByteHandler implements ByteHandler {
                 CHANNEL_CLOSER,
                 true)
                 .flatMap(size ->
-                        just(new FileUploadResult(descName, name, true, SUCCESS_MSG, size))
+                        just(new FileUploadResult(type, descName, name, true, SUCCESS_MSG, size))
                 );
     }
 

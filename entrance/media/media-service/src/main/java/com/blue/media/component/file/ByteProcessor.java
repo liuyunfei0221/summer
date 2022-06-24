@@ -2,7 +2,8 @@ package com.blue.media.component.file;
 
 import com.blue.base.common.base.BlueChecker;
 import com.blue.media.api.model.FileUploadResult;
-import com.blue.media.component.file.inter.ByteHandler;
+import com.blue.media.component.file.preprocessor.inter.PreAndPostWriteProcessorHandler;
+import com.blue.media.component.file.processor.inter.ByteHandler;
 import com.blue.media.config.deploy.LocalDiskFileDeploy;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -15,9 +16,11 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.blue.base.common.base.BlueChecker.isEmpty;
+import static com.blue.base.common.base.BlueChecker.isNull;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
@@ -31,6 +34,12 @@ import static reactor.util.Loggers.getLogger;
 public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOGGER = getLogger(ByteProcessor.class);
+
+    /**
+     * around handler
+     */
+    //TODO
+    private Map<Integer, PreAndPostWriteProcessorHandler> preAndPostWriteProcessorHandlers = new HashMap<>();
 
     /**
      * target byte handler
@@ -66,11 +75,19 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
      * write
      *
      * @param part
+     * @param type
      * @param memberId
      * @return
      */
-    public Mono<FileUploadResult> write(Part part, Long memberId) {
-        return byteHandler.write(part, memberId);
+    public Mono<FileUploadResult> write(Part part, Integer type, Long memberId) {
+        PreAndPostWriteProcessorHandler preAndPostWriteProcessorHandler = preAndPostWriteProcessorHandlers.get(type);
+
+        return isNull(preAndPostWriteProcessorHandler)
+                ?
+                byteHandler.write(part, type, memberId)
+                :
+                byteHandler.write(preAndPostWriteProcessorHandler.preHandle(part, type, memberId), type, memberId)
+                        .flatMap(fur -> preAndPostWriteProcessorHandler.postHandle(fur, type, memberId));
     }
 
     /**

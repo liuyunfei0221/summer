@@ -1,7 +1,7 @@
 package com.blue.member.constant;
 
 /**
- * column names of country,state,city,area
+ * column names of member modules
  *
  * @author liuyunfei
  */

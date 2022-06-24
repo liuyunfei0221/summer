@@ -30,6 +30,7 @@ public class MemberBasicApiRoute {
         RouterFunction<ServerResponse> routerFunction = route()
                 .GET("", memberBasicApiHandler::getByAccess)
                 .PATCH("/icon", accept(APPLICATION_JSON), memberBasicApiHandler::updateIcon)
+                .PATCH("/qrCode", accept(APPLICATION_JSON), memberBasicApiHandler::updateQrCode)
                 .PATCH("/profile", accept(APPLICATION_JSON), memberBasicApiHandler::updateProfile)
                 .build();
 

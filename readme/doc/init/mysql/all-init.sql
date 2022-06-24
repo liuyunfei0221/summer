@@ -467,23 +467,25 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'member basic info', 'member basic info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180003, 'PATCH', 'blue-member', '/basic/icon', b'1', b'1', b'1', b'0', b'1', 1,
         'update member icon', 'update member icon', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180004, 'PATCH', 'blue-member', '/basic/profile', b'1', b'1', b'1', b'0', b'1', 1,
+       (180004, 'PATCH', 'blue-member', '/basic/qrCode', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member qrCode', 'update member qrCode', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180005, 'PATCH', 'blue-member', '/basic/profile', b'1', b'1', b'1', b'0', b'1', 1,
         'update member profile', 'update member profile', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180005, 'POST', 'blue-member', '/address', b'1', b'1', b'1', b'1', b'1', 1,
+       (180006, 'POST', 'blue-member', '/address', b'1', b'1', b'1', b'1', b'1', 1,
         'add address', 'add address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180006, 'PUT', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
+       (180007, 'PUT', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
         'update address', 'update address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180007, 'DELETE', 'blue-member', '/address/{id}', b'1', b'1', b'1', b'0', b'1', 1,
+       (180008, 'DELETE', 'blue-member', '/address/{id}', b'1', b'1', b'1', b'0', b'1', 1,
         'delete address', 'delete address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180008, 'GET', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
+       (180009, 'GET', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
         'select address for api', 'select address for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180009, 'POST', 'blue-member', '/card', b'1', b'1', b'1', b'1', b'1', 1,
+       (180010, 'POST', 'blue-member', '/card', b'1', b'1', b'1', b'1', b'1', 1,
         'add card', 'add card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180010, 'PUT', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
+       (180011, 'PUT', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
         'update card', 'update card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180011, 'DELETE', 'blue-member', '/card/{id}', b'1', b'1', b'1', b'0', b'1', 1,
+       (180012, 'DELETE', 'blue-member', '/card/{id}', b'1', b'1', b'1', b'0', b'1', 1,
         'delete card', 'delete card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180012, 'GET', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
+       (180013, 'GET', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
         'select card for api', 'select card for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- member manage
@@ -1345,6 +1347,7 @@ CREATE TABLE `member_basic_0`
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(256) DEFAULT '' COMMENT 'icon link',
+    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
     `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
@@ -1365,6 +1368,7 @@ CREATE TABLE `member_basic_1`
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
+    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
     `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
@@ -1447,7 +1451,7 @@ CREATE TABLE `member_detail_0`
     `hobby`      varchar(512) DEFAULT '' COMMENT 'hobby',
     `homepage`   varchar(255) DEFAULT '' COMMENT 'personal home page',
     `extra`      varchar(255) DEFAULT '' COMMENT 'extra info',
-    `status`     tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `status`     tinyint      DEFAULT '0' COMMENT 'data status: 1-valid 0-invalid',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY          `idx_name`(`name`) USING BTREE,
@@ -1475,7 +1479,7 @@ CREATE TABLE `member_detail_1`
     `hobby`      varchar(512) DEFAULT '' COMMENT 'hobby',
     `homepage`   varchar(255) DEFAULT '' COMMENT 'personal home page',
     `extra`      varchar(255) DEFAULT '' COMMENT 'extra info',
-    `status`     tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `status`     tinyint      DEFAULT '0' COMMENT 'data status: 1-valid 0-invalid',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY          `idx_name`(`name`) USING BTREE,
@@ -1483,32 +1487,6 @@ CREATE TABLE `member_detail_1`
     KEY          `idx_email`(`email`) USING BTREE,
     KEY          `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member detail 1';
-
-CREATE TABLE `member_business_0`
-(
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
-    `profile`     varchar(256) DEFAULT '' COMMENT 'profile',
-    `extra`       varchar(255) DEFAULT '' COMMENT 'extra info',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member_code_profile`(`member_id`,`qr_code`,`profile`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 0';
-
-CREATE TABLE `member_business_1`
-(
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
-    `profile`     varchar(256) DEFAULT '' COMMENT 'profile',
-    `extra`       varchar(255) DEFAULT '' COMMENT 'extra info',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member_code_profile`(`member_id`,`qr_code`,`profile`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 1';
 
 CREATE TABLE `undo_log_0`
 (
@@ -1551,6 +1529,7 @@ CREATE TABLE `member_basic_0`
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(256) DEFAULT '' COMMENT 'icon link',
+    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
     `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
@@ -1571,6 +1550,7 @@ CREATE TABLE `member_basic_1`
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
     `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
+    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
     `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
     `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
@@ -1653,7 +1633,7 @@ CREATE TABLE `member_detail_0`
     `hobby`       varchar(512) DEFAULT '' COMMENT 'hobby',
     `homepage`    varchar(255) DEFAULT '' COMMENT 'personal home page',
     `extra`       varchar(255) DEFAULT '' COMMENT 'extra info',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `status`      tinyint      DEFAULT '0' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
@@ -1683,7 +1663,7 @@ CREATE TABLE `member_detail_1`
     `hobby`       varchar(512) DEFAULT '' COMMENT 'hobby',
     `homepage`    varchar(255) DEFAULT '' COMMENT 'personal home page',
     `extra`       varchar(255) DEFAULT '' COMMENT 'extra info',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `status`      tinyint      DEFAULT '0' COMMENT 'data status: 1-valid 0-invalid',
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
@@ -1693,34 +1673,6 @@ CREATE TABLE `member_detail_1`
     KEY           `idx_email`(`email`) USING BTREE,
     KEY           `idx_country_state_city`(`country_id`,`state_id`,`city_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member detail 1';
-
-CREATE TABLE `member_business_0`
-(
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
-    `profile`     varchar(256) DEFAULT '' COMMENT 'profile',
-    `extra`       varchar(255) DEFAULT '' COMMENT 'extra info',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member_code_profile`(`member_id`,`qr_code`,`profile`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 0';
-
-CREATE TABLE `member_business_1`
-(
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
-    `profile`     varchar(256) DEFAULT '' COMMENT 'profile',
-    `extra`       varchar(255) DEFAULT '' COMMENT 'extra info',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_member_code_profile`(`member_id`,`qr_code`,`profile`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member business 1';
 
 CREATE TABLE `undo_log_0`
 (

@@ -40,8 +40,7 @@ import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.verify.BusinessType.REGISTER;
 import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static com.blue.base.constant.verify.VerifyType.SMS;
-import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_INFO;
-import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
+import static com.blue.member.converter.MemberModelConverters.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -144,11 +143,11 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         //init finance account
         rpcFinanceControlServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));
 
-        @SuppressWarnings("UnnecessaryLocalVariable")
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
 
-//        if (1 == 1)
-//            throw new BlueException(666, 666, "test rollback");
+        //noinspection ConstantConditions
+        if (1 == 1)
+            throw new BlueException(666, 666, "test rollback");
 
         return memberBasicInfo;
     }
@@ -232,7 +231,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
                                         Map<Long, List<RoleInfo>> memberIdAndRoleInfoMapping = relationInfos.stream().collect(toMap(MemberRoleInfo::getMemberId, MemberRoleInfo::getRoleInfos, (a, b) -> b));
                                         return just(members.stream()
                                                 .map(memberBasic ->
-                                                        new MemberAuthorityInfo(MEMBER_BASIC_2_MEMBER_INFO.apply(memberBasic), memberIdAndRoleInfoMapping.get(memberBasic.getId()))
+                                                        new MemberAuthorityInfo(MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(memberBasic), memberIdAndRoleInfoMapping.get(memberBasic.getId()))
                                                 ).collect(toList()));
                                     })
                             :

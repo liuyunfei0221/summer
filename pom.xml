@@ -39,15 +39,14 @@
         <zkclient.version>0.11</zkclient.version>
         <seata-spring.version>1.4.2</seata-spring.version>
         <spring-mybatis.version>2.2.2</spring-mybatis.version>
-        <groovy.version>3.0.11</groovy.version>
         <apache.curator.version>5.2.1</apache.curator.version>
         <commons-pool2.version>2.11.1</commons-pool2.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-codec.version>1.15</commons-codec.version>
         <gson.version>2.9.0</gson.version>
         <java-jwt.version>3.19.2</java-jwt.version>
-        <redisson.version>3.17.3</redisson.version>
-        <elasticsearch.version>8.2.2</elasticsearch.version>
+        <redisson.version>3.17.4</redisson.version>
+        <elasticsearch.version>8.2.3</elasticsearch.version>
         <zxing.version>3.5.0</zxing.version>
         <caffeine.version>3.1.1</caffeine.version>
         <apache.poi.version>5.2.2</apache.poi.version>

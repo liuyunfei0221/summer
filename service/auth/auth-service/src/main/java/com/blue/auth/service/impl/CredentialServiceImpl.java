@@ -88,7 +88,6 @@ public class CredentialServiceImpl implements CredentialService {
         LOGGER.info("Mono<Optional<Credential>> getCredentialByCredentialAndType(String credential, String credentialType), credential = {}, credentialType = {}", credential, credentialType);
         if (isBlank(credential))
             throw new BlueException(EMPTY_PARAM);
-
         assertCredentialType(credentialType, false);
 
         return ofNullable(credentialMapper.getByCredentialAndType(credential, credentialType));

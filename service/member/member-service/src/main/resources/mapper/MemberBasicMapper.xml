@@ -12,6 +12,7 @@
         <result column="name" jdbcType="VARCHAR" property="name"
                 typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="qr_code" jdbcType="VARCHAR" property="qrCode"/>
         <result column="gender" jdbcType="TINYINT" property="gender"/>
         <result column="profile" jdbcType="VARCHAR" property="profile"
                 typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
@@ -23,18 +24,18 @@
 
     <sql id="Base_Column_List">
         id
-        , phone, email, name, icon, gender, `profile`, source, status, create_time, update_time
+        , phone, email, name, icon, qr_code, gender, `profile`, source, status, create_time, update_time
     </sql>
 
     <insert id="insert" parameterType="com.blue.member.repository.entity.MemberBasic">
-        insert into member_basic (id, phone, email, name, icon,
+        insert into member_basic (id, phone, email, name, icon, qr_code,
                                   gender, `profile`, source, status,
                                   create_time, update_time)
         values (#{id,jdbcType=BIGINT},
                 #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
-                #{icon,jdbcType=VARCHAR}, #{gender,jdbcType=TINYINT},
+                #{icon,jdbcType=VARCHAR}, #{qrCode,jdbcType=VARCHAR}, #{gender,jdbcType=TINYINT},
                 #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{source,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
                 #{updateTime,jdbcType=BIGINT})
@@ -57,6 +58,9 @@
             </if>
             <if test="icon != null">
                 icon,
+            </if>
+            <if test="qrCode != null">
+                qr_code,
             </if>
             <if test="gender != null">
                 gender,
@@ -93,6 +97,9 @@
             <if test="icon != null">
                 #{icon,jdbcType=VARCHAR},
             </if>
+            <if test="qrCode != null">
+                #{qrCode,jdbcType=VARCHAR},
+            </if>
             <if test="gender != null">
                 #{gender,jdbcType=TINYINT},
             </if>
@@ -120,6 +127,7 @@
             email       = #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             name        = #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             icon        = #{icon,jdbcType=VARCHAR},
+            qr_code     = #{qrCode,jdbcType=VARCHAR},
             gender      = #{gender,jdbcType=TINYINT},
             `profile`   = #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             source      = #{source,jdbcType=VARCHAR},
@@ -143,6 +151,9 @@
             </if>
             <if test="icon != null">
                 icon = #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="qrCode != null">
+                qr_code = #{qrCode,jdbcType=VARCHAR},
             </if>
             <if test="gender != null">
                 gender = #{gender,jdbcType=TINYINT},
@@ -176,6 +187,13 @@
     <update id="updateIcon">
         UPDATE member_basic
         SET icon        = #{icon,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateQrCode">
+        UPDATE member_basic
+        SET qr_code     = #{qrCode,jdbcType=VARCHAR},
             update_time = #{updateTime,jdbcType=BIGINT}
         WHERE id = #{id,jdbcType=BIGINT}
     </update>

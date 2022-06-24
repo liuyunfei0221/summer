@@ -1,7 +1,7 @@
 package com.blue.member.model;
 
 import com.blue.auth.api.model.RoleInfo;
-import com.blue.member.api.model.MemberInfo;
+import com.blue.member.api.model.MemberBasicInfo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,24 +16,24 @@ public final class MemberAuthorityInfo implements Serializable {
 
     private static final long serialVersionUID = 225423587277804228L;
 
-    private MemberInfo memberInfo;
+    private MemberBasicInfo memberBasicInfo;
 
     private List<RoleInfo> roleInfos;
 
     public MemberAuthorityInfo() {
     }
 
-    public MemberAuthorityInfo(MemberInfo memberInfo, List<RoleInfo> roleInfos) {
-        this.memberInfo = memberInfo;
+    public MemberAuthorityInfo(MemberBasicInfo memberBasicInfo, List<RoleInfo> roleInfos) {
+        this.memberBasicInfo = memberBasicInfo;
         this.roleInfos = roleInfos;
     }
 
-    public MemberInfo getMemberInfo() {
-        return memberInfo;
+    public MemberBasicInfo getMemberBasicInfo() {
+        return memberBasicInfo;
     }
 
-    public void setMemberInfo(MemberInfo memberInfo) {
-        this.memberInfo = memberInfo;
+    public void setMemberBasicInfo(MemberBasicInfo memberBasicInfo) {
+        this.memberBasicInfo = memberBasicInfo;
     }
 
     public List<RoleInfo> getRoleInfos() {
@@ -47,7 +47,7 @@ public final class MemberAuthorityInfo implements Serializable {
     @Override
     public String toString() {
         return "MemberAuthorityInfo{" +
-                "memberInfo=" + memberInfo +
+                "memberBasicInfo=" + memberBasicInfo +
                 ", roleInfos=" + roleInfos +
                 '}';
     }

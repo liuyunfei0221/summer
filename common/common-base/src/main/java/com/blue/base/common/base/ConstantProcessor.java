@@ -2,15 +2,16 @@ package com.blue.base.common.base;
 
 import com.blue.base.constant.analyze.StatisticsRange;
 import com.blue.base.constant.analyze.StatisticsType;
-import com.blue.base.constant.common.*;
 import com.blue.base.constant.article.ArticleType;
 import com.blue.base.constant.article.SubjectType;
+import com.blue.base.constant.auth.CredentialType;
+import com.blue.base.constant.auth.DeviceType;
+import com.blue.base.constant.auth.ResourceType;
+import com.blue.base.constant.common.*;
+import com.blue.base.constant.media.AttachmentType;
 import com.blue.base.constant.member.Gender;
 import com.blue.base.constant.member.SourceType;
 import com.blue.base.constant.portal.BulletinType;
-import com.blue.base.constant.auth.DeviceType;
-import com.blue.base.constant.auth.CredentialType;
-import com.blue.base.constant.auth.ResourceType;
 import com.blue.base.constant.portal.StyleType;
 import com.blue.base.constant.verify.BusinessType;
 import com.blue.base.constant.verify.VerifyType;
@@ -22,7 +23,8 @@ import java.util.Map;
 
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -69,6 +71,12 @@ public final class ConstantProcessor {
      */
     private static final Map<String, MediaType> FILE_MEDIA_TYPE_MAPPING =
             of(BlueFileType.values()).collect(toMap(bft -> bft.identity.toLowerCase(), bft -> bft.mediaType));
+
+    /**
+     * attachment type identity and attachment type mapping
+     */
+    private static final Map<Integer, AttachmentType> ATTACHMENT_TYPE_MAPPING =
+            of(AttachmentType.values()).collect(toMap(at -> at.identity, at -> at));
 
     /**
      * valid resource type identity and type mapping
@@ -228,6 +236,20 @@ public final class ConstantProcessor {
             return;
 
         if (isBlank(identity) || !FILE_MEDIA_TYPE_MAPPING.containsKey(identity.toLowerCase()))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert attachment type
+     *
+     * @param identity
+     * @return
+     */
+    public static void assertAttachmentType(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!ATTACHMENT_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -530,6 +552,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         return mediaType;
+    }
+
+    /**
+     * get attachment type by attachment identity
+     *
+     * @param identity
+     * @return
+     */
+    public static AttachmentType getAttachmentTypeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        AttachmentType attachmentType = ATTACHMENT_TYPE_MAPPING.get(identity);
+        if (isNull(attachmentType))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return attachmentType;
     }
 
     /**

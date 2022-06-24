@@ -312,10 +312,8 @@ dubbo:
   registry:
     id: summer-registry
     client: curator
-    zone: summer
     protocol: zookeeper
     address: zookeeper://43.138.111.53:2181
-    group: summer
     file: D:/locallogs/dubbo/message/registry.properties
     check: false
     timeout: 120000

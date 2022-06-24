@@ -42,6 +42,7 @@ import static com.blue.base.constant.common.Default.DEFAULT;
 import static com.blue.base.constant.common.Default.NOT_DEFAULT;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Symbol.DATABASE_WILDCARD;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -144,7 +145,7 @@ public class RoleServiceImpl implements RoleService {
         process(condition, SORT_ATTRIBUTE_MAPPING, RoleSortAttribute.ID.column);
 
         ofNullable(condition.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike("%" + nameLike + "%"));
+                .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike(DATABASE_WILDCARD.identity + nameLike + DATABASE_WILDCARD.identity));
 
         return condition;
     };

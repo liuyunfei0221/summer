@@ -12,6 +12,13 @@ public final class FileUploadResult implements Serializable {
 
     private static final long serialVersionUID = -6671532943914698022L;
 
+    /**
+     * attachment type
+     *
+     * @see com.blue.base.constant.media.AttachmentType
+     */
+    private Integer type;
+
     private String destination;
 
     private String resource;
@@ -25,12 +32,21 @@ public final class FileUploadResult implements Serializable {
     public FileUploadResult() {
     }
 
-    public FileUploadResult(String destination, String resource, boolean success, String message, Long length) {
+    public FileUploadResult(Integer type, String destination, String resource, boolean success, String message, Long length) {
+        this.type = type;
         this.destination = destination;
         this.resource = resource;
         this.success = success;
         this.message = message;
         this.length = length;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getDestination() {
@@ -76,7 +92,8 @@ public final class FileUploadResult implements Serializable {
     @Override
     public String toString() {
         return "FileUploadResult{" +
-                "destination='" + destination + '\'' +
+                "type=" + type +
+                ", destination='" + destination + '\'' +
                 ", resource='" + resource + '\'' +
                 ", success=" + success +
                 ", message='" + message + '\'' +

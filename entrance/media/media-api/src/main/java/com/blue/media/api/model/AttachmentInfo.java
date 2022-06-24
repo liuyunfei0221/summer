@@ -14,6 +14,13 @@ public final class AttachmentInfo implements Serializable {
 
     private Long id;
 
+    /**
+     * attachment type
+     *
+     * @see com.blue.base.constant.media.AttachmentType
+     */
+    private Integer type;
+
     private String link;
 
     private String name;
@@ -31,8 +38,9 @@ public final class AttachmentInfo implements Serializable {
     public AttachmentInfo() {
     }
 
-    public AttachmentInfo(Long id, String link, String name, String fileType, Long size, Integer status, Long createTime, Long creator) {
+    public AttachmentInfo(Long id, Integer type, String link, String name, String fileType, Long size, Integer status, Long createTime, Long creator) {
         this.id = id;
+        this.type = type;
         this.link = link;
         this.name = name;
         this.fileType = fileType;
@@ -48,6 +56,14 @@ public final class AttachmentInfo implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getLink() {
@@ -110,6 +126,7 @@ public final class AttachmentInfo implements Serializable {
     public String toString() {
         return "AttachmentInfo{" +
                 "id=" + id +
+                ", type=" + type +
                 ", link='" + link + '\'' +
                 ", name='" + name + '\'' +
                 ", fileType='" + fileType + '\'' +

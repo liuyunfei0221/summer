@@ -1,5 +1,6 @@
 package com.blue.member.service.inter;
 
+import com.blue.base.model.common.IdentityParam;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.common.StringDataParam;
@@ -39,10 +40,19 @@ public interface MemberBasicService {
      * update member's icon
      *
      * @param id
-     * @param stringDataParam
+     * @param identityParam
      * @return
      */
-    Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, StringDataParam stringDataParam);
+    Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, IdentityParam identityParam);
+
+    /**
+     * update member's qrCode
+     *
+     * @param id
+     * @param identityParam
+     * @return
+     */
+    Mono<MemberBasicInfo> updateMemberBasicQrCode(Long id, IdentityParam identityParam);
 
     /**
      * update member's profile

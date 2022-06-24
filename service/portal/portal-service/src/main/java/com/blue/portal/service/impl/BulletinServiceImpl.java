@@ -46,6 +46,7 @@ import static com.blue.base.constant.common.CacheKeyPrefix.BULLETINS_PRE;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.base.constant.common.Symbol.DATABASE_WILDCARD;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
@@ -158,9 +159,9 @@ public class BulletinServiceImpl implements BulletinService {
         process(condition, SORT_ATTRIBUTE_MAPPING, BulletinSortAttribute.ID.column);
 
         ofNullable(condition.getTitleLike())
-                .filter(StringUtils::hasText).ifPresent(titleLike -> condition.setTitleLike("%" + titleLike + "%"));
+                .filter(StringUtils::hasText).ifPresent(titleLike -> condition.setTitleLike(DATABASE_WILDCARD.identity + titleLike + DATABASE_WILDCARD.identity));
         ofNullable(condition.getLinkLike())
-                .filter(StringUtils::hasText).ifPresent(linkLike -> condition.setLinkLike("%" + linkLike + "%"));
+                .filter(StringUtils::hasText).ifPresent(linkLike -> condition.setLinkLike(DATABASE_WILDCARD.identity + linkLike + DATABASE_WILDCARD.identity));
 
         return condition;
     };

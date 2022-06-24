@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "066d52fa-1d6f-40d0-9459-09c7f16f9d63",
+		"_postman_id": "c93b6c4c-1d09-4aa9-85e3-9ae4fa793683",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11135497"
@@ -1196,7 +1196,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMDdjMTJhY2FjMmFkY2ZmYTAxZTFkY2Y3ZDJjM2UwZDk5MDRlZmZkMzhlN2IyMjk2NTZmMGE1MTE1YjU1OWRiMjZiMTI1NGUyM2JiZDVkMDI2ODkyOGQwYTllNGVhZDM2MDlmNTkwNWJhZjIxNDk1OTMzNWU0MDgwMjc5MjQ3NTciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxMjUyMSIsIm5iZiI6MTY1NTgxMjUyMSwidCI6IkNQTGlFblhLUXdoIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ5MDQyOTI5OTM3MDAxX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTg4NTIxOTMxLCJpIjoiMzk3NDkwNDI5Mjk5MzcwMDEiLCJleHAiOjE2NjM1ODg1MjEsImlhdCI6MTY1NTgxMjUyMSwianRpIjoiV1dIcWZVMm1mYUZhT2hsTkRaSjg3azdsWlJBZnBxcUwiLCJuIjoiUFZBUiJ9.FuFOxHTD5FeXP1jThVAj5O24qVjAh1BBYWSb9Q_Do_l341zJ4GL-vE4sowcls0asBRO9RvzeTBPdUv7hzFZt3w",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiOTM0MDFkMGVmYWUyNWRmNGJmOTc4OTE1NThmNzBhMjU1OWRkZDUzNTUyZjk4MmJkMTA3YzA4ODlkOWU3ZmQ0NjBiNDZiOGM3ODZjY2NlZmVmNWQ4YTg5YjU2OGYyM2QxN2FiMjIzYmIxM2E2ODE1MDk4ODY3MmI3MjY1YjU1YWUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NjA2MjM0NiIsIm5iZiI6MTY1NjA2MjM0NiwidCI6InVYVkR1Mjc4czNKIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzODM4MzQ2Njc4LCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM4MzgzNDYsImlhdCI6MTY1NjA2MjM0NiwianRpIjoiTHlWRzBCNEI0Rk5wUk1IRTN5NzBSWXBrV2RkeDI4VjAiLCJuIjoiUFZBUiJ9.IHWcJNkcKE1npZfUUv3p8vgRX4sX1DjNtFpPCGF2HamDk--ccOaadS0YfRXIpXlhV0qrOVCRbWgVFVketKWong",
 								"type": "text"
 							}
 						],
@@ -1946,7 +1946,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiODRkMTgzNzRlM2MxYjYwZTU4NzgzYjNjOWJkMjFhOGY3MTM3ZTQ2ZDJlNWY5YjhlN2ZmMzY2MGNlZDczNWU1OGExZjhmYTE1NWMwN2Q0NzNmMzI4ZGE5MDNjMWRhODNiMTJjMmNmOWY1ZGM5ZTRiYmU3NjRhMjc4NDAyZTY1YTUiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MTE1MTM3MCIsIm5iZiI6MTY1MTE1MTM3MCwidCI6ImRndzViNlRvMk1FIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDc0NjA1MzQ5NjQwNjAxOV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1ODkyNzM3MDA3OSwiaSI6IjM0NzQ2MDUzNDk2NDA2MDE5IiwiZXhwIjoxNjU4OTI3MzcwLCJpYXQiOjE2NTExNTEzNzAsImp0aSI6Ikt1R3dQNFNQQVlReGVmQWkwTlRnQTFRdTI5RTh3Y0ZKIiwibiI6IlBWQVIifQ.IN7NI7h6Qch256XM204C4D6UPJuuvuloqiVLV8yZfVJNL6iVpxrmFKOK0iJq8HAJehY4FyEY62dN8fQql7T8pA",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYTQyNWNjMzU0YjM1ZmZkYzVkY2M0NmM1NTg1NzMyZjU4MThkNTEwZjM3MGEzY2Y4ZDAxYjkyMzE5NTYxMWI0ZmYzMjQwZTJkNTVlNTczOTY0ZjI0NjMxNWFjYjhlZGMyMjc4NTE2Zjg5NjJmMmIxMjg5NTFjMjA0NjhmOTJmNWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NjA2MjQyNSIsIm5iZiI6MTY1NjA2MjQyNSwidCI6ImdrODc2U3VGR2RvIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzODM4NDI1OTUyLCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM4Mzg0MjUsImlhdCI6MTY1NjA2MjQyNSwianRpIjoiSUw3b1BYamIwNjFYRzZVcDBUcjhiZ3lkNUFKT3M2ZlEiLCJuIjoiUFZBUiJ9.Apzohg4ssePu5y8X9FllMY6zW81PiYRNA-Pfl8tsLp7HPbs43xRLr85ryhbQ9F8CbgHL2KWGLgyctZYlX8_xkw",
 								"type": "text"
 							}
 						],
@@ -1955,7 +1955,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:11000/blue-auth/manager/auth/security/34746053496406021",
+							"raw": "localhost:11000/blue-auth/manager/auth/security/39940008987075870",
 							"host": [
 								"localhost"
 							],
@@ -1965,7 +1965,7 @@
 								"manager",
 								"auth",
 								"security",
-								"34746053496406021"
+								"39940008987075870"
 							]
 						}
 					},
@@ -2634,7 +2634,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiN2I1NmNiMDEzZTY3MmU1MmJkNThiYzNjM2E1MzgzYTBmYjFiZGNiNzQ5ZGNhMjQ3ZWVmMGM5NDhjMjk0N2VmMGNlODUxMzg3YmE1ODIyZjU2YWJjYmFjOWI5ZDFlMzA2MzRiZTFlNmM1MDU3MmZkMzYyZTJmMTAxYzRjMTEwMjAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTk3ODgzNyIsIm5iZiI6MTY1NTk3ODgzNywidCI6ImxVUTVURndBeHgwIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNzU0ODM3NDk5LCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM3NTQ4MzcsImlhdCI6MTY1NTk3ODgzNywianRpIjoiMlBxV2pZeXJhQndybGRjM1JBVkQ2Yno0NWhObGZmRG0iLCJuIjoiUFZBUiJ9.B-_Ub2hp2w0eE789cEtz7vGbKFEaoYMZfVIlKxINWGxurg7U4sKD3uTAaomreWv6AEpR0i--CO8NJ8LyPPIy-A",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYTQyNWNjMzU0YjM1ZmZkYzVkY2M0NmM1NTg1NzMyZjU4MThkNTEwZjM3MGEzY2Y4ZDAxYjkyMzE5NTYxMWI0ZmYzMjQwZTJkNTVlNTczOTY0ZjI0NjMxNWFjYjhlZGMyMjc4NTE2Zjg5NjJmMmIxMjg5NTFjMjA0NjhmOTJmNWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NjA2MjQyNSIsIm5iZiI6MTY1NjA2MjQyNSwidCI6ImdrODc2U3VGR2RvIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzODM4NDI1OTUyLCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM4Mzg0MjUsImlhdCI6MTY1NjA2MjQyNSwianRpIjoiSUw3b1BYamIwNjFYRzZVcDBUcjhiZ3lkNUFKT3M2ZlEiLCJuIjoiUFZBUiJ9.Apzohg4ssePu5y8X9FllMY6zW81PiYRNA-Pfl8tsLp7HPbs43xRLr85ryhbQ9F8CbgHL2KWGLgyctZYlX8_xkw",
 								"type": "text"
 							}
 						],
@@ -2669,7 +2669,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiN2I1NmNiMDEzZTY3MmU1MmJkNThiYzNjM2E1MzgzYTBmYjFiZGNiNzQ5ZGNhMjQ3ZWVmMGM5NDhjMjk0N2VmMGNlODUxMzg3YmE1ODIyZjU2YWJjYmFjOWI5ZDFlMzA2MzRiZTFlNmM1MDU3MmZkMzYyZTJmMTAxYzRjMTEwMjAiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTk3ODgzNyIsIm5iZiI6MTY1NTk3ODgzNywidCI6ImxVUTVURndBeHgwIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNzU0ODM3NDk5LCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM3NTQ4MzcsImlhdCI6MTY1NTk3ODgzNywianRpIjoiMlBxV2pZeXJhQndybGRjM1JBVkQ2Yno0NWhObGZmRG0iLCJuIjoiUFZBUiJ9.B-_Ub2hp2w0eE789cEtz7vGbKFEaoYMZfVIlKxINWGxurg7U4sKD3uTAaomreWv6AEpR0i--CO8NJ8LyPPIy-A",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYTQyNWNjMzU0YjM1ZmZkYzVkY2M0NmM1NTg1NzMyZjU4MThkNTEwZjM3MGEzY2Y4ZDAxYjkyMzE5NTYxMWI0ZmYzMjQwZTJkNTVlNTczOTY0ZjI0NjMxNWFjYjhlZGMyMjc4NTE2Zjg5NjJmMmIxMjg5NTFjMjA0NjhmOTJmNWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NjA2MjQyNSIsIm5iZiI6MTY1NjA2MjQyNSwidCI6ImdrODc2U3VGR2RvIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzODM4NDI1OTUyLCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM4Mzg0MjUsImlhdCI6MTY1NjA2MjQyNSwianRpIjoiSUw3b1BYamIwNjFYRzZVcDBUcjhiZ3lkNUFKT3M2ZlEiLCJuIjoiUFZBUiJ9.Apzohg4ssePu5y8X9FllMY6zW81PiYRNA-Pfl8tsLp7HPbs43xRLr85ryhbQ9F8CbgHL2KWGLgyctZYlX8_xkw",
 								"type": "text"
 							}
 						],
@@ -3669,7 +3669,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"4300245\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"1433885\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/auth/login",
@@ -3698,7 +3698,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMjhiMDlhMWM4MDk0YTk5YjU2MGI2YWRlOGRlOTIzZDgzNjk5MjNjNjY5Njk2NGQwY2VmZGU0ODVlZDdlODBiMzQ3YzYzM2U3ZDUzMmYwNmRmNDdhMTUwNzhhYjgzZjdiYmQ1YjExYzljYmMzMmUyYjYxZTE0OWUxMmUwOTJhYzciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTk4NzYwMSIsIm5iZiI6MTY1NTk4NzYwMSwidCI6IkprZGVQd0hJRm1xIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5OTQwMDA4OTg3MDY2MzY5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNzYzNjAxOTA1LCJpIjoiMzk5NDAwMDg5ODcwNjYzNjkiLCJleHAiOjE2NjM3NjM2MDEsImlhdCI6MTY1NTk4NzYwMSwianRpIjoiNmtsMFRKWHdSRFhueVBsbjhacW5mUzhMNUNEcFQwdGciLCJuIjoiUFZBUiJ9.sTCsavIH1-PIczig3KzrVQOZDJr_5qLj1mODTJquyt6kcopRQlOPG3IETLilP864RR_918vxfngH0TAgvrLrFA",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYTQyNWNjMzU0YjM1ZmZkYzVkY2M0NmM1NTg1NzMyZjU4MThkNTEwZjM3MGEzY2Y4ZDAxYjkyMzE5NTYxMWI0ZmYzMjQwZTJkNTVlNTczOTY0ZjI0NjMxNWFjYjhlZGMyMjc4NTE2Zjg5NjJmMmIxMjg5NTFjMjA0NjhmOTJmNWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NjA2MjQyNSIsIm5iZiI6MTY1NjA2MjQyNSwidCI6ImdrODc2U3VGR2RvIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzODM4NDI1OTUyLCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM4Mzg0MjUsImlhdCI6MTY1NjA2MjQyNSwianRpIjoiSUw3b1BYamIwNjFYRzZVcDBUcjhiZ3lkNUFKT3M2ZlEiLCJuIjoiUFZBUiJ9.Apzohg4ssePu5y8X9FllMY6zW81PiYRNA-Pfl8tsLp7HPbs43xRLr85ryhbQ9F8CbgHL2KWGLgyctZYlX8_xkw",
 								"type": "text"
 							}
 						],
@@ -3758,13 +3758,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYTBkZWQyNDJmOWZiYzk5MDc1Mzk0N2M1MzI3OGFiMmQxODNhMGQyNjZmMzJhMDA0OTg5OGZmZjI5NTFhZTc4ZmFhOGRjZGVkZTVjZGJkNjIxYzNhYjY4NmY1Yjg0ODI0YTE2ZGNhZDk5OWEwMTUwYmY5Y2I5Njg1ZGYyYzNmNzIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MTE1MjIwMSIsIm5iZiI6MTY1MTE1MjIwMSwidCI6Ik1JUXBMeUx5VTNlIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDc0NjA1MzQ5NjQwNjAyMV9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1ODkyODIwMTE4NCwiaSI6IjM0NzQ2MDUzNDk2NDA2MDIxIiwiZXhwIjoxNjU4OTI4MjAxLCJpYXQiOjE2NTExNTIyMDEsImp0aSI6InF5Qng1MkhpQTRWUmlEdjV2dlk0Vkx5Yno0U0FkclhpIiwibiI6IlBWQVIifQ.o_YvrJOVNepBl-tk4mSPE-pAQ2DAtYJt-xLRNduTBlnshEPmd4y4r9uUmMzs6bB7dAm_n6V_ZUHh45BphJueGw",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYTQyNWNjMzU0YjM1ZmZkYzVkY2M0NmM1NTg1NzMyZjU4MThkNTEwZjM3MGEzY2Y4ZDAxYjkyMzE5NTYxMWI0ZmYzMjQwZTJkNTVlNTczOTY0ZjI0NjMxNWFjYjhlZGMyMjc4NTE2Zjg5NjJmMmIxMjg5NTFjMjA0NjhmOTJmNWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NjA2MjQyNSIsIm5iZiI6MTY1NjA2MjQyNSwidCI6ImdrODc2U3VGR2RvIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzODM4NDI1OTUyLCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM4Mzg0MjUsImlhdCI6MTY1NjA2MjQyNSwianRpIjoiSUw3b1BYamIwNjFYRzZVcDBUcjhiZ3lkNUFKT3M2ZlEiLCJuIjoiUFZBUiJ9.Apzohg4ssePu5y8X9FllMY6zW81PiYRNA-Pfl8tsLp7HPbs43xRLr85ryhbQ9F8CbgHL2KWGLgyctZYlX8_xkw",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"credential\":\"liuyunfei0221@outloot.com\",\r\n    \"verificationCode\":\"6836431\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"credential\":\"liuyunfei0221@outloot.com\",\r\n    \"verificationCode\":\"3964839\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/auth/credential",

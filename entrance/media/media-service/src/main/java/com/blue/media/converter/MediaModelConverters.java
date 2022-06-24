@@ -34,7 +34,7 @@ public final class MediaModelConverters {
         if (isNull(attachment))
             throw new BlueException(EMPTY_PARAM);
 
-        return new AttachmentUploadInfo(attachment.getId(), attachment.getName(), attachment.getSize());
+        return new AttachmentUploadInfo(attachment.getId(), attachment.getType(), attachment.getName(), attachment.getSize());
     };
 
     /**
@@ -52,7 +52,7 @@ public final class MediaModelConverters {
         if (isNull(attachment))
             throw new BlueException(EMPTY_PARAM);
 
-        return new AttachmentInfo(attachment.getId(), attachment.getLink(), attachment.getName(), attachment.getFileType(), attachment.getSize(), attachment.getStatus(), attachment.getCreateTime(), attachment.getCreator());
+        return new AttachmentInfo(attachment.getId(), attachment.getType(), attachment.getLink(), attachment.getName(), attachment.getFileType(), attachment.getSize(), attachment.getStatus(), attachment.getCreateTime(), attachment.getCreator());
     };
 
     /**
@@ -62,7 +62,7 @@ public final class MediaModelConverters {
         if (isNull(attachment))
             throw new BlueException(EMPTY_PARAM);
 
-        return new AttachmentDetailInfo(attachment.getId(), attachment.getName(), attachment.getSize(),
+        return new AttachmentDetailInfo(attachment.getId(), attachment.getType(), attachment.getLink(), attachment.getName(), attachment.getSize(),
                 attachment.getStatus(), attachment.getCreateTime(), attachment.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value);
     };
 

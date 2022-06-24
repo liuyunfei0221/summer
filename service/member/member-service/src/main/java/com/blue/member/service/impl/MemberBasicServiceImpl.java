@@ -1,17 +1,16 @@
 package com.blue.member.service.impl;
 
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.common.InvalidAuthEvent;
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
-import com.blue.base.model.common.StringDataParam;
+import com.blue.base.model.common.*;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
+import com.blue.media.api.model.AttachmentInfo;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.config.deploy.MemberDeploy;
 import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.event.producer.InvalidAuthProducer;
 import com.blue.member.model.MemberBasicCondition;
+import com.blue.member.remote.consumer.RpcAttachmentServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.repository.mapper.MemberBasicMapper;
 import com.blue.member.service.inter.MemberBasicService;
@@ -23,16 +22,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
+import reactor.util.function.Tuple2;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
@@ -75,16 +72,20 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
+    private RpcAttachmentServiceConsumer rpcAttachmentServiceConsumer;
+
     private StringRedisTemplate stringRedisTemplate;
 
     private ExecutorService executorService;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MemberBasicServiceImpl(InvalidAuthProducer invalidAuthProducer, MemberBasicMapper memberBasicMapper, BlueIdentityProcessor blueIdentityProcessor,
-                                  StringRedisTemplate stringRedisTemplate, ExecutorService executorService, MemberDeploy memberDeploy) {
+                                  RpcAttachmentServiceConsumer rpcAttachmentServiceConsumer, StringRedisTemplate stringRedisTemplate,
+                                  ExecutorService executorService, MemberDeploy memberDeploy) {
         this.invalidAuthProducer = invalidAuthProducer;
         this.memberBasicMapper = memberBasicMapper;
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.rpcAttachmentServiceConsumer = rpcAttachmentServiceConsumer;
         this.stringRedisTemplate = stringRedisTemplate;
         this.executorService = executorService;
 
@@ -157,7 +158,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
         Map<Long, String> idAndCacheKeyMapping = ids.stream().distinct().collect(toMap(id -> id, MEMBER_CACHE_KEY_GENERATOR, (a, b) -> a));
 
-        List<Object> strObjs = stringRedisTemplate.executePipelined((RedisCallback<String>) connection -> {
+        List<Object> nullableStrObjs = stringRedisTemplate.executePipelined((RedisCallback<String>) connection -> {
             for (String cacheKey : idAndCacheKeyMapping.values())
                 connection.get(cacheKey.getBytes(UTF_8));
             return null;
@@ -166,9 +167,14 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         List<MemberBasic> result = new ArrayList<>(idAndCacheKeyMapping.size());
 
         MemberBasic memberBasic;
-        for (Object strObj : strObjs)
-            if (isNotNull(strObj)) {
-                memberBasic = GSON.fromJson(String.valueOf(strObj), MemberBasic.class);
+        for (Object nullableStr : nullableStrObjs)
+            if (isNotNull(nullableStr)) {
+                try {
+                    memberBasic = GSON.fromJson(String.valueOf(nullableStr), MemberBasic.class);
+                } catch (Exception e) {
+                    LOGGER.error("MEMBER_BASICS_WITH_REDIS_CACHE_GETTER, deSerialize failed, nullableStr = {}, idAndCacheKeyMapping = {}, e = {}", nullableStr, idAndCacheKeyMapping, e);
+                    continue;
+                }
                 result.add(memberBasic);
                 idAndCacheKeyMapping.remove(memberBasic.getId());
             }
@@ -181,6 +187,18 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         result.addAll(missCacheMemberBasics);
 
         return result;
+    };
+
+    private final BiFunction<Long, Long, Mono<Tuple2<MemberBasic, AttachmentInfo>>> MEMBER_WITH_ATTACHMENT_GETTER = (memberId, attachmentId) -> {
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(UNAUTHORIZED);
+        if (isInvalidIdentity(attachmentId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return zip(justOrEmpty(memberBasicMapper.selectByPrimaryKey(memberId))
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST)))),
+                rpcAttachmentServiceConsumer.getAttachmentInfoMonoByPrimaryKey(attachmentId)
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST)))));
     };
 
     /**
@@ -271,31 +289,73 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * update member's icon
      *
      * @param id
-     * @param stringDataParam
+     * @param identityParam
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, StringDataParam stringDataParam) {
-        LOGGER.info("Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, StringDataParam stringDataParam), id = {}, stringDataParam = {}",
-                id, stringDataParam);
+    public Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, IdentityParam identityParam) {
+        LOGGER.info("Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, IdentityParam identityParam), id = {}, stringDataParam = {}",
+                id, identityParam);
         if (isInvalidIdentity(id))
             throw new BlueException(UNAUTHORIZED);
-        if (isNull(stringDataParam))
+        if (isNull(identityParam))
             throw new BlueException(EMPTY_PARAM);
+        identityParam.asserts();
 
-        String icon = stringDataParam.getData();
-        if (isBlank(icon))
+        return MEMBER_WITH_ATTACHMENT_GETTER.apply(id, identityParam.getId())
+                .flatMap(tuple2 -> {
+                    MemberBasic memberBasic = tuple2.getT1();
+                    AttachmentInfo attachmentInfo = tuple2.getT2();
+
+                    if (!id.equals(attachmentInfo.getCreator()))
+                        return error(new BlueException(DATA_NOT_BELONG_TO_YOU));
+
+                    String link = attachmentInfo.getLink();
+
+                    REDIS_CACHE_DELETER.accept(id);
+                    memberBasicMapper.updateIcon(id, link, TIME_STAMP_GETTER.get());
+                    REDIS_CACHE_DELETER.accept(id);
+
+                    memberBasic.setIcon(link);
+                    return just(memberBasic);
+                })
+                .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO);
+    }
+
+
+    /**
+     * update member's qrCode
+     *
+     * @param id
+     * @param identityParam
+     * @return
+     */
+    @Override
+    public Mono<MemberBasicInfo> updateMemberBasicQrCode(Long id, IdentityParam identityParam) {
+        LOGGER.info("Mono<MemberBasicInfo> updateMemberBasicQrCode(Long id, IdentityParam identityParam), id = {}, stringDataParam = {}",
+                id, identityParam);
+        if (isInvalidIdentity(id))
+            throw new BlueException(UNAUTHORIZED);
+        if (isNull(identityParam))
             throw new BlueException(EMPTY_PARAM);
+        identityParam.asserts();
 
-        return justOrEmpty(memberBasicMapper.selectByPrimaryKey(id))
-                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .flatMap(mb -> {
+        return MEMBER_WITH_ATTACHMENT_GETTER.apply(id, identityParam.getId())
+                .flatMap(tuple2 -> {
+                    MemberBasic memberBasic = tuple2.getT1();
+                    AttachmentInfo attachmentInfo = tuple2.getT2();
+
+                    if (!id.equals(attachmentInfo.getCreator()))
+                        return error(new BlueException(DATA_NOT_BELONG_TO_YOU));
+
+                    String link = attachmentInfo.getLink();
+
                     REDIS_CACHE_DELETER.accept(id);
-                    memberBasicMapper.updateIcon(id, icon, TIME_STAMP_GETTER.get());
+                    memberBasicMapper.updateQrCode(id, link, TIME_STAMP_GETTER.get());
                     REDIS_CACHE_DELETER.accept(id);
 
-                    mb.setIcon(icon);
-                    return just(mb);
+                    memberBasic.setQrCode(link);
+                    return just(memberBasic);
                 })
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO);
     }

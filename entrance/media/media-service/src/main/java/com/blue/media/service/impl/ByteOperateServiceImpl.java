@@ -19,7 +19,7 @@ import com.blue.media.service.inter.ByteOperateService;
 import com.blue.media.service.inter.DownloadHistoryService;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
-import org.springframework.http.codec.multipart.FilePart;
+import org.springframework.http.codec.multipart.FormFieldPart;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -37,8 +37,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNotNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.base.common.base.ConstantProcessor.assertAttachmentType;
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.common.BlueBoolean.FALSE;
@@ -46,10 +48,11 @@ import static com.blue.base.constant.common.BlueBoolean.TRUE;
 import static com.blue.base.constant.common.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_WRITE;
 import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.SpecialPrefix.CONTENT_DISPOSITION_FILE_NAME_PREFIX;
 import static com.blue.base.constant.common.Status.VALID;
 import static com.blue.base.constant.common.Symbol.SCHEME_SEPARATOR;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENTS_2_ATTACHMENT_UPLOAD_INFOS_CONVERTER;
+import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -92,7 +95,14 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         this.blueIdentityProcessor = blueIdentityProcessor;
 
         allFileSizeThreshold = localDiskFileDeploy.getAllFileSizeThreshold();
-        ATTR_NAME = localDiskFileDeploy.getAttrName();
+
+        String attrName = localDiskFileDeploy.getAttrName();
+        String typeName = localDiskFileDeploy.getTypeName();
+        if (isBlank(attrName) || isBlank(typeName))
+            throw new RuntimeException("attrName or typeName can't be blank");
+
+        ATTR_NAME = attrName;
+        TYPE_NAME = typeName;
         CURRENT_SIZE_THRESHOLD = localDiskFileDeploy.getCurrentSizeThreshold();
     }
 
@@ -101,6 +111,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
     private static long CURRENT_SIZE_THRESHOLD;
 
     private static String ATTR_NAME;
+    private static String TYPE_NAME;
 
     private final BiFunction<FileUploadResult, Long, Attachment> ATTACHMENT_CONVERTER = (fur, memberId) -> {
         Attachment attachment = new Attachment();
@@ -108,6 +119,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         attachment.setId(blueIdentityProcessor.generate(Attachment.class));
 
         String destination = fur.getDestination();
+        attachment.setType(fur.getType());
         attachment.setLink(destination);
         attachment.setName(fur.getResource());
         attachment.setFileType(substring(destination, lastIndexOf(destination, SCHEME_SEPARATOR.identity) + 1));
@@ -129,22 +141,32 @@ public class ByteOperateServiceImpl implements ByteOperateService {
             throw new BlueException(PAYLOAD_TOO_LARGE);
     };
 
+    private static final Function<List<Part>, Integer> TYPE_PARSER = parts -> {
+        if (isEmpty(parts))
+            throw new BlueException(EMPTY_PARAM);
+
+        try {
+            FormFieldPart formFieldPart = (FormFieldPart) parts.get(0);
+            return parseInt(formFieldPart.value());
+        } catch (Exception e) {
+            throw new BlueException(BAD_REQUEST);
+        }
+    };
+
     private final BiFunction<MultiValueMap<String, Part>, Long, Mono<List<FileUploadResult>>> ATTACHMENTS_UPLOADER = (valueMap, memberId) -> {
         LOGGER.info("ATTACHMENT_UPLOADER, valueMap = {}", valueMap);
+
+        Integer type = TYPE_PARSER.apply(valueMap.get(TYPE_NAME));
+        assertAttachmentType(type, false);
 
         List<Part> resources = valueMap.get(ATTR_NAME);
         if (isEmpty(resources))
             throw new BlueException(EMPTY_PARAM);
-
-        int size = resources.size();
-        if (size == 1 && EMPTY_DATA.value.equals(((FilePart) (resources.get(0))).filename()))
-            throw new BlueException(EMPTY_PARAM);
-
-        if (size > CURRENT_SIZE_THRESHOLD)
+        if (resources.size() > CURRENT_SIZE_THRESHOLD)
             throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return fromIterable(resources)
-                .flatMap(part -> byteProcessor.write(part, memberId))
+                .flatMap(part -> byteProcessor.write(part, type, memberId))
                 .collectList();
     };
 
@@ -228,14 +250,12 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                 );
     }
 
-    private static final String CONTENT_DISPOSITION_PREFIX = "attachment; filename=";
-
     private static final Function<Attachment, String> CONTENT_DISPOSITION_GEN = attachment ->
             ofNullable(attachment)
                     .map(Attachment::getName)
                     .filter(BlueChecker::isNotBlank)
                     .map(name -> URLEncoder.encode(name, UTF_8))
-                    .map(encodedName -> CONTENT_DISPOSITION_PREFIX + encodedName)
+                    .map(encodedName -> CONTENT_DISPOSITION_FILE_NAME_PREFIX.prefix + encodedName)
                     .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
     /**

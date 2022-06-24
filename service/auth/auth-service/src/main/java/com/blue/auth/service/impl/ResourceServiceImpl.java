@@ -40,6 +40,7 @@ import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELEC
 import static com.blue.base.constant.common.CacheKey.RESOURCES;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.Symbol.DATABASE_WILDCARD;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -114,9 +115,9 @@ public class ResourceServiceImpl implements ResourceService {
                 .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(condition::setModule);
 
         ofNullable(condition.getUriLike())
-                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(uriLike -> condition.setUriLike("%" + uriLike + "%"));
+                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(uriLike -> condition.setUriLike(DATABASE_WILDCARD.identity + uriLike + DATABASE_WILDCARD.identity));
         ofNullable(condition.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike("%" + nameLike + "%"));
+                .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike(DATABASE_WILDCARD.identity + nameLike + DATABASE_WILDCARD.identity));
 
         return condition;
     };

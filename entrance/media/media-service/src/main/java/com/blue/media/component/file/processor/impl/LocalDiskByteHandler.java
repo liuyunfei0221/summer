@@ -1,10 +1,10 @@
-package com.blue.media.component.file.impl;
+package com.blue.media.component.file.processor.impl;
 
 import com.blue.base.common.base.Monitor;
 import com.blue.base.constant.media.ByteHandlerType;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.FileUploadResult;
-import com.blue.media.component.file.inter.ByteHandler;
+import com.blue.media.component.file.processor.inter.ByteHandler;
 import com.blue.media.config.deploy.LocalDiskFileDeploy;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.codec.multipart.FilePart;
@@ -20,7 +20,9 @@ import java.util.Set;
 import java.util.function.*;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.common.base.ConstantProcessor.assertAttachmentType;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.PAYLOAD_TOO_LARGE;
 import static com.blue.base.constant.common.Symbol.SCHEME_SEPARATOR;
 import static com.blue.base.constant.media.ByteHandlerType.LOCAL_DISK;
 import static com.blue.media.common.MediaCommonFunctions.BUFFER_SIZE;
@@ -38,7 +40,7 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * local disk byte operate processor
+ * local disk byte operate handler
  *
  * @author liuyunfei
  */
@@ -173,13 +175,15 @@ public final class LocalDiskByteHandler implements ByteHandler {
      * write for upload
      *
      * @param part
+     * @param type
      * @param memberId
      * @return
      */
     @Override
-    public Mono<FileUploadResult> write(Part part, Long memberId) {
+    public Mono<FileUploadResult> write(Part part, Integer type, Long memberId) {
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
+        assertAttachmentType(type, false);
 
         String name = PART_NAME_GETTER.apply(part);
         String descName = NAME_COMBINER.apply(descPath, name);
@@ -190,7 +194,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
                 CHANNEL_CLOSER,
                 true)
                 .flatMap(size ->
-                        just(new FileUploadResult(descName, name, true, SUCCESS_MSG, size))
+                        just(new FileUploadResult(type, descName, name, true, SUCCESS_MSG, size))
                 );
     }
 

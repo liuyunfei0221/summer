@@ -49,6 +49,11 @@ public enum Symbol {
     WILDCARD("*"),
 
     /**
+     * db wildcard
+     */
+    DATABASE_WILDCARD("%"),
+
+    /**
      * element separator
      */
     LIST_ELEMENT_SEPARATOR(","),

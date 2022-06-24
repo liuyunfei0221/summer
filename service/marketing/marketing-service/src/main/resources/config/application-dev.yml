@@ -473,13 +473,11 @@ dubbo:
   registry:
     id: summer-registry
     client: curator
-    zone: summer
     protocol: zookeeper
     address: zookeeper://172.16.204.75
     port: 2181
     username:
     password:
-    group: summer
     file: D:/locallogs/dubbo/marketing/registry.properties
     check: false
     timeout: 60000
