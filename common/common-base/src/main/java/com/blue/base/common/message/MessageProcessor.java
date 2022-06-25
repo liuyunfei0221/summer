@@ -76,12 +76,15 @@ public final class MessageProcessor {
         List<File> files = getFiles(uri, true);
         int size = files.size();
 
+        LOGGER.info("files = {}", files);
+
         Map<Integer, LanguageInfo> infoMap = new HashMap<>(size);
         Map<String, Map<Integer, String>> i18n = new HashMap<>(size);
 
         Map<String, String> messages;
         String identity;
         LanguageInfo languageInfo;
+
         for (File f : files) {
             if (isNull(f))
                 continue;
@@ -153,10 +156,6 @@ public final class MessageProcessor {
             return msg;
         }
     };
-
-    static {
-        refresh();
-    }
 
     /**
      * refresh i18n messages
