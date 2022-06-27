@@ -57,9 +57,10 @@ public final class ElementProcessor {
 
     private static final Consumer<String> ELEMENT_LOADER = uri -> {
         List<File> files = getFiles(uri, true).stream().filter(Objects::nonNull).collect(toList());
-        Integer supportLanguageSize = ofNullable(MessageProcessor.listSupportLanguages()).map(List::size).orElse(0);
 
-        if (files.size() != supportLanguageSize)
+        LOGGER.info("files = {}", files);
+        
+        if (files.size() != ofNullable(MessageProcessor.listSupportLanguages()).map(List::size).orElse(0))
             LOGGER.warn("size of element languages support and size of message languages support are different");
 
         //noinspection UnnecessaryLocalVariable
@@ -100,10 +101,6 @@ public final class ElementProcessor {
 
     private static final BiFunction<Map<String, String>, ElementKey, String> VALUE_GETTER = (values, key) ->
             ofNullable(values.get(ofNullable(key).map(k -> k.key).orElse(DEFAULT_KEY))).orElse(DEFAULT_VALUE).intern();
-
-    static {
-        refresh();
-    }
 
     /**
      * refresh i18n messages

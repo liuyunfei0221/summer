@@ -39,7 +39,7 @@ eureka:
     response-cache-update-interval-ms: 30000
   instance:
     hostname: localhost
-    lease-expiration-duration-in-seconds: 300
+    lease-expiration-duration-in-seconds: 60
   client:
     register-with-eureka: false
     fetch-registry: false

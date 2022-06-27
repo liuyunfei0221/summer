@@ -203,9 +203,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST)))));
     };
 
-    /**
-     * is a number exist?
-     */
     private final Consumer<MemberBasic> MEMBER_EXIST_VALIDATOR = mb -> {
         ofNullable(mb.getPhone())
                 .filter(BlueChecker::isNotBlank)
@@ -248,7 +245,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public MemberBasicInfo insertMemberBasic(MemberBasic memberBasic) {
         LOGGER.info("MemberBasicInfo insertMemberBasic(MemberBasic memberBasic), memberBasic = {}", memberBasic);
         if (isNull(memberBasic))
@@ -273,7 +270,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public MemberBasicInfo updateMemberBasic(MemberBasic memberBasic) {
-        LOGGER.info("void insert(MemberBasic memberBasic), memberBasic = {}", memberBasic);
+        LOGGER.info("MemberBasicInfo updateMemberBasic(MemberBasic memberBasic), memberBasic = {}", memberBasic);
         if (isNull(memberBasic))
             throw new BlueException(EMPTY_PARAM);
         Long id = memberBasic.getId();
@@ -295,6 +292,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, IdentityParam identityParam) {
         LOGGER.info("Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, IdentityParam identityParam), id = {}, stringDataParam = {}",
                 id, identityParam);
@@ -335,6 +333,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public Mono<MemberBasicInfo> updateMemberBasicQrCode(Long id, IdentityParam identityParam) {
         LOGGER.info("Mono<MemberBasicInfo> updateMemberBasicQrCode(Long id, IdentityParam identityParam), id = {}, stringDataParam = {}",
                 id, identityParam);
@@ -374,6 +373,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public Mono<MemberBasicInfo> updateMemberBasicProfile(Long id, StringDataParam stringDataParam) {
         LOGGER.info("Mono<MemberBasicInfo> updateMemberBasicProfile(Long id, StringDataParam stringDataParam), id = {}, stringDataParam = {}", id, stringDataParam);
         if (isInvalidIdentity(id))
@@ -452,7 +452,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      */
     @Override
     public Mono<MemberBasic> getMemberBasicMono(Long id) {
-        LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
+        LOGGER.info("Mono<MemberBasic> getMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
         return just(getMemberBasic(id));
     }
 
@@ -531,7 +531,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         return getMemberBasicMono(id)
                 .flatMap(mb -> {
                     if (isInvalidStatus(mb.getStatus()))
-                        return error(() -> new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
+                        return error(() -> new BlueException(DATA_HAS_BEEN_FROZEN));
                     LOGGER.info("mb = {}", mb);
                     return just(mb);
                 }).flatMap(mb ->
@@ -554,7 +554,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
             throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return allotByMax(ids, (int) DB_SELECT.value, false)
-                .parallelStream().map(MEMBER_BASICS_WITH_REDIS_CACHE_GETTER)
+                .stream().map(MEMBER_BASICS_WITH_REDIS_CACHE_GETTER)
                 .flatMap(List::stream)
                 .collect(toList());
     }
@@ -614,8 +614,8 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      */
     @Override
     public Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberBasicCondition memberBasicCondition) {
-        LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberCondition memberCondition), " +
-                "limit = {}, rows = {}, memberCondition = {}", limit, rows, memberBasicCondition);
+        LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberBasicCondition memberBasicCondition), " +
+                "limit = {}, rows = {}, memberBasicCondition = {}", limit, rows, memberBasicCondition);
         if (isNull(limit) || limit < 0 || isNull(rows) || rows < 1)
             throw new BlueException(INVALID_PARAM);
 
@@ -630,7 +630,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      */
     @Override
     public Mono<Long> countMemberBasicMonoByCondition(MemberBasicCondition memberBasicCondition) {
-        LOGGER.info("Mono<Long> countMemberBasicMonoByCondition(MemberCondition memberCondition), memberCondition = {}", memberBasicCondition);
+        LOGGER.info("Mono<Long> countMemberBasicMonoByCondition(MemberBasicCondition memberBasicCondition), memberBasicCondition = {}", memberBasicCondition);
         return just(ofNullable(memberBasicMapper.countByCondition(memberBasicCondition)).orElse(0L));
     }
 
@@ -642,7 +642,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      */
     @Override
     public Mono<PageModelResponse<MemberBasicInfo>> selectMemberBasicInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<MemberInfo>> selectMemberInfoPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
+        LOGGER.info("Mono<PageModelResponse<MemberBasicInfo>> selectMemberBasicInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);

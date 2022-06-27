@@ -32,13 +32,13 @@ server:
 eureka:
   instance:
     prefer-ip-address: false
-    lease-renewal-interval-in-seconds: 300
+    lease-renewal-interval-in-seconds: 60
     instance-id: ${server.address}:${spring.application.name}:${server.port}
     hostname: ${server.address}
   client:
     service-url:
       defaultZone: http://blue:LiuZhiyi20200805@172.16.204.75:3000/eureka/
-    registry-fetch-interval-seconds: 300
+    registry-fetch-interval-seconds: 60
 
 
 mongo:

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,12 +19,14 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
+import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -209,13 +212,17 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @Override
     public Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds) {
         LOGGER.info("Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
+        if (isEmpty(memberIds))
+            return just(emptyList());
+        if (memberIds.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
 
-        return isValidIdentities(memberIds) ? just(allotByMax(memberIds, (int) DB_SELECT.value, false)
-                .stream().map(memberRoleRelationMapper::selectByMemberIds)
-                .flatMap(List::stream)
-                .collect(toList()))
-                :
-                just(emptyList());
+        return fromIterable(allotByMax(memberIds, (int) DB_SELECT.value, false))
+                .map(memberRoleRelationMapper::selectByMemberIds)
+                .reduceWith(LinkedList::new, (a, b) -> {
+                    a.addAll(b);
+                    return a;
+                });
     }
 
     /**

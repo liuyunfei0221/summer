@@ -4,7 +4,7 @@ spring:
   aop:
     proxy-target-class: true
   profiles:
-    active: test
+    active: dev
   messages:
     basename: i18n.messages
   webflux:

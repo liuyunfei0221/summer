@@ -1,5 +1,9 @@
 package com.blue.member.model;
 
+import com.blue.base.constant.common.SortType;
+import com.blue.base.model.common.SortCondition;
+import com.blue.member.constant.MemberDetailSortAttribute;
+
 import java.io.Serializable;
 
 /**
@@ -8,24 +12,35 @@ import java.io.Serializable;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class MemberDetailCondition implements Serializable {
+public final class MemberDetailCondition extends SortCondition implements Serializable {
 
     private static final long serialVersionUID = -5961680212338876121L;
 
     private Long id;
 
+    private Long memberId;
+
+    private String name;
+
+    private Integer gender;
+
     private String phone;
 
     private String email;
 
-    private String name;
+    private Long countryId;
 
-    private String icon;
+    private Long stateId;
 
-    /**
-     * @see com.blue.base.constant.member.Gender
-     */
-    private Integer gender;
+    private Long cityId;
+
+    private String address;
+
+    private String profile;
+
+    private String hobbyLike;
+
+    private String homepage;
 
     /**
      * @see com.blue.base.constant.common.Status
@@ -40,28 +55,36 @@ public final class MemberDetailCondition implements Serializable {
 
     private Long updateTimeEnd;
 
-    private String sortAttribute;
-
-    private String sortType;
-
     public MemberDetailCondition() {
+        super(MemberDetailSortAttribute.ID.attribute, SortType.DESC.identity);
     }
 
-    public MemberDetailCondition(Long id, String phone, String email, String name, String icon, Integer gender,
-                                 Integer status, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+    public MemberDetailCondition(String sortAttribute, String sortType) {
+        super(sortAttribute, sortType);
+    }
+
+    public MemberDetailCondition(Long id, Long memberId, String name, Integer gender, String phone, String email,
+                                 Long countryId, Long stateId, Long cityId, String address, String profile, String hobbyLike, String homepage, Integer status,
+                                 Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+        super(sortAttribute, sortType);
         this.id = id;
+        this.memberId = memberId;
+        this.name = name;
+        this.gender = gender;
         this.phone = phone;
         this.email = email;
-        this.name = name;
-        this.icon = icon;
-        this.gender = gender;
+        this.countryId = countryId;
+        this.stateId = stateId;
+        this.cityId = cityId;
+        this.address = address;
+        this.profile = profile;
+        this.hobbyLike = hobbyLike;
+        this.homepage = homepage;
         this.status = status;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
         this.updateTimeBegin = updateTimeBegin;
         this.updateTimeEnd = updateTimeEnd;
-        this.sortAttribute = sortAttribute;
-        this.sortType = sortType;
     }
 
     public Long getId() {
@@ -70,6 +93,30 @@ public final class MemberDetailCondition implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
     }
 
     public String getPhone() {
@@ -88,28 +135,60 @@ public final class MemberDetailCondition implements Serializable {
         this.email = email;
     }
 
-    public String getName() {
-        return name;
+    public Long getCountryId() {
+        return countryId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCountryId(Long countryId) {
+        this.countryId = countryId;
     }
 
-    public String getIcon() {
-        return icon;
+    public Long getStateId() {
+        return stateId;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public void setStateId(Long stateId) {
+        this.stateId = stateId;
     }
 
-    public Integer getGender() {
-        return gender;
+    public Long getCityId() {
+        return cityId;
     }
 
-    public void setGender(Integer gender) {
-        this.gender = gender;
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public String getHobbyLike() {
+        return hobbyLike;
+    }
+
+    public void setHobbyLike(String hobbyLike) {
+        this.hobbyLike = hobbyLike;
+    }
+
+    public String getHomepage() {
+        return homepage;
+    }
+
+    public void setHomepage(String homepage) {
+        this.homepage = homepage;
     }
 
     public Integer getStatus() {
@@ -152,39 +231,29 @@ public final class MemberDetailCondition implements Serializable {
         this.updateTimeEnd = updateTimeEnd;
     }
 
-    public String getSortAttribute() {
-        return sortAttribute;
-    }
-
-    public void setSortAttribute(String sortAttribute) {
-        this.sortAttribute = sortAttribute;
-    }
-
-    public String getSortType() {
-        return sortType;
-    }
-
-    public void setSortType(String sortType) {
-        this.sortType = sortType;
-    }
-
     @Override
     public String toString() {
-        return "MemberCondition{" +
+        return "MemberDetailCondition{" +
                 "id=" + id +
+                ", memberId=" + memberId +
+                ", name='" + name + '\'' +
+                ", gender=" + gender +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", icon='" + icon + '\'' +
-                ", gender=" + gender +
+                ", countryId=" + countryId +
+                ", stateId=" + stateId +
+                ", cityId=" + cityId +
+                ", address='" + address + '\'' +
+                ", profile='" + profile + '\'' +
+                ", hobbyLike='" + hobbyLike + '\'' +
+                ", homepage='" + homepage + '\'' +
                 ", status=" + status +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +
                 ", updateTimeEnd=" + updateTimeEnd +
-                ", sortAttribute='" + sortAttribute + '\'' +
-                ", sortType='" + sortType + '\'' +
+                ", sortAttribute=" + sortAttribute +
+                ", sortType=" + sortAttribute +
                 '}';
     }
-
 }

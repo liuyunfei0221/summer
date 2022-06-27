@@ -12,7 +12,7 @@
         <result column="birthday" jdbcType="VARCHAR" property="birthday"
                 typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="nationality_id" jdbcType="BIGINT" property="nationalityId"/>
-        <result column="ethnic_id" jdbcType="BIGINT" property="ethnicId"/>
+        <result column="ethnic" jdbcType="VARCHAR" property="ethnic"/>
         <result column="id_card_no" jdbcType="VARCHAR" property="idCardNo"
                 typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="residence_address" jdbcType="VARCHAR" property="residenceAddress"
@@ -32,7 +32,7 @@
 
     <sql id="Base_Column_List">
         id
-        , member_id, real_name, gender, birthday, nationality_id, ethnic_id, id_card_no,
+        , member_id, real_name, gender, birthday, nationality_id, ethnic, id_card_no,
         residence_address, issuing_authority, since_date, expire_date, extra, status, create_time,
         update_time
     </sql>
@@ -40,16 +40,14 @@
     <insert id="insert" parameterType="com.blue.member.repository.entity.RealName">
         insert into real_name (id, member_id, real_name,
                                gender, birthday, nationality_id,
-                               ethnic_id, id_card_no, residence_address,
+                               ethnic, id_card_no, residence_address,
                                issuing_authority, since_date, expire_date,
-                               extra, status, create_time,
-                               update_time)
+                               extra, status, create_time, update_time)
         values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
                 #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{gender,jdbcType=TINYINT},
                 #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
-                #{nationalityId,jdbcType=BIGINT},
-                #{ethnicId,jdbcType=BIGINT},
+                #{nationalityId,jdbcType=BIGINT}, #{ethnic,jdbcType=VARCHAR},
                 #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
@@ -81,8 +79,8 @@
             <if test="nationalityId != null">
                 nationality_id,
             </if>
-            <if test="ethnicId != null">
-                ethnic_id,
+            <if test="ethnic != null">
+                ethnic,
             </if>
             <if test="idCardNo != null">
                 id_card_no,
@@ -131,8 +129,8 @@
             <if test="nationalityId != null">
                 #{nationalityId,jdbcType=BIGINT},
             </if>
-            <if test="ethnicId != null">
-                #{ethnicId,jdbcType=BIGINT},
+            <if test="ethnic != null">
+                #{ethnic,jdbcType=VARCHAR},
             </if>
             <if test="idCardNo != null">
                 #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
@@ -171,7 +169,7 @@
             gender            = #{gender,jdbcType=TINYINT},
             birthday          = #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             nationality_id    = #{nationalityId,jdbcType=BIGINT},
-            ethnic_id         = #{ethnicId,jdbcType=BIGINT},
+            ethnic            = #{ethnic,jdbcType=VARCHAR},
             id_card_no        = #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             residence_address = #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             issuing_authority = #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
@@ -204,8 +202,8 @@
             <if test="nationalityId != null">
                 nationality_id = #{nationalityId,jdbcType=BIGINT},
             </if>
-            <if test="ethnicId != null">
-                ethnic_id = #{ethnicId,jdbcType=BIGINT},
+            <if test="ethnic != null">
+                ethnic = #{ethnic,jdbcType=VARCHAR},
             </if>
             <if test="idCardNo != null">
                 id_card_no =
@@ -249,9 +247,22 @@
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
+    <update id="updateStatus">
+        UPDATE real_name
+        SET status      = #{status,jdbcType=TINYINT},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
+        from real_name
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectMemberIdByPrimaryKey" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select member_id
         from real_name
         where id = #{id,jdbcType=BIGINT}
     </select>
@@ -263,7 +274,6 @@
         real_name FORCE INDEX(idx_member)
         WHERE
         `member_id` = #{memberId,jdbcType=BIGINT}
-        LIMIT 1;
     </select>
 
     <select id="selectByIds" resultMap="BaseResultMap">
@@ -276,6 +286,124 @@
         <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
             #{id,jdbcType=BIGINT}
         </foreach>
+    </select>
+
+    <select id="selectByMemberIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        real_name
+        WHERE
+        member_id IN
+        <foreach collection="memberIds" open="(" close=")" separator="," item="memberId" index="index">
+            #{memberId,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <sql id="Real_Name_Conditions">
+        <if test="realNameCondition != null">
+            <where>
+                <if test="realNameCondition.id != null">
+                    AND
+                    id = #{realNameCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="realNameCondition.memberId != null">
+                    AND
+                    member_id = #{realNameCondition.memberId,jdbcType=BIGINT}
+                </if>
+                <if test="realNameCondition.realName != null and realNameCondition.realName != ''">
+                    AND
+                    real_name =
+                    #{realNameCondition.realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="realNameCondition.gender != null">
+                    AND
+                    gender = #{realNameCondition.gender,jdbcType=TINYINT}
+                </if>
+                <if test="realNameCondition.birthday != null and realNameCondition.birthday != ''">
+                    AND
+                    birthday =
+                    #{realNameCondition.birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="realNameCondition.nationalityId != null and realNameCondition.nationalityId != ''">
+                    AND
+                    nationality_id = #{realNameCondition.nationalityId,jdbcType=BIGINT}
+                </if>
+                <if test="realNameCondition.ethnic != null and realNameCondition.ethnic != ''">
+                    AND
+                    ethnic =
+                    #{realNameCondition.ethnic,jdbcType=VARCHAR}
+                </if>
+                <if test="realNameCondition.idCardNo != null and realNameCondition.idCardNo != ''">
+                    AND
+                    id_card_no =
+                    #{realNameCondition.idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="realNameCondition.residenceAddress != null and realNameCondition.residenceAddress != ''">
+                    AND
+                    residence_address = #{realNameCondition.residenceAddress,jdbcType=VARCHAR}
+                </if>
+                <if test="realNameCondition.issuingAuthority != null and realNameCondition.issuingAuthority != ''">
+                    AND
+                    issuing_authority =
+                    #{realNameCondition.issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="realNameCondition.sinceDate != null and realNameCondition.sinceDate != ''">
+                    AND
+                    since_date =
+                    #{realNameCondition.sinceDate,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="realNameCondition.expireDate != null and realNameCondition.expireDate != ''">
+                    AND
+                    expire_date = #{realNameCondition.expireDate,jdbcType=VARCHAR}
+                </if>
+                <if test="realNameCondition.extra != null and realNameCondition.extra != ''">
+                    AND
+                    extra =
+                    #{realNameCondition.extra,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="realNameCondition.status != null">
+                    AND
+                    status = #{realNameCondition.status,jdbcType=TINYINT}
+                </if>
+                <if test="realNameCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{realNameCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="realNameCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{realNameCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="realNameCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{realNameCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="realNameCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{realNameCondition.updateTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        real_name
+        <include refid="Real_Name_Conditions"/>
+        <if test="realNameCondition != null and realNameCondition.sortAttribute != null and realNameCondition.sortAttribute != '' and realNameCondition.sortType != null and realNameCondition.sortType != ''">
+            ORDER BY
+            ${realNameCondition.sortAttribute} ${realNameCondition.sortType}
+        </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM
+        real_name
+        <include refid="Real_Name_Conditions"/>
     </select>
 
 </mapper>

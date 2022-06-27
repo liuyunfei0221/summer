@@ -39,13 +39,9 @@
     </sql>
 
     <insert id="insert" parameterType="com.blue.member.repository.entity.MemberDetail">
-        insert into member_detail (id, member_id, name,
-                                   gender, phone, email,
-                                   country_id, country, state_id,
-                                   state, city_id, city,
-                                   address, profile, hobby,
-                                   homepage, extra, status,
-                                   create_time, update_time)
+        insert into member_detail (id, member_id, name, gender, phone, email, country_id, country, state_id,
+                                   state, city_id, city, address, `profile`, hobby,
+                                   homepage, extra, status, create_time, update_time)
         values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
                 #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{gender,jdbcType=TINYINT},
@@ -286,9 +282,22 @@
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
+    <update id="updateStatus">
+        UPDATE member_detail
+        SET status      = #{status,jdbcType=TINYINT},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        WHERE id = #{id,jdbcType=BIGINT}
+    </update>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
+        from member_detail
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectMemberIdByPrimaryKey" parameterType="java.lang.Long" resultType="java.lang.Long">
+        select member_id
         from member_detail
         where id = #{id,jdbcType=BIGINT}
     </select>
@@ -299,8 +308,7 @@
         FROM
         member_detail FORCE INDEX(idx_member)
         WHERE
-        `member_id` = #{memberId,jdbcType=BIGINT}
-        LIMIT 1;
+        member_id = #{memberId,jdbcType=BIGINT}
     </select>
 
     <select id="selectByIds" resultMap="BaseResultMap">
@@ -313,6 +321,123 @@
         <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
             #{id,jdbcType=BIGINT}
         </foreach>
+    </select>
+
+    <select id="selectByMemberIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        member_detail
+        WHERE
+        member_id IN
+        <foreach collection="memberIds" open="(" close=")" separator="," item="memberId" index="index">
+            #{memberId,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <sql id="Member_Detail_Conditions">
+        <if test="memberDetailCondition != null">
+            <where>
+                <if test="memberDetailCondition.id != null">
+                    AND
+                    id = #{memberDetailCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="memberDetailCondition.memberId != null">
+                    AND
+                    member_id = #{memberDetailCondition.memberId,jdbcType=BIGINT}
+                </if>
+                <if test="memberDetailCondition.name != null and memberDetailCondition.name != ''">
+                    AND
+                    name =
+                    #{memberDetailCondition.name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="memberDetailCondition.gender != null">
+                    AND
+                    gender = #{memberDetailCondition.gender,jdbcType=TINYINT}
+                </if>
+                <if test="memberDetailCondition.phone != null and memberDetailCondition.phone != ''">
+                    AND
+                    phone =
+                    #{memberDetailCondition.phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="memberDetailCondition.email != null and memberDetailCondition.email != ''">
+                    AND
+                    email =
+                    #{memberDetailCondition.email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="memberDetailCondition.countryId != null">
+                    AND
+                    country_id = #{memberDetailCondition.countryId,jdbcType=BIGINT}
+                </if>
+                <if test="memberDetailCondition.stateId != null">
+                    AND
+                    state_id = #{memberDetailCondition.stateId,jdbcType=BIGINT}
+                </if>
+                <if test="memberDetailCondition.cityId != null">
+                    AND
+                    city_id = #{memberDetailCondition.cityId,jdbcType=BIGINT}
+                </if>
+                <if test="memberDetailCondition.address != null and memberDetailCondition.address != ''">
+                    AND
+                    address =
+                    #{memberDetailCondition.address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="memberDetailCondition.profile != null and memberDetailCondition.profile != ''">
+                    AND
+                    profile =
+                    #{memberDetailCondition.profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="memberDetailCondition.hobbyLike != null and memberDetailCondition.hobbyLike != ''">
+                    AND
+                    hobby LIKE #{memberDetailCondition.hobbyLike,jdbcType=VARCHAR}
+                </if>
+                <if test="memberDetailCondition.homepage != null and memberDetailCondition.homepage != ''">
+                    AND
+                    homepage =
+                    #{memberDetailCondition.homepage,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="memberDetailCondition.status != null">
+                    AND
+                    status = #{memberDetailCondition.status,jdbcType=TINYINT}
+                </if>
+                <if test="memberDetailCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{memberDetailCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="memberDetailCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{memberDetailCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="memberDetailCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{memberDetailCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="memberDetailCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{memberDetailCondition.updateTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        member_detail
+        <include refid="Member_Detail_Conditions"/>
+        <if test="memberDetailCondition != null and memberDetailCondition.sortAttribute != null and memberDetailCondition.sortAttribute != '' and memberDetailCondition.sortType != null and memberDetailCondition.sortType != ''">
+            ORDER BY
+            ${memberDetailCondition.sortAttribute} ${memberDetailCondition.sortType}
+        </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM
+        member_detail
+        <include refid="Member_Detail_Conditions"/>
     </select>
 
 </mapper>

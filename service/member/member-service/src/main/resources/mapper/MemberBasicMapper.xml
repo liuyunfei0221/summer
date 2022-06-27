@@ -29,8 +29,7 @@
 
     <insert id="insert" parameterType="com.blue.member.repository.entity.MemberBasic">
         insert into member_basic (id, phone, email, name, icon, qr_code,
-                                  gender, `profile`, source, status,
-                                  create_time, update_time)
+                                  gender, `profile`, source, status, create_time, update_time)
         values (#{id,jdbcType=BIGINT},
                 #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
@@ -280,7 +279,7 @@
                     name =
                     #{memberBasicCondition.name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
                 </if>
-                <if test="memberBasicCondition.gender != null and memberBasicCondition.gender != ''">
+                <if test="memberBasicCondition.gender != null">
                     AND
                     gender = #{memberBasicCondition.gender,jdbcType=TINYINT}
                 </if>

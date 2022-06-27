@@ -47,16 +47,16 @@ public enum ResponseElement {
     UNSUPPORTED_OPERATE(HttpStatus.BAD_REQUEST.value(), 400000019, "Operate is not support"),
     NEED_TURING_TEST(HttpStatus.BAD_REQUEST.value(), 400000020, "Need to pass the Turing test"),
     DATA_NOT_BELONG_TO_YOU(HttpStatus.BAD_REQUEST.value(), 400000021, "Data not belong to you"),
+    DATA_HAS_BEEN_FROZEN(HttpStatus.BAD_REQUEST.value(), 400100022, "Data has been frozen"),
     //</editor-fold>
 
 
     //<editor-fold desc="member">
     MEMBER_NOT_HAS_A_ROLE(HttpStatus.BAD_REQUEST.value(), 400100001, "Member not has a role"),
     MEMBER_ALREADY_HAS_A_ROLE(HttpStatus.BAD_REQUEST.value(), 400100002, "Member already has a role"),
-    ACCOUNT_HAS_BEEN_FROZEN(HttpStatus.BAD_REQUEST.value(), 400100003, "Your account has been frozen"),
-    PHONE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100004, "The phone number already exists"),
-    EMAIL_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100005, "The email already exists"),
-    NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100006, "The name already exists"),
+    PHONE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100003, "The phone number already exists"),
+    EMAIL_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100004, "The email already exists"),
+    NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100005, "The name already exists"),
     //</editor-fold>
 
 

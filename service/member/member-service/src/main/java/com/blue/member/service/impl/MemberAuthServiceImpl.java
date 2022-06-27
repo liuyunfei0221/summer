@@ -22,6 +22,8 @@ import com.blue.member.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberAuthService;
 import com.blue.member.service.inter.MemberBasicService;
+import com.blue.member.service.inter.MemberDetailService;
+import com.blue.member.service.inter.RealNameService;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +42,8 @@ import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.verify.BusinessType.REGISTER;
 import static com.blue.base.constant.verify.VerifyType.MAIL;
 import static com.blue.base.constant.verify.VerifyType.SMS;
-import static com.blue.member.converter.MemberModelConverters.*;
+import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
+import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -63,6 +66,10 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     private final MemberBasicService memberBasicService;
 
+    private final MemberDetailService memberDetailService;
+
+    private final RealNameService realNameService;
+
     private final BlueIdentityProcessor blueIdentityProcessor;
 
     private final CredentialCollectProcessor credentialCollectProcessor;
@@ -76,10 +83,13 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     private final RpcFinanceControlServiceConsumer rpcFinanceControlServiceConsumer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public MemberAuthServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor, CredentialCollectProcessor credentialCollectProcessor,
+    public MemberAuthServiceImpl(MemberBasicService memberBasicService, MemberDetailService memberDetailService, RealNameService realNameService,
+                                 BlueIdentityProcessor blueIdentityProcessor, CredentialCollectProcessor credentialCollectProcessor,
                                  RpcRoleServiceConsumer rpcRoleServiceConsumer, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
                                  RpcAuthControlServiceConsumer rpcAuthControlServiceConsumer, RpcFinanceControlServiceConsumer rpcFinanceControlServiceConsumer) {
         this.memberBasicService = memberBasicService;
+        this.memberDetailService = memberDetailService;
+        this.realNameService = realNameService;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.credentialCollectProcessor = credentialCollectProcessor;
         this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
@@ -145,6 +155,9 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
 
+        memberDetailService.initMemberDetail(id);
+        realNameService.initRealName(id);
+
         //noinspection ConstantConditions
         if (1 == 1)
             throw new BlueException(666, 666, "test rollback");
@@ -178,8 +191,10 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         //init finance account
         rpcFinanceControlServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));
 
-        @SuppressWarnings("UnnecessaryLocalVariable")
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
+
+        memberDetailService.initMemberDetail(id);
+        realNameService.initRealName(id);
 
 //        if (1 == 1)
 //            throw new BlueException(666, 666, "test rollback");

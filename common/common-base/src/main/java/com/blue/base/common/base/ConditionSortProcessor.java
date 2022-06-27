@@ -35,7 +35,6 @@ public final class ConditionSortProcessor {
         if (isBlank(sortType))
             condition.setSortType(DESC.identity);
 
-
         String sortAttribute = condition.getSortAttribute();
         if (isBlank(sortAttribute) || isEmpty(sortAttrMapping))
             condition.setSortAttribute(isNotBlank(defaultSortAttr) ? defaultSortAttr : null);

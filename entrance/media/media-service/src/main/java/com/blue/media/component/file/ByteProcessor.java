@@ -94,14 +94,11 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
         if (isNull(part) || isNull(type) || isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
 
-        PreAndPostWriteProcessorHandler preAndPostWriteProcessorHandler = preAndPostWriteProcessorHandlers.get(type);
-
-        return isNull(preAndPostWriteProcessorHandler) ?
-                byteHandler.write(part, type, memberId)
-                :
-                preAndPostWriteProcessorHandler.preHandle(part, memberId)
+        return ofNullable(preAndPostWriteProcessorHandlers.get(type))
+                .map(h -> h.preHandle(part, memberId)
                         .flatMap(p -> byteHandler.write(p, type, memberId))
-                        .flatMap(fur -> preAndPostWriteProcessorHandler.postHandle(fur, memberId));
+                        .flatMap(fur -> h.postHandle(fur, memberId)))
+                .orElseGet(() -> byteHandler.write(part, type, memberId));
     }
 
     /**

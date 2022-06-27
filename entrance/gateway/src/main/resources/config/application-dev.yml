@@ -38,7 +38,7 @@ eureka:
   client:
     service-url:
       defaultZone: http://blue:LiuZhiyi20200805@172.16.204.75:3000/eureka/
-    registry-fetch-interval-seconds: 300
+    registry-fetch-interval-seconds: 60
 
 
 cors:

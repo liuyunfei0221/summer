@@ -1,5 +1,6 @@
 package com.blue.member.repository.mapper;
 
+import com.blue.member.model.MemberDetailCondition;
 import com.blue.member.repository.entity.MemberDetail;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,7 +24,17 @@ public interface MemberDetailMapper {
 
     int deleteByPrimaryKey(Long id);
 
+    int updateStatus(@Param("id") Long id, @Param("status") Integer status, @Param("updateTime") Long updateTime);
+
     MemberDetail selectByPrimaryKey(Long id);
+
+    /**
+     * select member id by id
+     *
+     * @param id
+     * @return
+     */
+    Long selectMemberIdByPrimaryKey(@Param("id") Long id);
 
     /**
      * select by member id
@@ -40,5 +51,31 @@ public interface MemberDetailMapper {
      * @return
      */
     List<MemberDetail> selectByIds(@Param("ids") List<Long> ids);
+
+    /**
+     * select by member ids
+     *
+     * @param memberIds
+     * @return
+     */
+    List<MemberDetail> selectByMemberIds(@Param("memberIds") List<Long> memberIds);
+
+    /**
+     * select by limit and condition
+     *
+     * @param limit
+     * @param rows
+     * @param memberDetailCondition
+     * @return
+     */
+    List<MemberDetail> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("memberDetailCondition") MemberDetailCondition memberDetailCondition);
+
+    /**
+     * count by condition
+     *
+     * @param memberDetailCondition
+     * @return
+     */
+    Long countByCondition(@Param("memberDetailCondition") MemberDetailCondition memberDetailCondition);
 
 }

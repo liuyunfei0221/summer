@@ -1,11 +1,11 @@
 package com.blue.member.constant;
 
 /**
- * member business sort columns
+ * real name sort columns
  *
  * @author liuyunfei
  */
-public enum MemberBusinessSortAttribute {
+public enum RealNameSortAttribute {
 
     /**
      * id
@@ -26,7 +26,7 @@ public enum MemberBusinessSortAttribute {
 
     public final String column;
 
-    MemberBusinessSortAttribute(String attribute, String column) {
+    RealNameSortAttribute(String attribute, String column) {
         this.attribute = attribute;
         this.column = column;
     }

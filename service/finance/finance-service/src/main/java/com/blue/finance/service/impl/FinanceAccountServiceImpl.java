@@ -97,7 +97,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
 
                     FinanceAccount financeAccount = faOpt.get();
                     if (isInvalidStatus(financeAccount.getStatus()))
-                        return error(() -> new BlueException(ACCOUNT_HAS_BEEN_FROZEN));
+                        return error(() -> new BlueException(DATA_HAS_BEEN_FROZEN));
 
                     return just(financeAccount);
                 })

@@ -97,7 +97,7 @@ public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
 
     private static final Consumer<MemberBasicInfo> MEMBER_STATUS_ASSERTER = memberBasicInfo -> {
         if (isInvalidStatus(memberBasicInfo.getStatus()))
-            throw new BlueException(ACCOUNT_HAS_BEEN_FROZEN);
+            throw new BlueException(DATA_HAS_BEEN_FROZEN);
     };
 
     @Override

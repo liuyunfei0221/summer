@@ -80,6 +80,7 @@ public final class MessageProcessor {
 
         Map<Integer, LanguageInfo> infoMap = new HashMap<>(size);
         Map<String, Map<Integer, String>> i18n = new HashMap<>(size);
+        LanguageInfo defaultLanguageInfo = null;
 
         Map<String, String> messages;
         String identity;
@@ -99,9 +100,8 @@ public final class MessageProcessor {
 
             i18n.put(lowerCase(identity), MESSAGES_CONVERTER.apply(messages));
 
-            if (DEFAULT_LANGUAGE.equals(
-                    ofNullable(languageInfo.getIdentity()).map(String::toLowerCase).orElse(EMPTY_DATA.value)))
-                DEFAULT_LANGUAGE_INFO = languageInfo;
+            if (DEFAULT_LANGUAGE.equals(ofNullable(languageInfo.getIdentity()).map(String::toLowerCase).orElse(EMPTY_DATA.value)))
+                defaultLanguageInfo = languageInfo;
         }
 
         List<LanguageInfo> supportLanguages = infoMap.entrySet().stream()
@@ -116,11 +116,12 @@ public final class MessageProcessor {
                 })
                 .map(Map.Entry::getValue).collect(toList());
 
+        if (isNull(defaultLanguageInfo))
+            throw new RuntimeException("DEFAULT_LANGUAGE_INFO can't be null");
+
         I_18_N = i18n;
         SUPPORT_LANGUAGES = supportLanguages;
-
-        if (isNull(DEFAULT_LANGUAGE_INFO))
-            throw new RuntimeException("DEFAULT_LANGUAGE_INFO can't be null");
+        DEFAULT_LANGUAGE_INFO = defaultLanguageInfo;
 
         LOGGER.info("I_18_N = {}", I_18_N);
         LOGGER.info("SUPPORT_LANGUAGES = {}", SUPPORT_LANGUAGES);

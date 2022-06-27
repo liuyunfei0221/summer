@@ -1,17 +1,20 @@
-package com.blue.member.api.model;
+package com.blue.member.model;
+
+import com.blue.base.constant.common.SortType;
+import com.blue.base.model.common.SortCondition;
+import com.blue.member.constant.MemberDetailSortAttribute;
 
 import java.io.Serializable;
 
-
 /**
- * member real name info
+ * member detail condition for select
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class MemberRealNameInfo implements Serializable {
+public final class RealNameCondition extends SortCondition implements Serializable {
 
-    private static final long serialVersionUID = -4709215206709937940L;
+    private static final long serialVersionUID = -5961680212338876121L;
 
     private Long id;
 
@@ -25,7 +28,7 @@ public final class MemberRealNameInfo implements Serializable {
 
     private Long nationalityId;
 
-    private Long ethnicId;
+    private String ethnic;
 
     private String idCardNo;
 
@@ -39,21 +42,38 @@ public final class MemberRealNameInfo implements Serializable {
 
     private String extra;
 
+    /**
+     * @see com.blue.base.constant.common.Status
+     */
     private Integer status;
 
-    public MemberRealNameInfo() {
+    private Long createTimeBegin;
+
+    private Long createTimeEnd;
+
+    private Long updateTimeBegin;
+
+    private Long updateTimeEnd;
+
+    public RealNameCondition() {
+        super(MemberDetailSortAttribute.ID.attribute, SortType.DESC.identity);
     }
 
-    public MemberRealNameInfo(Long id, Long memberId, String realName, Integer gender, String birthday,
-                              Long nationalityId, Long ethnicId, String idCardNo, String residenceAddress,
-                              String issuingAuthority, String sinceDate, String expireDate, String extra, Integer status) {
+    public RealNameCondition(String sortAttribute, String sortType) {
+        super(sortAttribute, sortType);
+    }
+
+    public RealNameCondition(Long id, Long memberId, String realName, Integer gender, String birthday, Long nationalityId, String ethnic,
+                             String idCardNo, String residenceAddress, String issuingAuthority, String sinceDate, String expireDate, String extra, Integer status,
+                             Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+        super(sortAttribute, sortType);
         this.id = id;
         this.memberId = memberId;
         this.realName = realName;
         this.gender = gender;
         this.birthday = birthday;
         this.nationalityId = nationalityId;
-        this.ethnicId = ethnicId;
+        this.ethnic = ethnic;
         this.idCardNo = idCardNo;
         this.residenceAddress = residenceAddress;
         this.issuingAuthority = issuingAuthority;
@@ -61,6 +81,10 @@ public final class MemberRealNameInfo implements Serializable {
         this.expireDate = expireDate;
         this.extra = extra;
         this.status = status;
+        this.createTimeBegin = createTimeBegin;
+        this.createTimeEnd = createTimeEnd;
+        this.updateTimeBegin = updateTimeBegin;
+        this.updateTimeEnd = updateTimeEnd;
     }
 
     public Long getId() {
@@ -111,12 +135,12 @@ public final class MemberRealNameInfo implements Serializable {
         this.nationalityId = nationalityId;
     }
 
-    public Long getEthnicId() {
-        return ethnicId;
+    public String getEthnic() {
+        return ethnic;
     }
 
-    public void setEthnicId(Long ethnicId) {
-        this.ethnicId = ethnicId;
+    public void setEthnic(String ethnic) {
+        this.ethnic = ethnic;
     }
 
     public String getIdCardNo() {
@@ -175,16 +199,48 @@ public final class MemberRealNameInfo implements Serializable {
         this.status = status;
     }
 
+    public Long getCreateTimeBegin() {
+        return createTimeBegin;
+    }
+
+    public void setCreateTimeBegin(Long createTimeBegin) {
+        this.createTimeBegin = createTimeBegin;
+    }
+
+    public Long getCreateTimeEnd() {
+        return createTimeEnd;
+    }
+
+    public void setCreateTimeEnd(Long createTimeEnd) {
+        this.createTimeEnd = createTimeEnd;
+    }
+
+    public Long getUpdateTimeBegin() {
+        return updateTimeBegin;
+    }
+
+    public void setUpdateTimeBegin(Long updateTimeBegin) {
+        this.updateTimeBegin = updateTimeBegin;
+    }
+
+    public Long getUpdateTimeEnd() {
+        return updateTimeEnd;
+    }
+
+    public void setUpdateTimeEnd(Long updateTimeEnd) {
+        this.updateTimeEnd = updateTimeEnd;
+    }
+
     @Override
     public String toString() {
-        return "MemberRealNameInfo{" +
+        return "RealNameCondition{" +
                 "id=" + id +
                 ", memberId=" + memberId +
                 ", realName='" + realName + '\'' +
                 ", gender=" + gender +
                 ", birthday='" + birthday + '\'' +
                 ", nationalityId=" + nationalityId +
-                ", ethnicId=" + ethnicId +
+                ", ethnic='" + ethnic + '\'' +
                 ", idCardNo='" + idCardNo + '\'' +
                 ", residenceAddress='" + residenceAddress + '\'' +
                 ", issuingAuthority='" + issuingAuthority + '\'' +
@@ -192,7 +248,12 @@ public final class MemberRealNameInfo implements Serializable {
                 ", expireDate='" + expireDate + '\'' +
                 ", extra='" + extra + '\'' +
                 ", status=" + status +
+                ", createTimeBegin=" + createTimeBegin +
+                ", createTimeEnd=" + createTimeEnd +
+                ", updateTimeBegin=" + updateTimeBegin +
+                ", updateTimeEnd=" + updateTimeEnd +
+                ", sortAttribute='" + sortAttribute + '\'' +
+                ", sortType='" + sortType + '\'' +
                 '}';
     }
-
 }

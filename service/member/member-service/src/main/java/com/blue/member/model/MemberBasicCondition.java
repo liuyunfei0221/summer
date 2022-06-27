@@ -172,6 +172,8 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +
                 ", updateTimeEnd=" + updateTimeEnd +
+                ", sortAttribute=" + sortAttribute +
+                ", sortType=" + sortAttribute +
                 '}';
     }
 

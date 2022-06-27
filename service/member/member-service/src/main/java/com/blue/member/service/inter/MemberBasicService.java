@@ -73,7 +73,7 @@ public interface MemberBasicService {
     MemberBasicInfo updateMemberBasicStatus(Long id, Integer status);
 
     /**
-     * get opt by id
+     * get by id
      *
      * @param id
      * @return
@@ -81,7 +81,7 @@ public interface MemberBasicService {
     MemberBasic getMemberBasic(Long id);
 
     /**
-     * get member by id
+     * get member mono by id
      *
      * @param id
      * @return

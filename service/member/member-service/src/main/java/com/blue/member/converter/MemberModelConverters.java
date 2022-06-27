@@ -147,12 +147,12 @@ public final class MemberModelConverters {
         throw new BlueException(EMPTY_PARAM);
     };
 
-    public static final Function<RealName, MemberRealNameInfo> MEMBER_REAL_NAME_2_MEMBER_REAL_NAME_INFO = realName -> {
+    public static final Function<RealName, RealNameInfo> REAL_NAME_2_REAL_NAME_INFO = realName -> {
         if (realName != null)
-            return new MemberRealNameInfo(
+            return new RealNameInfo(
                     realName.getId(), realName.getMemberId(), realName.getRealName(),
                     realName.getGender(), realName.getBirthday(), realName.getNationalityId(),
-                    realName.getEthnicId(), realName.getIdCardNo(), realName.getResidenceAddress(),
+                    realName.getEthnic(), realName.getIdCardNo(), realName.getResidenceAddress(),
                     realName.getIssuingAuthority(), realName.getSinceDate(), realName.getExpireDate(),
                     realName.getExtra(), realName.getStatus()
             );

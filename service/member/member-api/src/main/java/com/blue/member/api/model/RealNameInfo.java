@@ -1,18 +1,17 @@
-package com.blue.member.repository.entity;
+package com.blue.member.api.model;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
 
 /**
- * member real name entity
+ * real name info
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class RealName implements Serializable {
+public final class RealNameInfo implements Serializable {
 
-    private static final long serialVersionUID = -2653604103780424227L;
+    private static final long serialVersionUID = -4709215206709937940L;
 
     private Long id;
 
@@ -42,9 +41,27 @@ public final class RealName implements Serializable {
 
     private Integer status;
 
-    private Long createTime;
+    public RealNameInfo() {
+    }
 
-    private Long updateTime;
+    public RealNameInfo(Long id, Long memberId, String realName, Integer gender, String birthday,
+                        Long nationalityId, String ethnic, String idCardNo, String residenceAddress,
+                        String issuingAuthority, String sinceDate, String expireDate, String extra, Integer status) {
+        this.id = id;
+        this.memberId = memberId;
+        this.realName = realName;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.nationalityId = nationalityId;
+        this.ethnic = ethnic;
+        this.idCardNo = idCardNo;
+        this.residenceAddress = residenceAddress;
+        this.issuingAuthority = issuingAuthority;
+        this.sinceDate = sinceDate;
+        this.expireDate = expireDate;
+        this.extra = extra;
+        this.status = status;
+    }
 
     public Long getId() {
         return id;
@@ -67,7 +84,7 @@ public final class RealName implements Serializable {
     }
 
     public void setRealName(String realName) {
-        this.realName = isNull(realName) ? null : realName.trim();
+        this.realName = realName;
     }
 
     public Integer getGender() {
@@ -83,7 +100,7 @@ public final class RealName implements Serializable {
     }
 
     public void setBirthday(String birthday) {
-        this.birthday = isNull(birthday) ? null : birthday.trim();
+        this.birthday = birthday;
     }
 
     public Long getNationalityId() {
@@ -107,7 +124,7 @@ public final class RealName implements Serializable {
     }
 
     public void setIdCardNo(String idCardNo) {
-        this.idCardNo = isNull(idCardNo) ? null : idCardNo.trim();
+        this.idCardNo = idCardNo;
     }
 
     public String getResidenceAddress() {
@@ -115,7 +132,7 @@ public final class RealName implements Serializable {
     }
 
     public void setResidenceAddress(String residenceAddress) {
-        this.residenceAddress = isNull(residenceAddress) ? null : residenceAddress.trim();
+        this.residenceAddress = residenceAddress;
     }
 
     public String getIssuingAuthority() {
@@ -123,7 +140,7 @@ public final class RealName implements Serializable {
     }
 
     public void setIssuingAuthority(String issuingAuthority) {
-        this.issuingAuthority = isNull(issuingAuthority) ? null : issuingAuthority.trim();
+        this.issuingAuthority = issuingAuthority;
     }
 
     public String getSinceDate() {
@@ -131,7 +148,7 @@ public final class RealName implements Serializable {
     }
 
     public void setSinceDate(String sinceDate) {
-        this.sinceDate = isNull(sinceDate) ? null : sinceDate.trim();
+        this.sinceDate = sinceDate;
     }
 
     public String getExpireDate() {
@@ -139,7 +156,7 @@ public final class RealName implements Serializable {
     }
 
     public void setExpireDate(String expireDate) {
-        this.expireDate = isNull(expireDate) ? null : expireDate.trim();
+        this.expireDate = expireDate;
     }
 
     public String getExtra() {
@@ -147,7 +164,7 @@ public final class RealName implements Serializable {
     }
 
     public void setExtra(String extra) {
-        this.extra = isNull(extra) ? null : extra.trim();
+        this.extra = extra;
     }
 
     public Integer getStatus() {
@@ -158,25 +175,9 @@ public final class RealName implements Serializable {
         this.status = status;
     }
 
-    public Long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Long createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
-    }
-
     @Override
     public String toString() {
-        return "RealName{" +
+        return "MemberRealNameInfo{" +
                 "id=" + id +
                 ", memberId=" + memberId +
                 ", realName='" + realName + '\'' +
@@ -191,8 +192,6 @@ public final class RealName implements Serializable {
                 ", expireDate='" + expireDate + '\'' +
                 ", extra='" + extra + '\'' +
                 ", status=" + status +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 '}';
     }
 
