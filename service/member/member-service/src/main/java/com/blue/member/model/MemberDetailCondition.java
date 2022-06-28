@@ -28,6 +28,20 @@ public final class MemberDetailCondition extends SortCondition implements Serial
 
     private String email;
 
+    private Integer yearOfBirth;
+
+    private Integer monthOfBirth;
+
+    private Integer dayOfBirth;
+
+    private Integer chineseZodiac;
+
+    private Integer zodiacSign;
+
+    private Integer height;
+
+    private Integer weight;
+
     private Long countryId;
 
     private Long stateId;
@@ -63,9 +77,10 @@ public final class MemberDetailCondition extends SortCondition implements Serial
         super(sortAttribute, sortType);
     }
 
-    public MemberDetailCondition(Long id, Long memberId, String name, Integer gender, String phone, String email,
-                                 Long countryId, Long stateId, Long cityId, String address, String profile, String hobbyLike, String homepage, Integer status,
-                                 Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+    public MemberDetailCondition(Long id, Long memberId, String name, Integer gender, String phone, String email, Integer yearOfBirth, Integer monthOfBirth, Integer dayOfBirth,
+                                 Integer chineseZodiac, Integer zodiacSign, Integer height, Integer weight, Long countryId, Long stateId, Long cityId, String address,
+                                 String profile, String hobbyLike, String homepage, Integer status, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd,
+                                 String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.memberId = memberId;
@@ -73,6 +88,13 @@ public final class MemberDetailCondition extends SortCondition implements Serial
         this.gender = gender;
         this.phone = phone;
         this.email = email;
+        this.yearOfBirth = yearOfBirth;
+        this.monthOfBirth = monthOfBirth;
+        this.dayOfBirth = dayOfBirth;
+        this.chineseZodiac = chineseZodiac;
+        this.zodiacSign = zodiacSign;
+        this.height = height;
+        this.weight = weight;
         this.countryId = countryId;
         this.stateId = stateId;
         this.cityId = cityId;
@@ -133,6 +155,62 @@ public final class MemberDetailCondition extends SortCondition implements Serial
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Integer getYearOfBirth() {
+        return yearOfBirth;
+    }
+
+    public void setYearOfBirth(Integer yearOfBirth) {
+        this.yearOfBirth = yearOfBirth;
+    }
+
+    public Integer getMonthOfBirth() {
+        return monthOfBirth;
+    }
+
+    public void setMonthOfBirth(Integer monthOfBirth) {
+        this.monthOfBirth = monthOfBirth;
+    }
+
+    public Integer getDayOfBirth() {
+        return dayOfBirth;
+    }
+
+    public void setDayOfBirth(Integer dayOfBirth) {
+        this.dayOfBirth = dayOfBirth;
+    }
+
+    public Integer getChineseZodiac() {
+        return chineseZodiac;
+    }
+
+    public void setChineseZodiac(Integer chineseZodiac) {
+        this.chineseZodiac = chineseZodiac;
+    }
+
+    public Integer getZodiacSign() {
+        return zodiacSign;
+    }
+
+    public void setZodiacSign(Integer zodiacSign) {
+        this.zodiacSign = zodiacSign;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 
     public Long getCountryId() {
@@ -240,6 +318,13 @@ public final class MemberDetailCondition extends SortCondition implements Serial
                 ", gender=" + gender +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
+                ", yearOfBirth=" + yearOfBirth +
+                ", monthOfBirth=" + monthOfBirth +
+                ", dayOfBirth=" + dayOfBirth +
+                ", chineseZodiac=" + chineseZodiac +
+                ", zodiacSign=" + zodiacSign +
+                ", height=" + height +
+                ", weight=" + weight +
                 ", countryId=" + countryId +
                 ", stateId=" + stateId +
                 ", cityId=" + cityId +
@@ -252,8 +337,7 @@ public final class MemberDetailCondition extends SortCondition implements Serial
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +
                 ", updateTimeEnd=" + updateTimeEnd +
-                ", sortAttribute=" + sortAttribute +
-                ", sortType=" + sortAttribute +
                 '}';
     }
+
 }

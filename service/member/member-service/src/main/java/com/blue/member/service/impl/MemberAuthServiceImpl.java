@@ -154,13 +154,10 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         rpcFinanceControlServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));
 
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
+        LOGGER.info("registerMemberBasic -> memberBasicInfo = {}", memberBasicInfo);
 
         memberDetailService.initMemberDetail(id);
         realNameService.initRealName(id);
-
-        //noinspection ConstantConditions
-        if (1 == 1)
-            throw new BlueException(666, 666, "test rollback");
 
         return memberBasicInfo;
     }
@@ -171,7 +168,6 @@ public class MemberAuthServiceImpl implements MemberAuthService {
      * @param memberRegistryParam
      * @return
      */
-    @SuppressWarnings("CommentedOutCode")
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
@@ -192,12 +188,13 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         rpcFinanceControlServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));
 
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
+        LOGGER.info("autoRegisterMemberBasic -> memberBasicInfo = {}", memberBasicInfo);
 
         memberDetailService.initMemberDetail(id);
         realNameService.initRealName(id);
 
-//        if (1 == 1)
-//            throw new BlueException(666, 666, "test rollback");
+        if (1 == 1)
+            throw new BlueException(666, 666, "test rollback");
 
         return memberBasicInfo;
     }

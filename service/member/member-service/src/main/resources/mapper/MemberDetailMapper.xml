@@ -13,6 +13,15 @@
                 typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="email" jdbcType="VARCHAR" property="email"
                 typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
+
+        <result column="year_of_birth" jdbcType="SMALLINT" property="yearOfBirth"/>
+        <result column="month_of_birth" jdbcType="TINYINT" property="monthOfBirth"/>
+        <result column="day_of_birth" jdbcType="TINYINT" property="dayOfBirth"/>
+        <result column="chinese_zodiac" jdbcType="TINYINT" property="chineseZodiac"/>
+        <result column="zodiac_sign" jdbcType="TINYINT" property="zodiacSign"/>
+        <result column="height" jdbcType="TINYINT" property="height"/>
+        <result column="weight" jdbcType="TINYINT" property="weight"/>
+
         <result column="country_id" jdbcType="BIGINT" property="countryId"/>
         <result column="country" jdbcType="VARCHAR" property="country"/>
         <result column="state_id" jdbcType="BIGINT" property="stateId"/>
@@ -39,14 +48,19 @@
     </sql>
 
     <insert id="insert" parameterType="com.blue.member.repository.entity.MemberDetail">
-        insert into member_detail (id, member_id, name, gender, phone, email, country_id, country, state_id,
-                                   state, city_id, city, address, `profile`, hobby,
-                                   homepage, extra, status, create_time, update_time)
+        insert into member_detail (id, member_id, name, gender, phone, email,
+                                   year_of_birth, month_of_birth, day_of_birth,
+                                   chinese_zodiac, zodiac_sign, height, weight,
+                                   country_id, country, state_id, state, city_id, city,
+                                   address, `profile`, hobby, homepage, extra, status, create_time, update_time)
         values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
                 #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{gender,jdbcType=TINYINT},
                 #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+                #{yearOfBirth,jdbcType=SMALLINT}, #{monthOfBirth,jdbcType=TINYINT}, #{dayOfBirth,jdbcType=TINYINT},
+                #{chineseZodiac,jdbcType=TINYINT}, #{zodiacSign,jdbcType=TINYINT},
+                #{height,jdbcType=TINYINT}, #{weight,jdbcType=TINYINT},
                 #{countryId,jdbcType=BIGINT}, #{country,jdbcType=VARCHAR}, #{stateId,jdbcType=BIGINT},
                 #{state,jdbcType=VARCHAR}, #{cityId,jdbcType=BIGINT}, #{city,jdbcType=VARCHAR},
                 #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
@@ -77,6 +91,27 @@
             </if>
             <if test="email != null">
                 email,
+            </if>
+            <if test="yearOfBirth != null">
+                year_of_birth,
+            </if>
+            <if test="monthOfBirth != null">
+                month_of_birth,
+            </if>
+            <if test="dayOfBirth != null">
+                day_of_birth,
+            </if>
+            <if test="chineseZodiac != null">
+                chinese_zodiac,
+            </if>
+            <if test="zodiacSign != null">
+                zodiac_sign,
+            </if>
+            <if test="height != null">
+                height,
+            </if>
+            <if test="weight != null">
+                weight,
             </if>
             <if test="countryId != null">
                 country_id,
@@ -140,6 +175,27 @@
             <if test="email != null">
                 #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
+            <if test="yearOfBirth != null">
+                #{yearOfBirth,jdbcType=SMALLINT},
+            </if>
+            <if test="monthOfBirth != null">
+                #{monthOfBirth,jdbcType=TINYINT},
+            </if>
+            <if test="dayOfBirth != null">
+                #{dayOfBirth,jdbcType=TINYINT},
+            </if>
+            <if test="chineseZodiac != null">
+                #{chineseZodiac,jdbcType=TINYINT},
+            </if>
+            <if test="zodiacSign != null">
+                #{zodiacSign,jdbcType=TINYINT},
+            </if>
+            <if test="height != null">
+                #{height,jdbcType=TINYINT},
+            </if>
+            <if test="weight != null">
+                #{weight,jdbcType=TINYINT},
+            </if>
             <if test="countryId != null">
                 #{countryId,jdbcType=BIGINT},
             </if>
@@ -187,25 +243,32 @@
 
     <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.MemberDetail">
         update member_detail
-        set member_id   = #{memberId,jdbcType=BIGINT},
-            name        = #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
-            gender      = #{gender,jdbcType=TINYINT},
-            phone       = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
-            email       = #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
-            country_id  = #{countryId,jdbcType=BIGINT},
-            country     = #{country,jdbcType=VARCHAR},
-            state_id    = #{stateId,jdbcType=BIGINT},
-            state       = #{state,jdbcType=VARCHAR},
-            city_id     = #{cityId,jdbcType=BIGINT},
-            city        = #{city,jdbcType=VARCHAR},
-            address     = #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
-            profile     = #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
-            hobby       = #{hobby,jdbcType=VARCHAR},
-            homepage    = #{homepage,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
-            extra       = #{extra,jdbcType=VARCHAR},
-            status      = #{status,jdbcType=TINYINT},
-            create_time = #{createTime,jdbcType=BIGINT},
-            update_time = #{updateTime,jdbcType=BIGINT}
+        set member_id      = #{memberId,jdbcType=BIGINT},
+            name           = #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            gender         = #{gender,jdbcType=TINYINT},
+            phone          = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            email          = #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            year_of_birth  = #{yearOfBirth,jdbcType=SMALLINT},
+            month_of_birth = #{monthOfBirth,jdbcType=TINYINT},
+            day_of_birth   = #{dayOfBirth,jdbcType=TINYINT},
+            chinese_zodiac = #{chineseZodiac,jdbcType=TINYINT},
+            zodiac_sign    = #{zodiacSign,jdbcType=TINYINT},
+            height         = #{height,jdbcType=TINYINT},
+            weight         = #{weight,jdbcType=TINYINT},
+            country_id     = #{countryId,jdbcType=BIGINT},
+            country        = #{country,jdbcType=VARCHAR},
+            state_id       = #{stateId,jdbcType=BIGINT},
+            state          = #{state,jdbcType=VARCHAR},
+            city_id        = #{cityId,jdbcType=BIGINT},
+            city           = #{city,jdbcType=VARCHAR},
+            address        = #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            profile        = #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            hobby          = #{hobby,jdbcType=VARCHAR},
+            homepage       = #{homepage,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            extra          = #{extra,jdbcType=VARCHAR},
+            status         = #{status,jdbcType=TINYINT},
+            create_time    = #{createTime,jdbcType=BIGINT},
+            update_time    = #{updateTime,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
@@ -226,6 +289,27 @@
             </if>
             <if test="email != null">
                 email = #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            </if>
+            <if test="yearOfBirth != null">
+                year_of_birth = #{yearOfBirth,jdbcType=SMALLINT},
+            </if>
+            <if test="monthOfBirth != null">
+                month_of_birth = #{monthOfBirth,jdbcType=TINYINT},
+            </if>
+            <if test="dayOfBirth != null">
+                day_of_birth = #{dayOfBirth,jdbcType=TINYINT},
+            </if>
+            <if test="chineseZodiac != null">
+                chinese_zodiac = #{chineseZodiac,jdbcType=TINYINT},
+            </if>
+            <if test="zodiacSign != null">
+                zodiac_sign = #{zodiacSign,jdbcType=TINYINT},
+            </if>
+            <if test="height != null">
+                height = #{height,jdbcType=TINYINT},
+            </if>
+            <if test="weight != null">
+                weight = #{weight,jdbcType=TINYINT},
             </if>
             <if test="countryId != null">
                 country_id = #{countryId,jdbcType=BIGINT},
@@ -364,6 +448,34 @@
                     AND
                     email =
                     #{memberDetailCondition.email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+                </if>
+                <if test="memberDetailCondition.yearOfBirth != null">
+                    AND
+                    year_of_birth = #{memberDetailCondition.yearOfBirth,jdbcType=SMALLINT}
+                </if>
+                <if test="memberDetailCondition.monthOfBirth != null">
+                    AND
+                    month_of_birth = #{memberDetailCondition.monthOfBirth,jdbcType=TINYINT}
+                </if>
+                <if test="memberDetailCondition.dayOfBirth != null">
+                    AND
+                    day_of_birth = #{memberDetailCondition.dayOfBirth,jdbcType=TINYINT}
+                </if>
+                <if test="memberDetailCondition.chineseZodiac != null">
+                    AND
+                    chinese_zodiac = #{memberDetailCondition.chineseZodiac,jdbcType=TINYINT}
+                </if>
+                <if test="memberDetailCondition.zodiacSign != null">
+                    AND
+                    zodiac_sign = #{memberDetailCondition.zodiacSign,jdbcType=TINYINT}
+                </if>
+                <if test="memberDetailCondition.height != null">
+                    AND
+                    height = #{memberDetailCondition.height,jdbcType=TINYINT}
+                </if>
+                <if test="memberDetailCondition.weight != null">
+                    AND
+                    weight = #{memberDetailCondition.weight,jdbcType=TINYINT}
                 </if>
                 <if test="memberDetailCondition.countryId != null">
                     AND

@@ -4,6 +4,7 @@ import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.member.api.model.MemberDetailInfo;
 import com.blue.member.model.MemberDetailCondition;
+import com.blue.member.model.MemberDetailUpdateParam;
 import com.blue.member.repository.entity.MemberDetail;
 import reactor.core.publisher.Mono;
 
@@ -28,10 +29,11 @@ public interface MemberDetailService {
     /**
      * update member detail
      *
-     * @param memberDetail
+     * @param memberDetailUpdateParam
+     * @param memberId
      * @return
      */
-    MemberDetailInfo updateMemberDetail(MemberDetail memberDetail);
+    MemberDetailInfo updateMemberDetail(MemberDetailUpdateParam memberDetailUpdateParam, Long memberId);
 
     /**
      * update member detail status

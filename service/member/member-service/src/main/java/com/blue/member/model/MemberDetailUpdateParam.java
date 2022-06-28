@@ -1,21 +1,26 @@
-package com.blue.member.api.model;
+package com.blue.member.model;
+
+import com.blue.base.inter.Asserter;
+import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
+import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
+import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.member.MemberThreshold.*;
 
 /**
- * member detail info
+ * params for update an exist member detail
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"unused", "DuplicatedCode"})
-public final class MemberDetailInfo implements Serializable {
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+public class MemberDetailUpdateParam implements Serializable, Asserter {
 
-    private static final long serialVersionUID = -3977258686475948793L;
+    private static final long serialVersionUID = 4028727042786997123L;
 
     private Long id;
-
-    private Long memberId;
 
     private String name;
 
@@ -34,25 +39,11 @@ public final class MemberDetailInfo implements Serializable {
 
     private Integer dayOfBirth;
 
-    private Integer chineseZodiac;
-
-    private Integer zodiacSign;
-
     private Integer height;
 
     private Integer weight;
 
-    private Long countryId;
-
-    private String country;
-
-    private Long stateId;
-
-    private String state;
-
     private Long cityId;
-
-    private String city;
 
     private String address;
 
@@ -64,15 +55,14 @@ public final class MemberDetailInfo implements Serializable {
 
     private String extra;
 
-    public MemberDetailInfo() {
+    public MemberDetailUpdateParam() {
     }
 
-    public MemberDetailInfo(Long id, Long memberId, String name, Integer gender, String phone, String email,
-                            Integer yearOfBirth, Integer monthOfBirth, Integer dayOfBirth, Integer chineseZodiac, Integer zodiacSign,
-                            Integer height, Integer weight, Long countryId, String country, Long stateId, String state, Long cityId, String city, String address,
-                            String profile, String hobby, String homepage, String extra) {
+    public MemberDetailUpdateParam(Long id, String name, Integer gender, String phone, String email,
+                                   Integer yearOfBirth, Integer monthOfBirth, Integer dayOfBirth,
+                                   Integer height, Integer weight, Long cityId, String address,
+                                   String profile, String hobby, String homepage, String extra) {
         this.id = id;
-        this.memberId = memberId;
         this.name = name;
         this.gender = gender;
         this.phone = phone;
@@ -80,21 +70,43 @@ public final class MemberDetailInfo implements Serializable {
         this.yearOfBirth = yearOfBirth;
         this.monthOfBirth = monthOfBirth;
         this.dayOfBirth = dayOfBirth;
-        this.chineseZodiac = chineseZodiac;
-        this.zodiacSign = zodiacSign;
         this.height = height;
         this.weight = weight;
-        this.countryId = countryId;
-        this.country = country;
-        this.stateId = stateId;
-        this.state = state;
         this.cityId = cityId;
-        this.city = city;
         this.address = address;
         this.profile = profile;
         this.hobby = hobby;
         this.homepage = homepage;
         this.extra = extra;
+    }
+
+    @Override
+    public void asserts() {
+        if (isInvalidIdentity(this.id))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid id");
+        if (isBlank(this.name))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
+        assertGenderIdentity(this.gender, false);
+        if (isBlank(this.phone))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
+        if (isBlank(this.email))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank");
+        if (isNull(this.yearOfBirth) || this.yearOfBirth < MIN_YEAR_OF_BIRTH.threshold)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid year of birth");
+        if (isNull(this.monthOfBirth) || this.monthOfBirth < MIN_MONTH_OF_BIRTH.threshold || this.monthOfBirth > MAX_MONTH_OF_BIRTH.threshold)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid month of birth");
+        if (isNull(this.dayOfBirth) || this.dayOfBirth < MIN_DAY_OF_BIRTH.threshold || this.dayOfBirth > MAX_DAY_OF_BIRTH.threshold)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid day of birth");
+        if (isNull(this.height) || this.height < 1L)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid height");
+        if (isNull(this.weight) || this.weight < 1L)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid weight");
+        if (isInvalidIdentity(this.cityId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid city id");
+        if (isBlank(this.address))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
+        if (isBlank(this.profile))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank");
     }
 
     public Long getId() {
@@ -103,14 +115,6 @@ public final class MemberDetailInfo implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
     }
 
     public String getName() {
@@ -169,22 +173,6 @@ public final class MemberDetailInfo implements Serializable {
         this.dayOfBirth = dayOfBirth;
     }
 
-    public Integer getChineseZodiac() {
-        return chineseZodiac;
-    }
-
-    public void setChineseZodiac(Integer chineseZodiac) {
-        this.chineseZodiac = chineseZodiac;
-    }
-
-    public Integer getZodiacSign() {
-        return zodiacSign;
-    }
-
-    public void setZodiacSign(Integer zodiacSign) {
-        this.zodiacSign = zodiacSign;
-    }
-
     public Integer getHeight() {
         return height;
     }
@@ -201,52 +189,12 @@ public final class MemberDetailInfo implements Serializable {
         this.weight = weight;
     }
 
-    public Long getCountryId() {
-        return countryId;
-    }
-
-    public void setCountryId(Long countryId) {
-        this.countryId = countryId;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public Long getStateId() {
-        return stateId;
-    }
-
-    public void setStateId(Long stateId) {
-        this.stateId = stateId;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public Long getCityId() {
         return cityId;
     }
 
     public void setCityId(Long cityId) {
         this.cityId = cityId;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public String getAddress() {
@@ -291,9 +239,8 @@ public final class MemberDetailInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "MemberDetailInfo{" +
+        return "MemberDetailUpdateParam{" +
                 "id=" + id +
-                ", memberId=" + memberId +
                 ", name='" + name + '\'' +
                 ", gender=" + gender +
                 ", phone='" + phone + '\'' +
@@ -301,16 +248,9 @@ public final class MemberDetailInfo implements Serializable {
                 ", yearOfBirth=" + yearOfBirth +
                 ", monthOfBirth=" + monthOfBirth +
                 ", dayOfBirth=" + dayOfBirth +
-                ", chineseZodiac=" + chineseZodiac +
-                ", zodiacSign=" + zodiacSign +
                 ", height=" + height +
                 ", weight=" + weight +
-                ", countryId=" + countryId +
-                ", country='" + country + '\'' +
-                ", stateId=" + stateId +
-                ", state='" + state + '\'' +
                 ", cityId=" + cityId +
-                ", city='" + city + '\'' +
                 ", address='" + address + '\'' +
                 ", profile='" + profile + '\'' +
                 ", hobby='" + hobby + '\'' +

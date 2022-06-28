@@ -2,8 +2,6 @@ package com.blue.member.repository.entity;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-
 /**
  * member detail entity
  *
@@ -28,6 +26,20 @@ public final class MemberDetail implements Serializable {
     private String phone;
 
     private String email;
+
+    private Integer yearOfBirth;
+
+    private Integer monthOfBirth;
+
+    private Integer dayOfBirth;
+
+    private Integer chineseZodiac;
+
+    private Integer zodiacSign;
+
+    private Integer height;
+
+    private Integer weight;
 
     private Long countryId;
 
@@ -78,7 +90,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = isNull(name) ? null : name.trim();
+        this.name = name;
     }
 
     public Integer getGender() {
@@ -94,7 +106,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setPhone(String phone) {
-        this.phone = isNull(phone) ? null : phone.trim();
+        this.phone = phone;
     }
 
     public String getEmail() {
@@ -102,7 +114,63 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setEmail(String email) {
-        this.email = isNull(email) ? null : email.trim();
+        this.email = email;
+    }
+
+    public Integer getYearOfBirth() {
+        return yearOfBirth;
+    }
+
+    public void setYearOfBirth(Integer yearOfBirth) {
+        this.yearOfBirth = yearOfBirth;
+    }
+
+    public Integer getMonthOfBirth() {
+        return monthOfBirth;
+    }
+
+    public void setMonthOfBirth(Integer monthOfBirth) {
+        this.monthOfBirth = monthOfBirth;
+    }
+
+    public Integer getDayOfBirth() {
+        return dayOfBirth;
+    }
+
+    public void setDayOfBirth(Integer dayOfBirth) {
+        this.dayOfBirth = dayOfBirth;
+    }
+
+    public Integer getChineseZodiac() {
+        return chineseZodiac;
+    }
+
+    public void setChineseZodiac(Integer chineseZodiac) {
+        this.chineseZodiac = chineseZodiac;
+    }
+
+    public Integer getZodiacSign() {
+        return zodiacSign;
+    }
+
+    public void setZodiacSign(Integer zodiacSign) {
+        this.zodiacSign = zodiacSign;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 
     public Long getCountryId() {
@@ -118,7 +186,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setCountry(String country) {
-        this.country = isNull(country) ? null : country.trim();
+        this.country = country;
     }
 
     public Long getStateId() {
@@ -134,7 +202,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setState(String state) {
-        this.state = isNull(state) ? null : state.trim();
+        this.state = state;
     }
 
     public Long getCityId() {
@@ -150,7 +218,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setCity(String city) {
-        this.city = isNull(city) ? null : city.trim();
+        this.city = city;
     }
 
     public String getAddress() {
@@ -158,7 +226,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setAddress(String address) {
-        this.address = isNull(address) ? null : address.trim();
+        this.address = address;
     }
 
     public String getProfile() {
@@ -166,7 +234,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setProfile(String profile) {
-        this.profile = isNull(profile) ? null : profile.trim();
+        this.profile = profile;
     }
 
     public String getHobby() {
@@ -174,7 +242,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setHobby(String hobby) {
-        this.hobby = isNull(hobby) ? null : hobby.trim();
+        this.hobby = hobby;
     }
 
     public String getHomepage() {
@@ -182,7 +250,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setHomepage(String homepage) {
-        this.homepage = isNull(homepage) ? null : homepage.trim();
+        this.homepage = homepage;
     }
 
     public String getExtra() {
@@ -190,7 +258,7 @@ public final class MemberDetail implements Serializable {
     }
 
     public void setExtra(String extra) {
-        this.extra = isNull(extra) ? null : extra.trim();
+        this.extra = extra;
     }
 
     public Integer getStatus() {
@@ -226,6 +294,13 @@ public final class MemberDetail implements Serializable {
                 ", gender=" + gender +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
+                ", yearOfBirth=" + yearOfBirth +
+                ", monthOfBirth=" + monthOfBirth +
+                ", dayOfBirth=" + dayOfBirth +
+                ", chineseZodiac=" + chineseZodiac +
+                ", zodiacSign=" + zodiacSign +
+                ", height=" + height +
+                ", weight=" + weight +
                 ", countryId=" + countryId +
                 ", country='" + country + '\'' +
                 ", stateId=" + stateId +

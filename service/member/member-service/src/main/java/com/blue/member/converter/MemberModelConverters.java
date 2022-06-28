@@ -138,7 +138,9 @@ public final class MemberModelConverters {
             return new MemberDetailInfo(
                     memberDetail.getId(), memberDetail.getMemberId(), memberDetail.getName(),
                     memberDetail.getGender(), memberDetail.getPhone(), memberDetail.getEmail(),
-                    memberDetail.getCountryId(), memberDetail.getCountry(),
+                    memberDetail.getYearOfBirth(), memberDetail.getMonthOfBirth(), memberDetail.getDayOfBirth(),
+                    memberDetail.getChineseZodiac(), memberDetail.getZodiacSign(),
+                    memberDetail.getHeight(), memberDetail.getWeight(), memberDetail.getCountryId(), memberDetail.getCountry(),
                     memberDetail.getStateId(), memberDetail.getState(), memberDetail.getCityId(),
                     memberDetail.getCity(), memberDetail.getAddress(), memberDetail.getProfile(),
                     memberDetail.getHobby(), memberDetail.getHomepage(), memberDetail.getExtra()

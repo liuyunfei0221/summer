@@ -5,7 +5,6 @@ import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.RealNameInfo;
-import com.blue.member.constant.MemberDetailSortAttribute;
 import com.blue.member.constant.RealNameSortAttribute;
 import com.blue.member.model.RealNameCondition;
 import com.blue.member.repository.entity.RealName;
@@ -29,10 +28,11 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertStatus;
-import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELECT;
+import static com.blue.base.constant.common.BlueNumericalValue.*;
 import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.INVALID;
+import static com.blue.base.constant.member.Gender.UNKNOWN;
 import static com.blue.member.converter.MemberModelConverters.REAL_NAME_2_REAL_NAME_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -69,8 +69,20 @@ public class RealNameServiceImpl implements RealNameService {
             throw new BlueException(INVALID_IDENTITY);
 
         RealName realName = new RealName();
+
         realName.setId(blueIdentityProcessor.generate(RealName.class));
         realName.setMemberId(memberId);
+        realName.setRealName(EMPTY_DATA.value);
+        realName.setGender(UNKNOWN.identity);
+        realName.setBirthday(EMPTY_DATA.value);
+        realName.setNationalityId(BLUE_ID.value);
+        realName.setEthnic(EMPTY_DATA.value);
+        realName.setIdCardNo(EMPTY_DATA.value);
+        realName.setResidenceAddress(EMPTY_DATA.value);
+        realName.setIssuingAuthority(EMPTY_DATA.value);
+        realName.setSinceDate(EMPTY_DATA.value);
+        realName.setExpireDate(EMPTY_DATA.value);
+        realName.setExtra(EMPTY_DATA.value);
         realName.setStatus(INVALID.status);
         Long timeStamp = TIME_STAMP_GETTER.get();
         realName.setCreateTime(timeStamp);
@@ -86,7 +98,7 @@ public class RealNameServiceImpl implements RealNameService {
         if (isNull(condition))
             return new RealNameCondition();
 
-        process(condition, SORT_ATTRIBUTE_MAPPING, MemberDetailSortAttribute.ID.column);
+        process(condition, SORT_ATTRIBUTE_MAPPING, RealNameSortAttribute.ID.column);
 
         return condition;
     };
