@@ -77,7 +77,7 @@ public class PortalServiceImpl implements PortalService {
 
         redisExpire = blueRedisConfig.getEntryTtl();
         CaffeineConf caffeineConf = new CaffeineConfParams(
-                caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), ChronoUnit.SECONDS),
+                caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), ChronoUnit.SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);

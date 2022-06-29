@@ -2,6 +2,7 @@ package com.blue.member.service.inter;
 
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
+import com.blue.base.model.common.StatusParam;
 import com.blue.member.api.model.MemberDetailInfo;
 import com.blue.member.model.MemberDetailCondition;
 import com.blue.member.model.MemberDetailUpdateParam;
@@ -29,20 +30,20 @@ public interface MemberDetailService {
     /**
      * update member detail
      *
-     * @param memberDetailUpdateParam
      * @param memberId
+     * @param memberDetailUpdateParam
      * @return
      */
-    MemberDetailInfo updateMemberDetail(MemberDetailUpdateParam memberDetailUpdateParam, Long memberId);
+    MemberDetailInfo updateMemberDetail(Long memberId, MemberDetailUpdateParam memberDetailUpdateParam);
 
     /**
      * update member detail status
      *
-     * @param id
-     * @param status
+     * @param memberId
+     * @param statusParam
      * @return
      */
-    MemberDetailInfo updateMemberDetailStatus(Long id, Integer status);
+    MemberDetailInfo updateMemberDetailStatus(Long memberId, StatusParam statusParam);
 
     /**
      * get by id

@@ -233,7 +233,7 @@ limit:
 
 
 risk:
-  illegalExpireSeconds: 10
+  illegalExpiresSecond: 10
 
 
 request:

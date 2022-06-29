@@ -53,7 +53,7 @@ public final class AccessInfoCache {
     /**
      * global expire millis
      */
-    private Long globalExpireMillis;
+    private Long globalExpiresMillis;
 
     /**
      * millis
@@ -75,11 +75,11 @@ public final class AccessInfoCache {
 
     public AccessInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer,
                            Scheduler scheduler, Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
-                           Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
+                           Integer refresherBlockingQueueCapacity, Long globalExpiresMillis, Long localExpiresMillis, Integer capacity) {
 
         assertConf(reactiveStringRedisTemplate, accessExpireProducer,
                 refresherCorePoolSize, refresherMaximumPoolSize, refresherKeepAliveSeconds,
-                refresherBlockingQueueCapacity, globalExpireMillis, localExpireMillis, capacity);
+                refresherBlockingQueueCapacity, globalExpiresMillis, localExpiresMillis, capacity);
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.accessExpireProducer = accessExpireProducer;
@@ -95,10 +95,10 @@ public final class AccessInfoCache {
         this.executorService = new ThreadPoolExecutor(refresherCorePoolSize, refresherMaximumPoolSize,
                 refresherKeepAliveSeconds, SECONDS, new ArrayBlockingQueue<>(refresherBlockingQueueCapacity), threadFactory, rejectedExecutionHandler);
 
-        this.globalExpireMillis = globalExpireMillis;
-        this.globalExpireDuration = Duration.of(globalExpireMillis, UNIT);
+        this.globalExpiresMillis = globalExpiresMillis;
+        this.globalExpireDuration = Duration.of(globalExpiresMillis, UNIT);
 
-        CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpireMillis, MILLIS),
+        CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpiresMillis, MILLIS),
                 AFTER_WRITE, executorService);
 
         this.cache = generateCache(caffeineConf);
@@ -111,7 +111,7 @@ public final class AccessInfoCache {
         try {
             this.executorService.execute(() -> {
                 if (hasText(keyId)) {
-                    accessExpireProducer.send(new KeyExpireEvent(keyId, globalExpireMillis, UNIT));
+                    accessExpireProducer.send(new KeyExpireEvent(keyId, globalExpiresMillis, UNIT));
                     LOGGER.warn("REDIS_ACCESS_REFRESHER -> SUCCESS, keyId = {}", keyId);
                 } else {
                     LOGGER.error("keyId or accessInfo is empty, keyId = {}", keyId);
@@ -230,7 +230,7 @@ public final class AccessInfoCache {
      */
     private static void assertConf(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer,
                                    Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
-                                   Integer refresherBlockingQueueCapacity, Long globalExpireMillis, Long localExpireMillis, Integer capacity) {
+                                   Integer refresherBlockingQueueCapacity, Long globalExpiresMillis, Long localExpiresMillis, Integer capacity) {
         if (isNull(reactiveStringRedisTemplate))
             throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
@@ -249,14 +249,14 @@ public final class AccessInfoCache {
         if (isNull(refresherBlockingQueueCapacity) || refresherBlockingQueueCapacity < 1)
             throw new RuntimeException("refresherBlockingQueueCapacity can't be null or less than 1");
 
-        if (isNull(globalExpireMillis) || globalExpireMillis < 1L)
-            throw new RuntimeException("globalExpireSeconds can't be null or less than 1");
+        if (isNull(globalExpiresMillis) || globalExpiresMillis < 1L)
+            throw new RuntimeException("globalExpiresSecond can't be null or less than 1");
 
-        if (isNull(localExpireMillis) || localExpireMillis < 1L)
-            throw new RuntimeException("localExpireSeconds can't be null or less than 1");
+        if (isNull(localExpiresMillis) || localExpiresMillis < 1L)
+            throw new RuntimeException("localExpiresSecond can't be null or less than 1");
 
-        if (localExpireMillis > globalExpireMillis)
-            throw new RuntimeException("localExpireSeconds can't be null or greater than globalExpireSeconds");
+        if (localExpiresMillis > globalExpiresMillis)
+            throw new RuntimeException("localExpiresSecond can't be null or greater than globalExpiresSecond");
 
         if (isNull(capacity) || capacity < 1)
             throw new RuntimeException("capacity can't be null or less than 1");

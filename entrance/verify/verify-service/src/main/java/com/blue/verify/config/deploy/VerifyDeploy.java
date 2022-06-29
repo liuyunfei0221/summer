@@ -23,7 +23,7 @@ public class VerifyDeploy {
 
     private Integer maxLength;
 
-    private Integer expireMillis;
+    private Integer expiresMillis;
 
     private Boolean repeatable;
 
@@ -70,12 +70,12 @@ public class VerifyDeploy {
         this.maxLength = maxLength;
     }
 
-    public Integer getExpireMillis() {
-        return expireMillis;
+    public Integer getExpiresMillis() {
+        return expiresMillis;
     }
 
-    public void setExpireMillis(Integer expireMillis) {
-        this.expireMillis = expireMillis;
+    public void setExpiresMillis(Integer expiresMillis) {
+        this.expiresMillis = expiresMillis;
     }
 
     public Boolean getRepeatable() {
@@ -94,7 +94,7 @@ public class VerifyDeploy {
                 ", verifyLength=" + verifyLength +
                 ", minLength=" + minLength +
                 ", maxLength=" + maxLength +
-                ", expireMillis=" + expireMillis +
+                ", expiresMillis=" + expiresMillis +
                 ", repeatable=" + repeatable +
                 '}';
     }

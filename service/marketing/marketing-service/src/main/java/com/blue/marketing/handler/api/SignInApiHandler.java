@@ -36,8 +36,8 @@ public final class SignInApiHandler {
      */
     public Mono<ServerResponse> signIn(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
-                .flatMap(ai ->
-                        signInService.signIn(ai.getId())
+                .flatMap(acc ->
+                        signInService.signIn(acc.getId())
                                 .flatMap(r ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
@@ -53,8 +53,8 @@ public final class SignInApiHandler {
      */
     public Mono<ServerResponse> selectRecords(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
-                .flatMap(ai ->
-                        signInService.getSignInRecord(ai.getId())
+                .flatMap(acc ->
+                        signInService.getSignInRecord(acc.getId())
                                 .flatMap(info ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)

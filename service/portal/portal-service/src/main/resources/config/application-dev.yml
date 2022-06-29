@@ -144,7 +144,7 @@ cache:
 
 caffeine:
   maximumSize: 1024
-  expireSeconds: 10
+  expiresSecond: 10
 
 
 executor:

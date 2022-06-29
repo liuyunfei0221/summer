@@ -22,7 +22,7 @@ public class CaffeineDeploy {
 
     private int styleMaximumSize;
 
-    private int expireSeconds;
+    private int expiresSecond;
 
     public CaffeineDeploy() {
     }
@@ -67,12 +67,12 @@ public class CaffeineDeploy {
         this.styleMaximumSize = styleMaximumSize;
     }
 
-    public int getExpireSeconds() {
-        return expireSeconds;
+    public int getExpiresSecond() {
+        return expiresSecond;
     }
 
-    public void setExpireSeconds(int expireSeconds) {
-        this.expireSeconds = expireSeconds;
+    public void setExpiresSecond(int expiresSecond) {
+        this.expiresSecond = expiresSecond;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class CaffeineDeploy {
                 ", cityMaximumSize=" + cityMaximumSize +
                 ", areaMaximumSize=" + areaMaximumSize +
                 ", styleMaximumSize=" + styleMaximumSize +
-                ", expireSeconds=" + expireSeconds +
+                ", expiresSecond=" + expiresSecond +
                 '}';
     }
 

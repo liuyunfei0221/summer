@@ -114,15 +114,15 @@ public class AuthServiceImpl implements AuthService {
         this.synchronizedProcessor = synchronizedProcessor;
 
         this.randomIdLen = sessionKeyDeploy.getRanLen();
-        this.refreshExpireMillis = this.jwtProcessor.getRefreshExpireMillis();
+        this.refreshExpiresMillis = this.jwtProcessor.getRefreshExpiresMillis();
     }
 
     private int randomIdLen;
 
-    private long refreshExpireMillis;
+    private long refreshExpiresMillis;
 
     private final Supplier<Date> REFRESH_EXPIRE_AT_GETTER = () ->
-            new Date(MILLIS_STAMP_SUP.get() + refreshExpireMillis);
+            new Date(MILLIS_STAMP_SUP.get() + refreshExpiresMillis);
 
     public static final String
             SESSION_KEY_PRE = CacheKeyPrefix.SESSION_PRE.prefix,
@@ -227,8 +227,8 @@ public class AuthServiceImpl implements AuthService {
      * @param deviceTypeIdentity
      * @return
      */
-    private static String genSessionKey(Long id, String credentialTypeIdentity, String deviceTypeIdentity) {
-        LOGGER.info("String genSessionKey(Long id, String credentialTypeIdentity, String deviceTypeIdentity), id = {}, credentialTypeIdentity = {}, deviceTypeIdentity = {}", id, credentialTypeIdentity, deviceTypeIdentity);
+    private static String genSessionKeyId(Long id, String credentialTypeIdentity, String deviceTypeIdentity) {
+        LOGGER.info("String genSessionKeyId(Long id, String credentialTypeIdentity, String deviceTypeIdentity), id = {}, credentialTypeIdentity = {}, deviceTypeIdentity = {}", id, credentialTypeIdentity, deviceTypeIdentity);
         if (isInvalidIdentity(id) || isBlank(deviceTypeIdentity))
             throw new BlueException(BAD_REQUEST);
 
@@ -288,7 +288,7 @@ public class AuthServiceImpl implements AuthService {
 
         return just(new MemberPayload(
                 randomAlphanumeric(randomIdLen),
-                genSessionKey(memberId, credentialType, deviceType),
+                genSessionKeyId(memberId, credentialType, deviceType),
                 valueOf(memberId),
                 credentialType, deviceType,
                 valueOf(TIME_STAMP_GETTER.get())));
@@ -347,7 +347,7 @@ public class AuthServiceImpl implements AuthService {
             if (memberPayload == null || refreshInfo == null)
                 throw new BlueException(UNAUTHORIZED);
 
-            if (parseLong(refreshInfo.getLoginTime()) + refreshExpireMillis <= TIME_STAMP_GETTER.get()) {
+            if (parseLong(refreshInfo.getLoginTime()) + refreshExpiresMillis <= TIME_STAMP_GETTER.get()) {
                 refreshInfoService.deleteRefreshInfo(refreshInfo.getId())
                         .doOnError(throwable -> LOGGER.error("AUTH_ASSERTER ->  refreshInfoService.deleteRefreshInfoById() failed, refreshInfo = {}, throwable = {}", refreshInfo, throwable))
                         .subscribe();
@@ -433,7 +433,7 @@ public class AuthServiceImpl implements AuthService {
             for (CredentialType credentialType : VALID_CREDENTIAL_TYPES)
                 for (DeviceType deviceType : VALID_DEVICE_TYPES)
                     refreshAccessRoleIdsOrPubKeyByKeyId(
-                            genSessionKey(memberId, credentialType.identity.intern(), deviceType.identity.intern()), roleIds, null);
+                            genSessionKeyId(memberId, credentialType.identity.intern(), deviceType.identity.intern()), roleIds, null);
         });
     };
 
@@ -447,7 +447,7 @@ public class AuthServiceImpl implements AuthService {
 
         long memberId = access.getId();
         ACCESS_SYNC_UPDATER.accept(memberId, () ->
-                refreshAccessRoleIdsOrPubKeyByKeyId(genSessionKey(memberId, access.getCredentialType().intern(), access.getDeviceType().intern()),
+                refreshAccessRoleIdsOrPubKeyByKeyId(genSessionKeyId(memberId, access.getCredentialType().intern(), access.getDeviceType().intern()),
                         null, pubKey));
     };
 
@@ -467,7 +467,7 @@ public class AuthServiceImpl implements AuthService {
                             String keyId;
                             for (CredentialType credentialType : VALID_CREDENTIAL_TYPES)
                                 for (DeviceType deviceType : VALID_DEVICE_TYPES) {
-                                    keyId = genSessionKey(memberId, credentialType.identity, deviceType.identity);
+                                    keyId = genSessionKeyId(memberId, credentialType.identity, deviceType.identity);
                                     accessInfoCache.invalidAccessInfo(keyId).toFuture().join();
                                     this.invalidateLocalAccessByKeyId(keyId).toFuture().join();
                                 }
@@ -721,7 +721,7 @@ public class AuthServiceImpl implements AuthService {
         if (isNull(access))
             return error(() -> new BlueException(UNAUTHORIZED));
 
-        String keyId = genSessionKey(access.getId(), access.getCredentialType().intern(), access.getDeviceType().intern());
+        String keyId = genSessionKeyId(access.getId(), access.getCredentialType().intern(), access.getDeviceType().intern());
         return zip(
                 REFRESH_INFOS_BY_ID_DELETER.apply(keyId),
                 accessInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))

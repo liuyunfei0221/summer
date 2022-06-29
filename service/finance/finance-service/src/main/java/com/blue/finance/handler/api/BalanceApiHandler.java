@@ -36,8 +36,8 @@ public final class BalanceApiHandler {
      */
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
-                .flatMap(ai ->
-                        financeAccountService.getBalanceByMemberId(ai.getId())
+                .flatMap(acc ->
+                        financeAccountService.getBalanceByMemberId(acc.getId())
                                 .flatMap(fv ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)

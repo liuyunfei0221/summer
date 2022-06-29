@@ -433,7 +433,7 @@ qr:
 
 
 member:
-  cacheExpireSeconds: 21600
+  cacheExpiresSecond: 21600
 
 
 address:

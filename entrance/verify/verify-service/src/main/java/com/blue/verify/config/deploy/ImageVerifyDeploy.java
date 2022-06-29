@@ -22,7 +22,7 @@ public class ImageVerifyDeploy {
 
     private Integer verifyLength;
 
-    private Integer expireMillis;
+    private Integer expiresMillis;
 
     private Integer allow;
 
@@ -63,12 +63,12 @@ public class ImageVerifyDeploy {
         this.verifyLength = verifyLength;
     }
 
-    public Integer getExpireMillis() {
-        return expireMillis;
+    public Integer getExpiresMillis() {
+        return expiresMillis;
     }
 
-    public void setExpireMillis(Integer expireMillis) {
-        this.expireMillis = expireMillis;
+    public void setExpiresMillis(Integer expiresMillis) {
+        this.expiresMillis = expiresMillis;
     }
 
     public Integer getAllow() {
@@ -94,7 +94,7 @@ public class ImageVerifyDeploy {
                 ", keyRandomType=" + keyRandomType +
                 ", imageType='" + imageType + '\'' +
                 ", verifyLength=" + verifyLength +
-                ", expireMillis=" + expireMillis +
+                ", expiresMillis=" + expiresMillis +
                 ", allow=" + allow +
                 ", sendIntervalMillis=" + sendIntervalMillis +
                 '}';

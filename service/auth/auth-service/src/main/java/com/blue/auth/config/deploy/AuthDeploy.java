@@ -14,15 +14,15 @@ import java.util.List;
 @ConfigurationProperties(prefix = "auth")
 public class AuthDeploy {
 
-    private transient Long globalMaxExpireMillis;
+    private transient Long globalMaxExpiresMillis;
 
-    private transient Long globalMinExpireMillis;
+    private transient Long globalMinExpiresMillis;
 
-    private transient Long globalRefreshExpireMillis;
+    private transient Long globalRefreshExpiresMillis;
 
     private Integer localCacheCapacity;
 
-    private Long localExpireMillis;
+    private Long localExpiresMillis;
 
     private Integer refresherCorePoolSize;
 
@@ -49,28 +49,28 @@ public class AuthDeploy {
     public AuthDeploy() {
     }
 
-    public Long getGlobalMaxExpireMillis() {
-        return globalMaxExpireMillis;
+    public Long getGlobalMaxExpiresMillis() {
+        return globalMaxExpiresMillis;
     }
 
-    public void setGlobalMaxExpireMillis(Long globalMaxExpireMillis) {
-        this.globalMaxExpireMillis = globalMaxExpireMillis;
+    public void setGlobalMaxExpiresMillis(Long globalMaxExpiresMillis) {
+        this.globalMaxExpiresMillis = globalMaxExpiresMillis;
     }
 
-    public Long getGlobalMinExpireMillis() {
-        return globalMinExpireMillis;
+    public Long getGlobalMinExpiresMillis() {
+        return globalMinExpiresMillis;
     }
 
-    public void setGlobalMinExpireMillis(Long globalMinExpireMillis) {
-        this.globalMinExpireMillis = globalMinExpireMillis;
+    public void setGlobalMinExpiresMillis(Long globalMinExpiresMillis) {
+        this.globalMinExpiresMillis = globalMinExpiresMillis;
     }
 
-    public Long getGlobalRefreshExpireMillis() {
-        return globalRefreshExpireMillis;
+    public Long getGlobalRefreshExpiresMillis() {
+        return globalRefreshExpiresMillis;
     }
 
-    public void setGlobalRefreshExpireMillis(Long globalRefreshExpireMillis) {
-        this.globalRefreshExpireMillis = globalRefreshExpireMillis;
+    public void setGlobalRefreshExpiresMillis(Long globalRefreshExpiresMillis) {
+        this.globalRefreshExpiresMillis = globalRefreshExpiresMillis;
     }
 
     public Integer getLocalCacheCapacity() {
@@ -81,12 +81,12 @@ public class AuthDeploy {
         this.localCacheCapacity = localCacheCapacity;
     }
 
-    public Long getLocalExpireMillis() {
-        return localExpireMillis;
+    public Long getLocalExpiresMillis() {
+        return localExpiresMillis;
     }
 
-    public void setLocalExpireMillis(Long localExpireMillis) {
-        this.localExpireMillis = localExpireMillis;
+    public void setLocalExpiresMillis(Long localExpiresMillis) {
+        this.localExpiresMillis = localExpiresMillis;
     }
 
     public Integer getRefresherCorePoolSize() {
@@ -180,11 +180,11 @@ public class AuthDeploy {
     @Override
     public String toString() {
         return "AuthDeploy{" +
-                "globalMaxExpireMillis=" + globalMaxExpireMillis +
-                ", globalMinExpireMillis=" + globalMinExpireMillis +
-                ", globalRefreshExpireMillis=" + globalRefreshExpireMillis +
+                "globalMaxExpiresMillis=" + globalMaxExpiresMillis +
+                ", globalMinExpiresMillis=" + globalMinExpiresMillis +
+                ", globalRefreshExpiresMillis=" + globalRefreshExpiresMillis +
                 ", localCacheCapacity=" + localCacheCapacity +
-                ", localExpireMillis=" + localExpireMillis +
+                ", localExpiresMillis=" + localExpiresMillis +
                 ", refresherCorePoolSize=" + refresherCorePoolSize +
                 ", refresherMaximumPoolSize=" + refresherMaximumPoolSize +
                 ", refresherKeepAliveSeconds=" + refresherKeepAliveSeconds +

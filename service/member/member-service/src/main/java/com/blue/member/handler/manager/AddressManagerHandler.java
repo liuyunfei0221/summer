@@ -47,5 +47,4 @@ public class AddressManagerHandler {
                                 .body(generate(OK.code, pma, serverRequest), BlueResponse.class));
     }
 
-
 }

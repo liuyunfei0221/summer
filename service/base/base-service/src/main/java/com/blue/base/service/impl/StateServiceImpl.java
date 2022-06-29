@@ -93,15 +93,15 @@ public class StateServiceImpl implements StateService {
         this.scheduler = scheduler;
 
         idStateCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         countryIdStatesCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         idRegionCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 

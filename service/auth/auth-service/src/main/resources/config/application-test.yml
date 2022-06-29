@@ -344,11 +344,11 @@ scheduler:
 
 
 auth:
-  globalMaxExpireMillis: 7776000000
-  globalMinExpireMillis: 259200000
-  globalRefreshExpireMillis: 7776000000
+  globalMaxExpiresMillis: 7776000000
+  globalMinExpiresMillis: 259200000
+  globalRefreshExpiresMillis: 7776000000
   localCacheCapacity: 16384
-  localExpireMillis: 180000
+  localExpiresMillis: 180000
   refresherCorePoolSize: 2
   refresherMaximumPoolSize: 4
   refresherKeepAliveSeconds: 64
@@ -364,7 +364,7 @@ auth:
 
 verify:
   defaultType: NUMERIC
-  defaultExpireMillis: 120000
+  defaultExpiresMillis: 120000
   defaultLength: 8
 
 

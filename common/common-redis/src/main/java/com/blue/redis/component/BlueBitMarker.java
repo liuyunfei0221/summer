@@ -81,8 +81,8 @@ public final class BlueBitMarker {
         return bits;
     };
 
-    private List<String> generateArgs(int offset, boolean bit, int expireSeconds) {
-        return asList(String.valueOf(offset), String.valueOf(BIT_VALUE_MAPPING.get(bit)), String.valueOf(expireSeconds));
+    private List<String> generateArgs(int offset, boolean bit, int expiresSecond) {
+        return asList(String.valueOf(offset), String.valueOf(BIT_VALUE_MAPPING.get(bit)), String.valueOf(expiresSecond));
     }
 
     private Mono<List<Long>> getByLimitUpTo64(String key, int limit) {
@@ -138,13 +138,13 @@ public final class BlueBitMarker {
      *
      * @param key
      * @param offset
-     * @param expireSeconds
+     * @param expiresSecond
      * @return
      */
-    public Mono<Boolean> setBit(String key, int offset, boolean bit, int expireSeconds) {
+    public Mono<Boolean> setBit(String key, int offset, boolean bit, int expiresSecond) {
         return isNotBlank(key) ?
                 reactiveStringRedisTemplate.execute(BIT_SET_SCRIPT, SCRIPT_KEYS_WRAPPER.apply(key),
-                                generateArgs(offset, bit, expireSeconds))
+                                generateArgs(offset, bit, expiresSecond))
                         .elementAt(FLUX_ELEMENT_INDEX)
                         .subscribeOn(scheduler)
                 :

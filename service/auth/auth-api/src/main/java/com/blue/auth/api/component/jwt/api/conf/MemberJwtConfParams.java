@@ -10,50 +10,50 @@ import java.util.List;
 @SuppressWarnings("unused")
 public final class MemberJwtConfParams implements MemberJwtConf {
 
-    private transient Long globalMaxExpireMillis;
+    private transient Long globalMaxExpiresMillis;
 
-    private transient Long globalMinExpireMillis;
+    private transient Long globalMinExpiresMillis;
 
-    private transient Long globalRefreshExpireMillis;
+    private transient Long globalRefreshExpiresMillis;
 
     private transient String signKey;
 
     private transient List<String> gammaSecrets;
 
-    public MemberJwtConfParams(Long globalMaxExpireMillis, Long globalMinExpireMillis, Long globalRefreshExpireMillis,
+    public MemberJwtConfParams(Long globalMaxExpiresMillis, Long globalMinExpiresMillis, Long globalRefreshExpiresMillis,
                                String signKey, List<String> gammaSecrets) {
-        this.globalMaxExpireMillis = globalMaxExpireMillis;
-        this.globalMinExpireMillis = globalMinExpireMillis;
-        this.globalRefreshExpireMillis = globalRefreshExpireMillis;
+        this.globalMaxExpiresMillis = globalMaxExpiresMillis;
+        this.globalMinExpiresMillis = globalMinExpiresMillis;
+        this.globalRefreshExpiresMillis = globalRefreshExpiresMillis;
         this.signKey = signKey;
         this.gammaSecrets = gammaSecrets;
     }
 
     @Override
-    public Long getGlobalMaxExpireMillis() {
-        return globalMaxExpireMillis;
+    public Long getGlobalMaxExpiresMillis() {
+        return globalMaxExpiresMillis;
     }
 
-    public void setGlobalMaxExpireMillis(Long globalMaxExpireMillis) {
-        this.globalMaxExpireMillis = globalMaxExpireMillis;
-    }
-
-    @Override
-    public Long getGlobalMinExpireMillis() {
-        return globalMinExpireMillis;
-    }
-
-    public void setGlobalMinExpireMillis(Long globalMinExpireMillis) {
-        this.globalMinExpireMillis = globalMinExpireMillis;
+    public void setGlobalMaxExpiresMillis(Long globalMaxExpiresMillis) {
+        this.globalMaxExpiresMillis = globalMaxExpiresMillis;
     }
 
     @Override
-    public Long getGlobalRefreshExpireMillis() {
-        return globalRefreshExpireMillis;
+    public Long getGlobalMinExpiresMillis() {
+        return globalMinExpiresMillis;
     }
 
-    public void setGlobalRefreshExpireMillis(Long globalRefreshExpireMillis) {
-        this.globalRefreshExpireMillis = globalRefreshExpireMillis;
+    public void setGlobalMinExpiresMillis(Long globalMinExpiresMillis) {
+        this.globalMinExpiresMillis = globalMinExpiresMillis;
+    }
+
+    @Override
+    public Long getGlobalRefreshExpiresMillis() {
+        return globalRefreshExpiresMillis;
+    }
+
+    public void setGlobalRefreshExpiresMillis(Long globalRefreshExpiresMillis) {
+        this.globalRefreshExpiresMillis = globalRefreshExpiresMillis;
     }
 
     @Override
@@ -77,9 +77,9 @@ public final class MemberJwtConfParams implements MemberJwtConf {
     @Override
     public String toString() {
         return "MemberJwtConfParams{" +
-                "globalMaxExpireMillis=" + globalMaxExpireMillis +
-                ", globalMinExpireMillis=" + globalMinExpireMillis +
-                ", globalRefreshExpireMillis=" + globalRefreshExpireMillis +
+                "globalMaxExpiresMillis=" + globalMaxExpiresMillis +
+                ", globalMinExpiresMillis=" + globalMinExpiresMillis +
+                ", globalRefreshExpiresMillis=" + globalRefreshExpiresMillis +
                 ", signKey='" + signKey + '\'' +
                 ", gammaSecrets=" + gammaSecrets +
                 '}';

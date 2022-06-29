@@ -388,7 +388,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
        (120001, 'POST', 'blue-verify', '/verify/generate', b'0', b'1', b'1', b'0', b'1', 1,
         'generate verify with param', 'generate verify with param', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
-
 -- verify manage
 
 
@@ -460,7 +459,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
        (170017, 'GET', 'blue-auth', '/manager/auth/security/{mid}', b'1', b'1', b'1', b'0', b'1', 2,
         'select members security info', 'select members security info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
-
 -- member api
 
        (180001, 'POST', 'blue-member', '/registry', b'0', b'1', b'1', b'1', b'1', 1,
@@ -473,34 +471,49 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'update member qrCode', 'update member qrCode', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180005, 'PATCH', 'blue-member', '/basic/profile', b'1', b'1', b'1', b'0', b'1', 1,
         'update member profile', 'update member profile', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180006, 'POST', 'blue-member', '/address', b'1', b'1', b'1', b'1', b'1', 1,
+       (180007, 'PUT', 'blue-member', '/detail', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member detail', 'update member detail', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180008, 'PATCH', 'blue-member', '/detail/status', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member detail status', 'update member detail status', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180009, 'GET', 'blue-member', '/detail', b'1', b'1', b'1', b'0', b'1', 1,
+        'member detail info', 'member detail info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180010, 'PUT', 'blue-member', '/realname', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member realname', 'update member realname', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180011, 'PATCH', 'blue-member', '/realname/status', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member realname status', 'update member realname status', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180012, 'GET', 'blue-member', '/realname', b'1', b'1', b'1', b'0', b'1', 1,
+        'member realname info', 'member realname info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180013, 'POST', 'blue-member', '/address', b'1', b'1', b'1', b'1', b'1', 1,
         'add address', 'add address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180007, 'PUT', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
+       (180014, 'PUT', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
         'update address', 'update address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180008, 'DELETE', 'blue-member', '/address/{id}', b'1', b'1', b'1', b'0', b'1', 1,
+       (180015, 'DELETE', 'blue-member', '/address/{id}', b'1', b'1', b'1', b'0', b'1', 1,
         'delete address', 'delete address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180009, 'GET', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
+       (180016, 'GET', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
         'select address for api', 'select address for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180010, 'POST', 'blue-member', '/card', b'1', b'1', b'1', b'1', b'1', 1,
+       (180017, 'POST', 'blue-member', '/card', b'1', b'1', b'1', b'1', b'1', 1,
         'add card', 'add card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180011, 'PUT', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
+       (180018, 'PUT', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
         'update card', 'update card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180012, 'DELETE', 'blue-member', '/card/{id}', b'1', b'1', b'1', b'0', b'1', 1,
+       (180019, 'DELETE', 'blue-member', '/card/{id}', b'1', b'1', b'1', b'0', b'1', 1,
         'delete card', 'delete card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180013, 'GET', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
+       (180020, 'GET', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
         'select card for api', 'select card for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- member manage
 
-       (190001, 'POST', 'blue-member', '/manager/basic', b'1', b'1', b'1', b'1', b'1', 2,
-        'member list', 'member list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (190002, 'POST', 'blue-member', '/manager/authorities', b'1', b'1', b'1', b'1', b'1', 2,
+       (190001, 'POST', 'blue-member', '/manager/basics', b'1', b'1', b'1', b'1', b'1', 2,
+        'member basic list', 'member basic list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (190002, 'POST', 'blue-member', '/manager/details', b'1', b'1', b'1', b'1', b'1', 2,
+        'member detail list', 'member detail list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (190003, 'POST', 'blue-member', '/manager/realnames', b'1', b'1', b'1', b'1', b'1', 2,
+        'member realname list', 'member realname list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (190004, 'POST', 'blue-member', '/manager/authorities', b'1', b'1', b'1', b'1', b'1', 2,
         'authority list', 'authority list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (190003, 'POST', 'blue-member', '/manager/addresses', b'1', b'1', b'1', b'1', b'1', 2,
+       (190005, 'POST', 'blue-member', '/manager/addresses', b'1', b'1', b'1', b'1', b'1', 2,
         'select address for manager', 'select address for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (190004, 'POST', 'blue-member', '/manager/cards', b'1', b'1', b'1', b'1', b'1', 2,
+       (190006, 'POST', 'blue-member', '/manager/cards', b'1', b'1', b'1', b'1', b'1', 2,
         'select card for manager', 'select card for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
 
 -- finance api
        (200001, 'GET', 'blue-finance', '/balance', b'1', b'1', b'1', b'0', b'1', 1,
@@ -508,7 +521,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
        (200002, 'POST', 'blue-finance', '/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
         'withdraw/test encrypt in finance', 'withdraw/test encrypt in finance', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
-
 
 -- finance open
 
@@ -547,7 +559,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
        (220007, 'GET', 'blue-media', '/mail/read', b'0', b'1', b'1', b'0', b'1', 2,
         'test read', 'test read', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
-
 -- media manage
 
        (230006, 'POST', 'blue-media', '/manager/attachments', b'1', b'1', b'1', b'0', b'1', 2,
@@ -555,7 +566,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
        (230007, 'POST', 'blue-media', '/manager/downloadHistories', b'1', b'1', b'1', b'0', b'1', 2,
         'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
-
 
 -- portal api
 
@@ -595,7 +605,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'event record list of manager', 'event record list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
 
-
 -- shine api
 
        (290001, 'GET', 'blue-shine', '/shine', b'0', b'1', b'1', b'0', b'1', 1,
@@ -624,7 +633,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (320004, 'POST', 'blue-analyze', '/statistics/active/summary', b'1', b'1', b'1', b'0', b'1', 2,
         'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
-
 
 -- role
 

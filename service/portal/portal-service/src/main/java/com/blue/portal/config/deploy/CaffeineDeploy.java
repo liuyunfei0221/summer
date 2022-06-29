@@ -14,7 +14,7 @@ public class CaffeineDeploy {
 
     private int maximumSize;
 
-    private int expireSeconds;
+    private int expiresSecond;
 
     public CaffeineDeploy() {
     }
@@ -27,19 +27,19 @@ public class CaffeineDeploy {
         this.maximumSize = maximumSize;
     }
 
-    public int getExpireSeconds() {
-        return expireSeconds;
+    public int getExpiresSecond() {
+        return expiresSecond;
     }
 
-    public void setExpireSeconds(int expireSeconds) {
-        this.expireSeconds = expireSeconds;
+    public void setExpiresSecond(int expiresSecond) {
+        this.expiresSecond = expiresSecond;
     }
 
     @Override
     public String toString() {
         return "CaffeineDeploy{" +
                 "maximumSize=" + maximumSize +
-                ", expireSeconds=" + expireSeconds +
+                ", expiresSecond=" + expiresSecond +
                 '}';
     }
 

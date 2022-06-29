@@ -2,8 +2,10 @@ package com.blue.member.service.inter;
 
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
+import com.blue.base.model.common.StatusParam;
 import com.blue.member.api.model.RealNameInfo;
 import com.blue.member.model.RealNameCondition;
+import com.blue.member.model.RealNameUpdateParam;
 import com.blue.member.repository.entity.RealName;
 import reactor.core.publisher.Mono;
 
@@ -28,19 +30,20 @@ public interface RealNameService {
     /**
      * update real name
      *
-     * @param realName
+     * @param memberId
+     * @param realNameUpdateParam
      * @return
      */
-    RealNameInfo updateRealName(RealName realName);
+    RealNameInfo updateRealName(Long memberId, RealNameUpdateParam realNameUpdateParam);
 
     /**
      * update real name status
      *
      * @param id
-     * @param status
+     * @param statusParam
      * @return
      */
-    RealNameInfo updateRealNameStatus(Long id, Integer status);
+    RealNameInfo updateRealNameStatus(Long id, StatusParam statusParam);
 
     /**
      * get by id

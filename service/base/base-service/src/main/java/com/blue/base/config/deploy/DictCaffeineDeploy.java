@@ -16,7 +16,7 @@ public class DictCaffeineDeploy {
 
     private int dictMaximumSize;
 
-    private int expireSeconds;
+    private int expiresSecond;
 
     public DictCaffeineDeploy() {
     }
@@ -37,12 +37,12 @@ public class DictCaffeineDeploy {
         this.dictMaximumSize = dictMaximumSize;
     }
 
-    public int getExpireSeconds() {
-        return expireSeconds;
+    public int getExpiresSecond() {
+        return expiresSecond;
     }
 
-    public void setExpireSeconds(int expireSeconds) {
-        this.expireSeconds = expireSeconds;
+    public void setExpiresSecond(int expiresSecond) {
+        this.expiresSecond = expiresSecond;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class DictCaffeineDeploy {
         return "DictCaffeineDeploy{" +
                 "dictTypeMaximumSize=" + dictTypeMaximumSize +
                 ", dictMaximumSize=" + dictMaximumSize +
-                ", expireSeconds=" + expireSeconds +
+                ", expiresSecond=" + expiresSecond +
                 '}';
     }
 

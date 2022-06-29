@@ -12,11 +12,11 @@ import java.util.function.Function;
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface JwtConf<T> {
 
-    Long getMaxExpireMillis();
+    Long getMaxExpiresMillis();
 
-    Long getMinExpireMillis();
+    Long getMinExpiresMillis();
 
-    Long getRefreshExpireMillis();
+    Long getRefreshExpiresMillis();
 
     String getSignKey();
 

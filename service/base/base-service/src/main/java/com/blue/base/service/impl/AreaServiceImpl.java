@@ -99,15 +99,15 @@ public class AreaServiceImpl implements AreaService {
         this.scheduler = scheduler;
 
         idAreaCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         cityIdAreasCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         idRegionCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 

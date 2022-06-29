@@ -47,5 +47,4 @@ public class CardManagerHandler {
                                 .body(generate(OK.code, pma, serverRequest), BlueResponse.class));
     }
 
-
 }

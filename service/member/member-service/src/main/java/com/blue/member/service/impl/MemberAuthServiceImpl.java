@@ -82,7 +82,6 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     private final RpcFinanceControlServiceConsumer rpcFinanceControlServiceConsumer;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public MemberAuthServiceImpl(MemberBasicService memberBasicService, MemberDetailService memberDetailService, RealNameService realNameService,
                                  BlueIdentityProcessor blueIdentityProcessor, CredentialCollectProcessor credentialCollectProcessor,
                                  RpcRoleServiceConsumer rpcRoleServiceConsumer, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
@@ -147,10 +146,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         long id = blueIdentityProcessor.generate(MemberBasic.class);
         memberBasic.setId(id);
 
-        //init auth info
         rpcAuthControlServiceConsumer.initMemberAuthInfo(new MemberCredentialInfo(id, credentialCollectProcessor.collect(memberBasic, memberRegistryParam.getAccess())));
 
-        //init finance account
         rpcFinanceControlServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));
 
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
@@ -184,7 +181,6 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         long id = blueIdentityProcessor.generate(MemberBasic.class);
         memberBasic.setId(id);
 
-        //init finance account
         rpcFinanceControlServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));
 
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
@@ -192,9 +188,6 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
         memberDetailService.initMemberDetail(id);
         realNameService.initRealName(id);
-
-        if (1 == 1)
-            throw new BlueException(666, 666, "test rollback");
 
         return memberBasicInfo;
     }

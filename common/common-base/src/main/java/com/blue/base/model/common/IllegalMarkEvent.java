@@ -35,17 +35,17 @@ public final class IllegalMarkEvent implements Serializable {
     /**
      * expire seconds
      */
-    private Long illegalExpireSeconds;
+    private Long illegalExpiresSecond;
 
     public IllegalMarkEvent() {
     }
 
-    public IllegalMarkEvent(String jwt, String ip, String resourceKey, Boolean mark, Long illegalExpireSeconds) {
+    public IllegalMarkEvent(String jwt, String ip, String resourceKey, Boolean mark, Long illegalExpiresSecond) {
         this.jwt = jwt;
         this.ip = ip;
         this.resourceKey = resourceKey;
         this.mark = mark;
-        this.illegalExpireSeconds = illegalExpireSeconds;
+        this.illegalExpiresSecond = illegalExpiresSecond;
     }
 
     public String getJwt() {
@@ -80,12 +80,12 @@ public final class IllegalMarkEvent implements Serializable {
         this.mark = mark;
     }
 
-    public Long getIllegalExpireSeconds() {
-        return illegalExpireSeconds;
+    public Long getIllegalExpiresSecond() {
+        return illegalExpiresSecond;
     }
 
-    public void setIllegalExpireSeconds(Long illegalExpireSeconds) {
-        this.illegalExpireSeconds = illegalExpireSeconds;
+    public void setIllegalExpiresSecond(Long illegalExpiresSecond) {
+        this.illegalExpiresSecond = illegalExpiresSecond;
     }
 
     @Override
@@ -95,7 +95,7 @@ public final class IllegalMarkEvent implements Serializable {
                 ", ip='" + ip + '\'' +
                 ", resourceKey='" + resourceKey + '\'' +
                 ", mark=" + mark +
-                ", illegalExpireSeconds=" + illegalExpireSeconds +
+                ", illegalExpiresSecond=" + illegalExpiresSecond +
                 '}';
     }
 

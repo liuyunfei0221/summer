@@ -91,12 +91,12 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         this.stringRedisTemplate = stringRedisTemplate;
         this.executorService = executorService;
 
-        Long cacheExpireSeconds = memberDeploy.getCacheExpireSeconds();
-        if (isNull(cacheExpireSeconds) || cacheExpireSeconds < 1L)
-            throw new RuntimeException("cacheExpireSeconds can't be null or less than 1");
+        Long cacheExpiresSecond = memberDeploy.getCacheExpiresSecond();
+        if (isNull(cacheExpiresSecond) || cacheExpiresSecond < 1L)
+            throw new RuntimeException("cacheExpiresSecond can't be null or less than 1");
 
-        this.expireDuration = Duration.of(cacheExpireSeconds, ChronoUnit.SECONDS);
-        this.expiration = Expiration.from(cacheExpireSeconds, TimeUnit.SECONDS);
+        this.expireDuration = Duration.of(cacheExpiresSecond, ChronoUnit.SECONDS);
+        this.expiration = Expiration.from(cacheExpiresSecond, TimeUnit.SECONDS);
     }
 
     private Duration expireDuration;

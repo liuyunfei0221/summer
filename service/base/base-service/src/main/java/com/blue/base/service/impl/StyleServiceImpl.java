@@ -98,7 +98,7 @@ public class StyleServiceImpl implements StyleService {
         this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(
-                caffeineDeploy.getStyleMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getStyleMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);

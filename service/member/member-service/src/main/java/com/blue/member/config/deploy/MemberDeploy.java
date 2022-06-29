@@ -12,20 +12,20 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "member")
 public class MemberDeploy {
 
-    private Long cacheExpireSeconds;
+    private Long cacheExpiresSecond;
 
-    public Long getCacheExpireSeconds() {
-        return cacheExpireSeconds;
+    public Long getCacheExpiresSecond() {
+        return cacheExpiresSecond;
     }
 
-    public void setCacheExpireSeconds(Long cacheExpireSeconds) {
-        this.cacheExpireSeconds = cacheExpireSeconds;
+    public void setCacheExpiresSecond(Long cacheExpiresSecond) {
+        this.cacheExpiresSecond = cacheExpiresSecond;
     }
 
     @Override
     public String toString() {
         return "MemberDeploy{" +
-                "cacheExpireSeconds=" + cacheExpireSeconds +
+                "cacheExpiresSecond=" + cacheExpiresSecond +
                 '}';
     }
 

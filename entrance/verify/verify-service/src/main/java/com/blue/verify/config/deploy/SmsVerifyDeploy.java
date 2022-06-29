@@ -15,7 +15,7 @@ public class SmsVerifyDeploy {
 
     private Integer verifyLength;
 
-    private Long expireMillis;
+    private Long expiresMillis;
 
     private Integer allow;
 
@@ -32,12 +32,12 @@ public class SmsVerifyDeploy {
         this.verifyLength = verifyLength;
     }
 
-    public Long getExpireMillis() {
-        return expireMillis;
+    public Long getExpiresMillis() {
+        return expiresMillis;
     }
 
-    public void setExpireMillis(Long expireMillis) {
-        this.expireMillis = expireMillis;
+    public void setExpiresMillis(Long expiresMillis) {
+        this.expiresMillis = expiresMillis;
     }
 
     public Integer getAllow() {
@@ -60,7 +60,7 @@ public class SmsVerifyDeploy {
     public String toString() {
         return "SmsVerifyDeploy{" +
                 "verifyLength=" + verifyLength +
-                ", expireMillis=" + expireMillis +
+                ", expiresMillis=" + expiresMillis +
                 ", allow=" + allow +
                 ", sendIntervalMillis=" + sendIntervalMillis +
                 '}';

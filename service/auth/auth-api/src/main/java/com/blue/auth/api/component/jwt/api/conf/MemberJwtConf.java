@@ -10,11 +10,11 @@ import java.util.List;
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface MemberJwtConf {
 
-    Long getGlobalMaxExpireMillis();
+    Long getGlobalMaxExpiresMillis();
 
-    Long getGlobalMinExpireMillis();
+    Long getGlobalMinExpiresMillis();
 
-    Long getGlobalRefreshExpireMillis();
+    Long getGlobalRefreshExpiresMillis();
 
     String getSignKey();
 

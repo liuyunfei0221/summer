@@ -1,8 +1,13 @@
 package com.blue.member.service.impl;
 
+import com.blue.base.api.model.CityInfo;
+import com.blue.base.api.model.CityRegion;
+import com.blue.base.api.model.CountryInfo;
+import com.blue.base.api.model.StateInfo;
 import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
+import com.blue.base.model.common.StatusParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberDetailInfo;
@@ -34,13 +39,14 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
-import static com.blue.base.common.base.ConstantProcessor.assertStatus;
 import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
 import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.Status.INVALID;
+import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.base.constant.common.SummerAttr.DATE_TIME_FORMATTER;
 import static com.blue.base.constant.common.Symbol.DATABASE_WILDCARD;
-import static com.blue.base.constant.member.MemberThreshold.MIN_YEAR_OF_BIRTH;
+import static com.blue.base.constant.member.MemberThreshold.*;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_DETAIL_2_MEMBER_DETAIL_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -91,6 +97,106 @@ public class MemberDetailServiceImpl implements MemberDetailService {
         return memberDetail;
     };
 
+    private final BiConsumer<MemberDetailUpdateParam, MemberDetail> ATTR_PACKAGER = (memberDetailUpdateParam, memberDetail) -> {
+        if (isNull(memberDetailUpdateParam) || isNull(memberDetail))
+            throw new BlueException(EMPTY_PARAM);
+
+        ofNullable(memberDetailUpdateParam.getName()).filter(BlueChecker::isNotBlank)
+                .ifPresent(memberDetail::setName);
+        ofNullable(memberDetailUpdateParam.getGender()).ifPresent(gender -> {
+            assertGenderIdentity(gender, false);
+            memberDetail.setGender(gender);
+        });
+        ofNullable(memberDetailUpdateParam.getPhone()).filter(BlueChecker::isNotBlank)
+                .ifPresent(memberDetail::setPhone);
+        ofNullable(memberDetailUpdateParam.getEmail()).filter(BlueChecker::isNotBlank)
+                .ifPresent(memberDetail::setEmail);
+
+        ofNullable(memberDetailUpdateParam.getBirthDay()).filter(BlueChecker::isNotBlank)
+                .ifPresent(birthDay -> {
+                    LocalDate localDate;
+                    try {
+                        localDate = LocalDate.parse(birthDay, DATE_TIME_FORMATTER);
+                    } catch (Exception e) {
+                        throw new BlueException(INVALID_PARAM);
+                    }
+
+                    Integer yearOfBirth = localDate.getYear();
+                    Integer monthOfBirth = localDate.getMonthValue();
+                    Integer dayOfBirth = localDate.getDayOfMonth();
+
+                    if (yearOfBirth.equals(memberDetail.getYearOfBirth()) && monthOfBirth.equals(memberDetail.getMonthOfBirth()) && dayOfBirth.equals(memberDetail.getDayOfBirth()))
+                        return;
+
+                    memberDetail.setYearOfBirth(yearOfBirth);
+                    memberDetail.setMonthOfBirth(monthOfBirth);
+                    memberDetail.setDayOfBirth(dayOfBirth);
+
+                    //TODO
+                    memberDetail.setChineseZodiac(1);
+                    memberDetail.setZodiacSign(1);
+                });
+
+        ofNullable(memberDetailUpdateParam.getHeight())
+                .ifPresent(height -> {
+                    if (height < MIN_HEIGHT.threshold || height > MAX_HEIGHT.threshold)
+                        throw new BlueException(INVALID_PARAM);
+                    memberDetail.setHeight(height);
+                });
+
+        ofNullable(memberDetailUpdateParam.getWeight())
+                .ifPresent(weight -> {
+                    if (weight < MIN_WEIGHT.threshold || weight > MAX_WEIGHT.threshold)
+                        throw new BlueException(INVALID_PARAM);
+                    memberDetail.setWeight(weight);
+                });
+
+        ofNullable(memberDetailUpdateParam.getCityId())
+                .filter(cityId -> !cityId.equals(memberDetail.getCityId()))
+                .ifPresent(cityId -> {
+                    if (isInvalidIdentity(cityId))
+                        throw new BlueException(INVALID_IDENTITY);
+
+                    CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionMonoById(cityId).toFuture().join();
+                    if (isNull(cityRegion))
+                        throw new BlueException(DATA_NOT_EXIST);
+
+                    CountryInfo countryInfo = cityRegion.getCountry();
+                    memberDetail.setCountryId(countryInfo.getId());
+                    memberDetail.setCountry(countryInfo.getName());
+
+                    StateInfo stateInfo = cityRegion.getState();
+                    memberDetail.setStateId(stateInfo.getId());
+                    memberDetail.setState(stateInfo.getName());
+
+                    CityInfo cityInfo = cityRegion.getCity();
+                    memberDetail.setCityId(cityInfo.getId());
+                    memberDetail.setCity(cityInfo.getName());
+                });
+
+        ofNullable(memberDetailUpdateParam.getAddress())
+                .filter(BlueChecker::isNotBlank)
+                .ifPresent(memberDetail::setAddress);
+
+        ofNullable(memberDetailUpdateParam.getProfile())
+                .filter(BlueChecker::isNotBlank)
+                .ifPresent(memberDetail::setProfile);
+
+        ofNullable(memberDetailUpdateParam.getHobby())
+                .filter(BlueChecker::isNotBlank)
+                .ifPresent(memberDetail::setHobby);
+
+        ofNullable(memberDetailUpdateParam.getHomepage())
+                .filter(BlueChecker::isNotBlank)
+                .ifPresent(memberDetail::setHomepage);
+
+        ofNullable(memberDetailUpdateParam.getExtra())
+                .filter(BlueChecker::isNotBlank)
+                .ifPresent(memberDetail::setExtra);
+
+        memberDetail.setStatus(VALID.status);
+        memberDetail.setUpdateTime(TIME_STAMP_GETTER.get());
+    };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberDetailSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
@@ -124,81 +230,27 @@ public class MemberDetailServiceImpl implements MemberDetailService {
         return MEMBER_DETAIL_2_MEMBER_DETAIL_INFO.apply(memberDetail);
     }
 
-    private static final BiConsumer<MemberDetailUpdateParam, MemberDetail> ATTR_PACKAGER = (memberDetailUpdateParam, memberDetail) -> {
-        if (isNull(memberDetailUpdateParam) || isNull(memberDetail))
-            throw new BlueException(EMPTY_PARAM);
-
-        ofNullable(memberDetailUpdateParam.getName()).filter(BlueChecker::isNotBlank)
-                .ifPresent(memberDetail::setName);
-        ofNullable(memberDetailUpdateParam.getGender()).ifPresent(gender -> {
-            assertGenderIdentity(gender, false);
-            memberDetail.setGender(gender);
-        });
-        ofNullable(memberDetailUpdateParam.getPhone()).filter(BlueChecker::isNotBlank)
-                .ifPresent(memberDetail::setPhone);
-        ofNullable(memberDetailUpdateParam.getEmail()).filter(BlueChecker::isNotBlank)
-                .ifPresent(memberDetail::setEmail);
-
-        ofNullable(memberDetailUpdateParam.getYearOfBirth())
-                .ifPresent(yearOfBirth -> {
-                    if (yearOfBirth < MIN_YEAR_OF_BIRTH.threshold || yearOfBirth > LocalDate.now().getYear())
-                        throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid year of birth");
-
-                    memberDetail.setYearOfBirth(yearOfBirth);
-//                    memberDetail.setChineseZodiac();
-                });
-
-
-        //rpcCityServiceConsumer
-
-
-
-//        private Integer monthOfBirth;
-//        private Integer dayOfBirth;
-//        private Integer chineseZodiac;
-//        private Integer zodiacSign;
-//        private Integer height;
-//        private Integer weight;
-//        private Long countryId;
-//        private String country;
-//        private Long stateId;
-//        private String state;
-//        private Long cityId;
-//        private String city;
-//        private String address;
-//        private String profile;
-//        private String hobby;
-//        private String homepage;
-//        private String extra;
-//        private Integer status;
-//        private Long createTime;
-//        private Long updateTime;
-
-    };
-
     /**
      * update member detail
      *
-     * @param memberDetailUpdateParam
      * @param memberId
+     * @param memberDetailUpdateParam
      * @return
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
-    public MemberDetailInfo updateMemberDetail(MemberDetailUpdateParam memberDetailUpdateParam, Long memberId) {
-        LOGGER.info("MemberDetailInfo updateMemberDetail(MemberDetailUpdateParam memberDetailUpdateParam, Long memberId), memberDetailUpdateParam = {}, memberId = {}",
-                memberDetailUpdateParam, memberId);
+    public MemberDetailInfo updateMemberDetail(Long memberId, MemberDetailUpdateParam memberDetailUpdateParam) {
+        LOGGER.info("MemberDetailInfo updateMemberDetail(Long memberId, MemberDetailUpdateParam memberDetailUpdateParam),  memberId = {}, memberDetailUpdateParam = {}",
+                memberId, memberDetailUpdateParam);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(UNAUTHORIZED);
         if (isNull(memberDetailUpdateParam))
             throw new BlueException(EMPTY_PARAM);
         memberDetailUpdateParam.asserts();
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
 
-        MemberDetail memberDetail = memberDetailMapper.selectByPrimaryKey(memberDetailUpdateParam.getId());
+        MemberDetail memberDetail = memberDetailMapper.selectByMemberId(memberId);
         if (isNull(memberDetail))
             throw new BlueException(DATA_NOT_EXIST);
-        if (!memberDetail.getMemberId().equals(memberId))
-            throw new BlueException(DATA_NOT_BELONG_TO_YOU);
 
         ATTR_PACKAGER.accept(memberDetailUpdateParam, memberDetail);
 
@@ -210,28 +262,29 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     /**
      * update member detail status
      *
-     * @param id
-     * @param status
+     * @param memberId
+     * @param statusParam
      * @return
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
-    public MemberDetailInfo updateMemberDetailStatus(Long id, Integer status) {
-        LOGGER.info("MemberDetailInfo updateMemberDetailStatus(Long id, Integer status), id = {}, status = {}", id, status);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-        assertStatus(status, false);
+    public MemberDetailInfo updateMemberDetailStatus(Long memberId, StatusParam statusParam) {
+        LOGGER.info("MemberDetailInfo updateMemberDetailStatus(Long memberId, StatusParam statusParam), memberId = {}, statusParam = {}", memberId, statusParam);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(UNAUTHORIZED);
+        statusParam.asserts();
 
-        MemberDetail memberDetail = memberDetailMapper.selectByPrimaryKey(id);
+        MemberDetail memberDetail = memberDetailMapper.selectByMemberId(memberId);
         if (isNull(memberDetail))
             throw new BlueException(DATA_NOT_EXIST);
 
-        if (status.equals(memberDetail.getStatus()))
+        Integer status = statusParam.getStatus();
+        if (memberDetail.getStatus().equals(status))
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
         memberDetail.setStatus(status);
 
-        memberDetailMapper.updateStatus(id, status, TIME_STAMP_GETTER.get());
+        memberDetailMapper.updateStatus(memberId, status, TIME_STAMP_GETTER.get());
 
         return MEMBER_DETAIL_2_MEMBER_DETAIL_INFO.apply(memberDetail);
     }

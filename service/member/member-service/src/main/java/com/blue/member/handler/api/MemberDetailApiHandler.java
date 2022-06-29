@@ -1,16 +1,16 @@
 package com.blue.member.handler.api;
 
 import com.blue.base.model.common.BlueResponse;
-import com.blue.base.model.common.IdentityParam;
-import com.blue.base.model.common.StringDataParam;
+import com.blue.base.model.common.StatusParam;
 import com.blue.base.model.exps.BlueException;
-import com.blue.member.service.inter.MemberBasicService;
+import com.blue.member.model.MemberDetailUpdateParam;
+import com.blue.member.service.inter.MemberDetailService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.base.common.reactive.AccessGetterForReactive.*;
+import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.common.ResponseElement.OK;
@@ -19,22 +19,22 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 import static reactor.core.publisher.Mono.*;
 
 /**
- * member basic api handler
+ * member detail api handler
  *
  * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 @Component
-public final class MemberBasicApiHandler {
+public final class MemberDetailApiHandler {
 
-    private final MemberBasicService memberBasicService;
+    private final MemberDetailService memberDetailService;
 
-    public MemberBasicApiHandler(MemberBasicService memberBasicService) {
-        this.memberBasicService = memberBasicService;
+    public MemberDetailApiHandler(MemberDetailService memberDetailService) {
+        this.memberDetailService = memberDetailService;
     }
 
     /**
-     * get member info by access
+     * get member detail info by access
      *
      * @param serverRequest
      * @return
@@ -42,59 +42,42 @@ public final class MemberBasicApiHandler {
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        memberBasicService.getMemberBasicInfoMonoWithAssert(acc.getId())
-                                .flatMap(mbi ->
+                        memberDetailService.getMemberDetailInfoMonoWithAssert(acc.getId())
+                                .flatMap(mdi ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class))
+                                                .body(generate(OK.code, mdi, serverRequest), BlueResponse.class))
                 );
     }
 
     /**
-     * update member's icon
+     * update member detail
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> updateIcon(ServerRequest serverRequest) {
+    public Mono<ServerResponse> update(ServerRequest serverRequest) {
         return zip(getAccessReact(serverRequest),
-                serverRequest.bodyToMono(IdentityParam.class)
+                serverRequest.bodyToMono(MemberDetailUpdateParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))))
                 .flatMap(tuple2 ->
-                        memberBasicService.updateMemberBasicIcon(tuple2.getT1().getId(), tuple2.getT2()))
+                        just(memberDetailService.updateMemberDetail(tuple2.getT1().getId(), tuple2.getT2())))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
     }
 
     /**
-     * update member's qrCode
+     * update member detail status
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> updateQrCode(ServerRequest serverRequest) {
+    public Mono<ServerResponse> updateStatus(ServerRequest serverRequest) {
         return zip(getAccessReact(serverRequest),
-                serverRequest.bodyToMono(IdentityParam.class)
+                serverRequest.bodyToMono(StatusParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))))
                 .flatMap(tuple2 ->
-                        memberBasicService.updateMemberBasicIcon(tuple2.getT1().getId(), tuple2.getT2()))
-                .flatMap(mbi ->
-                        ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
-    }
-
-    /**
-     * update member's profile
-     *
-     * @param serverRequest
-     * @return
-     */
-    public Mono<ServerResponse> updateProfile(ServerRequest serverRequest) {
-        return zip(getAccessReact(serverRequest),
-                serverRequest.bodyToMono(StringDataParam.class)
-                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))))
-                .flatMap(tuple2 ->
-                        memberBasicService.updateMemberBasicProfile(tuple2.getT1().getId(), tuple2.getT2()))
+                        just(memberDetailService.updateMemberDetailStatus(tuple2.getT1().getId(), tuple2.getT2())))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));

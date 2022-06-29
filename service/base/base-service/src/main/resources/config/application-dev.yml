@@ -239,14 +239,14 @@ dubbo:
     check: false
     timeout: 60000
     simplified: false
-  metadata-report:
-    address: zookeeper://172.16.204.75
-    port: 2181
-    username:
-    password:
-    timeout: 120000
-    default: true
-    check: false
+#  metadata-report:
+#    address: zookeeper://172.16.204.75
+#    port: 2181
+#    username:
+#    password:
+#    timeout: 120000
+#    default: true
+#    check: false
   application:
     id: summer-base
     name: summer-base
@@ -277,13 +277,13 @@ caffeine:
   cityMaximumSize: 32768
   areaMaximumSize: 65536
   styleMaximumSize: 32
-  expireSeconds: 30
+  expiresSecond: 30
 
 
 dict:
   dictTypeMaximumSize: 1
   dictMaximumSize: 1024
-  expireSeconds: 259200
+  expiresSecond: 259200
 
 
 producers:

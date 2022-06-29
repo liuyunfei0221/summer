@@ -277,13 +277,13 @@ caffeine:
   cityMaximumSize: 32768
   areaMaximumSize: 65536
   styleMaximumSize: 32
-  expireSeconds: 30
+  expiresSecond: 30
 
 
 dict:
   dictTypeMaximumSize: 1
   dictMaximumSize: 1024
-  expireSeconds: 259200
+  expiresSecond: 259200
 
 
 producers:

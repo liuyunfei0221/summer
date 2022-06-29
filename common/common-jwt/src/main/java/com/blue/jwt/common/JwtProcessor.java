@@ -30,20 +30,20 @@ public interface JwtProcessor<T> {
      *
      * @return
      */
-    long getMaxExpireMillis();
+    long getMaxExpiresMillis();
 
     /**
      * get the lower limit of the expiration time of jwt
      *
      * @return
      */
-    long getMinExpireMillis();
+    long getMinExpiresMillis();
 
     /**
      * get expire millis of the expiration time of refresh token
      *
      * @return
      */
-    long getRefreshExpireMillis();
+    long getRefreshExpiresMillis();
 
 }

@@ -30,7 +30,27 @@ public enum MemberThreshold {
     /**
      * max of birth month
      */
-    MAX_DAY_OF_BIRTH(31);
+    MAX_DAY_OF_BIRTH(31),
+
+    /**
+     * min height
+     */
+    MIN_HEIGHT(30),
+
+    /**
+     * max height
+     */
+    MAX_HEIGHT(300),
+
+    /**
+     * min weight
+     */
+    MIN_WEIGHT(20),
+
+    /**
+     * max weight
+     */
+    MAX_WEIGHT(300);
 
     public final int threshold;
 

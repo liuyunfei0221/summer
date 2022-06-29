@@ -398,11 +398,11 @@ nesting:
 
 
 jwt:
-  globalMaxExpireMillis: 267840000
-  globalMinExpireMillis: 18000000
-  globalRefreshExpireMillis: 2678400000
+  globalMaxExpiresMillis: 267840000
+  globalMinExpiresMillis: 18000000
+  globalRefreshExpiresMillis: 2678400000
   localCacheCapacity: 16384
-  localExpireMillis: 60
+  localExpiresMillis: 60
   refresherCorePoolSize: 2
   refresherMaximumPoolSize: 4
   refresherKeepAliveSeconds: 64

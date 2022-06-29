@@ -29,7 +29,7 @@ public final class AnalyzeApiHandler {
      */
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
-                .flatMap(ai ->
+                .flatMap(acc ->
                         ok()
                                 .contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, "test", serverRequest), BlueResponse.class)

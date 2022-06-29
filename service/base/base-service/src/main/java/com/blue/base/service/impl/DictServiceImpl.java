@@ -58,11 +58,11 @@ public class DictServiceImpl implements DictService {
         this.dictRepository = dictRepository;
 
         ALL_TYPES_CACHE = generateCache(new CaffeineConfParams(
-                dictCaffeineDeploy.getDictTypeMaximumSize(), Duration.of(dictCaffeineDeploy.getExpireSeconds(), SECONDS),
+                dictCaffeineDeploy.getDictTypeMaximumSize(), Duration.of(dictCaffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         TYPE_CODE_DICT_CACHE = generateCache(new CaffeineConfParams(
-                dictCaffeineDeploy.getDictMaximumSize(), Duration.of(dictCaffeineDeploy.getExpireSeconds(), SECONDS),
+                dictCaffeineDeploy.getDictMaximumSize(), Duration.of(dictCaffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 

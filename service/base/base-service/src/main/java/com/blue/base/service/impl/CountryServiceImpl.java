@@ -87,11 +87,11 @@ public class CountryServiceImpl implements CountryService {
         this.countryRepository = countryRepository;
 
         idCountryCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getCountryMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getCountryMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         allCountriesCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getCountryMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getCountryMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 

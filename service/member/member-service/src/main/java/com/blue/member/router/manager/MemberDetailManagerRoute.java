@@ -1,6 +1,6 @@
-package com.blue.member.router.api;
+package com.blue.member.router.manager;
 
-import com.blue.member.handler.api.MemberBasicApiHandler;
+import com.blue.member.handler.manager.MemberDetailManagerHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -14,24 +14,21 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * member basic api router
+ * member detail manager router
  *
  * @author liuyunfei
  */
 @Configuration
-public class MemberBasicApiRoute {
+public class MemberDetailManagerRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> memberBasicApiRouter(MemberBasicApiHandler memberBasicApiHandler) {
+    RouterFunction<ServerResponse> memberDetailManagerRouter(MemberDetailManagerHandler memberDetailManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-member/basic");
+        RequestPredicate pathPredicate = path("/blue-member/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("", memberBasicApiHandler::get)
-                .PATCH("/icon", accept(APPLICATION_JSON), memberBasicApiHandler::updateIcon)
-                .PATCH("/qrCode", accept(APPLICATION_JSON), memberBasicApiHandler::updateQrCode)
-                .PATCH("/profile", accept(APPLICATION_JSON), memberBasicApiHandler::updateProfile)
+                .POST("/details", accept(APPLICATION_JSON), memberDetailManagerHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

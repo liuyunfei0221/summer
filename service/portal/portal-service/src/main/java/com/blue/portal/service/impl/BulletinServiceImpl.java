@@ -96,7 +96,7 @@ public class BulletinServiceImpl implements BulletinService {
         this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(
-                caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);

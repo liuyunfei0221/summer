@@ -12,9 +12,9 @@ import java.util.function.Function;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public abstract class BaseJwtConfParams<T> implements JwtConf<T> {
 
-    protected transient Long maxExpireMillis;
-    protected transient Long minExpireMillis;
-    protected transient Long refreshExpireMillis;
+    protected transient Long maxExpiresMillis;
+    protected transient Long minExpiresMillis;
+    protected transient Long refreshExpiresMillis;
 
     protected transient String signKey;
     protected transient List<String> gammaSecrets;
@@ -22,27 +22,27 @@ public abstract class BaseJwtConfParams<T> implements JwtConf<T> {
     public BaseJwtConfParams() {
     }
 
-    public BaseJwtConfParams(Long maxExpireMillis, Long minExpireMillis, Long refreshExpireMillis, String signKey, List<String> gammaSecrets) {
-        this.maxExpireMillis = maxExpireMillis;
-        this.minExpireMillis = minExpireMillis;
-        this.refreshExpireMillis = refreshExpireMillis;
+    public BaseJwtConfParams(Long maxExpiresMillis, Long minExpiresMillis, Long refreshExpiresMillis, String signKey, List<String> gammaSecrets) {
+        this.maxExpiresMillis = maxExpiresMillis;
+        this.minExpiresMillis = minExpiresMillis;
+        this.refreshExpiresMillis = refreshExpiresMillis;
         this.signKey = signKey;
         this.gammaSecrets = gammaSecrets;
     }
 
     @Override
-    public Long getMaxExpireMillis() {
-        return maxExpireMillis;
+    public Long getMaxExpiresMillis() {
+        return maxExpiresMillis;
     }
 
     @Override
-    public Long getMinExpireMillis() {
-        return minExpireMillis;
+    public Long getMinExpiresMillis() {
+        return minExpiresMillis;
     }
 
     @Override
-    public Long getRefreshExpireMillis() {
-        return refreshExpireMillis;
+    public Long getRefreshExpiresMillis() {
+        return refreshExpiresMillis;
     }
 
     @Override

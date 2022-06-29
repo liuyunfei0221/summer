@@ -24,7 +24,7 @@ public final class BlueJwtProcessorGenerator {
      * @return
      */
     public static <T> JwtProcessor<T> generate(JwtConf<T> jwtConf) {
-        LOGGER.info("create(JwtConf<T> jwtConf), jwtConf = {}", jwtConf);
+        LOGGER.info("<T> JwtProcessor<T> generate(JwtConf<T> jwtConf), jwtConf = {}", jwtConf);
         return new BlueJwtProcessor<>(jwtConf);
     }
 

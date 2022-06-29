@@ -8,7 +8,6 @@ import java.io.Serializable;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.member.MemberThreshold.*;
 
 /**
  * params for update an exist member detail
@@ -19,8 +18,6 @@ import static com.blue.base.constant.member.MemberThreshold.*;
 public class MemberDetailUpdateParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 4028727042786997123L;
-
-    private Long id;
 
     private String name;
 
@@ -33,11 +30,7 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
 
     private String email;
 
-    private Integer yearOfBirth;
-
-    private Integer monthOfBirth;
-
-    private Integer dayOfBirth;
+    private String birthDay;
 
     private Integer height;
 
@@ -58,18 +51,14 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
     public MemberDetailUpdateParam() {
     }
 
-    public MemberDetailUpdateParam(Long id, String name, Integer gender, String phone, String email,
-                                   Integer yearOfBirth, Integer monthOfBirth, Integer dayOfBirth,
-                                   Integer height, Integer weight, Long cityId, String address,
+    public MemberDetailUpdateParam(String name, Integer gender, String phone, String email,
+                                   String birthDay, Integer height, Integer weight, Long cityId, String address,
                                    String profile, String hobby, String homepage, String extra) {
-        this.id = id;
         this.name = name;
         this.gender = gender;
         this.phone = phone;
         this.email = email;
-        this.yearOfBirth = yearOfBirth;
-        this.monthOfBirth = monthOfBirth;
-        this.dayOfBirth = dayOfBirth;
+        this.birthDay = birthDay;
         this.height = height;
         this.weight = weight;
         this.cityId = cityId;
@@ -82,8 +71,6 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
 
     @Override
     public void asserts() {
-        if (isInvalidIdentity(this.id))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid id");
         if (isBlank(this.name))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
         assertGenderIdentity(this.gender, false);
@@ -91,12 +78,6 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
         if (isBlank(this.email))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank");
-        if (isNull(this.yearOfBirth) || this.yearOfBirth < MIN_YEAR_OF_BIRTH.threshold)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid year of birth");
-        if (isNull(this.monthOfBirth) || this.monthOfBirth < MIN_MONTH_OF_BIRTH.threshold || this.monthOfBirth > MAX_MONTH_OF_BIRTH.threshold)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid month of birth");
-        if (isNull(this.dayOfBirth) || this.dayOfBirth < MIN_DAY_OF_BIRTH.threshold || this.dayOfBirth > MAX_DAY_OF_BIRTH.threshold)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid day of birth");
         if (isNull(this.height) || this.height < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid height");
         if (isNull(this.weight) || this.weight < 1L)
@@ -107,14 +88,6 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
         if (isBlank(this.profile))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank");
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -149,28 +122,12 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
         this.email = email;
     }
 
-    public Integer getYearOfBirth() {
-        return yearOfBirth;
+    public String getBirthDay() {
+        return birthDay;
     }
 
-    public void setYearOfBirth(Integer yearOfBirth) {
-        this.yearOfBirth = yearOfBirth;
-    }
-
-    public Integer getMonthOfBirth() {
-        return monthOfBirth;
-    }
-
-    public void setMonthOfBirth(Integer monthOfBirth) {
-        this.monthOfBirth = monthOfBirth;
-    }
-
-    public Integer getDayOfBirth() {
-        return dayOfBirth;
-    }
-
-    public void setDayOfBirth(Integer dayOfBirth) {
-        this.dayOfBirth = dayOfBirth;
+    public void setBirthDay(String birthDay) {
+        this.birthDay = birthDay;
     }
 
     public Integer getHeight() {
@@ -240,14 +197,11 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
     @Override
     public String toString() {
         return "MemberDetailUpdateParam{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", gender=" + gender +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
-                ", yearOfBirth=" + yearOfBirth +
-                ", monthOfBirth=" + monthOfBirth +
-                ", dayOfBirth=" + dayOfBirth +
+                ", birthDay='" + birthDay + '\'' +
                 ", height=" + height +
                 ", weight=" + weight +
                 ", cityId=" + cityId +

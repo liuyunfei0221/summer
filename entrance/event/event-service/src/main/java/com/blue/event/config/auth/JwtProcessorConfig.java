@@ -28,7 +28,7 @@ public class JwtProcessorConfig {
     @Bean
     MemberJwtConf memberJwtConf() {
         LOGGER.info("jwtDeploy = {}", jwtDeploy);
-        return new MemberJwtConfParams(jwtDeploy.getGlobalMaxExpireMillis(), jwtDeploy.getGlobalMinExpireMillis(),jwtDeploy.getGlobalRefreshExpireMillis(),
+        return new MemberJwtConfParams(jwtDeploy.getGlobalMaxExpiresMillis(), jwtDeploy.getGlobalMinExpiresMillis(),jwtDeploy.getGlobalRefreshExpiresMillis(),
                 jwtDeploy.getSignKey(), jwtDeploy.getGammaSecrets());
     }
 

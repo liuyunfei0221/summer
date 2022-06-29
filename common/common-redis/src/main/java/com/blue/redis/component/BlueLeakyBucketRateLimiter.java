@@ -62,14 +62,14 @@ public final class BlueLeakyBucketRateLimiter {
      *
      * @param limitKey
      * @param allow
-     * @param expireMillis
+     * @param expiresMillis
      * @return
      */
-    public Mono<Boolean> isAllowed(String limitKey, Integer allow, Long expireMillis) {
-        assertParam(limitKey, allow, expireMillis);
+    public Mono<Boolean> isAllowed(String limitKey, Integer allow, Long expiresMillis) {
+        assertParam(limitKey, allow, expiresMillis);
 
         return reactiveStringRedisTemplate.execute(SCRIPT, SCRIPT_KEYS_WRAPPER.apply(limitKey),
-                        SCRIPT_ARGS_WRAPPER.apply(allow, expireMillis))
+                        SCRIPT_ARGS_WRAPPER.apply(allow, expiresMillis))
                 .onErrorResume(FALL_BACKER)
                 .elementAt(0)
                 .subscribeOn(scheduler);
@@ -80,11 +80,11 @@ public final class BlueLeakyBucketRateLimiter {
      *
      * @param limitKey
      * @param allow
-     * @param expireMillis
+     * @param expiresMillis
      * @return
      */
-    public Boolean isAllowedBySync(String limitKey, Integer allow, Long expireMillis) {
-        return isAllowed(limitKey, allow, expireMillis).toFuture().join();
+    public Boolean isAllowedBySync(String limitKey, Integer allow, Long expiresMillis) {
+        return isAllowed(limitKey, allow, expiresMillis).toFuture().join();
     }
 
     /**
@@ -105,14 +105,14 @@ public final class BlueLeakyBucketRateLimiter {
      *
      * @param limitKey
      * @param allow
-     * @param expireMillis
+     * @param expiresMillis
      */
-    private void assertParam(String limitKey, Integer allow, Long expireMillis) {
+    private void assertParam(String limitKey, Integer allow, Long expiresMillis) {
         if (isBlank(limitKey))
             throw new RuntimeException("limitKey can't be null");
 
-        if (isNull(allow) || isNull(expireMillis) || allow < 1 || expireMillis < 1L)
-            throw new RuntimeException("allow and expireMillis can't be null or less than 1");
+        if (isNull(allow) || isNull(expiresMillis) || allow < 1 || expiresMillis < 1L)
+            throw new RuntimeException("allow and expiresMillis can't be null or less than 1");
     }
 
 }

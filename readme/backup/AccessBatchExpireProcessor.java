@@ -131,7 +131,7 @@ public final class AccessBatchExpireProcessor {
      */
     private final BiConsumer<ExpireData, RedisConnection> DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER = (expireData, connection) -> {
         try {
-            connection.expire(expireData.key.getBytes(UTF_8), expireData.expireSeconds);
+            connection.expire(expireData.key.getBytes(UTF_8), expireData.expiresSecond);
         } catch (Exception e) {
             LOGGER.error("expireData(ExpireData expireData, RedisConnection connection) failed, expireData = {}, e = {}", expireData, e);
         } finally {
@@ -166,7 +166,7 @@ public final class AccessBatchExpireProcessor {
      */
     private final BiConsumer<KeyExpireParam, ExpireData> DATA_PACKAGER = (keyExpireParam, expireData) -> {
         expireData.key = keyExpireParam.getKey();
-        expireData.expireSeconds = SECONDS_CONVERTER.apply(keyExpireParam.getExpire(), keyExpireParam.getUnit());
+        expireData.expiresSecond = SECONDS_CONVERTER.apply(keyExpireParam.getExpire(), keyExpireParam.getUnit());
     };
 
     /**
@@ -222,7 +222,7 @@ public final class AccessBatchExpireProcessor {
      */
     private static final class ExpireData {
         String key;
-        long expireSeconds;
+        long expiresSecond;
     }
 
 }

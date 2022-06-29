@@ -10,17 +10,19 @@ import com.blue.jwt.api.conf.JwtConf;
 import com.blue.jwt.exception.AuthenticationException;
 import org.slf4j.Logger;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.*;
 
+import static com.auth0.jwt.HeaderParams.CONTENT_TYPE;
 import static com.auth0.jwt.JWT.require;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static com.blue.jwt.constant.JwtConfSchema.*;
 import static com.blue.jwt.constant.JwtResponseElement.UNAUTHORIZED;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -41,21 +43,24 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     private static final Logger LOGGER = getLogger(BlueJwtProcessor.class);
 
     //<editor-fold desc="jwt configs">
+
     /**
-     * header info
+     * content type
      */
-    private static final String HEADER_TYPE_NAME = "Type", HEADER_TYPE_VALUE = "Jwt";
-    private static final String HEADER_ALG_NAME = "alg", HEADER_ALG_VALUE = "HS512";
+    private static final String HEADER_CONTENT_TYPE_NAME = CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE = "application/jwt";
 
     /**
      * header
      */
-    private static final Map<String, Object> JWT_HEADER = new HashMap<>(4, 1.0f);
+    private static final Map<String, Object> COMMON_HEADER = new HashMap<>(1, 1.0f);
 
     static {
-        JWT_HEADER.put(HEADER_TYPE_NAME, HEADER_TYPE_VALUE);
-        JWT_HEADER.put(HEADER_ALG_NAME, HEADER_ALG_VALUE);
+        COMMON_HEADER.put(HEADER_CONTENT_TYPE_NAME, HEADER_CONTENT_TYPE_VALUE);
     }
+
+    private static final String ISSUER = "Blue", SUBJECT = "Hello", AUDIENCE = "Bluer";
+
+    private static final String EMPTY_DATA = "";
 
     /**
      * constants
@@ -72,17 +77,17 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     /**
      * maximum expiration time/Maximum validity period for certification
      */
-    private final transient long MAX_EXPIRE_MILLIS;
+    private transient long maxExpiresMillis;
 
     /**
      * minimum expiration time/certification expiration time after the last operation
      */
-    private final transient long MIN_EXPIRE_MILLIS;
+    private final transient long minExpiresMillis;
 
     /**
      * refresh token expiration time after the last operation
      */
-    private final transient long REFRESH_EXPIRE_MILLIS;
+    private final transient long refreshExpiresMillis;
 
     /**
      * encrypt algorithm
@@ -118,12 +123,12 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     /**
      * expire key
      */
-    private static final String EXPIRES_AT_STAMP_KEY = "blueExpiresAtStamp";
+    private static final String EXPIRES_AT_STAMP_KEY = "eas";
 
     /**
-     * date generator
+     * instant generator
      */
-    private static final Function<Long, Date> DATE_GEN = Date::new;
+    private static final Function<Long, Instant> INSTANT_GEN = Instant::ofEpochMilli;
 
     /**
      * timestamp generator
@@ -160,6 +165,23 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
             sha512Hex(MIX_UP_PROCESSOR.apply(jwtId, expiresAtStamp));
 
     /**
+     * commons packager
+     */
+    private final Consumer<JWTCreator.Builder> JWT_COMMON_PACKAGER = builder -> {
+        long currentStamp = MILLIS_STAMP_SUP.get();
+        long expiresAtStamp = currentStamp + maxExpiresMillis;
+
+        String jwtId = randomAlphanumeric(RANDOM_JWT_ID_LEN);
+        builder.withJWTId(jwtId).withKeyId(KEY_ID_GENERATOR.apply(jwtId, expiresAtStamp));
+        builder.withClaim(EXPIRES_AT_STAMP_KEY, expiresAtStamp);
+
+        Instant instant = INSTANT_GEN.apply(currentStamp);
+        builder.withIssuedAt(instant).withNotBefore(instant).withExpiresAt(INSTANT_GEN.apply(expiresAtStamp));
+
+        builder.withIssuer(ISSUER).withSubject(SUBJECT).withAudience(AUDIENCE);
+    };
+
+    /**
      * jwt keyId asserter
      */
     private final Consumer<DecodedJWT> JWT_ASSERTER = jwt -> {
@@ -171,8 +193,6 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
         throw new AuthenticationException(UNAUTHORIZED);
     };
 
-    private static final String EMPTY_DATA = "";
-
     /**
      * construct
      *
@@ -181,9 +201,9 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     public BlueJwtProcessor(JwtConf<T> jwtConf) {
         assertConf(jwtConf);
 
-        this.MAX_EXPIRE_MILLIS = jwtConf.getMaxExpireMillis();
-        this.MIN_EXPIRE_MILLIS = jwtConf.getMinExpireMillis();
-        this.REFRESH_EXPIRE_MILLIS = jwtConf.getRefreshExpireMillis();
+        this.maxExpiresMillis = jwtConf.getMaxExpiresMillis();
+        this.minExpiresMillis = jwtConf.getMinExpiresMillis();
+        this.refreshExpiresMillis = jwtConf.getRefreshExpiresMillis();
 
         this.ALGORITHM = HMAC512(jwtConf.getSignKey());
         this.VERIFIER = require(ALGORITHM).build();
@@ -203,31 +223,25 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
      */
     @Override
     public String create(T t) {
-        if (isNull(t)) {
-            LOGGER.error("String create(T t), t can't be null");
-            throw new AuthenticationException(UNAUTHORIZED);
+        if (nonNull(t)) {
+            try {
+                JWTCreator.Builder builder = JWT.create()
+                        .withHeader(COMMON_HEADER);
+
+                ofNullable(DATA_2_CLAIM_PROCESSOR.apply(t))
+                        .ifPresent(cm -> cm.forEach(builder::withClaim));
+
+                JWT_COMMON_PACKAGER.accept(builder);
+
+                return builder.sign(ALGORITHM);
+            } catch (Exception e) {
+                LOGGER.error("String create(T t), failed, t = {}, e = {}", t, e);
+                throw new RuntimeException("String create(T t), failed, t = " + t + ", e = " + e);
+            }
         }
 
-        long currentStamp = MILLIS_STAMP_SUP.get();
-        long expiresAtStamp = currentStamp + MAX_EXPIRE_MILLIS;
-        try {
-            JWTCreator.Builder builder = JWT.create().withHeader(JWT_HEADER);
-
-            String jwtId = randomAlphanumeric(RANDOM_JWT_ID_LEN);
-            builder.withJWTId(jwtId).withKeyId(KEY_ID_GENERATOR.apply(jwtId, expiresAtStamp));
-            builder.withClaim(EXPIRES_AT_STAMP_KEY, expiresAtStamp);
-
-            ofNullable(DATA_2_CLAIM_PROCESSOR.apply(t))
-                    .ifPresent(cm -> cm.forEach(builder::withClaim));
-
-            Date date = DATE_GEN.apply(currentStamp);
-            builder.withIssuedAt(date).withNotBefore(date).withExpiresAt(DATE_GEN.apply(expiresAtStamp));
-
-            return builder.sign(ALGORITHM);
-        } catch (Exception e) {
-            LOGGER.error("String create(T t), failed, t = {}, e = {}", t, e);
-            throw new RuntimeException("String create(T t), failed, t = " + t + ", e = " + e);
-        }
+        LOGGER.error("String create(T t), t can't be null");
+        throw new AuthenticationException(UNAUTHORIZED);
     }
 
     /**
@@ -260,8 +274,8 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
      * @return
      */
     @Override
-    public long getMaxExpireMillis() {
-        return MAX_EXPIRE_MILLIS;
+    public long getMaxExpiresMillis() {
+        return maxExpiresMillis;
     }
 
     /**
@@ -270,8 +284,8 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
      * @return
      */
     @Override
-    public long getMinExpireMillis() {
-        return MIN_EXPIRE_MILLIS;
+    public long getMinExpiresMillis() {
+        return minExpiresMillis;
     }
 
     /**
@@ -280,8 +294,8 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
      * @return
      */
     @Override
-    public long getRefreshExpireMillis() {
-        return REFRESH_EXPIRE_MILLIS;
+    public long getRefreshExpiresMillis() {
+        return refreshExpiresMillis;
     }
 
     /**
@@ -291,14 +305,14 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
      * @param <T>
      */
     private static <T> void assertConf(JwtConf<T> conf) {
-        Long minExpireMillis = conf.getMinExpireMillis();
-        if (isNull(minExpireMillis) || minExpireMillis < 0L)
-            throw new RuntimeException("minExpireMillis can't be null or less than 0L");
-        Long maxExpireMillis = conf.getMaxExpireMillis();
-        if (isNull(maxExpireMillis) || maxExpireMillis < 0L)
-            throw new RuntimeException("maxExpireMillis can't be null or less than 0L");
-        if (maxExpireMillis <= minExpireMillis)
-            throw new RuntimeException("maxExpireMillis can't less than minExpireMillis");
+        Long minExpiresMillis = conf.getMinExpiresMillis();
+        if (isNull(minExpiresMillis) || minExpiresMillis < 0L)
+            throw new RuntimeException("minExpiresMillis can't be null or less than 0L");
+        Long maxExpiresMillis = conf.getMaxExpiresMillis();
+        if (isNull(maxExpiresMillis) || maxExpiresMillis < 0L)
+            throw new RuntimeException("maxExpiresMillis can't be null or less than 0L");
+        if (maxExpiresMillis <= minExpiresMillis)
+            throw new RuntimeException("maxExpiresMillis can't less than minExpiresMillis");
 
         String signKey = conf.getSignKey();
         if (isBlank(signKey))

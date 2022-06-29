@@ -98,15 +98,15 @@ public class CityServiceImpl implements CityService {
         this.scheduler = scheduler;
 
         idCityCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         stateIdCitiesCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
 
         idRegionCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpireSeconds(), SECONDS),
+                caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 

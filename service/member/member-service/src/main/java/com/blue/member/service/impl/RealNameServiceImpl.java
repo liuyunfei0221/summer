@@ -2,11 +2,13 @@ package com.blue.member.service.impl;
 
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
+import com.blue.base.model.common.StatusParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.RealNameInfo;
 import com.blue.member.constant.RealNameSortAttribute;
 import com.blue.member.model.RealNameCondition;
+import com.blue.member.model.RealNameUpdateParam;
 import com.blue.member.repository.entity.RealName;
 import com.blue.member.repository.mapper.RealNameMapper;
 import com.blue.member.service.inter.RealNameService;
@@ -19,6 +21,7 @@ import reactor.util.Logger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -27,11 +30,11 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
-import static com.blue.base.common.base.ConstantProcessor.assertStatus;
 import static com.blue.base.constant.common.BlueNumericalValue.*;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.INVALID;
+import static com.blue.base.constant.common.Status.VALID;
 import static com.blue.base.constant.member.Gender.UNKNOWN;
 import static com.blue.member.converter.MemberModelConverters.REAL_NAME_2_REAL_NAME_INFO;
 import static java.util.Collections.emptyList;
@@ -91,6 +94,15 @@ public class RealNameServiceImpl implements RealNameService {
         return realName;
     };
 
+    private final BiConsumer<RealNameUpdateParam, RealName> ATTR_PACKAGER = (realNameUpdateParam, realName) -> {
+        if (isNull(realNameUpdateParam) || isNull(realName))
+            throw new BlueException(EMPTY_PARAM);
+
+
+        realName.setStatus(VALID.status);
+        realName.setUpdateTime(TIME_STAMP_GETTER.get());
+    };
+
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RealNameSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
@@ -123,21 +135,26 @@ public class RealNameServiceImpl implements RealNameService {
     /**
      * update real name
      *
-     * @param realName
+     * @param memberId
+     * @param realNameUpdateParam
      * @return
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
-    public RealNameInfo updateRealName(RealName realName) {
-        LOGGER.info("MemberDetailInfo updateRealName(RealName realName), realName = {}", realName);
-        if (isNull(realName))
+    public RealNameInfo updateRealName(Long memberId, RealNameUpdateParam realNameUpdateParam) {
+        LOGGER.info("RealNameInfo updateRealName(Long memberId, RealNameUpdateParam realNameUpdateParam),  memberId = {}, realNameUpdateParam = {}",
+                memberId, realNameUpdateParam);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(UNAUTHORIZED);
+        if (isNull(realNameUpdateParam))
             throw new BlueException(EMPTY_PARAM);
-        Long id = realName.getId();
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
+        realNameUpdateParam.asserts();
 
-        if (!realNameMapper.selectMemberIdByPrimaryKey(id).equals(realName.getMemberId()))
-            throw new BlueException(UNSUPPORTED_OPERATE);
+        RealName realName = realNameMapper.selectByMemberId(memberId);
+        if (isNull(realName))
+            throw new BlueException(DATA_NOT_EXIST);
+
+        ATTR_PACKAGER.accept(realNameUpdateParam, realName);
 
         realNameMapper.updateByPrimaryKey(realName);
 
@@ -148,22 +165,23 @@ public class RealNameServiceImpl implements RealNameService {
      * update real name status
      *
      * @param id
-     * @param status
+     * @param statusParam
      * @return
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
-    public RealNameInfo updateRealNameStatus(Long id, Integer status) {
-        LOGGER.info("RealNameInfo updateRealNameStatus(Long id, Integer status), id = {}, status = {}", id, status);
+    public RealNameInfo updateRealNameStatus(Long id, StatusParam statusParam) {
+        LOGGER.info("RealNameInfo updateRealNameStatus(Long id, StatusParam statusParam), id = {}, statusParam = {}", id, statusParam);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
-        assertStatus(status, false);
+        statusParam.asserts();
 
         RealName realName = realNameMapper.selectByPrimaryKey(id);
         if (isNull(realName))
             throw new BlueException(DATA_NOT_EXIST);
 
-        if (status.equals(realName.getStatus()))
+        Integer status = statusParam.getStatus();
+        if (realName.getStatus().equals(status))
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
         realName.setStatus(status);

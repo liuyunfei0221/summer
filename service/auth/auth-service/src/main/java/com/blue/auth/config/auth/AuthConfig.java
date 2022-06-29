@@ -38,7 +38,7 @@ public class AuthConfig {
     @Bean
     MemberJwtConf memberJwtConf() {
         LOGGER.info("memberJwtConf = {}", authDeploy);
-        return new MemberJwtConfParams(authDeploy.getGlobalMaxExpireMillis(), authDeploy.getGlobalMinExpireMillis(), authDeploy.getGlobalRefreshExpireMillis(),
+        return new MemberJwtConfParams(authDeploy.getGlobalMaxExpiresMillis(), authDeploy.getGlobalMinExpiresMillis(), authDeploy.getGlobalRefreshExpiresMillis(),
                 authDeploy.getSignKey(), authDeploy.getGammaSecrets());
     }
 
@@ -48,7 +48,7 @@ public class AuthConfig {
         LOGGER.info("jwtDeploy = {}", authDeploy);
         return new AccessInfoCache(reactiveStringRedisTemplate, accessExpireProducer, scheduler, authDeploy.getRefresherCorePoolSize(),
                 authDeploy.getRefresherMaximumPoolSize(), authDeploy.getRefresherKeepAliveSeconds(), authDeploy.getRefresherBlockingQueueCapacity(),
-                authDeploy.getGlobalMinExpireMillis(), authDeploy.getLocalExpireMillis(), authDeploy.getLocalCacheCapacity());
+                authDeploy.getGlobalMinExpiresMillis(), authDeploy.getLocalExpiresMillis(), authDeploy.getLocalCacheCapacity());
     }
 
     @Bean

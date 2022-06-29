@@ -46,11 +46,11 @@ public final class IllegalAsserter {
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.scheduler = scheduler;
 
-        Long illegalExpireSeconds = riskControlDeploy.getIllegalExpireSeconds();
-        if (isNull(illegalExpireSeconds) || illegalExpireSeconds < 1L)
-            throw new RuntimeException("illegalExpireSeconds can't be null or less than 1");
+        Long illegalExpiresSecond = riskControlDeploy.getIllegalExpiresSecond();
+        if (isNull(illegalExpiresSecond) || illegalExpiresSecond < 1L)
+            throw new RuntimeException("illegalExpiresSecond can't be null or less than 1");
 
-        defaultIllegalExpireDuration = Duration.of(illegalExpireSeconds, SECONDS);
+        defaultIllegalExpireDuration = Duration.of(illegalExpiresSecond, SECONDS);
 
         MARKERS.put(true, MARKER);
         MARKERS.put(false, CLEARER);
@@ -69,7 +69,7 @@ public final class IllegalAsserter {
             JWT_KEY_WRAPPER = jwt -> ILLEGAL_JWT_PREFIX + jwt,
             IP_KEY_WRAPPER = ip -> ILLEGAL_IP_PREFIX + ip;
 
-    private Mono<Boolean> markWithExpire(String key, String resKey, Long expireSeconds) {
+    private Mono<Boolean> markWithExpire(String key, String resKey, Long expiresSecond) {
         return this.reactiveStringRedisTemplate
                 .opsForSet().members(key)
                 .any(s -> s.equals(ALL_RESOURCE) || s.equals(resKey))
@@ -80,7 +80,7 @@ public final class IllegalAsserter {
                                 this.reactiveStringRedisTemplate
                                         .opsForSet().add(key, resKey)
                                         .flatMap(l -> this.reactiveStringRedisTemplate.expire(key,
-                                                ofNullable(expireSeconds).map(s -> Duration.of(s, SECONDS))
+                                                ofNullable(expiresSecond).map(s -> Duration.of(s, SECONDS))
                                                         .orElse(defaultIllegalExpireDuration))))
                 .subscribeOn(scheduler);
     }
@@ -101,12 +101,12 @@ public final class IllegalAsserter {
         return zip(ofNullable(event.getJwt())
                         .filter(BlueChecker::isNotBlank)
                         .map(JWT_KEY_WRAPPER)
-                        .map(key -> markWithExpire(key, resKey, event.getIllegalExpireSeconds()))
+                        .map(key -> markWithExpire(key, resKey, event.getIllegalExpiresSecond()))
                         .orElseGet(() -> just(false)),
                 ofNullable(event.getIp())
                         .filter(BlueChecker::isNotBlank)
                         .map(IP_KEY_WRAPPER)
-                        .map(key -> markWithExpire(key, resKey, event.getIllegalExpireSeconds()))
+                        .map(key -> markWithExpire(key, resKey, event.getIllegalExpiresSecond()))
                         .orElseGet(() -> just(false))
         ).flatMap(tuple2 -> just(tuple2.getT1() || tuple2.getT2()));
     },

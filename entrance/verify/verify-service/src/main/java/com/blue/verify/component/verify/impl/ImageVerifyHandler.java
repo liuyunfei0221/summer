@@ -90,9 +90,9 @@ public class ImageVerifyHandler implements VerifyHandler {
         if (isNull(verifyLength) || verifyLength < 1)
             throw new RuntimeException("verifyLength can't be null or less than 1");
 
-        Integer expireMillis = imageVerifyDeploy.getExpireMillis();
-        if (isNull(expireMillis) || expireMillis < 1)
-            throw new RuntimeException("expireMillis can't be null or less than 1");
+        Integer expiresMillis = imageVerifyDeploy.getExpiresMillis();
+        if (isNull(expiresMillis) || expiresMillis < 1)
+            throw new RuntimeException("expiresMillis can't be null or less than 1");
 
         Integer allow = imageVerifyDeploy.getAllow();
         if (isNull(allow) || allow < 1)
@@ -106,7 +106,7 @@ public class ImageVerifyHandler implements VerifyHandler {
         this.KEY_RANDOM_TYPE = keyRandomType;
         this.imageType = imageType;
         this.VERIFY_LEN = verifyLength;
-        this.DEFAULT_DURATION = Duration.of(expireMillis, MILLIS);
+        this.DEFAULT_DURATION = Duration.of(expiresMillis, MILLIS);
         this.ALLOW = allow;
         this.SEND_INTERVAL_MILLIS = sendIntervalMillis;
     }

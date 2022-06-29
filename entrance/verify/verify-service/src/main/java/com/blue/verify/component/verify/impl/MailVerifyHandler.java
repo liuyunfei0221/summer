@@ -65,9 +65,9 @@ public class MailVerifyHandler implements VerifyHandler {
         if (isNull(verifyLength) || verifyLength < 1)
             throw new RuntimeException("verifyLength can't be null or less than 1");
 
-        Long expireMillis = mailVerifyDeploy.getExpireMillis();
-        if (isNull(expireMillis) || expireMillis < 1L)
-            throw new RuntimeException("expireMillis can't be null or less than 1");
+        Long expiresMillis = mailVerifyDeploy.getExpiresMillis();
+        if (isNull(expiresMillis) || expiresMillis < 1L)
+            throw new RuntimeException("expiresMillis can't be null or less than 1");
 
         Integer allow = mailVerifyDeploy.getAllow();
         if (isNull(allow) || allow < 1)
@@ -78,7 +78,7 @@ public class MailVerifyHandler implements VerifyHandler {
             throw new RuntimeException("sendIntervalMillis can't be null or less than 1");
 
         this.VERIFY_LEN = verifyLength;
-        this.DEFAULT_DURATION = Duration.of(expireMillis, MILLIS);
+        this.DEFAULT_DURATION = Duration.of(expiresMillis, MILLIS);
         this.ALLOW = allow;
         this.SEND_INTERVAL_MILLIS = sendIntervalMillis;
     }

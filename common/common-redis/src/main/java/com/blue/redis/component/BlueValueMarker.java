@@ -60,12 +60,12 @@ public final class BlueValueMarker {
     private static final BiFunction<String, Long, Object[]> SCRIPT_ARGS_WRAPPER = (v, expire) ->
             new Object[]{v, String.valueOf(expire)};
 
-    private boolean expireHllOrWithInit(String key, String initValue, Long expireMillis) {
-        if (isNotBlank(key) && isNotBlank(initValue) && isNotNull(expireMillis) && expireMillis > 0L)
+    private boolean expireHllOrWithInit(String key, String initValue, Long expiresMillis) {
+        if (isNotBlank(key) && isNotBlank(initValue) && isNotNull(expiresMillis) && expiresMillis > 0L)
             return ofNullable(stringRedisTemplate.execute(EXPIRE_HLL_OR_WITH_INIT_SCRIPT, SCRIPT_KEYS_WRAPPER.apply(key),
-                    SCRIPT_ARGS_WRAPPER.apply(initValue, expireMillis))).orElse(false);
+                    SCRIPT_ARGS_WRAPPER.apply(initValue, expiresMillis))).orElse(false);
 
-        throw new RuntimeException("key or initValue can't be blank, expireMillis can't be null or less than 1");
+        throw new RuntimeException("key or initValue can't be blank, expiresMillis can't be null or less than 1");
     }
 
 
@@ -80,13 +80,13 @@ public final class BlueValueMarker {
      * if HyperLogLog exist, expire. or init, then expire
      *
      * @param key
-     * @param expireMillis
+     * @param expiresMillis
      * @return
      */
-    public Mono<Boolean> expireKeyOrWithInit(String key, String initValue, Long expireMillis) {
-        LOGGER.info("Mono<Boolean> expireKeyOrWithInit(String key, Long expireMillis), key = {}, expireMillis = {}", key, expireMillis);
+    public Mono<Boolean> expireKeyOrWithInit(String key, String initValue, Long expiresMillis) {
+        LOGGER.info("Mono<Boolean> expireKeyOrWithInit(String key, Long expiresMillis), key = {}, expiresMillis = {}", key, expiresMillis);
 
-        return just(expireHllOrWithInit(key, initValue, expireMillis));
+        return just(expireHllOrWithInit(key, initValue, expiresMillis));
     }
 
     /**

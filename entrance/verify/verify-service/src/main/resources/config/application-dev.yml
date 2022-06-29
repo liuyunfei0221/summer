@@ -121,7 +121,7 @@ limit:
 
 
 risk:
-  illegalExpireSeconds: 10
+  illegalExpiresSecond: 10
 
 
 request:
@@ -322,7 +322,7 @@ verify:
   verifyLength: 16
   minLength: 4
   maxLength: 32
-  expireMillis: 300000
+  expiresMillis: 300000
   repeatable: true
 
 
@@ -332,19 +332,19 @@ imagev:
   randomType: ALPHANUMERIC
   imageType: png
   verifyLength: 7
-  expireMillis: 300000
+  expiresMillis: 300000
   allow: 10
   sendIntervalMillis: 30000
 
 smsv:
   verifyLength: 7
-  expireMillis: 300000
+  expiresMillis: 300000
   allow: 1
   sendIntervalMillis: 30000
 
 mailv:
   verifyLength: 7
-  expireMillis: 300000
+  expiresMillis: 300000
   allow: 1
   sendIntervalMillis: 30000
 

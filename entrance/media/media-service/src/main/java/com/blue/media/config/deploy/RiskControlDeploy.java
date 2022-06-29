@@ -12,24 +12,24 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "risk")
 public class RiskControlDeploy {
 
-    private Long illegalExpireSeconds;
+    private Long illegalExpiresSecond;
 
     public RiskControlDeploy() {
     }
 
 
-    public Long getIllegalExpireSeconds() {
-        return illegalExpireSeconds;
+    public Long getIllegalExpiresSecond() {
+        return illegalExpiresSecond;
     }
 
-    public void setIllegalExpireSeconds(Long illegalExpireSeconds) {
-        this.illegalExpireSeconds = illegalExpireSeconds;
+    public void setIllegalExpiresSecond(Long illegalExpiresSecond) {
+        this.illegalExpiresSecond = illegalExpiresSecond;
     }
 
     @Override
     public String toString() {
         return "RiskControlDeploy{" +
-                ", illegalExpireSeconds=" + illegalExpireSeconds +
+                ", illegalExpiresSecond=" + illegalExpiresSecond +
                 '}';
     }
 

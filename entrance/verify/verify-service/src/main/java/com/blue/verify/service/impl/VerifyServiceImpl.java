@@ -69,9 +69,9 @@ public class VerifyServiceImpl implements VerifyService {
         if (isNull(maxLength) || maxLength < minLength)
             throw new RuntimeException("maxLength can't be null or less than minLength");
 
-        Integer expireMillis = verifyDeploy.getExpireMillis();
-        if (isNull(expireMillis) || expireMillis < 1)
-            throw new RuntimeException("expireMillis can't be null or less than 1");
+        Integer expiresMillis = verifyDeploy.getExpiresMillis();
+        if (isNull(expiresMillis) || expiresMillis < 1)
+            throw new RuntimeException("expiresMillis can't be null or less than 1");
 
         Boolean repeatable = verifyDeploy.getRepeatable();
         if (isNull(repeatable))
@@ -82,7 +82,7 @@ public class VerifyServiceImpl implements VerifyService {
         this.VERIFY_LEN = verifyLength;
         this.MIN_LEN = minLength;
         this.MAX_LEN = maxLength;
-        this.DEFAULT_DURATION = Duration.of(expireMillis, MILLIS);
+        this.DEFAULT_DURATION = Duration.of(expiresMillis, MILLIS);
         this.DEFAULT_REPEATABLE = repeatable;
 
         this.VALIDATORS.put(false, UN_REPEATABLE_VALIDATOR);
