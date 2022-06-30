@@ -17,7 +17,6 @@ import java.util.List;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Configuration
 public class WebConfig implements WebFluxConfigurer {
 
