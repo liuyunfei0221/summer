@@ -31,7 +31,7 @@
 ///**
 // * @author liuyunfei
 // */
-//@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection", "DuplicatedCode", "AliControlFlowStatementWithoutBraces"})
+//@SuppressWarnings({"JavaDoc", "DuplicatedCode", "AliControlFlowStatementWithoutBraces"})
 //@Component
 //public class MailManagerHandler {
 //

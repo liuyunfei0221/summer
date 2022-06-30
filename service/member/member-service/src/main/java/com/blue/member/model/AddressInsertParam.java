@@ -8,7 +8,8 @@ import java.io.Serializable;
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
+import static com.blue.base.constant.member.BlueMemberThreshold.*;
 
 /**
  * params for insert a new address
@@ -58,17 +59,28 @@ public class AddressInsertParam implements Serializable, Asserter {
 
     @Override
     public void asserts() {
-        if (isBlank(this.contact))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "contact can't be blank");
+        if (isBlank(this.contact) || isBlank(this.phone) || isNull(this.cityId) || isBlank(this.detail) || isBlank(this.reference))
+            throw new BlueException(INVALID_PARAM);
         assertGenderIdentity(this.gender, false);
-        if (isBlank(this.phone))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
+
+        int length = contact.length();
+        if (length < CONTACT_LEN_MIN.value || length > CONTACT_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
+
+        length = phone.length();
+        if (length < PHONE_LEN_MIN.value || length > PHONE_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
+
         if (isNull(this.cityId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "cityId can't be null");
-        if (isBlank(this.detail))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "detail can't be blank");
-        if (isBlank(this.reference))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "reference can't be blank");
+            throw new BlueException(INVALID_PARAM);
+
+        length = detail.length();
+        if (length < ADDR_DETAIL_LEN_MIN.value || length > ADDR_DETAIL_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
+
+        length = reference.length();
+        if (length < REFERENCE_LEN_MIN.value || length > REFERENCE_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
     }
 
     public String getContact() {

@@ -6,7 +6,10 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.ConstantProcessor.assertVerifyType;
+import static com.blue.base.constant.auth.BlueAuthThreshold.*;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
 
 /**
  * access update info
@@ -40,6 +43,15 @@ public final class AccessUpdateParam implements Serializable, Asserter {
     public void asserts() {
         if (isBlank(verifyType) || isBlank(verificationCode) || isBlank(access))
             throw new BlueException(EMPTY_PARAM);
+        assertVerifyType(verifyType, false);
+
+        int length = verificationCode.length();
+        if (length < VFC_LEN_MIN.value || length > VFC_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
+
+        length = access.length();
+        if (length < ACS_LEN_MIN.value || length > ACS_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
     }
 
     public String getVerifyType() {

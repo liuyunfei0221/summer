@@ -11,6 +11,7 @@ import com.blue.base.constant.common.*;
 import com.blue.base.constant.media.AttachmentType;
 import com.blue.base.constant.member.Gender;
 import com.blue.base.constant.member.SourceType;
+import com.blue.base.constant.member.ZodiacSign;
 import com.blue.base.constant.portal.BulletinType;
 import com.blue.base.constant.portal.StyleType;
 import com.blue.base.constant.verify.BusinessType;
@@ -107,6 +108,12 @@ public final class ConstantProcessor {
      */
     private static final Map<String, SourceType> SOURCE_MAPPING =
             of(SourceType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+
+    /**
+     * valid zodiac sign identity and type mapping
+     */
+    private static final Map<Integer, ZodiacSign> ZODIAC_SIGN_MAPPING =
+            of(ZodiacSign.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
 
     /**
      * valid status type identity and type mapping
@@ -302,6 +309,19 @@ public final class ConstantProcessor {
             return;
 
         if (!SOURCE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert zodiac sign
+     *
+     * @param identity
+     */
+    public static void assertZodiacSign(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!ZODIAC_SIGN_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -637,6 +657,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         return sourceType;
+    }
+
+    /**
+     * get zodiac sign by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static ZodiacSign getZodiacSignByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        ZodiacSign zodiacSign = ZODIAC_SIGN_MAPPING.get(identity);
+        if (isNull(zodiacSign))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return zodiacSign;
     }
 
     /**

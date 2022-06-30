@@ -13,7 +13,6 @@ import static com.blue.captcha.api.generator.BlueCaptchaGenerator.generateCaptch
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"SpringFacetCodeInspection", "SpringJavaInjectionPointsAutowiringInspection"})
 @ConditionalOnBean(value = {CaptchaConf.class})
 @AutoConfiguration
 public class BlueCaptchaConfiguration {

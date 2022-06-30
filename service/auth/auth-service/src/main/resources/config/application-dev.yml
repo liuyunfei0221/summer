@@ -882,7 +882,7 @@ dubbo:
     port: 2181
     username:
     password:
-    file: D:/locallogs/dubbo/auth/registry.properties
+    file: /usr/env/log/dubbo/auth/registry.properties
     check: false
     timeout: 60000
     simplified: false
@@ -904,7 +904,7 @@ dubbo:
     name: dubbo
     host: localhost
     port: 24000
-    accesslog: D:/locallogs/dubbo/auth/access.log
+    accesslog: /usr/env/log/dubbo/auth/access.log
   provider:
     retries: 0
     timeout: 10000

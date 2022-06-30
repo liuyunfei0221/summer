@@ -26,7 +26,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AlibabaRemoveCommentedCode", "SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
+@SuppressWarnings({"AlibabaRemoveCommentedCode"})
 @ConditionalOnBean(value = {RedisConf.class})
 @AutoConfiguration
 public class BlueRedisConfiguration {

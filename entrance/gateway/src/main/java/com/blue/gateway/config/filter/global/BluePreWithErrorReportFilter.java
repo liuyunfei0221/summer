@@ -41,7 +41,7 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @Component
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "UnusedAssignment", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "UnusedAssignment"})
 public final class BluePreWithErrorReportFilter implements GlobalFilter, Ordered {
 
     private static final Logger LOGGER = getLogger(BluePreWithErrorReportFilter.class);

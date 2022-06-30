@@ -46,7 +46,7 @@ import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.common.base.RsaProcessor.initKeyPair;
 import static com.blue.base.constant.auth.CredentialType.NOT_LOGGED_IN;
 import static com.blue.base.constant.auth.DeviceType.UNKNOWN;
-import static com.blue.base.constant.common.BlueNumericalValue.*;
+import static com.blue.base.constant.common.BlueCommonThreshold.*;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;

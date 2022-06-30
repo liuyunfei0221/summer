@@ -235,7 +235,7 @@ dubbo:
     port: 2181
     username: blue
     password: LiuZhiyi20200805
-    file: D:/locallogs/dubbo/base/registry.properties
+    file: /usr/env/log/dubbo/base/registry.properties
     check: false
     timeout: 60000
     simplified: false
@@ -258,7 +258,7 @@ dubbo:
     name: dubbo
     host: localhost
     port: 22000
-    accesslog: D:/locallogs/dubbo/base/access.log
+    accesslog: /usr/env/log/dubbo/base/access.log
   provider:
     retries: 0
     timeout: 10000

@@ -32,7 +32,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 @Service
 public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
 

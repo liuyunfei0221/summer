@@ -5,7 +5,7 @@ package com.blue.base.constant.common;
  *
  * @author liuyunfei
  */
-public enum BlueNumericalValue {
+public enum BlueCommonThreshold {
 
     /**
      * default page
@@ -71,6 +71,11 @@ public enum BlueNumericalValue {
      * phone number/email length maximum for member login
      */
     ID_LEN_MAX(64L),
+    
+    /**
+     * system default id
+     */
+    BLUE_ID(0L),
 
     /**
      * phone number minimum
@@ -145,50 +150,14 @@ public enum BlueNumericalValue {
     /**
      * login timestamp for not login
      */
-    NOT_LOGGED_IN_TIME(0L),
-
-    /**
-     * maximum expiration time of monthly sign-in information(day)
-     */
-    MAX_EXPIRE_DAYS_FOR_SIGN(33L),
-
-    /**
-     * qr code width
-     */
-    QR_CODE_WIDTH(200L),
-
-    /**
-     * qr code height
-     */
-    QR_CODE_HEIGHT(200L),
-
-    /**
-     * qr logo width
-     */
-    QR_CODE_LOGO_ROUND_ARCW(20L),
-
-    /**
-     * qr logo height
-     */
-    QR_CODE_LOGO_ROUND_ARCH(20L),
-
-    /**
-     * random name length
-     */
-    RANDOM_NAME_LEN(8L),
-
-    /**
-     * system default id
-     */
-    BLUE_ID(0L);
-
+    NOT_LOGGED_IN_TIME(0L);
 
     /**
      * number
      */
     public final long value;
 
-    BlueNumericalValue(long value) {
+    BlueCommonThreshold(long value) {
         this.value = value;
     }
 

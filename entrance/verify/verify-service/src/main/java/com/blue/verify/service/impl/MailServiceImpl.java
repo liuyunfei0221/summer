@@ -17,7 +17,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc"})
 @Service
 public class MailServiceImpl implements MailService {
 

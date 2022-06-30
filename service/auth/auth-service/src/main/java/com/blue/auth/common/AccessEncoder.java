@@ -1,6 +1,6 @@
 package com.blue.auth.common;
 
-import com.blue.base.constant.common.BlueNumericalValue;
+import com.blue.base.constant.common.BlueCommonThreshold;
 import com.blue.base.model.exps.BlueException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,9 +25,9 @@ public final class AccessEncoder {
     private static final UnaryOperator<String> ACCESS_ENCODER = access -> {
         if (isBlank(access))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
-        if (access.length() > BlueNumericalValue.ACS_LEN_MAX.value)
+        if (access.length() > BlueCommonThreshold.ACS_LEN_MAX.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too long");
-        if (access.length() < BlueNumericalValue.ACS_LEN_MIN.value)
+        if (access.length() < BlueCommonThreshold.ACS_LEN_MIN.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
 
         return ENCODER.encode(access);

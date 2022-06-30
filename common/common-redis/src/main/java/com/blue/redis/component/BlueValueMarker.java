@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.EXPIRE_HLL_OR_WITH_INIT;

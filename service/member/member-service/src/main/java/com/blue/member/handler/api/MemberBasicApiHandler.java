@@ -77,7 +77,7 @@ public final class MemberBasicApiHandler {
                 serverRequest.bodyToMono(IdentityParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))))
                 .flatMap(tuple2 ->
-                        memberBasicService.updateMemberBasicIcon(tuple2.getT1().getId(), tuple2.getT2()))
+                        memberBasicService.updateMemberBasicQrCode(tuple2.getT1().getId(), tuple2.getT2()))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));

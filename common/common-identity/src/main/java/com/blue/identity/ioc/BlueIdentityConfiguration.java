@@ -14,7 +14,6 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
 @ConditionalOnBean(value = {IdentityConf.class})
 @AutoConfiguration
 public class BlueIdentityConfiguration {

@@ -6,7 +6,10 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.ConstantProcessor.assertVerifyType;
+import static com.blue.base.constant.auth.BlueAuthThreshold.*;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
 
 /**
  * credential modify param
@@ -52,6 +55,20 @@ public final class CredentialModifyParam implements Serializable, Asserter {
     public void asserts() {
         if (isBlank(currentVerifyType) || isBlank(currentVerificationCode) || isBlank(destinationVerifyType) || isBlank(destinationVerificationCode) || isBlank(destinationCredential))
             throw new BlueException(EMPTY_PARAM);
+        assertVerifyType(currentVerifyType, false);
+        assertVerifyType(destinationVerifyType, false);
+
+        int length = currentVerificationCode.length();
+        if (length < VFC_LEN_MIN.value || length > VFC_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
+
+        length = destinationCredential.length();
+        if (length < CREDENTIAL_LEN_MIN.value || length > CREDENTIAL_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
+
+        length = destinationVerificationCode.length();
+        if (length < VFC_LEN_MIN.value || length > VFC_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
     }
 
     public String getCurrentVerifyType() {

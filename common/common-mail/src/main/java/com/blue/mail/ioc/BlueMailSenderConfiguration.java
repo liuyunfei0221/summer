@@ -13,7 +13,6 @@ import static com.blue.mail.api.generator.BlueMailSenderGenerator.generateMailSe
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
 @ConditionalOnBean(value = {MailSenderConf.class})
 @AutoConfiguration
 public class BlueMailSenderConfiguration {

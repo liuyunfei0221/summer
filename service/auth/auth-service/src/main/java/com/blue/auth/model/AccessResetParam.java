@@ -6,14 +6,18 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.ConstantProcessor.assertVerifyType;
+import static com.blue.base.constant.auth.BlueAuthThreshold.*;
+import static com.blue.base.constant.auth.BlueAuthThreshold.ACS_LEN_MAX;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
 
 /**
  * access reset info
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 public final class AccessResetParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 2293803879668176107L;
@@ -46,6 +50,19 @@ public final class AccessResetParam implements Serializable, Asserter {
     public void asserts() {
         if (isBlank(verifyType) || isBlank(credential) || isBlank(verificationCode) || isBlank(access))
             throw new BlueException(EMPTY_PARAM);
+        assertVerifyType(verifyType, false);
+
+        int length = credential.length();
+        if (length < CREDENTIAL_LEN_MIN.value || length > CREDENTIAL_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
+
+        length = verificationCode.length();
+        if (length < VFC_LEN_MIN.value || length > VFC_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
+
+        length = access.length();
+        if (length < ACS_LEN_MIN.value || length > ACS_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
     }
 
     public String getVerifyType() {

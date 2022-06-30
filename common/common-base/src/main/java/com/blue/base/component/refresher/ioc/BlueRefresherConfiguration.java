@@ -1,25 +1,24 @@
 package com.blue.base.component.refresher.ioc;
 
-import com.blue.base.common.message.ElementProcessor;
-import com.blue.base.common.message.MessageProcessor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
 
+import static com.blue.base.component.refresher.api.StaticCommonRefresher.refresh;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+
 /**
- * static resources loader
+ * static resource loader configuration
  *
  * @author liuyunfei
  */
-@Order(value = Ordered.HIGHEST_PRECEDENCE)
-public class StaticCommonRefresher implements ApplicationListener<ContextRefreshedEvent> {
+@Order(HIGHEST_PRECEDENCE)
+public class BlueRefresherConfiguration implements ApplicationListener<ContextRefreshedEvent> {
 
     @Override
     public void onApplicationEvent(@NonNull ContextRefreshedEvent contextRefreshedEvent) {
-        MessageProcessor.refresh();
-        ElementProcessor.refresh();
+        refresh();
     }
 
 }

@@ -46,7 +46,7 @@ import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.common.BlueBoolean.FALSE;
 import static com.blue.base.constant.common.BlueBoolean.TRUE;
 import static com.blue.base.constant.common.BlueHeader.CONTENT_DISPOSITION;
-import static com.blue.base.constant.common.BlueNumericalValue.DB_WRITE;
+import static com.blue.base.constant.common.BlueCommonThreshold.DB_WRITE;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialPrefix.CONTENT_DISPOSITION_FILE_NAME_PREFIX;
 import static com.blue.base.constant.common.Status.VALID;
@@ -86,7 +86,6 @@ public class ByteOperateServiceImpl implements ByteOperateService {
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ByteOperateServiceImpl(ByteProcessor byteProcessor, AttachmentService attachmentService, DownloadHistoryService downloadHistoryService,
                                   BlueIdentityProcessor blueIdentityProcessor, LocalDiskFileDeploy localDiskFileDeploy) {
         this.byteProcessor = byteProcessor;

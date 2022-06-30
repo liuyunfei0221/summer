@@ -47,7 +47,7 @@ public enum ResponseElement {
     UNSUPPORTED_OPERATE(HttpStatus.BAD_REQUEST.value(), 400000019, "Operate is not support"),
     NEED_TURING_TEST(HttpStatus.BAD_REQUEST.value(), 400000020, "Need to pass the Turing test"),
     DATA_NOT_BELONG_TO_YOU(HttpStatus.BAD_REQUEST.value(), 400000021, "Data not belong to you"),
-    DATA_HAS_BEEN_FROZEN(HttpStatus.BAD_REQUEST.value(), 400100022, "Data has been frozen"),
+    DATA_HAS_BEEN_FROZEN(HttpStatus.BAD_REQUEST.value(), 400000022, "Data has been frozen"),
     //</editor-fold>
 
 

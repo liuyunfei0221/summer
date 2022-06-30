@@ -40,7 +40,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "UnusedAssignment", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "UnusedAssignment"})
 @Component
 public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
 

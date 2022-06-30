@@ -19,8 +19,8 @@ import static com.blue.auth.converter.AuthModelConverters.CREDENTIAL_2_CREDENTIA
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
-import static com.blue.base.constant.common.BlueNumericalValue.ACS_LEN_MAX;
-import static com.blue.base.constant.common.BlueNumericalValue.ACS_LEN_MIN;
+import static com.blue.base.constant.common.BlueCommonThreshold.ACS_LEN_MAX;
+import static com.blue.base.constant.common.BlueCommonThreshold.ACS_LEN_MIN;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.Status.VALID;
 import static java.util.Collections.emptyList;

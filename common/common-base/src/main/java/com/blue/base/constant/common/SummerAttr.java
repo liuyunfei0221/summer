@@ -44,12 +44,12 @@ public final class SummerAttr {
     /**
      * default datetime format
      */
-    private static final String DATE_TIME_FORMAT;
+    private static final String DATE_TIME_FORMAT, DATE_FORMAT;
 
     /**
      * default datetime formatter
      */
-    public static final DateTimeFormatter DATE_TIME_FORMATTER;
+    public static final DateTimeFormatter DATE_TIME_FORMATTER, DATE_FORMATTER;
 
     /**
      * online time, stamp of seconds
@@ -75,6 +75,7 @@ public final class SummerAttr {
             LANGUAGE_ATTR_KEY = "language",
             TIME_ZONE_ATTR_KEY = "timeZone",
             DATE_TIME_FORMAT_KEY = "dateTimeFormat",
+            DATE_FORMAT_KEY = "dateFormat",
             ONLINE_TIME_STR_KEY = "onlineTime";
 
     static {
@@ -96,6 +97,10 @@ public final class SummerAttr {
         if (isBlank(dateTimeFormat))
             throw new RuntimeException("dateTimeFormat can't be null");
 
+        String dateFormat = properties.getProperty(DATE_TIME_FORMAT_KEY);
+        if (isBlank(dateFormat))
+            throw new RuntimeException("dateFormat can't be null");
+
         String onlineTimeStr = properties.getProperty(ONLINE_TIME_STR_KEY);
         if (isBlank(dateTimeFormat))
             throw new RuntimeException("onlineTimeStr can't be null");
@@ -105,7 +110,9 @@ public final class SummerAttr {
         TIME_ZONE = timeZone;
         CLOCK = system(of(TIME_ZONE));
         DATE_TIME_FORMAT = dateTimeFormat;
+        DATE_FORMAT = dateFormat;
         DATE_TIME_FORMATTER = ofPattern(DATE_TIME_FORMAT);
+        DATE_FORMATTER = ofPattern(DATE_FORMAT);
         ONLINE_TIME = convertStrToEpochSecond(onlineTimeStr);
     }
 

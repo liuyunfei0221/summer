@@ -5,8 +5,10 @@ import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
+import static com.blue.base.constant.member.BlueMemberThreshold.*;
 
 /**
  * params for insert a new card
@@ -48,9 +50,22 @@ public class CardInsertParam implements Serializable, Asserter {
     @Override
     public void asserts() {
         if (isBlank(this.name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
+            throw new BlueException(INVALID_PARAM);
+
+        int length = name.length();
+        if (length < NAME_LEN_MIN.value || length > NAME_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
+
+        length = detail.length();
+        if (length < ADDR_DETAIL_LEN_MIN.value || length > ADDR_DETAIL_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
+
         if (isInvalidIdentity(this.contentId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid contentId");
+            throw new BlueException(INVALID_PARAM);
+
+        length = extra.length();
+        if (length < EXTRA_LEN_MIN.value || length > EXTRA_LEN_MAX.value)
+            throw new BlueException(INVALID_PARAM);
     }
 
     public String getName() {

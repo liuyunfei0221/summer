@@ -141,7 +141,7 @@ public final class MessageProcessor {
 
     private static final BiFunction<Integer, List<String>, String> MESSAGE_GETTER = (code, languages) ->
             ofNullable(MESSAGES_GETTER.apply(languages))
-                    .map(messages -> messages.get(ofNullable(code).orElse(DEFAULT_CODE)))
+                    .map(messages -> ofNullable(messages.get(code)).orElseGet(() -> messages.get(DEFAULT_CODE)))
                     .orElse(DEFAULT_MESSAGE).intern();
 
     private static final Predicate<ElementKey[]> NON_KEY_REPLACEMENTS_PRE = replacements ->

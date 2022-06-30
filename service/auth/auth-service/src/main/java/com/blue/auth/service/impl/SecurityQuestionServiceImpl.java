@@ -111,6 +111,8 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
         LOGGER.info("void insertSecurityQuestions(List<SecurityQuestionInsertParam> securityQuestionInsertParams, Long memberId), securityQuestionInsertParams = {}, memberId = {}", securityQuestionInsertParams, memberId);
         if (isEmpty(securityQuestionInsertParams))
             throw new BlueException(EMPTY_PARAM);
+        if (securityQuestionInsertParams.size() > maxQuestion)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
         if (isInvalidIdentity(memberId))
             throw new BlueException(UNAUTHORIZED);
 

@@ -39,12 +39,12 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
-import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
-import static com.blue.base.constant.common.BlueNumericalValue.MAX_SERVICE_SELECT;
+import static com.blue.base.constant.common.BlueCommonThreshold.DB_SELECT;
+import static com.blue.base.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.Status.INVALID;
 import static com.blue.base.constant.common.Status.VALID;
-import static com.blue.base.constant.common.SummerAttr.DATE_TIME_FORMATTER;
+import static com.blue.base.constant.common.SummerAttr.DATE_FORMATTER;
 import static com.blue.base.constant.common.Symbol.DATABASE_WILDCARD;
 import static com.blue.base.constant.member.MemberThreshold.*;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_DETAIL_2_MEMBER_DETAIL_INFO;
@@ -116,7 +116,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
                 .ifPresent(birthDay -> {
                     LocalDate localDate;
                     try {
-                        localDate = LocalDate.parse(birthDay, DATE_TIME_FORMATTER);
+                        localDate = LocalDate.parse(birthDay, DATE_FORMATTER);
                     } catch (Exception e) {
                         throw new BlueException(INVALID_PARAM);
                     }

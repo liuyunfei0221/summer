@@ -8,7 +8,7 @@ import com.blue.member.api.model.MemberRegistryParam;
 import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.PhoneProcessor.parseLast4no;
 import static com.blue.base.constant.auth.CredentialType.PHONE_PWD;
-import static com.blue.base.constant.common.BlueNumericalValue.ID_LEN_MIN;
+import static com.blue.base.constant.common.BlueCommonThreshold.ID_LEN_MIN;
 import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 

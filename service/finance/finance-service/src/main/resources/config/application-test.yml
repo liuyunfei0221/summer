@@ -374,7 +374,7 @@ dubbo:
     port: 2181
     username: blue
     password: LiuZhiyi20200805
-    file: D:/locallogs/dubbo/finance/registry.properties
+    file: /usr/env/log/dubbo/finance/registry.properties
     check: false
     timeout: 60000
     simplified: false
@@ -397,7 +397,7 @@ dubbo:
     name: dubbo
     host: localhost
     port: 30000
-    accesslog: D:/locallogs/dubbo/finance/access.log
+    accesslog: /usr/env/log/dubbo/finance/access.log
   provider:
     retries: 0
     timeout: 10000

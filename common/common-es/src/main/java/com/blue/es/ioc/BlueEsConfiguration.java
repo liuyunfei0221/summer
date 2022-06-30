@@ -13,7 +13,6 @@ import static com.blue.es.api.generator.BlueEsGenerator.generateRestClient;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"SpringJavaInjectionPointsAutowiringInspection", "SpringFacetCodeInspection"})
 @ConditionalOnBean(value = {EsConf.class})
 @AutoConfiguration
 public class BlueEsConfiguration {

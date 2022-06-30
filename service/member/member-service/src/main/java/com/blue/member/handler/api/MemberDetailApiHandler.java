@@ -42,7 +42,7 @@ public final class MemberDetailApiHandler {
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        memberDetailService.getMemberDetailInfoMonoWithAssert(acc.getId())
+                        memberDetailService.getMemberDetailInfoMonoByMemberIdWithAssert(acc.getId())
                                 .flatMap(mdi ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(generate(OK.code, mdi, serverRequest), BlueResponse.class))

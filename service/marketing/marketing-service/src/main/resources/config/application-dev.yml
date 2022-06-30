@@ -478,7 +478,7 @@ dubbo:
     port: 2181
     username:
     password:
-    file: D:/locallogs/dubbo/marketing/registry.properties
+    file: /usr/env/log/dubbo/marketing/registry.properties
     check: false
     timeout: 60000
     simplified: false
@@ -503,7 +503,7 @@ dubbo:
     name: dubbo
     host: localhost
     port: 36000
-    accesslog: D:/locallogs/dubbo/marketing/access.log
+    accesslog: /usr/env/log/dubbo/marketing/access.log
   provider:
     retries: 0
     timeout: 10000

@@ -19,7 +19,7 @@ import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.constant.common.BlueDataAttrKey.ACCESS;
 import static com.blue.base.constant.common.BlueDataAttrKey.JWT;
 import static com.blue.base.constant.common.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.common.BlueNumericalValue.UNKNOWN_LOGGED_IN_ROLE_ID;
+import static com.blue.base.constant.common.BlueCommonThreshold.UNKNOWN_LOGGED_IN_ROLE_ID;
 import static com.blue.base.constant.common.DataEventOpType.STOP_OVER;
 import static com.blue.base.constant.common.DataEventType.UNIFIED;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
@@ -35,7 +35,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc"})
 @Service
 public class EventReportServiceImpl implements EventReportService {
 

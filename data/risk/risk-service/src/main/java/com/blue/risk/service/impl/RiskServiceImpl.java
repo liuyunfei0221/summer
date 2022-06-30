@@ -27,7 +27,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 @Service
 public class RiskServiceImpl implements RiskService, ApplicationListener<ContextRefreshedEvent> {
 

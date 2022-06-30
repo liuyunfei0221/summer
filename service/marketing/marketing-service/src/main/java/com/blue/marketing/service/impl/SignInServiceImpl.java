@@ -1,6 +1,6 @@
 package com.blue.marketing.service.impl;
 
-import com.blue.base.constant.common.BlueNumericalValue;
+import com.blue.base.constant.marketing.BlueMarketingThreshold;
 import com.blue.base.model.exps.BlueException;
 import com.blue.marketing.api.model.*;
 import com.blue.marketing.config.deploy.BlockingDeploy;
@@ -74,7 +74,7 @@ public class SignInServiceImpl implements SignInService {
     /**
      * sign in redis key expire/day
      */
-    private static final int MAX_EXPIRE_DAYS_FOR_SIGN = (int) BlueNumericalValue.MAX_EXPIRE_DAYS_FOR_SIGN.value;
+    private static final int MAX_EXPIRE_DAYS_FOR_SIGN = (int) BlueMarketingThreshold.MAX_EXPIRE_DAYS_FOR_SIGN.value;
 
     private static final int SECONDS_OF_DAY = 60 * 60 * 24;
 

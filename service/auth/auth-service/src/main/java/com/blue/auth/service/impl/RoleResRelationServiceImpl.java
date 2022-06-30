@@ -32,7 +32,7 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.GSON;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.common.BlueNumericalValue.DB_SELECT;
+import static com.blue.base.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.base.constant.common.CacheKey.ROLE_RES_RELS;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static java.util.Collections.emptyList;

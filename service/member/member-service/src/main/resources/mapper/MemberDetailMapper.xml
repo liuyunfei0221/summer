@@ -44,7 +44,7 @@
     <sql id="Base_Column_List">
         id
         , member_id, name, gender, phone, email, country_id, country, state_id, state,
-    city_id, city, address, profile, hobby, homepage, extra, status, create_time, update_time
+    city_id, city, address, `profile`, hobby, homepage, extra, status, create_time, update_time
     </sql>
 
     <insert id="insert" parameterType="com.blue.member.repository.entity.MemberDetail">
@@ -135,7 +135,7 @@
                 address,
             </if>
             <if test="profile != null">
-                profile,
+                `profile`,
             </if>
             <if test="hobby != null">
                 hobby,
@@ -262,7 +262,7 @@
             city_id        = #{cityId,jdbcType=BIGINT},
             city           = #{city,jdbcType=VARCHAR},
             address        = #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
-            profile        = #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            `profile`      = #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             hobby          = #{hobby,jdbcType=VARCHAR},
             homepage       = #{homepage,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             extra          = #{extra,jdbcType=VARCHAR},
@@ -334,7 +334,7 @@
                 #{address,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="profile != null">
-                profile =
+                `profile` =
                 #{profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="hobby != null">
@@ -496,7 +496,7 @@
                 </if>
                 <if test="memberDetailCondition.profile != null and memberDetailCondition.profile != ''">
                     AND
-                    profile =
+                    `profile` =
                     #{memberDetailCondition.profile,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
                 </if>
                 <if test="memberDetailCondition.hobbyLike != null and memberDetailCondition.hobbyLike != ''">

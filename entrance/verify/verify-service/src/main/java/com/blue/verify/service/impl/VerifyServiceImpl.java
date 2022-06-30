@@ -27,7 +27,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "AlibabaAvoidComplexCondition", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "AlibabaAvoidComplexCondition"})
 @Service
 public class VerifyServiceImpl implements VerifyService {
 

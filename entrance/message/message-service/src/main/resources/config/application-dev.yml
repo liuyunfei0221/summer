@@ -314,7 +314,7 @@ dubbo:
     client: curator
     protocol: zookeeper
     address: zookeeper://43.138.111.53:2181
-    file: D:/locallogs/dubbo/message/registry.properties
+    file: /usr/env/log/dubbo/message/registry.properties
     check: false
     timeout: 120000
   application:
@@ -328,7 +328,7 @@ dubbo:
     name: dubbo
     host: localhost
     port: 14000
-    accesslog: D:/locallogs/dubbo/message/access.log
+    accesslog: /usr/env/log/dubbo/message/access.log
   provider:
     retries: 0
     timeout: 10000

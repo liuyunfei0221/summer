@@ -6,7 +6,7 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.constant.common.BlueNumericalValue.*;
+import static com.blue.base.constant.common.BlueCommonThreshold.*;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
@@ -39,15 +39,14 @@ public final class SecurityQuestionInsertParam implements Serializable, Asserter
 
     @Override
     public void asserts() {
-        if (isBlank(this.question))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "question can't be blank");
+        if (isBlank(this.question) || isBlank(this.answer))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "question or answer can't be blank");
+
         int length = this.question.length();
         if (length < SEC_QUESTION_LEN_MIN.value || length > SEC_QUESTION_LEN_MAX.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "question length can't be less than " + SEC_QUESTION_LEN_MIN.value
                     + " or greater than " + SEC_QUESTION_LEN_MAX.value);
 
-        if (isBlank(this.answer))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "answer can't be blank");
         length = this.answer.length();
         if (length < SEC_ANSWER_LEN_MIN.value || length > SEC_ANSWER_LEN_MAX.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "answer length can't be less than " + SEC_ANSWER_LEN_MIN.value

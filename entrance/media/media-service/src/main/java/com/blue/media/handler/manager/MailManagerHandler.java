@@ -28,7 +28,7 @@ import static reactor.util.Loggers.getLogger;
 /**
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "DuplicatedCode", "AliControlFlowStatementWithoutBraces", "unused", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "DuplicatedCode", "AliControlFlowStatementWithoutBraces", "unused"})
 @Component
 public class MailManagerHandler {
 

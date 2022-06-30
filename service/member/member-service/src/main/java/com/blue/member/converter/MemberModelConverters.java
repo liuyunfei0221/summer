@@ -1,7 +1,7 @@
 package com.blue.member.converter;
 
 import com.blue.base.common.base.BlueChecker;
-import com.blue.base.constant.common.BlueNumericalValue;
+import com.blue.base.constant.common.BlueCommonThreshold;
 import com.blue.base.constant.common.Status;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.api.model.*;
@@ -38,17 +38,17 @@ public final class MemberModelConverters {
 
         String phone = memberRegistryParam.getPhone();
         if (isNotBlank(phone)) {
-            if (phone.length() > BlueNumericalValue.PHONE_LEN_MAX.value)
+            if (phone.length() > BlueCommonThreshold.PHONE_LEN_MAX.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too long");
-            if (phone.length() < BlueNumericalValue.PHONE_LEN_MIN.value)
+            if (phone.length() < BlueCommonThreshold.PHONE_LEN_MIN.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too short");
         }
 
         String email = memberRegistryParam.getEmail();
         if (isNotBlank(email)) {
-            if (email.length() > BlueNumericalValue.EMAIL_LEN_MAX.value)
+            if (email.length() > BlueCommonThreshold.EMAIL_LEN_MAX.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too long");
-            if (email.length() < BlueNumericalValue.EMAIL_LEN_MIN.value)
+            if (email.length() < BlueCommonThreshold.EMAIL_LEN_MIN.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too short");
         }
 

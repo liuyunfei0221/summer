@@ -870,7 +870,7 @@ CREATE TABLE `real_name_0`
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
     KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+    KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name detail 0';
 
 CREATE TABLE `real_name_1`
@@ -895,7 +895,7 @@ CREATE TABLE `real_name_1`
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
     KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+    KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name detail 1';
 
 CREATE TABLE `member_detail_0`
@@ -1069,7 +1069,7 @@ CREATE TABLE `real_name_0`
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
     KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+    KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 0';
 
 CREATE TABLE `real_name_1`
@@ -1094,7 +1094,7 @@ CREATE TABLE `real_name_1`
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
     KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
-    UNIQUE KEY `idx_id_card`(`id_card_no`) USING BTREE
+    KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 1';
 
 CREATE TABLE `member_detail_0`

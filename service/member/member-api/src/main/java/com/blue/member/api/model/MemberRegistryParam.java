@@ -1,6 +1,6 @@
 package com.blue.member.api.model;
 
-import com.blue.base.constant.common.BlueNumericalValue;
+import com.blue.base.constant.common.BlueCommonThreshold;
 import com.blue.base.inter.Asserter;
 import com.blue.base.model.exps.BlueException;
 
@@ -57,9 +57,9 @@ public final class MemberRegistryParam implements Serializable, Asserter {
             throw new BlueException(VERIFY_IS_INVALID);
 
         if (isNotBlank(this.access)) {
-            if (this.access.length() > BlueNumericalValue.ACS_LEN_MAX.value)
+            if (this.access.length() > BlueCommonThreshold.ACS_LEN_MAX.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too long");
-            if (this.access.length() < BlueNumericalValue.ACS_LEN_MIN.value)
+            if (this.access.length() < BlueCommonThreshold.ACS_LEN_MIN.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
         }
     }

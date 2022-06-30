@@ -5,8 +5,7 @@ import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
@@ -32,6 +31,10 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
 
     private String birthDay;
 
+    private Integer chineseZodiac;
+
+    private Integer zodiacSign;
+
     private Integer height;
 
     private Integer weight;
@@ -51,14 +54,15 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
     public MemberDetailUpdateParam() {
     }
 
-    public MemberDetailUpdateParam(String name, Integer gender, String phone, String email,
-                                   String birthDay, Integer height, Integer weight, Long cityId, String address,
-                                   String profile, String hobby, String homepage, String extra) {
+    public MemberDetailUpdateParam(String name, Integer gender, String phone, String email, String birthDay, Integer chineseZodiac, Integer zodiacSign,
+                                   Integer height, Integer weight, Long cityId, String address, String profile, String hobby, String homepage, String extra) {
         this.name = name;
         this.gender = gender;
         this.phone = phone;
         this.email = email;
         this.birthDay = birthDay;
+        this.chineseZodiac = chineseZodiac;
+        this.zodiacSign = zodiacSign;
         this.height = height;
         this.weight = weight;
         this.cityId = cityId;
@@ -72,22 +76,7 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
     @Override
     public void asserts() {
         if (isBlank(this.name))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
-        assertGenderIdentity(this.gender, false);
-        if (isBlank(this.phone))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
-        if (isBlank(this.email))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank");
-        if (isNull(this.height) || this.height < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid height");
-        if (isNull(this.weight) || this.weight < 1L)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid weight");
-        if (isInvalidIdentity(this.cityId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid city id");
-        if (isBlank(this.address))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone can't be blank");
-        if (isBlank(this.profile))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email can't be blank");
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid name");
     }
 
     public String getName() {
@@ -128,6 +117,22 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
 
     public void setBirthDay(String birthDay) {
         this.birthDay = birthDay;
+    }
+
+    public Integer getChineseZodiac() {
+        return chineseZodiac;
+    }
+
+    public void setChineseZodiac(Integer chineseZodiac) {
+        this.chineseZodiac = chineseZodiac;
+    }
+
+    public Integer getZodiacSign() {
+        return zodiacSign;
+    }
+
+    public void setZodiacSign(Integer zodiacSign) {
+        this.zodiacSign = zodiacSign;
     }
 
     public Integer getHeight() {
@@ -202,6 +207,8 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", birthDay='" + birthDay + '\'' +
+                ", chineseZodiac=" + chineseZodiac +
+                ", zodiacSign=" + zodiacSign +
                 ", height=" + height +
                 ", weight=" + weight +
                 ", cityId=" + cityId +

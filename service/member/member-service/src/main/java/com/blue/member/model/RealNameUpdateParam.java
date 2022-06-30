@@ -5,9 +5,10 @@ import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.base.common.base.BlueChecker.isBlank;
+import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
 
 /**
  * params for update exist real name
@@ -62,24 +63,25 @@ public class RealNameUpdateParam implements Serializable, Asserter {
     @Override
     public void asserts() {
         if (isBlank(this.realName))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "realName can't be blank");
+            throw new BlueException(INVALID_PARAM);
         assertGenderIdentity(this.gender, false);
+
         if (isBlank(this.birthday))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "birthday can't be blank");
+            throw new BlueException(INVALID_PARAM);
         if (isInvalidIdentity(nationalityId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid nationalityId");
+            throw new BlueException(INVALID_PARAM);
         if (isBlank(this.ethnic))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "ethnic can't be blank");
+            throw new BlueException(INVALID_PARAM);
         if (isBlank(this.idCardNo))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "idCardNo can't be blank");
+            throw new BlueException(INVALID_PARAM);
         if (isBlank(this.residenceAddress))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "residenceAddress can't be blank");
+            throw new BlueException(INVALID_PARAM);
         if (isBlank(this.issuingAuthority))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "issuingAuthority can't be blank");
+            throw new BlueException(INVALID_PARAM);
         if (isBlank(this.sinceDate))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "sinceDate can't be blank");
+            throw new BlueException(INVALID_PARAM);
         if (isBlank(this.expireDate))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "expireDate can't be blank");
+            throw new BlueException(INVALID_PARAM);
     }
 
     public String getRealName() {
