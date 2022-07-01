@@ -1,4 +1,4 @@
-package com.blue.member.config.blue;
+package com.blue.media.config.deploy;
 
 import com.blue.qr.api.conf.QrConfParams;
 import org.springframework.boot.context.properties.ConfigurationProperties;

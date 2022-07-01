@@ -38,7 +38,7 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
-import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
+import static com.blue.base.common.base.ConstantProcessor.*;
 import static com.blue.base.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.base.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.ResponseElement.*;
@@ -90,6 +90,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
         memberDetail.setId(blueIdentityProcessor.generate(RealName.class));
         memberDetail.setMemberId(memberId);
         memberDetail.setStatus(INVALID.status);
+
         Long timeStamp = TIME_STAMP_GETTER.get();
         memberDetail.setCreateTime(timeStamp);
         memberDetail.setUpdateTime(timeStamp);
@@ -131,10 +132,18 @@ public class MemberDetailServiceImpl implements MemberDetailService {
                     memberDetail.setYearOfBirth(yearOfBirth);
                     memberDetail.setMonthOfBirth(monthOfBirth);
                     memberDetail.setDayOfBirth(dayOfBirth);
+                });
 
-                    //TODO
-                    memberDetail.setChineseZodiac(1);
-                    memberDetail.setZodiacSign(1);
+        ofNullable(memberDetailUpdateParam.getChineseZodiac())
+                .ifPresent(chineseZodiac -> {
+                    assertChineseZodiac(chineseZodiac, false);
+                    memberDetail.setChineseZodiac(chineseZodiac);
+                });
+
+        ofNullable(memberDetailUpdateParam.getZodiacSign())
+                .ifPresent(zodiacSign -> {
+                    assertZodiacSign(zodiacSign, false);
+                    memberDetail.setZodiacSign(zodiacSign);
                 });
 
         ofNullable(memberDetailUpdateParam.getHeight())

@@ -24,7 +24,7 @@ public final class RealName implements Serializable {
 
     private String birthday;
 
-    private Long nationalityId;
+    private String nationality;
 
     private String ethnic;
 
@@ -86,12 +86,12 @@ public final class RealName implements Serializable {
         this.birthday = isNull(birthday) ? null : birthday.trim();
     }
 
-    public Long getNationalityId() {
-        return nationalityId;
+    public String getNationality() {
+        return nationality;
     }
 
-    public void setNationalityId(Long nationalityId) {
-        this.nationalityId = nationalityId;
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 
     public String getEthnic() {
@@ -182,7 +182,7 @@ public final class RealName implements Serializable {
                 ", realName='" + realName + '\'' +
                 ", gender=" + gender +
                 ", birthday='" + birthday + '\'' +
-                ", nationalityId=" + nationalityId +
+                ", nationality=" + nationality +
                 ", ethnic=" + ethnic +
                 ", idCardNo='" + idCardNo + '\'' +
                 ", residenceAddress='" + residenceAddress + '\'' +

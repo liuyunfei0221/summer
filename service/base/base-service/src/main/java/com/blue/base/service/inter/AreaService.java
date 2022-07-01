@@ -48,7 +48,7 @@ public interface AreaService {
     Mono<AreaInfo> deleteArea(Long id);
 
     /**
-     * invalid chche
+     * invalid cache
      */
     void invalidCache();
 

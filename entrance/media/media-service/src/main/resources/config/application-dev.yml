@@ -171,6 +171,10 @@ error:
   errorReportWithRequestBodyContentTypes: [ application/json,multipart/form-data ]
 
 
+handlertype:
+  type: ld
+
+
 ldfiles:
   handlerType: ld
   attrName: attachments
@@ -195,6 +199,14 @@ cosfiles:
   singleFileSizeThreshold: 4294967296000
   currentSizeThreshold: 32
   descPath: E:\\tempFile\\disc
+
+
+qr:
+  width: 200
+  height: 200
+  strokesWidth: 1
+  protected Color logoFrameColor: Color.WHITE
+  protected Color frameColor: Color.CYAN
 
 
 encrypt:

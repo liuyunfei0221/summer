@@ -30,7 +30,6 @@ public class MemberDetailApiRoute {
         RouterFunction<ServerResponse> routerFunction = route()
                 .GET("", memberDetailApiHandler::get)
                 .PUT("", accept(APPLICATION_JSON), memberDetailApiHandler::update)
-                .PATCH("", accept(APPLICATION_JSON), memberDetailApiHandler::updateStatus)
                 .build();
 
         return nest(pathPredicate, routerFunction);

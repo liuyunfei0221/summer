@@ -1,7 +1,6 @@
 package com.blue.member.handler.api;
 
 import com.blue.base.model.common.BlueResponse;
-import com.blue.base.model.common.StatusParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.member.model.RealNameUpdateParam;
 import com.blue.member.service.inter.RealNameService;
@@ -61,23 +60,6 @@ public final class RealNameApiHandler {
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))))
                 .flatMap(tuple2 ->
                         just(realNameService.updateRealName(tuple2.getT1().getId(), tuple2.getT2())))
-                .flatMap(mbi ->
-                        ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
-    }
-
-    /**
-     * update real name status
-     *
-     * @param serverRequest
-     * @return
-     */
-    public Mono<ServerResponse> updateStatus(ServerRequest serverRequest) {
-        return zip(getAccessReact(serverRequest),
-                serverRequest.bodyToMono(StatusParam.class)
-                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))))
-                .flatMap(tuple2 ->
-                        just(realNameService.updateRealNameStatus(tuple2.getT1().getId(), tuple2.getT2())))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));

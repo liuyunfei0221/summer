@@ -6,7 +6,6 @@ import com.blue.base.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
 import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
 
@@ -26,7 +25,7 @@ public class RealNameUpdateParam implements Serializable, Asserter {
 
     private String birthday;
 
-    private Long nationalityId;
+    private String nationality;
 
     private String ethnic;
 
@@ -45,12 +44,12 @@ public class RealNameUpdateParam implements Serializable, Asserter {
     public RealNameUpdateParam() {
     }
 
-    public RealNameUpdateParam(String realName, Integer gender, String birthday, Long nationalityId, String ethnic, String idCardNo,
+    public RealNameUpdateParam(String realName, Integer gender, String birthday, String nationality, String ethnic, String idCardNo,
                                String residenceAddress, String issuingAuthority, String sinceDate, String expireDate, String extra) {
         this.realName = realName;
         this.gender = gender;
         this.birthday = birthday;
-        this.nationalityId = nationalityId;
+        this.nationality = nationality;
         this.ethnic = ethnic;
         this.idCardNo = idCardNo;
         this.residenceAddress = residenceAddress;
@@ -68,7 +67,7 @@ public class RealNameUpdateParam implements Serializable, Asserter {
 
         if (isBlank(this.birthday))
             throw new BlueException(INVALID_PARAM);
-        if (isInvalidIdentity(nationalityId))
+        if (isBlank(nationality))
             throw new BlueException(INVALID_PARAM);
         if (isBlank(this.ethnic))
             throw new BlueException(INVALID_PARAM);
@@ -108,12 +107,12 @@ public class RealNameUpdateParam implements Serializable, Asserter {
         this.birthday = birthday;
     }
 
-    public Long getNationalityId() {
-        return nationalityId;
+    public String getNationality() {
+        return nationality;
     }
 
-    public void setNationalityId(Long nationalityId) {
-        this.nationalityId = nationalityId;
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 
     public String getEthnic() {
@@ -178,7 +177,7 @@ public class RealNameUpdateParam implements Serializable, Asserter {
                 "realName='" + realName + '\'' +
                 ", gender=" + gender +
                 ", birthday='" + birthday + '\'' +
-                ", nationalityId=" + nationalityId +
+                ", nationality=" + nationality +
                 ", ethnic='" + ethnic + '\'' +
                 ", idCardNo='" + idCardNo + '\'' +
                 ", residenceAddress='" + residenceAddress + '\'' +

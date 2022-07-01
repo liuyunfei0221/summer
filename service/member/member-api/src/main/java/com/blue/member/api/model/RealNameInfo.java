@@ -23,7 +23,7 @@ public final class RealNameInfo implements Serializable {
 
     private String birthday;
 
-    private Long nationalityId;
+    private String nationality;
 
     private String ethnic;
 
@@ -45,14 +45,14 @@ public final class RealNameInfo implements Serializable {
     }
 
     public RealNameInfo(Long id, Long memberId, String realName, Integer gender, String birthday,
-                        Long nationalityId, String ethnic, String idCardNo, String residenceAddress,
+                        String nationality, String ethnic, String idCardNo, String residenceAddress,
                         String issuingAuthority, String sinceDate, String expireDate, String extra, Integer status) {
         this.id = id;
         this.memberId = memberId;
         this.realName = realName;
         this.gender = gender;
         this.birthday = birthday;
-        this.nationalityId = nationalityId;
+        this.nationality = nationality;
         this.ethnic = ethnic;
         this.idCardNo = idCardNo;
         this.residenceAddress = residenceAddress;
@@ -103,12 +103,12 @@ public final class RealNameInfo implements Serializable {
         this.birthday = birthday;
     }
 
-    public Long getNationalityId() {
-        return nationalityId;
+    public String getNationality() {
+        return nationality;
     }
 
-    public void setNationalityId(Long nationalityId) {
-        this.nationalityId = nationalityId;
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 
     public String getEthnic() {
@@ -183,7 +183,7 @@ public final class RealNameInfo implements Serializable {
                 ", realName='" + realName + '\'' +
                 ", gender=" + gender +
                 ", birthday='" + birthday + '\'' +
-                ", nationalityId=" + nationalityId +
+                ", nationality=" + nationality +
                 ", ethnic=" + ethnic +
                 ", idCardNo='" + idCardNo + '\'' +
                 ", residenceAddress='" + residenceAddress + '\'' +

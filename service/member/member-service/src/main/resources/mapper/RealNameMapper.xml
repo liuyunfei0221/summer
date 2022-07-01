@@ -11,8 +11,10 @@
         <result column="gender" jdbcType="TINYINT" property="gender"/>
         <result column="birthday" jdbcType="VARCHAR" property="birthday"
                 typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
-        <result column="nationality_id" jdbcType="BIGINT" property="nationalityId"/>
-        <result column="ethnic" jdbcType="VARCHAR" property="ethnic"/>
+        <result column="nationality" jdbcType="VARCHAR" property="nationality"
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
+        <result column="ethnic" jdbcType="VARCHAR" property="ethnic"
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="id_card_no" jdbcType="VARCHAR" property="idCardNo"
                 typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="residence_address" jdbcType="VARCHAR" property="residenceAddress"
@@ -32,14 +34,14 @@
 
     <sql id="Base_Column_List">
         id
-        , member_id, real_name, gender, birthday, nationality_id, ethnic, id_card_no,
+        , member_id, real_name, gender, birthday, nationality, ethnic, id_card_no,
         residence_address, issuing_authority, since_date, expire_date, extra, status, create_time,
         update_time
     </sql>
 
     <insert id="insert" parameterType="com.blue.member.repository.entity.RealName">
         insert into real_name (id, member_id, real_name,
-                               gender, birthday, nationality_id,
+                               gender, birthday, nationality,
                                ethnic, id_card_no, residence_address,
                                issuing_authority, since_date, expire_date,
                                extra, status, create_time, update_time)
@@ -47,7 +49,8 @@
                 #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{gender,jdbcType=TINYINT},
                 #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
-                #{nationalityId,jdbcType=BIGINT}, #{ethnic,jdbcType=VARCHAR},
+                #{nationality,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+                #{ethnic,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
@@ -76,8 +79,8 @@
             <if test="birthday != null">
                 birthday,
             </if>
-            <if test="nationalityId != null">
-                nationality_id,
+            <if test="nationality != null">
+                nationality,
             </if>
             <if test="ethnic != null">
                 ethnic,
@@ -126,11 +129,11 @@
             <if test="birthday != null">
                 #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
-            <if test="nationalityId != null">
-                #{nationalityId,jdbcType=BIGINT},
+            <if test="nationality != null">
+                #{nationality,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="ethnic != null">
-                #{ethnic,jdbcType=VARCHAR},
+                #{ethnic,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="idCardNo != null">
                 #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
@@ -168,8 +171,8 @@
             real_name         = #{realName,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             gender            = #{gender,jdbcType=TINYINT},
             birthday          = #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
-            nationality_id    = #{nationalityId,jdbcType=BIGINT},
-            ethnic            = #{ethnic,jdbcType=VARCHAR},
+            nationality       = #{nationality,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            ethnic            = #{ethnic,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             id_card_no        = #{idCardNo,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             residence_address = #{residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             issuing_authority = #{issuingAuthority,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
@@ -199,11 +202,12 @@
                 birthday =
                 #{birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
-            <if test="nationalityId != null">
-                nationality_id = #{nationalityId,jdbcType=BIGINT},
+            <if test="nationality != null">
+                nationality =
+                #{nationality,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="ethnic != null">
-                ethnic = #{ethnic,jdbcType=VARCHAR},
+                ethnic = #{ethnic,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
             <if test="idCardNo != null">
                 id_card_no =
@@ -325,14 +329,15 @@
                     birthday =
                     #{realNameCondition.birthday,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
                 </if>
-                <if test="realNameCondition.nationalityId != null and realNameCondition.nationalityId != ''">
+                <if test="realNameCondition.nationality != null">
                     AND
-                    nationality_id = #{realNameCondition.nationalityId,jdbcType=BIGINT}
+                    nationality =
+                    #{realNameCondition.nationality,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
                 </if>
                 <if test="realNameCondition.ethnic != null and realNameCondition.ethnic != ''">
                     AND
                     ethnic =
-                    #{realNameCondition.ethnic,jdbcType=VARCHAR}
+                    #{realNameCondition.ethnic,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
                 </if>
                 <if test="realNameCondition.idCardNo != null and realNameCondition.idCardNo != ''">
                     AND
@@ -341,7 +346,7 @@
                 </if>
                 <if test="realNameCondition.residenceAddress != null and realNameCondition.residenceAddress != ''">
                     AND
-                    residence_address = #{realNameCondition.residenceAddress,jdbcType=VARCHAR}
+                    residence_address = #{realNameCondition.residenceAddress,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
                 </if>
                 <if test="realNameCondition.issuingAuthority != null and realNameCondition.issuingAuthority != ''">
                     AND

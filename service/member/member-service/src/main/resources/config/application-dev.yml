@@ -423,12 +423,8 @@ rest:
   maxByteInMemorySize: 1048576
 
 
-qr:
-  width: 200
-  height: 200
-  strokesWidth: 1
-  protected Color logoFrameColor: Color.WHITE
-  protected Color frameColor: Color.CYAN
+validatortype:
+  type: ali
 
 
 member:

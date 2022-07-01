@@ -30,7 +30,6 @@ public class RealNameApiRoute {
         RouterFunction<ServerResponse> routerFunction = route()
                 .GET("", realNameApiHandler::get)
                 .PUT("", accept(APPLICATION_JSON), realNameApiHandler::update)
-                .PATCH("", accept(APPLICATION_JSON), realNameApiHandler::updateStatus)
                 .build();
 
         return nest(pathPredicate, routerFunction);

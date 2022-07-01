@@ -26,7 +26,7 @@ public final class RealNameCondition extends SortCondition implements Serializab
 
     private String birthday;
 
-    private Long nationalityId;
+    private String nationality;
 
     private String ethnic;
 
@@ -63,7 +63,7 @@ public final class RealNameCondition extends SortCondition implements Serializab
         super(sortAttribute, sortType);
     }
 
-    public RealNameCondition(Long id, Long memberId, String realName, Integer gender, String birthday, Long nationalityId, String ethnic,
+    public RealNameCondition(Long id, Long memberId, String realName, Integer gender, String birthday, String nationality, String ethnic,
                              String idCardNo, String residenceAddress, String issuingAuthority, String sinceDate, String expireDate, String extra, Integer status,
                              Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
@@ -72,7 +72,7 @@ public final class RealNameCondition extends SortCondition implements Serializab
         this.realName = realName;
         this.gender = gender;
         this.birthday = birthday;
-        this.nationalityId = nationalityId;
+        this.nationality = nationality;
         this.ethnic = ethnic;
         this.idCardNo = idCardNo;
         this.residenceAddress = residenceAddress;
@@ -127,12 +127,12 @@ public final class RealNameCondition extends SortCondition implements Serializab
         this.birthday = birthday;
     }
 
-    public Long getNationalityId() {
-        return nationalityId;
+    public String getNationality() {
+        return nationality;
     }
 
-    public void setNationalityId(Long nationalityId) {
-        this.nationalityId = nationalityId;
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 
     public String getEthnic() {
@@ -239,7 +239,7 @@ public final class RealNameCondition extends SortCondition implements Serializab
                 ", realName='" + realName + '\'' +
                 ", gender=" + gender +
                 ", birthday='" + birthday + '\'' +
-                ", nationalityId=" + nationalityId +
+                ", nationality=" + nationality +
                 ", ethnic='" + ethnic + '\'' +
                 ", idCardNo='" + idCardNo + '\'' +
                 ", residenceAddress='" + residenceAddress + '\'' +

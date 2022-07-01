@@ -473,31 +473,27 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'update member profile', 'update member profile', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180007, 'PUT', 'blue-member', '/detail', b'1', b'1', b'1', b'0', b'1', 1,
         'update member detail', 'update member detail', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180008, 'PATCH', 'blue-member', '/detail/status', b'1', b'1', b'1', b'0', b'1', 1,
-        'update member detail status', 'update member detail status', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180009, 'GET', 'blue-member', '/detail', b'1', b'1', b'1', b'0', b'1', 1,
+       (180008, 'GET', 'blue-member', '/detail', b'1', b'1', b'1', b'0', b'1', 1,
         'member detail info', 'member detail info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180010, 'PUT', 'blue-member', '/realname', b'1', b'1', b'1', b'0', b'1', 1,
+       (180009, 'PUT', 'blue-member', '/realname', b'1', b'1', b'1', b'0', b'1', 1,
         'update member realname', 'update member realname', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180011, 'PATCH', 'blue-member', '/realname/status', b'1', b'1', b'1', b'0', b'1', 1,
-        'update member realname status', 'update member realname status', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180012, 'GET', 'blue-member', '/realname', b'1', b'1', b'1', b'0', b'1', 1,
+       (180010, 'GET', 'blue-member', '/realname', b'1', b'1', b'1', b'0', b'1', 1,
         'member realname info', 'member realname info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180013, 'POST', 'blue-member', '/address', b'1', b'1', b'1', b'1', b'1', 1,
+       (180011, 'POST', 'blue-member', '/address', b'1', b'1', b'1', b'1', b'1', 1,
         'add address', 'add address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180014, 'PUT', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
+       (180012, 'PUT', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
         'update address', 'update address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180015, 'DELETE', 'blue-member', '/address/{id}', b'1', b'1', b'1', b'0', b'1', 1,
+       (180013, 'DELETE', 'blue-member', '/address/{id}', b'1', b'1', b'1', b'0', b'1', 1,
         'delete address', 'delete address', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180016, 'GET', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
+       (180014, 'GET', 'blue-member', '/address', b'1', b'1', b'1', b'0', b'1', 1,
         'select address for api', 'select address for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180017, 'POST', 'blue-member', '/card', b'1', b'1', b'1', b'1', b'1', 1,
+       (180015, 'POST', 'blue-member', '/card', b'1', b'1', b'1', b'1', b'1', 1,
         'add card', 'add card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180018, 'PUT', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
+       (180016, 'PUT', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
         'update card', 'update card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180019, 'DELETE', 'blue-member', '/card/{id}', b'1', b'1', b'1', b'0', b'1', 1,
+       (180017, 'DELETE', 'blue-member', '/card/{id}', b'1', b'1', b'1', b'0', b'1', 1,
         'delete card', 'delete card', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180020, 'GET', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
+       (180018, 'GET', 'blue-member', '/card', b'1', b'1', b'1', b'0', b'1', 1,
         'select card for api', 'select card for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- member manage
@@ -1399,7 +1395,7 @@ CREATE TABLE `real_name_0`
     `real_name`         varchar(256) DEFAULT '' COMMENT 'read name',
     `gender`            tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
-    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `nationality`       varchar(128) DEFAULT '' COMMENT 'nationality/country',
     `ethnic`            varchar(64)  DEFAULT '' COMMENT 'ethnic',
     `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
     `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
@@ -1413,7 +1409,6 @@ CREATE TABLE `real_name_0`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
-    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 0';
 
@@ -1424,7 +1419,7 @@ CREATE TABLE `real_name_1`
     `real_name`         varchar(256) DEFAULT '' COMMENT 'read name',
     `gender`            tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
-    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `nationality`       varchar(128) DEFAULT '' COMMENT 'nationality/country',
     `ethnic`            varchar(64)  DEFAULT '' COMMENT 'ethnic',
     `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
     `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
@@ -1438,7 +1433,6 @@ CREATE TABLE `real_name_1`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
-    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 1';
 
@@ -1599,7 +1593,7 @@ CREATE TABLE `real_name_0`
     `real_name`         varchar(256) DEFAULT '' COMMENT 'read name',
     `gender`            tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
-    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `nationality`       varchar(128) DEFAULT '' COMMENT 'nationality/country',
     `ethnic`            varchar(64)  DEFAULT '' COMMENT 'ethnic',
     `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
     `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
@@ -1613,7 +1607,6 @@ CREATE TABLE `real_name_0`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
-    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 0';
 
@@ -1624,7 +1617,7 @@ CREATE TABLE `real_name_1`
     `real_name`         varchar(256) DEFAULT '' COMMENT 'read name',
     `gender`            tinyint      DEFAULT "3" COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
-    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `nationality`       varchar(128) DEFAULT '' COMMENT 'nationality/country',
     `ethnic`            varchar(64)  DEFAULT '' COMMENT 'ethnic',
     `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
     `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
@@ -1638,7 +1631,6 @@ CREATE TABLE `real_name_1`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
-    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 1';
 

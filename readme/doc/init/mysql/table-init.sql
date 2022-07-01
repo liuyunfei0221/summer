@@ -855,7 +855,7 @@ CREATE TABLE `real_name_0`
     `real_name`         varchar(256) DEFAULT '' COMMENT 'real name',
     `gender`            tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
-    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `nationality`       varchar(128) DEFAULT '' COMMENT 'nationality/country',
     `ethnic`            varchar(64)  DEFAULT '' COMMENT 'ethnic',
     `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
     `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
@@ -869,7 +869,6 @@ CREATE TABLE `real_name_0`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
-    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name detail 0';
 
@@ -880,7 +879,7 @@ CREATE TABLE `real_name_1`
     `real_name`         varchar(256) DEFAULT '' COMMENT 'real name',
     `gender`            tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
-    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `nationality`       varchar(128) DEFAULT '' COMMENT 'nationality/country',
     `ethnic`            varchar(64)  DEFAULT '' COMMENT 'ethnic',
     `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
     `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
@@ -894,7 +893,6 @@ CREATE TABLE `real_name_1`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
-    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name detail 1';
 
@@ -1054,7 +1052,7 @@ CREATE TABLE `real_name_0`
     `real_name`         varchar(256) DEFAULT '' COMMENT 'read name',
     `gender`            tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
-    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `nationality`       varchar(128) DEFAULT '' COMMENT 'nationality/country',
     `ethnic`            varchar(64)  DEFAULT '' COMMENT 'ethnic',
     `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
     `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
@@ -1068,7 +1066,6 @@ CREATE TABLE `real_name_0`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
-    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 0';
 
@@ -1079,7 +1076,7 @@ CREATE TABLE `real_name_1`
     `real_name`         varchar(256) DEFAULT '' COMMENT 'read name',
     `gender`            tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
     `birthday`          varchar(32)  DEFAULT '' COMMENT 'birthday, format: yyyy-MM-dd',
-    `nationality_id`    bigint       DEFAULT '0' COMMENT 'nationality id/country id',
+    `nationality`       varchar(128) DEFAULT '' COMMENT 'nationality/country',
     `ethnic`            varchar(64)  DEFAULT '' COMMENT 'ethnic',
     `id_card_no`        varchar(128) DEFAULT '' COMMENT 'id card number',
     `residence_address` varchar(512) DEFAULT '' COMMENT 'residence address',
@@ -1093,7 +1090,6 @@ CREATE TABLE `real_name_1`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE,
     KEY                 `idx_real_name`(`real_name`) USING BTREE,
-    KEY                 `idx_nationality`(`nationality_id`) USING BTREE,
     KEY                 `idx_id_card`(`id_card_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of real name 1';
 

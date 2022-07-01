@@ -47,7 +47,7 @@ public interface CountryService {
     Mono<CountryInfo> deleteCountry(Long id);
 
     /**
-     * invalid chche
+     * invalid cache
      */
     void invalidCache();
 

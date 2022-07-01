@@ -23,7 +23,7 @@ public class RealNameManagerRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> memberDetailManagerRouter(RealNameManagerHandler realNameManagerHandler) {
+    RouterFunction<ServerResponse> realNameManagerRouter(RealNameManagerHandler realNameManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-member/manager");
 

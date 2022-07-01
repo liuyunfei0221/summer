@@ -9,6 +9,8 @@ import com.blue.base.constant.auth.DeviceType;
 import com.blue.base.constant.auth.ResourceType;
 import com.blue.base.constant.common.*;
 import com.blue.base.constant.media.AttachmentType;
+import com.blue.base.constant.media.QrCodeType;
+import com.blue.base.constant.member.ChineseZodiac;
 import com.blue.base.constant.member.Gender;
 import com.blue.base.constant.member.SourceType;
 import com.blue.base.constant.member.ZodiacSign;
@@ -80,6 +82,12 @@ public final class ConstantProcessor {
             of(AttachmentType.values()).collect(toMap(at -> at.identity, at -> at));
 
     /**
+     * qr code type identity and qr code type mapping
+     */
+    private static final Map<Integer, QrCodeType> QR_CEDE_TYPE_MAPPING =
+            of(QrCodeType.values()).collect(toMap(qct -> qct.identity, at -> at));
+
+    /**
      * valid resource type identity and type mapping
      */
     private static final Map<Integer, ResourceType> RESOURCE_TYPE_MAPPING =
@@ -108,6 +116,12 @@ public final class ConstantProcessor {
      */
     private static final Map<String, SourceType> SOURCE_MAPPING =
             of(SourceType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+
+    /**
+     * valid chinese zodiac identity and type mapping
+     */
+    private static final Map<Integer, ChineseZodiac> CHINESE_ZODIAC_MAPPING =
+            of(ChineseZodiac.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
 
     /**
      * valid zodiac sign identity and type mapping
@@ -261,6 +275,20 @@ public final class ConstantProcessor {
     }
 
     /**
+     * assert qr code type
+     *
+     * @param identity
+     * @return
+     */
+    public static void assertQrCodeType(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!QR_CEDE_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
      * assert credential type
      *
      * @param identity
@@ -309,6 +337,19 @@ public final class ConstantProcessor {
             return;
 
         if (!SOURCE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert chinese zodiac
+     *
+     * @param identity
+     */
+    public static void assertChineseZodiac(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!CHINESE_ZODIAC_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -592,6 +633,23 @@ public final class ConstantProcessor {
     }
 
     /**
+     * get qr code type by attachment identity
+     *
+     * @param identity
+     * @return
+     */
+    public static QrCodeType getQrCodeTypeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        QrCodeType qrCodeType = QR_CEDE_TYPE_MAPPING.get(identity);
+        if (isNull(qrCodeType))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return qrCodeType;
+    }
+
+    /**
      * get credential type by identity
      *
      * @param identity
@@ -657,6 +715,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         return sourceType;
+    }
+
+    /**
+     * get zodiac sign by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static ChineseZodiac getChineseZodiacByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        ChineseZodiac chineseZodiac = CHINESE_ZODIAC_MAPPING.get(identity);
+        if (isNull(chineseZodiac))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return chineseZodiac;
     }
 
     /**

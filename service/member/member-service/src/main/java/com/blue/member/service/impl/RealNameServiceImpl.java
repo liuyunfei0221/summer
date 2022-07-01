@@ -1,11 +1,14 @@
 package com.blue.member.service.impl;
 
+import com.blue.base.common.base.BlueChecker;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.base.model.common.StatusParam;
 import com.blue.base.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.RealNameInfo;
+import com.blue.member.api.model.RealNameValidateResult;
+import com.blue.member.component.realname.validator.RealNameProcessor;
 import com.blue.member.constant.RealNameSortAttribute;
 import com.blue.member.model.RealNameCondition;
 import com.blue.member.model.RealNameUpdateParam;
@@ -22,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -30,12 +34,11 @@ import static com.blue.base.common.base.ArrayAllocator.allotByMax;
 import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConditionSortProcessor.process;
-import static com.blue.base.constant.common.BlueCommonThreshold.*;
+import static com.blue.base.constant.common.BlueCommonThreshold.DB_SELECT;
+import static com.blue.base.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.INVALID;
 import static com.blue.base.constant.common.Status.VALID;
-import static com.blue.base.constant.member.Gender.UNKNOWN;
 import static com.blue.member.converter.MemberModelConverters.REAL_NAME_2_REAL_NAME_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -57,12 +60,15 @@ public class RealNameServiceImpl implements RealNameService {
 
     private static final Logger LOGGER = getLogger(RealNameServiceImpl.class);
 
+    private RealNameProcessor realNameProcessor;
+
     private final RealNameMapper realNameMapper;
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public RealNameServiceImpl(RealNameMapper realNameMapper, BlueIdentityProcessor blueIdentityProcessor) {
+    public RealNameServiceImpl(RealNameProcessor realNameProcessor, RealNameMapper realNameMapper, BlueIdentityProcessor blueIdentityProcessor) {
+        this.realNameProcessor = realNameProcessor;
         this.realNameMapper = realNameMapper;
         this.blueIdentityProcessor = blueIdentityProcessor;
     }
@@ -75,18 +81,8 @@ public class RealNameServiceImpl implements RealNameService {
 
         realName.setId(blueIdentityProcessor.generate(RealName.class));
         realName.setMemberId(memberId);
-        realName.setRealName(EMPTY_DATA.value);
-        realName.setGender(UNKNOWN.identity);
-        realName.setBirthday(EMPTY_DATA.value);
-        realName.setNationalityId(BLUE_ID.value);
-        realName.setEthnic(EMPTY_DATA.value);
-        realName.setIdCardNo(EMPTY_DATA.value);
-        realName.setResidenceAddress(EMPTY_DATA.value);
-        realName.setIssuingAuthority(EMPTY_DATA.value);
-        realName.setSinceDate(EMPTY_DATA.value);
-        realName.setExpireDate(EMPTY_DATA.value);
-        realName.setExtra(EMPTY_DATA.value);
         realName.setStatus(INVALID.status);
+
         Long timeStamp = TIME_STAMP_GETTER.get();
         realName.setCreateTime(timeStamp);
         realName.setUpdateTime(timeStamp);
@@ -97,10 +93,29 @@ public class RealNameServiceImpl implements RealNameService {
     private final BiConsumer<RealNameUpdateParam, RealName> ATTR_PACKAGER = (realNameUpdateParam, realName) -> {
         if (isNull(realNameUpdateParam) || isNull(realName))
             throw new BlueException(EMPTY_PARAM);
+        realNameUpdateParam.asserts();
 
+        realName.setRealName(realNameUpdateParam.getRealName());
+        realName.setGender(realNameUpdateParam.getGender());
+        realName.setBirthday(realNameUpdateParam.getBirthday());
+        realName.setNationality(realNameUpdateParam.getNationality());
+        realName.setEthnic(realNameUpdateParam.getEthnic());
+        realName.setIdCardNo(realNameUpdateParam.getIdCardNo());
+        realName.setResidenceAddress(realNameUpdateParam.getResidenceAddress());
+        realName.setIssuingAuthority(realNameUpdateParam.getIssuingAuthority());
+        realName.setSinceDate(realNameUpdateParam.getSinceDate());
+        realName.setExpireDate(realNameUpdateParam.getExpireDate());
 
+        ofNullable(realNameUpdateParam.getExtra()).filter(BlueChecker::isNotBlank)
+                .ifPresent(realName::setExtra);
         realName.setStatus(VALID.status);
         realName.setUpdateTime(TIME_STAMP_GETTER.get());
+    };
+
+    private final Consumer<RealName> REAL_NAME_INFO_VALIDATOR = realName -> {
+        RealNameValidateResult validateResult = realNameProcessor.validate(realName);
+        if (!validateResult.isAllow())
+            throw new BlueException(INVALID_PARAM);
     };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RealNameSortAttribute.values())
@@ -155,6 +170,8 @@ public class RealNameServiceImpl implements RealNameService {
             throw new BlueException(DATA_NOT_EXIST);
 
         ATTR_PACKAGER.accept(realNameUpdateParam, realName);
+
+        REAL_NAME_INFO_VALIDATOR.accept(realName);
 
         realNameMapper.updateByPrimaryKey(realName);
 

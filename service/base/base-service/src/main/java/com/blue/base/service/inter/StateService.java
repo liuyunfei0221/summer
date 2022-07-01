@@ -48,7 +48,7 @@ public interface StateService {
     Mono<StateInfo> deleteState(Long id);
 
     /**
-     * invalid chche
+     * invalid cache
      */
     void invalidCache();
 

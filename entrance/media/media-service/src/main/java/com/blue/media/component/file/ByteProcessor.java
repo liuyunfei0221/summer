@@ -5,7 +5,7 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.FileUploadResult;
 import com.blue.media.component.file.preprocessor.inter.PreAndPostWriteProcessorHandler;
 import com.blue.media.component.file.processor.inter.ByteHandler;
-import com.blue.media.config.deploy.LocalDiskFileDeploy;
+import com.blue.media.config.deploy.HandlerTypeDeploy;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -62,16 +62,16 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
         if (isEmpty(byteHandlerOfType))
             throw new RuntimeException("byteHandlers is empty");
 
-        LocalDiskFileDeploy localDiskFileDeploy;
+        HandlerTypeDeploy handlerTypeDeploy;
         try {
-            localDiskFileDeploy = applicationContext.getBean(LocalDiskFileDeploy.class);
-            LOGGER.info("ByteProcessor onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent), fileDeploy = {}", localDiskFileDeploy);
+            handlerTypeDeploy = applicationContext.getBean(HandlerTypeDeploy.class);
+            LOGGER.info("ByteProcessor onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent), handlerTypeDeploy = {}", handlerTypeDeploy);
         } catch (BeansException e) {
-            LOGGER.error("applicationContext.getBean(FileDeploy.class), e = {}", e);
-            throw new RuntimeException("applicationContext.getBean(FileDeploy.class) failed");
+            LOGGER.error("applicationContext.getBean(HandlerTypeDeploy.class), e = {}", e);
+            throw new RuntimeException("applicationContext.getBean(HandlerTypeDeploy.class) failed");
         }
 
-        String handlerType = ofNullable(localDiskFileDeploy.getHandlerType())
+        String handlerType = ofNullable(handlerTypeDeploy.getType())
                 .filter(BlueChecker::isNotBlank)
                 .orElseThrow(() -> new RuntimeException("handlerType is blank"));
 

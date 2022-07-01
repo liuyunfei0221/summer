@@ -48,7 +48,7 @@ public interface CityService {
     Mono<CityInfo> deleteCity(Long id);
 
     /**
-     * invalid chche
+     * invalid cache
      */
     void invalidCache();
 

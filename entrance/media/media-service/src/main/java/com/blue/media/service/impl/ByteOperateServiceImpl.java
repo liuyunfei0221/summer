@@ -37,8 +37,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.assertAttachmentType;
 import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
@@ -158,6 +157,9 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         Integer type = TYPE_PARSER.apply(valueMap.get(TYPE_NAME));
         assertAttachmentType(type, false);
 
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
+
         List<Part> resources = valueMap.get(ATTR_NAME);
         if (isEmpty(resources))
             throw new BlueException(EMPTY_PARAM);
@@ -225,6 +227,44 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                 .subscribe(dh -> LOGGER.info("DOWNLOAD_RECORDER -> insert(downloadHistory), dh = {}", dh));
     };
 
+    private static final Function<Attachment, String> CONTENT_DISPOSITION_GEN = attachment ->
+            ofNullable(attachment)
+                    .map(Attachment::getName)
+                    .filter(BlueChecker::isNotBlank)
+                    .map(name -> URLEncoder.encode(name, UTF_8))
+                    .map(encodedName -> CONTENT_DISPOSITION_FILE_NAME_PREFIX.prefix + encodedName)
+                    .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+
+    private Mono<List<FileUploadResult>> updateAttachments(List<Part> resources, Integer type, Long memberId) {
+        LOGGER.info("Mono<List<FileUploadResult>> updateAttachments(List<Part> resources,Integer type,Long memberId), resources = {}, type = {}, memberId = {}", resources, type, memberId);
+        assertAttachmentType(type, false);
+
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        if (isEmpty(resources))
+            throw new BlueException(EMPTY_PARAM);
+        if (resources.size() > CURRENT_SIZE_THRESHOLD)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
+
+        return fromIterable(resources)
+                .flatMap(part -> byteProcessor.write(part, type, memberId))
+                .collectList();
+    }
+
+    /**
+     * upload
+     *
+     * @param resources
+     * @param type
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<List<FileUploadResult>> upload(List<Part> resources, Integer type, Long memberId) {
+        return updateAttachments(resources, type, memberId);
+    }
+
     /**
      * upload
      *
@@ -248,14 +288,6 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                                 .body(generate(OK.code, summary, serverRequest), BlueResponse.class)
                 );
     }
-
-    private static final Function<Attachment, String> CONTENT_DISPOSITION_GEN = attachment ->
-            ofNullable(attachment)
-                    .map(Attachment::getName)
-                    .filter(BlueChecker::isNotBlank)
-                    .map(name -> URLEncoder.encode(name, UTF_8))
-                    .map(encodedName -> CONTENT_DISPOSITION_FILE_NAME_PREFIX.prefix + encodedName)
-                    .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
     /**
      * download

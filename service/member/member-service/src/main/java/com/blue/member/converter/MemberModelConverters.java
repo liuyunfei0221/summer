@@ -153,7 +153,7 @@ public final class MemberModelConverters {
         if (realName != null)
             return new RealNameInfo(
                     realName.getId(), realName.getMemberId(), realName.getRealName(),
-                    realName.getGender(), realName.getBirthday(), realName.getNationalityId(),
+                    realName.getGender(), realName.getBirthday(), realName.getNationality(),
                     realName.getEthnic(), realName.getIdCardNo(), realName.getResidenceAddress(),
                     realName.getIssuingAuthority(), realName.getSinceDate(), realName.getExpireDate(),
                     realName.getExtra(), realName.getStatus()
