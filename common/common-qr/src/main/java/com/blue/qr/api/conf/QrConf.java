@@ -59,4 +59,11 @@ public interface QrConf {
      */
     Color getFrameColor();
 
+    /**
+     * qr code file type
+     *
+     * @return
+     */
+    String getFileType();
+
 }

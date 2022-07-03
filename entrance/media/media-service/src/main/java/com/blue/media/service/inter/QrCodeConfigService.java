@@ -3,6 +3,7 @@ package com.blue.media.service.inter;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.common.PageModelResponse;
 import com.blue.media.api.model.QrCodeConfigInfo;
+import com.blue.media.api.model.QrCodeConfigManagerInfo;
 import com.blue.media.model.QrCodeCondition;
 import com.blue.media.model.QrCodeConfigInsertParam;
 import com.blue.media.model.QrCodeConfigUpdateParam;
@@ -27,7 +28,7 @@ public interface QrCodeConfigService {
      * @param operatorId
      * @return
      */
-    QrCodeConfigInfo insertStyle(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId);
+    QrCodeConfigInfo insertQrCodeConfig(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId);
 
     /**
      * update qr code config
@@ -36,96 +37,79 @@ public interface QrCodeConfigService {
      * @param operatorId
      * @return
      */
-    QrCodeConfigInfo updateStyle(QrCodeConfigUpdateParam qrCodeConfigUpdateParam, Long operatorId);
+    QrCodeConfigInfo updateQrCodeConfig(QrCodeConfigUpdateParam qrCodeConfigUpdateParam, Long operatorId);
 
     /**
-     * delete style
+     * delete config
      *
      * @param id
      * @return
      */
-    QrCodeConfigInfo deleteStyle(Long id);
+    QrCodeConfigInfo deleteQrCodeConfig(Long id);
 
     /**
-     * update active style by id
-     *
-     * @param id
-     * @param operatorId
-     * @return
-     */
-    QrCodeConfigInfo updateActiveStyle(Long id, Long operatorId);
-
-    /**
-     * expire style info
-     *
-     * @return
-     */
-    void invalidStyleInfosCache();
-
-    /**
-     * get style by id
+     * get config by id
      *
      * @param id
      * @return
      */
-    Optional<QrCodeConfig> getStyle(Long id);
+    Optional<QrCodeConfig> getQrCodeConfig(Long id);
 
     /**
-     * get style mono by id
+     * get config mono by id
      *
      * @param id
      * @return
      */
-    Mono<Optional<QrCodeConfig>> getStyleMono(Long id);
+    Mono<Optional<QrCodeConfig>> getQrCodeConfigMono(Long id);
 
     /**
-     * select all style
+     * select all config
      *
      * @return
      */
-    Mono<List<QrCodeConfig>> selectStyle();
+    Mono<List<QrCodeConfig>> selectQrCodeConfig();
 
     /**
-     * list style by type and active
+     * list config by type and active
      *
-     * @param styleType
-     * @param isActive
+     * @param configType
      * @return
      */
-    List<QrCodeConfig> selectByTypeAndActive(Integer styleType, Boolean isActive);
+    List<QrCodeConfig> selectQrCodeConfigByType(Integer configType);
 
     /**
-     * get active style
+     * get active config
      *
-     * @param styleType
+     * @param configType
      * @return
      */
-    Mono<QrCodeConfigInfo> getActiveStyleInfoMonoByTypeWithCache(Integer styleType);
+    Mono<QrCodeConfigInfo> getQrCodeConfigInfoMonoByTypeWithCache(Integer configType);
 
     /**
-     * select style by page and condition
+     * select config by page and condition
      *
      * @param limit
      * @param rows
      * @param qrCodeCondition
      * @return
      */
-    Mono<List<QrCodeConfig>> selectStyleMonoByLimitAndCondition(Long limit, Long rows, QrCodeCondition qrCodeCondition);
+    Mono<List<QrCodeConfig>> selectQrCodeConfigMonoByLimitAndCondition(Long limit, Long rows, QrCodeCondition qrCodeCondition);
 
     /**
-     * count style by condition
+     * count config by condition
      *
      * @param qrCodeCondition
      * @return
      */
-    Mono<Long> countStyleMonoByCondition(QrCodeCondition qrCodeCondition);
+    Mono<Long> countQrCodeConfigMonoByCondition(QrCodeCondition qrCodeCondition);
 
     /**
-     * select style manager info page by condition
+     * select config manager info page by condition
      *
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<QrCodeConfigInfo>> selectStyleManagerInfoPageMonoByPageAndCondition(PageModelRequest<QrCodeCondition> pageModelRequest);
+    Mono<PageModelResponse<QrCodeConfigManagerInfo>> selectQrCodeConfigManagerInfoPageMonoByPageAndCondition(PageModelRequest<QrCodeCondition> pageModelRequest);
 
 }

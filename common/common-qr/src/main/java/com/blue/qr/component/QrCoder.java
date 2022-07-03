@@ -32,6 +32,7 @@ import static com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage;
 import static com.google.zxing.qrcode.decoder.ErrorCorrectionLevel.H;
 import static java.awt.BasicStroke.CAP_ROUND;
 import static java.awt.BasicStroke.JOIN_ROUND;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.imageio.ImageIO.read;
 import static javax.imageio.ImageIO.write;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -46,10 +47,9 @@ public final class QrCoder {
 
     private static final Logger LOGGER = getLogger(QrCoder.class);
 
-    private static final String CHARSET = "UTF-8";
+    private static final String CHARSET = UTF_8.name();
     private static final int LOGO_AND_FRAME_ROUND_ARCW = 20;
     private static final int LOGO_AND_FRAME_ROUND_ARCH = 20;
-    private static final String CODE_FORMAT = "jpg";
     private static final MultiFormatWriter MULTI_FORMAT_WRITER = new MultiFormatWriter();
 
     private static final Map<EncodeHintType, Object> ENCODE_CODE_PARAMS = new HashMap<>(4);
@@ -76,6 +76,7 @@ public final class QrCoder {
     private final BasicStroke stroke;
     private final Color logoFrameColor;
     private final Color frameColor;
+    private final String fileType;
 
 
     public QrCoder(QrConf qrConf) {
@@ -94,6 +95,7 @@ public final class QrCoder {
         this.frameColor = qrConf.getFrameColor();
         this.stroke = new BasicStroke(qrConf.getStrokesWidth(), CAP_ROUND, JOIN_ROUND);
         this.logoFrameColor = qrConf.getLogoFrameColor();
+        this.fileType = qrConf.getFileType();
     }
 
     /**
@@ -133,7 +135,7 @@ public final class QrCoder {
              BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream)) {
 
             BitMatrix bitMatrix = MULTI_FORMAT_WRITER.encode(content, QR_CODE, width, height, ENCODE_CODE_PARAMS);
-            MatrixToImageWriter.writeToStream(bitMatrix, CODE_FORMAT, bufferedOutputStream);
+            MatrixToImageWriter.writeToStream(bitMatrix, fileType, bufferedOutputStream);
 
             return byteArrayOutputStream.toByteArray();
         } catch (Exception e) {
@@ -182,7 +184,7 @@ public final class QrCoder {
             qrGraphics.dispose();
             qrImage.flush();
 
-            write(qrImage, CODE_FORMAT, bufferedOutputStream);
+            write(qrImage, fileType, bufferedOutputStream);
 
             return byteArrayOutputStream.toByteArray();
         } catch (Exception e) {

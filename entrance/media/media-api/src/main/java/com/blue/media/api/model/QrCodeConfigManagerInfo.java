@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class QrCodeConfigInfo implements Serializable {
+public final class QrCodeConfigManagerInfo implements Serializable {
 
     private static final long serialVersionUID = 4786656684754973382L;
 

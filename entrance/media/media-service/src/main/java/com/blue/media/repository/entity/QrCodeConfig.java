@@ -21,9 +21,7 @@ public final class QrCodeConfig implements Serializable {
     private String name;
 
     /**
-     * qr code type
-     *
-     * @see com.blue.base.constant.media.QrCodeType
+     * unique qr code type
      */
     private Integer type;
 
@@ -32,8 +30,6 @@ public final class QrCodeConfig implements Serializable {
     private String pathToBeFilled;
 
     private Integer placeholderCount;
-
-    private String fileType;
 
     private Integer status;
 
@@ -93,14 +89,6 @@ public final class QrCodeConfig implements Serializable {
         this.placeholderCount = placeholderCount;
     }
 
-    public String getFileType() {
-        return fileType;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -150,7 +138,6 @@ public final class QrCodeConfig implements Serializable {
                 ", domain='" + domain + '\'' +
                 ", pathToBeFilled='" + pathToBeFilled + '\'' +
                 ", placeholderCount=" + placeholderCount +
-                ", fileType='" + fileType + '\'' +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

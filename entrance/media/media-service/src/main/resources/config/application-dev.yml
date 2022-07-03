@@ -204,9 +204,12 @@ cosfiles:
 qr:
   width: 200
   height: 200
+  onColor: 0xFF000001
+  offColor: 0xFFFFFFFF
   strokesWidth: 1
-  protected Color logoFrameColor: Color.WHITE
-  protected Color frameColor: Color.CYAN
+  logoFrameColor: Color.WHITE
+  frameColor: Color.CYAN
+  fileType: jpg
 
 
 encrypt:

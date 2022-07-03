@@ -125,7 +125,7 @@ public class StyleServiceImpl implements StyleService {
     private final Function<Integer, Style> ACTIVE_STYLE_DB_GETTER = type -> {
         assertStyleType(type, false);
 
-        List<Style> activeStyles = this.selectByTypeAndActive(type, TRUE.bool);
+        List<Style> activeStyles = this.selectStyleByTypeAndActive(type, TRUE.bool);
         LOGGER.info("ACTIVE_STYLE_INFO_DB_GETTER, activeStyles = {}, type = {}", activeStyles, type);
 
         if (isEmpty(activeStyles))
@@ -452,7 +452,7 @@ public class StyleServiceImpl implements StyleService {
      * @return
      */
     @Override
-    public List<Style> selectByTypeAndActive(Integer styleType, Boolean isActive) {
+    public List<Style> selectStyleByTypeAndActive(Integer styleType, Boolean isActive) {
         LOGGER.info("List<Style> selectByTypeAndActive(Integer styleType, Boolean isActive), styleType = {}, isActive = {}",
                 styleType, isActive);
         assertBulletinType(styleType, false);

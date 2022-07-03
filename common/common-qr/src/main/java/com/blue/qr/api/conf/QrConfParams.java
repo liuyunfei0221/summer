@@ -2,6 +2,9 @@ package com.blue.qr.api.conf;
 
 import java.awt.*;
 
+import static java.awt.Color.CYAN;
+import static java.awt.Color.WHITE;
+
 /**
  * default qr conf params
  *
@@ -27,9 +30,11 @@ public class QrConfParams implements QrConf {
      */
     protected int strokesWidth = 1;
 
-    protected Color logoFrameColor = Color.WHITE;
+    protected Color logoFrameColor = WHITE;
 
-    protected Color frameColor = Color.CYAN;
+    protected Color frameColor = CYAN;
+
+    protected String fileType;
 
     public QrConfParams() {
     }
@@ -69,6 +74,11 @@ public class QrConfParams implements QrConf {
         return frameColor;
     }
 
+    @Override
+    public String getFileType() {
+        return fileType;
+    }
+
     public void setWidth(int width) {
         this.width = width;
     }
@@ -97,6 +107,10 @@ public class QrConfParams implements QrConf {
         this.frameColor = frameColor;
     }
 
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
     @Override
     public String toString() {
         return "QrConfParams{" +
@@ -107,6 +121,7 @@ public class QrConfParams implements QrConf {
                 ", strokesWidth=" + strokesWidth +
                 ", logoFrameColor=" + logoFrameColor +
                 ", frameColor=" + frameColor +
+                ", fileType=" + fileType +
                 '}';
     }
 

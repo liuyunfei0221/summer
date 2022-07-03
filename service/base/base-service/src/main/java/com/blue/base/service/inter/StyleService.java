@@ -93,7 +93,7 @@ public interface StyleService {
      * @param isActive
      * @return
      */
-    List<Style> selectByTypeAndActive(Integer styleType, Boolean isActive);
+    List<Style> selectStyleByTypeAndActive(Integer styleType, Boolean isActive);
 
     /**
      * get active style

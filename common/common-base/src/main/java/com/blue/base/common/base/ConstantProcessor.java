@@ -9,7 +9,6 @@ import com.blue.base.constant.auth.DeviceType;
 import com.blue.base.constant.auth.ResourceType;
 import com.blue.base.constant.common.*;
 import com.blue.base.constant.media.AttachmentType;
-import com.blue.base.constant.media.QrCodeType;
 import com.blue.base.constant.member.ChineseZodiac;
 import com.blue.base.constant.member.Gender;
 import com.blue.base.constant.member.SourceType;
@@ -80,12 +79,6 @@ public final class ConstantProcessor {
      */
     private static final Map<Integer, AttachmentType> ATTACHMENT_TYPE_MAPPING =
             of(AttachmentType.values()).collect(toMap(at -> at.identity, at -> at));
-
-    /**
-     * qr code type identity and qr code type mapping
-     */
-    private static final Map<Integer, QrCodeType> QR_CEDE_TYPE_MAPPING =
-            of(QrCodeType.values()).collect(toMap(qct -> qct.identity, at -> at));
 
     /**
      * valid resource type identity and type mapping
@@ -271,20 +264,6 @@ public final class ConstantProcessor {
             return;
 
         if (!ATTACHMENT_TYPE_MAPPING.containsKey(identity))
-            throw new BlueException(INVALID_IDENTITY);
-    }
-
-    /**
-     * assert qr code type
-     *
-     * @param identity
-     * @return
-     */
-    public static void assertQrCodeType(Integer identity, boolean nullable) {
-        if (nullable && isNull(identity))
-            return;
-
-        if (!QR_CEDE_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -630,23 +609,6 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         return attachmentType;
-    }
-
-    /**
-     * get qr code type by attachment identity
-     *
-     * @param identity
-     * @return
-     */
-    public static QrCodeType getQrCodeTypeByIdentity(Integer identity) {
-        if (isNull(identity))
-            throw new BlueException(INVALID_IDENTITY);
-
-        QrCodeType qrCodeType = QR_CEDE_TYPE_MAPPING.get(identity);
-        if (isNull(qrCodeType))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return qrCodeType;
     }
 
     /**
