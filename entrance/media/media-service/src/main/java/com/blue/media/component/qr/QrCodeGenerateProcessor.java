@@ -21,7 +21,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * verify processor
+ * qr code stream generate processor
  *
  * @author liuyunfei
  */
