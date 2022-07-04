@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.common.base.ConstantProcessor.assertBulletinType;
+import static com.blue.base.common.base.ConstantProcessor.assertQrCodeGenType;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
@@ -22,12 +22,17 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
 
     private String name;
 
+    private String description;
+
     /**
-     * qr code type
-     *
-     * @see com.blue.base.constant.media.QrCodeType
+     * unique qr code type
      */
     private Integer type;
+
+    /**
+     * @see com.blue.base.constant.media.QrCodeGenType
+     */
+    private Integer genHandlerType;
 
     private String domain;
 
@@ -35,33 +40,31 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
 
     private Integer placeholderCount;
 
-    private String fileType;
-
     public QrCodeConfigInsertParam() {
     }
 
-    public QrCodeConfigInsertParam(String name, Integer type, String domain, String pathToBeFilled, Integer placeholderCount, String fileType) {
+    public QrCodeConfigInsertParam(String name, String description, Integer type, String domain, String pathToBeFilled, Integer placeholderCount) {
         this.name = name;
+        this.description = description;
         this.type = type;
         this.domain = domain;
         this.pathToBeFilled = pathToBeFilled;
         this.placeholderCount = placeholderCount;
-        this.fileType = fileType;
     }
 
     @Override
     public void asserts() {
         if (isBlank(this.name))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid name");
-        assertBulletinType(this.type, false);
+        if (isBlank(this.description))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid description");
+        assertQrCodeGenType(this.genHandlerType, false);
         if (isBlank(this.domain))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid domain");
         if (isBlank(this.pathToBeFilled))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid pathToBeFilled");
         if (isNull(this.placeholderCount) || placeholderCount < 0)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid attributes");
-        if (isBlank(this.fileType))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid fileType");
     }
 
     public String getName() {
@@ -72,12 +75,28 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Integer getType() {
         return type;
     }
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Integer getGenHandlerType() {
+        return genHandlerType;
+    }
+
+    public void setGenHandlerType(Integer genHandlerType) {
+        this.genHandlerType = genHandlerType;
     }
 
     public String getDomain() {
@@ -104,23 +123,16 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
         this.placeholderCount = placeholderCount;
     }
 
-    public String getFileType() {
-        return fileType;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
-
     @Override
     public String toString() {
         return "QrCodeConfigInsertParam{" +
                 "name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 ", type=" + type +
+                ", genHandlerType=" + genHandlerType +
                 ", domain='" + domain + '\'' +
                 ", pathToBeFilled='" + pathToBeFilled + '\'' +
                 ", placeholderCount=" + placeholderCount +
-                ", fileType='" + fileType + '\'' +
                 '}';
     }
 

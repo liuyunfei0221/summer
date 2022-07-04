@@ -21,9 +21,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.blue.base.common.base.BlueChecker.isBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.google.zxing.BarcodeFormat.QR_CODE;
 import static com.google.zxing.DecodeHintType.PURE_BARCODE;
 import static com.google.zxing.EncodeHintType.ERROR_CORRECTION;
@@ -78,10 +78,11 @@ public final class QrCoder {
     private final Color frameColor;
     private final String fileType;
 
+    public QrCoder(QrConf conf) {
+        confAssert(conf);
 
-    public QrCoder(QrConf qrConf) {
-        this.width = qrConf.getWidth();
-        this.height = qrConf.getHeight();
+        this.width = conf.getWidth();
+        this.height = conf.getHeight();
 
         this.logoRoundX = width / 5 * 2;
         this.logoRoundY = height / 5 * 2;
@@ -89,13 +90,13 @@ public final class QrCoder {
         this.logoRoundHeight = height / 5;
 
         this.logoRound = new RoundRectangle2D.Float(logoRoundX, logoRoundY, logoRoundWidth, logoRoundHeight, LOGO_AND_FRAME_ROUND_ARCW, LOGO_AND_FRAME_ROUND_ARCH);
-        this.matrixToImageConfig = new MatrixToImageConfig(qrConf.getOnColor(), qrConf.getOffColor());
+        this.matrixToImageConfig = new MatrixToImageConfig(conf.getOnColor(), conf.getOffColor());
         this.frameRound =
                 new RoundRectangle2D.Float(logoRoundX + 2, logoRoundY + 2, logoRoundWidth - 4, logoRoundHeight - 4, LOGO_AND_FRAME_ROUND_ARCW, LOGO_AND_FRAME_ROUND_ARCH);
-        this.frameColor = qrConf.getFrameColor();
-        this.stroke = new BasicStroke(qrConf.getStrokesWidth(), CAP_ROUND, JOIN_ROUND);
-        this.logoFrameColor = qrConf.getLogoFrameColor();
-        this.fileType = qrConf.getFileType();
+        this.frameColor = conf.getFrameColor();
+        this.stroke = new BasicStroke(conf.getStrokesWidth(), CAP_ROUND, JOIN_ROUND);
+        this.logoFrameColor = conf.getLogoFrameColor();
+        this.fileType = conf.getFileType();
     }
 
     /**
@@ -128,7 +129,7 @@ public final class QrCoder {
      * @return
      */
     public byte[] generateCodeWithoutLogo(String content) {
-        if (isNull(content) || EMPTY_DATA.value.equals(content))
+        if (isBlank(content))
             throw new BlueException(BAD_REQUEST);
 
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -153,7 +154,7 @@ public final class QrCoder {
      * @return
      */
     public byte[] generateCodeWithLogo(String content, byte[] logoData) {
-        if (isNull(content) || EMPTY_DATA.value.equals(content))
+        if (isBlank(content))
             throw new BlueException(BAD_REQUEST);
 
         if (isNull(logoData) || logoData.length < 1)
@@ -191,7 +192,33 @@ public final class QrCoder {
             LOGGER.error("generateCodeWithLogo(String content, byte[] logoData), e = ", e);
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "parse data failed");
         }
+    }
 
+    /**
+     * assert conf
+     *
+     * @param conf
+     */
+    private static void confAssert(QrConf conf) {
+        if (isNull(conf))
+            throw new RuntimeException("conf can't be null");
+
+        if (conf.getWidth() < 1)
+            throw new RuntimeException("width can't be less than 1");
+        if (conf.getHeight() < 1)
+            throw new RuntimeException("height can't be less than 1");
+        if (conf.getOnColor() < 1)
+            throw new RuntimeException("onColor can't be less than 1");
+        if (conf.getOffColor() < 1)
+            throw new RuntimeException("offColor can't be less than 1");
+        if (conf.getStrokesWidth() < 1)
+            throw new RuntimeException("offColor can't be less than 1");
+        if (isNull(conf.getLogoFrameColor()))
+            throw new RuntimeException("logoFrameColor can't be null");
+        if (isNull(conf.getFrameColor()))
+            throw new RuntimeException("frameColor can't be null");
+        if (isBlank(conf.getFileType()))
+            throw new RuntimeException("fileType can't be blank");
     }
 
 }

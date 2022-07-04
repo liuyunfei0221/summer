@@ -23,9 +23,29 @@ public enum ColumnName {
     NAME("name"),
 
     /**
+     * description
+     */
+    DESCRIPTION("description"),
+
+    /**
+     * domain
+     */
+    DOMAIN("domain"),
+
+    /**
+     * pathToBeFilled
+     */
+    PATH_TO_BE_FILLED("pathToBeFilled"),
+
+    /**
      * create time
      */
-    CREATE_TIME("createTime");
+    CREATE_TIME("createTime"),
+
+    /**
+     * update time
+     */
+    UPDATE_TIME("updateTime");
 
     public final String name;
 

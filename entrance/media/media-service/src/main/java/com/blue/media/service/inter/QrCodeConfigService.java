@@ -8,6 +8,7 @@ import com.blue.media.model.QrCodeCondition;
 import com.blue.media.model.QrCodeConfigInsertParam;
 import com.blue.media.model.QrCodeConfigUpdateParam;
 import com.blue.media.repository.entity.QrCodeConfig;
+import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public interface QrCodeConfigService {
      * @param operatorId
      * @return
      */
-    QrCodeConfigInfo insertQrCodeConfig(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId);
+    Mono<QrCodeConfigInfo> insertQrCodeConfig(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId);
 
     /**
      * update qr code config
@@ -37,7 +38,7 @@ public interface QrCodeConfigService {
      * @param operatorId
      * @return
      */
-    QrCodeConfigInfo updateQrCodeConfig(QrCodeConfigUpdateParam qrCodeConfigUpdateParam, Long operatorId);
+    Mono<QrCodeConfigInfo> updateQrCodeConfig(QrCodeConfigUpdateParam qrCodeConfigUpdateParam, Long operatorId);
 
     /**
      * delete config
@@ -45,7 +46,7 @@ public interface QrCodeConfigService {
      * @param id
      * @return
      */
-    QrCodeConfigInfo deleteQrCodeConfig(Long id);
+    Mono<QrCodeConfigInfo> deleteQrCodeConfig(Long id);
 
     /**
      * get config by id
@@ -61,7 +62,7 @@ public interface QrCodeConfigService {
      * @param id
      * @return
      */
-    Mono<Optional<QrCodeConfig>> getQrCodeConfigMono(Long id);
+    Mono<QrCodeConfig> getQrCodeConfigMono(Long id);
 
     /**
      * select all config
@@ -71,38 +72,38 @@ public interface QrCodeConfigService {
     Mono<List<QrCodeConfig>> selectQrCodeConfig();
 
     /**
-     * list config by type and active
+     * get config by type
      *
-     * @param configType
+     * @param type
      * @return
      */
-    List<QrCodeConfig> selectQrCodeConfigByType(Integer configType);
+    Optional<QrCodeConfigInfo> getQrCodeConfigInfoByType(Integer type);
 
     /**
-     * get active config
+     * get config mono by type
      *
-     * @param configType
+     * @param type
      * @return
      */
-    Mono<QrCodeConfigInfo> getQrCodeConfigInfoMonoByTypeWithCache(Integer configType);
+    Mono<QrCodeConfigInfo> getQrCodeConfigInfoMonoByType(Integer type);
 
     /**
-     * select config by page and condition
+     * select config by page and query
      *
      * @param limit
      * @param rows
-     * @param qrCodeCondition
+     * @param query
      * @return
      */
-    Mono<List<QrCodeConfig>> selectQrCodeConfigMonoByLimitAndCondition(Long limit, Long rows, QrCodeCondition qrCodeCondition);
+    Mono<List<QrCodeConfig>> selectQrCodeConfigMonoByLimitAndCondition(Long limit, Long rows, Query query);
 
     /**
-     * count config by condition
+     * count config by query
      *
-     * @param qrCodeCondition
+     * @param query
      * @return
      */
-    Mono<Long> countQrCodeConfigMonoByCondition(QrCodeCondition qrCodeCondition);
+    Mono<Long> countQrCodeConfigMonoByCondition(Query query);
 
     /**
      * select config manager info page by condition

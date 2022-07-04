@@ -19,22 +19,25 @@ public final class QrCodeCondition extends SortCondition implements Serializable
 
     private Long id;
 
-    private String name;
+    private String nameLike;
+
+    private String descriptionLike;
 
     /**
-     * qr code type
-     *
-     * @see com.blue.base.constant.media.QrCodeType
+     * unique qr code type
      */
     private Integer type;
 
-    private String domain;
+    /**
+     * @see com.blue.base.constant.media.QrCodeGenType
+     */
+    private Integer genHandlerType;
 
-    private String pathToBeFilled;
+    private String domainLike;
+
+    private String pathToBeFilledLike;
 
     private Integer placeholderCount;
-
-    private String fileType;
 
     private Integer status;
 
@@ -58,16 +61,19 @@ public final class QrCodeCondition extends SortCondition implements Serializable
         super(sortAttribute, sortType);
     }
 
-    public QrCodeCondition(Long id, String name, Integer type, String domain, String pathToBeFilled, Integer placeholderCount, String fileType, Integer status,
-                           Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, Long creator, Long updater, String sortAttribute, String sortType) {
+    public QrCodeCondition(Long id, String nameLike, String descriptionLike, Integer type, Integer genHandlerType,
+                           String domainLike, String pathToBeFilledLike, Integer placeholderCount, Integer status,
+                           Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, Long creator, Long updater,
+                           String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
-        this.name = name;
+        this.nameLike = nameLike;
+        this.descriptionLike = descriptionLike;
         this.type = type;
-        this.domain = domain;
-        this.pathToBeFilled = pathToBeFilled;
+        this.genHandlerType = genHandlerType;
+        this.domainLike = domainLike;
+        this.pathToBeFilledLike = pathToBeFilledLike;
         this.placeholderCount = placeholderCount;
-        this.fileType = fileType;
         this.status = status;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
@@ -85,12 +91,20 @@ public final class QrCodeCondition extends SortCondition implements Serializable
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNameLike() {
+        return nameLike;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNameLike(String nameLike) {
+        this.nameLike = nameLike;
+    }
+
+    public String getDescriptionLike() {
+        return descriptionLike;
+    }
+
+    public void setDescriptionLike(String descriptionLike) {
+        this.descriptionLike = descriptionLike;
     }
 
     public Integer getType() {
@@ -101,20 +115,28 @@ public final class QrCodeCondition extends SortCondition implements Serializable
         this.type = type;
     }
 
-    public String getDomain() {
-        return domain;
+    public Integer getGenHandlerType() {
+        return genHandlerType;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setGenHandlerType(Integer genHandlerType) {
+        this.genHandlerType = genHandlerType;
     }
 
-    public String getPathToBeFilled() {
-        return pathToBeFilled;
+    public String getDomainLike() {
+        return domainLike;
     }
 
-    public void setPathToBeFilled(String pathToBeFilled) {
-        this.pathToBeFilled = pathToBeFilled;
+    public void setDomainLike(String domainLike) {
+        this.domainLike = domainLike;
+    }
+
+    public String getPathToBeFilledLike() {
+        return pathToBeFilledLike;
+    }
+
+    public void setPathToBeFilledLike(String pathToBeFilledLike) {
+        this.pathToBeFilledLike = pathToBeFilledLike;
     }
 
     public Integer getPlaceholderCount() {
@@ -123,14 +145,6 @@ public final class QrCodeCondition extends SortCondition implements Serializable
 
     public void setPlaceholderCount(Integer placeholderCount) {
         this.placeholderCount = placeholderCount;
-    }
-
-    public String getFileType() {
-        return fileType;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
     }
 
     public Integer getStatus() {
@@ -193,12 +207,13 @@ public final class QrCodeCondition extends SortCondition implements Serializable
     public String toString() {
         return "QrCodeCondition{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", nameLike='" + nameLike + '\'' +
+                ", descriptionLike='" + descriptionLike + '\'' +
                 ", type=" + type +
-                ", domain='" + domain + '\'' +
-                ", pathToBeFilled='" + pathToBeFilled + '\'' +
+                ", genHandlerType=" + genHandlerType +
+                ", domainLike='" + domainLike + '\'' +
+                ", pathToBeFilledLike='" + pathToBeFilledLike + '\'' +
                 ", placeholderCount=" + placeholderCount +
-                ", fileType='" + fileType + '\'' +
                 ", status=" + status +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
@@ -210,4 +225,5 @@ public final class QrCodeCondition extends SortCondition implements Serializable
                 ", sortType='" + sortType + '\'' +
                 '}';
     }
+
 }

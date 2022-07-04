@@ -9,6 +9,7 @@ import com.blue.base.constant.auth.DeviceType;
 import com.blue.base.constant.auth.ResourceType;
 import com.blue.base.constant.common.*;
 import com.blue.base.constant.media.AttachmentType;
+import com.blue.base.constant.media.QrCodeGenType;
 import com.blue.base.constant.member.ChineseZodiac;
 import com.blue.base.constant.member.Gender;
 import com.blue.base.constant.member.SourceType;
@@ -66,19 +67,26 @@ public final class ConstantProcessor {
      * media type identity and media mapping
      */
     private static final Map<String, MediaType> MEDIA_TYPE_MAPPING =
-            of(BlueMediaType.values()).collect(toMap(bmt -> bmt.identity.toLowerCase(), bmt -> bmt.mediaType));
+            of(BlueMediaType.values()).collect(toMap(t -> t.identity.toLowerCase(), t -> t.mediaType));
 
     /**
      * file type identity and media mapping
      */
     private static final Map<String, MediaType> FILE_MEDIA_TYPE_MAPPING =
-            of(BlueFileType.values()).collect(toMap(bft -> bft.identity.toLowerCase(), bft -> bft.mediaType));
+            of(BlueFileType.values()).collect(toMap(t -> t.identity.toLowerCase(), t -> t.mediaType));
 
     /**
      * attachment type identity and attachment type mapping
      */
     private static final Map<Integer, AttachmentType> ATTACHMENT_TYPE_MAPPING =
-            of(AttachmentType.values()).collect(toMap(at -> at.identity, at -> at));
+            of(AttachmentType.values()).collect(toMap(t -> t.identity, at -> at));
+
+    /**
+     * qr code generator type identity and qr code generator type mapping
+     */
+    private static final Map<Integer, QrCodeGenType> QR_CODE_GEN_TYPE_MAPPING =
+            of(QrCodeGenType.values()).collect(toMap(t -> t.identity, t -> t));
+
 
     /**
      * valid resource type identity and type mapping
@@ -264,6 +272,20 @@ public final class ConstantProcessor {
             return;
 
         if (!ATTACHMENT_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert qr code generator type
+     *
+     * @param identity
+     * @return
+     */
+    public static void assertQrCodeGenType(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!QR_CODE_GEN_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -609,6 +631,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         return attachmentType;
+    }
+
+    /**
+     * get qr code generator type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static QrCodeGenType getQrCodeGenTypeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        QrCodeGenType qrCodeGenType = QR_CODE_GEN_TYPE_MAPPING.get(identity);
+        if (isNull(qrCodeGenType))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return qrCodeGenType;
     }
 
     /**

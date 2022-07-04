@@ -1,12 +1,10 @@
 package com.blue.media.converter;
 
 import com.blue.base.model.exps.BlueException;
-import com.blue.media.api.model.AttachmentDetailInfo;
-import com.blue.media.api.model.AttachmentInfo;
-import com.blue.media.api.model.AttachmentUploadInfo;
-import com.blue.media.api.model.DownloadHistoryInfo;
+import com.blue.media.api.model.*;
 import com.blue.media.repository.entity.Attachment;
 import com.blue.media.repository.entity.DownloadHistory;
+import com.blue.media.repository.entity.QrCodeConfig;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -80,6 +78,36 @@ public final class MediaModelConverters {
 
         return new DownloadHistoryInfo(downloadHistory.getId(), downloadHistory.getAttachmentId(), isNotBlank(attachmentName) ? attachmentName : EMPTY_DATA.value, downloadHistory.getCreateTime(),
                 downloadHistory.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value);
+    }
+
+    /**
+     * qr code config -> qr code config info
+     */
+    public static final Function<QrCodeConfig, QrCodeConfigInfo> QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER = qrCodeConfig -> {
+        if (isNull(qrCodeConfig))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new QrCodeConfigInfo(qrCodeConfig.getId(), qrCodeConfig.getName(), qrCodeConfig.getDescription(), qrCodeConfig.getType(), qrCodeConfig.getGenHandlerType(),
+                qrCodeConfig.getDomain(), qrCodeConfig.getPathToBeFilled(), qrCodeConfig.getPlaceholderCount(), qrCodeConfig.getAllowedRoles(), qrCodeConfig.getStatus());
+    };
+
+    /**
+     * config -> config manager indo
+     *
+     * @param qrCodeConfig
+     * @param creatorName
+     * @param updaterName
+     * @return
+     */
+    public static QrCodeConfigManagerInfo qrCodeConfigToQrCodeConfigManagerInfo(QrCodeConfig qrCodeConfig, String creatorName, String updaterName) {
+        if (isNull(qrCodeConfig))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new QrCodeConfigManagerInfo(
+                qrCodeConfig.getId(), qrCodeConfig.getName(), qrCodeConfig.getDescription(), qrCodeConfig.getType(), qrCodeConfig.getGenHandlerType(),
+                qrCodeConfig.getDomain(), qrCodeConfig.getPathToBeFilled(), qrCodeConfig.getPlaceholderCount(), qrCodeConfig.getAllowedRoles(), qrCodeConfig.getStatus(),
+                qrCodeConfig.getCreateTime(), qrCodeConfig.getUpdateTime(), qrCodeConfig.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value,
+                qrCodeConfig.getUpdater(), isNotBlank(updaterName) ? updaterName : EMPTY_DATA.value);
     }
 
 }

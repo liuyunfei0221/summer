@@ -2,6 +2,7 @@ package com.blue.media.api.model;
 
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * qr code config info
@@ -17,10 +18,17 @@ public final class QrCodeConfigManagerInfo implements Serializable {
 
     private String name;
 
+    private String description;
+
     /**
-     * qr code type
+     * unique qr code type
      */
     private Integer type;
+
+    /**
+     * @see com.blue.base.constant.media.QrCodeGenType
+     */
+    private Integer genHandlerType;
 
     private String domain;
 
@@ -28,9 +36,48 @@ public final class QrCodeConfigManagerInfo implements Serializable {
 
     private Integer placeholderCount;
 
-    private String fileType;
+    /**
+     * allowed role ids
+     */
+    private List<Long> allowedRoles;
 
     private Integer status;
+
+    private Long createTime;
+
+    private Long updateTime;
+
+    private Long creator;
+
+    private String creatorName;
+
+    private Long updater;
+
+    private String updaterName;
+
+    public QrCodeConfigManagerInfo() {
+    }
+
+    public QrCodeConfigManagerInfo(Long id, String name, String description, Integer type, Integer genHandlerType, String domain, String pathToBeFilled,
+                                   Integer placeholderCount, List<Long> allowedRoles, Integer status, Long createTime, Long updateTime,
+                                   Long creator, String creatorName, Long updater, String updaterName) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.genHandlerType = genHandlerType;
+        this.domain = domain;
+        this.pathToBeFilled = pathToBeFilled;
+        this.placeholderCount = placeholderCount;
+        this.allowedRoles = allowedRoles;
+        this.status = status;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.creator = creator;
+        this.creatorName = creatorName;
+        this.updater = updater;
+        this.updaterName = updaterName;
+    }
 
     public Long getId() {
         return id;
@@ -48,12 +95,28 @@ public final class QrCodeConfigManagerInfo implements Serializable {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Integer getType() {
         return type;
     }
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Integer getGenHandlerType() {
+        return genHandlerType;
+    }
+
+    public void setGenHandlerType(Integer genHandlerType) {
+        this.genHandlerType = genHandlerType;
     }
 
     public String getDomain() {
@@ -80,12 +143,12 @@ public final class QrCodeConfigManagerInfo implements Serializable {
         this.placeholderCount = placeholderCount;
     }
 
-    public String getFileType() {
-        return fileType;
+    public List<Long> getAllowedRoles() {
+        return allowedRoles;
     }
 
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
+    public void setAllowedRoles(List<Long> allowedRoles) {
+        this.allowedRoles = allowedRoles;
     }
 
     public Integer getStatus() {
@@ -96,17 +159,73 @@ public final class QrCodeConfigManagerInfo implements Serializable {
         this.status = status;
     }
 
+    public Long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
+    }
+
+    public Long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Long updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Long getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Long creator) {
+        this.creator = creator;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public Long getUpdater() {
+        return updater;
+    }
+
+    public void setUpdater(Long updater) {
+        this.updater = updater;
+    }
+
+    public String getUpdaterName() {
+        return updaterName;
+    }
+
+    public void setUpdaterName(String updaterName) {
+        this.updaterName = updaterName;
+    }
+
     @Override
     public String toString() {
-        return "QrCodeConfigInfo{" +
+        return "QrCodeConfigManagerInfo{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 ", type=" + type +
+                ", genHandlerType=" + genHandlerType +
                 ", domain='" + domain + '\'' +
                 ", pathToBeFilled='" + pathToBeFilled + '\'' +
                 ", placeholderCount=" + placeholderCount +
-                ", fileType='" + fileType + '\'' +
+                ", allowedRoles=" + allowedRoles +
                 ", status=" + status +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", creator=" + creator +
+                ", creatorName='" + creatorName + '\'' +
+                ", updater=" + updater +
+                ", updaterName='" + updaterName + '\'' +
                 '}';
     }
 

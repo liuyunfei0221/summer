@@ -4,6 +4,7 @@ package com.blue.media.repository.entity;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * qr code config
@@ -20,16 +21,28 @@ public final class QrCodeConfig implements Serializable {
 
     private String name;
 
+    private String description;
+
     /**
      * unique qr code type
      */
     private Integer type;
+
+    /**
+     * @see com.blue.base.constant.media.QrCodeGenType
+     */
+    private Integer genHandlerType;
 
     private String domain;
 
     private String pathToBeFilled;
 
     private Integer placeholderCount;
+
+    /**
+     * allowed role ids
+     */
+    private List<Long> allowedRoles;
 
     private Integer status;
 
@@ -57,12 +70,28 @@ public final class QrCodeConfig implements Serializable {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Integer getType() {
         return type;
     }
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Integer getGenHandlerType() {
+        return genHandlerType;
+    }
+
+    public void setGenHandlerType(Integer genHandlerType) {
+        this.genHandlerType = genHandlerType;
     }
 
     public String getDomain() {
@@ -87,6 +116,14 @@ public final class QrCodeConfig implements Serializable {
 
     public void setPlaceholderCount(Integer placeholderCount) {
         this.placeholderCount = placeholderCount;
+    }
+
+    public List<Long> getAllowedRoles() {
+        return allowedRoles;
+    }
+
+    public void setAllowedRoles(List<Long> allowedRoles) {
+        this.allowedRoles = allowedRoles;
     }
 
     public Integer getStatus() {
@@ -134,10 +171,13 @@ public final class QrCodeConfig implements Serializable {
         return "QrCodeConfig{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 ", type=" + type +
+                ", genHandlerType=" + genHandlerType +
                 ", domain='" + domain + '\'' +
                 ", pathToBeFilled='" + pathToBeFilled + '\'' +
                 ", placeholderCount=" + placeholderCount +
+                ", allowedRoles=" + allowedRoles +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
@@ -145,5 +185,5 @@ public final class QrCodeConfig implements Serializable {
                 ", updater=" + updater +
                 '}';
     }
-
+    
 }
