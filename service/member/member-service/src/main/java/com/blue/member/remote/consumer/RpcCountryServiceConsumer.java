@@ -69,7 +69,7 @@ public class RpcCountryServiceConsumer {
      * @return
      */
     public Mono<CountryInfo> getCountryInfoMonoById(Long id) {
-        return fromFuture(rpcCountryService.getCountryInfoMonoById(id)).subscribeOn(scheduler);
+        return fromFuture(rpcCountryService.getCountryInfoMonoById(id)).publishOn(scheduler);
     }
 
     /**
@@ -87,7 +87,7 @@ public class RpcCountryServiceConsumer {
      * @return
      */
     public Mono<List<CountryInfo>> selectCountryInfoMono() {
-        return fromFuture(rpcCountryService.selectCountryInfoMono()).subscribeOn(scheduler);
+        return fromFuture(rpcCountryService.selectCountryInfoMono()).publishOn(scheduler);
     }
 
     /**
@@ -107,7 +107,7 @@ public class RpcCountryServiceConsumer {
      * @return
      */
     public Mono<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids) {
-        return fromFuture(rpcCountryService.selectCountryInfoMonoByIds(ids)).subscribeOn(scheduler);
+        return fromFuture(rpcCountryService.selectCountryInfoMonoByIds(ids)).publishOn(scheduler);
     }
 
 }

@@ -98,7 +98,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         probe.setType(param.getType());
         probe.setName(param.getName());
 
-        if (ofNullable(qrCodeConfigRepository.count(Example.of(probe)).subscribeOn(scheduler).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(qrCodeConfigRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(DATA_ALREADY_EXIST);
     };
 
@@ -145,13 +145,13 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         probe.setType(param.getType());
 
         List<QrCodeConfig> configs = ofNullable(qrCodeConfigRepository.findAll(Example.of(probe)).collectList()
-                .subscribeOn(scheduler).toFuture().join())
+                .publishOn(scheduler).toFuture().join())
                 .orElseGet(Collections::emptyList);
 
         if (configs.stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
 
-        QrCodeConfig qrCodeConfig = qrCodeConfigRepository.findById(id).subscribeOn(scheduler).toFuture().join();
+        QrCodeConfig qrCodeConfig = qrCodeConfigRepository.findById(id).publishOn(scheduler).toFuture().join();
         if (isNull(qrCodeConfig))
             throw new BlueException(DATA_NOT_EXIST);
 
@@ -301,8 +301,8 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         QrCodeConfig qrCodeConfig = CONFIG_INSERT_PARAM_2_CONFIG_CONVERTER.apply(qrCodeConfigInsertParam, operatorId);
 
         return qrCodeConfigRepository.insert(qrCodeConfig)
-                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER)
-                .subscribeOn(scheduler);
+                .publishOn(scheduler)
+                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
     }
 
     /**
@@ -324,8 +324,8 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
         return qrCodeConfigRepository.save(qrCodeConfig)
-                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER)
-                .subscribeOn(scheduler);
+                .publishOn(scheduler)
+                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
     }
 
     /**
@@ -341,10 +341,10 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
             throw new BlueException(INVALID_IDENTITY);
 
         return qrCodeConfigRepository.findById(id)
+                .publishOn(scheduler)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(config -> qrCodeConfigRepository.delete(config).then(just(config)))
-                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER)
-                .subscribeOn(scheduler);
+                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
     }
 
     /**
@@ -357,7 +357,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     public Optional<QrCodeConfig> getQrCodeConfig(Long id) {
         LOGGER.info("Optional<QrCodeConfig> getQrCodeConfig(Long id), id = {}", id);
 
-        return ofNullable(qrCodeConfigRepository.findById(id).subscribeOn(scheduler).toFuture().join());
+        return ofNullable(qrCodeConfigRepository.findById(id).publishOn(scheduler).toFuture().join());
     }
 
     /**
@@ -370,7 +370,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     public Mono<QrCodeConfig> getQrCodeConfigMono(Long id) {
         LOGGER.info("Mono<QrCodeConfig> getQrCodeConfigMono(Long id), id = {}", id);
 
-        return qrCodeConfigRepository.findById(id).subscribeOn(scheduler);
+        return qrCodeConfigRepository.findById(id).publishOn(scheduler);
     }
 
     /**
@@ -382,7 +382,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     public Mono<List<QrCodeConfig>> selectQrCodeConfig() {
         LOGGER.info("Mono<List<QrCodeConfig>> selectQrCodeConfig()");
 
-        return qrCodeConfigRepository.findAll().collectList();
+        return qrCodeConfigRepository.findAll().publishOn(scheduler).collectList();
     }
 
     /**
@@ -398,7 +398,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         QrCodeConfig probe = new QrCodeConfig();
         probe.setType(ofNullable(type).orElseThrow(() -> new BlueException(BAD_REQUEST)));
 
-        return ofNullable(qrCodeConfigRepository.findOne(Example.of(probe)).subscribeOn(scheduler).toFuture().join()).map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
+        return ofNullable(qrCodeConfigRepository.findOne(Example.of(probe)).publishOn(scheduler).toFuture().join()).map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
     }
 
     /**
@@ -415,9 +415,9 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         probe.setType(ofNullable(type).orElseThrow(() -> new BlueException(BAD_REQUEST)));
 
         return qrCodeConfigRepository.findOne(Example.of(probe))
+                .publishOn(scheduler)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER)
-                .subscribeOn(scheduler);
+                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
     }
 
     /**
@@ -439,7 +439,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, QrCodeConfig.class).collectList().subscribeOn(scheduler);
+        return reactiveMongoTemplate.find(listQuery, QrCodeConfig.class).publishOn(scheduler).collectList();
     }
 
     /**
@@ -452,7 +452,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     public Mono<Long> countQrCodeConfigMonoByCondition(Query query) {
         LOGGER.info("Mono<Long> countQrCodeConfigMonoByCondition(Query query), query = {}", query);
 
-        return reactiveMongoTemplate.count(query, QrCodeConfig.class).subscribeOn(scheduler);
+        return reactiveMongoTemplate.count(query, QrCodeConfig.class).publishOn(scheduler);
     }
 
     /**

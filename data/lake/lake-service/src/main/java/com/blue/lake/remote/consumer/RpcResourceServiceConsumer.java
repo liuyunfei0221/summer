@@ -40,7 +40,7 @@ public class RpcResourceServiceConsumer {
      * @return
      */
     public Mono<List<ResourceInfo>> selectResourceInfo() {
-        return fromFuture(rpcResourceService.selectResourceInfo()).subscribeOn(scheduler);
+        return fromFuture(rpcResourceService.selectResourceInfo()).publishOn(scheduler);
     }
 
 }

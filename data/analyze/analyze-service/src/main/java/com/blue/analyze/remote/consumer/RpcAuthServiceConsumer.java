@@ -44,7 +44,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<AccessAsserted> assertAccess(AccessAssert accessAssert) {
-        return fromFuture(rpcAuthService.assertAccess(accessAssert)).subscribeOn(scheduler);
+        return fromFuture(rpcAuthService.assertAccess(accessAssert)).publishOn(scheduler);
     }
 
     /**
@@ -54,7 +54,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<Boolean> invalidateAuthByAccess(Access access) {
-        return fromFuture(rpcAuthService.invalidateAuthByAccess(access)).subscribeOn(scheduler);
+        return fromFuture(rpcAuthService.invalidateAuthByAccess(access)).publishOn(scheduler);
     }
 
     /**
@@ -64,7 +64,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<Boolean> invalidateAuthByJwt(String jwt) {
-        return fromFuture(rpcAuthService.invalidateAuthByJwt(jwt)).subscribeOn(scheduler);
+        return fromFuture(rpcAuthService.invalidateAuthByJwt(jwt)).publishOn(scheduler);
     }
 
     /**
@@ -74,7 +74,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<Boolean> invalidateAuthByMemberId(Long memberId) {
-        return fromFuture(rpcAuthService.invalidateAuthByMemberId(memberId)).subscribeOn(scheduler);
+        return fromFuture(rpcAuthService.invalidateAuthByMemberId(memberId)).publishOn(scheduler);
     }
 
 }

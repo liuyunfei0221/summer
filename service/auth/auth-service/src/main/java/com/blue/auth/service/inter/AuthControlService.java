@@ -32,7 +32,7 @@ public interface AuthControlService {
      * @param refresh
      * @return
      */
-    Mono<MemberAccess> refreshAccess(String refresh);
+    Mono<MemberAccess> refreshAccessByRefresh(String refresh);
 
     /**
      * logout

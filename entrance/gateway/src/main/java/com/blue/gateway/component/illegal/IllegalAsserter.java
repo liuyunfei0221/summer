@@ -75,21 +75,21 @@ public final class IllegalAsserter {
                 .any(s -> s.equals(ALL_RESOURCE) || s.equals(resKey))
                 .flatMap(b ->
                         b ? just(false)
-                                .subscribeOn(scheduler)
+                                .publishOn(scheduler)
                                 :
                                 this.reactiveStringRedisTemplate
                                         .opsForSet().add(key, resKey)
+                                        .publishOn(scheduler)
                                         .flatMap(l -> this.reactiveStringRedisTemplate.expire(key,
                                                 ofNullable(expiresSecond).map(s -> Duration.of(s, SECONDS))
-                                                        .orElse(defaultIllegalExpireDuration))))
-                .subscribeOn(scheduler);
+                                                        .orElse(defaultIllegalExpireDuration))));
     }
 
     private Mono<Boolean> clearMark(String key, String resKey) {
         return isBlank(resKey) || ALL_RESOURCE.equals(resKey) ?
-                this.reactiveStringRedisTemplate.delete(key).map(l -> l > 0).subscribeOn(scheduler)
+                this.reactiveStringRedisTemplate.delete(key).publishOn(scheduler).map(l -> l > 0)
                 :
-                this.reactiveStringRedisTemplate.opsForSet().remove(key, resKey).map(l -> l > 0).subscribeOn(scheduler);
+                this.reactiveStringRedisTemplate.opsForSet().remove(key, resKey).publishOn(scheduler).map(l -> l > 0);
     }
 
     /**
@@ -137,8 +137,8 @@ public final class IllegalAsserter {
      */
     private final BiFunction<String, String, Mono<Boolean>> KEY_VALIDATOR = (key, res) ->
             this.reactiveStringRedisTemplate.opsForSet()
-                    .members(key).collectList()
-                    .flatMap(s -> RES_VALIDATOR.apply(s, res)).subscribeOn(scheduler);
+                    .members(key).publishOn(scheduler).collectList()
+                    .flatMap(s -> RES_VALIDATOR.apply(s, res));
 
     /**
      * validator

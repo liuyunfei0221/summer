@@ -127,7 +127,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     @Override
     public Mono<DownloadHistory> insertDownloadHistory(DownloadHistory downloadHistory) {
         LOGGER.info("Mono<DownloadHistory> insert(DownloadHistory downloadHistory), downloadHistory = {}", downloadHistory);
-        return downloadHistoryRepository.insert(downloadHistory).subscribeOn(scheduler);
+        return downloadHistoryRepository.insert(downloadHistory).publishOn(scheduler);
     }
 
     /**
@@ -153,7 +153,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return downloadHistoryRepository.findById(id).subscribeOn(scheduler);
+        return downloadHistoryRepository.findById(id).publishOn(scheduler);
     }
 
     /**
@@ -174,8 +174,9 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         probe.setCreator(memberId);
 
         return downloadHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.name)))
+                .publishOn(scheduler)
                 .skip(limit).take(rows)
-                .collectList().subscribeOn(scheduler);
+                .collectList();
     }
 
     /**
@@ -193,7 +194,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         DownloadHistory probe = new DownloadHistory();
         probe.setCreator(memberId);
 
-        return downloadHistoryRepository.count(Example.of(probe)).subscribeOn(scheduler);
+        return downloadHistoryRepository.count(Example.of(probe)).publishOn(scheduler);
     }
 
     /**
@@ -252,7 +253,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, DownloadHistory.class).collectList().subscribeOn(scheduler);
+        return reactiveMongoTemplate.find(listQuery, DownloadHistory.class).publishOn(scheduler).collectList();
     }
 
     /**
@@ -264,7 +265,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     @Override
     public Mono<Long> countDownloadHistoryMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countDownloadHistoryMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, DownloadHistory.class).subscribeOn(scheduler);
+        return reactiveMongoTemplate.count(query, DownloadHistory.class).publishOn(scheduler);
     }
 
     /**

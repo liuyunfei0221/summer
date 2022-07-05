@@ -73,7 +73,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
     @Override
     public CompletableFuture<CountryInfo> getCountryInfoMonoById(Long id) {
         return just(id)
-                .subscribeOn(scheduler)
+                .publishOn(scheduler)
                 .flatMap(countryService::getCountryInfoMonoById)
                 .toFuture();
     }
@@ -96,7 +96,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
     @Override
     public CompletableFuture<List<CountryInfo>> selectCountryInfoMono() {
         return just(true)
-                .subscribeOn(scheduler)
+                .publishOn(scheduler)
                 .flatMap(v -> countryService.selectCountryInfoMono())
                 .toFuture();
     }
@@ -121,7 +121,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
     @Override
     public CompletableFuture<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids) {
         return just(ids)
-                .subscribeOn(scheduler)
+                .publishOn(scheduler)
                 .flatMap(countryService::selectCountryInfoMonoByIds)
                 .toFuture();
     }

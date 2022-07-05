@@ -67,9 +67,9 @@ public final class BlueTokenBucketRateLimiter {
 
         return reactiveStringRedisTemplate.execute(SCRIPT, SCRIPT_KEYS_WRAPPER.apply(limitKey),
                         SCRIPT_ARGS_FUNC.apply(replenishRate, burstCapacity))
+                .publishOn(scheduler)
                 .onErrorResume(FALL_BACKER)
-                .elementAt(0)
-                .subscribeOn(scheduler);
+                .elementAt(0);
     }
 
     /**
@@ -104,7 +104,8 @@ public final class BlueTokenBucketRateLimiter {
      */
     public Mono<Boolean> delete(String key) {
         return isNotBlank(key) ?
-                reactiveStringRedisTemplate.delete(key).flatMap(r -> just(r > 0))
+                reactiveStringRedisTemplate.delete(key)
+                        .publishOn(scheduler).flatMap(r -> just(r > 0))
                 :
                 error(() -> new BlueException(BAD_REQUEST));
     }

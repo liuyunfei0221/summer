@@ -42,7 +42,7 @@ public class RpcRoleServiceConsumer {
      * @return
      */
     public Mono<MemberRoleInfo> selectRoleInfoByMemberId(Long memberId) {
-        return fromFuture(rpcRoleService.selectRoleInfoByMemberId(memberId)).subscribeOn(scheduler);
+        return fromFuture(rpcRoleService.selectRoleInfoByMemberId(memberId)).publishOn(scheduler);
     }
 
     /**
@@ -52,7 +52,7 @@ public class RpcRoleServiceConsumer {
      * @return
      */
     public Mono<List<MemberRoleInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
-        return fromFuture(rpcRoleService.selectRoleInfoByMemberIds(memberIds)).subscribeOn(scheduler);
+        return fromFuture(rpcRoleService.selectRoleInfoByMemberIds(memberIds)).publishOn(scheduler);
     }
 
 }

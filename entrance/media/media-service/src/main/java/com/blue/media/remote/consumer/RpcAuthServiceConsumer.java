@@ -40,7 +40,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<AccessAsserted> assertAccess(AccessAssert accessAssert) {
-        return fromFuture(rpcAuthService.assertAccess(accessAssert)).subscribeOn(scheduler);
+        return fromFuture(rpcAuthService.assertAccess(accessAssert)).publishOn(scheduler);
     }
 
 }

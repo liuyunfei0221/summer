@@ -145,8 +145,9 @@ public class AreaServiceImpl implements AreaService {
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
                         idAreaCache.getAll(l, is -> areaRepository.findAllById(l)
+                                        .publishOn(scheduler)
                                         .flatMap(a -> just(AREA_2_AREA_INFO_CONVERTER.apply(a)))
-                                        .collectList().subscribeOn(scheduler).toFuture().join()
+                                        .collectList().toFuture().join()
                                         .parallelStream()
                                         .collect(toMap(AreaInfo::getId, ci -> ci, (a, b) -> a)))
                                 .entrySet()
@@ -220,7 +221,7 @@ public class AreaServiceImpl implements AreaService {
         probe.setCityId(param.getCityId());
         probe.setName(param.getName());
 
-        if (ofNullable(areaRepository.count(Example.of(probe)).subscribeOn(scheduler).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(areaRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(AREA_ALREADY_EXIST);
     };
 
@@ -266,14 +267,14 @@ public class AreaServiceImpl implements AreaService {
         probe.setCityId(param.getCityId());
         probe.setName(param.getName());
 
-        List<Area> areas = ofNullable(areaRepository.findAll(Example.of(probe)).collectList()
-                .subscribeOn(scheduler).toFuture().join())
+        List<Area> areas = ofNullable(areaRepository.findAll(Example.of(probe)).publishOn(scheduler)
+                .collectList().toFuture().join())
                 .orElseGet(Collections::emptyList);
 
         if (areas.stream().anyMatch(a -> !id.equals(a.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
 
-        Area area = areaRepository.findById(id).subscribeOn(scheduler).toFuture().join();
+        Area area = areaRepository.findById(id).publishOn(scheduler).toFuture().join();
         if (isNull(area))
             throw new BlueException(DATA_NOT_EXIST);
 
@@ -350,11 +351,12 @@ public class AreaServiceImpl implements AreaService {
         Area area = AREA_INSERT_PARAM_2_AREA_CONVERTER.apply(areaInsertParam);
 
         return areaRepository.insert(area)
+                .publishOn(scheduler)
                 .map(AREA_2_AREA_INFO_CONVERTER)
                 .doOnSuccess(ai -> {
                     LOGGER.info("ai = {}", ai);
                     invalidCache();
-                }).subscribeOn(scheduler);
+                });
     }
 
     /**
@@ -374,11 +376,12 @@ public class AreaServiceImpl implements AreaService {
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
         return areaRepository.save(area)
+                .publishOn(scheduler)
                 .map(AREA_2_AREA_INFO_CONVERTER)
                 .doOnSuccess(ai -> {
                     LOGGER.info("ai = {}", ai);
                     invalidCache();
-                }).subscribeOn(scheduler);
+                });
     }
 
     /**
@@ -394,13 +397,15 @@ public class AreaServiceImpl implements AreaService {
             throw new BlueException(INVALID_IDENTITY);
 
         return areaRepository.findById(id)
+                .publishOn(scheduler)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(area -> areaRepository.delete(area)
+                        .publishOn(scheduler)
                         .then(just(AREA_2_AREA_INFO_CONVERTER.apply(area)))
                         .doOnSuccess(ai -> {
                             LOGGER.info("ai = {}", ai);
                             invalidCache();
-                        })).subscribeOn(scheduler);
+                        }));
     }
 
     /**
@@ -421,7 +426,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Optional<Area> getAreaById(Long id) {
-        return ofNullable(areaRepository.findById(id).subscribeOn(scheduler).toFuture().join());
+        return ofNullable(areaRepository.findById(id).publishOn(scheduler).toFuture().join());
     }
 
     /**
@@ -439,7 +444,7 @@ public class AreaServiceImpl implements AreaService {
         probe.setCityId(cityId);
 
         return areaRepository.findAll(Example.of(probe), by(Sort.Order.asc(NAME.name)))
-                .collectList().subscribeOn(scheduler).toFuture().join();
+                .publishOn(scheduler).collectList().toFuture().join();
     }
 
     /**
@@ -458,7 +463,7 @@ public class AreaServiceImpl implements AreaService {
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream()
                 .map(l -> areaRepository.findAllById(l)
-                        .collectList().subscribeOn(scheduler).toFuture().join())
+                        .publishOn(scheduler).collectList().toFuture().join())
                 .flatMap(List::stream)
                 .collect(toList());
     }
@@ -602,7 +607,7 @@ public class AreaServiceImpl implements AreaService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, Area.class).collectList().subscribeOn(scheduler);
+        return reactiveMongoTemplate.find(listQuery, Area.class).publishOn(scheduler).collectList();
     }
 
     /**
@@ -614,7 +619,7 @@ public class AreaServiceImpl implements AreaService {
     @Override
     public Mono<Long> countAreaMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countAreaMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, Area.class).subscribeOn(scheduler);
+        return reactiveMongoTemplate.count(query, Area.class).publishOn(scheduler);
     }
 
     /**

@@ -359,8 +359,8 @@ public class AuthControlServiceImpl implements AuthControlService {
      * @return
      */
     @Override
-    public Mono<MemberAccess> refreshAccess(String refresh) {
-        LOGGER.info("Mono<MemberAccess> refreshAccess(String refresh), refresh = {}", refresh);
+    public Mono<MemberAccess> refreshAccessByRefresh(String refresh) {
+        LOGGER.info("Mono<MemberAccess> refreshAccessByRefresh(String refresh), refresh = {}", refresh);
         return just(jwtProcessor.parse(refresh))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
                 .flatMap(memberPayload ->

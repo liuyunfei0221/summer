@@ -1,6 +1,5 @@
 package com.blue.media.component.qr.impl;
 
-import com.blue.base.constant.common.Symbol;
 import com.blue.base.constant.media.QrCodeGenType;
 import com.blue.base.model.common.Access;
 import com.blue.base.model.exps.BlueException;
@@ -15,6 +14,7 @@ import java.util.stream.Stream;
 
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
+import static com.blue.base.constant.common.Symbol.PATH_SEPARATOR;
 import static com.blue.base.constant.media.QrCodeGenType.USER_INFO;
 import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.just;
@@ -24,7 +24,7 @@ import static reactor.core.publisher.Mono.just;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
 public class MemberInfoQrCodeGenHandler implements QrCodeGenHandler {
 
     private final QrCoder qrCoder;
@@ -53,7 +53,7 @@ public class MemberInfoQrCodeGenHandler implements QrCodeGenHandler {
         String path = String.format(pathToBeFilled, placeholders);
         String domain = qrCodeConfigInfo.getDomain();
 
-        String content = domain + Symbol.PATH_SEPARATOR.identity + path;
+        String content = domain + PATH_SEPARATOR.identity + path;
 
         return just(qrCoder.generateCodeWithoutLogo(content));
     }

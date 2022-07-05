@@ -44,8 +44,8 @@ import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessRea
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.common.BlueBoolean.FALSE;
 import static com.blue.base.constant.common.BlueBoolean.TRUE;
-import static com.blue.base.constant.common.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.base.constant.common.BlueCommonThreshold.DB_WRITE;
+import static com.blue.base.constant.common.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.SpecialPrefix.CONTENT_DISPOSITION_FILE_NAME_PREFIX;
 import static com.blue.base.constant.common.Status.VALID;
@@ -53,6 +53,7 @@ import static com.blue.base.constant.common.Symbol.SCHEME_SEPARATOR;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENTS_2_ATTACHMENT_UPLOAD_INFOS_CONVERTER;
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
@@ -235,34 +236,20 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                     .map(encodedName -> CONTENT_DISPOSITION_FILE_NAME_PREFIX.prefix + encodedName)
                     .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
-    private Mono<List<FileUploadResult>> updateAttachments(List<Part> resources, Integer type, Long memberId) {
-        LOGGER.info("Mono<List<FileUploadResult>> updateAttachments(List<Part> resources,Integer type,Long memberId), resources = {}, type = {}, memberId = {}", resources, type, memberId);
-        assertAttachmentType(type, false);
-
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        if (isEmpty(resources))
-            throw new BlueException(EMPTY_PARAM);
-        if (resources.size() > CURRENT_SIZE_THRESHOLD)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
-
-        return fromIterable(resources)
-                .flatMap(part -> byteProcessor.write(part, type, memberId))
-                .collectList();
-    }
-
     /**
      * upload
      *
-     * @param resources
+     * @param bytes
      * @param type
      * @param memberId
+     * @param originalName
+     * @param descName
      * @return
      */
     @Override
-    public Mono<List<FileUploadResult>> upload(List<Part> resources, Integer type, Long memberId) {
-        return updateAttachments(resources, type, memberId);
+    public Mono<UploadResultSummary> upload(byte[] bytes, Integer type, Long memberId, String originalName, String descName) {
+        return byteProcessor.write(bytes, type, memberId, originalName, descName)
+                .flatMap(fur -> just(ATTACHMENTS_RECORDER.apply(singletonList(fur), memberId)));
     }
 
     /**

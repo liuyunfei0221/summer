@@ -271,6 +271,7 @@ public class CardServiceImpl implements CardService {
                     probe.setMemberId(memberId);
 
                     return cardRepository.count(Example.of(probe))
+                            .publishOn(scheduler)
                             .switchIfEmpty(defer(() -> just(0L)))
                             .flatMap(count -> {
                                 if (count >= MAX_ADDRESS)
@@ -279,8 +280,7 @@ public class CardServiceImpl implements CardService {
                                 return CARD_INSERT_PARAM_2_MEMBER_ADDRESS.apply(cardInsertParam, memberId);
                             })
                             .flatMap(cardRepository::insert)
-                            .flatMap(c -> just(CARD_2_CARD_INFO.apply(c)))
-                            .subscribeOn(scheduler);
+                            .flatMap(c -> just(CARD_2_CARD_INFO.apply(c)));
                 }
         );
     }
@@ -303,6 +303,7 @@ public class CardServiceImpl implements CardService {
 
         return synchronizedProcessor.handleSupWithLock(CARD_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
                 cardRepository.findById(cardUpdateParam.getId())
+                        .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(card -> {
                             if (!card.getMemberId().equals(memberId))
@@ -311,9 +312,7 @@ public class CardServiceImpl implements CardService {
                             return CARD_UPDATE_PARAM_2_MEMBER_ADDRESS.apply(cardUpdateParam, card);
                         })
                         .flatMap(cardRepository::save)
-                        .flatMap(c -> just(CARD_2_CARD_INFO.apply(c)))
-                        .subscribeOn(scheduler)
-        );
+                        .flatMap(c -> just(CARD_2_CARD_INFO.apply(c))));
     }
 
     /**
@@ -333,6 +332,7 @@ public class CardServiceImpl implements CardService {
 
         return synchronizedProcessor.handleSupWithLock(CARD_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
                 cardRepository.findById(id)
+                        .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(card -> {
                             if (!card.getMemberId().equals(memberId))
@@ -341,9 +341,7 @@ public class CardServiceImpl implements CardService {
                             return cardRepository.delete(card)
                                     .then(just(card));
                         })
-                        .flatMap(c -> just(CARD_2_CARD_INFO.apply(c)))
-                        .subscribeOn(scheduler)
-        );
+                        .flatMap(c -> just(CARD_2_CARD_INFO.apply(c))));
     }
 
     /**
@@ -358,7 +356,7 @@ public class CardServiceImpl implements CardService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return cardRepository.findById(id).subscribeOn(scheduler);
+        return cardRepository.findById(id).publishOn(scheduler);
     }
 
     /**
@@ -376,7 +374,7 @@ public class CardServiceImpl implements CardService {
         Card probe = new Card();
         probe.setMemberId(memberId);
 
-        return cardRepository.findAll(Example.of(probe)).collectList().subscribeOn(scheduler);
+        return cardRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList();
     }
 
     /**
@@ -435,11 +433,10 @@ public class CardServiceImpl implements CardService {
             return error(() -> new BlueException(PAYLOAD_TOO_LARGE));
 
         return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
-                .map(shardIds -> cardRepository.findAllById(shardIds)
+                .map(shardIds -> cardRepository.findAllById(shardIds).publishOn(scheduler)
                         .map(CARD_2_CARD_INFO))
                 .reduce(Flux::concat)
-                .flatMap(Flux::collectList)
-                .subscribeOn(scheduler);
+                .flatMap(Flux::collectList);
     }
 
     /**
@@ -460,7 +457,7 @@ public class CardServiceImpl implements CardService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, Card.class).collectList().subscribeOn(scheduler);
+        return reactiveMongoTemplate.find(listQuery, Card.class).publishOn(scheduler).collectList();
     }
 
     /**
@@ -472,7 +469,7 @@ public class CardServiceImpl implements CardService {
     @Override
     public Mono<Long> countCardMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countCardMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, Card.class).subscribeOn(scheduler);
+        return reactiveMongoTemplate.count(query, Card.class).publishOn(scheduler);
     }
 
     /**

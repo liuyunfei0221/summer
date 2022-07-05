@@ -23,6 +23,17 @@ public interface PreAndPostWriteProcessorHandler {
     Mono<Part> preHandle(Part part, Long memberId);
 
     /**
+     * handle part before write
+     *
+     * @param bytes
+     * @param memberId
+     * @param originalName
+     * @param descName
+     * @return
+     */
+    Mono<byte[]> preHandle(byte[] bytes, Long memberId, String originalName, String descName);
+
+    /**
      * handle part after write
      *
      * @param fileUploadResult

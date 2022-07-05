@@ -35,6 +35,21 @@ public class CommonPreAndPostWriteProcessorHandler implements PreAndPostWritePro
     }
 
     /**
+     * handle part before write
+     *
+     * @param bytes
+     * @param memberId
+     * @param originalName
+     * @param descName
+     * @return
+     */
+    @Override
+    public Mono<byte[]> preHandle(byte[] bytes, Long memberId, String originalName, String descName) {
+        LOGGER.info("Mono<byte[]> preHandle(byte[] bytes, Long memberId, String originalName, String descName), memberId = {}, originalName = {}, descName = {}", memberId, originalName, descName);
+        return just(bytes);
+    }
+
+    /**
      * handle part after write
      *
      * @param fileUploadResult

@@ -26,6 +26,18 @@ public interface ByteHandler {
     Mono<FileUploadResult> write(Part part, Integer type, Long memberId);
 
     /**
+     * write
+     *
+     * @param bytes
+     * @param type
+     * @param memberId
+     * @param originalName
+     * @param descName
+     * @return
+     */
+    Mono<FileUploadResult> write(byte[] bytes, Integer type, Long memberId, String originalName, String descName);
+
+    /**
      * read
      *
      * @param link

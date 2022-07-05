@@ -1,12 +1,9 @@
 package com.blue.media.service.inter;
 
-import com.blue.media.api.model.FileUploadResult;
-import org.springframework.http.codec.multipart.Part;
+import com.blue.media.api.model.UploadResultSummary;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 /**
  * byte operate service
@@ -19,12 +16,14 @@ public interface ByteOperateService {
     /**
      * upload
      *
-     * @param resources
+     * @param bytes
      * @param type
      * @param memberId
+     * @param originalName
+     * @param descName
      * @return
      */
-    Mono<List<FileUploadResult>> upload(List<Part> resources, Integer type, Long memberId);
+    Mono<UploadResultSummary> upload(byte[] bytes, Integer type, Long memberId, String originalName, String descName);
 
     /**
      * upload

@@ -138,7 +138,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         if (attachment == null)
             throw new BlueException(EMPTY_PARAM);
 
-        return attachmentRepository.insert(attachment).subscribeOn(scheduler);
+        return attachmentRepository.insert(attachment).publishOn(scheduler);
     }
 
     /**
@@ -154,8 +154,9 @@ public class AttachmentServiceImpl implements AttachmentService {
         return isNotEmpty(attachments) ?
                 fromIterable(allotByMax(attachments, (int) DB_WRITE.value, false))
                         .map(attachmentRepository::saveAll)
+                        .publishOn(scheduler)
                         .reduce(Flux::concat)
-                        .flatMap(Flux::collectList).subscribeOn(scheduler)
+                        .flatMap(Flux::collectList)
                 :
                 just(emptyList());
     }
@@ -172,7 +173,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return attachmentRepository.findById(id).subscribeOn(scheduler);
+        return attachmentRepository.findById(id).publishOn(scheduler);
     }
 
     /**
@@ -201,10 +202,10 @@ public class AttachmentServiceImpl implements AttachmentService {
             return error(() -> new BlueException(PAYLOAD_TOO_LARGE));
 
         return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
-                .map(shardIds -> attachmentRepository.findAllById(shardIds).map(ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER))
+                .map(shardIds -> attachmentRepository.findAllById(shardIds)
+                        .publishOn(scheduler).map(ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER))
                 .reduce(Flux::concat)
-                .flatMap(Flux::collectList)
-                .subscribeOn(scheduler);
+                .flatMap(Flux::collectList);
     }
 
     /**
@@ -223,6 +224,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 
         return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
                 .map(shardIds -> attachmentRepository.findAllById(shardIds)
+                        .publishOn(scheduler)
                         .collectList()
                         .flatMap(attachments ->
                                 zip(rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(attachments.stream().map(Attachment::getCreator).collect(toList()))
@@ -233,7 +235,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                             return fromStream(tuple2.getT2().stream().map(attachment -> ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(attachment, idAndNameMapping.get(attachment.getCreator()))));
                         }))
                 .reduce(Flux::concat)
-                .flatMap(Flux::collectList).subscribeOn(scheduler);
+                .flatMap(Flux::collectList);
     }
 
     /**
@@ -255,8 +257,9 @@ public class AttachmentServiceImpl implements AttachmentService {
         probe.setCreator(memberId);
 
         return attachmentRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.name)))
+                .publishOn(scheduler)
                 .skip(limit).take(rows)
-                .collectList().subscribeOn(scheduler);
+                .collectList();
     }
 
     /**
@@ -272,7 +275,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         Attachment probe = new Attachment();
         probe.setCreator(memberId);
 
-        return attachmentRepository.count(Example.of(probe)).subscribeOn(scheduler);
+        return attachmentRepository.count(Example.of(probe)).publishOn(scheduler);
     }
 
     /**
@@ -327,7 +330,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, Attachment.class).collectList().subscribeOn(scheduler);
+        return reactiveMongoTemplate.find(listQuery, Attachment.class).publishOn(scheduler).collectList();
     }
 
     /**
@@ -339,7 +342,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Override
     public Mono<Long> countAttachmentMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countAttachmentMonoByCondition(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, Attachment.class).subscribeOn(scheduler);
+        return reactiveMongoTemplate.count(query, Attachment.class).publishOn(scheduler);
     }
 
     /**

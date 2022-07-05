@@ -40,7 +40,7 @@ public class RpcRoleServiceConsumer {
      * @return
      */
     public Mono<List<RoleInfo>> selectRoleInfo() {
-        return fromFuture(rpcRoleService.selectRoleInfo()).subscribeOn(scheduler);
+        return fromFuture(rpcRoleService.selectRoleInfo()).publishOn(scheduler);
     }
 
 }

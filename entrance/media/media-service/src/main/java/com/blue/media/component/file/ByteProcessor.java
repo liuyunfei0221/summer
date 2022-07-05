@@ -102,6 +102,29 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
     }
 
     /**
+     * write
+     *
+     * @param bytes
+     * @param type
+     * @param memberId
+     * @param originalName
+     * @param descName
+     * @return
+     */
+    public Mono<FileUploadResult> write(byte[] bytes, Integer type, Long memberId, String originalName, String descName) {
+        LOGGER.info("Mono<FileUploadResult> write(byte[] bytes, Integer type, Long memberId, String originalName, String descName), type = {}, memberId = {}",
+                type, memberId);
+        if (isNull(bytes) || isNull(type) || isInvalidIdentity(memberId) || isBlank(descName))
+            throw new BlueException(BAD_REQUEST);
+
+        return ofNullable(preAndPostWriteProcessorHandlers.get(type))
+                .map(h -> h.preHandle(bytes, memberId, originalName, descName)
+                        .flatMap(bs -> byteHandler.write(bs, type, memberId, originalName, descName))
+                        .flatMap(fur -> h.postHandle(fur, memberId)))
+                .orElseGet(() -> byteHandler.write(bytes, type, memberId, originalName, descName));
+    }
+
+    /**
      * read
      *
      * @param link

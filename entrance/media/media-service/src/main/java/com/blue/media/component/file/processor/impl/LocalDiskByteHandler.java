@@ -23,16 +23,17 @@ import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.assertAttachmentType;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.base.constant.common.ResponseElement.PAYLOAD_TOO_LARGE;
+import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Symbol.SCHEME_SEPARATOR;
 import static com.blue.base.constant.media.ByteHandlerType.LOCAL_DISK;
-import static com.blue.media.common.MediaCommonFunctions.BUFFER_SIZE;
-import static com.blue.media.common.MediaCommonFunctions.DATA_BUFFER_FACTORY;
+import static com.blue.media.common.MediaCommonFunctions.*;
 import static java.lang.System.currentTimeMillis;
 import static java.nio.channels.FileChannel.open;
 import static java.nio.file.StandardOpenOption.*;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static org.springframework.core.io.buffer.DataBufferUtils.readByteChannel;
+import static org.springframework.core.io.buffer.DataBufferUtils.release;
 import static reactor.core.publisher.BufferOverflowStrategy.ERROR;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.using;
@@ -130,7 +131,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
     private final Supplier<Monitor<Long>> MONITOR_SUP = () ->
             new Monitor<>(0L, Long::sum, m -> m <= singleFileSizeThreshold);
 
-    private final BiFunction<Part, FileChannel, Mono<Long>> FILE_WRITER = (part, channel) -> {
+    private final BiFunction<Part, FileChannel, Mono<Long>> PART_FILE_WRITER = (part, channel) -> {
         FilePart filePart = (FilePart) part;
         Flux<DataBuffer> dataBufferFlux = filePart.content();
         Monitor<Long> monitor = MONITOR_SUP.get();
@@ -141,6 +142,27 @@ public final class LocalDiskByteHandler implements ByteHandler {
                     if (monitor.operateWithAssert((long) dataBuffer.readableByteCount())) {
                         try {
                             channel.write(dataBuffer.asByteBuffer());
+                        } catch (Exception e) {
+                            throw new RuntimeException("upload failed, e = " + e);
+                        }
+                    } else {
+                        throw new BlueException(PAYLOAD_TOO_LARGE);
+                    }
+                }).collectList()
+                .flatMap(v ->
+                        just(monitor.getMonitored()));
+    };
+
+    private final BiFunction<byte[], FileChannel, Mono<Long>> BYTE_FILE_WRITER = (bytes, channel) -> {
+        Monitor<Long> monitor = MONITOR_SUP.get();
+        return BUFFER_FLUX_CONVERTER.apply(bytes)
+                .onBackpressureBuffer(BACKPRESSURE_BUFFER_MAX_SIZE, ERROR)
+                .doOnNext(dataBuffer -> {
+                    if (monitor.operateWithAssert((long) dataBuffer.readableByteCount())) {
+                        try {
+                            channel.write(dataBuffer.asByteBuffer());
+
+                            release(dataBuffer);
                         } catch (Exception e) {
                             throw new RuntimeException("upload failed, e = " + e);
                         }
@@ -190,11 +212,40 @@ public final class LocalDiskByteHandler implements ByteHandler {
 
         return using(
                 () -> CHANNEL_GEN.apply(descName),
-                ch -> FILE_WRITER.apply(part, ch),
+                ch -> PART_FILE_WRITER.apply(part, ch),
                 CHANNEL_CLOSER,
                 true)
                 .flatMap(size ->
                         just(new FileUploadResult(type, descName, name, true, SUCCESS_MSG, size))
+                );
+    }
+
+    /**
+     * write
+     *
+     * @param bytes
+     * @param type
+     * @param memberId
+     * @param originalName
+     * @param descName
+     * @return
+     */
+    @Override
+    public Mono<FileUploadResult> write(byte[] bytes, Integer type, Long memberId, String originalName, String descName) {
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+        assertAttachmentType(type, false);
+
+        if (isBlank(descName))
+            throw new BlueException(BAD_REQUEST);
+
+        return using(
+                () -> CHANNEL_GEN.apply(descName),
+                ch -> BYTE_FILE_WRITER.apply(bytes, ch),
+                CHANNEL_CLOSER,
+                true)
+                .flatMap(size ->
+                        just(new FileUploadResult(type, descName, isNotBlank(originalName) ? originalName : EMPTY_DATA.value, true, SUCCESS_MSG, size))
                 );
     }
 

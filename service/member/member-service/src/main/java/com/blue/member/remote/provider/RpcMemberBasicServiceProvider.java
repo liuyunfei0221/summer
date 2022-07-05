@@ -49,7 +49,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoMonoByPrimaryKey(Long id) {
-        return just(id).subscribeOn(scheduler)
+        return just(id).publishOn(scheduler)
                 .flatMap(memberBasicService::getMemberBasicMono)
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                 .toFuture();
@@ -63,7 +63,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
-        return just(ids).subscribeOn(scheduler)
+        return just(ids).publishOn(scheduler)
                 .flatMap(memberBasicService::selectMemberBasicInfoMonoByIds)
                 .toFuture();
     }
@@ -76,7 +76,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByPhone(String phone) {
-        return just(phone).subscribeOn(scheduler)
+        return just(phone).publishOn(scheduler)
                 .flatMap(memberBasicService::getMemberBasicMonoByPhone)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)
@@ -92,7 +92,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByEmail(String email) {
-        return just(email).subscribeOn(scheduler)
+        return just(email).publishOn(scheduler)
                 .flatMap(memberBasicService::getMemberBasicMonoByEmail)
                 .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                         .map(Mono::just)

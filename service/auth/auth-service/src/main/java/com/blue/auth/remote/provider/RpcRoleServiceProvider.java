@@ -54,7 +54,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     @Override
     public CompletableFuture<List<RoleInfo>> selectRoleInfo() {
         return just(true)
-                .subscribeOn(scheduler)
+                .publishOn(scheduler)
                 .flatMap(v -> roleService.selectRole())
                 .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))
                 .toFuture();
@@ -68,7 +68,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
      */
     @Override
     public CompletableFuture<MemberRoleInfo> selectRoleInfoByMemberId(Long memberId) {
-        return just(memberId).subscribeOn(scheduler)
+        return just(memberId).publishOn(scheduler)
                 .flatMap(memberRoleRelationService::selectRoleIdsMonoByMemberId)
                 .flatMap(roleService::selectRoleMonoByIds)
                 .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))
@@ -84,7 +84,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
      */
     @Override
     public CompletableFuture<List<MemberRoleInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
-        return just(memberIds).subscribeOn(scheduler)
+        return just(memberIds).publishOn(scheduler)
                 .flatMap(memberRoleRelationService::selectRelationMonoByMemberIds)
                 .flatMap(relations ->
                         zip(roleService.selectRoleMonoByIds(relations.stream().map(MemberRoleRelation::getRoleId).collect(toList()))

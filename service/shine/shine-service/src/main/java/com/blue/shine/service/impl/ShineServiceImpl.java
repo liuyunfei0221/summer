@@ -82,7 +82,7 @@ public class ShineServiceImpl implements ShineService {
 
         query.skip(5).limit(3);
 
-        Flux<Shine> shineFlux = reactiveMongoTemplate.find(query, Shine.class).subscribeOn(scheduler);
+        Flux<Shine> shineFlux = reactiveMongoTemplate.find(query, Shine.class).publishOn(scheduler);
         List<Shine> shineList = shineFlux.collectList().toFuture().join();
         System.err.println(shineList);
 

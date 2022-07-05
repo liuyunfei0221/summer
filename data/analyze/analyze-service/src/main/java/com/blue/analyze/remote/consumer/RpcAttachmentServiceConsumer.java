@@ -42,7 +42,7 @@ public class RpcAttachmentServiceConsumer {
      * @return
      */
     Mono<AttachmentInfo> getAttachmentInfoMonoByPrimaryKey(Long id) {
-        return fromFuture(rpcAttachmentService.getAttachmentInfoMonoByPrimaryKey(id)).subscribeOn(scheduler);
+        return fromFuture(rpcAttachmentService.getAttachmentInfoMonoByPrimaryKey(id)).publishOn(scheduler);
     }
 
     /**
@@ -52,7 +52,7 @@ public class RpcAttachmentServiceConsumer {
      * @return
      */
     Mono<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids) {
-        return fromFuture(rpcAttachmentService.selectAttachmentInfoMonoByIds(ids)).subscribeOn(scheduler);
+        return fromFuture(rpcAttachmentService.selectAttachmentInfoMonoByIds(ids)).publishOn(scheduler);
     }
 
 }

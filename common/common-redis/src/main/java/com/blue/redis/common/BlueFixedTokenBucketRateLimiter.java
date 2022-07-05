@@ -68,9 +68,9 @@ public final class BlueFixedTokenBucketRateLimiter {
     private final Function<String, Mono<Boolean>> ALLOWED_GETTER = limitKey ->
             reactiveStringRedisTemplate.execute(SCRIPT, SCRIPT_KEYS_WRAPPER.apply(limitKey),
                             SCRIPT_ARGS_SUP.get())
+                    .publishOn(scheduler)
                     .onErrorResume(FALL_BACKER)
-                    .elementAt(0)
-                    .subscribeOn(scheduler);
+                    .elementAt(0);
 
     /**
      * key allowed?
@@ -100,7 +100,8 @@ public final class BlueFixedTokenBucketRateLimiter {
      */
     public Mono<Boolean> delete(String key) {
         return isNotBlank(key) ?
-                reactiveStringRedisTemplate.delete(key).flatMap(r -> just(r > 0))
+                reactiveStringRedisTemplate.delete(key)
+                        .publishOn(scheduler).flatMap(r -> just(r > 0))
                 :
                 error(() -> new BlueException(BAD_REQUEST));
     }

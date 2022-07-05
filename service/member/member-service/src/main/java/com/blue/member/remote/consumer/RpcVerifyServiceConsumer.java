@@ -43,7 +43,7 @@ public class RpcVerifyServiceConsumer {
      * @return
      */
     public Mono<String> generate(VerifyType type, String key, Integer length, Duration expire) {
-        return fromFuture(rpcVerifyService.generate(type, key, length, expire)).subscribeOn(scheduler);
+        return fromFuture(rpcVerifyService.generate(type, key, length, expire)).publishOn(scheduler);
     }
 
     /**
@@ -56,7 +56,7 @@ public class RpcVerifyServiceConsumer {
      * @return
      */
     public Mono<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable) {
-        return fromFuture(rpcVerifyService.validate(type, key, verify, repeatable)).subscribeOn(scheduler);
+        return fromFuture(rpcVerifyService.validate(type, key, verify, repeatable)).publishOn(scheduler);
     }
 
 }

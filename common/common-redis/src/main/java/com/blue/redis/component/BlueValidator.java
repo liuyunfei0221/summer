@@ -74,7 +74,7 @@ public final class BlueValidator {
 
         return reactiveStringRedisTemplate.opsForValue()
                 .set(KEY_WRAPPER.apply(key), value, expire)
-                .subscribeOn(scheduler);
+                .publishOn(scheduler);
     }
 
     /**
@@ -90,8 +90,8 @@ public final class BlueValidator {
         return reactiveStringRedisTemplate.execute(UNREPEATABLE_VALIDATION_SCRIPT,
                         SCRIPT_KEYS_WRAPPER.apply(key), SCRIPT_ARGS_WRAPPER.apply(value))
                 .onErrorResume(FALL_BACKER)
-                .elementAt(0)
-                .subscribeOn(scheduler);
+                .publishOn(scheduler)
+                .elementAt(0);
     }
 
     /**
@@ -107,8 +107,8 @@ public final class BlueValidator {
         return reactiveStringRedisTemplate.execute(REPEATABLE_UNTIL_SUCCESS_OR_TIMEOUT_VALIDATION_SCRIPT,
                         SCRIPT_KEYS_WRAPPER.apply(key), SCRIPT_ARGS_WRAPPER.apply(value))
                 .onErrorResume(FALL_BACKER)
-                .elementAt(0)
-                .subscribeOn(scheduler);
+                .publishOn(scheduler)
+                .elementAt(0);
     }
 
     /**
@@ -122,8 +122,8 @@ public final class BlueValidator {
         assertParam(key, value);
 
         return reactiveStringRedisTemplate.opsForValue().get(KEY_WRAPPER.apply(key))
-                .flatMap(v -> just(value.equals(v)))
-                .subscribeOn(scheduler);
+                .publishOn(scheduler)
+                .flatMap(v -> just(value.equals(v)));
     }
 
     /**
@@ -134,8 +134,8 @@ public final class BlueValidator {
      */
     public Mono<Boolean> delete(String key) {
         return isNotBlank(key) ?
-                reactiveStringRedisTemplate.delete(key).flatMap(r -> just(r > 0))
-                        .subscribeOn(scheduler)
+                reactiveStringRedisTemplate.delete(key)
+                        .publishOn(scheduler).flatMap(r -> just(r > 0))
                 :
                 error(() -> new BlueException(BAD_REQUEST));
     }

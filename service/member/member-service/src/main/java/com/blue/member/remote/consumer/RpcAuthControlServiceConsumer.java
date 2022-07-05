@@ -57,7 +57,7 @@ public class RpcAuthControlServiceConsumer {
      * @return
      */
     Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds) {
-        return fromFuture(rpcAuthControlService.refreshMemberRoleById(memberId, roleIds)).subscribeOn(scheduler).subscribeOn(scheduler);
+        return fromFuture(rpcAuthControlService.refreshMemberRoleById(memberId, roleIds)).publishOn(scheduler).publishOn(scheduler);
     }
 
     /**
@@ -67,7 +67,7 @@ public class RpcAuthControlServiceConsumer {
      * @return
      */
     public Mono<List<AuthorityBaseOnRole>> selectAuthorityByAccess(Access access) {
-        return fromFuture(rpcAuthControlService.selectAuthorityByAccess(access)).subscribeOn(scheduler).subscribeOn(scheduler);
+        return fromFuture(rpcAuthControlService.selectAuthorityByAccess(access)).publishOn(scheduler).publishOn(scheduler);
     }
 
     /**
@@ -77,7 +77,7 @@ public class RpcAuthControlServiceConsumer {
      * @return
      */
     public Mono<List<AuthorityBaseOnRole>> selectAuthorityByMemberId(Long memberId) {
-        return fromFuture(rpcAuthControlService.selectAuthorityByMemberId(memberId)).subscribeOn(scheduler).subscribeOn(scheduler);
+        return fromFuture(rpcAuthControlService.selectAuthorityByMemberId(memberId)).publishOn(scheduler).publishOn(scheduler);
     }
 
 }

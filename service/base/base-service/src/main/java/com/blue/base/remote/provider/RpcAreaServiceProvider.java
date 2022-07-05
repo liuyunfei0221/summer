@@ -78,7 +78,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     @Override
     public CompletableFuture<AreaInfo> getAreaInfoMonoById(Long id) {
         return just(id)
-                .subscribeOn(scheduler)
+                .publishOn(scheduler)
                 .flatMap(areaService::getAreaInfoMonoById)
                 .toFuture();
     }
@@ -103,7 +103,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     @Override
     public CompletableFuture<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId) {
         return just(cityId)
-                .subscribeOn(scheduler)
+                .publishOn(scheduler)
                 .flatMap(areaService::selectAreaInfoMonoByCityId)
                 .toFuture();
     }
@@ -128,7 +128,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     @Override
     public CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids) {
         return just(ids)
-                .subscribeOn(scheduler)
+                .publishOn(scheduler)
                 .flatMap(areaService::selectAreaInfoMonoByIds)
                 .toFuture();
     }
@@ -153,7 +153,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     @Override
     public CompletableFuture<AreaRegion> getAreaRegionMonoById(Long id) {
         return just(id)
-                .subscribeOn(scheduler)
+                .publishOn(scheduler)
                 .flatMap(areaService::getAreaRegionMonoById)
                 .toFuture();
     }
@@ -178,7 +178,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     @Override
     public CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids) {
         return just(ids)
-                .subscribeOn(scheduler)
+                .publishOn(scheduler)
                 .flatMap(areaService::selectAreaRegionMonoByIds)
                 .toFuture();
     }

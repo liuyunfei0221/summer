@@ -129,13 +129,14 @@ public final class AccessInfoCache {
         LOGGER.warn("REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER, get accessInfo from redis and set in caff, keyId = {}", keyId);
 
         return reactiveStringRedisTemplate.opsForValue().get(keyId)
+                .publishOn(scheduler)
                 .flatMap(accessInfo -> {
                     if (!EMPTY_DATA.value.equals(accessInfo)) {
                         cache.put(keyId, accessInfo);
                         REDIS_ACCESS_REFRESHER.accept(keyId);
                     }
                     return just(accessInfo);
-                }).subscribeOn(scheduler);
+                });
     };
 
     /**
@@ -160,12 +161,12 @@ public final class AccessInfoCache {
 
         return reactiveStringRedisTemplate.opsForValue()
                 .set(keyId, accessInfo, globalExpireDuration)
+                .publishOn(scheduler)
                 .onErrorResume(throwable -> {
                     LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
                     return just(false);
                 })
-                .doOnSuccess(ig -> cache.invalidate(keyId))
-                .subscribeOn(scheduler);
+                .doOnSuccess(ig -> cache.invalidate(keyId));
     };
 
     /**
@@ -176,7 +177,7 @@ public final class AccessInfoCache {
      */
     public Mono<String> getAccessInfo(String keyId) {
         return isNotBlank(keyId) ?
-                ACCESS_GETTER_WITH_CACHE.apply(keyId).subscribeOn(scheduler)
+                ACCESS_GETTER_WITH_CACHE.apply(keyId).publishOn(scheduler)
                 :
                 error(() -> new BlueException(UNAUTHORIZED));
     }
@@ -201,11 +202,11 @@ public final class AccessInfoCache {
         LOGGER.info("invalidAuthInfo(), keyId = {}", keyId);
         return isNotBlank(keyId) ?
                 reactiveStringRedisTemplate.delete(keyId)
+                        .publishOn(scheduler)
                         .flatMap(l -> just(l > 0L))
                         .doOnSuccess(ig -> cache.invalidate(keyId))
-                        .subscribeOn(scheduler)
                 :
-                just(false).subscribeOn(scheduler);
+                just(false).publishOn(scheduler);
     }
 
     /**
@@ -219,9 +220,9 @@ public final class AccessInfoCache {
             if (isNotBlank(keyId))
                 cache.invalidate(keyId);
 
-            return just(true).subscribeOn(scheduler);
+            return just(true).publishOn(scheduler);
         } catch (Exception e) {
-            return just(false).subscribeOn(scheduler);
+            return just(false).publishOn(scheduler);
         }
     }
 

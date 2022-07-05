@@ -1,7 +1,5 @@
 package com.blue.qr.api.conf;
 
-import java.awt.*;
-
 import static java.awt.Color.CYAN;
 import static java.awt.Color.WHITE;
 
@@ -30,9 +28,9 @@ public class QrConfParams implements QrConf {
      */
     protected int strokesWidth = 1;
 
-    protected Color logoFrameColor = WHITE;
+    protected ColorAttr logoFrameColor = new ColorAttr(WHITE.getRed(), WHITE.getGreen(), WHITE.getBlue(), WHITE.getAlpha());
 
-    protected Color frameColor = CYAN;
+    protected ColorAttr frameColor = new ColorAttr(CYAN.getRed(), CYAN.getGreen(), CYAN.getBlue(), CYAN.getAlpha());
 
     protected String fileType;
 
@@ -65,12 +63,12 @@ public class QrConfParams implements QrConf {
     }
 
     @Override
-    public Color getLogoFrameColor() {
+    public ColorAttr getLogoFrameColor() {
         return logoFrameColor;
     }
 
     @Override
-    public Color getFrameColor() {
+    public ColorAttr getFrameColor() {
         return frameColor;
     }
 
@@ -99,11 +97,11 @@ public class QrConfParams implements QrConf {
         this.strokesWidth = strokesWidth;
     }
 
-    public void setLogoFrameColor(Color logoFrameColor) {
+    public void setLogoFrameColor(ColorAttr logoFrameColor) {
         this.logoFrameColor = logoFrameColor;
     }
 
-    public void setFrameColor(Color frameColor) {
+    public void setFrameColor(ColorAttr frameColor) {
         this.frameColor = frameColor;
     }
 

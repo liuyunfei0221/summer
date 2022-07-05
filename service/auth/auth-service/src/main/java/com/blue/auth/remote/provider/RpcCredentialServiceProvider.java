@@ -50,7 +50,7 @@ public class RpcCredentialServiceProvider implements RpcCredentialService {
      */
     @Override
     public CompletableFuture<CredentialInfo> getCredentialByMemberIdAndType(Long memberId, String credentialType) {
-        return just(true).subscribeOn(scheduler)
+        return just(true).publishOn(scheduler)
                 .flatMap(v -> credentialService.getCredentialMonoByMemberIdAndType(memberId, credentialType))
                 .flatMap(cOpt -> cOpt.map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER)
                         .map(Mono::just)
@@ -67,8 +67,7 @@ public class RpcCredentialServiceProvider implements RpcCredentialService {
      */
     @Override
     public CompletableFuture<List<CredentialInfo>> selectCredentialByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
-        return just(true)
-                .subscribeOn(scheduler)
+        return just(true).publishOn(scheduler)
                 .flatMap(v -> credentialService.selectCredentialInfoMonoByMemberIdAndTypes(memberId, credentialTypes))
                 .toFuture();
     }
@@ -82,7 +81,7 @@ public class RpcCredentialServiceProvider implements RpcCredentialService {
      */
     @Override
     public CompletableFuture<CredentialInfo> getCredentialByCredentialAndType(String credential, String credentialType) {
-        return just(true).subscribeOn(scheduler)
+        return just(true).publishOn(scheduler)
                 .flatMap(v -> credentialService.getCredentialMonoByCredentialAndType(credential, credentialType))
                 .flatMap(cOpt -> cOpt.map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER)
                         .map(Mono::just)
@@ -99,8 +98,7 @@ public class RpcCredentialServiceProvider implements RpcCredentialService {
      */
     @Override
     public CompletableFuture<List<CredentialInfo>> selectCredentialByCredentialAndTypes(String credential, List<String> credentialTypes) {
-        return just(true)
-                .subscribeOn(scheduler)
+        return just(true).publishOn(scheduler)
                 .flatMap(v -> credentialService.selectCredentialInfoMonoByCredentialAndTypes(credential, credentialTypes))
                 .toFuture();
     }

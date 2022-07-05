@@ -79,7 +79,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
             credentialHistory.setId(blueIdentityProcessor.generate(CredentialHistory.class));
 
         credentialHistory.setCredential(encryptString(credentialHistory.getCredential()));
-        return credentialHistoryRepository.insert(credentialHistory).subscribeOn(scheduler);
+        return credentialHistoryRepository.insert(credentialHistory).publishOn(scheduler);
     }
 
     /**
@@ -99,7 +99,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
                     credentialHistory.setCredential(encryptString(credentialHistory.getCredential()));
                     if (isInvalidIdentity(credentialHistory.getId()))
                         credentialHistory.setId(blueIdentityProcessor.generate(CredentialHistory.class));
-                }).collect(toList())).collectList().subscribeOn(scheduler);
+                }).collect(toList())).publishOn(scheduler).collectList();
     }
 
     /**
@@ -118,7 +118,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
             try {
                 CredentialHistory credentialHistory = this.insertCredentialHistory(
                                 new CredentialHistory(blueIdentityProcessor.generate(CredentialHistory.class), memberId, credential, TIME_STAMP_GETTER.get()))
-                        .subscribeOn(scheduler).toFuture().join();
+                        .publishOn(scheduler).toFuture().join();
                 LOGGER.info("executorService.submit(), insertCredentialHistory success, credentialHistory = {}", credentialHistory);
             } catch (Exception e) {
                 LOGGER.error("executorService.submit(), insertCredentialHistory failed, credential = {}, memberId = {}", credential, memberId);
@@ -142,7 +142,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
             try {
                 List<CredentialHistory> credentialHistories = this.insertCredentialHistories(credentials.stream().map(Credential::getCredential).distinct().filter(BlueChecker::isNotBlank)
                                 .map(cre -> new CredentialHistory(blueIdentityProcessor.generate(CredentialHistory.class), memberId, cre, TIME_STAMP_GETTER.get())).collect(toList()))
-                        .subscribeOn(scheduler).toFuture().join();
+                        .publishOn(scheduler).toFuture().join();
                 LOGGER.info("executorService.submit(), insertCredentialHistories success, credentialHistories = {}", credentialHistories);
             } catch (Exception e) {
                 LOGGER.error("executorService.submit(), insertCredentialHistories failed, credentials = {}, memberId = {}", credentials, memberId);
@@ -173,7 +173,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
                     credentialHistory.setCredential(decryptString(credentialHistory.getCredential()));
                     return just(credentialHistory);
                 })
-                .collectList().subscribeOn(scheduler);
+                .publishOn(scheduler).collectList();
     }
 
     /**
@@ -191,12 +191,12 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
         CredentialHistory probe = new CredentialHistory();
         probe.setMemberId(memberId);
 
-        return credentialHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(CREATE_TIME.attribute))).take(HISTORY_SELECT_LIMIT)
+        return credentialHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(CREATE_TIME.attribute)))
+                .publishOn(scheduler).take(HISTORY_SELECT_LIMIT)
                 .flatMap(credentialHistory -> {
                     credentialHistory.setCredential(decryptString(credentialHistory.getCredential()));
                     return just(CREDENTIAL_HISTORY_2_CREDENTIAL_HISTORY_INFO_CONVERTER.apply(credentialHistory));
-                })
-                .collectList().subscribeOn(scheduler);
+                }).collectList();
     }
 
 }

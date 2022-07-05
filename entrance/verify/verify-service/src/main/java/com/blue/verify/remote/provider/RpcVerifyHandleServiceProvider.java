@@ -45,7 +45,7 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
      */
     @Override
     public CompletableFuture<String> generate(VerifyType verifyType, BusinessType businessType, String destination) {
-        return just(true).subscribeOn(scheduler).flatMap(v -> verifyHandleService.generate(verifyType, businessType, destination)).toFuture();
+        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.generate(verifyType, businessType, destination)).toFuture();
     }
 
     /**
@@ -60,7 +60,7 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
      */
     @Override
     public CompletableFuture<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
-        return just(true).subscribeOn(scheduler).flatMap(v -> verifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).toFuture();
+        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).toFuture();
     }
 
     /**
@@ -72,7 +72,7 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
      */
     @Override
     public CompletableFuture<Boolean> turingValidate(String key, String verify) {
-        return just(true).subscribeOn(scheduler).flatMap(v -> verifyHandleService.turingValidate(key, verify)).toFuture();
+        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.turingValidate(key, verify)).toFuture();
     }
 
 }

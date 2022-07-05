@@ -54,7 +54,7 @@ public final class AuthApiHandler {
      */
     public Mono<ServerResponse> refreshAccess(ServerRequest serverRequest) {
         return getAuthorizationReact(serverRequest)
-                .flatMap(authControlService::refreshAccess)
+                .flatMap(authControlService::refreshAccessByRefresh)
                 .flatMap(ma ->
                         ok().contentType(APPLICATION_JSON)
                                 .header(AUTHORIZATION.name, ma.getAuth())

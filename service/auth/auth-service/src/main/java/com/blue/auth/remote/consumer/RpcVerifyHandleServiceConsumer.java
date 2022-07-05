@@ -41,7 +41,7 @@ public class RpcVerifyHandleServiceConsumer {
      * @return
      */
     public Mono<String> generate(VerifyType verifyType, BusinessType businessType, String destination) {
-        return fromFuture(rpcVerifyHandleService.generate(verifyType, businessType, destination)).subscribeOn(scheduler);
+        return fromFuture(rpcVerifyHandleService.generate(verifyType, businessType, destination)).publishOn(scheduler);
     }
 
     /**
@@ -55,7 +55,7 @@ public class RpcVerifyHandleServiceConsumer {
      * @return
      */
     public Mono<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
-        return fromFuture(rpcVerifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).subscribeOn(scheduler);
+        return fromFuture(rpcVerifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).publishOn(scheduler);
     }
 
     /**
@@ -66,7 +66,7 @@ public class RpcVerifyHandleServiceConsumer {
      * @return
      */
     public Mono<Boolean> turingValidate(String key, String verify) {
-        return fromFuture(rpcVerifyHandleService.turingValidate( key, verify)).subscribeOn(scheduler);
+        return fromFuture(rpcVerifyHandleService.turingValidate( key, verify)).publishOn(scheduler);
     }
 
 }

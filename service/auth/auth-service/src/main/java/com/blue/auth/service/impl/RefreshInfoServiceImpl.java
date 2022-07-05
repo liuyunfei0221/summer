@@ -49,7 +49,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
         if (isNull(refreshInfo))
             throw new BlueException(EMPTY_PARAM);
 
-        return refreshInfoRepository.save(refreshInfo).subscribeOn(scheduler);
+        return refreshInfoRepository.save(refreshInfo).publishOn(scheduler);
     }
 
     /**
@@ -64,7 +64,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
         if (isBlank(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return refreshInfoRepository.deleteById(id).subscribeOn(scheduler);
+        return refreshInfoRepository.deleteById(id).publishOn(scheduler);
     }
 
     /**
@@ -79,7 +79,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
         if (isEmpty(refreshInfos))
             throw new BlueException(EMPTY_PARAM);
 
-        return refreshInfoRepository.deleteAll(refreshInfos).subscribeOn(scheduler);
+        return refreshInfoRepository.deleteAll(refreshInfos).publishOn(scheduler);
     }
 
     /**
@@ -94,7 +94,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
         if (isBlank(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return refreshInfoRepository.findById(id).subscribeOn(scheduler);
+        return refreshInfoRepository.findById(id).publishOn(scheduler);
     }
 
     /**
@@ -109,7 +109,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
         if (isNull(probe))
             throw new BlueException(EMPTY_PARAM);
 
-        return refreshInfoRepository.findAll(Example.of(probe)).collectList().subscribeOn(scheduler);
+        return refreshInfoRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList();
     }
 
 }

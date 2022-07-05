@@ -47,7 +47,7 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      */
     @Override
     public CompletableFuture<String> generate(VerifyType type, String key, Integer length, Duration expire) {
-        return just(true).subscribeOn(scheduler).flatMap(v -> verifyService.generate(type, key, length, expire)).toFuture();
+        return just(true).publishOn(scheduler).flatMap(v -> verifyService.generate(type, key, length, expire)).toFuture();
     }
 
     /**
@@ -61,7 +61,7 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      */
     @Override
     public CompletableFuture<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable) {
-        return just(true).subscribeOn(scheduler).flatMap(v -> verifyService.validate(type, key, verify, repeatable)).toFuture();
+        return just(true).publishOn(scheduler).flatMap(v -> verifyService.validate(type, key, verify, repeatable)).toFuture();
     }
 
 }

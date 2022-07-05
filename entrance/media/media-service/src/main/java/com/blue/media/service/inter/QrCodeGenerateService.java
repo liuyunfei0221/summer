@@ -1,6 +1,7 @@
 package com.blue.media.service.inter;
 
-import org.springframework.web.reactive.function.server.ServerRequest;
+import com.blue.base.model.common.Access;
+import com.blue.media.model.QrCodeGenerateParam;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
@@ -15,9 +16,10 @@ public interface QrCodeGenerateService {
     /**
      * generate qr code
      *
-     * @param serverRequest
+     * @param access
+     * @param qrCodeGenerateParam
      * @return
      */
-    Mono<ServerResponse> generate(ServerRequest serverRequest);
+    Mono<ServerResponse> generateCode(Access access, QrCodeGenerateParam qrCodeGenerateParam);
 
 }

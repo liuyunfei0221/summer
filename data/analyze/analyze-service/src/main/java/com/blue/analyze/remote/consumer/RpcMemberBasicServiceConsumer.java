@@ -44,7 +44,7 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     Mono<MemberBasicInfo> getMemberBasicInfoMonoByPrimaryKey(Long id) {
-        return fromFuture(rpcMemberBasicService.getMemberBasicInfoMonoByPrimaryKey(id)).subscribeOn(scheduler);
+        return fromFuture(rpcMemberBasicService.getMemberBasicInfoMonoByPrimaryKey(id)).publishOn(scheduler);
     }
 
     /**
@@ -54,7 +54,7 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
-        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoMonoByIds(ids)).subscribeOn(scheduler);
+        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoMonoByIds(ids)).publishOn(scheduler);
     }
 
     /**
@@ -64,7 +64,7 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     public Mono<MemberBasicInfo> getMemberBasicInfoByPhone(String phone) {
-        return fromFuture(rpcMemberBasicService.getMemberBasicInfoByPhone(phone)).subscribeOn(scheduler);
+        return fromFuture(rpcMemberBasicService.getMemberBasicInfoByPhone(phone)).publishOn(scheduler);
     }
 
     /**
@@ -74,7 +74,7 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     public Mono<MemberBasicInfo> getMemberBasicInfoByEmail(String email) {
-        return fromFuture(rpcMemberBasicService.getMemberBasicInfoByEmail(email)).subscribeOn(scheduler);
+        return fromFuture(rpcMemberBasicService.getMemberBasicInfoByEmail(email)).publishOn(scheduler);
     }
 
 }

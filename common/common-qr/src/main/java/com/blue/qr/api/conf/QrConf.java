@@ -1,7 +1,5 @@
 package com.blue.qr.api.conf;
 
-import java.awt.*;
-
 /**
  * qr conf
  *
@@ -50,14 +48,14 @@ public interface QrConf {
      *
      * @return
      */
-    Color getLogoFrameColor();
+    ColorAttr getLogoFrameColor();
 
     /**
      * frame color
      *
      * @return
      */
-    Color getFrameColor();
+    ColorAttr getFrameColor();
 
     /**
      * qr code file type

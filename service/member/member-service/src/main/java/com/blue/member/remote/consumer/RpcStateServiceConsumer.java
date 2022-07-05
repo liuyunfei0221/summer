@@ -74,7 +74,7 @@ public class RpcStateServiceConsumer {
      * @return
      */
     public Mono<StateInfo> getStateInfoMonoById(Long id) {
-        return fromFuture(rpcStateService.getStateInfoMonoById(id)).subscribeOn(scheduler);
+        return fromFuture(rpcStateService.getStateInfoMonoById(id)).publishOn(scheduler);
     }
 
     /**
@@ -94,7 +94,7 @@ public class RpcStateServiceConsumer {
      * @return
      */
     public Mono<List<StateInfo>> selectStateInfoMonoByCountryId(Long countryId) {
-        return fromFuture(rpcStateService.selectStateInfoMonoByCountryId(countryId)).subscribeOn(scheduler);
+        return fromFuture(rpcStateService.selectStateInfoMonoByCountryId(countryId)).publishOn(scheduler);
     }
 
     /**
@@ -114,7 +114,7 @@ public class RpcStateServiceConsumer {
      * @return
      */
     public Mono<Map<Long, StateInfo>> selectStateInfoMonoByIds(List<Long> ids) {
-        return fromFuture(rpcStateService.selectStateInfoMonoByIds(ids)).subscribeOn(scheduler);
+        return fromFuture(rpcStateService.selectStateInfoMonoByIds(ids)).publishOn(scheduler);
     }
 
     /**
@@ -134,7 +134,7 @@ public class RpcStateServiceConsumer {
      * @return
      */
     public Mono<StateRegion> getStateRegionMonoById(Long id) {
-        return fromFuture(rpcStateService.getStateRegionMonoById(id)).subscribeOn(scheduler);
+        return fromFuture(rpcStateService.getStateRegionMonoById(id)).publishOn(scheduler);
     }
 
     /**
@@ -154,7 +154,7 @@ public class RpcStateServiceConsumer {
      * @return
      */
     public Mono<Map<Long, StateRegion>> selectStateRegionMonoByIds(List<Long> ids) {
-        return fromFuture(rpcStateService.selectStateRegionMonoByIds(ids)).subscribeOn(scheduler);
+        return fromFuture(rpcStateService.selectStateRegionMonoByIds(ids)).publishOn(scheduler);
     }
 
 }

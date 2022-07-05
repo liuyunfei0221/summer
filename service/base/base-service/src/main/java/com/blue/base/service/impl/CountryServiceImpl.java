@@ -129,8 +129,9 @@ public class CountryServiceImpl implements CountryService {
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
                         idCountryCache.getAll(l, is -> countryRepository.findAllById(l)
+                                        .publishOn(scheduler)
                                         .flatMap(c -> just(COUNTRY_2_COUNTRY_INFO_CONVERTER.apply(c)))
-                                        .collectList().subscribeOn(scheduler).toFuture().join()
+                                        .collectList().toFuture().join()
                                         .parallelStream()
                                         .collect(toMap(CountryInfo::getId, ci -> ci, (a, b) -> a)))
                                 .entrySet()
@@ -150,27 +151,27 @@ public class CountryServiceImpl implements CountryService {
         Country probe = new Country();
 
         probe.setName(param.getName());
-        if (ofNullable(countryRepository.count(Example.of(probe)).subscribeOn(scheduler).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(countryRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(COUNTRY_NAME_ALREADY_EXIST);
 
         probe.setName(null);
         probe.setNativeName(param.getNativeName());
-        if (ofNullable(countryRepository.count(Example.of(probe)).subscribeOn(scheduler).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(countryRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(COUNTRY_NATIVE_NAME_ALREADY_EXIST);
 
         probe.setNativeName(null);
         probe.setNumericCode(param.getNumericCode());
-        if (ofNullable(countryRepository.count(Example.of(probe)).subscribeOn(scheduler).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(countryRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(COUNTRY_NUMERIC_CODE_ALREADY_EXIST);
 
         probe.setNumericCode(null);
         probe.setCountryCode(param.getCountryCode());
-        if (ofNullable(countryRepository.count(Example.of(probe)).subscribeOn(scheduler).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(countryRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(COUNTRY_CODE_ALREADY_EXIST);
 
         probe.setCountryCode(null);
         probe.setPhoneCode(param.getPhoneCode());
-        if (ofNullable(countryRepository.count(Example.of(probe)).subscribeOn(scheduler).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(countryRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(COUNTRY_PHONE_CODE_ALREADY_EXIST);
     };
 
@@ -218,38 +219,38 @@ public class CountryServiceImpl implements CountryService {
 
         Long id = param.getId();
 
-        Country country = countryRepository.findById(id).subscribeOn(scheduler).toFuture().join();
+        Country country = countryRepository.findById(id).publishOn(scheduler).toFuture().join();
         if (isNull(country))
             throw new BlueException(DATA_NOT_EXIST);
 
         Country probe = new Country();
 
         probe.setName(param.getName());
-        if (ofNullable(countryRepository.findAll(Example.of(probe)).collectList().subscribeOn(scheduler).toFuture().join())
+        if (ofNullable(countryRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList().toFuture().join())
                 .orElseGet(Collections::emptyList).stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(COUNTRY_NAME_ALREADY_EXIST);
 
         probe.setName(null);
         probe.setNativeName(param.getNativeName());
-        if (ofNullable(countryRepository.findAll(Example.of(probe)).collectList().subscribeOn(scheduler).toFuture().join())
+        if (ofNullable(countryRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList().toFuture().join())
                 .orElseGet(Collections::emptyList).stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(COUNTRY_NATIVE_NAME_ALREADY_EXIST);
 
         probe.setNativeName(null);
         probe.setNumericCode(param.getNumericCode());
-        if (ofNullable(countryRepository.findAll(Example.of(probe)).collectList().subscribeOn(scheduler).toFuture().join())
+        if (ofNullable(countryRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList().toFuture().join())
                 .orElseGet(Collections::emptyList).stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(COUNTRY_NUMERIC_CODE_ALREADY_EXIST);
 
         probe.setNumericCode(null);
         probe.setCountryCode(param.getCountryCode());
-        if (ofNullable(countryRepository.findAll(Example.of(probe)).collectList().subscribeOn(scheduler).toFuture().join())
+        if (ofNullable(countryRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList().toFuture().join())
                 .orElseGet(Collections::emptyList).stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(COUNTRY_CODE_ALREADY_EXIST);
 
         probe.setCountryCode(null);
         probe.setPhoneCode(param.getPhoneCode());
-        if (ofNullable(countryRepository.findAll(Example.of(probe)).collectList().subscribeOn(scheduler).toFuture().join())
+        if (ofNullable(countryRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList().toFuture().join())
                 .orElseGet(Collections::emptyList).stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(COUNTRY_PHONE_CODE_ALREADY_EXIST);
 
@@ -351,11 +352,12 @@ public class CountryServiceImpl implements CountryService {
         Country country = COUNTRY_INSERT_PARAM_2_COUNTRY_CONVERTER.apply(countryInsertParam);
 
         return countryRepository.insert(country)
+                .publishOn(scheduler)
                 .map(COUNTRY_2_COUNTRY_INFO_CONVERTER)
                 .doOnSuccess(ci -> {
                     LOGGER.info("ci = {}", ci);
                     invalidCache();
-                }).subscribeOn(scheduler);
+                });
     }
 
     /**
@@ -375,11 +377,12 @@ public class CountryServiceImpl implements CountryService {
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
         return countryRepository.save(country)
+                .publishOn(scheduler)
                 .map(COUNTRY_2_COUNTRY_INFO_CONVERTER)
                 .doOnSuccess(ci -> {
                     LOGGER.info("ci = {}", ci);
                     invalidCache();
-                }).subscribeOn(scheduler);
+                });
     }
 
     /**
@@ -395,6 +398,7 @@ public class CountryServiceImpl implements CountryService {
             throw new BlueException(INVALID_IDENTITY);
 
         return countryRepository.findById(id)
+                .publishOn(scheduler)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(country -> {
                     State probe = new State();
@@ -404,6 +408,7 @@ public class CountryServiceImpl implements CountryService {
                     query.addCriteria(byExample(probe));
 
                     return reactiveMongoTemplate.count(query, State.class)
+                            .publishOn(scheduler)
                             .flatMap(stateCount ->
                                     stateCount <= 0L ?
                                             countryRepository.delete(country)
@@ -415,7 +420,7 @@ public class CountryServiceImpl implements CountryService {
                                 LOGGER.info("ci = {}", ci);
                                 invalidCache();
                             });
-                }).subscribeOn(scheduler);
+                });
     }
 
     /**
@@ -435,7 +440,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Optional<Country> getCountryById(Long id) {
-        return ofNullable(countryRepository.findById(id).subscribeOn(scheduler).toFuture().join());
+        return ofNullable(countryRepository.findById(id).publishOn(scheduler).toFuture().join());
     }
 
     /**
@@ -446,7 +451,7 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public List<Country> selectCountry() {
         return countryRepository.findAll(by(Sort.Order.asc(NAME.name)))
-                .collectList().subscribeOn(scheduler).toFuture().join();
+                .publishOn(scheduler).collectList().toFuture().join();
     }
 
     /**
@@ -464,7 +469,7 @@ public class CountryServiceImpl implements CountryService {
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream()
                 .map(l -> countryRepository.findAllById(l)
-                        .collectList().subscribeOn(scheduler).toFuture().join())
+                        .publishOn(scheduler).collectList().toFuture().join())
                 .flatMap(List::stream)
                 .collect(toList());
     }
@@ -560,7 +565,7 @@ public class CountryServiceImpl implements CountryService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, Country.class).collectList().subscribeOn(scheduler);
+        return reactiveMongoTemplate.find(listQuery, Country.class).publishOn(scheduler).collectList();
     }
 
     /**
@@ -572,7 +577,7 @@ public class CountryServiceImpl implements CountryService {
     @Override
     public Mono<Long> countCountryMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countCountryMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, Country.class).subscribeOn(scheduler);
+        return reactiveMongoTemplate.count(query, Country.class).publishOn(scheduler);
     }
 
     /**

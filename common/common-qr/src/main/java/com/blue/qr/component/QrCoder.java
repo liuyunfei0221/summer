@@ -2,6 +2,7 @@ package com.blue.qr.component;
 
 
 import com.blue.base.model.exps.BlueException;
+import com.blue.qr.api.conf.ColorAttr;
 import com.blue.qr.api.conf.QrConf;
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
@@ -93,9 +94,14 @@ public final class QrCoder {
         this.matrixToImageConfig = new MatrixToImageConfig(conf.getOnColor(), conf.getOffColor());
         this.frameRound =
                 new RoundRectangle2D.Float(logoRoundX + 2, logoRoundY + 2, logoRoundWidth - 4, logoRoundHeight - 4, LOGO_AND_FRAME_ROUND_ARCW, LOGO_AND_FRAME_ROUND_ARCH);
-        this.frameColor = conf.getFrameColor();
         this.stroke = new BasicStroke(conf.getStrokesWidth(), CAP_ROUND, JOIN_ROUND);
-        this.logoFrameColor = conf.getLogoFrameColor();
+
+        ColorAttr frameColorAttr = conf.getFrameColor();
+        this.frameColor = new Color(frameColorAttr.getR(), frameColorAttr.getG(), frameColorAttr.getB(), frameColorAttr.getA());
+
+        ColorAttr logoFrameColorAttr = conf.getLogoFrameColor();
+        this.logoFrameColor = new Color(logoFrameColorAttr.getR(), logoFrameColorAttr.getG(), logoFrameColorAttr.getB(), logoFrameColorAttr.getA());
+
         this.fileType = conf.getFileType();
     }
 
@@ -207,10 +213,6 @@ public final class QrCoder {
             throw new RuntimeException("width can't be less than 1");
         if (conf.getHeight() < 1)
             throw new RuntimeException("height can't be less than 1");
-        if (conf.getOnColor() < 1)
-            throw new RuntimeException("onColor can't be less than 1");
-        if (conf.getOffColor() < 1)
-            throw new RuntimeException("offColor can't be less than 1");
         if (conf.getStrokesWidth() < 1)
             throw new RuntimeException("offColor can't be less than 1");
         if (isNull(conf.getLogoFrameColor()))

@@ -20,8 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
 import static io.netty.buffer.ByteBufAllocator.DEFAULT;
 import static java.lang.String.valueOf;
@@ -50,7 +53,7 @@ public final class MediaCommonFunctions extends ReactiveCommonFunctions {
     /**
      * buffer allocate size
      */
-    private static final int BUFFER_ALLOCATE = 512;
+    public static final int BUFFER_ALLOCATE = 512;
 
     /**
      * error message consumer
@@ -72,6 +75,34 @@ public final class MediaCommonFunctions extends ReactiveCommonFunctions {
             throw (BlueException) throwable;
 
         throw new RuntimeException(throwable);
+    };
+
+    public static final Function<byte[], Flux<DataBuffer>> BUFFER_FLUX_CONVERTER = bytes -> {
+        if (isNull(bytes))
+            throw new BlueException(EMPTY_PARAM);
+
+        final byte[] tarBytes = bytes;
+        int len = tarBytes.length;
+
+        return Flux.create(fluxSink -> {
+                    int limit = 0;
+                    int rows = BUFFER_ALLOCATE;
+                    int last;
+
+                    while (limit < len) {
+                        if ((last = len - limit) < rows)
+                            rows = last;
+
+                        DataBuffer dataBuffer = DATA_BUFFER_FACTORY.allocateBuffer(rows);
+                        dataBuffer.write(tarBytes, limit, rows);
+                        fluxSink.next(dataBuffer);
+
+                        limit += rows;
+                    }
+
+                    fluxSink.complete();
+                }
+        );
     };
 
     /**

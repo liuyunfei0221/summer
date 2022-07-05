@@ -327,6 +327,7 @@ public class AddressServiceImpl implements AddressService {
                     probe.setMemberId(memberId);
 
                     return addressRepository.count(Example.of(probe))
+                            .publishOn(scheduler)
                             .switchIfEmpty(defer(() -> just(0L)))
                             .flatMap(count -> {
                                 if (count >= MAX_ADDRESS)
@@ -335,8 +336,7 @@ public class AddressServiceImpl implements AddressService {
                                 return ADDRESS_INSERT_PARAM_2_MEMBER_ADDRESS.apply(addressInsertParam, memberId);
                             })
                             .flatMap(addressRepository::insert)
-                            .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a)))
-                            .subscribeOn(scheduler);
+                            .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a)));
                 }
         );
     }
@@ -359,6 +359,7 @@ public class AddressServiceImpl implements AddressService {
 
         return synchronizedProcessor.handleSupWithLock(ADDRESS_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
                 addressRepository.findById(addressUpdateParam.getId())
+                        .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(address -> {
                             if (!address.getMemberId().equals(memberId))
@@ -367,9 +368,7 @@ public class AddressServiceImpl implements AddressService {
                             return ADDRESS_UPDATE_PARAM_2_MEMBER_ADDRESS.apply(addressUpdateParam, address);
                         })
                         .flatMap(addressRepository::save)
-                        .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a)))
-                        .subscribeOn(scheduler)
-        );
+                        .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a))));
     }
 
     /**
@@ -389,6 +388,7 @@ public class AddressServiceImpl implements AddressService {
 
         return synchronizedProcessor.handleSupWithLock(ADDRESS_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
                 addressRepository.findById(id)
+                        .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(address -> {
                             if (!address.getMemberId().equals(memberId))
@@ -397,9 +397,7 @@ public class AddressServiceImpl implements AddressService {
                             return addressRepository.delete(address)
                                     .then(just(address));
                         })
-                        .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a)))
-                        .subscribeOn(scheduler)
-        );
+                        .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a))));
     }
 
     /**
@@ -414,7 +412,7 @@ public class AddressServiceImpl implements AddressService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return addressRepository.findById(id).subscribeOn(scheduler);
+        return addressRepository.findById(id).publishOn(scheduler);
     }
 
     /**
@@ -432,7 +430,7 @@ public class AddressServiceImpl implements AddressService {
         Address probe = new Address();
         probe.setMemberId(memberId);
 
-        return addressRepository.findAll(Example.of(probe)).collectList().subscribeOn(scheduler);
+        return addressRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList();
     }
 
     /**
@@ -492,9 +490,10 @@ public class AddressServiceImpl implements AddressService {
 
         return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
                 .map(shardIds -> addressRepository.findAllById(shardIds)
+                        .publishOn(scheduler)
                         .map(ADDRESS_2_ADDRESS_INFO))
                 .reduce(Flux::concat)
-                .flatMap(Flux::collectList).subscribeOn(scheduler);
+                .flatMap(Flux::collectList);
     }
 
     /**
@@ -515,7 +514,7 @@ public class AddressServiceImpl implements AddressService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, Address.class).collectList().subscribeOn(scheduler);
+        return reactiveMongoTemplate.find(listQuery, Address.class).publishOn(scheduler).collectList();
     }
 
     /**
@@ -527,7 +526,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public Mono<Long> countAddressMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countAddressMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, Address.class).subscribeOn(scheduler);
+        return reactiveMongoTemplate.count(query, Address.class).publishOn(scheduler);
     }
 
     /**

@@ -62,7 +62,7 @@ public final class BlueBitMarker {
     private static final Function<String, List<String>> SCRIPT_KEYS_WRAPPER = Arrays::asList;
 
     private final BiFunction<String, Integer, Mono<Boolean>> BITMAP_BIT_GETTER = (key, offset) ->
-            reactiveStringRedisTemplate.opsForValue().getBit(key, (long) offset).subscribeOn(scheduler);
+            reactiveStringRedisTemplate.opsForValue().getBit(key, (long) offset).publishOn(scheduler);
 
     private static final BiFunction<List<Long>, Integer, boolean[]> BITS_PARSER = (records, limit) -> {
         if (limit < MIN_LIMIT || limit > MAX_LIMIT)
@@ -95,8 +95,8 @@ public final class BlueBitMarker {
                                         BitFieldSubCommands.create()
                                                 .get(BitFieldSubCommands.BitFieldType.signed(limit))
                                                 .valueAt(MARK_BIT)))
-                .elementAt(FLUX_ELEMENT_INDEX)
-                .subscribeOn(scheduler);
+                .publishOn(scheduler)
+                .elementAt(FLUX_ELEMENT_INDEX);
     }
 
     /**
@@ -145,8 +145,8 @@ public final class BlueBitMarker {
         return isNotBlank(key) ?
                 reactiveStringRedisTemplate.execute(BIT_SET_SCRIPT, SCRIPT_KEYS_WRAPPER.apply(key),
                                 generateArgs(offset, bit, expiresSecond))
+                        .publishOn(scheduler)
                         .elementAt(FLUX_ELEMENT_INDEX)
-                        .subscribeOn(scheduler)
                 :
                 error(() -> new BlueException(BAD_REQUEST));
     }
@@ -159,8 +159,8 @@ public final class BlueBitMarker {
      */
     public Mono<Boolean> delete(String key) {
         return isNotBlank(key) ?
-                reactiveStringRedisTemplate.delete(key).flatMap(r -> just(r > 0))
-                        .subscribeOn(scheduler)
+                reactiveStringRedisTemplate.delete(key)
+                        .publishOn(scheduler).flatMap(r -> just(r > 0))
                 :
                 error(() -> new BlueException(BAD_REQUEST));
     }

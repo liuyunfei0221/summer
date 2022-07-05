@@ -45,7 +45,7 @@ public class RpcCredentialServiceConsumer {
      * @return
      */
     public Mono<CredentialInfo> getCredentialByMemberIdAndType(Long memberId, String credentialType) {
-        return fromFuture(rpcCredentialService.getCredentialByMemberIdAndType(memberId, credentialType)).subscribeOn(scheduler);
+        return fromFuture(rpcCredentialService.getCredentialByMemberIdAndType(memberId, credentialType)).publishOn(scheduler);
     }
 
     /**
@@ -56,7 +56,7 @@ public class RpcCredentialServiceConsumer {
      * @return
      */
     public Mono<List<CredentialInfo>> selectCredentialByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
-        return fromFuture(rpcCredentialService.selectCredentialByMemberIdAndTypes(memberId, credentialTypes)).subscribeOn(scheduler);
+        return fromFuture(rpcCredentialService.selectCredentialByMemberIdAndTypes(memberId, credentialTypes)).publishOn(scheduler);
     }
 
     /**
@@ -67,7 +67,7 @@ public class RpcCredentialServiceConsumer {
      * @return
      */
     public Mono<CredentialInfo> getCredentialByCredentialAndType(String credential, String credentialType) {
-        return fromFuture(rpcCredentialService.getCredentialByCredentialAndType(credential, credentialType)).subscribeOn(scheduler);
+        return fromFuture(rpcCredentialService.getCredentialByCredentialAndType(credential, credentialType)).publishOn(scheduler);
     }
 
     /**
@@ -78,7 +78,7 @@ public class RpcCredentialServiceConsumer {
      * @return
      */
     public Mono<List<CredentialInfo>> selectCredentialByCredentialAndTypes(String credential, List<String> credentialTypes) {
-        return fromFuture(rpcCredentialService.selectCredentialByCredentialAndTypes(credential, credentialTypes)).subscribeOn(scheduler);
+        return fromFuture(rpcCredentialService.selectCredentialByCredentialAndTypes(credential, credentialTypes)).publishOn(scheduler);
     }
 
 }

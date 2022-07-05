@@ -97,7 +97,7 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      */
     @Override
     public CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds) {
-        return authControlService.refreshMemberRoleByIds(memberId, roleIds).subscribeOn(scheduler).toFuture();
+        return authControlService.refreshMemberRoleByIds(memberId, roleIds).publishOn(scheduler).toFuture();
     }
 
     /**
@@ -108,7 +108,7 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      */
     @Override
     public CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByAccess(Access access) {
-        return just(access).subscribeOn(scheduler).flatMap(authControlService::selectAuthoritiesMonoByAccess).toFuture();
+        return just(access).publishOn(scheduler).flatMap(authControlService::selectAuthoritiesMonoByAccess).toFuture();
     }
 
     /**
@@ -119,7 +119,7 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      */
     @Override
     public CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByMemberId(Long memberId) {
-        return just(memberId).subscribeOn(scheduler).flatMap(authControlService::selectAuthoritiesMonoByMemberId).toFuture();
+        return just(memberId).publishOn(scheduler).flatMap(authControlService::selectAuthoritiesMonoByMemberId).toFuture();
     }
 
 }
