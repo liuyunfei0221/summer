@@ -35,12 +35,12 @@ public class Test {
 
     }
 
-    private static void testParse(String filePath) {
+    private static void testParse(String filePath, QrCoder qrCoder) {
         try (FileInputStream fileInputStream = new FileInputStream(filePath);
              BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream)) {
             byte[] qrData = bufferedInputStream.readAllBytes();
 
-            String result = QrCoder.parseCode(qrData);
+            String result = qrCoder.parseCode(qrData);
             System.err.println(result);
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,7 +58,7 @@ public class Test {
             e.printStackTrace();
         }
 
-        testParse(qrDesc);
+        testParse(qrDesc, qrCoder);
 
     }
 
@@ -78,7 +78,7 @@ public class Test {
             e.printStackTrace();
         }
 
-        testParse(qrDesc);
+        testParse(qrDesc, qrCoder);
 
     }
 

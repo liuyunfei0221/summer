@@ -4,10 +4,13 @@ import com.blue.base.model.common.Access;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.api.model.QrCodeConfigInfo;
 import com.blue.media.component.qr.inter.QrCodeGenHandler;
+import com.blue.media.model.QrCodeGenerateParam;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
@@ -46,14 +49,15 @@ public class QrCodeGenerateProcessor implements ApplicationListener<ContextRefre
     }
 
     /**
-     * generate qr code stream
+     * generate qr code
      *
      * @param qrCodeConfigInfo
+     * @param qrCodeGenerateParam
      * @param access
-     * @param param
+     * @param serverRequest
      * @return
      */
-    public Mono<byte[]> generate(QrCodeConfigInfo qrCodeConfigInfo, Access access, Map<String, String> param) {
+    public Mono<ServerResponse> generateCode(QrCodeGenerateParam qrCodeGenerateParam, QrCodeConfigInfo qrCodeConfigInfo, Access access, ServerRequest serverRequest) {
         if (isNull(qrCodeConfigInfo))
             throw new BlueException(BAD_REQUEST);
 
@@ -61,7 +65,7 @@ public class QrCodeGenerateProcessor implements ApplicationListener<ContextRefre
         assertQrCodeGenType(genHandlerType, false);
 
         return ofNullable(qrCodeGenHandlers.get(genHandlerType))
-                .map(gh -> gh.generate(access, param, qrCodeConfigInfo))
+                .map(gh -> gh.generateCode(qrCodeGenerateParam, qrCodeConfigInfo, access, serverRequest))
                 .orElseThrow(() -> new BlueException(INVALID_PARAM));
     }
 

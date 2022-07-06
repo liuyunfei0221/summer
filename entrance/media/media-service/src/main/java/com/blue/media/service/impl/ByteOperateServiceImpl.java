@@ -51,9 +51,9 @@ import static com.blue.base.constant.common.SpecialPrefix.CONTENT_DISPOSITION_FI
 import static com.blue.base.constant.common.Status.VALID;
 import static com.blue.base.constant.common.Symbol.SCHEME_SEPARATOR;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENTS_2_ATTACHMENT_UPLOAD_INFOS_CONVERTER;
+import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_UPLOAD_INFO_CONVERTER;
 import static java.lang.Integer.parseInt;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
@@ -178,7 +178,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         return byteProcessor.read(link, memberId);
     };
 
-    private final BiFunction<List<FileUploadResult>, Long, UploadResultSummary> ATTACHMENTS_RECORDER = (fileUploadResults, memberId) -> {
+    private final BiFunction<List<FileUploadResult>, Long, Mono<UploadResultSummary>> ATTACHMENTS_RECORDER = (fileUploadResults, memberId) -> {
         LOGGER.info("ATTACHMENTS_RECORDER, fileUploadResults = {}, memberId = {}", fileUploadResults, memberId);
 
         UploadResultSummary uploadResultSummary = new UploadResultSummary();
@@ -202,7 +202,21 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                         .flatMap(List::stream)
                         .collect(toList())));
 
-        return uploadResultSummary;
+        return just(uploadResultSummary);
+    };
+
+    private final BiFunction<FileUploadResult, Long, Mono<AttachmentUploadInfo>> ATTACHMENT_RECORDER = (fileUploadResult, memberId) -> {
+        LOGGER.info("ATTACHMENT_RECORDER, fileUploadResult = {}, memberId = {}", fileUploadResult, memberId);
+
+        if (isNull(fileUploadResult) || isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+
+        return fileUploadResult.getSuccess()
+                ?
+                attachmentService.insertAttachment(ATTACHMENT_CONVERTER.apply(fileUploadResult, memberId))
+                        .map(ATTACHMENT_2_ATTACHMENT_UPLOAD_INFO_CONVERTER)
+                :
+                error(() -> new BlueException(BAD_REQUEST));
     };
 
     public static final UnaryOperator<String> FILE_TYPE_GETTER = MediaCommonFunctions.FILE_TYPE_GETTER;
@@ -247,9 +261,9 @@ public class ByteOperateServiceImpl implements ByteOperateService {
      * @return
      */
     @Override
-    public Mono<UploadResultSummary> upload(byte[] bytes, Integer type, Long memberId, String originalName, String descName) {
+    public Mono<AttachmentUploadInfo> upload(byte[] bytes, Integer type, Long memberId, String originalName, String descName) {
         return byteProcessor.write(bytes, type, memberId, originalName, descName)
-                .flatMap(fur -> just(ATTACHMENTS_RECORDER.apply(singletonList(fur), memberId)));
+                .flatMap(fur -> ATTACHMENT_RECORDER.apply(fur, memberId));
     }
 
     /**
@@ -269,7 +283,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                     return zip(ATTACHMENTS_UPLOADER.apply(tuple2.getT1(), memberId), just(memberId));
                 })
                 .flatMap(tuple2 ->
-                        just(ATTACHMENTS_RECORDER.apply(tuple2.getT1(), tuple2.getT2())))
+                        ATTACHMENTS_RECORDER.apply(tuple2.getT1(), tuple2.getT2()))
                 .flatMap(summary ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, summary, serverRequest), BlueResponse.class)

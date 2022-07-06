@@ -1,6 +1,6 @@
 package com.blue.media.service.inter;
 
-import com.blue.media.api.model.UploadResultSummary;
+import com.blue.media.api.model.AttachmentUploadInfo;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -23,7 +23,7 @@ public interface ByteOperateService {
      * @param descName
      * @return
      */
-    Mono<UploadResultSummary> upload(byte[] bytes, Integer type, Long memberId, String originalName, String descName);
+    Mono<AttachmentUploadInfo> upload(byte[] bytes, Integer type, Long memberId, String originalName, String descName);
 
     /**
      * upload

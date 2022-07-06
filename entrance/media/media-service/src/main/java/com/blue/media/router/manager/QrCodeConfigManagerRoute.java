@@ -1,6 +1,6 @@
-package com.blue.base.router.manager;
+package com.blue.media.router.manager;
 
-import com.blue.base.handler.manager.StyleManagerHandler;
+import com.blue.media.handler.manager.QrCodeConfigManagerHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -15,26 +15,25 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * style manager route
+ * config manager route
  *
  * @author liuyunfei
  */
 @SuppressWarnings("DuplicatedCode")
 @Configuration
-public class StyleManagerRoute {
+public class QrCodeConfigManagerRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> roleManagerRouter(StyleManagerHandler styleManagerHandler) {
+    RouterFunction<ServerResponse> qrCodeConfigManagerRouter(QrCodeConfigManagerHandler qrCodeConfigManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-base/manager");
+        RequestPredicate pathPredicate = path("/blue-media/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/style", accept(APPLICATION_JSON), styleManagerHandler::insert)
-                .PUT("/style", accept(APPLICATION_JSON), styleManagerHandler::update)
-                .DELETE("/style/{" + ID.key + "}", styleManagerHandler::delete)
-                .PUT("/style/active", styleManagerHandler::updateActive)
-                .POST("/styles", accept(APPLICATION_JSON), styleManagerHandler::select)
+                .POST("/qrCodeConfig", accept(APPLICATION_JSON), qrCodeConfigManagerHandler::insert)
+                .PUT("/qrCodeConfig", accept(APPLICATION_JSON), qrCodeConfigManagerHandler::update)
+                .DELETE("/qrCodeConfig/{" + ID.key + "}", qrCodeConfigManagerHandler::delete)
+                .POST("/qrCodeConfigs", accept(APPLICATION_JSON), qrCodeConfigManagerHandler::select)
                 .build();
 
         return nest(pathPredicate, routerFunction);

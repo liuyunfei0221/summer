@@ -3,9 +3,10 @@ package com.blue.media.component.qr.inter;
 import com.blue.base.constant.media.QrCodeGenType;
 import com.blue.base.model.common.Access;
 import com.blue.media.api.model.QrCodeConfigInfo;
+import com.blue.media.model.QrCodeGenerateParam;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-
-import java.util.Map;
 
 /**
  * qr code generate handler interface
@@ -18,12 +19,13 @@ public interface QrCodeGenHandler {
     /**
      * generate
      *
-     * @param access
-     * @param param
      * @param qrCodeConfigInfo
+     * @param qrCodeGenerateParam
+     * @param access
+     * @param serverRequest
      * @return
      */
-    Mono<byte[]> generate(Access access, Map<String, String> param, QrCodeConfigInfo qrCodeConfigInfo);
+    Mono<ServerResponse> generateCode(QrCodeGenerateParam qrCodeGenerateParam, QrCodeConfigInfo qrCodeConfigInfo, Access access, ServerRequest serverRequest);
 
     /**
      * target qr code gen type to process

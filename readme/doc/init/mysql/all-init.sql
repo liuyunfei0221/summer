@@ -548,11 +548,21 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
         'attachment list of api', 'attachment list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (220004, 'POST', 'blue-media', '/downloadHistories', b'1', b'1', b'1', b'1', b'1', 1,
         'download history list of api', 'download history list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220005, 'POST', 'blue-media', '/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
+       (220005, 'POST', 'blue-media', '/qrCode', b'1', b'1', b'1', b'1', b'1', 1,
+        'generate qr code for api', 'generate qr code for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
+       (220006, 'POST', 'blue-media', '/withdraw', b'1', b'0', b'0', b'1', b'1', 1,
         'withdraw test encrypt in media', 'withdraw test encrypt in media', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220006, 'GET', 'blue-media', '/mail/send', b'0', b'1', b'1', b'0', b'1', 2,
+       (220007, 'POST', 'blue-media', '/trd', b'1', b'1', b'1', b'1', b'1', 1,
+        'test temp redirect in media', 'test temp redirect in medi', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (220008, 'POST', 'blue-media', '/rd', b'1', b'1', b'1', b'1', b'1', 1,
+        'test redirect in media', 'test redirect in media', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (220009, 'POST', 'blue-media', '/fd', b'1', b'1', b'1', b'1', b'1', 1,
+        'test forward in media', 'test forward in media', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
+       (220010, 'GET', 'blue-media', '/mail/send', b'0', b'1', b'1', b'0', b'1', 2,
         'test send', 'test send', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220007, 'GET', 'blue-media', '/mail/read', b'0', b'1', b'1', b'0', b'1', 2,
+       (220011, 'GET', 'blue-media', '/mail/read', b'0', b'1', b'1', b'0', b'1', 2,
         'test read', 'test read', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- media manage
@@ -562,6 +572,15 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
        (230007, 'POST', 'blue-media', '/manager/downloadHistories', b'1', b'1', b'1', b'0', b'1', 2,
         'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
+       (230008, 'POST', 'blue-base', '/manager/qrCodeConfigs', b'1', b'1', b'1', b'1', b'1', 2,
+        ' qr code config list of manager', ' qr code config list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (230009, 'POST', 'blue-base', '/manager/qrCodeConfig', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert qr code config', 'insert qr code config', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (230010, 'PUT', 'blue-base', '/manager/qrCodeConfig', b'1', b'1', b'1', b'1', b'1', 2,
+        'update qr code config', 'update qr code config', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (230011, 'DELETE', 'blue-base', '/manager/qrCodeConfig/{id}', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete qr code config', 'delete qr code config', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
 
 -- portal api
 

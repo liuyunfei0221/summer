@@ -1,13 +1,12 @@
-package com.blue.base.router.manager;
+package com.blue.media.router.api;
 
-import com.blue.base.handler.manager.StyleManagerHandler;
+import com.blue.media.handler.api.QrCodeGenerateApiHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static com.blue.base.constant.common.PathVariable.ID;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
@@ -15,26 +14,21 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * style manager route
+ * qr code generate api route
  *
  * @author liuyunfei
  */
-@SuppressWarnings("DuplicatedCode")
 @Configuration
-public class StyleManagerRoute {
+public class QrCodeGenerateApiRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> roleManagerRouter(StyleManagerHandler styleManagerHandler) {
+    RouterFunction<ServerResponse> qrCodeGenerateApiRouter(QrCodeGenerateApiHandler qrCodeGenerateApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-base/manager");
+        RequestPredicate pathPredicate = path("/blue-media/qrCode");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/style", accept(APPLICATION_JSON), styleManagerHandler::insert)
-                .PUT("/style", accept(APPLICATION_JSON), styleManagerHandler::update)
-                .DELETE("/style/{" + ID.key + "}", styleManagerHandler::delete)
-                .PUT("/style/active", styleManagerHandler::updateActive)
-                .POST("/styles", accept(APPLICATION_JSON), styleManagerHandler::select)
+                .POST("", accept(APPLICATION_JSON), qrCodeGenerateApiHandler::generate)
                 .build();
 
         return nest(pathPredicate, routerFunction);

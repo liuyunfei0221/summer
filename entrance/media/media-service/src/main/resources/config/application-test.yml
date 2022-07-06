@@ -204,11 +204,19 @@ cosfiles:
 qr:
   width: 200
   height: 200
-  onColor: 0xFF000001
-  offColor: 0xFFFFFFFF
+  onColor: -16777215
+  offColor: -1
   strokesWidth: 1
-  logoFrameColor: Color.WHITE
-  frameColor: Color.CYAN
+  logoFrameColor:
+    r: 255
+    g: 255
+    b: 255
+    a: 255
+  frameColor:
+    r: 0
+    g: 255
+    b: 255
+    a: 255
   fileType: jpg
 
 

@@ -111,7 +111,7 @@ public final class QrCoder {
      * @param qrData
      * @return
      */
-    public static String parseCode(byte[] qrData) {
+    public String parseCode(byte[] qrData) {
         if (isNull(qrData) || qrData.length < 1)
             throw new BlueException(BAD_REQUEST);
 
@@ -198,6 +198,15 @@ public final class QrCoder {
             LOGGER.error("generateCodeWithLogo(String content, byte[] logoData), e = ", e);
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "parse data failed");
         }
+    }
+
+    /**
+     * get file type
+     *
+     * @return
+     */
+    public String getFileType() {
+        return this.fileType;
     }
 
     /**

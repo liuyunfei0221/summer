@@ -124,6 +124,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
         try {
             return open(new File(descName).toPath(), CREATE_NEW, WRITE);
         } catch (Exception e) {
+            LOGGER.error("CHANNEL_GEN failed, descName = {}, e = {}", descName, e);
             throw new BlueException(BAD_REQUEST);
         }
     };

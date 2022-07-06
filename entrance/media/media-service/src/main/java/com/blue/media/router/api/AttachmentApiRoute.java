@@ -28,7 +28,6 @@ public class AttachmentApiRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/attachments", accept(APPLICATION_JSON), attachmentApiHandler::select)
-                .POST("/withdraw", accept(APPLICATION_JSON), attachmentApiHandler::withdraw)
                 .build();
 
         return nest(pathPredicate, routerFunction);

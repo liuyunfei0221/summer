@@ -3,7 +3,6 @@ package com.blue.media.handler.api;
 import com.blue.base.model.common.BlueResponse;
 import com.blue.base.model.common.PageModelRequest;
 import com.blue.base.model.exps.BlueException;
-import com.blue.media.api.model.WithdrawInfo;
 import com.blue.media.service.inter.AttachmentService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -48,28 +47,6 @@ public final class AttachmentApiHandler {
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));
-    }
-
-    /**
-     * test encrypt in media project
-     *
-     * @param serverRequest
-     * @return
-     */
-    public Mono<ServerResponse> withdraw(ServerRequest serverRequest) {
-        return zip(serverRequest.bodyToMono(WithdrawInfo.class)
-                        .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
-                getAccessReact(serverRequest))
-                .flatMap(tuple2 -> {
-                    System.err.println(tuple2.getT2());
-                    System.err.println();
-                    System.err.println(tuple2.getT1());
-
-                    return just("OK");
-                }).flatMap(
-                        rs ->
-                                ok().contentType(APPLICATION_JSON)
-                                        .body(generate(OK.code, rs, serverRequest), BlueResponse.class));
     }
 
 }

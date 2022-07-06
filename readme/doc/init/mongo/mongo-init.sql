@@ -65,3 +65,29 @@ db.downloadHistory.createIndex({"id":1});
 db.downloadHistory.createIndex({"attachmentId":1});
 db.downloadHistory.createIndex({"createTime":-1});
 db.downloadHistory.createIndex({"creator":1});
+
+db.getCollection("qrCodeConfig").insert( {
+    _id: NumberLong("41122926732247041"),
+    name: "member info",
+    description: "member info",
+    type: NumberInt("1"),
+    genHandlerType: NumberInt("1"),
+    domain: "localhost:11000",
+    pathToBeFilled: "blue-member/basic/%s",
+    placeholderCount: NumberInt("1"),
+    allowedRoles: [
+        NumberLong("1"),
+        NumberLong("2"),
+        NumberLong("3"),
+        NumberLong("4"),
+        NumberLong("5"),
+        NumberLong("6")
+    ],
+    status: NumberInt("1"),
+    createTime: NumberLong("1657089007"),
+    updateTime: NumberLong("1657089007"),
+    creator: NumberLong("1"),
+    updater: NumberLong("1"),
+    _class: "com.blue.media.repository.entity.QrCodeConfig"
+} );
+db.qrCodeConfig.createIndex({"type":1});
