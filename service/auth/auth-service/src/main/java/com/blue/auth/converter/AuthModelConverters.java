@@ -5,9 +5,9 @@ import com.blue.auth.model.*;
 import com.blue.auth.repository.entity.*;
 import com.blue.base.model.exps.BlueException;
 
+import java.util.Map;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.BlueChecker.isNull;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.base.common.base.ConstantProcessor.getResourceTypeByIdentity;
@@ -15,6 +15,7 @@ import static com.blue.base.constant.common.Default.NOT_DEFAULT;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Symbol.PATH_SEPARATOR;
+import static java.util.Optional.ofNullable;
 
 /**
  * model converters in auth project
@@ -60,17 +61,16 @@ public final class AuthModelConverters {
      * role -> role manager indo
      *
      * @param role
-     * @param creatorName
-     * @param updaterName
+     * @param idAndMemberNameMapping
      * @return
      */
-    public static RoleManagerInfo roleToRoleManagerInfo(Role role, String creatorName, String updaterName) {
+    public static RoleManagerInfo roleToRoleManagerInfo(Role role, Map<Long, String> idAndMemberNameMapping) {
         if (isNull(role))
             throw new BlueException(EMPTY_PARAM);
 
         return new RoleManagerInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault(),
-                role.getCreateTime(), role.getUpdateTime(), role.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value,
-                role.getUpdater(), isNotBlank(updaterName) ? updaterName : EMPTY_DATA.value);
+                role.getCreateTime(), role.getUpdateTime(), role.getCreator(), ofNullable(idAndMemberNameMapping.get(role.getCreator())).orElse(EMPTY_DATA.value),
+                role.getUpdater(), ofNullable(idAndMemberNameMapping.get(role.getUpdater())).orElse(EMPTY_DATA.value));
     }
 
     /**
@@ -114,18 +114,17 @@ public final class AuthModelConverters {
 
         return new ResourceInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(),
                 resource.getAuthenticate(), resource.getRequestUnDecryption(), resource.getResponseUnEncryption(), resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
-                 getResourceTypeByIdentity(resource.getType()).disc.intern(), resource.getName(), resource.getDescription());
+                getResourceTypeByIdentity(resource.getType()).disc.intern(), resource.getName(), resource.getDescription());
     };
 
     /**
      * resource -> resource manager indo
      *
      * @param resource
-     * @param creatorName
-     * @param updaterName
+     * @param idAndMemberNameMapping
      * @return
      */
-    public static ResourceManagerInfo resourceToResourceManagerInfo(Resource resource, String creatorName, String updaterName) {
+    public static ResourceManagerInfo resourceToResourceManagerInfo(Resource resource, Map<Long, String> idAndMemberNameMapping) {
         if (isNull(resource))
             throw new BlueException(EMPTY_PARAM);
 
@@ -134,8 +133,8 @@ public final class AuthModelConverters {
 
         return new ResourceManagerInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(), resource.getAuthenticate(),
                 resource.getRequestUnDecryption(), resource.getResponseUnEncryption(), resource.getExistenceRequestBody(), resource.getExistenceResponseBody(), getResourceTypeByIdentity(resource.getType()).disc.intern(),
-                resource.getName(), resource.getDescription(), resource.getCreateTime(), resource.getUpdateTime(), resource.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value,
-                resource.getUpdater(), isNotBlank(updaterName) ? updaterName : EMPTY_DATA.value);
+                resource.getName(), resource.getDescription(), resource.getCreateTime(), resource.getUpdateTime(), resource.getCreator(), ofNullable(idAndMemberNameMapping.get(resource.getCreator())).orElse(EMPTY_DATA.value),
+                resource.getUpdater(), ofNullable(idAndMemberNameMapping.get(resource.getUpdater())).orElse(EMPTY_DATA.value));
     }
 
     /**

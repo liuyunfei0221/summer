@@ -7,6 +7,7 @@ import com.blue.portal.model.BulletinInsertParam;
 import com.blue.portal.repository.entity.Bulletin;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
@@ -15,6 +16,7 @@ import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.VALID;
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -74,17 +76,17 @@ public final class PortalModelConverters {
      * bulletin -> bulletin manager indo
      *
      * @param bulletin
-     * @param creatorName
-     * @param updaterName
+     * @param idAndMemberNameMapping
      * @return
      */
-    public static BulletinManagerInfo bulletinToBulletinManagerInfo(Bulletin bulletin, String creatorName, String updaterName) {
+    public static BulletinManagerInfo bulletinToBulletinManagerInfo(Bulletin bulletin, Map<Long, String> idAndMemberNameMapping) {
         if (isNull(bulletin))
             throw new BlueException(EMPTY_PARAM);
 
         return new BulletinManagerInfo(bulletin.getId(), bulletin.getTitle(), bulletin.getContent(), bulletin.getLink(), bulletin.getType(), bulletin.getStatus(),
                 bulletin.getPriority(), bulletin.getActiveTime(), bulletin.getExpireTime(), bulletin.getCreateTime(), bulletin.getUpdateTime(),
-                bulletin.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value, bulletin.getUpdater(), isNotBlank(updaterName) ? updaterName : EMPTY_DATA.value);
+                bulletin.getCreator(), ofNullable(idAndMemberNameMapping.get(bulletin.getCreator())).orElse(EMPTY_DATA.value), bulletin.getUpdater(),
+                ofNullable(idAndMemberNameMapping.get(bulletin.getUpdater())).orElse(EMPTY_DATA.value));
     }
 
 }

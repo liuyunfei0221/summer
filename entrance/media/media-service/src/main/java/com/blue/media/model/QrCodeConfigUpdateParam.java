@@ -2,6 +2,8 @@ package com.blue.media.model;
 
 import com.blue.base.model.exps.BlueException;
 
+import java.util.List;
+
 import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
 
@@ -20,8 +22,8 @@ public final class QrCodeConfigUpdateParam extends QrCodeConfigInsertParam {
     public QrCodeConfigUpdateParam() {
     }
 
-    public QrCodeConfigUpdateParam(Long id, String name, String description, Integer type, String domain, String pathToBeFilled, Integer placeholderCount) {
-        super(name, description, type, domain, pathToBeFilled, placeholderCount);
+    public QrCodeConfigUpdateParam(Long id, String name, String description, Integer type, String domain, String pathToBeFilled, Integer placeholderCount, List<Long> allowedRoles) {
+        super(name, description, type, domain, pathToBeFilled, placeholderCount, allowedRoles);
         this.id = id;
     }
 

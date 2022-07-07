@@ -1,5 +1,6 @@
-package com.blue.media.api.model;
+package com.blue.media.model;
 
+import com.blue.auth.api.model.RoleInfo;
 
 import java.io.Serializable;
 import java.util.List;
@@ -39,7 +40,7 @@ public final class QrCodeConfigManagerInfo implements Serializable {
     /**
      * allowed role ids
      */
-    private List<Long> allowedRoles;
+    private List<RoleInfo> allowedRoles;
 
     private Integer status;
 
@@ -59,7 +60,7 @@ public final class QrCodeConfigManagerInfo implements Serializable {
     }
 
     public QrCodeConfigManagerInfo(Long id, String name, String description, Integer type, Integer genHandlerType, String domain, String pathToBeFilled,
-                                   Integer placeholderCount, List<Long> allowedRoles, Integer status, Long createTime, Long updateTime,
+                                   Integer placeholderCount, List<RoleInfo> allowedRoles, Integer status, Long createTime, Long updateTime,
                                    Long creator, String creatorName, Long updater, String updaterName) {
         this.id = id;
         this.name = name;
@@ -143,11 +144,11 @@ public final class QrCodeConfigManagerInfo implements Serializable {
         this.placeholderCount = placeholderCount;
     }
 
-    public List<Long> getAllowedRoles() {
+    public List<RoleInfo> getAllowedRoles() {
         return allowedRoles;
     }
 
-    public void setAllowedRoles(List<Long> allowedRoles) {
+    public void setAllowedRoles(List<RoleInfo> allowedRoles) {
         this.allowedRoles = allowedRoles;
     }
 

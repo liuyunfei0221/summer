@@ -46,7 +46,7 @@ public final class QrCodeConfigManagerHandler {
         return zip(serverRequest.bodyToMono(QrCodeConfigInsertParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> just(qrCodeConfigService.insertQrCodeConfig(tuple2.getT1(), tuple2.getT2().getId())))
+                .flatMap(tuple2 -> qrCodeConfigService.insertQrCodeConfig(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ci, serverRequest), BlueResponse.class));
@@ -62,7 +62,7 @@ public final class QrCodeConfigManagerHandler {
         return zip(serverRequest.bodyToMono(QrCodeConfigUpdateParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> just(qrCodeConfigService.updateQrCodeConfig(tuple2.getT1(), tuple2.getT2().getId())))
+                .flatMap(tuple2 -> qrCodeConfigService.updateQrCodeConfig(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ci, serverRequest), BlueResponse.class));
@@ -76,7 +76,7 @@ public final class QrCodeConfigManagerHandler {
      */
     public Mono<ServerResponse> delete(ServerRequest serverRequest) {
         return getLongVariableReact(serverRequest, ID.key)
-                .flatMap(id -> just(qrCodeConfigService.deleteQrCodeConfig(id)))
+                .flatMap(qrCodeConfigService::deleteQrCodeConfig)
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ci, serverRequest), BlueResponse.class));

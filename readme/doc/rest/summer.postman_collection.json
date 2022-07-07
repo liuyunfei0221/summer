@@ -1140,7 +1140,7 @@
 							"raw": "{\r\n    \"credentialType\":\"EP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"liuyunfei19890221@gmail.com\",\r\n        \"access\":\"password\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:11000/blue-auth/auth/login",
+							"raw": "localhost:11000/blue-auth/auth/session",
 							"host": [
 								"localhost"
 							],
@@ -1148,7 +1148,7 @@
 							"path": [
 								"blue-auth",
 								"auth",
-								"login"
+								"session"
 							]
 						}
 					},
@@ -1170,7 +1170,7 @@
 							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"0540170\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:11000/blue-auth/auth/login",
+							"raw": "localhost:11000/blue-auth/auth/session",
 							"host": [
 								"localhost"
 							],
@@ -1178,7 +1178,7 @@
 							"path": [
 								"blue-auth",
 								"auth",
-								"login"
+								"session"
 							]
 						}
 					},
@@ -1389,11 +1389,11 @@
 				{
 					"name": "注销登录",
 					"request": {
-						"method": "PATCH",
+						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMmRlODFkNTA2MmI5MTAyOTY4NTlhMmEyMDAwZWY1ZDBhOWE4OGNlMDliNWQxYzA4NTdkM2I5NjhlYzJhZDQ4OGY1NTIxMDI3NDM5YmZkZThlYzFkNDdhMzRkOTAwODg5ODZjMTM4NTI0Yjc0MjBiN2U3YTUzYmZlOTY2NWVmNDciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxNjg3NiIsIm5iZiI6MTY1NTgxNjg3NiwidCI6ImNtWUxJcUVPaXdUIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ5MDQyOTI5OTM3MDAxX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTkyODc2Mzg2LCJpIjoiMzk3NDkwNDI5Mjk5MzcwMDEiLCJleHAiOjE2NjM1OTI4NzYsImlhdCI6MTY1NTgxNjg3NiwianRpIjoiWXVEdk95ZUtOYTNycFlmQUxRUFZFVEZRSFhjNGp5cTciLCJuIjoiUFZBUiJ9.18W38i43zFLezElSE4mTbipczrKSABHmMYVhvaaYOSo-ilTud6q3FBGodzXGcBvulYfoZFNzBEcY0MDGhOWQkg",
+								"value": "eyJraWQiOiJiY2Q2ZWMyNTgxMTk5OGZjOWRkNTFlMjVjOTE5YjU4Yzc1MDU0MjZhZmFkYTc5YTA3NjE2ZjZmZjllOTk0NDkwZDljMGZjNmE0MmRjOTFmN2ZmYjUxZWRmZjYxZGQyOTZiNzhkNDczZDE0ZmZlMzQ3NzNhNTA1ZDAxNTcxYWZiNSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIxNzc0OTk0NjQ2NjMwNV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMTc3NDk5NDY0NjYzMDUiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxNzc1OTYiLCJuYmYiOjE2NTcxNzc1OTYsInQiOiI4RXNmemczdDZHbSIsImVhcyI6MTY2NDk1MzU5NjY4OCwiZXhwIjoxNjY0OTUzNTk2LCJpYXQiOjE2NTcxNzc1OTYsImp0aSI6Ikk5ZDNZYnIzYmYzOWFFbmFhSEZjZFZYWTJFTjQydmpMIn0.kej8uZpb2BHP53dFmto-w0n0yHmi_eKMS08ugNkgst5h-_jzjqtAQRgwnEPzdyU5rOfKCADww9vllhGCD6wEiw",
 								"type": "text"
 							},
 							{
@@ -1403,7 +1403,7 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:11000/blue-auth/auth/logout",
+							"raw": "localhost:11000/blue-auth/auth/session",
 							"host": [
 								"localhost"
 							],
@@ -1411,7 +1411,7 @@
 							"path": [
 								"blue-auth",
 								"auth",
-								"logout"
+								"session"
 							]
 						}
 					},
@@ -1429,12 +1429,12 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZmI1NTk0N2U4ZWE1ZGUzNWQ2YzlhMGNlMDhiYzk3YTRkZmNkYzIyZGE0NDYwNjBlN2M4Y2U4MjQzNTA3NzdjNjgxZjk0MjM1ZTNjMjE0ZDNhNzA4Y2E1YTYwMmNkYjQyZjNmOTJiMDc3M2JiYjM3MjkxMDI5NDBkMDg3YjM4YjciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDg2MDcxNiIsIm5iZiI6MTY1MDg2MDcxNywidCI6Imd3OFFDd2xvQk1uIiwiZyI6Ik0iLCJoIjoiQl9TTjozNDM1MjU1NTAzNTE5NzQ2MF9DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MTEyODU1NzAxNSwiaSI6IjM0MzUyNTU1MDM1MTk3NDYwIiwiZXhwIjoxNjUxMTI4NTU3LCJpYXQiOjE2NTA4NjA3MTcsImp0aSI6IlFYYTRLOEhWemRvclFXYmZmV0JMQm5ZMGp2S0FOdUhJIiwibiI6IlBWQVIifQ.ykyS_qXA3nqpDFruQfbratX2FyCc9-p7YieLJhwlPOWxD938kTJK6N3KVrYFiV1IiFCFaG56Amd_ca4oFPWx9w",
+								"value": "eyJraWQiOiI1OGZmMDJlOGZjMjJlOWUyZTBjMTc5NWRkOWM4MzJhZjFmNmVjMjgwNzhmMDE3MTNlMGFlMmYxNmZjNGJlYWY4YmE2YjdkMjgzMDkxOWI4NjMxNWFiNDhhMDgyYzYxZWIwY2Q2NzZlNTMzZTlkZWQyY2VjNmZhZDlkZDMzZThjNiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIxNzc0OTk0NjQ2NjMwNV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMTc3NDk5NDY0NjYzMDUiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxNzc2NjciLCJuYmYiOjE2NTcxNzc2NjcsInQiOiI1WHN4dk43UTZCMyIsImVhcyI6MTY2NDk1MzY2NzU5NywiZXhwIjoxNjY0OTUzNjY3LCJpYXQiOjE2NTcxNzc2NjcsImp0aSI6IjlmMFZZbGtWUDVheHlPaG0xWE9ZcjhJaEJuODh1YmZkIn0.tPx8YsB1-FKbucFJnxcOpQFOt6D4PYfuE77A0Pn8LvMGxTGgcXtMwGnWPV5xJmhk5e5CgpMtPPuGrppCqMcTLw",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "localhost:11000/blue-auth/auth/logout",
+							"raw": "localhost:11000/blue-auth/auth/sessions",
 							"host": [
 								"localhost"
 							],
@@ -1442,7 +1442,7 @@
 							"path": [
 								"blue-auth",
 								"auth",
-								"logout"
+								"sessions"
 							]
 						}
 					},
@@ -3141,7 +3141,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNGIwZmY1Y2RkMDk0ZWM0YTc2MWE1M2QwZTQwZjFmYmM0ZjZmNWNiYTk5NTA5ZjYzYWIyOWUzNDlkNjFmZjk0Nzk2ZWRkZWJhZjdiMmUxNDUwZTk5MWFiYzFkMDY1OTAxOTM3YmMzMzYwMGZkY2M0ZDhkYWY4YTQzMmVmOTFlYjciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1Mjk1OTIxMCIsIm5iZiI6MTY1Mjk1OTIxMCwidCI6IkpzV0h5bVczRFU5IiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM2Njg1NjA0ODkyNzA0NzY5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYwNzM1MjEwMDIxLCJpIjoiMzY2ODU2MDQ4OTI3MDQ3NjkiLCJleHAiOjE2NjA3MzUyMTAsImlhdCI6MTY1Mjk1OTIxMCwianRpIjoiVWRCdmRJeHB4OXNHRUNHNkhLUTFKSFpMaERYM1E1OTUiLCJuIjoiUFZBUiJ9.dZF4l0KO4TqJYD3rwlnIvJOPPR6MAdxDB0X__Uja9JdzyXrPo4K-itaiNtz70krnjQgyiQL7KOSMpyvaFwtuJA",
+								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
 								"type": "text"
 							}
 						],
@@ -3788,6 +3788,143 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "后台二维码配置查询",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"descriptionLike\":null,\r\n        \"type\":null,\r\n        \"genHandlerType\":null,\r\n        \"domainLike\":null,\r\n        \"pathToBeFilledLike\":null,\r\n        \"placeholderCount\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:13000/blue-media/manager/qrCodeConfigs",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"manager",
+								"qrCodeConfigs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台添加二维码配置",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"member detail\",\r\n    \"description\":\"member detail\",\r\n    \"type\":2,\r\n    \"genHandlerType\":\"1\",\r\n    \"domain\":\"localhost:11000\",\r\n    \"pathToBeFilled\":\"blue-member/basic/%s\",\r\n    \"placeholderCount\":\"1\",\r\n    \"allowedRoles\":[1,2,3,4,5,6]\r\n}"
+						},
+						"url": {
+							"raw": "localhost:13000/blue-media/manager/qrCodeConfig",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"manager",
+								"qrCodeConfig"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台修改二维码配置",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":41232609459571929,\r\n    \"name\":\"member details\",\r\n    \"description\":\"member details\",\r\n    \"type\":2,\r\n    \"genHandlerType\":\"1\",\r\n    \"domain\":\"localhost:11000\",\r\n    \"pathToBeFilled\":\"blue-member/basic/%s\",\r\n    \"placeholderCount\":\"1\",\r\n    \"allowedRoles\":[1,2,3,4,5]\r\n}"
+						},
+						"url": {
+							"raw": "localhost:13000/blue-media/manager/qrCodeConfig",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"manager",
+								"qrCodeConfig"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台删除二维码配置",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:13000/blue-media/manager/qrCodeConfig/41232609459571929",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"manager",
+								"qrCodeConfig",
+								"41232609459571929"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -4039,10 +4176,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"9150153\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"7193282\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:11000/blue-auth/auth/login",
+							"raw": "localhost:11000/blue-auth/auth/session",
 							"host": [
 								"localhost"
 							],
@@ -4050,7 +4187,7 @@
 							"path": [
 								"blue-auth",
 								"auth",
-								"login"
+								"session"
 							]
 						}
 					},
@@ -4068,7 +4205,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI5NDRkYTE1MTk2YjI5ZjIyMjZlMDNjZmFmYmQ4NDU0MzMwNjdmMDRiM2QxNjc4NTc5YjFkNzFkYWQzOTc5NGQ4MTU2NmNiZDM0NTI0YjY4MTBmZDZiMzNmMTZkMDVmNTIyOGU0ODRmNGUzOWU4Y2M2OGRhN2ZmNmM1YTU1NjFlZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTExMjI1ODAzMzQ4Mzc3N19DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDExMTIyNTgwMzM0ODM3NzciLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcwNzk0NDYiLCJuYmYiOjE2NTcwNzk0NDYsInQiOiJpdlNHazR0UENvdSIsImVhcyI6MTY2NDg1NTQ0Njk4MSwiZXhwIjoxNjY0ODU1NDQ2LCJpYXQiOjE2NTcwNzk0NDYsImp0aSI6IklmSm5yUGk4eEh1WjNiNEFlSnRvdEdvRVJKcGR3ak81In0.fUK67nEBs7zcnf1v5SnRDdzTs2QJBlURULDRNkAjdZxB5bCRCUiKlMNtGqtCwZtNlvs93pFbbtUEjUe_DdQCDA",
+								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
 								"type": "text"
 							}
 						],

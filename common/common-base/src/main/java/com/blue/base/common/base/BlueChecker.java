@@ -5,13 +5,11 @@ import com.blue.base.model.common.IdentityParam;
 import com.blue.base.model.exps.BlueException;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.blue.base.constant.common.ResponseElement.*;
 import static com.blue.base.constant.common.Status.VALID;
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author liuyunfei
@@ -121,6 +119,38 @@ public final class BlueChecker {
      */
     public static <T, A> boolean isNotEmpty(Map<T, A> map) {
         return map != null && map.size() > 0;
+    }
+
+    /**
+     * is same list
+     *
+     * @param a
+     * @param b
+     * @param <T>
+     * @return
+     */
+    public static <T> boolean isEquals(List<T> a, List<T> b) {
+        boolean isNullA = isNull(a);
+        boolean isNullB = isNull(b);
+
+        if (isNullA && isNullB)
+            return true;
+
+        if (isNullA != isNullB)
+            return false;
+
+        List<T> sortedA = a.stream().sorted().filter(Objects::nonNull).collect(toList());
+        List<T> sortedB = b.stream().sorted().filter(Objects::nonNull).collect(toList());
+
+        int size = a.size();
+        if (size != b.size())
+            return false;
+
+        for (int i = 0; i < size; i++)
+            if (!sortedA.get(i).equals(sortedB.get(i)))
+                return false;
+
+        return true;
     }
 
     /**

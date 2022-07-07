@@ -47,7 +47,6 @@ import static com.blue.base.constant.common.BlueBoolean.FALSE;
 import static com.blue.base.constant.common.BlueBoolean.TRUE;
 import static com.blue.base.constant.common.CacheKeyPrefix.ACTIVE_STYLE_PRE;
 import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Symbol.DATABASE_WILDCARD;
 import static com.blue.base.constant.common.SyncKeyPrefix.STYLES_CACHE_PRE;
 import static com.blue.base.converter.BaseModelConverters.*;
@@ -383,17 +382,16 @@ public class StyleServiceImpl implements StyleService {
         styleMapper.updateByPrimaryKey(oldActiveStyle);
         CACHE_DELETER.accept(type);
 
-        Map<Long, String> idAndNameMapping;
+        Map<Long, String> idAndMemberNameMapping;
         try {
-            idAndNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(newActiveStyle)))
+            idAndMemberNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(newActiveStyle)))
                     .toFuture().join().parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
         } catch (Exception e) {
             LOGGER.error("StyleManagerInfo updateActiveStyle(Long id, Long operatorId), generate idAndNameMapping failed, e = {}", e);
-            idAndNameMapping = emptyMap();
+            idAndMemberNameMapping = emptyMap();
         }
 
-        return styleToStyleManagerInfo(newActiveStyle, ofNullable(idAndNameMapping.get(newActiveStyle.getCreator())).orElse(EMPTY_DATA.value),
-                ofNullable(idAndNameMapping.get(newActiveStyle.getUpdater())).orElse(EMPTY_DATA.value));
+        return styleToStyleManagerInfo(newActiveStyle, idAndMemberNameMapping);
     }
 
     /**
@@ -526,10 +524,9 @@ public class StyleServiceImpl implements StyleService {
                     return isNotEmpty(styles) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(styles))
                                     .flatMap(memberBasicInfos -> {
-                                        Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+                                        Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(styles.stream().map(s ->
-                                                styleToStyleManagerInfo(s, ofNullable(idAndNameMapping.get(s.getCreator())).orElse(EMPTY_DATA.value),
-                                                        ofNullable(idAndNameMapping.get(s.getUpdater())).orElse(EMPTY_DATA.value))).collect(toList()));
+                                                styleToStyleManagerInfo(s, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(styleManagerInfos ->
                                             just(new PageModelResponse<>(styleManagerInfos, tuple2.getT2())))
                             :

@@ -39,7 +39,6 @@ import static com.blue.base.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.base.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.base.constant.common.CacheKey.RESOURCES;
 import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Symbol.DATABASE_WILDCARD;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -47,7 +46,8 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.core.publisher.Mono.*;
+import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -472,10 +472,9 @@ public class ResourceServiceImpl implements ResourceService {
                     return isNotEmpty(resources) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(resources))
                                     .flatMap(memberBasicInfos -> {
-                                        Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+                                        Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(resources.stream().map(r ->
-                                                resourceToResourceManagerInfo(r, ofNullable(idAndNameMapping.get(r.getCreator())).orElse(EMPTY_DATA.value),
-                                                        ofNullable(idAndNameMapping.get(r.getUpdater())).orElse(EMPTY_DATA.value))).collect(toList()));
+                                                 resourceToResourceManagerInfo(r, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(resourceManagerInfos ->
                                             just(new PageModelResponse<>(resourceManagerInfos, tuple2.getT2())))
                             :

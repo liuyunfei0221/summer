@@ -6,6 +6,7 @@ import com.blue.base.model.exps.BlueException;
 import com.blue.base.repository.entity.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static com.blue.base.common.base.BlueChecker.*;
@@ -15,6 +16,7 @@ import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.VALID;
 import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -110,14 +112,6 @@ public final class BaseModelConverters {
     };
 
     /**
-     * styles -> styleInfos
-     */
-    public static final Function<List<Style>, List<StyleInfo>> STYLES_2_STYLE_INFOS_CONVERTER = sts ->
-            isNotNull(sts) && sts.size() > 0 ? sts.stream()
-                    .map(STYLE_2_STYLE_INFO_CONVERTER)
-                    .collect(toList()) : emptyList();
-
-    /**
      * style insert param -> style
      */
     public static final Function<StyleInsertParam, Style> STYLE_INSERT_PARAM_2_STYLE_CONVERTER = param -> {
@@ -144,17 +138,16 @@ public final class BaseModelConverters {
      * style -> style manager indo
      *
      * @param style
-     * @param creatorName
-     * @param updaterName
+     * @param idAndMemberNameMapping
      * @return
      */
-    public static StyleManagerInfo styleToStyleManagerInfo(Style style, String creatorName, String updaterName) {
+    public static StyleManagerInfo styleToStyleManagerInfo(Style style, Map<Long, String> idAndMemberNameMapping) {
         if (isNull(style))
             throw new BlueException(EMPTY_PARAM);
 
         return new StyleManagerInfo(style.getId(), style.getName(), style.getAttributes(), style.getType(), style.getIsActive(), style.getStatus(),
-                style.getCreateTime(), style.getUpdateTime(), style.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value,
-                style.getUpdater(), isNotBlank(updaterName) ? updaterName : EMPTY_DATA.value);
+                style.getCreateTime(), style.getUpdateTime(), style.getCreator(), ofNullable(idAndMemberNameMapping.get(style.getCreator())).orElse(EMPTY_DATA.value),
+                style.getUpdater(), ofNullable(idAndMemberNameMapping.get(style.getUpdater())).orElse(EMPTY_DATA.value));
     }
 
     /**

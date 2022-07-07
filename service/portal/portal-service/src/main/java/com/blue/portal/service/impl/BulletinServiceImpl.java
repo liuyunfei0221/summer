@@ -44,7 +44,6 @@ import static com.blue.base.common.base.ConditionSortProcessor.process;
 import static com.blue.base.common.base.ConstantProcessor.assertBulletinType;
 import static com.blue.base.constant.common.CacheKeyPrefix.BULLETINS_PRE;
 import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Status.VALID;
 import static com.blue.base.constant.common.Symbol.DATABASE_WILDCARD;
 import static com.blue.base.constant.portal.BulletinType.POPULAR;
@@ -489,10 +488,9 @@ public class BulletinServiceImpl implements BulletinService {
                     return isNotEmpty(bulletins) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(bulletins))
                                     .flatMap(memberBasicInfos -> {
-                                        Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+                                        Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(bulletins.stream().map(b ->
-                                                bulletinToBulletinManagerInfo(b, ofNullable(idAndNameMapping.get(b.getCreator())).orElse(EMPTY_DATA.value),
-                                                        ofNullable(idAndNameMapping.get(b.getUpdater())).orElse(EMPTY_DATA.value))).collect(toList()));
+                                                bulletinToBulletinManagerInfo(b, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(bulletinManagerInfos ->
                                             just(new PageModelResponse<>(bulletinManagerInfos, tuple2.getT2())))
                             :

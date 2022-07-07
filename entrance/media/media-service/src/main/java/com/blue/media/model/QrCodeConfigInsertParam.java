@@ -4,9 +4,9 @@ import com.blue.base.inter.Asserter;
 import com.blue.base.model.exps.BlueException;
 
 import java.io.Serializable;
+import java.util.List;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.base.common.base.BlueChecker.*;
 import static com.blue.base.common.base.ConstantProcessor.assertQrCodeGenType;
 import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
 
@@ -40,16 +40,19 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
 
     private Integer placeholderCount;
 
+    private List<Long> allowedRoles;
+
     public QrCodeConfigInsertParam() {
     }
 
-    public QrCodeConfigInsertParam(String name, String description, Integer type, String domain, String pathToBeFilled, Integer placeholderCount) {
+    public QrCodeConfigInsertParam(String name, String description, Integer type, String domain, String pathToBeFilled, Integer placeholderCount, List<Long> allowedRoles) {
         this.name = name;
         this.description = description;
         this.type = type;
         this.domain = domain;
         this.pathToBeFilled = pathToBeFilled;
         this.placeholderCount = placeholderCount;
+        this.allowedRoles = allowedRoles;
     }
 
     @Override
@@ -65,6 +68,8 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid pathToBeFilled");
         if (isNull(this.placeholderCount) || placeholderCount < 0)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid attributes");
+        if (isEmpty(this.allowedRoles))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid allowedRoles");
     }
 
     public String getName() {
@@ -123,6 +128,14 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
         this.placeholderCount = placeholderCount;
     }
 
+    public List<Long> getAllowedRoles() {
+        return allowedRoles;
+    }
+
+    public void setAllowedRoles(List<Long> allowedRoles) {
+        this.allowedRoles = allowedRoles;
+    }
+
     @Override
     public String toString() {
         return "QrCodeConfigInsertParam{" +
@@ -133,7 +146,8 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
                 ", domain='" + domain + '\'' +
                 ", pathToBeFilled='" + pathToBeFilled + '\'' +
                 ", placeholderCount=" + placeholderCount +
+                ", allowedRoles=" + allowedRoles +
                 '}';
     }
-
+    
 }

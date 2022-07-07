@@ -1198,7 +1198,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
         MEMBER_ROLE_LEVEL_ASSERTER.accept(memberId, operatorId);
 
-        return zip(rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId),
+        return zip(rpcMemberBasicServiceConsumer.getMemberBasicInfoMonoByPrimaryKey(memberId),
                 credentialHistoryService.selectCredentialHistoryInfoMonoByMemberIdWithLimit(memberId),
                 securityQuestionService.selectSecurityQuestionInfoMonoByMemberId(memberId)
         ).flatMap(tuple3 -> just(new MemberSecurityInfo(memberId, tuple3.getT1(), tuple3.getT2(), tuple3.getT3())));

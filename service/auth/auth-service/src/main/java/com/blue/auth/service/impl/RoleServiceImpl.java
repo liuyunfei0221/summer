@@ -41,7 +41,6 @@ import static com.blue.base.constant.common.CacheKey.ROLES;
 import static com.blue.base.constant.common.Default.DEFAULT;
 import static com.blue.base.constant.common.Default.NOT_DEFAULT;
 import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.base.constant.common.Symbol.DATABASE_WILDCARD;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
@@ -49,7 +48,8 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.core.publisher.Mono.*;
+import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -356,17 +356,16 @@ public class RoleServiceImpl implements RoleService {
         roleMapper.updateByPrimaryKey(oldDefaultRole);
         CACHE_DELETER.accept(DEFAULT_ROLE.key);
 
-        Map<Long, String> idAndNameMapping;
+        Map<Long, String> idAndMemberNameMapping;
         try {
-            idAndNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(newDefaultRole))).toFuture().join()
+            idAndMemberNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(newDefaultRole))).toFuture().join()
                     .parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
         } catch (Exception e) {
-            LOGGER.error("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), generate idAndNameMapping failed, e = {}", e);
-            idAndNameMapping = emptyMap();
+            LOGGER.error("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), generate idAndMemberNameMapping failed, e = {}", e);
+            idAndMemberNameMapping = emptyMap();
         }
 
-        return roleToRoleManagerInfo(newDefaultRole, ofNullable(idAndNameMapping.get(newDefaultRole.getCreator())).orElse(EMPTY_DATA.value),
-                ofNullable(idAndNameMapping.get(newDefaultRole.getUpdater())).orElse(EMPTY_DATA.value));
+        return roleToRoleManagerInfo(newDefaultRole, idAndMemberNameMapping);
     }
 
     /**
@@ -508,10 +507,9 @@ public class RoleServiceImpl implements RoleService {
                     return isNotEmpty(roles) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(roles))
                                     .flatMap(memberBasicInfos -> {
-                                        Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+                                        Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(roles.stream().map(r ->
-                                                roleToRoleManagerInfo(r, ofNullable(idAndNameMapping.get(r.getCreator())).orElse(EMPTY_DATA.value),
-                                                        ofNullable(idAndNameMapping.get(r.getUpdater())).orElse(EMPTY_DATA.value))).collect(toList()));
+                                                roleToRoleManagerInfo(r, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(resourceManagerInfos ->
                                             just(new PageModelResponse<>(resourceManagerInfos, tuple2.getT2())))
                             :
