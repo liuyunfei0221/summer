@@ -339,7 +339,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      * @return
      */
     @Override
-    public Mono<ServerResponse> login(ServerRequest serverRequest) {
+    public Mono<ServerResponse> insertSession(ServerRequest serverRequest) {
         return getIpReact(serverRequest)
                 .flatMap(ip -> {
                     LOGGER.info("Mono<ServerResponse> login(ServerRequest serverRequest), ip = {}", ip);
@@ -347,9 +347,31 @@ public class AuthControlServiceImpl implements AuthControlService {
                 })
                 .flatMap(allowed ->
                         allowed ?
-                                loginService.login(serverRequest)
+                                loginService.insertSession(serverRequest)
                                 :
                                 error(() -> new BlueException(TOO_MANY_REQUESTS)));
+    }
+
+    /**
+     * logout
+     *
+     * @param serverRequest
+     * @return
+     */
+    @Override
+    public Mono<ServerResponse> deleteSession(ServerRequest serverRequest) {
+        return loginService.deleteSession(serverRequest);
+    }
+
+    /**
+     * logout everywhere
+     *
+     * @param serverRequest
+     * @return
+     */
+    @Override
+    public Mono<ServerResponse> deleteSessions(ServerRequest serverRequest) {
+        return loginService.deleteSessions(serverRequest);
     }
 
     /**
@@ -370,17 +392,6 @@ public class AuthControlServiceImpl implements AuthControlService {
                                                 authService.refreshAccessByMemberPayload(memberPayload)
                                                 :
                                                 error(() -> new BlueException(TOO_MANY_REQUESTS))));
-    }
-
-    /**
-     * logout
-     *
-     * @param serverRequest
-     * @return
-     */
-    @Override
-    public Mono<ServerResponse> logout(ServerRequest serverRequest) {
-        return loginService.logout(serverRequest);
     }
 
     /**
@@ -1187,7 +1198,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
         MEMBER_ROLE_LEVEL_ASSERTER.accept(memberId, operatorId);
 
-        return zip(rpcMemberBasicServiceConsumer.getMemberBasicInfoMonoByPrimaryKey(memberId),
+        return zip(rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId),
                 credentialHistoryService.selectCredentialHistoryInfoMonoByMemberIdWithLimit(memberId),
                 securityQuestionService.selectSecurityQuestionInfoMonoByMemberId(memberId)
         ).flatMap(tuple3 -> just(new MemberSecurityInfo(memberId, tuple3.getT1(), tuple3.getT2(), tuple3.getT3())));

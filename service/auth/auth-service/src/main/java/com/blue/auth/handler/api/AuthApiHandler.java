@@ -10,13 +10,13 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.auth.constant.AuthTypeReference.LIST_PARAM_FOR_QUESTION_INSERT_PARAM_TYPE;
-import static com.blue.base.common.reactive.AccessGetterForReactive.*;
+import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
+import static com.blue.base.common.reactive.AccessGetterForReactive.getAuthorizationReact;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.common.BlueHeader.AUTHORIZATION;
 import static com.blue.base.constant.common.BlueHeader.SECRET;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.common.ResponseElement.OK;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
@@ -42,8 +42,28 @@ public final class AuthApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> login(ServerRequest serverRequest) {
-        return authControlService.login(serverRequest);
+    public Mono<ServerResponse> insertSession(ServerRequest serverRequest) {
+        return authControlService.insertSession(serverRequest);
+    }
+
+    /**
+     * logout
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> deleteSession(ServerRequest serverRequest) {
+        return authControlService.deleteSession(serverRequest);
+    }
+
+    /**
+     * logout everywhere
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> deleteSessions(ServerRequest serverRequest) {
+        return authControlService.deleteSessions(serverRequest);
     }
 
     /**
@@ -77,40 +97,6 @@ public final class AuthApiHandler {
                                 .flatMap(secKey ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(SECRET.name, secKey)
-                                                .body(generate(OK.code, serverRequest)
-                                                        , BlueResponse.class)));
-    }
-
-    /**
-     * logout
-     *
-     * @param serverRequest
-     * @return
-     */
-    public Mono<ServerResponse> logout(ServerRequest serverRequest) {
-        return getAccessReact(serverRequest)
-                .flatMap(acc ->
-                        authControlService.invalidateAuthByAccess(acc)
-                                .flatMap(success ->
-                                        ok().contentType(APPLICATION_JSON)
-                                                .header(AUTHORIZATION.name, EMPTY_DATA.value)
-                                                .body(generate(OK.code, serverRequest)
-                                                        , BlueResponse.class)));
-    }
-
-    /**
-     * logout everywhere
-     *
-     * @param serverRequest
-     * @return
-     */
-    public Mono<ServerResponse> logoutEverywhere(ServerRequest serverRequest) {
-        return getAccessReact(serverRequest)
-                .flatMap(acc ->
-                        authControlService.invalidateAuthByMemberId(acc.getId())
-                                .flatMap(success ->
-                                        ok().contentType(APPLICATION_JSON)
-                                                .header(AUTHORIZATION.name, EMPTY_DATA.value)
                                                 .body(generate(OK.code, serverRequest)
                                                         , BlueResponse.class)));
     }

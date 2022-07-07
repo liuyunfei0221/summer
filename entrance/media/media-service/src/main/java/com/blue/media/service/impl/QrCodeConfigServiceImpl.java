@@ -12,6 +12,7 @@ import com.blue.media.model.QrCodeCondition;
 import com.blue.media.model.QrCodeConfigInsertParam;
 import com.blue.media.model.QrCodeConfigUpdateParam;
 import com.blue.media.remote.consumer.RpcMemberBasicServiceConsumer;
+import com.blue.media.remote.consumer.RpcRoleServiceConsumer;
 import com.blue.media.repository.entity.QrCodeConfig;
 import com.blue.media.repository.template.QrCodeConfigRepository;
 import com.blue.media.service.inter.QrCodeConfigService;
@@ -68,6 +69,8 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
+    private final RpcRoleServiceConsumer rpcRoleServiceConsumer;
+
     private BlueIdentityProcessor blueIdentityProcessor;
 
     private QrCodeConfigRepository qrCodeConfigRepository;
@@ -76,9 +79,10 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
     private Scheduler scheduler;
 
-    public QrCodeConfigServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
+    public QrCodeConfigServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, RpcRoleServiceConsumer rpcRoleServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
                                    QrCodeConfigRepository qrCodeConfigRepository, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
+        this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.qrCodeConfigRepository = qrCodeConfigRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
@@ -475,8 +479,10 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
                 .flatMap(tuple2 -> {
                     List<QrCodeConfig> configs = tuple2.getT1();
 
+//                    rpcRoleServiceConsumer.selectRoleInfo()
+
                     return isNotEmpty(configs) ?
-                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(configs))
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(configs))
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(configs.stream().map(c ->

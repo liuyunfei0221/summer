@@ -27,11 +27,11 @@ public class AuthApiRoute {
         RequestPredicate pathPredicate = path("/blue-auth/auth");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/login", accept(APPLICATION_JSON), authApiHandler::login)
+                .POST("/session", accept(APPLICATION_JSON), authApiHandler::insertSession)
+                .DELETE("/session", authApiHandler::deleteSession)
+                .DELETE("/sessions", authApiHandler::deleteSessions)
                 .PATCH("/access", authApiHandler::refreshAccess)
                 .PATCH("/secret", accept(APPLICATION_JSON), authApiHandler::refreshSecret)
-                .PATCH("/logout", authApiHandler::logout)
-                .DELETE("/logout", authApiHandler::logoutEverywhere)
                 .PUT("/access", accept(APPLICATION_JSON), authApiHandler::updateAccess)
                 .POST("/access", accept(APPLICATION_JSON), authApiHandler::resetAccess)
                 .POST("/credential", accept(APPLICATION_JSON), authApiHandler::credentialSettingUp)

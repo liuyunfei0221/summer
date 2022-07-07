@@ -42,7 +42,7 @@ public class LoginServiceImpl implements LoginService {
      * @return
      */
     @Override
-    public Mono<ServerResponse> login(ServerRequest serverRequest) {
+    public Mono<ServerResponse> insertSession(ServerRequest serverRequest) {
         return loginProcessor.login(serverRequest);
     }
 
@@ -53,7 +53,7 @@ public class LoginServiceImpl implements LoginService {
      * @return
      */
     @Override
-    public Mono<ServerResponse> logout(ServerRequest serverRequest) {
+    public Mono<ServerResponse> deleteSession(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
                         authService.invalidateAuthByAccess(acc)
@@ -62,6 +62,24 @@ public class LoginServiceImpl implements LoginService {
                                                 .header(AUTHORIZATION.name, EMPTY_DATA.value)
                                                 .body(
                                                         generate(OK.code, serverRequest)
+                                                        , BlueResponse.class)));
+    }
+
+    /**
+     * logout everywhere
+     *
+     * @param serverRequest
+     * @return
+     */
+    @Override
+    public Mono<ServerResponse> deleteSessions(ServerRequest serverRequest) {
+        return getAccessReact(serverRequest)
+                .flatMap(acc ->
+                        authService.invalidateAuthByMemberId(acc.getId())
+                                .flatMap(success ->
+                                        ok().contentType(APPLICATION_JSON)
+                                                .header(AUTHORIZATION.name, EMPTY_DATA.value)
+                                                .body(generate(OK.code, serverRequest)
                                                         , BlueResponse.class)));
     }
 

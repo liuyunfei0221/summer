@@ -18,7 +18,7 @@ public interface LoginService {
      * @param serverRequest
      * @return
      */
-    Mono<ServerResponse> login(ServerRequest serverRequest);
+    Mono<ServerResponse> insertSession(ServerRequest serverRequest);
 
     /**
      * logout
@@ -26,6 +26,14 @@ public interface LoginService {
      * @param serverRequest
      * @return
      */
-    Mono<ServerResponse> logout(ServerRequest serverRequest);
+    Mono<ServerResponse> deleteSession(ServerRequest serverRequest);
+
+    /**
+     * logout everywhere
+     *
+     * @param serverRequest
+     * @return
+     */
+    Mono<ServerResponse> deleteSessions(ServerRequest serverRequest);
 
 }

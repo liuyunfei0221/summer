@@ -24,7 +24,23 @@ public interface AuthControlService {
      * @param serverRequest
      * @return
      */
-    Mono<ServerResponse> login(ServerRequest serverRequest);
+    Mono<ServerResponse> insertSession(ServerRequest serverRequest);
+
+    /**
+     * logout
+     *
+     * @param serverRequest
+     * @return
+     */
+    Mono<ServerResponse> deleteSession(ServerRequest serverRequest);
+
+    /**
+     * logout everywhere
+     *
+     * @param serverRequest
+     * @return
+     */
+    Mono<ServerResponse> deleteSessions(ServerRequest serverRequest);
 
     /**
      * refresh jwt by refresh token
@@ -33,14 +49,6 @@ public interface AuthControlService {
      * @return
      */
     Mono<MemberAccess> refreshAccessByRefresh(String refresh);
-
-    /**
-     * logout
-     *
-     * @param serverRequest
-     * @return
-     */
-    Mono<ServerResponse> logout(ServerRequest serverRequest);
 
     /**
      * operator's role level must higher than target member role level
