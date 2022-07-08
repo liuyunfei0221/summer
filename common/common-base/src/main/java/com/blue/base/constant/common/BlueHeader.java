@@ -75,9 +75,14 @@ public enum BlueHeader {
     CONTENT_DISPOSITION(HttpHeaders.CONTENT_DISPOSITION),
 
     /**
-     * EXTRA
+     * REQ EXTRA
      */
-    EXTRA("Extra");
+    REQUEST_EXTRA("RequestExtra"),
+
+    /**
+     * RES EXTRA
+     */
+    RESPONSE_EXTRA("ResponseExtra");
 
     public final String name;
 

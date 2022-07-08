@@ -227,7 +227,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                         .publishOn(scheduler)
                         .collectList()
                         .flatMap(attachments ->
-                                zip(rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(attachments.stream().map(Attachment::getCreator).collect(toList()))
+                                zip(rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(attachments.stream().map(Attachment::getCreator).collect(toList()))
                                                 .flatMap(memberBasicInfos -> just(memberBasicInfos.stream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a)))),
                                         just(attachments))
                         ).flatMapMany(tuple2 -> {
@@ -297,7 +297,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         return zip(
                 selectAttachmentMonoByLimitAndMemberId(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberId),
                 countAttachmentMonoByMemberId(memberId),
-                rpcMemberBasicServiceConsumer.getMemberBasicInfoMonoByPrimaryKey(memberId)
+                rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId)
         ).flatMap(tuple3 -> {
             List<Attachment> attachments = tuple3.getT1();
             String memberName = tuple3.getT3().getName();
@@ -364,7 +364,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                 .flatMap(tuple2 -> {
                     List<Attachment> attachments = tuple2.getT1();
                     return isNotEmpty(attachments) ?
-                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(attachments.parallelStream().map(Attachment::getCreator).collect(toList()))
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(attachments.parallelStream().map(Attachment::getCreator).collect(toList()))
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(attachments.stream().map(a ->

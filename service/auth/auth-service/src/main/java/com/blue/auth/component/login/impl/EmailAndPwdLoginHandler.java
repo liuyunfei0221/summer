@@ -88,7 +88,7 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
                                 .filter(c -> matchAccess(access, c.getAccess()))
                                 .map(Credential::getMemberId)
                                 .orElseThrow(() -> new BlueException(INVALID_ACCT_OR_PWD)))
-                ).flatMap(rpcMemberBasicServiceConsumer::getMemberBasicInfoMonoByPrimaryKey)
+                ).flatMap(rpcMemberBasicServiceConsumer::getMemberBasicInfoByPrimaryKey)
                 .flatMap(mbi -> {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
                     return authService.generateAuthMono(mbi.getId(), EMAIL_PWD.identity, loginParam.getDeviceType().intern());
@@ -97,7 +97,7 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
                         .header(AUTHORIZATION.name, ma.getAuth())
                         .header(SECRET.name, ma.getSecKey())
                         .header(REFRESH.name, ma.getRefresh())
-                        .header(EXTRA.name, GSON.toJson(EXTRA_INFO))
+                        .header(RESPONSE_EXTRA.name, GSON.toJson(EXTRA_INFO))
                         .body(generate(OK.code, serverRequest)
                                 , BlueResponse.class));
     }

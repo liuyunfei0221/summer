@@ -5,7 +5,6 @@ import com.blue.base.api.model.CityRegion;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -22,23 +21,7 @@ public interface RpcCityService {
      * @param id
      * @return
      */
-    Optional<CityInfo> getCityInfoOptById(Long id);
-
-    /**
-     * get city info by id with assert
-     *
-     * @param id
-     * @return
-     */
-    CityInfo getCityInfoById(Long id);
-
-    /**
-     * get city info mono by id
-     *
-     * @param id
-     * @return
-     */
-    CompletableFuture<CityInfo> getCityInfoMonoById(Long id);
+    CompletableFuture<CityInfo> getCityInfoById(Long id);
 
     /**
      * select city info by state id
@@ -46,15 +29,7 @@ public interface RpcCityService {
      * @param stateId
      * @return
      */
-    List<CityInfo> selectCityInfoByStateId(Long stateId);
-
-    /**
-     * select city info mono by state id
-     *
-     * @param stateId
-     * @return
-     */
-    CompletableFuture<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId);
+    CompletableFuture<List<CityInfo>> selectCityInfoByStateId(Long stateId);
 
     /**
      * select city info by ids
@@ -62,15 +37,7 @@ public interface RpcCityService {
      * @param ids
      * @return
      */
-    Map<Long, CityInfo> selectCityInfoByIds(List<Long> ids);
-
-    /**
-     * select city info mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    CompletableFuture<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids);
+    CompletableFuture<Map<Long, CityInfo>> selectCityInfoByIds(List<Long> ids);
 
     /**
      * get city region by id
@@ -78,30 +45,14 @@ public interface RpcCityService {
      * @param id
      * @return
      */
-    CityRegion getCityRegionById(Long id);
+    CompletableFuture<CityRegion> getCityRegionById(Long id);
 
     /**
-     * get city region mono by id
-     *
-     * @param id
-     * @return
-     */
-    CompletableFuture<CityRegion> getCityRegionMonoById(Long id);
-
-    /**
-     * get city regions by id
+     * get city regions by ids
      *
      * @param ids
      * @return
      */
-    Map<Long, CityRegion> selectCityRegionByIds(List<Long> ids);
-
-    /**
-     * get city regions mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    CompletableFuture<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids);
+    CompletableFuture<Map<Long, CityRegion>> selectCityRegionByIds(List<Long> ids);
 
 }

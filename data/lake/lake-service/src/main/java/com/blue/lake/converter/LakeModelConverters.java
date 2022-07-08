@@ -93,8 +93,10 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
         String realUri = ofNullable(entries.get(REAL_URI.key)).orElse(EMPTY_DATA.value);
         optEvent.setRealUri(realUri);
         optEvent.setRequestBody(ofNullable(entries.get(REQUEST_BODY.key)).orElse(EMPTY_DATA.value));
+        optEvent.setRequestExtra(ofNullable(entries.get(REQUEST_EXTRA.key)).orElse(EMPTY_DATA.value));
         optEvent.setResponseStatus(ofNullable(entries.get(RESPONSE_STATUS.key)).map(Integer::parseInt).orElse(OK.status));
         optEvent.setResponseBody(ofNullable(entries.get(RESPONSE_BODY.key)).map(body -> NESTING_RESPONSE_BODY_HANDLER.apply(realUri, body)).orElse(EMPTY_DATA.value));
+        optEvent.setResponseExtra(ofNullable(entries.get(RESPONSE_EXTRA.key)).orElse(EMPTY_DATA.value));
         optEvent.setRequestId(ofNullable(entries.get(REQUEST_ID.key)).orElse(EMPTY_DATA.value));
         optEvent.setMetadata(ofNullable(entries.get(METADATA.key)).orElse(EMPTY_DATA.value));
         optEvent.setJwt(ofNullable(entries.get(JWT.key)).orElse(EMPTY_DATA.value));

@@ -111,7 +111,7 @@ public class AddressServiceImpl implements AddressService {
         if (isInvalidIdentity(areaId) || isNull(address))
             return;
 
-        AreaRegion areaRegion = rpcAreaServiceConsumer.getAreaRegionMonoById(areaId)
+        AreaRegion areaRegion = rpcAreaServiceConsumer.getAreaRegionById(areaId)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .toFuture().join();
 
@@ -144,7 +144,7 @@ public class AddressServiceImpl implements AddressService {
         if (isInvalidIdentity(cityId) || isNull(address))
             return;
 
-        CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionMonoById(cityId)
+        CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionById(cityId)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .toFuture().join();
 

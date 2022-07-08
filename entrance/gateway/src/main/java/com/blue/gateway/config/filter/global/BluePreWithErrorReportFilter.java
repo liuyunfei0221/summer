@@ -104,6 +104,8 @@ public final class BluePreWithErrorReportFilter implements GlobalFilter, Ordered
                 .ifPresent(source -> attributes.put(SOURCE.key, source));
         ofNullable(request.getHeaders().getFirst(BlueHeader.HOST.name))
                 .ifPresent(host -> attributes.put(HOST.key, host));
+        ofNullable(request.getHeaders().getFirst(BlueHeader.REQUEST_EXTRA.name))
+                .ifPresent(extra -> attributes.put(REQUEST_EXTRA.key, extra));
 
         REQUEST_IP_REPACKAGER.accept(request, ip);
     }

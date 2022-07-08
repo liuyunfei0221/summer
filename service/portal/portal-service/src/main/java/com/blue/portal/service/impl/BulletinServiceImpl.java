@@ -486,7 +486,7 @@ public class BulletinServiceImpl implements BulletinService {
                 .flatMap(tuple2 -> {
                     List<Bulletin> bulletins = tuple2.getT1();
                     return isNotEmpty(bulletins) ?
-                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(bulletins))
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(bulletins))
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(bulletins.stream().map(b ->

@@ -11,7 +11,6 @@ import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static reactor.core.publisher.Mono.fromFuture;
 
@@ -20,24 +19,18 @@ import static reactor.core.publisher.Mono.fromFuture;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
 @Component
 public class RpcAreaServiceConsumer {
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-base"},
             methods = {
-                    @Method(name = "getAreaInfoOptById", async = false),
-                    @Method(name = "getAreaInfoById", async = false),
-                    @Method(name = "getAreaInfoMonoById", async = true),
-                    @Method(name = "selectAreaInfoByCityId", async = false),
-                    @Method(name = "selectAreaInfoMonoByCityId", async = true),
-                    @Method(name = "selectAreaInfoByIds", async = false),
-                    @Method(name = "selectAreaInfoMonoByIds", async = true),
+                    @Method(name = "getAreaInfoById", async = true),
+                    @Method(name = "selectAreaInfoByCityId", async = true),
+                    @Method(name = "selectAreaInfoByIds", async = true),
                     @Method(name = "getAreaRegionById", async = true),
-                    @Method(name = "getAreaRegionMonoById", async = true),
-                    @Method(name = "selectAreaRegionByIds", async = true),
-                    @Method(name = "selectAreaRegionMonoByIds", async = true)
+                    @Method(name = "selectAreaRegionByIds", async = true)
             })
     private RpcAreaService rpcAreaService;
 
@@ -48,43 +41,13 @@ public class RpcAreaServiceConsumer {
     }
 
     /**
-     * get area info opt by id
-     *
-     * @param id
-     * @return
-     */
-    public Optional<AreaInfo> getAreaInfoOptById(Long id) {
-        return rpcAreaService.getAreaInfoOptById(id);
-    }
-
-    /**
-     * get area info by id with assert
-     *
-     * @param id
-     * @return
-     */
-    public AreaInfo getAreaInfoById(Long id) {
-        return rpcAreaService.getAreaInfoById(id);
-    }
-
-    /**
      * get area info mono by id
      *
      * @param id
      * @return
      */
-    public Mono<AreaInfo> getAreaInfoMonoById(Long id) {
-        return fromFuture(rpcAreaService.getAreaInfoMonoById(id)).publishOn(scheduler);
-    }
-
-    /**
-     * select area info by city id
-     *
-     * @param cityId
-     * @return
-     */
-    public List<AreaInfo> selectAreaInfoByCityId(Long cityId) {
-        return rpcAreaService.selectAreaInfoByCityId(cityId);
+    public Mono<AreaInfo> getAreaInfoById(Long id) {
+        return fromFuture(rpcAreaService.getAreaInfoById(id)).publishOn(scheduler);
     }
 
     /**
@@ -93,18 +56,8 @@ public class RpcAreaServiceConsumer {
      * @param cityId
      * @return
      */
-    public Mono<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId) {
-        return fromFuture(rpcAreaService.selectAreaInfoMonoByCityId(cityId)).publishOn(scheduler);
-    }
-
-    /**
-     * select area info by ids
-     *
-     * @param ids
-     * @return
-     */
-    public Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids) {
-        return rpcAreaService.selectAreaInfoByIds(ids);
+    public Mono<List<AreaInfo>> selectAreaInfoByCityId(Long cityId) {
+        return fromFuture(rpcAreaService.selectAreaInfoByCityId(cityId)).publishOn(scheduler);
     }
 
     /**
@@ -113,18 +66,8 @@ public class RpcAreaServiceConsumer {
      * @param ids
      * @return
      */
-    public Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids) {
-        return fromFuture(rpcAreaService.selectAreaInfoMonoByIds(ids)).publishOn(scheduler);
-    }
-
-    /**
-     * get region by id
-     *
-     * @param id
-     * @return
-     */
-    public AreaRegion getAreaRegionById(Long id) {
-        return rpcAreaService.getAreaRegionById(id);
+    public Mono<Map<Long, AreaInfo>> selectAreaInfoByIds(List<Long> ids) {
+        return fromFuture(rpcAreaService.selectAreaInfoByIds(ids)).publishOn(scheduler);
     }
 
     /**
@@ -133,18 +76,8 @@ public class RpcAreaServiceConsumer {
      * @param id
      * @return
      */
-    public Mono<AreaRegion> getAreaRegionMonoById(Long id) {
-        return fromFuture(rpcAreaService.getAreaRegionMonoById(id)).publishOn(scheduler);
-    }
-
-    /**
-     * get regions by ids
-     *
-     * @param ids
-     * @return
-     */
-    public Map<Long, AreaRegion> selectAreaRegionByIds(List<Long> ids) {
-        return rpcAreaService.selectAreaRegionByIds(ids);
+    public Mono<AreaRegion> getAreaRegionById(Long id) {
+        return fromFuture(rpcAreaService.getAreaRegionById(id)).publishOn(scheduler);
     }
 
     /**
@@ -153,8 +86,8 @@ public class RpcAreaServiceConsumer {
      * @param ids
      * @return
      */
-    public Mono<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids) {
-        return fromFuture(rpcAreaService.selectAreaRegionMonoByIds(ids)).publishOn(scheduler);
+    public Mono<Map<Long, AreaRegion>> selectAreaRegionByIds(List<Long> ids) {
+        return fromFuture(rpcAreaService.selectAreaRegionByIds(ids)).publishOn(scheduler);
     }
 
 }

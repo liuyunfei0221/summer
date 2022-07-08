@@ -166,7 +166,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
                     if (isInvalidIdentity(cityId))
                         throw new BlueException(INVALID_IDENTITY);
 
-                    CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionMonoById(cityId).toFuture().join();
+                    CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionById(cityId).toFuture().join();
                     if (isNull(cityRegion))
                         throw new BlueException(DATA_NOT_EXIST);
 

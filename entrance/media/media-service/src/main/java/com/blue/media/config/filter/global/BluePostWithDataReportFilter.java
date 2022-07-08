@@ -1,6 +1,7 @@
 package com.blue.media.config.filter.global;
 
 import com.blue.base.common.content.common.RequestBodyProcessor;
+import com.blue.base.constant.common.BlueHeader;
 import com.blue.base.model.common.DataEvent;
 import com.blue.base.model.common.ExceptionResponse;
 import com.blue.base.model.exps.BlueException;
@@ -149,6 +150,9 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
             return new ServerHttpResponseDecorator(response) {
                 @Override
                 public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+                    ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
+                            .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
+
                     return getResponseBodyAndReport(exchange, response, httpStatus, body, dataEvent).flatMap(data -> {
                         byte[] bytes = data.getBytes(UTF_8);
                         DataBuffer resBuffer = DATA_BUFFER_FACTORY.allocateBuffer(bytes.length);
@@ -166,9 +170,13 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
             };
         }
 
+        ServerHttpResponse decoratorResponse = new ServerHttpResponseDecorator(response);
+        ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
+                .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
+
         requestEventReporter.report(dataEvent);
 
-        return response;
+        return decoratorResponse;
     }
 
     private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {

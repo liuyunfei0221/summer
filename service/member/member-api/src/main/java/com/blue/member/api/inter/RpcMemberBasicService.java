@@ -19,7 +19,7 @@ public interface RpcMemberBasicService {
      * @param id
      * @return
      */
-    CompletableFuture<MemberBasicInfo> getMemberBasicInfoMonoByPrimaryKey(Long id);
+    CompletableFuture<MemberBasicInfo> getMemberBasicInfoByPrimaryKey(Long id);
 
     /**
      * select member basic by ids
@@ -27,7 +27,7 @@ public interface RpcMemberBasicService {
      * @param ids
      * @return
      */
-    CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids);
+    CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids);
 
     /**
      * get member basic by phone

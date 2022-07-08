@@ -25,8 +25,8 @@ import static reactor.core.publisher.Mono.just;
 @DubboService(interfaceClass = RpcMemberBasicService.class,
         version = "1.0",
         methods = {
-                @Method(name = "getMemberBasicInfoMonoByPrimaryKey", async = true),
-                @Method(name = "selectMemberBasicInfoMonoByIds", async = true),
+                @Method(name = "getMemberBasicInfoByPrimaryKey", async = true),
+                @Method(name = "selectMemberBasicInfoByIds", async = true),
                 @Method(name = "getMemberBasicInfoByPhone", async = true),
                 @Method(name = "getMemberBasicInfoByEmail", async = true)
         })
@@ -48,7 +48,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      * @return
      */
     @Override
-    public CompletableFuture<MemberBasicInfo> getMemberBasicInfoMonoByPrimaryKey(Long id) {
+    public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByPrimaryKey(Long id) {
         return just(id).publishOn(scheduler)
                 .flatMap(memberBasicService::getMemberBasicMono)
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
@@ -62,7 +62,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      * @return
      */
     @Override
-    public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
+    public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids) {
         return just(ids).publishOn(scheduler)
                 .flatMap(memberBasicService::selectMemberBasicInfoMonoByIds)
                 .toFuture();

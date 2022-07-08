@@ -121,7 +121,7 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
                                         .flatMap(credentialOpt ->
                                                 credentialOpt.map(credential -> {
                                                             extra.put(NEW_MEMBER.key, false);
-                                                            return rpcMemberBasicServiceConsumer.getMemberBasicInfoMonoByPrimaryKey(credential.getMemberId())
+                                                            return rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(credential.getMemberId())
                                                                     .flatMap(mbi -> {
                                                                         MEMBER_STATUS_ASSERTER.accept(mbi);
                                                                         return authService.generateAuthMono(mbi.getId(), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());
@@ -139,7 +139,7 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
                                                         .header(AUTHORIZATION.name, ma.getAuth())
                                                         .header(SECRET.name, ma.getSecKey())
                                                         .header(REFRESH.name, ma.getRefresh())
-                                                        .header(EXTRA.name, GSON.toJson(extra))
+                                                        .header(RESPONSE_EXTRA.name, GSON.toJson(extra))
                                                         .body(generate(OK.code, serverRequest)
                                                                 , BlueResponse.class))
                                 :

@@ -199,7 +199,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
         return zip(justOrEmpty(memberBasicMapper.selectByPrimaryKey(memberId))
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST)))),
-                rpcAttachmentServiceConsumer.getAttachmentInfoMonoByPrimaryKey(attachmentId)
+                rpcAttachmentServiceConsumer.getAttachmentInfoByPrimaryKey(attachmentId)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST)))));
     };
 

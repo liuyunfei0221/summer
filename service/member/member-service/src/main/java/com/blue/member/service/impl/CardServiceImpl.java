@@ -115,7 +115,7 @@ public class CardServiceImpl implements CardService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(EMPTY_PARAM);
 
-        return rpcAttachmentServiceConsumer.selectAttachmentInfoMonoByIds(Stream.of(coverId, contentId)
+        return rpcAttachmentServiceConsumer.selectAttachmentInfoByIds(Stream.of(coverId, contentId)
                         .filter(BlueChecker::isValidIdentity).collect(toList()))
                 .map(attachmentInfos -> attachmentInfos.stream().collect(toMap(AttachmentInfo::getId, a -> a, (a, b) -> a)))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))

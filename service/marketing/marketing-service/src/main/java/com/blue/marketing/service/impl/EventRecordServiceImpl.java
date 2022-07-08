@@ -213,7 +213,7 @@ public class EventRecordServiceImpl implements EventRecordService {
         return zip(
                 selectEventRecordMonoByLimitAndCreator(pageModelRequest.getLimit(), pageModelRequest.getRows(), creator),
                 countEventRecordMonoByCreator(creator),
-                rpcMemberBasicServiceConsumer.getMemberBasicInfoMonoByPrimaryKey(creator)
+                rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(creator)
         ).flatMap(tuple3 -> {
             List<EventRecord> eventRecords = tuple3.getT1();
             String creatorName = tuple3.getT3().getName();
@@ -273,7 +273,7 @@ public class EventRecordServiceImpl implements EventRecordService {
                 .flatMap(tuple2 -> {
                     List<EventRecord> eventRecords = tuple2.getT1();
                     return isNotEmpty(eventRecords) ?
-                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(eventRecords.parallelStream().map(EventRecord::getCreator).collect(toList()))
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(eventRecords.parallelStream().map(EventRecord::getCreator).collect(toList()))
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(eventRecords.stream().map(e ->

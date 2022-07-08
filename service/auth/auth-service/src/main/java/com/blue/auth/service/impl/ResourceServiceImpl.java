@@ -470,7 +470,7 @@ public class ResourceServiceImpl implements ResourceService {
                 .flatMap(tuple2 -> {
                     List<Resource> resources = tuple2.getT1();
                     return isNotEmpty(resources) ?
-                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(resources))
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(resources))
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(resources.stream().map(r ->

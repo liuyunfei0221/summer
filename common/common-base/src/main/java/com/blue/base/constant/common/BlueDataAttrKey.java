@@ -135,7 +135,17 @@ public enum BlueDataAttrKey {
     /**
      * do not need turing test?
      */
-    WITHOUT_TURING_TEST("withoutTuringTest");
+    WITHOUT_TURING_TEST("withoutTuringTest"),
+
+    /**
+     * REQ EXTRA
+     */
+    REQUEST_EXTRA("requestExtra"),
+
+    /**
+     * RES EXTRA
+     */
+    RESPONSE_EXTRA("responseExtra");
 
     /**
      * key

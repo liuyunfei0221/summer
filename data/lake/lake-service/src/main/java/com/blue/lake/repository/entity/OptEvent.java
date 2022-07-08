@@ -33,9 +33,13 @@ public class OptEvent implements Serializable {
 
     private String requestBody;
 
+    private String requestExtra;
+
     private Integer responseStatus;
 
     private String responseBody;
+
+    private String responseExtra;
 
     private String requestId;
 
@@ -141,6 +145,14 @@ public class OptEvent implements Serializable {
         this.requestBody = requestBody;
     }
 
+    public String getRequestExtra() {
+        return requestExtra;
+    }
+
+    public void setRequestExtra(String requestExtra) {
+        this.requestExtra = requestExtra;
+    }
+
     public Integer getResponseStatus() {
         return responseStatus;
     }
@@ -155,6 +167,14 @@ public class OptEvent implements Serializable {
 
     public void setResponseBody(String responseBody) {
         this.responseBody = responseBody;
+    }
+
+    public String getResponseExtra() {
+        return responseExtra;
+    }
+
+    public void setResponseExtra(String responseExtra) {
+        this.responseExtra = responseExtra;
     }
 
     public String getRequestId() {
@@ -297,8 +317,10 @@ public class OptEvent implements Serializable {
                 ", uri='" + uri + '\'' +
                 ", realUri='" + realUri + '\'' +
                 ", requestBody='" + requestBody + '\'' +
+                ", requestExtra='" + requestExtra + '\'' +
                 ", responseStatus=" + responseStatus +
                 ", responseBody='" + responseBody + '\'' +
+                ", responseExtra='" + responseExtra + '\'' +
                 ", requestId='" + requestId + '\'' +
                 ", metadata='" + metadata + '\'' +
                 ", jwt='" + jwt + '\'' +

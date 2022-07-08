@@ -10,7 +10,6 @@ import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static reactor.core.publisher.Mono.just;
@@ -20,21 +19,15 @@ import static reactor.core.publisher.Mono.just;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
+@SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @DubboService(interfaceClass = RpcCityService.class,
         version = "1.0",
         methods = {
-                @Method(name = "getCityInfoOptById", async = false),
-                @Method(name = "getCityInfoById", async = false),
-                @Method(name = "getCityInfoMonoById", async = true),
-                @Method(name = "selectCityInfoByStateId", async = false),
-                @Method(name = "selectCityInfoMonoByStateId", async = true),
-                @Method(name = "selectCityInfoByIds", async = false),
-                @Method(name = "selectCityInfoMonoByIds", async = true),
-                @Method(name = "getCityRegionById", async = false),
-                @Method(name = "getCityRegionMonoById", async = true),
-                @Method(name = "selectCityRegionByIds", async = false),
-                @Method(name = "selectCityRegionMonoByIds", async = true)
+                @Method(name = "getCityInfoById", async = true),
+                @Method(name = "selectCityInfoByStateId", async = true),
+                @Method(name = "selectCityInfoByIds", async = true),
+                @Method(name = "getCityRegionById", async = true),
+                @Method(name = "selectCityRegionByIds", async = true)
         })
 public class RpcCityServiceProvider implements RpcCityService {
 
@@ -48,50 +41,17 @@ public class RpcCityServiceProvider implements RpcCityService {
     }
 
     /**
-     * get city info by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public Optional<CityInfo> getCityInfoOptById(Long id) {
-        return cityService.getCityInfoOptById(id);
-    }
-
-    /**
-     * get city info by id with assert
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public CityInfo getCityInfoById(Long id) {
-        return cityService.getCityInfoById(id);
-    }
-
-    /**
      * get city info mono by id
      *
      * @param id
      * @return
      */
     @Override
-    public CompletableFuture<CityInfo> getCityInfoMonoById(Long id) {
+    public CompletableFuture<CityInfo> getCityInfoById(Long id) {
         return just(id)
                 .publishOn(scheduler)
                 .flatMap(cityService::getCityInfoMonoById)
                 .toFuture();
-    }
-
-    /**
-     * select city info by state id
-     *
-     * @param stateId
-     * @return
-     */
-    @Override
-    public List<CityInfo> selectCityInfoByStateId(Long stateId) {
-        return cityService.selectCityInfoByStateId(stateId);
     }
 
     /**
@@ -101,22 +61,11 @@ public class RpcCityServiceProvider implements RpcCityService {
      * @return
      */
     @Override
-    public CompletableFuture<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId) {
+    public CompletableFuture<List<CityInfo>> selectCityInfoByStateId(Long stateId) {
         return just(stateId)
                 .publishOn(scheduler)
                 .flatMap(cityService::selectCityInfoMonoByStateId)
                 .toFuture();
-    }
-
-    /**
-     * select city info by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public Map<Long, CityInfo> selectCityInfoByIds(List<Long> ids) {
-        return cityService.selectCityInfoByIds(ids);
     }
 
     /**
@@ -126,22 +75,11 @@ public class RpcCityServiceProvider implements RpcCityService {
      * @return
      */
     @Override
-    public CompletableFuture<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids) {
+    public CompletableFuture<Map<Long, CityInfo>> selectCityInfoByIds(List<Long> ids) {
         return just(ids)
                 .publishOn(scheduler)
                 .flatMap(cityService::selectCityInfoMonoByIds)
                 .toFuture();
-    }
-
-    /**
-     * get city region by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public CityRegion getCityRegionById(Long id) {
-        return cityService.getCityRegionById(id);
     }
 
     /**
@@ -151,22 +89,11 @@ public class RpcCityServiceProvider implements RpcCityService {
      * @return
      */
     @Override
-    public CompletableFuture<CityRegion> getCityRegionMonoById(Long id) {
+    public CompletableFuture<CityRegion> getCityRegionById(Long id) {
         return just(id)
                 .publishOn(scheduler)
                 .flatMap(cityService::getCityRegionMonoById)
                 .toFuture();
-    }
-
-    /**
-     * get city regions by id
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public Map<Long, CityRegion> selectCityRegionByIds(List<Long> ids) {
-        return cityService.selectCityRegionByIds(ids);
     }
 
     /**
@@ -176,7 +103,7 @@ public class RpcCityServiceProvider implements RpcCityService {
      * @return
      */
     @Override
-    public CompletableFuture<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids) {
+    public CompletableFuture<Map<Long, CityRegion>> selectCityRegionByIds(List<Long> ids) {
         return just(ids)
                 .publishOn(scheduler)
                 .flatMap(cityService::selectCityRegionMonoByIds)

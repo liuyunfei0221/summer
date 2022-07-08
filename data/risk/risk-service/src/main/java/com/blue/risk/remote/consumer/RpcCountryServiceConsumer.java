@@ -10,7 +10,6 @@ import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static reactor.core.publisher.Mono.fromFuture;
 
@@ -19,20 +18,16 @@ import static reactor.core.publisher.Mono.fromFuture;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
 @Component
 public class RpcCountryServiceConsumer {
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-base"},
             methods = {
-                    @Method(name = "getCountryInfoOptById", async = false),
-                    @Method(name = "getCountryInfoById", async = false),
-                    @Method(name = "getCountryInfoMonoById", async = true),
-                    @Method(name = "selectCountryInfo", async = false),
-                    @Method(name = "selectCountryInfoMono", async = true),
-                    @Method(name = "selectCountryInfoByIds", async = false),
-                    @Method(name = "selectCountryInfoMonoByIds", async = true)
+                    @Method(name = "getCountryInfoById", async = true),
+                    @Method(name = "selectCountryInfo", async = true),
+                    @Method(name = "selectCountryInfoByIds", async = true)
             })
     private RpcCountryService rpcCountryService;
 
@@ -43,42 +38,13 @@ public class RpcCountryServiceConsumer {
     }
 
     /**
-     * get country info by country id
-     *
-     * @param id
-     * @return
-     */
-    public Optional<CountryInfo> getCountryInfoOptById(Long id) {
-        return rpcCountryService.getCountryInfoOptById(id);
-    }
-
-    /**
-     * get country info by country id with assert
-     *
-     * @param id
-     * @return
-     */
-    public CountryInfo getCountryInfoById(Long id) {
-        return rpcCountryService.getCountryInfoById(id);
-    }
-
-    /**
      * get country info mono by country id
      *
      * @param id
      * @return
      */
-    public Mono<CountryInfo> getCountryInfoMonoById(Long id) {
-        return fromFuture(rpcCountryService.getCountryInfoMonoById(id)).publishOn(scheduler);
-    }
-
-    /**
-     * select all countries
-     *
-     * @return
-     */
-    public List<CountryInfo> selectCountryInfo() {
-        return rpcCountryService.selectCountryInfo();
+    public Mono<CountryInfo> getCountryInfoById(Long id) {
+        return fromFuture(rpcCountryService.getCountryInfoById(id)).publishOn(scheduler);
     }
 
     /**
@@ -86,18 +52,8 @@ public class RpcCountryServiceConsumer {
      *
      * @return
      */
-    public Mono<List<CountryInfo>> selectCountryInfoMono() {
-        return fromFuture(rpcCountryService.selectCountryInfoMono()).publishOn(scheduler);
-    }
-
-    /**
-     * select country info by ids
-     *
-     * @param ids
-     * @return
-     */
-    public Map<Long, CountryInfo> selectCountryInfoByIds(List<Long> ids) {
-        return rpcCountryService.selectCountryInfoByIds(ids);
+    public Mono<List<CountryInfo>> selectCountryInfo() {
+        return fromFuture(rpcCountryService.selectCountryInfo()).publishOn(scheduler);
     }
 
     /**
@@ -106,8 +62,8 @@ public class RpcCountryServiceConsumer {
      * @param ids
      * @return
      */
-    public Mono<Map<Long, CountryInfo>> selectCountryInfoMonoByIds(List<Long> ids) {
-        return fromFuture(rpcCountryService.selectCountryInfoMonoByIds(ids)).publishOn(scheduler);
+    public Mono<Map<Long, CountryInfo>> selectCountryInfoByIds(List<Long> ids) {
+        return fromFuture(rpcCountryService.selectCountryInfoByIds(ids)).publishOn(scheduler);
     }
 
 }

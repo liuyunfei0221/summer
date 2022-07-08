@@ -24,8 +24,8 @@ public class RpcAttachmentServiceConsumer {
     @DubboReference(version = "1.0",
             providedBy = {"summer-media"},
             methods = {
-                    @Method(name = "getAttachmentInfoMonoByPrimaryKey", async = true),
-                    @Method(name = "selectAttachmentInfoMonoByIds", async = true)
+                    @Method(name = "getAttachmentInfoByPrimaryKey", async = true),
+                    @Method(name = "selectAttachmentInfoByIds", async = true)
             })
     private RpcAttachmentService rpcAttachmentService;
 
@@ -41,8 +41,8 @@ public class RpcAttachmentServiceConsumer {
      * @param id
      * @return
      */
-    Mono<AttachmentInfo> getAttachmentInfoMonoByPrimaryKey(Long id) {
-        return fromFuture(rpcAttachmentService.getAttachmentInfoMonoByPrimaryKey(id)).publishOn(scheduler);
+    public Mono<AttachmentInfo> getAttachmentInfoByPrimaryKey(Long id) {
+        return fromFuture(rpcAttachmentService.getAttachmentInfoByPrimaryKey(id)).publishOn(scheduler);
     }
 
     /**
@@ -51,8 +51,8 @@ public class RpcAttachmentServiceConsumer {
      * @param ids
      * @return
      */
-    Mono<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids) {
-        return fromFuture(rpcAttachmentService.selectAttachmentInfoMonoByIds(ids)).publishOn(scheduler);
+    public Mono<List<AttachmentInfo>> selectAttachmentInfoByIds(List<Long> ids) {
+        return fromFuture(rpcAttachmentService.selectAttachmentInfoByIds(ids)).publishOn(scheduler);
     }
 
 }

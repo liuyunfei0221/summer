@@ -5,7 +5,6 @@ import com.blue.base.api.model.AreaRegion;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -17,28 +16,12 @@ import java.util.concurrent.CompletableFuture;
 public interface RpcAreaService {
 
     /**
-     * get area info opt by id
+     * get area info by id
      *
      * @param id
      * @return
      */
-    Optional<AreaInfo> getAreaInfoOptById(Long id);
-
-    /**
-     * get area info by id with assert
-     *
-     * @param id
-     * @return
-     */
-    AreaInfo getAreaInfoById(Long id);
-
-    /**
-     * get area info mono by id
-     *
-     * @param id
-     * @return
-     */
-    CompletableFuture<AreaInfo> getAreaInfoMonoById(Long id);
+    CompletableFuture<AreaInfo> getAreaInfoById(Long id);
 
     /**
      * select area info by city id
@@ -46,15 +29,7 @@ public interface RpcAreaService {
      * @param cityId
      * @return
      */
-    List<AreaInfo> selectAreaInfoByCityId(Long cityId);
-
-    /**
-     * select area info mono by city id
-     *
-     * @param cityId
-     * @return
-     */
-    CompletableFuture<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId);
+    CompletableFuture<List<AreaInfo>> selectAreaInfoByCityId(Long cityId);
 
     /**
      * select area info by ids
@@ -62,15 +37,7 @@ public interface RpcAreaService {
      * @param ids
      * @return
      */
-    Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids);
-
-    /**
-     * select area info mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids);
+    CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoByIds(List<Long> ids);
 
     /**
      * get region by id
@@ -78,15 +45,7 @@ public interface RpcAreaService {
      * @param id
      * @return
      */
-    AreaRegion getAreaRegionById(Long id);
-
-    /**
-     * get region mono by id
-     *
-     * @param id
-     * @return
-     */
-    CompletableFuture<AreaRegion> getAreaRegionMonoById(Long id);
+    CompletableFuture<AreaRegion> getAreaRegionById(Long id);
 
     /**
      * get regions by ids
@@ -94,14 +53,6 @@ public interface RpcAreaService {
      * @param ids
      * @return
      */
-    Map<Long, AreaRegion> selectAreaRegionByIds(List<Long> ids);
-
-    /**
-     * get regions mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids);
+    CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionByIds(List<Long> ids);
 
 }

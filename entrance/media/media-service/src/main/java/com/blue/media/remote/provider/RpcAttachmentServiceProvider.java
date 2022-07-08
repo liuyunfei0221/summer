@@ -23,8 +23,8 @@ import static reactor.core.publisher.Mono.*;
 @DubboService(interfaceClass = RpcAttachmentService.class,
         version = "1.0",
         methods = {
-                @Method(name = "getAttachmentInfoMonoByPrimaryKey", async = true),
-                @Method(name = "selectAttachmentInfoMonoByIds", async = true)
+                @Method(name = "getAttachmentInfoByPrimaryKey", async = true),
+                @Method(name = "selectAttachmentInfoByIds", async = true)
         })
 public class RpcAttachmentServiceProvider implements RpcAttachmentService {
 
@@ -44,7 +44,7 @@ public class RpcAttachmentServiceProvider implements RpcAttachmentService {
      * @return
      */
     @Override
-    public CompletableFuture<AttachmentInfo> getAttachmentInfoMonoByPrimaryKey(Long id) {
+    public CompletableFuture<AttachmentInfo> getAttachmentInfoByPrimaryKey(Long id) {
         return just(id).publishOn(scheduler).flatMap(attachmentService::getAttachmentInfoMono)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .toFuture();
@@ -57,7 +57,7 @@ public class RpcAttachmentServiceProvider implements RpcAttachmentService {
      * @return
      */
     @Override
-    public CompletableFuture<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids) {
+    public CompletableFuture<List<AttachmentInfo>> selectAttachmentInfoByIds(List<Long> ids) {
         return just(ids).publishOn(scheduler).flatMap(attachmentService::selectAttachmentInfoMonoByIds)
                 .toFuture();
     }

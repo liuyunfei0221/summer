@@ -19,7 +19,7 @@ public interface RpcAttachmentService {
      * @param id
      * @return
      */
-    CompletableFuture<AttachmentInfo> getAttachmentInfoMonoByPrimaryKey(Long id);
+    CompletableFuture<AttachmentInfo> getAttachmentInfoByPrimaryKey(Long id);
 
     /**
      * select attachment by ids
@@ -27,6 +27,6 @@ public interface RpcAttachmentService {
      * @param ids
      * @return
      */
-    CompletableFuture<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids);
+    CompletableFuture<List<AttachmentInfo>> selectAttachmentInfoByIds(List<Long> ids);
 
 }

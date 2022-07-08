@@ -11,7 +11,6 @@ import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static reactor.core.publisher.Mono.fromFuture;
 
@@ -20,24 +19,18 @@ import static reactor.core.publisher.Mono.fromFuture;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused"})
 @Component
 public class RpcCityServiceConsumer {
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-base"},
             methods = {
-                    @Method(name = "getCityInfoOptById", async = false),
-                    @Method(name = "getCityInfoById", async = false),
-                    @Method(name = "getCityInfoMonoById", async = true),
-                    @Method(name = "selectCityInfoByStateId", async = false),
-                    @Method(name = "selectCityInfoMonoByStateId", async = true),
-                    @Method(name = "selectCityInfoByIds", async = false),
-                    @Method(name = "selectCityInfoMonoByIds", async = true),
+                    @Method(name = "getCityInfoById", async = true),
+                    @Method(name = "selectCityInfoByStateId", async = true),
+                    @Method(name = "selectCityInfoByIds", async = true),
                     @Method(name = "getCityRegionById", async = true),
-                    @Method(name = "getCityRegionMonoById", async = true),
-                    @Method(name = "selectCityRegionByIds", async = true),
-                    @Method(name = "selectCityRegionMonoByIds", async = true)
+                    @Method(name = "selectCityRegionByIds", async = true)
             })
     private RpcCityService rpcCityService;
 
@@ -48,43 +41,13 @@ public class RpcCityServiceConsumer {
     }
 
     /**
-     * get city info by id
-     *
-     * @param id
-     * @return
-     */
-    public Optional<CityInfo> getCityInfoOptById(Long id) {
-        return rpcCityService.getCityInfoOptById(id);
-    }
-
-    /**
-     * get city info by id with assert
-     *
-     * @param id
-     * @return
-     */
-    public CityInfo getCityInfoById(Long id) {
-        return rpcCityService.getCityInfoById(id);
-    }
-
-    /**
      * get city info mono by id
      *
      * @param id
      * @return
      */
-    public Mono<CityInfo> getCityInfoMonoById(Long id) {
-        return fromFuture(rpcCityService.getCityInfoMonoById(id)).publishOn(scheduler);
-    }
-
-    /**
-     * select city info by state id
-     *
-     * @param stateId
-     * @return
-     */
-    public List<CityInfo> selectCityInfoByStateId(Long stateId) {
-        return rpcCityService.selectCityInfoByStateId(stateId);
+    public Mono<CityInfo> getCityInfoById(Long id) {
+        return fromFuture(rpcCityService.getCityInfoById(id)).publishOn(scheduler);
     }
 
     /**
@@ -93,18 +56,8 @@ public class RpcCityServiceConsumer {
      * @param stateId
      * @return
      */
-    public Mono<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId) {
-        return fromFuture(rpcCityService.selectCityInfoMonoByStateId(stateId)).publishOn(scheduler);
-    }
-
-    /**
-     * select city info by ids
-     *
-     * @param ids
-     * @return
-     */
-    public Map<Long, CityInfo> selectCityInfoByIds(List<Long> ids) {
-        return rpcCityService.selectCityInfoByIds(ids);
+    public Mono<List<CityInfo>> selectCityInfoByStateId(Long stateId) {
+        return fromFuture(rpcCityService.selectCityInfoByStateId(stateId)).publishOn(scheduler);
     }
 
     /**
@@ -113,18 +66,8 @@ public class RpcCityServiceConsumer {
      * @param ids
      * @return
      */
-    public Mono<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids) {
-        return fromFuture(rpcCityService.selectCityInfoMonoByIds(ids)).publishOn(scheduler);
-    }
-
-    /**
-     * get city region by id
-     *
-     * @param id
-     * @return
-     */
-    public CityRegion getCityRegionById(Long id) {
-        return rpcCityService.getCityRegionById(id);
+    public Mono<Map<Long, CityInfo>> selectCityInfoByIds(List<Long> ids) {
+        return fromFuture(rpcCityService.selectCityInfoByIds(ids)).publishOn(scheduler);
     }
 
     /**
@@ -133,18 +76,8 @@ public class RpcCityServiceConsumer {
      * @param id
      * @return
      */
-    public Mono<CityRegion> getCityRegionMonoById(Long id) {
-        return fromFuture(rpcCityService.getCityRegionMonoById(id)).publishOn(scheduler);
-    }
-
-    /**
-     * get city regions by id
-     *
-     * @param ids
-     * @return
-     */
-    public Map<Long, CityRegion> selectCityRegionByIds(List<Long> ids) {
-        return rpcCityService.selectCityRegionByIds(ids);
+    public Mono<CityRegion> getCityRegionById(Long id) {
+        return fromFuture(rpcCityService.getCityRegionById(id)).publishOn(scheduler);
     }
 
     /**
@@ -153,8 +86,8 @@ public class RpcCityServiceConsumer {
      * @param ids
      * @return
      */
-    public Mono<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids) {
-        return fromFuture(rpcCityService.selectCityRegionMonoByIds(ids)).publishOn(scheduler);
+    public Mono<Map<Long, CityRegion>> selectCityRegionByIds(List<Long> ids) {
+        return fromFuture(rpcCityService.selectCityRegionByIds(ids)).publishOn(scheduler);
     }
 
 }

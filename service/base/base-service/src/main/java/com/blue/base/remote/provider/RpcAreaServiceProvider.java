@@ -10,7 +10,6 @@ import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static reactor.core.publisher.Mono.just;
@@ -20,21 +19,15 @@ import static reactor.core.publisher.Mono.just;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
+@SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl"})
 @DubboService(interfaceClass = RpcAreaService.class,
         version = "1.0",
         methods = {
-                @Method(name = "getAreaInfoOptById", async = false),
-                @Method(name = "getAreaInfoById", async = false),
-                @Method(name = "getAreaInfoMonoById", async = true),
-                @Method(name = "selectAreaInfoByCityId", async = false),
-                @Method(name = "selectAreaInfoMonoByCityId", async = true),
-                @Method(name = "selectAreaInfoByIds", async = false),
-                @Method(name = "selectAreaInfoMonoByIds", async = true),
-                @Method(name = "getAreaRegionById", async = false),
-                @Method(name = "getAreaRegionMonoById", async = true),
-                @Method(name = "selectAreaRegionByIds", async = false),
-                @Method(name = "selectAreaRegionMonoByIds", async = true)
+                @Method(name = "getAreaInfoById", async = true),
+                @Method(name = "selectAreaInfoByCityId", async = true),
+                @Method(name = "selectAreaInfoByIds", async = true),
+                @Method(name = "getAreaRegionById", async = true),
+                @Method(name = "selectAreaRegionByIds", async = true)
         })
 public class RpcAreaServiceProvider implements RpcAreaService {
 
@@ -48,50 +41,17 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     }
 
     /**
-     * get area info opt by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public Optional<AreaInfo> getAreaInfoOptById(Long id) {
-        return areaService.getAreaInfoOptById(id);
-    }
-
-    /**
-     * get area info by id with assert
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public AreaInfo getAreaInfoById(Long id) {
-        return areaService.getAreaInfoById(id);
-    }
-
-    /**
      * get area info mono by id
      *
      * @param id
      * @return
      */
     @Override
-    public CompletableFuture<AreaInfo> getAreaInfoMonoById(Long id) {
+    public CompletableFuture<AreaInfo> getAreaInfoById(Long id) {
         return just(id)
                 .publishOn(scheduler)
                 .flatMap(areaService::getAreaInfoMonoById)
                 .toFuture();
-    }
-
-    /**
-     * select area info by city id
-     *
-     * @param cityId
-     * @return
-     */
-    @Override
-    public List<AreaInfo> selectAreaInfoByCityId(Long cityId) {
-        return areaService.selectAreaInfoByCityId(cityId);
     }
 
     /**
@@ -101,22 +61,11 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      * @return
      */
     @Override
-    public CompletableFuture<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId) {
+    public CompletableFuture<List<AreaInfo>> selectAreaInfoByCityId(Long cityId) {
         return just(cityId)
                 .publishOn(scheduler)
                 .flatMap(areaService::selectAreaInfoMonoByCityId)
                 .toFuture();
-    }
-
-    /**
-     * select area info by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids) {
-        return areaService.selectAreaInfoByIds(ids);
     }
 
     /**
@@ -126,22 +75,11 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      * @return
      */
     @Override
-    public CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids) {
+    public CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoByIds(List<Long> ids) {
         return just(ids)
                 .publishOn(scheduler)
                 .flatMap(areaService::selectAreaInfoMonoByIds)
                 .toFuture();
-    }
-
-    /**
-     * get region by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public AreaRegion getAreaRegionById(Long id) {
-        return areaService.getAreaRegionById(id);
     }
 
     /**
@@ -151,22 +89,11 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      * @return
      */
     @Override
-    public CompletableFuture<AreaRegion> getAreaRegionMonoById(Long id) {
+    public CompletableFuture<AreaRegion> getAreaRegionById(Long id) {
         return just(id)
                 .publishOn(scheduler)
                 .flatMap(areaService::getAreaRegionMonoById)
                 .toFuture();
-    }
-
-    /**
-     * get regions by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public Map<Long, AreaRegion> selectAreaRegionByIds(List<Long> ids) {
-        return areaService.selectAreaRegionByIds(ids);
     }
 
     /**
@@ -176,7 +103,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      * @return
      */
     @Override
-    public CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids) {
+    public CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionByIds(List<Long> ids) {
         return just(ids)
                 .publishOn(scheduler)
                 .flatMap(areaService::selectAreaRegionMonoByIds)

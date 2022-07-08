@@ -489,7 +489,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
                 .flatMap(tuple2 -> {
                     List<QrCodeConfig> configs = tuple2.getT1();
                     return isNotEmpty(configs) ?
-                            zip(rpcRoleServiceConsumer.selectRoleInfo(), rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(configs)))
+                            zip(rpcRoleServiceConsumer.selectRoleInfo(), rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(configs)))
                                     .flatMap(t2 -> {
                                         Map<Long, RoleInfo> idAndRoleInfoMapping = t2.getT1().parallelStream().collect(toMap(RoleInfo::getId, ri -> ri, (a, b) -> a));
                                         Map<Long, String> idAndMemberNameMapping = t2.getT2().parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));

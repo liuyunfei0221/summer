@@ -24,8 +24,8 @@ public class RpcMemberBasicServiceConsumer {
     @DubboReference(version = "1.0",
             providedBy = {"summer-member"},
             methods = {
-                    @Method(name = "getMemberBasicInfoMonoByPrimaryKey", async = true),
-                    @Method(name = "selectMemberBasicInfoMonoByIds", async = true),
+                    @Method(name = "getMemberBasicInfoByPrimaryKey", async = true),
+                    @Method(name = "selectMemberBasicInfoByIds", async = true),
                     @Method(name = "getMemberBasicInfoByPhone", async = true),
                     @Method(name = "getMemberBasicInfoByEmail", async = true)
             })
@@ -43,8 +43,8 @@ public class RpcMemberBasicServiceConsumer {
      * @param id
      * @return
      */
-    public Mono<MemberBasicInfo> getMemberBasicInfoMonoByPrimaryKey(Long id) {
-        return fromFuture(rpcMemberBasicService.getMemberBasicInfoMonoByPrimaryKey(id)).publishOn(scheduler);
+    public Mono<MemberBasicInfo> getMemberBasicInfoByPrimaryKey(Long id) {
+        return fromFuture(rpcMemberBasicService.getMemberBasicInfoByPrimaryKey(id)).publishOn(scheduler);
     }
 
     /**
@@ -53,8 +53,8 @@ public class RpcMemberBasicServiceConsumer {
      * @param ids
      * @return
      */
-    public Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
-        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoMonoByIds(ids)).publishOn(scheduler);
+    public Mono<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids) {
+        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoByIds(ids)).publishOn(scheduler);
     }
 
     /**

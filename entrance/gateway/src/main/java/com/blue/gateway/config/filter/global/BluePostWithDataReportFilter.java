@@ -1,6 +1,7 @@
 package com.blue.gateway.config.filter.global;
 
 import com.blue.base.common.content.common.RequestBodyProcessor;
+import com.blue.base.constant.common.BlueHeader;
 import com.blue.base.model.common.DataEvent;
 import com.blue.base.model.common.ExceptionResponse;
 import com.blue.gateway.component.event.RequestEventReporter;
@@ -134,6 +135,10 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
                 public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                     CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(
                             exchange, exchange.getResponse().getHeaders());
+
+                    ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
+                            .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
+
                     return fromPublisher(getResponseBodyAndReport(exchange, httpStatus, body, dataEvent), String.class)
                             .insert(outputMessage, new BodyInserterContext())
                             .then(defer(() ->
@@ -152,9 +157,13 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
             };
         }
 
+        ServerHttpResponse decoratorResponse = new ServerHttpResponseDecorator(response);
+        ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
+                .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
+
         requestEventReporter.report(dataEvent);
 
-        return response;
+        return decoratorResponse;
     }
 
     private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, GatewayFilterChain chain, DataEvent dataEvent) {

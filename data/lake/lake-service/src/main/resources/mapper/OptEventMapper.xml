@@ -12,8 +12,10 @@
         <result column="uri" jdbcType="VARCHAR" property="uri"/>
         <result column="real_uri" jdbcType="VARCHAR" property="realUri"/>
         <result column="request_body" jdbcType="VARCHAR" property="requestBody"/>
+        <result column="request_extra" jdbcType="VARCHAR" property="requestExtra"/>
         <result column="response_status" jdbcType="INTEGER" property="responseStatus"/>
         <result column="response_body" jdbcType="VARCHAR" property="responseBody"/>
+        <result column="response_extra" jdbcType="VARCHAR" property="responseExtra"/>
         <result column="request_id" jdbcType="VARCHAR" property="requestId"/>
         <result column="metadata" jdbcType="VARCHAR" property="metadata"/>
         <result column="jwt" jdbcType="VARCHAR" property="jwt"/>
@@ -35,8 +37,8 @@
 
     <sql id="Base_Column_List">
         id
-        , data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, response_status,response_body,request_id, metadata, jwt, member_id, role_ids, credential_type,
-        device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body, duration_seconds
+        , data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, request_extra, response_status, response_body, response_extra, request_id, metadata, jwt, member_id,
+        role_ids, credential_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body, duration_seconds
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -54,8 +56,8 @@
 
     <insert id="insert" parameterType="com.blue.lake.repository.entity.OptEvent">
         insert into opt_event (id, data_event_type, data_event_op_type, stamp, create_date,
-                               method, uri, real_uri, request_body, response_status,
-                               response_body, request_id, metadata, jwt, member_id,
+                               method, uri, real_uri, request_body, request_extra, response_status,
+                               response_body, response_extra, request_id, metadata, jwt, member_id,
                                role_ids, credential_type, device_type, login_time, client_ip,
                                user_agent, sec_key, request_un_decryption,
                                response_un_encryption, existence_request_body,
@@ -64,8 +66,9 @@
                 #{dataEventOpType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
                 #{createDate,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR},
                 #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
-                #{requestBody,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR},
-                #{requestId,jdbcType=VARCHAR}, #{metadata,jdbcType=VARCHAR},
+                #{requestBody,jdbcType=VARCHAR}, #{requestExtra,jdbcType=VARCHAR},
+                #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR},
+                #{responseExtra,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR}, #{metadata,jdbcType=VARCHAR},
                 #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT},
                 #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
                 #{credentialType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
@@ -78,8 +81,9 @@
     <insert id="insertBatch" parameterType="java.util.List">
         <if test="list != null and list.size > 0">
             INSERT INTO opt_event (id, data_event_type, data_event_op_type,
-            stamp, create_date, method, uri, real_uri, request_body, response_status,
-            response_body, request_id, metadata, jwt, member_id,
+            stamp, create_date, method, uri, real_uri, request_body,
+            request_extra, response_status, response_body, response_extra,
+            request_id, metadata, jwt, member_id,
             role_ids, credential_type, device_type, login_time, client_ip,
             user_agent, sec_key, request_un_decryption,
             response_un_encryption, existence_request_body,
@@ -90,8 +94,8 @@
                 #{dataEventOpType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
                 #{stamp,jdbcType=BIGINT}, #{createDate,jdbcType=VARCHAR},
                 #{method,jdbcType=VARCHAR}, #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
-                #{requestBody,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER},
-                #{responseBody,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR},
+                #{requestBody,jdbcType=VARCHAR}, #{requestExtra,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER},
+                #{responseBody,jdbcType=VARCHAR}, #{responseExtra,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR},
                 #{metadata,jdbcType=VARCHAR}, #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT},
                 #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
                 #{credentialType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
@@ -133,11 +137,17 @@
             <if test="requestBody != null">
                 request_body,
             </if>
+            <if test="requestExtra != null">
+                request_extra,
+            </if>
             <if test="responseStatus != null">
                 response_status,
             </if>
             <if test="responseBody != null">
                 response_body,
+            </if>
+            <if test="responseExtra != null">
+                response_extra,
             </if>
             <if test="requestId != null">
                 request_id,
@@ -216,11 +226,17 @@
             <if test="requestBody != null">
                 #{requestBody,jdbcType=VARCHAR},
             </if>
+            <if test="requestExtra != null">
+                #{requestExtra,jdbcType=VARCHAR},
+            </if>
             <if test="responseStatus != null">
                 #{responseStatus,jdbcType=INTEGER},
             </if>
             <if test="responseBody != null">
                 #{responseBody,jdbcType=VARCHAR},
+            </if>
+            <if test="responseExtra != null">
+                #{responseExtra,jdbcType=VARCHAR},
             </if>
             <if test="requestId != null">
                 #{requestId,jdbcType=VARCHAR},
@@ -300,11 +316,17 @@
             <if test="requestBody != null">
                 request_body = #{requestBody,jdbcType=VARCHAR},
             </if>
+            <if test="requestExtra != null">
+                request_extra = #{requestExtra,jdbcType=VARCHAR},
+            </if>
             <if test="responseStatus != null">
                 response_status = #{responseStatus,jdbcType=INTEGER},
             </if>
             <if test="responseBody != null">
                 response_body = #{responseBody,jdbcType=VARCHAR},
+            </if>
+            <if test="responseExtra != null">
+                response_extra = #{responseExtra,jdbcType=VARCHAR},
             </if>
             <if test="requestId != null">
                 request_id = #{requestId,jdbcType=VARCHAR},
@@ -319,7 +341,8 @@
                 member_id = #{memberId,jdbcType=BIGINT},
             </if>
             <if test="roleId != null">
-                role_ids = #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
+                role_ids =
+                #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
             </if>
             <if test="credentialType != null">
                 credential_type = #{credentialType,jdbcType=VARCHAR},
@@ -368,8 +391,10 @@
             uri                     = #{uri,jdbcType=VARCHAR},
             real_uri                = #{realUri,jdbcType=VARCHAR},
             request_body            = #{requestBody,jdbcType=VARCHAR},
+            request_extra           = #{requestExtra,jdbcType=VARCHAR},
             response_status         = #{responseStatus,jdbcType=INTEGER},
             response_body           = #{responseBody,jdbcType=VARCHAR},
+            response_extra          = #{responseExtra,jdbcType=VARCHAR},
             request_id              = #{requestId,jdbcType=VARCHAR},
             metadata                = #{metadata,jdbcType=VARCHAR},
             jwt                     = #{jwt,jdbcType=VARCHAR},

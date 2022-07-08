@@ -384,7 +384,7 @@ public class StyleServiceImpl implements StyleService {
 
         Map<Long, String> idAndMemberNameMapping;
         try {
-            idAndMemberNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(newActiveStyle)))
+            idAndMemberNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(singletonList(newActiveStyle)))
                     .toFuture().join().parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
         } catch (Exception e) {
             LOGGER.error("StyleManagerInfo updateActiveStyle(Long id, Long operatorId), generate idAndNameMapping failed, e = {}", e);
@@ -522,7 +522,7 @@ public class StyleServiceImpl implements StyleService {
                 .flatMap(tuple2 -> {
                     List<Style> styles = tuple2.getT1();
                     return isNotEmpty(styles) ?
-                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(styles))
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(styles))
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(styles.stream().map(s ->

@@ -358,7 +358,7 @@ public class RoleServiceImpl implements RoleService {
 
         Map<Long, String> idAndMemberNameMapping;
         try {
-            idAndMemberNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(singletonList(newDefaultRole))).toFuture().join()
+            idAndMemberNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(singletonList(newDefaultRole))).toFuture().join()
                     .parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
         } catch (Exception e) {
             LOGGER.error("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), generate idAndMemberNameMapping failed, e = {}", e);
@@ -505,7 +505,7 @@ public class RoleServiceImpl implements RoleService {
                     List<Role> roles = tuple2.getT1();
 
                     return isNotEmpty(roles) ?
-                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoMonoByIds(OPERATORS_GETTER.apply(roles))
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(roles))
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(roles.stream().map(r ->
