@@ -43,7 +43,7 @@
         </javaClientGenerator>
 
         <!-- tables -->
-        <table tableName="security_question" domainObjectName="SecurityQuestion"/>
+        <table tableName="finance_flow" domainObjectName="FinanceFlow"/>
 
     </context>
 </generatorConfiguration>

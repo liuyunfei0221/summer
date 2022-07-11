@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.finance.repository.mapper.FinanceFlowMapper">
+    <resultMap id="BaseResultMap" type="com.blue.finance.repository.entity.FinanceFlow">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="order_id" jdbcType="BIGINT" property="orderId"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="change_type" jdbcType="TINYINT" property="changeType"/>
+        <result column="amount_changed" jdbcType="BIGINT" property="amountChanged"/>
+        <result column="amount_before_changed" jdbcType="BIGINT" property="amountBeforeChanged"/>
+        <result column="amount_after_changed" jdbcType="BIGINT" property="amountAfterChanged"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , member_id, order_id, type, change_type, amount_changed, amount_before_changed,
+    amount_after_changed, status, create_time, update_time
+    </sql>
+
+    <insert id="insert" parameterType="com.blue.finance.repository.entity.FinanceFlow">
+        insert into finance_flow (id, member_id, order_id,
+                                  type, change_type, amount_changed,
+                                  amount_before_changed, amount_after_changed,
+                                  status, create_time, update_time)
+        values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT},
+                #{type,jdbcType=TINYINT}, #{changeType,jdbcType=TINYINT}, #{amountChanged,jdbcType=BIGINT},
+                #{amountBeforeChanged,jdbcType=BIGINT}, #{amountAfterChanged,jdbcType=BIGINT},
+                #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.finance.repository.entity.FinanceFlow">
+        insert into finance_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="memberId != null">
+                member_id,
+            </if>
+            <if test="orderId != null">
+                order_id,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="changeType != null">
+                change_type,
+            </if>
+            <if test="amountChanged != null">
+                amount_changed,
+            </if>
+            <if test="amountBeforeChanged != null">
+                amount_before_changed,
+            </if>
+            <if test="amountAfterChanged != null">
+                amount_after_changed,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="memberId != null">
+                #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="orderId != null">
+                #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=TINYINT},
+            </if>
+            <if test="changeType != null">
+                #{changeType,jdbcType=TINYINT},
+            </if>
+            <if test="amountChanged != null">
+                #{amountChanged,jdbcType=BIGINT},
+            </if>
+            <if test="amountBeforeChanged != null">
+                #{amountBeforeChanged,jdbcType=BIGINT},
+            </if>
+            <if test="amountAfterChanged != null">
+                #{amountAfterChanged,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.finance.repository.entity.FinanceFlow">
+        update finance_flow
+        set member_id             = #{memberId,jdbcType=BIGINT},
+            order_id              = #{orderId,jdbcType=BIGINT},
+            type                  = #{type,jdbcType=TINYINT},
+            change_type           = #{changeType,jdbcType=TINYINT},
+            amount_changed        = #{amountChanged,jdbcType=BIGINT},
+            amount_before_changed = #{amountBeforeChanged,jdbcType=BIGINT},
+            amount_after_changed  = #{amountAfterChanged,jdbcType=BIGINT},
+            status                = #{status,jdbcType=TINYINT},
+            create_time           = #{createTime,jdbcType=BIGINT},
+            update_time           = #{updateTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.finance.repository.entity.FinanceFlow">
+        update finance_flow
+        <set>
+            <if test="memberId != null">
+                member_id = #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="orderId != null">
+                order_id = #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="changeType != null">
+                change_type = #{changeType,jdbcType=TINYINT},
+            </if>
+            <if test="amountChanged != null">
+                amount_changed = #{amountChanged,jdbcType=BIGINT},
+            </if>
+            <if test="amountBeforeChanged != null">
+                amount_before_changed = #{amountBeforeChanged,jdbcType=BIGINT},
+            </if>
+            <if test="amountAfterChanged != null">
+                amount_after_changed = #{amountAfterChanged,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from finance_flow
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from finance_flow
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+</mapper>

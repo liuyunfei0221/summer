@@ -97,7 +97,7 @@ public final class SummerAttr {
         if (isBlank(dateTimeFormat))
             throw new RuntimeException("dateTimeFormat can't be null");
 
-        String dateFormat = properties.getProperty(DATE_TIME_FORMAT_KEY);
+        String dateFormat = properties.getProperty(DATE_FORMAT_KEY);
         if (isBlank(dateFormat))
             throw new RuntimeException("dateFormat can't be null");
 

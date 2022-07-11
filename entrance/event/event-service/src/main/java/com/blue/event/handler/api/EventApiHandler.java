@@ -38,9 +38,9 @@ public final class EventApiHandler {
     public Mono<ServerResponse> report(ServerRequest serverRequest) {
         return just(serverRequest)
                 .flatMap(eventReportService::report)
-                .flatMap(b ->
+                .flatMap(success ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, b, serverRequest), BlueResponse.class));
+                                .body(generate(OK.code, success, serverRequest), BlueResponse.class));
     }
 
 }

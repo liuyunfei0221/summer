@@ -12,7 +12,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +26,7 @@ import static com.blue.base.constant.common.BlueDataAttrKey.*;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.common.ResponseElement.OK;
 import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.base.constant.common.SummerAttr.DATE_FORMATTER;
 import static java.time.Instant.ofEpochSecond;
 import static java.time.LocalDate.ofInstant;
 import static java.time.ZoneId.systemDefault;
@@ -42,10 +42,8 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 @Component
 public final class LakeModelConverters implements ApplicationListener<ContextRefreshedEvent> {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
     private static final Function<Long, String> DATE_STR_FUNC = stamp ->
-            ofInstant(ofEpochSecond(stamp), systemDefault()).format(FORMATTER);
+            ofInstant(ofEpochSecond(stamp), systemDefault()).format(DATE_FORMATTER);
 
     private static Set<String> NESTING_REAL_URIS;
 

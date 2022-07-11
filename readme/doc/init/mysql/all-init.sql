@@ -630,7 +630,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', b'0', b'1', b'1', b'0', b'1', 
 
 -- event api
 
-       (300001, 'POST', 'blue-event', '/event/report', b'0', b'1', b'1', b'0', b'1', 1,
+       (300001, 'POST', 'blue-event', '/event/report', b'0', b'1', b'1', b'1', b'1', 1,
         'event report', 'event report', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- event manage
@@ -747,6 +747,44 @@ CREATE TABLE `finance_account_1`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of finance account 1';
+
+CREATE TABLE `finance_flow_0`
+(
+    `id`                    bigint  NOT NULL COMMENT 'id',
+    `member_id`             bigint  NOT NULL COMMENT 'member id',
+    `order_id`              bigint  NOT NULL COMMENT 'order id',
+    `type`                  tinyint NOT NULL COMMENT 'flow type',
+    `change_type`           tinyint NOT NULL COMMENT 'change type',
+    `amount_changed`        bigint DEFAULT '0' COMMENT 'amount changed/fen',
+    `amount_before_changed` bigint DEFAULT '0' COMMENT 'amount before changed/fen',
+    `amount_after_changed`  bigint DEFAULT '0' COMMENT 'amount after changed/fen',
+    `status`                tinyint NOT NULL COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`           bigint  NOT NULL COMMENT 'data create time',
+    `update_time`           bigint  NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    KEY                     `idx_member`(`member_id`) USING BTREE,
+    KEY                     `idx_order`(`order_id`) USING BTREE,
+    KEY                     `idx_create_time`(`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of finance flow 0';
+
+CREATE TABLE `finance_flow_1`
+(
+    `id`                    bigint  NOT NULL COMMENT 'id',
+    `member_id`             bigint  NOT NULL COMMENT 'member id',
+    `order_id`              bigint  NOT NULL COMMENT 'order id',
+    `type`                  tinyint NOT NULL COMMENT 'flow type',
+    `change_type`           tinyint NOT NULL COMMENT 'change type',
+    `amount_changed`        bigint DEFAULT '0' COMMENT 'amount changed/fen',
+    `amount_before_changed` bigint DEFAULT '0' COMMENT 'amount before changed/fen',
+    `amount_after_changed`  bigint DEFAULT '0' COMMENT 'amount after changed/fen',
+    `status`                tinyint NOT NULL COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`           bigint  NOT NULL COMMENT 'data create time',
+    `update_time`           bigint  NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    KEY                     `idx_member`(`member_id`) USING BTREE,
+    KEY                     `idx_order`(`order_id`) USING BTREE,
+    KEY                     `idx_create_time`(`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of finance flow 1';
 
 CREATE TABLE `organization_0`
 (
@@ -912,6 +950,44 @@ CREATE TABLE `finance_account_1`
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member`(`member_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of finance account 1';
+
+CREATE TABLE `finance_flow_0`
+(
+    `id`                    bigint  NOT NULL COMMENT 'id',
+    `member_id`             bigint  NOT NULL COMMENT 'member id',
+    `order_id`              bigint  NOT NULL COMMENT 'order id',
+    `type`                  tinyint NOT NULL COMMENT 'flow type',
+    `change_type`           tinyint NOT NULL COMMENT 'change type',
+    `amount_changed`        bigint DEFAULT '0' COMMENT 'amount changed/fen',
+    `amount_before_changed` bigint DEFAULT '0' COMMENT 'amount before changed/fen',
+    `amount_after_changed`  bigint DEFAULT '0' COMMENT 'amount after changed/fen',
+    `status`                tinyint NOT NULL COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`           bigint  NOT NULL COMMENT 'data create time',
+    `update_time`           bigint  NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    KEY                     `idx_member`(`member_id`) USING BTREE,
+    KEY                     `idx_order`(`order_id`) USING BTREE,
+    KEY                     `idx_create_time`(`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of finance flow 0';
+
+CREATE TABLE `finance_flow_1`
+(
+    `id`                    bigint  NOT NULL COMMENT 'id',
+    `member_id`             bigint  NOT NULL COMMENT 'member id',
+    `order_id`              bigint  NOT NULL COMMENT 'order id',
+    `type`                  tinyint NOT NULL COMMENT 'flow type',
+    `change_type`           tinyint NOT NULL COMMENT 'change type',
+    `amount_changed`        bigint DEFAULT '0' COMMENT 'amount changed/fen',
+    `amount_before_changed` bigint DEFAULT '0' COMMENT 'amount before changed/fen',
+    `amount_after_changed`  bigint DEFAULT '0' COMMENT 'amount after changed/fen',
+    `status`                tinyint NOT NULL COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`           bigint  NOT NULL COMMENT 'data create time',
+    `update_time`           bigint  NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    KEY                     `idx_member`(`member_id`) USING BTREE,
+    KEY                     `idx_order`(`order_id`) USING BTREE,
+    KEY                     `idx_create_time`(`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of finance flow 1';
 
 CREATE TABLE `organization_0`
 (
