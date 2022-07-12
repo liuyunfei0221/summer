@@ -11,22 +11,22 @@ public enum SyncKeyPrefix {
     /**
      * access update sync prefix
      */
-    ACCESS_UPDATE_PRE("ACCESS_UPDATE_PRE:"),
+    ACCESS_UPDATE_PRE("ACCESS_UPDATE:"),
 
     /**
      * bulletins cache sync key prefix
      */
-    BULLETINS_CACHE_PRE("BULLETINS_CACHE_PRE:"),
+    BULLETINS_CACHE_PRE("BULLETINS_CACHE:"),
 
     /**
      * styles cache sync key prefix
      */
-    STYLES_CACHE_PRE("STYLES_CACHE_PRE:"),
+    STYLES_CACHE_PRE("STYLES_CACHE:"),
 
     /**
      * member role relation update sync key prefix
      */
-    MEMBER_ROLE_REL_UPDATE_PRE("MEMBER_ROLE_REL_UPDATING_PRE:"),
+    MEMBER_ROLE_REL_UPDATE_PRE("MEMBER_ROLE_REL_UPDATING:"),
 
     /**
      * operate address sync key pre
@@ -41,7 +41,7 @@ public enum SyncKeyPrefix {
     /**
      * question insert key pre
      */
-    QUESTION_INSERT_PRE("QUESTION_INSERT_PRE:");
+    QUESTION_INSERT_PRE("QUESTION_INSERT:");
 
     public final String prefix;
 

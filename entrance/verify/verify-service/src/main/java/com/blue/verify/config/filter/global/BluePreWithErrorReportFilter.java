@@ -126,9 +126,9 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
                                 .switchIfEmpty(defer(() -> just(EMPTY_DATA.value)))
                                 .flatMap(requestBody -> {
                                     DataEvent dataEvent = new DataEvent();
-                                    dataEvent.setDataEventOpType(CLICK);
+                                    dataEvent.setDataEventOpType(CLICK.identity);
 
-                                    dataEvent.setDataEventType(UNIFIED);
+                                    dataEvent.setDataEventType(UNIFIED.identity);
                                     dataEvent.setStamp(TIME_STAMP_GETTER.get());
                                     EVENT_PACKAGER.accept(attributes, dataEvent);
                                     if (!EMPTY_DATA.value.equals(requestBody))

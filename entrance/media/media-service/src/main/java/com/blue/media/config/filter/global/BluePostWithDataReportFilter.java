@@ -112,8 +112,8 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
     }
 
     private void packageRequestInfo(DataEvent dataEvent, Map<String, Object> attributes) {
-        dataEvent.setDataEventType(UNIFIED);
-        dataEvent.setDataEventOpType(CLICK);
+        dataEvent.setDataEventType(UNIFIED.identity);
+        dataEvent.setDataEventOpType(CLICK.identity);
 
         dataEvent.setStamp(TIME_STAMP_GETTER.get());
 

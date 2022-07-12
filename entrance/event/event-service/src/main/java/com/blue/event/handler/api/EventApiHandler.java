@@ -35,9 +35,9 @@ public final class EventApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> report(ServerRequest serverRequest) {
+    public Mono<ServerResponse> insert(ServerRequest serverRequest) {
         return just(serverRequest)
-                .flatMap(eventReportService::report)
+                .flatMap(eventReportService::insert)
                 .flatMap(success ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, success, serverRequest), BlueResponse.class));

@@ -154,8 +154,8 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
         return chain.filter(exchange)
                 .onErrorResume(throwable -> {
                     DataEvent dataEvent = new DataEvent();
-                    dataEvent.setDataEventType(UNIFIED);
-                    dataEvent.setDataEventOpType(CLICK);
+                    dataEvent.setDataEventType(UNIFIED.identity);
+                    dataEvent.setDataEventOpType(CLICK.identity);
 
                     dataEvent.setStamp(TIME_STAMP_GETTER.get());
                     EVENT_PACKAGER.accept(attributes, dataEvent);

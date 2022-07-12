@@ -1,8 +1,6 @@
 package com.blue.base.model.common;
 
 import com.blue.base.constant.common.BlueDataAttrKey;
-import com.blue.base.constant.common.DataEventOpType;
-import com.blue.base.constant.common.DataEventType;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -28,14 +26,14 @@ public final class DataEvent implements Serializable {
      *
      * @see com.blue.base.constant.common.DataEventType
      */
-    private DataEventType dataEventType;
+    private String dataEventType;
 
     /**
      * event operate type
      *
      * @see com.blue.base.constant.common.DataEventOpType
      */
-    private DataEventOpType dataEventOpType;
+    private String dataEventOpType;
 
     /**
      * stamp(second)
@@ -50,7 +48,7 @@ public final class DataEvent implements Serializable {
     public DataEvent() {
     }
 
-    public DataEvent(DataEventType dataEventType, DataEventOpType dataEventOpType, Long stamp, Map<String, String> entries) {
+    public DataEvent(String dataEventType, String dataEventOpType, Long stamp, Map<String, String> entries) {
         this.dataEventType = dataEventType;
         this.dataEventOpType = dataEventOpType;
         this.stamp = stamp;
@@ -58,19 +56,19 @@ public final class DataEvent implements Serializable {
         this.entries = isNotNull(entries) ? entries : new HashMap<>();
     }
 
-    public DataEventType getDataEventType() {
+    public String getDataEventType() {
         return dataEventType;
     }
 
-    public void setDataEventType(DataEventType dataEventType) {
+    public void setDataEventType(String dataEventType) {
         this.dataEventType = dataEventType;
     }
 
-    public DataEventOpType getDataEventOpType() {
+    public String getDataEventOpType() {
         return dataEventOpType;
     }
 
-    public void setDataEventOpType(DataEventOpType dataEventOpType) {
+    public void setDataEventOpType(String dataEventOpType) {
         this.dataEventOpType = dataEventOpType;
     }
 

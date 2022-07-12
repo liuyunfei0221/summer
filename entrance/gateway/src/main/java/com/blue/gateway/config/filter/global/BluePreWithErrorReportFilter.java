@@ -125,8 +125,8 @@ public final class BluePreWithErrorReportFilter implements GlobalFilter, Ordered
                                 .switchIfEmpty(defer(() -> just(EMPTY_DATA.value)))
                                 .flatMap(requestBody -> {
                                     DataEvent dataEvent = new DataEvent();
-                                    dataEvent.setDataEventType(UNIFIED);
-                                    dataEvent.setDataEventOpType(CLICK);
+                                    dataEvent.setDataEventType(UNIFIED.identity);
+                                    dataEvent.setDataEventOpType(CLICK.identity);
 
                                     dataEvent.setStamp(TIME_STAMP_GETTER.get());
                                     EVENT_PACKAGER.accept(attributes, dataEvent);

@@ -14,19 +14,21 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import static com.blue.base.common.access.AccessProcessor.accessToJson;
+import static com.blue.base.common.base.BlueChecker.isNotBlank;
 import static com.blue.base.common.base.CommonFunctions.EVENT_PACKAGER;
 import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.base.constant.common.BlueCommonThreshold.UNKNOWN_LOGGED_IN_ROLE_ID;
 import static com.blue.base.constant.common.BlueDataAttrKey.ACCESS;
 import static com.blue.base.constant.common.BlueDataAttrKey.JWT;
 import static com.blue.base.constant.common.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.common.BlueCommonThreshold.UNKNOWN_LOGGED_IN_ROLE_ID;
-import static com.blue.base.constant.common.DataEventOpType.STOP_OVER;
-import static com.blue.base.constant.common.DataEventType.UNIFIED;
 import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.base.constant.common.SpecialAccess.VISITOR;
+import static com.blue.base.constant.event.DataEventAttrKey.DATA_EVENT_OP_TYPE;
+import static com.blue.base.constant.event.DataEventAttrKey.DATA_EVENT_TYPE;
 import static com.blue.event.constant.EventTypeReference.EVENT_MODEL_FOR_RESOURCE_CONDITION_TYPE;
 import static java.lang.Long.parseLong;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -57,18 +59,16 @@ public class EventReportServiceImpl implements EventReportService {
      * @return
      */
     @Override
-    public Mono<Boolean> report(ServerRequest serverRequest) {
+    public Mono<Boolean> insert(ServerRequest serverRequest) {
         return just(serverRequest)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(request -> {
                     DataEvent dataEvent = new DataEvent();
-                    dataEvent.setDataEventType(UNIFIED);
-                    dataEvent.setDataEventOpType(STOP_OVER);
 
                     dataEvent.setStamp(TIME_STAMP_GETTER.get());
 
                     String jwt = serverRequest.headers().firstHeader(AUTHORIZATION.name);
-                    if (BlueChecker.isNotBlank(jwt)) {
+                    if (isNotBlank(jwt)) {
                         dataEvent.addData(JWT.key, jwt);
                         try {
                             MemberPayload memberPayload = jwtProcessor.parse(jwt);
@@ -84,6 +84,15 @@ public class EventReportServiceImpl implements EventReportService {
                     return request.bodyToMono(EVENT_MODEL_FOR_RESOURCE_CONDITION_TYPE)
                             .flatMap(eventData -> {
                                 LOGGER.info("eventData = {}", eventData);
+
+                                ofNullable(eventData.get(DATA_EVENT_TYPE.key))
+                                        .map(String::valueOf)
+                                        .filter(BlueChecker::isNotBlank)
+                                        .ifPresent(dataEvent::setDataEventType);
+                                ofNullable(eventData.get(DATA_EVENT_OP_TYPE.key))
+                                        .map(String::valueOf)
+                                        .filter(BlueChecker::isNotBlank)
+                                        .ifPresent(dataEvent::setDataEventOpType);
 
                                 EVENT_PACKAGER.accept(eventData, dataEvent);
                                 return just(dataEvent);

@@ -4071,7 +4071,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjJiNjM0YzJlNTIwZDQ2MWYzMzU5NTk2NzAxYmUzNDRmZDc2MDEzNjY0MmVmZjNkZDA1YTk0MDA4YmEyYzg0MWQzMzgyNzc4MDlkYzliMjg2MzRkZGNjMThlZGJkODk5MWY3NzZjZGY4OWYzYmZlMDczMGU3MjM4MmY4YzhkNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxMDQyMyIsIm5iZiI6MTY1NTgxMDQyMywidCI6ImFyMEU3bXFEUkRzIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ1MjkzNDIzNDc2NzM3X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTg2NDIzNzAwLCJpIjoiMzk3NDUyOTM0MjM0NzY3MzciLCJleHAiOjE2NjM1ODY0MjMsImlhdCI6MTY1NTgxMDQyMywianRpIjoidTgzN3ozc0VFUkpVZk5nY2hOanF6QklSMER0MGtJZGUiLCJuIjoiUFZBUiJ9.SwXmwpe4PtHF2gb4H8xii1P3Ed-t4z6V2NZob7M3Ee2MsxioQRDTOR43V5NdOxke8snmvyQhdgdt2lrCnvwEDQ",
+								"value": "eyJraWQiOiI2Yzg3OWM3ZjdlZDE4OGUwOTU2ODdlMmU0ZDY4ZWVlYzQ4ZjQ0MTZmMGI3MjJjNTVhOTMyMDE3N2Y4YjZmNTY4YWM3MDhlOWQzYjZlZGY0ZmZmODJhYjkyY2VmOTRmZjc2NjRhMTUzZGY4ZTI5NjZhY2M1ODQ2NGIyODhmNWNmNyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDE2OTMzNDU2MzM3OTYwOTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQxNjkzMzQ1NjMzNzk2MDk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU3NjIxMzQxIiwibmJmIjoxNjU3NjIxMzQxLCJ0IjoiUGtoNlRHTGh4ckYiLCJlYXMiOjE2NjUzOTczNDE4MzQsImV4cCI6MTY2NTM5NzM0MSwiaWF0IjoxNjU3NjIxMzQxLCJqdGkiOiJPcm1qQkl5bDdISkJ2TUdySWNYSHRPSmJVZ2lxR21iRiJ9.427rWesEZ7P_GQCCUK_b3PcVEm6SfMkqPyxfmfLCg9yBfMl3KpS4PC7xMEIUuCPy_ND54Z-z2JJeg3OdIzINtQ",
 								"type": "text"
 							}
 						],
@@ -4111,18 +4111,17 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"durationSeconds\":111,\r\n    \"col2\":\"222\"\r\n}"
+							"raw": "{\r\n    \"dataEventType\":\"test\",\r\n    \"dataEventOpType\":\"test\",\r\n    \"durationSeconds\":111,\r\n    \"col2\":\"222\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:15000/blue-event/event/report",
+							"raw": "localhost:59000/blue-event/event",
 							"host": [
 								"localhost"
 							],
-							"port": "15000",
+							"port": "59000",
 							"path": [
 								"blue-event",
-								"event",
-								"report"
+								"event"
 							]
 						}
 					},
@@ -4176,7 +4175,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"7193282\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"3497478\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/auth/session",
@@ -4205,7 +4204,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
+								"value": "eyJraWQiOiI2Yzg3OWM3ZjdlZDE4OGUwOTU2ODdlMmU0ZDY4ZWVlYzQ4ZjQ0MTZmMGI3MjJjNTVhOTMyMDE3N2Y4YjZmNTY4YWM3MDhlOWQzYjZlZGY0ZmZmODJhYjkyY2VmOTRmZjc2NjRhMTUzZGY4ZTI5NjZhY2M1ODQ2NGIyODhmNWNmNyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDE2OTMzNDU2MzM3OTYwOTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQxNjkzMzQ1NjMzNzk2MDk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU3NjIxMzQxIiwibmJmIjoxNjU3NjIxMzQxLCJ0IjoiUGtoNlRHTGh4ckYiLCJlYXMiOjE2NjUzOTczNDE4MzQsImV4cCI6MTY2NTM5NzM0MSwiaWF0IjoxNjU3NjIxMzQxLCJqdGkiOiJPcm1qQkl5bDdISkJ2TUdySWNYSHRPSmJVZ2lxR21iRiJ9.427rWesEZ7P_GQCCUK_b3PcVEm6SfMkqPyxfmfLCg9yBfMl3KpS4PC7xMEIUuCPy_ND54Z-z2JJeg3OdIzINtQ",
 								"type": "text"
 							}
 						],

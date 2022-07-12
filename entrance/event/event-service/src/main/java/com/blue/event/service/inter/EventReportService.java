@@ -17,6 +17,6 @@ public interface EventReportService {
      * @param serverRequest
      * @return
      */
-    Mono<Boolean> report(ServerRequest serverRequest);
+    Mono<Boolean> insert(ServerRequest serverRequest);
 
 }

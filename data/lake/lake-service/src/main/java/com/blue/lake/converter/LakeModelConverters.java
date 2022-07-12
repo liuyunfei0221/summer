@@ -75,9 +75,9 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
         OptEvent optEvent = new OptEvent();
 
         optEvent.setDataEventType(ofNullable(param.getDataEventType())
-                .map(t -> t.identity).orElse(EMPTY_DATA.value));
+                .filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value));
         optEvent.setDataEventOpType(ofNullable(param.getDataEventOpType())
-                .map(t -> t.identity).orElse(EMPTY_DATA.value));
+                .filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value));
 
         long stamp = ofNullable(param.getStamp()).orElse(TIME_STAMP_GETTER.get());
         optEvent.setStamp(stamp);
