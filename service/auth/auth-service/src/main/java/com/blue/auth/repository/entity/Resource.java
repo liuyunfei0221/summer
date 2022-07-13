@@ -2,8 +2,6 @@ package com.blue.auth.repository.entity;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-
 /**
  * resource entity
  *
@@ -30,6 +28,11 @@ public final class Resource implements Serializable {
      * resource uri
      */
     private String uri;
+
+    /**
+     * relation view
+     */
+    private String relationView;
 
     /**
      * certificate resource?
@@ -76,6 +79,7 @@ public final class Resource implements Serializable {
 
     private Long updater;
 
+
     public Long getId() {
         return id;
     }
@@ -89,7 +93,7 @@ public final class Resource implements Serializable {
     }
 
     public void setRequestMethod(String requestMethod) {
-        this.requestMethod = isNull(requestMethod) ? null : requestMethod.trim();
+        this.requestMethod = requestMethod;
     }
 
     public String getModule() {
@@ -105,7 +109,15 @@ public final class Resource implements Serializable {
     }
 
     public void setUri(String uri) {
-        this.uri = isNull(uri) ? null : uri.trim();
+        this.uri = uri;
+    }
+
+    public String getRelationView() {
+        return relationView;
+    }
+
+    public void setRelationView(String relationView) {
+        this.relationView = relationView;
     }
 
     public Boolean getAuthenticate() {
@@ -161,7 +173,7 @@ public final class Resource implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = isNull(name) ? null : name.trim();
+        this.name = name;
     }
 
     public String getDescription() {
@@ -169,7 +181,7 @@ public final class Resource implements Serializable {
     }
 
     public void setDescription(String description) {
-        this.description = isNull(description) ? null : description.trim();
+        this.description = description;
     }
 
     public Long getCreateTime() {
@@ -211,6 +223,7 @@ public final class Resource implements Serializable {
                 ", requestMethod='" + requestMethod + '\'' +
                 ", module='" + module + '\'' +
                 ", uri='" + uri + '\'' +
+                ", relationView='" + relationView + '\'' +
                 ", authenticate=" + authenticate +
                 ", requestUnDecryption=" + requestUnDecryption +
                 ", responseUnEncryption=" + responseUnEncryption +

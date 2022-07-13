@@ -20,8 +20,8 @@ public final class ResourceUpdateParam extends ResourceInsertParam {
     public ResourceUpdateParam() {
     }
 
-    public ResourceUpdateParam(Long id, String requestMethod, String module, String uri, Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody, Integer type, String name, String description) {
-        super(requestMethod, module, uri, authenticate, requestUnDecryption, responseUnEncryption, existenceRequestBody, existenceResponseBody, type, name, description);
+    public ResourceUpdateParam(Long id, String requestMethod, String module, String uri, String relationView, Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody, Integer type, String name, String description) {
+        super(requestMethod, module, uri, relationView, authenticate, requestUnDecryption, responseUnEncryption, existenceRequestBody, existenceResponseBody, type, name, description);
         this.id = id;
     }
 
@@ -47,6 +47,7 @@ public final class ResourceUpdateParam extends ResourceInsertParam {
                 ", requestMethod='" + super.getRequestMethod() + '\'' +
                 ", module='" + super.getModule() + '\'' +
                 ", uri='" + super.getUri() + '\'' +
+                ", relationView='" + super.getRelationView() + '\'' +
                 ", authenticate=" + super.getAuthenticate() +
                 ", requestUnDecryption=" + super.getRequestUnDecryption() +
                 ", responseUnEncryption=" + super.getResponseUnEncryption() +

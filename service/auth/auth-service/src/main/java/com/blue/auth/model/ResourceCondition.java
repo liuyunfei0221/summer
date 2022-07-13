@@ -25,6 +25,8 @@ public final class ResourceCondition extends SortCondition implements Serializab
 
     private String uriLike;
 
+    private String relationViewLike;
+
     private Boolean authenticate;
 
     private Boolean requestUnDecryption;
@@ -55,13 +57,14 @@ public final class ResourceCondition extends SortCondition implements Serializab
         super(sortAttribute, sortType);
     }
 
-    public ResourceCondition(Long id, String requestMethod, String module, String uriLike, Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody,
+    public ResourceCondition(Long id, String requestMethod, String module, String uriLike, String relationViewLike, Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody,
                              Integer type, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.requestMethod = requestMethod;
         this.module = module;
         this.uriLike = uriLike;
+        this.relationViewLike = relationViewLike;
         this.authenticate = authenticate;
         this.requestUnDecryption = requestUnDecryption;
         this.responseUnEncryption = responseUnEncryption;
@@ -105,6 +108,14 @@ public final class ResourceCondition extends SortCondition implements Serializab
 
     public void setUriLike(String uriLike) {
         this.uriLike = uriLike;
+    }
+
+    public String getRelationViewLike() {
+        return relationViewLike;
+    }
+
+    public void setRelationViewLike(String relationViewLike) {
+        this.relationViewLike = relationViewLike;
     }
 
     public Boolean getAuthenticate() {
@@ -202,6 +213,7 @@ public final class ResourceCondition extends SortCondition implements Serializab
                 ", requestMethod='" + requestMethod + '\'' +
                 ", module='" + module + '\'' +
                 ", uriLike='" + uriLike + '\'' +
+                ", relationViewLike='" + relationViewLike + '\'' +
                 ", authenticate=" + authenticate +
                 ", requestUnDecryption=" + requestUnDecryption +
                 ", responseUnEncryption=" + responseUnEncryption +

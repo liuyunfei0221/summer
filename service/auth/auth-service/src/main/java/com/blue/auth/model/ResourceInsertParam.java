@@ -38,6 +38,11 @@ public class ResourceInsertParam implements Serializable, Asserter {
     private String uri;
 
     /**
+     * relation view
+     */
+    private String relationView;
+
+    /**
      * certificate resource?
      */
     private Boolean authenticate;
@@ -80,13 +85,14 @@ public class ResourceInsertParam implements Serializable, Asserter {
     public ResourceInsertParam() {
     }
 
-    public ResourceInsertParam(String requestMethod, String module, String uri, Boolean authenticate,
-                               Boolean requestUnDecryption, Boolean responseUnEncryption,
+    public ResourceInsertParam(String requestMethod, String module, String uri, String relationView,
+                               Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption,
                                Boolean existenceRequestBody, Boolean existenceResponseBody,
                                Integer type, String name, String description) {
         this.requestMethod = requestMethod;
         this.module = module;
         this.uri = uri;
+        this.relationView = relationView;
         this.authenticate = authenticate;
         this.requestUnDecryption = requestUnDecryption;
         this.responseUnEncryption = responseUnEncryption;
@@ -142,6 +148,14 @@ public class ResourceInsertParam implements Serializable, Asserter {
 
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    public String getRelationView() {
+        return relationView;
+    }
+
+    public void setRelationView(String relationView) {
+        this.relationView = relationView;
     }
 
     public Boolean getAuthenticate() {
@@ -214,6 +228,7 @@ public class ResourceInsertParam implements Serializable, Asserter {
                 "requestMethod='" + requestMethod + '\'' +
                 ", module='" + module + '\'' +
                 ", uri='" + uri + '\'' +
+                ", relationView='" + relationView + '\'' +
                 ", authenticate=" + authenticate +
                 ", requestUnDecryption=" + requestUnDecryption +
                 ", responseUnEncryption=" + responseUnEncryption +

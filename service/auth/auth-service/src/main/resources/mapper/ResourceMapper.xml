@@ -7,6 +7,7 @@
         <result column="request_method" jdbcType="VARCHAR" property="requestMethod"/>
         <result column="module" jdbcType="VARCHAR" property="module"/>
         <result column="uri" jdbcType="VARCHAR" property="uri"/>
+        <result column="relation_view" jdbcType="VARCHAR" property="relationView"/>
         <result column="authenticate" jdbcType="BIT" property="authenticate"/>
         <result column="request_un_decryption" jdbcType="BIT" property="requestUnDecryption"/>
         <result column="response_un_encryption" jdbcType="BIT" property="responseUnEncryption"/>
@@ -23,16 +24,17 @@
 
     <sql id="Base_Column_List">
         `id`
-        , `request_method`,`module`, `uri`, `authenticate`, `request_un_decryption`, `response_un_encryption`, `existence_request_body`, `existence_response_body`, `type`, `name`, `description`, `create_time`, `update_time`, `creator`, `updater`
+        , `request_method`,`module`, `uri`, `relation_view`, `authenticate`, `request_un_decryption`, `response_un_encryption`, `existence_request_body`, `existence_response_body`, `type`, `name`, `description`, `create_time`, `update_time`, `creator`, `updater`
     </sql>
 
     <insert id="insert" parameterType="com.blue.auth.repository.entity.Resource">
-        insert into resource (id, request_method, module, uri, authenticate, request_un_decryption,
+        insert into resource (id, request_method, module, uri, `relation_view`, authenticate, request_un_decryption,
                               response_un_encryption, existence_request_body, existence_response_body,
                               type, name, description, create_time, update_time, creator, updater)
         values (#{id,jdbcType=BIGINT}, #{requestMethod,jdbcType=VARCHAR}, #{module,jdbcType=VARCHAR},
-                #{uri,jdbcType=VARCHAR}, #{authenticate,jdbcType=BIT}, #{requestUnDecryption,jdbcType=BIT},
-                #{responseUnEncryption,jdbcType=BIT}, #{existenceRequestBody,jdbcType=BIT},
+                #{uri,jdbcType=VARCHAR}, #{relationView,jdbcType=VARCHAR}, #{authenticate,jdbcType=BIT},
+                #{requestUnDecryption,jdbcType=BIT}, #{responseUnEncryption,jdbcType=BIT},
+                #{existenceRequestBody,jdbcType=BIT},
                 #{existenceResponseBody,jdbcType=BIT}, #{type,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
                 #{description,jdbcType=VARCHAR}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
                 #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
@@ -52,6 +54,9 @@
             </if>
             <if test="uri != null">
                 uri,
+            </if>
+            <if test="relationView != null">
+                relation_view,
             </if>
             <if test="authenticate != null">
                 authenticate,
@@ -103,6 +108,9 @@
             <if test="uri != null">
                 #{uri,jdbcType=VARCHAR},
             </if>
+            <if test="relationView != null">
+                #{relationView,jdbcType=VARCHAR},
+            </if>
             <if test="authenticate != null">
                 #{authenticate,jdbcType=BIT},
             </if>
@@ -147,6 +155,7 @@
         set request_method          = #{requestMethod,jdbcType=VARCHAR},
             module                  = #{module,jdbcType=VARCHAR},
             uri                     = #{uri,jdbcType=VARCHAR},
+            relation_view           = #{relationView,jdbcType=VARCHAR},
             authenticate            = #{authenticate,jdbcType=BIT},
             request_un_decryption   = #{requestUnDecryption,jdbcType=BIT},
             response_un_encryption  = #{responseUnEncryption,jdbcType=BIT},
@@ -173,6 +182,9 @@
             </if>
             <if test="uri != null">
                 uri = #{uri,jdbcType=VARCHAR},
+            </if>
+            <if test="relationView != null">
+                relation_view = #{relationView,jdbcType=VARCHAR},
             </if>
             <if test="authenticate != null">
                 authenticate = #{authenticate,jdbcType=BIT},
@@ -264,6 +276,10 @@
                 <if test="resourceCondition.uriLike != null and resourceCondition.uriLike != ''">
                     AND
                     uri LIKE #{resourceCondition.uriLike,jdbcType=VARCHAR}
+                </if>
+                <if test="resourceCondition.relationViewLike != null and resourceCondition.relationViewLike != ''">
+                    AND
+                    relation_view LIKE #{resourceCondition.relationViewLike,jdbcType=VARCHAR}
                 </if>
                 <if test="resourceCondition.authenticate != null">
                     AND

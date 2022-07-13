@@ -17,6 +17,7 @@ CREATE TABLE `resource`
     `request_method`          varchar(16)  NOT NULL COMMENT 'request method/upper',
     `module`                  varchar(256) NOT NULL COMMENT 'module/service',
     `uri`                     varchar(256) NOT NULL COMMENT 'resource uri/lower',
+    `relation_view`           varchar(512) DEFAULT '' COMMENT 'resource relation view',
     `authenticate`            bit          NOT NULL COMMENT 'need auth? 1-yes 0-no',
     `request_un_decryption`   bit          NOT NULL COMMENT 'do not decrypt request body? 1-not 0-yes',
     `response_un_encryption`  bit          NOT NULL COMMENT 'do not encrypt response body? 1-not 0-yes',

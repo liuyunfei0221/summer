@@ -35,6 +35,11 @@ public final class ResourceInfo implements Serializable {
     private String absoluteUri;
 
     /**
+     * relation view
+     */
+    private String relationView;
+
+    /**
      * authenticate 1.yes 0.no
      */
     private Boolean authenticate;
@@ -77,14 +82,15 @@ public final class ResourceInfo implements Serializable {
     public ResourceInfo() {
     }
 
-    public ResourceInfo(Long id, String requestMethod, String module, String relativeUri, String absoluteUri,
-                        Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody,
-                        Boolean existenceResponseBody, String type, String name, String description) {
+    public ResourceInfo(Long id, String requestMethod, String module, String relativeUri, String absoluteUri, String relationView,
+                        Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody,
+                        String type, String name, String description) {
         this.id = id;
         this.requestMethod = requestMethod;
         this.module = module;
         this.relativeUri = relativeUri;
         this.absoluteUri = absoluteUri;
+        this.relationView = relationView;
         this.authenticate = authenticate;
         this.requestUnDecryption = requestUnDecryption;
         this.responseUnEncryption = responseUnEncryption;
@@ -133,6 +139,14 @@ public final class ResourceInfo implements Serializable {
 
     public void setAbsoluteUri(String absoluteUri) {
         this.absoluteUri = absoluteUri;
+    }
+
+    public String getRelationView() {
+        return relationView;
+    }
+
+    public void setRelationView(String relationView) {
+        this.relationView = relationView;
     }
 
     public Boolean getAuthenticate() {
@@ -207,6 +221,7 @@ public final class ResourceInfo implements Serializable {
                 ", module='" + module + '\'' +
                 ", relativeUri='" + relativeUri + '\'' +
                 ", absoluteUri='" + absoluteUri + '\'' +
+                ", relationView='" + relationView + '\'' +
                 ", authenticate=" + authenticate +
                 ", requestUnDecryption=" + requestUnDecryption +
                 ", responseUnEncryption=" + responseUnEncryption +

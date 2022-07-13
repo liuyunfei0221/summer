@@ -88,6 +88,7 @@ public final class AuthModelConverters {
         resource.setRequestMethod(param.getRequestMethod().toUpperCase());
         resource.setModule(param.getModule().toLowerCase());
         resource.setUri(param.getUri().toLowerCase());
+        resource.setRelationView(param.getRelationView());
         resource.setAuthenticate(param.getAuthenticate());
         resource.setRequestUnDecryption(param.getRequestUnDecryption());
         resource.setResponseUnEncryption(param.getResponseUnEncryption());
@@ -112,7 +113,7 @@ public final class AuthModelConverters {
         String module = resource.getModule().intern();
         String relativeUri = resource.getUri().intern();
 
-        return new ResourceInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(),
+        return new ResourceInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(), resource.getRelationView(),
                 resource.getAuthenticate(), resource.getRequestUnDecryption(), resource.getResponseUnEncryption(), resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                 getResourceTypeByIdentity(resource.getType()).disc.intern(), resource.getName(), resource.getDescription());
     };
@@ -131,7 +132,7 @@ public final class AuthModelConverters {
         String module = resource.getModule().intern();
         String relativeUri = resource.getUri().intern();
 
-        return new ResourceManagerInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(), resource.getAuthenticate(),
+        return new ResourceManagerInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(), resource.getRelationView(), resource.getAuthenticate(),
                 resource.getRequestUnDecryption(), resource.getResponseUnEncryption(), resource.getExistenceRequestBody(), resource.getExistenceResponseBody(), getResourceTypeByIdentity(resource.getType()).disc.intern(),
                 resource.getName(), resource.getDescription(), resource.getCreateTime(), resource.getUpdateTime(), resource.getCreator(), ofNullable(idAndMemberNameMapping.get(resource.getCreator())).orElse(EMPTY_DATA.value),
                 resource.getUpdater(), ofNullable(idAndMemberNameMapping.get(resource.getUpdater())).orElse(EMPTY_DATA.value));
