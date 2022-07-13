@@ -327,6 +327,11 @@ executor:
   threadNamePre: blue-summer
 
 
+message:
+  messageLocation: classpath:i18n/message
+  elementLocation: classpath:i18n/element
+
+
 scheduler:
   threadCap: 4
   queuedTaskCap: 4096

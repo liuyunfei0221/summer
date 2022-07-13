@@ -5,7 +5,6 @@ package com.blue.jwt.common;
  *
  * @author liuyunfei
  */
-
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface JwtProcessor<T> {
 

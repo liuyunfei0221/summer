@@ -42,7 +42,6 @@ public final class ElementProcessor {
 
     private static final Logger LOGGER = getLogger(ElementProcessor.class);
 
-    private static final String ELEMENT_URI = "classpath:i18n/element";
     private static final String DEFAULT_LANGUAGE = lowerCase(replace(LANGUAGE, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity));
     private static final String DEFAULT_KEY = DEFAULT.key;
     private static final String DEFAULT_VALUE = DEFAULT.key;
@@ -59,7 +58,7 @@ public final class ElementProcessor {
         List<File> files = getFiles(uri, true).stream().filter(Objects::nonNull).collect(toList());
 
         LOGGER.info("files = {}", files);
-        
+
         if (files.size() != ofNullable(MessageProcessor.listSupportLanguages()).map(List::size).orElse(0))
             LOGGER.warn("size of element languages support and size of message languages support are different");
 
@@ -103,10 +102,13 @@ public final class ElementProcessor {
             ofNullable(values.get(ofNullable(key).map(k -> k.key).orElse(DEFAULT_KEY))).orElse(DEFAULT_VALUE).intern();
 
     /**
-     * refresh i18n messages
+     * load i18n elements
      */
-    public static void refresh() {
-        ELEMENT_LOADER.accept(ELEMENT_URI);
+    public static void load(String location) {
+        if (isBlank(location))
+            throw new RuntimeException("location can't be blank");
+
+        ELEMENT_LOADER.accept(location);
     }
 
     /**

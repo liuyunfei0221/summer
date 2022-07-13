@@ -1,6 +1,6 @@
 com.blue.base.component.encoder.ioc.StringColumnEncoderInitializer
 com.blue.base.component.exception.ioc.ReactiveBlueExceptionHandler
 com.blue.base.component.executor.ioc.BlueExecutorConfiguration
-com.blue.base.component.refresher.ioc.BlueRefresherConfiguration
+com.blue.base.component.message.ioc.BlueMessageLoadConfiguration
 com.blue.base.component.rest.ioc.BlueRestConfiguration
 com.blue.base.component.scheduler.ioc.BlueSchedulerConfiguration

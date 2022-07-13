@@ -336,6 +336,11 @@ executor:
   threadNamePre: blue-summer
 
 
+message:
+  messageLocation: E:\tempFile\i18n\message
+  elementLocation: E:\tempFile\i18n\element
+
+
 scheduler:
   threadCap: 4
   queuedTaskCap: 4096
@@ -886,14 +891,14 @@ dubbo:
     check: false
     timeout: 60000
     simplified: false
-#  metadata-report:
-#    address: zookeeper://172.16.204.75
-#    port: 2181
-#    username:
-#    password:
-#    timeout: 120000
-#    default: true
-#    check: false
+  #  metadata-report:
+  #    address: zookeeper://172.16.204.75
+  #    port: 2181
+  #    username:
+  #    password:
+  #    timeout: 120000
+  #    default: true
+  #    check: false
   application:
     id: summer-auth
     name: summer-auth

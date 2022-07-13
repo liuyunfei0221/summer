@@ -43,7 +43,6 @@ public final class MessageProcessor {
 
     private static final Logger LOGGER = getLogger(MessageProcessor.class);
 
-    private static final String MESSAGES_URI = "classpath:i18n/message";
     private static final String DEFAULT_LANGUAGE = lowerCase(replace(LANGUAGE, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity));
     private static final int DEFAULT_CODE = INTERNAL_SERVER_ERROR.code;
     private static final String DEFAULT_MESSAGE = INTERNAL_SERVER_ERROR.message;
@@ -159,10 +158,13 @@ public final class MessageProcessor {
     };
 
     /**
-     * refresh i18n messages
+     * load i18n messages
      */
-    public static void refresh() {
-        MESSAGES_LOADER.accept(MESSAGES_URI);
+    public static void load(String location) {
+        if (isBlank(location))
+            throw new RuntimeException("location can't be blank");
+
+        MESSAGES_LOADER.accept(location);
     }
 
     /**

@@ -5,9 +5,14 @@ package com.blue.base.component.encoder.api.conf;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavadocDeclaration"})
 public interface EncoderConf {
 
+    /**
+     * salt
+     *
+     * @return
+     */
     String getSalt();
 
 }

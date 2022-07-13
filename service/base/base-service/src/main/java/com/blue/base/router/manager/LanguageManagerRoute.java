@@ -26,7 +26,8 @@ public class LanguageManagerRoute {
         RequestPredicate pathPredicate = path("/blue-base/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .PUT("/languages", languageManagerHandler::refresh)
+                .GET("/languages", languageManagerHandler::select)
+                .GET("/language", languageManagerHandler::getDefault)
                 .build();
 
         return nest(pathPredicate, routerFunction);

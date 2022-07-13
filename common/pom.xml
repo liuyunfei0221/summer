@@ -35,6 +35,7 @@
         <module>common-redis</module>
         <module>common-redisson</module>
         <module>common-seata</module>
+        <module>common-template</module>
     </modules>
 
 </project>
