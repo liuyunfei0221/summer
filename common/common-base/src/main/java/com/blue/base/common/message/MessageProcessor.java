@@ -168,11 +168,20 @@ public final class MessageProcessor {
     }
 
     /**
+     * i18n messages
+     *
+     * @return
+     */
+    public static Map<String, Map<Integer, String>> listI18n() {
+        return I_18_N;
+    }
+
+    /**
      * support languages
      *
      * @return
      */
-    public static List<LanguageInfo> listSupportLanguages() {
+    public static List<LanguageInfo> supportLanguages() {
         return SUPPORT_LANGUAGES;
     }
 
@@ -181,7 +190,7 @@ public final class MessageProcessor {
      *
      * @return
      */
-    public static LanguageInfo getDefaultLanguage() {
+    public static LanguageInfo defaultLanguage() {
         return DEFAULT_LANGUAGE_INFO;
     }
 

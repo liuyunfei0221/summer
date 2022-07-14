@@ -59,7 +59,7 @@ public final class ElementProcessor {
 
         LOGGER.info("files = {}", files);
 
-        if (files.size() != ofNullable(MessageProcessor.listSupportLanguages()).map(List::size).orElse(0))
+        if (files.size() != ofNullable(MessageProcessor.supportLanguages()).map(List::size).orElse(0))
             LOGGER.warn("size of element languages support and size of message languages support are different");
 
         //noinspection UnnecessaryLocalVariable
@@ -110,6 +110,16 @@ public final class ElementProcessor {
 
         ELEMENT_LOADER.accept(location);
     }
+
+    /**
+     * i18n elements
+     *
+     * @return
+     */
+    public static Map<String, Map<String, String>> listI18n() {
+        return I_18_N;
+    }
+
 
     /**
      * select all elements by default language

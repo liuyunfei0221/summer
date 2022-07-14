@@ -1,13 +1,15 @@
 package com.blue.base.handler.manager;
 
+import com.blue.base.common.message.ElementProcessor;
+import com.blue.base.common.message.MessageProcessor;
 import com.blue.base.model.common.BlueResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.base.common.message.MessageProcessor.getDefaultLanguage;
-import static com.blue.base.common.message.MessageProcessor.listSupportLanguages;
+import static com.blue.base.common.message.MessageProcessor.defaultLanguage;
+import static com.blue.base.common.message.MessageProcessor.supportLanguages;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -15,7 +17,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 import static reactor.core.publisher.Mono.just;
 
 /**
- * language api handler
+ * language manager handler
  *
  * @author liuyunfei
  */
@@ -29,8 +31,8 @@ public final class LanguageManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> select(ServerRequest serverRequest) {
-        return just(listSupportLanguages())
+    public Mono<ServerResponse> selectLanguage(ServerRequest serverRequest) {
+        return just(supportLanguages())
                 .flatMap(ls ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ls, serverRequest), BlueResponse.class)
@@ -43,8 +45,36 @@ public final class LanguageManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> getDefault(ServerRequest serverRequest) {
-        return just(getDefaultLanguage())
+    public Mono<ServerResponse> getDefaultLanguage(ServerRequest serverRequest) {
+        return just(defaultLanguage())
+                .flatMap(ls ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, ls, serverRequest), BlueResponse.class)
+                );
+    }
+
+    /**
+     * select messages
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> selectMessage(ServerRequest serverRequest) {
+        return just(MessageProcessor.listI18n())
+                .flatMap(ls ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(generate(OK.code, ls, serverRequest), BlueResponse.class)
+                );
+    }
+
+    /**
+     * select elements
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> selectElement(ServerRequest serverRequest) {
+        return just(ElementProcessor.listI18n())
                 .flatMap(ls ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ls, serverRequest), BlueResponse.class)
