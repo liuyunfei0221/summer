@@ -28,8 +28,8 @@ public class LanguageManagerRoute {
         RouterFunction<ServerResponse> routerFunction = route()
                 .GET("/languages", languageManagerHandler::selectLanguage)
                 .GET("/language", languageManagerHandler::getDefaultLanguage)
-                .GET("/messages", languageManagerHandler::selectMessage)
-                .GET("/elements", languageManagerHandler::selectElement)
+                .GET("/message", languageManagerHandler::selectMessage)
+                .GET("/element", languageManagerHandler::selectElement)
                 .build();
 
         return nest(pathPredicate, routerFunction);

@@ -112,16 +112,6 @@ public final class ElementProcessor {
     }
 
     /**
-     * i18n elements
-     *
-     * @return
-     */
-    public static Map<String, Map<String, String>> listI18n() {
-        return I_18_N;
-    }
-
-
-    /**
      * select all elements by default language
      *
      * @return

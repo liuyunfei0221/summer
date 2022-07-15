@@ -1,15 +1,13 @@
 package com.blue.base.handler.manager;
 
-import com.blue.base.common.message.ElementProcessor;
-import com.blue.base.common.message.MessageProcessor;
 import com.blue.base.model.common.BlueResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.base.common.message.MessageProcessor.defaultLanguage;
-import static com.blue.base.common.message.MessageProcessor.supportLanguages;
+import static com.blue.base.common.message.ElementProcessor.selectAllElement;
+import static com.blue.base.common.message.MessageProcessor.*;
 import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
 import static com.blue.base.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -60,7 +58,7 @@ public final class LanguageManagerHandler {
      * @return
      */
     public Mono<ServerResponse> selectMessage(ServerRequest serverRequest) {
-        return just(MessageProcessor.listI18n())
+        return just(listMessage(serverRequest))
                 .flatMap(ls ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ls, serverRequest), BlueResponse.class)
@@ -74,7 +72,7 @@ public final class LanguageManagerHandler {
      * @return
      */
     public Mono<ServerResponse> selectElement(ServerRequest serverRequest) {
-        return just(ElementProcessor.listI18n())
+        return just(selectAllElement(serverRequest))
                 .flatMap(ls ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(generate(OK.code, ls, serverRequest), BlueResponse.class)

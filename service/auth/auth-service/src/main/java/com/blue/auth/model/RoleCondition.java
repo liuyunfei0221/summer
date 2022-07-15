@@ -19,6 +19,8 @@ public final class RoleCondition extends SortCondition implements Serializable {
 
     private Long id;
 
+    private Integer type;
+
     private String nameLike;
 
     private Long createTimeBegin;
@@ -37,9 +39,10 @@ public final class RoleCondition extends SortCondition implements Serializable {
         super(sortAttribute, sortType);
     }
 
-    public RoleCondition(Long id, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+    public RoleCondition(Long id, Integer type, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
+        this.type = type;
         this.nameLike = nameLike;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
@@ -53,6 +56,14 @@ public final class RoleCondition extends SortCondition implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getNameLike() {
@@ -99,6 +110,7 @@ public final class RoleCondition extends SortCondition implements Serializable {
     public String toString() {
         return "RoleCondition{" +
                 "id=" + id +
+                ", type=" + type +
                 ", nameLike='" + nameLike + '\'' +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +

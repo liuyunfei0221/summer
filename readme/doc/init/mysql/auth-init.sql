@@ -86,10 +86,10 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'support languages manager', 'support languages', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110018, 'GET', 'blue-base', '/manager/language', '', b'1', b'1', b'1', b'0', b'1', 2,
         'get default language manager', 'get default language', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (110019, 'GET', 'blue-base', '/manager/messages', '', b'1', b'1', b'1', b'0', b'1', 2,
-        'i18n messages', 'i18n messages', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (110020, 'GET', 'blue-base', '/manager/elements', '', b'1', b'1', b'1', b'0', b'1', 2,
-        'i18n elements', 'i18n elements', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110019, 'GET', 'blue-base', '/manager/message', '', b'1', b'1', b'1', b'0', b'1', 2,
+        'i18n message', 'i18n message', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (110020, 'GET', 'blue-base', '/manager/element', '', b'1', b'1', b'1', b'0', b'1', 2,
+        'i18n element', 'i18n element', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (110021, 'POST', 'blue-base', '/manager/styles', '', b'1', b'1', b'1', b'1', b'1', 2,
         'style list of manager', 'style list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -371,14 +371,14 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- role
 
-INSERT INTO `auth`.`role`(`id`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`, `creator`,
-                          `updater`)
-VALUES (1, 'blue', 'blue', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (2, 'admin', 'admin', 1, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (3, 'manager', 'manager', 2, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (4, 'tester', 'tester', 3, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (5, 'customer', 'customer', 4, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (6, 'member', 'member', 5, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+INSERT INTO `auth`.`role`(`id`, `type`, `name`, `description`, `level`, `is_default`, `create_time`, `update_time`,
+                          `creator`, `updater`)
+VALUES (1, 2, 'blue', 'blue', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (2, 2, 'admin', 'admin', 1, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (3, 2, 'manager', 'manager', 2, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (4, 2, 'tester', 'tester', 3, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (5, 2, 'customer', 'customer', 4, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (6, 1, 'member', 'member', 5, 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 
 -- blue admin res

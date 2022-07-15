@@ -16,6 +16,11 @@ public final class Role implements Serializable {
 
     private Long id;
 
+    /**
+     * @see com.blue.base.constant.auth.RoleType
+     */
+    private Integer type;
+
     private String name;
 
     private String description;
@@ -41,6 +46,14 @@ public final class Role implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getName() {
@@ -111,6 +124,7 @@ public final class Role implements Serializable {
     public String toString() {
         return "Role{" +
                 "id=" + id +
+                ", type=" + type +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", level=" + level +

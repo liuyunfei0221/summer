@@ -18,6 +18,11 @@ public final class RoleManagerInfo implements Serializable {
     private Long id;
 
     /**
+     * @see com.blue.base.constant.auth.RoleType
+     */
+    private Integer type;
+
+    /**
      * role name
      */
     private String name;
@@ -52,9 +57,10 @@ public final class RoleManagerInfo implements Serializable {
     public RoleManagerInfo() {
     }
 
-    public RoleManagerInfo(Long id, String name, String description, Integer level, Boolean isDefault,
-                           Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
+    public RoleManagerInfo(Long id, Integer type, String name, String description, Integer level, Boolean isDefault, Long createTime, Long updateTime,
+                           Long creator, String creatorName, Long updater, String updaterName) {
         this.id = id;
+        this.type = type;
         this.name = name;
         this.description = description;
         this.level = level;
@@ -73,6 +79,14 @@ public final class RoleManagerInfo implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public String getName() {
@@ -159,6 +173,7 @@ public final class RoleManagerInfo implements Serializable {
     public String toString() {
         return "RoleManagerInfo{" +
                 "id=" + id +
+                ", type=" + type +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", level=" + level +
@@ -171,5 +186,5 @@ public final class RoleManagerInfo implements Serializable {
                 ", updaterName='" + updaterName + '\'' +
                 '}';
     }
-
+    
 }

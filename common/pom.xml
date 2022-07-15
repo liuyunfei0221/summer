@@ -16,6 +16,7 @@
     <description>common</description>
 
     <packaging>pom</packaging>
+
     <modules>
         <module>common-base</module>
         <module>common-caffeine</module>

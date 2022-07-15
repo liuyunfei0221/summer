@@ -4,6 +4,7 @@
 <mapper namespace="com.blue.auth.repository.mapper.RoleMapper">
     <resultMap id="BaseResultMap" type="com.blue.auth.repository.entity.Role">
         <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="description" jdbcType="VARCHAR" property="description"/>
         <result column="level" jdbcType="INTEGER" property="level"/>
@@ -16,15 +17,16 @@
 
     <sql id="Base_Column_List">
         id
-        , name, description, level, is_default, create_time, update_time, creator, updater
+        ,type, name, description, level, is_default, create_time, update_time, creator, updater
     </sql>
 
     <insert id="insert" parameterType="com.blue.auth.repository.entity.Role">
-        insert into role (id, name, description,
+        insert into role (id, type, name, description,
                           level, is_default, create_time,
                           update_time, creator, updater)
-        values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
-                #{level,jdbcType=INTEGER}, #{isDefault,jdbcType=BIT}, #{createTime,jdbcType=BIGINT},
+        values (#{id,jdbcType=BIGINT}, #{type,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
+                #{description,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER},
+                #{isDefault,jdbcType=BIT}, #{createTime,jdbcType=BIGINT},
                 #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
     </insert>
 
@@ -33,6 +35,9 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
+            </if>
+            <if test="type != null">
+                type,
             </if>
             <if test="name != null">
                 name,
@@ -63,6 +68,9 @@
             <if test="id != null">
                 #{id,jdbcType=BIGINT},
             </if>
+            <if test="type != null">
+                #{type,jdbcType=TINYINT},
+            </if>
             <if test="name != null">
                 #{name,jdbcType=VARCHAR},
             </if>
@@ -92,7 +100,8 @@
 
     <update id="updateByPrimaryKey" parameterType="com.blue.auth.repository.entity.Role">
         update role
-        set name        = #{name,jdbcType=VARCHAR},
+        set type        = #{type,jdbcType=TINYINT},
+            name        = #{name,jdbcType=VARCHAR},
             description = #{description,jdbcType=VARCHAR},
             level       = #{level,jdbcType=INTEGER},
             is_default  = #{isDefault,jdbcType=BIT},
@@ -106,6 +115,9 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.auth.repository.entity.Role">
         update role
         <set>
+            <if test="type != null">
+                type = #{type,jdbcType=TINYINT},
+            </if>
             <if test="name != null">
                 name = #{name,jdbcType=VARCHAR},
             </if>
@@ -172,6 +184,10 @@
                 <if test="roleCondition.id != null">
                     AND
                     id = #{roleCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="roleCondition.type != null">
+                    AND
+                    type = #{roleCondition.type,jdbcType=TINYINT}
                 </if>
                 <if test="roleCondition.nameLike != null and roleCondition.nameLike != ''">
                     AND

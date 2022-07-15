@@ -3,7 +3,7 @@ package com.blue.media.config.filter.global;
 import com.blue.base.model.exps.BlueException;
 import com.blue.media.config.deploy.RateLimiterDeploy;
 import com.blue.redis.api.generator.BlueRateLimiterGenerator;
-import com.blue.redis.common.BlueFixedTokenBucketRateLimiter;
+import com.blue.redis.component.BlueFixedTokenBucketRateLimiter;
 import org.springframework.core.Ordered;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.blue.redis.api.generator;
 
-import com.blue.redis.common.BlueFixedTokenBucketRateLimiter;
+import com.blue.redis.component.BlueFixedTokenBucketRateLimiter;
 import com.blue.redis.component.BlueLeakyBucketRateLimiter;
 import com.blue.redis.component.BlueTokenBucketRateLimiter;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;

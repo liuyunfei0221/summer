@@ -7,6 +7,7 @@ import com.blue.base.constant.article.SubjectType;
 import com.blue.base.constant.auth.CredentialType;
 import com.blue.base.constant.auth.DeviceType;
 import com.blue.base.constant.auth.ResourceType;
+import com.blue.base.constant.auth.RoleType;
 import com.blue.base.constant.common.*;
 import com.blue.base.constant.media.AttachmentType;
 import com.blue.base.constant.media.QrCodeGenType;
@@ -93,6 +94,12 @@ public final class ConstantProcessor {
      */
     private static final Map<Integer, ResourceType> RESOURCE_TYPE_MAPPING =
             of(ResourceType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+
+    /**
+     * valid role type identity and type mapping
+     */
+    private static final Map<Integer, RoleType> ROLE_TYPE_MAPPING =
+            of(RoleType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
 
     /**
      * valid credential type identity and type mapping
@@ -216,6 +223,19 @@ public final class ConstantProcessor {
             return;
 
         if (!RESOURCE_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert role type
+     *
+     * @param identity
+     */
+    public static void assertRoleType(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!ROLE_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -563,6 +583,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         return resourceType;
+    }
+
+    /**
+     * get role type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static RoleType getRoleTypeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        RoleType roleType = ROLE_TYPE_MAPPING.get(identity);
+        if (isNull(roleType))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return roleType;
     }
 
     /**

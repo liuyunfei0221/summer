@@ -3,7 +3,7 @@ package com.blue.gateway.config.filter.global;
 import com.blue.base.model.exps.BlueException;
 import com.blue.gateway.config.deploy.RateLimiterDeploy;
 import com.blue.redis.api.generator.BlueRateLimiterGenerator;
-import com.blue.redis.common.BlueFixedTokenBucketRateLimiter;
+import com.blue.redis.component.BlueFixedTokenBucketRateLimiter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;

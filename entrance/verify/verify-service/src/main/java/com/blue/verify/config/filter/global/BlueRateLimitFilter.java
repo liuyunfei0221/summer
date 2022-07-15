@@ -2,7 +2,7 @@ package com.blue.verify.config.filter.global;
 
 import com.blue.base.model.exps.BlueException;
 import com.blue.redis.api.generator.BlueRateLimiterGenerator;
-import com.blue.redis.common.BlueFixedTokenBucketRateLimiter;
+import com.blue.redis.component.BlueFixedTokenBucketRateLimiter;
 import com.blue.verify.config.deploy.RateLimiterDeploy;
 import org.springframework.core.Ordered;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;

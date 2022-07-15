@@ -168,12 +168,13 @@ public final class MessageProcessor {
     }
 
     /**
-     * i18n messages
+     * get message by language
      *
+     * @param serverRequest
      * @return
      */
-    public static Map<String, Map<Integer, String>> listI18n() {
-        return I_18_N;
+    public static Map<Integer, String> listMessage(ServerRequest serverRequest) {
+        return MESSAGES_GETTER.apply(getAcceptLanguages(serverRequest));
     }
 
     /**

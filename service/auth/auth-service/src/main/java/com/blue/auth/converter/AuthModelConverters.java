@@ -54,7 +54,7 @@ public final class AuthModelConverters {
         if (isNull(role))
             throw new BlueException(EMPTY_PARAM);
 
-        return new RoleInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault());
+        return new RoleInfo(role.getId(), role.getType(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault());
     };
 
     /**
@@ -68,7 +68,7 @@ public final class AuthModelConverters {
         if (isNull(role))
             throw new BlueException(EMPTY_PARAM);
 
-        return new RoleManagerInfo(role.getId(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault(),
+        return new RoleManagerInfo(role.getId(), role.getType(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault(),
                 role.getCreateTime(), role.getUpdateTime(), role.getCreator(), ofNullable(idAndMemberNameMapping.get(role.getCreator())).orElse(EMPTY_DATA.value),
                 role.getUpdater(), ofNullable(idAndMemberNameMapping.get(role.getUpdater())).orElse(EMPTY_DATA.value));
     }

@@ -1,4 +1,4 @@
-package com.blue.redis.common;
+package com.blue.redis.component;
 
 import com.blue.base.model.exps.BlueException;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;

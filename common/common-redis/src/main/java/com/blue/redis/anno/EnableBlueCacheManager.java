@@ -11,10 +11,11 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * enable trans
+ * enable redis cache manager
  *
  * @author liuyunfei
  */
+@SuppressWarnings("unused")
 @Target(TYPE)
 @Retention(RUNTIME)
 @Configuration
