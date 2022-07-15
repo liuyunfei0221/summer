@@ -1,6 +1,6 @@
 package com.blue.mongo.constant;
 
-import com.blue.base.constant.common.SortType;
+import com.blue.basic.constant.common.SortType;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;

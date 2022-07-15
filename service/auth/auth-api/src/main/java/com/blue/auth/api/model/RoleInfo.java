@@ -18,7 +18,7 @@ public final class RoleInfo implements Serializable {
     private Long id;
 
     /**
-     * @see com.blue.base.constant.auth.RoleType
+     * @see com.blue.basic.constant.auth.RoleType
      */
     private Integer type;
 

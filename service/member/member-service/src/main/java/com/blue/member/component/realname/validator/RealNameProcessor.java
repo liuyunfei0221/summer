@@ -1,7 +1,7 @@
 package com.blue.member.component.realname.validator;
 
-import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.member.api.model.RealNameValidateResult;
 import com.blue.member.component.realname.validator.inter.RealNameValidator;
 import com.blue.member.config.deploy.ValidatorTypeDeploy;
@@ -15,9 +15,9 @@ import reactor.util.Logger;
 
 import java.util.Map;
 
-import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 

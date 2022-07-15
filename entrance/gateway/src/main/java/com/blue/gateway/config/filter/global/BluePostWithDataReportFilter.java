@@ -1,9 +1,9 @@
 package com.blue.gateway.config.filter.global;
 
-import com.blue.base.common.content.common.RequestBodyProcessor;
-import com.blue.base.constant.common.BlueHeader;
-import com.blue.base.model.common.DataEvent;
-import com.blue.base.model.common.ExceptionResponse;
+import com.blue.basic.common.content.common.RequestBodyProcessor;
+import com.blue.basic.constant.common.BlueHeader;
+import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.common.ExceptionResponse;
 import com.blue.gateway.component.event.RequestEventReporter;
 import com.blue.gateway.config.deploy.EncryptDeploy;
 import org.reactivestreams.Publisher;
@@ -29,11 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import static com.blue.base.common.base.CommonFunctions.*;
-import static com.blue.base.constant.common.BlueDataAttrKey.*;
-import static com.blue.base.constant.common.DataEventOpType.CLICK;
-import static com.blue.base.constant.common.DataEventType.UNIFIED;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.common.base.CommonFunctions.*;
+import static com.blue.basic.constant.common.BlueDataAttrKey.*;
+import static com.blue.basic.constant.common.DataEventOpType.CLICK;
+import static com.blue.basic.constant.common.DataEventType.UNIFIED;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.gateway.common.GatewayCommonFunctions.*;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_POST_WITH_DATA_REPORT;
 import static java.lang.String.valueOf;

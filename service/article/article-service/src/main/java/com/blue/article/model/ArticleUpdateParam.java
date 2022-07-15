@@ -1,6 +1,6 @@
 package com.blue.article.model;
 
-import com.blue.base.inter.Asserter;
+import com.blue.basic.inter.Asserter;
 
 import java.io.Serializable;
 import java.util.List;

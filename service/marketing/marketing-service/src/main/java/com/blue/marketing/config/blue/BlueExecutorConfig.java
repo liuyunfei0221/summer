@@ -1,6 +1,6 @@
 package com.blue.marketing.config.blue;
 
-import com.blue.base.component.executor.api.conf.AbstractExecutorConfParam;
+import com.blue.basic.component.executor.api.conf.AbstractExecutorConfParam;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;

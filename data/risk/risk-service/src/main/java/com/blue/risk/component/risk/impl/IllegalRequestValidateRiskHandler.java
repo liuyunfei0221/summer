@@ -1,15 +1,15 @@
 package com.blue.risk.component.risk.impl;
 
-import com.blue.base.model.common.DataEvent;
-import com.blue.base.model.common.IllegalMarkEvent;
+import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.common.IllegalMarkEvent;
 import com.blue.risk.component.risk.inter.RiskHandler;
 import com.blue.risk.event.producer.IllegalMarkProducer;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
 
-import static com.blue.base.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
-import static com.blue.base.constant.common.BlueDataAttrKey.*;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
+import static com.blue.basic.constant.common.BlueDataAttrKey.*;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.risk.component.risk.constant.HandlerPrecedence.ILLEGAL_REQUEST_VALIDATE;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;

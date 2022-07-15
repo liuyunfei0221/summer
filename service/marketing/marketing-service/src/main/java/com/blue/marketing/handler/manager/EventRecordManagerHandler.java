@@ -1,16 +1,16 @@
 package com.blue.marketing.handler.manager;
 
-import com.blue.base.model.common.BlueResponse;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.common.BlueResponse;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.service.inter.EventRecordService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.ResponseElement.OK;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.OK;
 import static com.blue.marketing.constant.MarketingTypeReference.PAGE_MODEL_FOR_EVENT_RECORD_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;

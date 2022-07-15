@@ -1,6 +1,6 @@
 package com.blue.verify.component.verify.ioc;
 
-import com.blue.base.component.common.BlueBeanDefinitionScanner;
+import com.blue.basic.component.common.BlueBeanDefinitionScanner;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;

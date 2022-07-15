@@ -1,10 +1,10 @@
 package com.blue.base.model;
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 
 /**
  * params for update city

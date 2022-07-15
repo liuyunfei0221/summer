@@ -1,7 +1,7 @@
 package com.blue.verify.remote.provider;
 
 
-import com.blue.base.constant.verify.VerifyType;
+import com.blue.basic.constant.verify.VerifyType;
 import com.blue.verify.api.inter.RpcVerifyService;
 import com.blue.verify.service.inter.VerifyService;
 import org.apache.dubbo.config.annotation.DubboService;

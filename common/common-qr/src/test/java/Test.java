@@ -1,4 +1,4 @@
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.qr.api.generator.BlueQrCoderGenerator;
 import com.blue.qr.component.QrCoder;
 
@@ -7,7 +7,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static com.blue.base.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 
 @SuppressWarnings("JavaDoc")
 public class Test {

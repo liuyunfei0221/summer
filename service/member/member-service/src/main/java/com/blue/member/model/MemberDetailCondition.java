@@ -1,7 +1,7 @@
 package com.blue.member.model;
 
-import com.blue.base.constant.common.SortType;
-import com.blue.base.model.common.SortCondition;
+import com.blue.basic.constant.common.SortType;
+import com.blue.basic.model.common.SortCondition;
 import com.blue.member.constant.MemberDetailSortAttribute;
 
 import java.io.Serializable;
@@ -57,7 +57,7 @@ public final class MemberDetailCondition extends SortCondition implements Serial
     private String homepage;
 
     /**
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

@@ -17,7 +17,7 @@ public final class AttachmentDetailInfo implements Serializable {
     /**
      * attachment type
      *
-     * @see com.blue.base.constant.media.AttachmentType
+     * @see com.blue.basic.constant.media.AttachmentType
      */
     private Integer type;
 

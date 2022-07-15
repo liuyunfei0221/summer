@@ -1,14 +1,14 @@
 package com.blue.auth.repository.entity;
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.common.base.BlueChecker.isBlank;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
  * refresh token info entity

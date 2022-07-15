@@ -3,7 +3,7 @@ package com.blue.auth.remote.provider;
 import com.blue.auth.api.inter.RpcCredentialService;
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.service.inter.CredentialService;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.publisher.Mono;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static com.blue.auth.converter.AuthModelConverters.CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER;
-import static com.blue.base.constant.common.ResponseElement.DATA_NOT_EXIST;
+import static com.blue.basic.constant.common.ResponseElement.DATA_NOT_EXIST;
 import static reactor.core.publisher.Mono.just;
 
 /**

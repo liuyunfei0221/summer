@@ -1,15 +1,15 @@
 package com.blue.auth.common;
 
-import com.blue.base.constant.common.BlueCommonThreshold;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.constant.common.BlueCommonThreshold;
+import com.blue.basic.model.exps.BlueException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.function.BiPredicate;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.common.base.BlueChecker.isNotBlank;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**

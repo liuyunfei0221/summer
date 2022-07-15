@@ -1,14 +1,14 @@
 package com.blue.auth.model;
 
-import com.blue.base.constant.auth.CredentialType;
-import com.blue.base.inter.Asserter;
+import com.blue.basic.constant.auth.CredentialType;
+import com.blue.basic.inter.Asserter;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.blue.base.common.base.ConstantProcessor.assertCredentialType;
-import static com.blue.base.common.base.ConstantProcessor.assertDeviceType;
+import static com.blue.basic.common.base.ConstantProcessor.assertCredentialType;
+import static com.blue.basic.common.base.ConstantProcessor.assertDeviceType;
 
 /**
  * login info
@@ -33,7 +33,7 @@ public final class LoginParam implements Serializable, Asserter {
     /**
      * device type
      *
-     * @see com.blue.base.constant.auth.DeviceType
+     * @see com.blue.basic.constant.auth.DeviceType
      */
     private String deviceType;
 

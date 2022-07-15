@@ -10,12 +10,12 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.auth.CredentialType.EMAIL_PWD;
-import static com.blue.base.constant.auth.CredentialType.EMAIL_VERIFY_AUTO_REGISTER;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.base.constant.common.Status.INVALID;
-import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.auth.CredentialType.EMAIL_PWD;
+import static com.blue.basic.constant.auth.CredentialType.EMAIL_VERIFY_AUTO_REGISTER;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.Status.INVALID;
+import static com.blue.basic.constant.common.Status.VALID;
 import static java.util.stream.Collectors.toSet;
 
 /**

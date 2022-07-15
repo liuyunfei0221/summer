@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.database.api.generator.BlueDataAccessGenerator.generateTxManager;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;

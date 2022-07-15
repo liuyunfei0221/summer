@@ -1,8 +1,8 @@
 package com.blue.base.event.consumer;
 
-import com.blue.base.component.lifecycle.inter.BlueLifecycle;
+import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.config.blue.BlueConsumerConfig;
-import com.blue.base.model.common.EmptyEvent;
+import com.blue.basic.model.common.EmptyEvent;
 import com.blue.base.service.inter.RegionControlService;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import reactor.util.Logger;
@@ -10,7 +10,7 @@ import reactor.util.Logger;
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.common.BlueTopic.REGION_INFOS_INVALID;
+import static com.blue.basic.constant.common.BlueTopic.REGION_INFOS_INVALID;
 import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;

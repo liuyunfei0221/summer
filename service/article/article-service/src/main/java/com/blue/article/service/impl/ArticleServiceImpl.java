@@ -3,7 +3,7 @@ package com.blue.article.service.impl;
 import com.blue.article.repository.entity.Article;
 import com.blue.article.repository.template.ArticleRepository;
 import com.blue.article.service.inter.ArticleService;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import org.elasticsearch.client.RestClient;
 import org.springframework.stereotype.Service;
@@ -12,8 +12,8 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Optional;
 
-import static com.blue.base.common.base.BlueChecker.isValidIdentity;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.common.base.BlueChecker.isValidIdentity;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 

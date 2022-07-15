@@ -1,7 +1,7 @@
 //package demo;
 //
-//import com.blue.base.common.reactive.AccessGetterForReactive;
-//import com.blue.base.model.base.BlueResponse;
+//import com.blue.basic.common.reactive.AccessGetterForReactive;
+//import com.blue.basic.model.base.BlueResponse;
 //import com.blue.context.holder.ReactiveContextHolder;
 //import com.blue.member.service.inter.MemberBasicService;
 //import org.springframework.stereotype.Component;
@@ -9,8 +9,8 @@
 //import org.springframework.web.reactive.function.server.ServerResponse;
 //import reactor.core.publisher.Mono;
 //
-//import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-//import static com.blue.base.constant.base.ResponseElement.OK;
+//import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+//import static com.blue.basic.constant.base.ResponseElement.OK;
 //import static org.springframework.http.MediaType.APPLICATION_JSON;
 //import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 //

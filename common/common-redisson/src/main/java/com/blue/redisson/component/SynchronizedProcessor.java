@@ -1,6 +1,6 @@
 package com.blue.redisson.component;
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.redisson.api.inter.HandleTask;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -10,8 +10,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.SyncKey.AUTHORITY_UPDATE_SYNC;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.SyncKey.AUTHORITY_UPDATE_SYNC;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;

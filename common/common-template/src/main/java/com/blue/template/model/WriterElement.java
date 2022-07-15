@@ -4,7 +4,7 @@ import freemarker.template.Configuration;
 
 import java.util.Set;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 
 /**
  * template writer elements

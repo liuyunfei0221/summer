@@ -2,7 +2,7 @@ package com.blue.marketing.api.model;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
 
 /**
  * sign in reward info

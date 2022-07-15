@@ -1,6 +1,6 @@
 package com.blue.finance.component.dynamic.ioc;
 
-import com.blue.base.component.common.BlueBeanDefinitionScanner;
+import com.blue.basic.component.common.BlueBeanDefinitionScanner;
 import com.blue.finance.component.dynamic.inter.DynamicEndPointHandler;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;

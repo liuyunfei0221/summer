@@ -19,12 +19,12 @@ public class FinanceFlow implements Serializable {
     private Long orderId;
 
     /**
-     * @see com.blue.base.constant.finance.FlowType
+     * @see com.blue.basic.constant.finance.FlowType
      */
     private Integer type;
 
     /**
-     * @see com.blue.base.constant.finance.FlowChangeType
+     * @see com.blue.basic.constant.finance.FlowChangeType
      */
     private Integer changeType;
 

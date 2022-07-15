@@ -2,7 +2,7 @@ package com.blue.media.config.filter.global;
 
 import com.blue.auth.api.model.AccessAssert;
 import com.blue.auth.api.model.AccessAsserted;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.media.remote.consumer.RpcAuthServiceConsumer;
 import org.springframework.core.Ordered;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -15,14 +15,14 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import static com.blue.base.common.access.AccessProcessor.accessToJson;
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.common.base.CommonFunctions.HEADER_VALUE_GETTER;
-import static com.blue.base.constant.common.BlueDataAttrKey.*;
-import static com.blue.base.constant.common.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.common.ResponseElement.UNAUTHORIZED;
-import static com.blue.base.constant.common.SpecialAccess.VISITOR;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.common.access.AccessProcessor.accessToJson;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.CommonFunctions.HEADER_VALUE_GETTER;
+import static com.blue.basic.constant.common.BlueDataAttrKey.*;
+import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
+import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
+import static com.blue.basic.constant.common.SpecialAccess.VISITOR;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.config.filter.BlueFilterOrder.BLUE_AUTH;
 import static java.util.Optional.ofNullable;
 

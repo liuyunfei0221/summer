@@ -1,7 +1,7 @@
 package com.blue.media.service.impl;
 
-import com.blue.base.model.common.Access;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.common.Access;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.media.component.qr.QrCodeGenerateProcessor;
 import com.blue.media.model.QrCodeGenerateParam;
 import com.blue.media.service.inter.QrCodeConfigService;
@@ -17,9 +17,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.ResponseElement.FORBIDDEN;
+import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.FORBIDDEN;
 import static reactor.core.publisher.Mono.*;
 
 /**

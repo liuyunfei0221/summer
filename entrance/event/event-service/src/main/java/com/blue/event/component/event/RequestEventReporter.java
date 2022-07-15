@@ -1,6 +1,6 @@
 package com.blue.event.component.event;
 
-import com.blue.base.model.common.DataEvent;
+import com.blue.basic.model.common.DataEvent;
 import com.blue.event.event.producer.RequestEventProducer;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;

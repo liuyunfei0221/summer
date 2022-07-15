@@ -1,7 +1,7 @@
 package com.blue.media.component.illegal;
 
-import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.common.IllegalMarkEvent;
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.model.common.IllegalMarkEvent;
 import com.blue.media.config.deploy.RiskControlDeploy;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -17,13 +17,13 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
-import static com.blue.base.constant.common.BlueDataAttrKey.*;
-import static com.blue.base.constant.common.CacheKeyPrefix.ILLEGAL_IP_PRE;
-import static com.blue.base.constant.common.CacheKeyPrefix.ILLEGAL_JWT_PRE;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.base.constant.common.Symbol.WILDCARD;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
+import static com.blue.basic.constant.common.BlueDataAttrKey.*;
+import static com.blue.basic.constant.common.CacheKeyPrefix.ILLEGAL_IP_PRE;
+import static com.blue.basic.constant.common.CacheKeyPrefix.ILLEGAL_JWT_PRE;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.Symbol.WILDCARD;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;

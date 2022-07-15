@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.identity.core.SnowflakeIdentityParser.parse;
 import static java.lang.Long.valueOf;
 

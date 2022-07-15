@@ -1,6 +1,6 @@
 package com.blue.media.component.file.preprocessor.ioc;
 
-import com.blue.base.component.common.BlueBeanDefinitionScanner;
+import com.blue.basic.component.common.BlueBeanDefinitionScanner;
 import com.blue.media.component.file.preprocessor.inter.PreAndPostWriteProcessorHandler;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;

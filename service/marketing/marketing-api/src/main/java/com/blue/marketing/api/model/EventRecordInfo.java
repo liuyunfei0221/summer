@@ -18,7 +18,7 @@ public final class EventRecordInfo implements Serializable {
     /**
      * event type
      *
-     * @see com.blue.base.constant.marketing.MarketingEventType
+     * @see com.blue.basic.constant.marketing.MarketingEventType
      */
     private Integer type;
 
@@ -30,7 +30,7 @@ public final class EventRecordInfo implements Serializable {
     /**
      * handling status
      *
-     * @see com.blue.base.constant.marketing.HandleStatus
+     * @see com.blue.basic.constant.marketing.HandleStatus
      */
     private Integer status;
 

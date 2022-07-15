@@ -1,6 +1,6 @@
 package com.blue.gateway.config.filter.global;
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerUriTools;
 import org.springframework.cloud.client.loadbalancer.Request;
@@ -20,9 +20,9 @@ import java.net.URI;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.NOT_FOUND;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.NOT_FOUND;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_LOAD_BALANCER_CLIENT;
 import static java.util.Optional.ofNullable;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.*;

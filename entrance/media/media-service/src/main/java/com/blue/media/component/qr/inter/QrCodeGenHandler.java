@@ -1,7 +1,7 @@
 package com.blue.media.component.qr.inter;
 
-import com.blue.base.constant.media.QrCodeGenType;
-import com.blue.base.model.common.Access;
+import com.blue.basic.constant.media.QrCodeGenType;
+import com.blue.basic.model.common.Access;
 import com.blue.media.api.model.QrCodeConfigInfo;
 import com.blue.media.model.QrCodeGenerateParam;
 import org.springframework.web.reactive.function.server.ServerRequest;

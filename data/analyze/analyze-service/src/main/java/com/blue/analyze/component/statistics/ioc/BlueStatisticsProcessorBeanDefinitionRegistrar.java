@@ -1,7 +1,7 @@
 package com.blue.analyze.component.statistics.ioc;
 
 import com.blue.analyze.component.statistics.inter.StatisticsCommand;
-import com.blue.base.component.common.BlueBeanDefinitionScanner;
+import com.blue.basic.component.common.BlueBeanDefinitionScanner;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Configuration;

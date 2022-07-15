@@ -1,6 +1,6 @@
 package com.blue.redis.component;
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import reactor.core.publisher.Flux;
@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.REPEATABLE_UNTIL_SUCCESS_OR_TIMEOUT_VALIDATION;
 import static com.blue.redis.constant.RedisScripts.UNREPEATABLE_VALIDATION;

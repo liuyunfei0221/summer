@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 
 /**
  * attachment
@@ -23,7 +23,7 @@ public final class Attachment implements Serializable {
     /**
      * attachment type
      *
-     * @see com.blue.base.constant.media.AttachmentType
+     * @see com.blue.basic.constant.media.AttachmentType
      */
     private Integer type;
 

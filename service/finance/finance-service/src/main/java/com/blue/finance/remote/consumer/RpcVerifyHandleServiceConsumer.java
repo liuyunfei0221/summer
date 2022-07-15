@@ -1,7 +1,7 @@
 package com.blue.finance.remote.consumer;
 
-import com.blue.base.constant.verify.BusinessType;
-import com.blue.base.constant.verify.VerifyType;
+import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyType;
 import com.blue.verify.api.inter.RpcVerifyHandleService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;

@@ -1,7 +1,7 @@
 package com.blue.verify.component.verify.inter;
 
-import com.blue.base.constant.verify.BusinessType;
-import com.blue.base.constant.verify.VerifyType;
+import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyType;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;

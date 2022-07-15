@@ -1,6 +1,6 @@
 package com.blue.auth.component.login.inter;
 
-import com.blue.base.constant.auth.CredentialType;
+import com.blue.basic.constant.auth.CredentialType;
 import com.blue.auth.model.LoginParam;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;

@@ -1,9 +1,9 @@
 package com.blue.auth.model;
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 
-import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
-import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.basic.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.basic.constant.common.ResponseElement.*;
 
 /**
  * params for update a exist role

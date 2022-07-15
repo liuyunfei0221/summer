@@ -1,7 +1,7 @@
-package com.blue.base.component.syncrest.api.generator;
+package com.blue.basic.component.syncrest.api.generator;
 
-import com.blue.base.component.syncrest.api.conf.SyncRestConf;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.component.syncrest.api.conf.SyncRestConf;
+import com.blue.basic.model.exps.BlueException;
 import io.netty.channel.ConnectTimeoutException;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.HttpRequestRetryHandler;

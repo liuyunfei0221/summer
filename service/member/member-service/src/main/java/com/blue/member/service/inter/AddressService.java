@@ -1,7 +1,7 @@
 package com.blue.member.service.inter;
 
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
 import com.blue.member.api.model.AddressInfo;
 import com.blue.member.model.AddressCondition;
 import com.blue.member.model.AddressInsertParam;

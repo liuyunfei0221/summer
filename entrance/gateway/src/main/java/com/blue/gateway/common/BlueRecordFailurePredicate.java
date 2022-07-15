@@ -1,11 +1,11 @@
 package com.blue.gateway.common;
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 
 import java.util.Set;
 import java.util.function.Predicate;
 
-import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.of;

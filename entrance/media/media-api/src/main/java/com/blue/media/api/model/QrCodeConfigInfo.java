@@ -26,7 +26,7 @@ public final class QrCodeConfigInfo implements Serializable {
     private Integer type;
 
     /**
-     * @see com.blue.base.constant.media.QrCodeGenType
+     * @see com.blue.basic.constant.media.QrCodeGenType
      */
     private Integer genHandlerType;
 

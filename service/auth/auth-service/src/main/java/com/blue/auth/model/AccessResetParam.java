@@ -1,16 +1,16 @@
 package com.blue.auth.model;
 
-import com.blue.base.inter.Asserter;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.inter.Asserter;
+import com.blue.basic.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.ConstantProcessor.assertVerifyType;
-import static com.blue.base.constant.auth.BlueAuthThreshold.*;
-import static com.blue.base.constant.auth.BlueAuthThreshold.ACS_LEN_MAX;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
+import static com.blue.basic.common.base.BlueChecker.isBlank;
+import static com.blue.basic.common.base.ConstantProcessor.assertVerifyType;
+import static com.blue.basic.constant.auth.BlueAuthThreshold.*;
+import static com.blue.basic.constant.auth.BlueAuthThreshold.ACS_LEN_MAX;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 
 /**
  * access reset info
@@ -23,7 +23,7 @@ public final class AccessResetParam implements Serializable, Asserter {
     private static final long serialVersionUID = 2293803879668176107L;
 
     /**
-     * @see com.blue.base.constant.verify.VerifyType
+     * @see com.blue.basic.constant.verify.VerifyType
      */
     private String verifyType;
 

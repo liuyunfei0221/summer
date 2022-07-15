@@ -1,8 +1,8 @@
 package com.blue.auth.component.access;
 
 import com.blue.auth.event.producer.AccessExpireProducer;
-import com.blue.base.model.common.KeyExpireEvent;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.common.KeyExpireEvent;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -19,9 +19,9 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static java.time.temporal.ChronoUnit.MILLIS;

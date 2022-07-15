@@ -1,7 +1,7 @@
 package com.blue.media.event.producer;
 
-import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.common.DataEvent;
+import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
+import com.blue.basic.model.common.DataEvent;
 import com.blue.media.config.blue.BlueProducerConfig;
 import com.blue.pulsar.common.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.common.BlueTopic.REQUEST_EVENT;
+import static com.blue.basic.constant.common.BlueTopic.REQUEST_EVENT;
 import static com.blue.pulsar.api.generator.BluePulsarProducerGenerator.generateProducer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;

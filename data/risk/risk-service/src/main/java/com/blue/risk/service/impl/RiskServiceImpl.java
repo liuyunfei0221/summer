@@ -1,6 +1,6 @@
 package com.blue.risk.service.impl;
 
-import com.blue.base.model.common.DataEvent;
+import com.blue.basic.model.common.DataEvent;
 import com.blue.risk.component.risk.inter.RiskHandler;
 import com.blue.risk.service.inter.RiskService;
 import org.springframework.context.ApplicationContext;
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import static com.blue.base.common.base.BlueChecker.isEmpty;
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static java.util.Comparator.comparingInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;

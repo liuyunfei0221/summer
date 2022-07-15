@@ -1,7 +1,7 @@
 package com.blue.verify;
 
-import com.blue.base.anno.EnableBlueLifecycle;
-import com.blue.base.anno.SummerSpringBootApplication;
+import com.blue.basic.anno.EnableBlueLifecycle;
+import com.blue.basic.anno.SummerSpringBootApplication;
 import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
 
 import static org.springframework.boot.SpringApplication.run;

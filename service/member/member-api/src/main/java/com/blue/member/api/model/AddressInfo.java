@@ -19,7 +19,7 @@ public final class AddressInfo implements Serializable {
     private String contact;
 
     /**
-     * @see com.blue.base.constant.member.Gender
+     * @see com.blue.basic.constant.member.Gender
      */
     private Integer gender;
 

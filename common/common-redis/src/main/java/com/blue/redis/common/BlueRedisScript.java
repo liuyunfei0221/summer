@@ -3,8 +3,8 @@ package com.blue.redis.common;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.lang.NonNull;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isBlank;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static org.springframework.data.redis.core.script.DigestUtils.sha1DigestAsHex;
 
 /**

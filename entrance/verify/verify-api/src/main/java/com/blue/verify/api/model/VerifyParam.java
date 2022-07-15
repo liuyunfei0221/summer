@@ -1,6 +1,6 @@
 package com.blue.verify.api.model;
 
-import com.blue.base.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.BusinessType;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ public final class VerifyParam implements Serializable {
     private static final long serialVersionUID = -4952556683651447255L;
 
     /**
-     * @see com.blue.base.constant.verify.VerifyType
+     * @see com.blue.basic.constant.verify.VerifyType
      */
     private String verifyType;
 

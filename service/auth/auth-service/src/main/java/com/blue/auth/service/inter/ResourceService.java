@@ -2,8 +2,8 @@ package com.blue.auth.service.inter;
 
 import com.blue.auth.api.model.ResourceManagerInfo;
 import com.blue.auth.repository.entity.Resource;
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
 import com.blue.auth.api.model.ResourceInfo;
 import com.blue.auth.model.ResourceCondition;
 import com.blue.auth.model.ResourceInsertParam;

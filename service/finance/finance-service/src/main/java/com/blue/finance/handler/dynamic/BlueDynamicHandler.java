@@ -1,7 +1,7 @@
 package com.blue.finance.handler.dynamic;
 
-import com.blue.base.constant.common.Symbol;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.constant.common.Symbol;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.finance.component.dynamic.inter.DynamicEndPointHandler;
 import com.blue.finance.config.deploy.DynamicApiDeploy;
 import com.blue.finance.repository.entity.DynamicHandler;
@@ -24,8 +24,8 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;

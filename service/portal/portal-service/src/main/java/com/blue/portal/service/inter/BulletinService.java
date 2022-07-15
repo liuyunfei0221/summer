@@ -1,7 +1,7 @@
 package com.blue.portal.service.inter;
 
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
 import com.blue.portal.api.model.BulletinInfo;
 import com.blue.portal.api.model.BulletinManagerInfo;
 import com.blue.portal.model.BulletinCondition;

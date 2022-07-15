@@ -2,7 +2,7 @@ package com.blue.marketing.repository.entity;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 
 /**
  * marketing event entity
@@ -19,7 +19,7 @@ public final class EventRecord implements Serializable {
     /**
      * event type
      *
-     * @see com.blue.base.constant.marketing.MarketingEventType
+     * @see com.blue.basic.constant.marketing.MarketingEventType
      */
     private Integer type;
 
@@ -31,7 +31,7 @@ public final class EventRecord implements Serializable {
     /**
      * handling status
      *
-     * @see com.blue.base.constant.marketing.HandleStatus
+     * @see com.blue.basic.constant.marketing.HandleStatus
      */
     private Integer status;
 

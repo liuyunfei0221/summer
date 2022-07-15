@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import static com.blue.base.constant.media.MailHeader.LIST_UNSUBSCRIBE;
+import static com.blue.basic.constant.media.MailHeader.LIST_UNSUBSCRIBE;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 

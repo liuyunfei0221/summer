@@ -1,6 +1,6 @@
 package com.blue.verify.service.inter;
 
-import com.blue.base.constant.verify.VerifyType;
+import com.blue.basic.constant.verify.VerifyType;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;

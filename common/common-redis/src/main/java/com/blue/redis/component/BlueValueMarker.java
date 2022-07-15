@@ -1,6 +1,6 @@
 package com.blue.redis.component;
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import reactor.core.publisher.Mono;
@@ -14,9 +14,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.BlueCommonThreshold.DB_SELECT;
-import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.EXPIRE_HLL_OR_WITH_INIT;
 import static java.util.Optional.ofNullable;

@@ -1,11 +1,11 @@
 package com.blue.marketing.model;
 
-import com.blue.base.model.common.SortCondition;
+import com.blue.basic.model.common.SortCondition;
 import com.blue.marketing.constant.EventRecordSortAttribute;
 
 import java.io.Serializable;
 
-import static com.blue.base.constant.common.SortType.DESC;
+import static com.blue.basic.constant.common.SortType.DESC;
 
 /**
  * event record condition for select
@@ -22,14 +22,14 @@ public final class EventRecordCondition extends SortCondition implements Seriali
     /**
      * event type
      *
-     * @see com.blue.base.constant.marketing.MarketingEventType
+     * @see com.blue.basic.constant.marketing.MarketingEventType
      */
     private Integer type;
 
     /**
      * handling status
      *
-     * @see com.blue.base.constant.marketing.HandleStatus
+     * @see com.blue.basic.constant.marketing.HandleStatus
      */
     private Integer status;
 

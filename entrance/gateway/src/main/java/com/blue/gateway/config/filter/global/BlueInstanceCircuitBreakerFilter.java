@@ -1,6 +1,6 @@
 package com.blue.gateway.config.filter.global;
 
-import com.blue.base.constant.common.Symbol;
+import com.blue.basic.constant.common.Symbol;
 import com.blue.gateway.config.deploy.CircuitBreakerDeploy;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
@@ -21,8 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_INSTANCE_CIRCUIT_BREAKER;
 import static io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator.of;
 import static java.time.temporal.ChronoUnit.MILLIS;

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.beans.BeanUtils.instantiateClass;

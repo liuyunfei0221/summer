@@ -3,18 +3,18 @@ package com.blue.auth.converter;
 import com.blue.auth.api.model.*;
 import com.blue.auth.model.*;
 import com.blue.auth.repository.entity.*;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.common.base.ConstantProcessor.getResourceTypeByIdentity;
-import static com.blue.base.constant.common.Default.NOT_DEFAULT;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.base.constant.common.Symbol.PATH_SEPARATOR;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.common.base.ConstantProcessor.getResourceTypeByIdentity;
+import static com.blue.basic.constant.common.Default.NOT_DEFAULT;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.Symbol.PATH_SEPARATOR;
 import static java.util.Optional.ofNullable;
 
 /**

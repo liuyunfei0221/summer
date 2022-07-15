@@ -2,7 +2,7 @@ package com.blue.article.repository.entity;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 
 /**
  * reply entity

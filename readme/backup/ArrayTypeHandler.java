@@ -1,6 +1,6 @@
 package com.blue.database.type;
 
-import com.blue.base.common.base.BlueChecker;
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.database.constant.DataType;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 

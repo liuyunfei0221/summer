@@ -1,11 +1,11 @@
 package com.blue.base.model;
 
 import com.blue.base.constant.StyleSortAttribute;
-import com.blue.base.model.common.SortCondition;
+import com.blue.basic.model.common.SortCondition;
 
 import java.io.Serializable;
 
-import static com.blue.base.constant.common.SortType.DESC;
+import static com.blue.basic.constant.common.SortType.DESC;
 
 /**
  * style condition for select
@@ -22,14 +22,14 @@ public final class StyleCondition extends SortCondition implements Serializable 
     private String nameLike;
 
     /**
-     * @see com.blue.base.constant.portal.StyleType
+     * @see com.blue.basic.constant.portal.StyleType
      */
     private Integer type;
 
     private Boolean isActive;
 
     /**
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

@@ -1,6 +1,6 @@
 package com.blue.marketing.component.marketing.ioc;
 
-import com.blue.base.component.common.BlueBeanDefinitionScanner;
+import com.blue.basic.component.common.BlueBeanDefinitionScanner;
 import com.blue.marketing.component.marketing.inter.EventHandler;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;

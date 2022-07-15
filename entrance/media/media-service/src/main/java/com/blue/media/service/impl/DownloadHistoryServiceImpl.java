@@ -1,8 +1,8 @@
 package com.blue.media.service.impl;
 
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.DownloadHistoryInfo;
 import com.blue.media.constant.DownloadHistorySortAttribute;
@@ -28,9 +28,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.constant.ColumnName.CREATE_TIME;
 import static com.blue.media.constant.ColumnName.ID;
 import static com.blue.media.converter.MediaModelConverters.downloadHistoryToDownloadHistoryInfo;

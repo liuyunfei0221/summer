@@ -1,7 +1,7 @@
 package com.blue.analyze.service.inter;
 
-import com.blue.base.constant.analyze.StatisticsRange;
-import com.blue.base.constant.analyze.StatisticsType;
+import com.blue.basic.constant.analyze.StatisticsRange;
+import com.blue.basic.constant.analyze.StatisticsType;
 import reactor.core.publisher.Mono;
 
 import java.util.List;

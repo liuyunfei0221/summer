@@ -1,7 +1,7 @@
 package com.blue.auth.component.auto.inter;
 
 import com.blue.auth.api.model.CredentialInfo;
-import com.blue.base.constant.auth.CredentialType;
+import com.blue.basic.constant.auth.CredentialType;
 import com.blue.member.api.model.MemberRegistryParam;
 
 /**

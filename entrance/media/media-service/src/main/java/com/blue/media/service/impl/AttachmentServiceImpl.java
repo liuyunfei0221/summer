@@ -1,9 +1,9 @@
 package com.blue.media.service.impl;
 
-import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.constant.AttachmentSortAttribute;
@@ -28,11 +28,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.BlueCommonThreshold.*;
-import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.BlueCommonThreshold.*;
+import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.constant.ColumnName.*;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER;

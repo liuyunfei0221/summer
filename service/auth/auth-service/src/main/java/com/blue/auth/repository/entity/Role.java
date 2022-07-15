@@ -2,7 +2,7 @@ package com.blue.auth.repository.entity;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 
 /**
  * role entity
@@ -17,7 +17,7 @@ public final class Role implements Serializable {
     private Long id;
 
     /**
-     * @see com.blue.base.constant.auth.RoleType
+     * @see com.blue.basic.constant.auth.RoleType
      */
     private Integer type;
 

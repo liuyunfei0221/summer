@@ -2,19 +2,19 @@ package com.blue.base.converter;
 
 import com.blue.base.api.model.*;
 import com.blue.base.model.StyleInsertParam;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.base.repository.entity.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.common.BlueBoolean.FALSE;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.constant.common.BlueBoolean.FALSE;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.Status.VALID;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;

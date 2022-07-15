@@ -1,15 +1,15 @@
 package com.blue.member.api.model;
 
-import com.blue.base.constant.common.BlueCommonThreshold;
-import com.blue.base.inter.Asserter;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.constant.common.BlueCommonThreshold;
+import com.blue.basic.inter.Asserter;
+import com.blue.basic.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.common.ResponseElement.VERIFY_IS_INVALID;
+import static com.blue.basic.common.base.BlueChecker.isBlank;
+import static com.blue.basic.common.base.BlueChecker.isNotBlank;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.VERIFY_IS_INVALID;
 
 /**
  * member registry params
@@ -36,12 +36,12 @@ public final class MemberRegistryParam implements Serializable, Asserter {
     private String icon;
 
     /**
-     * @see com.blue.base.constant.member.Gender
+     * @see com.blue.basic.constant.member.Gender
      */
     private Integer gender;
 
     /**
-     * @see com.blue.base.constant.member.SourceType
+     * @see com.blue.basic.constant.member.SourceType
      */
     private String source;
 

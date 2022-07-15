@@ -1,8 +1,8 @@
 package com.blue.media.component.file.processor.impl;
 
-import com.blue.base.common.base.Monitor;
-import com.blue.base.constant.media.ByteHandlerType;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.base.Monitor;
+import com.blue.basic.constant.media.ByteHandlerType;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.FileUploadResult;
 import com.blue.media.component.file.processor.inter.ByteHandler;
 import com.blue.media.config.deploy.LocalDiskFileDeploy;
@@ -19,13 +19,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.*;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.ConstantProcessor.assertAttachmentType;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.common.ResponseElement.PAYLOAD_TOO_LARGE;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.base.constant.common.Symbol.SCHEME_SEPARATOR;
-import static com.blue.base.constant.media.ByteHandlerType.LOCAL_DISK;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.ConstantProcessor.assertAttachmentType;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.PAYLOAD_TOO_LARGE;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.Symbol.SCHEME_SEPARATOR;
+import static com.blue.basic.constant.media.ByteHandlerType.LOCAL_DISK;
 import static com.blue.media.common.MediaCommonFunctions.*;
 import static java.lang.System.currentTimeMillis;
 import static java.nio.channels.FileChannel.open;

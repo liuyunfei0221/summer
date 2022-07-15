@@ -1,6 +1,6 @@
 package com.blue.risk.config.blue;
 
-import com.blue.base.component.message.api.conf.MessageConfParams;
+import com.blue.basic.component.message.api.conf.MessageConfParams;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 

@@ -13,12 +13,12 @@ public class MergeSummaryParam implements Serializable {
     private static final long serialVersionUID = -916119028631172684L;
 
     /**
-     * @see com.blue.base.constant.analyze.StatisticsType
+     * @see com.blue.basic.constant.analyze.StatisticsType
      */
     List<String> statisticsTypes;
 
     /**
-     * @see com.blue.base.constant.analyze.StatisticsRange
+     * @see com.blue.basic.constant.analyze.StatisticsRange
      */
     List<String> statisticsRanges;
 

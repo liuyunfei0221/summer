@@ -1,8 +1,8 @@
 package com.blue.marketing.service.impl;
 
-import com.blue.base.constant.marketing.HandleStatus;
-import com.blue.base.constant.marketing.MarketingEventType;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.constant.marketing.HandleStatus;
+import com.blue.basic.constant.marketing.MarketingEventType;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.component.marketing.MarketingEventProcessor;
@@ -15,8 +15,8 @@ import reactor.util.Logger;
 
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;

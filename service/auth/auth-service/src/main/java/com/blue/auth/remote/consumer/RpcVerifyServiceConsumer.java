@@ -1,6 +1,6 @@
 package com.blue.auth.remote.consumer;
 
-import com.blue.base.constant.verify.VerifyType;
+import com.blue.basic.constant.verify.VerifyType;
 import com.blue.verify.api.inter.RpcVerifyService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;

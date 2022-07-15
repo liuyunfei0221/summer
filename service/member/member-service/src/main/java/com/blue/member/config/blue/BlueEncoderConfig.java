@@ -1,6 +1,6 @@
 package com.blue.member.config.blue;
 
-import com.blue.base.component.encoder.api.conf.EncoderConfParams;
+import com.blue.basic.component.encoder.api.conf.EncoderConfParams;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 

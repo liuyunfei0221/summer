@@ -1,11 +1,11 @@
 package com.blue.auth.model;
 
 import com.blue.auth.constant.ResourceSortAttribute;
-import com.blue.base.model.common.SortCondition;
+import com.blue.basic.model.common.SortCondition;
 
 import java.io.Serializable;
 
-import static com.blue.base.constant.common.SortType.DESC;
+import static com.blue.basic.constant.common.SortType.DESC;
 
 /**
  * role condition for select

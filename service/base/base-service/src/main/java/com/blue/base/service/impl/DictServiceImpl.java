@@ -2,9 +2,9 @@ package com.blue.base.service.impl;
 
 import com.blue.base.api.model.DictInfo;
 import com.blue.base.api.model.DictTypeInfo;
-import com.blue.base.common.base.BlueChecker;
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.base.config.deploy.DictCaffeineDeploy;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.base.repository.entity.Dict;
 import com.blue.base.repository.entity.DictType;
 import com.blue.base.repository.template.DictRepository;
@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.common.base.BlueChecker.isNotBlank;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static com.blue.base.converter.BaseModelConverters.DICT_2_DICT_INFOS_CONVERTER;
 import static com.blue.base.converter.BaseModelConverters.DICT_TYPES_2_DICT_TYPE_INFOS_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;

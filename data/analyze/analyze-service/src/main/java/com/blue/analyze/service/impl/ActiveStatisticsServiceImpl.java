@@ -1,9 +1,9 @@
 package com.blue.analyze.service.impl;
 
 import com.blue.analyze.service.inter.ActiveStatisticsService;
-import com.blue.base.constant.analyze.StatisticsRange;
-import com.blue.base.constant.analyze.StatisticsType;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.constant.analyze.StatisticsRange;
+import com.blue.basic.constant.analyze.StatisticsType;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.redis.component.BlueValueMarker;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -17,11 +17,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.common.base.BlueChecker.isValidIdentity;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
-import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isValidIdentity;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;

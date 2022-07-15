@@ -1,6 +1,6 @@
 package com.blue.database.api.generator;
 
-import com.blue.base.common.base.BlueChecker;
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.database.api.conf.*;
 import com.blue.database.common.DatabaseShardingAlgorithm;
 import com.blue.database.common.TableShardingAlgorithm;
@@ -29,10 +29,10 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.MathProcessor.assertDisorderIntegerContinuous;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.base.constant.common.Symbol.*;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.MathProcessor.assertDisorderIntegerContinuous;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.Symbol.*;
 import static com.blue.identity.constant.IdentitySchema.MAX_DATA_CENTER_ID;
 import static com.blue.identity.constant.IdentitySchema.MAX_WORKER_ID;
 import static java.lang.Integer.parseInt;

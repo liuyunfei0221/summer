@@ -4,7 +4,7 @@ import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.api.model.MemberRoleRelationInsertOrDeleteParam;
 import com.blue.auth.api.model.MemberRoleRelationUpdateParam;
-import com.blue.base.model.common.Access;
+import com.blue.basic.model.common.Access;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

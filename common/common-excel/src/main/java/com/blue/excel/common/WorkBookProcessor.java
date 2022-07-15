@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.BlueChecker.*;
 import static java.lang.String.valueOf;
 import static org.slf4j.LoggerFactory.getLogger;
 

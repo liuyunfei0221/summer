@@ -1,6 +1,6 @@
 package com.blue.shine.handler.api;
 
-import com.blue.base.model.common.BlueResponse;
+import com.blue.basic.model.common.BlueResponse;
 import com.blue.shine.service.inter.ShineService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -10,10 +10,10 @@ import reactor.util.Logger;
 
 import java.util.Map;
 
-import static com.blue.base.common.reactive.MetadataGetterForReactive.getMetadata;
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.common.reactive.RequestIpGetterForReactive.getRequestIp;
-import static com.blue.base.constant.common.ResponseElement.OK;
+import static com.blue.basic.common.reactive.MetadataGetterForReactive.getMetadata;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.RequestIpGetterForReactive.getRequestIp;
+import static com.blue.basic.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.util.Loggers.getLogger;

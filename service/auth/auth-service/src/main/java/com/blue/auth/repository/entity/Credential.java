@@ -1,10 +1,10 @@
 package com.blue.auth.repository.entity;
 
-import com.blue.base.constant.auth.CredentialType;
+import com.blue.basic.constant.auth.CredentialType;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 
 /**
  * credential entity

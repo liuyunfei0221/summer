@@ -1,5 +1,5 @@
-//import com.blue.base.common.base.FileProcessor;
-//import com.blue.base.model.base.BlueResponse;
+//import com.blue.basic.common.base.FileProcessor;
+//import com.blue.basic.model.base.BlueResponse;
 //import com.blue.mail.common.MailReader;
 //import com.blue.mail.common.MailSender;
 //import jakarta.mail.Message;
@@ -18,9 +18,9 @@
 //import java.util.concurrent.CompletableFuture;
 //import java.util.stream.Stream;
 //
-//import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-//import static com.blue.base.constant.base.ResponseElement.OK;
-//import static com.blue.base.constant.media.MailHeader.LIST_UNSUBSCRIBE;
+//import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+//import static com.blue.basic.constant.base.ResponseElement.OK;
+//import static com.blue.basic.constant.media.MailHeader.LIST_UNSUBSCRIBE;
 //import static com.blue.mail.common.MailReader.parseMessage;
 //import static java.util.stream.Collectors.toList;
 //import static org.springframework.http.MediaType.APPLICATION_JSON;

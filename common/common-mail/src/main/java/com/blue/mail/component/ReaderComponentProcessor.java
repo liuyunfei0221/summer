@@ -7,7 +7,7 @@ import reactor.util.Logger;
 
 import java.util.Properties;
 
-import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.BlueChecker.*;
 import static jakarta.mail.Session.getInstance;
 import static reactor.util.Loggers.getLogger;
 

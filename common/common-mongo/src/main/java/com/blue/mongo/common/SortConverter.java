@@ -10,7 +10,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.BlueChecker.isNotEmpty;
+import static com.blue.basic.common.base.BlueChecker.isNotEmpty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 

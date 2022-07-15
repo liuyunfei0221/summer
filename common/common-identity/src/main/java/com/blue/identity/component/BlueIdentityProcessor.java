@@ -1,6 +1,6 @@
 package com.blue.identity.component;
 
-import com.blue.base.constant.common.Symbol;
+import com.blue.basic.constant.common.Symbol;
 import com.blue.identity.api.conf.IdentityConf;
 import com.blue.identity.core.BlueIdentityGenerator;
 import com.blue.identity.core.SnowflakeIdentityParser;
@@ -15,8 +15,8 @@ import java.util.concurrent.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.identity.core.ConfAsserter.assertConf;
 import static java.time.Instant.now;
 import static java.util.Optional.ofNullable;

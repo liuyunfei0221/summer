@@ -1,9 +1,9 @@
 package com.blue.media.service.impl;
 
 import com.blue.auth.api.model.RoleInfo;
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.media.api.model.QrCodeConfigInfo;
 import com.blue.media.constant.AttachmentSortAttribute;
@@ -34,10 +34,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.media.constant.ColumnName.*;
 import static com.blue.media.converter.MediaModelConverters.QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER;
 import static com.blue.media.converter.MediaModelConverters.qrCodeConfigToQrCodeConfigManagerInfo;

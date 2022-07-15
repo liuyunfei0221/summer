@@ -2,7 +2,7 @@ package com.blue.marketing.repository.entity;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 
 /**
  * reward entity
@@ -25,7 +25,7 @@ public final class Reward implements Serializable {
     /**
      * reward type
      *
-     * @see com.blue.base.constant.marketing.RewardType
+     * @see com.blue.basic.constant.marketing.RewardType
      */
     private Integer type;
 
@@ -37,7 +37,7 @@ public final class Reward implements Serializable {
     /**
      * reward status
      *
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

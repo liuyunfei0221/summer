@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 
 /**
  * dict entity

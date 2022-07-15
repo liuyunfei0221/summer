@@ -1,7 +1,7 @@
 package com.blue.gateway.common;
 
-import com.blue.base.common.reactive.ReactiveCommonFunctions;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.reactive.ReactiveCommonFunctions;
+import com.blue.basic.model.exps.BlueException;
 import org.springframework.cloud.gateway.filter.factory.rewrite.CachedBodyOutputMessage;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;

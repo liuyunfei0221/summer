@@ -1,15 +1,15 @@
 package com.blue.member.model;
 
-import com.blue.base.inter.Asserter;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.inter.Asserter;
+import com.blue.basic.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.common.base.ConstantProcessor.assertGenderIdentity;
-import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
-import static com.blue.base.constant.member.BlueMemberThreshold.*;
+import static com.blue.basic.common.base.BlueChecker.isBlank;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.ConstantProcessor.assertGenderIdentity;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
+import static com.blue.basic.constant.member.BlueMemberThreshold.*;
 
 /**
  * params for insert a new address

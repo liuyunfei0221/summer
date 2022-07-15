@@ -4,15 +4,15 @@ import com.blue.article.model.ArticleInsertParam;
 import com.blue.article.model.LinkInsertParam;
 import com.blue.article.repository.entity.Article;
 import com.blue.article.repository.entity.Link;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.base.constant.common.Status.VALID;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.Status.VALID;
 import static java.util.Optional.ofNullable;
 
 /**

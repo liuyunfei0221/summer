@@ -1,11 +1,11 @@
 package com.blue.media.model;
 
-import com.blue.base.model.common.SortCondition;
+import com.blue.basic.model.common.SortCondition;
 import com.blue.media.constant.QrCodeConfigSortAttribute;
 
 import java.io.Serializable;
 
-import static com.blue.base.constant.common.SortType.DESC;
+import static com.blue.basic.constant.common.SortType.DESC;
 
 /**
  * qr code config condition for select
@@ -29,7 +29,7 @@ public final class QrCodeCondition extends SortCondition implements Serializable
     private Integer type;
 
     /**
-     * @see com.blue.base.constant.media.QrCodeGenType
+     * @see com.blue.basic.constant.media.QrCodeGenType
      */
     private Integer genHandlerType;
 

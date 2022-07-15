@@ -1,6 +1,6 @@
 package com.blue.marketing.event.producer;
 
-import com.blue.base.component.lifecycle.inter.BlueLifecycle;
+import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.config.blue.BlueProducerConfig;
 import com.blue.pulsar.common.BluePulsarProducer;
@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.common.BlueTopic.MARKETING;
+import static com.blue.basic.constant.common.BlueTopic.MARKETING;
 import static com.blue.pulsar.api.generator.BluePulsarProducerGenerator.generateProducer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;

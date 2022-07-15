@@ -60,7 +60,7 @@ public final class Resource implements Serializable {
     private Boolean existenceResponseBody;
 
     /**
-     * @see com.blue.base.constant.auth.ResourceType
+     * @see com.blue.basic.constant.auth.ResourceType
      */
     private Integer type;
 

@@ -1,7 +1,7 @@
 package com.blue.lake.service.impl;
 
-import com.blue.base.model.common.DataEvent;
-import com.blue.base.model.common.LimitModelRequest;
+import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.common.LimitModelRequest;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.lake.repository.entity.OptEvent;
 import com.blue.lake.repository.mapper.OptEventMapper;
@@ -12,8 +12,8 @@ import reactor.util.Logger;
 
 import java.util.List;
 
-import static com.blue.base.constant.common.BlueCommonThreshold.LIMIT;
-import static com.blue.base.constant.common.BlueCommonThreshold.ROWS;
+import static com.blue.basic.constant.common.BlueCommonThreshold.LIMIT;
+import static com.blue.basic.constant.common.BlueCommonThreshold.ROWS;
 import static com.blue.lake.converter.LakeModelConverters.DATA_EVENT_2_OPT_EVENT;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;

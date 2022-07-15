@@ -1,12 +1,12 @@
 package com.blue.auth.api.model;
 
-import com.blue.base.model.common.Access;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.common.Access;
+import com.blue.basic.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
  * auth assert result

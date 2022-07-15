@@ -2,7 +2,7 @@ package com.blue.auth.api.inter;
 
 import com.blue.auth.api.model.AccessAssert;
 import com.blue.auth.api.model.AccessAsserted;
-import com.blue.base.model.common.Access;
+import com.blue.basic.model.common.Access;
 
 import java.util.concurrent.CompletableFuture;
 

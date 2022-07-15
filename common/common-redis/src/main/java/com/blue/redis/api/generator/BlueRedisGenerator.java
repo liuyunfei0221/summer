@@ -31,8 +31,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.CacheKeyPrefix.CACHE_MANAGER_PRE;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.CacheKeyPrefix.CACHE_MANAGER_PRE;
 import static com.blue.redis.constant.ServerMode.CLUSTER;
 import static com.blue.redis.constant.ServerMode.SINGLE;
 import static io.lettuce.core.protocol.DecodeBufferPolicies.ratio;

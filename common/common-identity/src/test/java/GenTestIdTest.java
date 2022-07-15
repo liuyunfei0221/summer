@@ -4,7 +4,7 @@ import com.blue.identity.core.param.IdGenParam;
 import java.time.Instant;
 import java.util.concurrent.*;
 
-import static com.blue.base.constant.common.SummerAttr.ONLINE_TIME;
+import static com.blue.basic.constant.common.SummerAttr.ONLINE_TIME;
 import static com.blue.identity.constant.SnowflakeBits.*;
 
 /**

@@ -11,7 +11,7 @@ import freemarker.template.Template;
 import java.io.Writer;
 import java.util.*;
 
-import static com.blue.base.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.BlueChecker.*;
 
 /**
  * template writer from string contents

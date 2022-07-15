@@ -4,7 +4,7 @@ import com.blue.captcha.api.conf.CaptchaConf;
 import com.blue.captcha.api.conf.CaptchaConfParams;
 import com.blue.captcha.component.CaptchaProcessor;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
 
 /**
  * captcha processor generator

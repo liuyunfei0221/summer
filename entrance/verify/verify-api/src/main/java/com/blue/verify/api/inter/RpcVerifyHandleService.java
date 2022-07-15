@@ -1,7 +1,7 @@
 package com.blue.verify.api.inter;
 
-import com.blue.base.constant.verify.BusinessType;
-import com.blue.base.constant.verify.VerifyType;
+import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyType;
 
 import java.util.concurrent.CompletableFuture;
 

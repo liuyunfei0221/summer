@@ -24,7 +24,7 @@ public final class StyleManagerInfo implements Serializable {
     private Boolean isActive;
 
     /**
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

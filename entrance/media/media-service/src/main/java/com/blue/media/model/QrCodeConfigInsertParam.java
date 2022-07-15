@@ -1,14 +1,14 @@
 package com.blue.media.model;
 
-import com.blue.base.inter.Asserter;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.inter.Asserter;
+import com.blue.basic.model.exps.BlueException;
 
 import java.io.Serializable;
 import java.util.List;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.ConstantProcessor.assertQrCodeGenType;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.ConstantProcessor.assertQrCodeGenType;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
  * params for insert a new qr config
@@ -30,7 +30,7 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
     private Integer type;
 
     /**
-     * @see com.blue.base.constant.media.QrCodeGenType
+     * @see com.blue.basic.constant.media.QrCodeGenType
      */
     private Integer genHandlerType;
 

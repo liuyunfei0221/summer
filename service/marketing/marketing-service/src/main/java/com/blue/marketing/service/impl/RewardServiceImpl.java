@@ -1,6 +1,6 @@
 package com.blue.marketing.service.impl;
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.entity.SignRewardTodayRelation;
 import com.blue.marketing.repository.mapper.RewardMapper;
@@ -12,11 +12,11 @@ import reactor.util.Logger;
 import java.util.List;
 import java.util.Optional;
 
-import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.BlueCommonThreshold.DB_SELECT;
-import static com.blue.base.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
-import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
+import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;

@@ -1,7 +1,7 @@
 package com.blue.verify.service.impl;
 
-import com.blue.base.constant.verify.BusinessType;
-import com.blue.base.constant.verify.VerifyType;
+import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyType;
 import com.blue.verify.component.verify.VerifyProcessor;
 import com.blue.verify.service.inter.VerifyHandleService;
 import org.springframework.stereotype.Service;

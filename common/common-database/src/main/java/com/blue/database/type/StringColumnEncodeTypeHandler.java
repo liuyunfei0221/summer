@@ -1,6 +1,6 @@
 package com.blue.database.type;
 
-import com.blue.base.component.encoder.api.common.StringColumnEncoder;
+import com.blue.basic.component.encoder.api.common.StringColumnEncoder;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.springframework.util.StringUtils;
@@ -10,8 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static com.blue.base.component.encoder.api.common.StringColumnEncoder.encryptString;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.component.encoder.api.common.StringColumnEncoder.encryptString;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -21,8 +21,8 @@ import static java.util.Optional.ofNullable;
  *
  * <p>
  * actived by
- * @see com.blue.base.component.encoder.api.conf.EncoderConf
- * @see com.blue.base.component.encoder.api.conf.EncoderConfParams
+ * @see com.blue.basic.component.encoder.api.conf.EncoderConf
+ * @see com.blue.basic.component.encoder.api.conf.EncoderConfParams
  */
 public final class StringColumnEncodeTypeHandler extends BaseTypeHandler<String> {
 

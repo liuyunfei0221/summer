@@ -1,7 +1,7 @@
 package com.blue.media.common;
 
-import com.blue.base.common.reactive.ReactiveCommonFunctions;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.reactive.ReactiveCommonFunctions;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.media.common.part.PartInfoProcessor;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
@@ -23,9 +23,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static io.netty.buffer.ByteBufAllocator.DEFAULT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;

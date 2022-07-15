@@ -1,7 +1,7 @@
 package com.blue.media.handler.manager;
 
-import com.blue.base.model.common.BlueResponse;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.common.BlueResponse;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.media.model.QrCodeConfigInsertParam;
 import com.blue.media.model.QrCodeConfigUpdateParam;
 import com.blue.media.service.inter.QrCodeConfigService;
@@ -10,12 +10,12 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.base.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.base.common.reactive.PathVariableGetter.getLongVariableReact;
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.common.PathVariable.ID;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.ResponseElement.OK;
+import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
+import static com.blue.basic.common.reactive.PathVariableGetter.getLongVariableReact;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.constant.common.PathVariable.ID;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.OK;
 import static com.blue.media.constant.MediaTypeReference.PAGE_MODEL_FOR_QR_CODE_CONFIG_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;

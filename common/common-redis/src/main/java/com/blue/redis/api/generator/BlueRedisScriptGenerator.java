@@ -9,7 +9,7 @@ import org.springframework.scripting.support.ResourceScriptSource;
 
 import java.io.IOException;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 

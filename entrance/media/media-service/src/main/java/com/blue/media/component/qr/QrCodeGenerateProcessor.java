@@ -1,7 +1,7 @@
 package com.blue.media.component.qr;
 
-import com.blue.base.model.common.Access;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.common.Access;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.QrCodeConfigInfo;
 import com.blue.media.component.qr.inter.QrCodeGenHandler;
 import com.blue.media.model.QrCodeGenerateParam;
@@ -15,11 +15,11 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.common.base.ConstantProcessor.assertQrCodeGenType;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.common.ResponseElement.INVALID_PARAM;
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.ConstantProcessor.assertQrCodeGenType;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 

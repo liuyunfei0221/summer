@@ -2,7 +2,7 @@ package com.blue.portal.repository.entity;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 
 /**
  * bulletin entity
@@ -23,12 +23,12 @@ public final class Bulletin implements Serializable {
     private String link;
 
     /**
-     * @see com.blue.base.constant.portal.BulletinType
+     * @see com.blue.basic.constant.portal.BulletinType
      */
     private Integer type;
 
     /**
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

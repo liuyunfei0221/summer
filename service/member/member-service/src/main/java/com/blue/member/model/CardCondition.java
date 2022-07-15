@@ -1,7 +1,7 @@
 package com.blue.member.model;
 
-import com.blue.base.constant.common.SortType;
-import com.blue.base.model.common.SortCondition;
+import com.blue.basic.constant.common.SortType;
+import com.blue.basic.model.common.SortCondition;
 import com.blue.member.constant.CardSortAttribute;
 
 import java.io.Serializable;
@@ -33,7 +33,7 @@ public final class CardCondition extends SortCondition implements Serializable {
     private String contentLinkLike;
 
     /**
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

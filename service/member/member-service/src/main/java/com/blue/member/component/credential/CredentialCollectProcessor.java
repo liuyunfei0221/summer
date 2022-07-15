@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import static com.blue.base.common.base.BlueChecker.isEmpty;
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**

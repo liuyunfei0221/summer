@@ -2,12 +2,12 @@ package com.blue.auth.component.auto.impl;
 
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.auto.inter.MemberParamByAutoLoginPackager;
-import com.blue.base.constant.auth.CredentialType;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.constant.auth.CredentialType;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.member.api.model.MemberRegistryParam;
 
-import static com.blue.base.constant.auth.CredentialType.NOT_LOGGED_IN;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.auth.CredentialType.NOT_LOGGED_IN;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
  * packager for not login

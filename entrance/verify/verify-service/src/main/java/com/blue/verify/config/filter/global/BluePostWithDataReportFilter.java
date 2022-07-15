@@ -1,9 +1,9 @@
 package com.blue.verify.config.filter.global;
 
-import com.blue.base.common.content.common.RequestBodyProcessor;
-import com.blue.base.constant.common.BlueHeader;
-import com.blue.base.model.common.DataEvent;
-import com.blue.base.model.common.ExceptionResponse;
+import com.blue.basic.common.content.common.RequestBodyProcessor;
+import com.blue.basic.constant.common.BlueHeader;
+import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.common.ExceptionResponse;
 import com.blue.verify.component.event.RequestEventReporter;
 import com.blue.verify.config.deploy.ResponseDeploy;
 import org.reactivestreams.Publisher;
@@ -30,11 +30,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.CommonFunctions.*;
-import static com.blue.base.constant.common.BlueDataAttrKey.*;
-import static com.blue.base.constant.common.DataEventOpType.CLICK;
-import static com.blue.base.constant.common.DataEventType.UNIFIED;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.common.base.CommonFunctions.*;
+import static com.blue.basic.constant.common.BlueDataAttrKey.*;
+import static com.blue.basic.constant.common.DataEventOpType.CLICK;
+import static com.blue.basic.constant.common.DataEventType.UNIFIED;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.verify.common.VerifyCommonFactory.*;
 import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_POST_WITH_DATA_REPORT;
 import static java.lang.String.valueOf;

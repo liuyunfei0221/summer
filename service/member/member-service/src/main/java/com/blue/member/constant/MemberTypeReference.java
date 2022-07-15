@@ -1,7 +1,7 @@
 package com.blue.member.constant;
 
 
-import com.blue.base.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelRequest;
 import com.blue.member.model.*;
 import org.springframework.core.ParameterizedTypeReference;
 

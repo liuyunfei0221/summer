@@ -1,7 +1,7 @@
 package com.blue.media.service.inter;
 
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
 import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.model.AttachmentCondition;

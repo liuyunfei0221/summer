@@ -1,9 +1,9 @@
 package com.blue.verify.service.impl;
 
-import com.blue.base.common.base.BlueRandomGenerator;
-import com.blue.base.constant.common.RandomType;
-import com.blue.base.constant.verify.VerifyType;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.base.BlueRandomGenerator;
+import com.blue.basic.constant.common.RandomType;
+import com.blue.basic.constant.verify.VerifyType;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.redis.component.BlueValidator;
 import com.blue.verify.config.deploy.VerifyDeploy;
 import com.blue.verify.service.inter.VerifyService;
@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.ResponseElement.ILLEGAL_REQUEST;
-import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.ResponseElement.ILLEGAL_REQUEST;
+import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;

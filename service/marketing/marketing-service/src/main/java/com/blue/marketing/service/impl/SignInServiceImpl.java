@@ -1,7 +1,7 @@
 package com.blue.marketing.service.impl;
 
-import com.blue.base.constant.marketing.BlueMarketingThreshold;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.constant.marketing.BlueMarketingThreshold;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.api.model.*;
 import com.blue.marketing.config.deploy.BlockingDeploy;
 import com.blue.marketing.event.producer.MarketingEventProducer;
@@ -24,13 +24,13 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.CommonFunctions.GSON;
-import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.common.CacheKeyPrefix.SIGN_IN_PRE;
-import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
-import static com.blue.base.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.CommonFunctions.GSON;
+import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.constant.common.CacheKeyPrefix.SIGN_IN_PRE;
+import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
+import static com.blue.basic.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;

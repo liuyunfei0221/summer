@@ -1,6 +1,6 @@
 package com.blue.redisson.api.generator;
 
-import com.blue.base.common.base.BlueChecker;
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.redisson.api.conf.RedissonConf;
 import com.blue.redisson.component.SynchronizedProcessor;
 import com.blue.redisson.constant.ServerMode;
@@ -18,7 +18,7 @@ import java.util.concurrent.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.redisson.constant.ServerMode.CLUSTER;
 import static com.blue.redisson.constant.ServerMode.SINGLE;
 import static java.util.Optional.ofNullable;

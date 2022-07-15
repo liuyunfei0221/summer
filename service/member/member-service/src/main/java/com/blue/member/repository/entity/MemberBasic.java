@@ -28,7 +28,7 @@ public final class MemberBasic implements Serializable {
     private String qrCode;
 
     /**
-     * @see com.blue.base.constant.member.Gender
+     * @see com.blue.basic.constant.member.Gender
      */
     private Integer gender;
 
@@ -37,7 +37,7 @@ public final class MemberBasic implements Serializable {
     private String source;
 
     /**
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

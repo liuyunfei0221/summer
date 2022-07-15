@@ -1,7 +1,7 @@
 package com.blue.mail.core;
 
-import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.mail.api.conf.MailSenderConf;
 import com.blue.mail.api.conf.SenderAttr;
 import jakarta.mail.Message;
@@ -17,10 +17,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.OriginalThrowableGetter.getOriginalThrowable;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.mail.component.SenderComponentProcessor.*;
 import static java.lang.Integer.bitCount;
 import static java.lang.Integer.numberOfLeadingZeros;

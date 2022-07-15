@@ -22,7 +22,7 @@ public final class StyleInfo implements Serializable {
     private Integer type;
 
     /**
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

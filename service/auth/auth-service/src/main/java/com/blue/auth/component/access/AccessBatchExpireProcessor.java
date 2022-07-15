@@ -1,6 +1,6 @@
 package com.blue.auth.component.access;
 
-import com.blue.base.model.common.KeyExpireEvent;
+import com.blue.basic.model.common.KeyExpireEvent;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
@@ -14,8 +14,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.Duration.of;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;

@@ -1,6 +1,6 @@
 package com.blue.mail.component;
 
-import com.blue.base.common.base.BlueChecker;
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.mail.api.conf.MailReaderConf;
 import jakarta.mail.*;
 import jakarta.mail.event.ConnectionListener;
@@ -15,8 +15,8 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.OriginalThrowableGetter.getOriginalThrowable;
 import static com.blue.mail.component.ReaderComponentProcessor.*;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;

@@ -3,7 +3,7 @@ package com.blue.member.remote.consumer;
 import com.blue.auth.api.inter.RpcAuthService;
 import com.blue.auth.api.model.AccessAssert;
 import com.blue.auth.api.model.AccessAsserted;
-import com.blue.base.model.common.Access;
+import com.blue.basic.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;

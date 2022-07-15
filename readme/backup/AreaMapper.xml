@@ -32,7 +32,7 @@
                 #{updateTime,jdbcType=BIGINT})
     </insert>
 
-    <insert id="insertSelective" parameterType="com.blue.base.repository.entity.Area">
+    <insert id="insertSelective" parameterType="com.blue.basic.repository.entity.Area">
         insert into area
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">

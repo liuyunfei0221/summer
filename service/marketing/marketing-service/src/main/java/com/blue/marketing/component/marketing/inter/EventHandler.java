@@ -1,6 +1,6 @@
 package com.blue.marketing.component.marketing.inter;
 
-import com.blue.base.constant.marketing.MarketingEventType;
+import com.blue.basic.constant.marketing.MarketingEventType;
 import com.blue.marketing.api.model.MarketingEvent;
 
 /**

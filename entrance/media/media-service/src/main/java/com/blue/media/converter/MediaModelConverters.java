@@ -1,7 +1,7 @@
 package com.blue.media.converter;
 
 import com.blue.auth.api.model.RoleInfo;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.*;
 import com.blue.media.model.QrCodeConfigManagerInfo;
 import com.blue.media.repository.entity.Attachment;
@@ -13,10 +13,10 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.common.base.BlueChecker.isNotBlank;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;

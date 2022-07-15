@@ -1,12 +1,12 @@
 package com.blue.member.model;
 
-import com.blue.base.constant.common.SortType;
-import com.blue.base.model.common.SortCondition;
+import com.blue.basic.constant.common.SortType;
+import com.blue.basic.model.common.SortCondition;
 import com.blue.member.constant.MemberBasicSortAttribute;
 
 import java.io.Serializable;
 
-import static com.blue.base.common.base.BlueChecker.isNotBlank;
+import static com.blue.basic.common.base.BlueChecker.isNotBlank;
 
 /**
  * member condition for select
@@ -27,14 +27,14 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
     private String name;
 
     /**
-     * @see com.blue.base.constant.member.Gender
+     * @see com.blue.basic.constant.member.Gender
      */
     private Integer gender;
 
     private String source;
 
     /**
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

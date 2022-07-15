@@ -2,15 +2,15 @@ package com.blue.auth.event.consumer;
 
 import com.blue.auth.config.blue.BlueConsumerConfig;
 import com.blue.auth.service.inter.AuthControlService;
-import com.blue.base.component.lifecycle.inter.BlueLifecycle;
-import com.blue.base.model.common.EmptyEvent;
+import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
+import com.blue.basic.model.common.EmptyEvent;
 import com.blue.pulsar.common.BluePulsarConsumer;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
-import static com.blue.base.constant.common.BlueTopic.SYSTEM_AUTHORITY_INFOS_REFRESH;
+import static com.blue.basic.constant.common.BlueTopic.SYSTEM_AUTHORITY_INFOS_REFRESH;
 import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;

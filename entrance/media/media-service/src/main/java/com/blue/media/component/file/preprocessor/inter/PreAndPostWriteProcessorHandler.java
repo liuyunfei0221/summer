@@ -1,6 +1,6 @@
 package com.blue.media.component.file.preprocessor.inter;
 
-import com.blue.base.constant.media.AttachmentType;
+import com.blue.basic.constant.media.AttachmentType;
 import com.blue.media.api.model.FileUploadResult;
 import org.springframework.http.codec.multipart.Part;
 import reactor.core.publisher.Mono;

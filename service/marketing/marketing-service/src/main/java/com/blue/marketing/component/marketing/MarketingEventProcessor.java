@@ -1,7 +1,7 @@
 package com.blue.marketing.component.marketing;
 
-import com.blue.base.constant.marketing.MarketingEventType;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.constant.marketing.MarketingEventType;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.component.marketing.inter.EventHandler;
 import org.springframework.context.ApplicationContext;
@@ -13,9 +13,9 @@ import reactor.util.Logger;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static java.util.stream.Collectors.toMap;
 import static reactor.util.Loggers.getLogger;
 

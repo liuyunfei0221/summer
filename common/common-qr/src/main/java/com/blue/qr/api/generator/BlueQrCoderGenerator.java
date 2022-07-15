@@ -4,7 +4,7 @@ import com.blue.qr.api.conf.QrConfParams;
 import com.blue.qr.api.conf.QrConf;
 import com.blue.qr.component.QrCoder;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
 
 /**
  * qrcoder generator

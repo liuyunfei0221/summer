@@ -1,11 +1,11 @@
 package com.blue.portal.model;
 
-import com.blue.base.model.common.SortCondition;
+import com.blue.basic.model.common.SortCondition;
 import com.blue.portal.constant.BulletinSortAttribute;
 
 import java.io.Serializable;
 
-import static com.blue.base.constant.common.SortType.DESC;
+import static com.blue.basic.constant.common.SortType.DESC;
 
 /**
  * bulletin condition for select
@@ -24,12 +24,12 @@ public final class BulletinCondition extends SortCondition implements Serializab
     private String linkLike;
 
     /**
-     * @see com.blue.base.constant.portal.BulletinType
+     * @see com.blue.basic.constant.portal.BulletinType
      */
     private Integer type;
 
     /**
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

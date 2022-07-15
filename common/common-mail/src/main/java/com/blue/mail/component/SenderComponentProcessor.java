@@ -20,9 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.FileGetter.getFile;
-import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION_DATABASE_URL;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.FileGetter.getFile;
+import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION_DATABASE_URL;
 import static jakarta.mail.Session.getInstance;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;

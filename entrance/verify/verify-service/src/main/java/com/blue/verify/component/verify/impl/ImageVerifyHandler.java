@@ -1,9 +1,9 @@
 package com.blue.verify.component.verify.impl;
 
-import com.blue.base.constant.common.RandomType;
-import com.blue.base.constant.verify.BusinessType;
-import com.blue.base.constant.verify.VerifyType;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.constant.common.RandomType;
+import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyType;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.captcha.component.CaptchaProcessor;
 import com.blue.redis.component.BlueLeakyBucketRateLimiter;
 import com.blue.verify.component.verify.inter.VerifyHandler;
@@ -24,14 +24,14 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.BlueRandomGenerator.generate;
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER;
-import static com.blue.base.constant.common.BlueHeader.VERIFY_KEY;
-import static com.blue.base.constant.common.RateLimitKeyPrefix.IMAGE_VERIFY_RATE_LIMIT_KEY_PRE;
-import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.Symbol.PAR_CONCATENATION;
-import static com.blue.base.constant.verify.VerifyType.IMAGE;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.BlueRandomGenerator.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER;
+import static com.blue.basic.constant.common.BlueHeader.VERIFY_KEY;
+import static com.blue.basic.constant.common.RateLimitKeyPrefix.IMAGE_VERIFY_RATE_LIMIT_KEY_PRE;
+import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
+import static com.blue.basic.constant.verify.VerifyType.IMAGE;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.springframework.http.HttpHeaders.CACHE_CONTROL;

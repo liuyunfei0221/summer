@@ -1,11 +1,11 @@
 package com.blue.media.model;
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 
 import java.util.List;
 
-import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 
 /**
  * params for update a exist qr config

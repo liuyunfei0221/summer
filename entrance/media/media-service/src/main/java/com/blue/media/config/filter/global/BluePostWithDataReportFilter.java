@@ -1,10 +1,10 @@
 package com.blue.media.config.filter.global;
 
-import com.blue.base.common.content.common.RequestBodyProcessor;
-import com.blue.base.constant.common.BlueHeader;
-import com.blue.base.model.common.DataEvent;
-import com.blue.base.model.common.ExceptionResponse;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.content.common.RequestBodyProcessor;
+import com.blue.basic.constant.common.BlueHeader;
+import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.common.ExceptionResponse;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.media.component.event.RequestEventReporter;
 import com.blue.media.config.deploy.EncryptDeploy;
 import org.reactivestreams.Publisher;
@@ -34,13 +34,13 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.common.base.CommonFunctions.*;
-import static com.blue.base.constant.common.BlueDataAttrKey.*;
-import static com.blue.base.constant.common.DataEventOpType.CLICK;
-import static com.blue.base.constant.common.DataEventType.UNIFIED;
-import static com.blue.base.constant.common.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.CommonFunctions.*;
+import static com.blue.basic.constant.common.BlueDataAttrKey.*;
+import static com.blue.basic.constant.common.DataEventOpType.CLICK;
+import static com.blue.basic.constant.common.DataEventType.UNIFIED;
+import static com.blue.basic.constant.common.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.common.MediaCommonFunctions.*;
 import static com.blue.media.config.filter.BlueFilterOrder.BLUE_POST_WITH_DATA_REPORT;
 import static java.lang.String.valueOf;

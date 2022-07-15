@@ -1,9 +1,9 @@
 package com.blue.member.service.impl;
 
-import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.member.api.model.CardDetailInfo;
@@ -36,15 +36,15 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.ArrayAllocator.allotByMax;
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.common.BlueCommonThreshold.DB_SELECT;
-import static com.blue.base.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
-import static com.blue.base.constant.common.ResponseElement.*;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.base.constant.common.Status.VALID;
-import static com.blue.base.constant.common.SyncKeyPrefix.CARD_UPDATE_PRE;
+import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
+import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
+import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.Status.VALID;
+import static com.blue.basic.constant.common.SyncKeyPrefix.CARD_UPDATE_PRE;
 import static com.blue.member.constant.ColumnName.*;
 import static com.blue.member.converter.MemberModelConverters.*;
 import static com.blue.mongo.common.SortConverter.convert;

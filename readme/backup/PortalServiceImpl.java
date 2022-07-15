@@ -1,9 +1,9 @@
 package com.blue.portal.service.impl;
 
-import com.blue.base.common.base.ConstantProcessor;
-import com.blue.base.constant.common.BlueNumericalValue;
-import com.blue.base.constant.portal.BulletinType;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.base.ConstantProcessor;
+import com.blue.basic.constant.common.BlueNumericalValue;
+import com.blue.basic.constant.portal.BulletinType;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.portal.api.model.BulletinInfo;
@@ -30,11 +30,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.CommonFunctions.GSON;
-import static com.blue.base.constant.common.BlueCacheKey.PORTALS_PRE;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.base.constant.common.SyncKey.PORTALS_REFRESH_PRE;
-import static com.blue.base.constant.portal.BulletinType.POPULAR;
+import static com.blue.basic.common.base.CommonFunctions.GSON;
+import static com.blue.basic.constant.common.BlueCacheKey.PORTALS_PRE;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.SyncKey.PORTALS_REFRESH_PRE;
+import static com.blue.basic.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static java.lang.System.currentTimeMillis;

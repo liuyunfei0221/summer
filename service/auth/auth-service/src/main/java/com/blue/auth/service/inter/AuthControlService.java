@@ -2,7 +2,7 @@ package com.blue.auth.service.inter;
 
 import com.blue.auth.api.model.*;
 import com.blue.auth.model.*;
-import com.blue.base.model.common.Access;
+import com.blue.basic.model.common.Access;
 import com.blue.member.api.model.MemberBasicInfo;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;

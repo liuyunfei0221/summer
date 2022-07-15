@@ -1,15 +1,15 @@
 package com.blue.finance.service.impl;
 
-import com.blue.base.model.common.Access;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.common.Access;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.finance.api.model.WithdrawInfo;
 import com.blue.finance.service.inter.WithdrawService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.util.Logger;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.util.Loggers.getLogger;

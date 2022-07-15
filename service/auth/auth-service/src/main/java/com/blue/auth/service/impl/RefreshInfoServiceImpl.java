@@ -3,7 +3,7 @@ package com.blue.auth.service.impl;
 import com.blue.auth.repository.entity.RefreshInfo;
 import com.blue.auth.repository.template.RefreshInfoRepository;
 import com.blue.auth.service.inter.RefreshInfoService;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -12,9 +12,9 @@ import reactor.util.Logger;
 
 import java.util.List;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static reactor.util.Loggers.getLogger;
 
 /**

@@ -1,12 +1,12 @@
-package com.blue.base.component.syncrest.ioc;
+package com.blue.basic.component.syncrest.ioc;
 
-import com.blue.base.component.syncrest.api.conf.SyncRestConf;
+import com.blue.basic.component.syncrest.api.conf.SyncRestConf;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-import static com.blue.base.component.syncrest.api.generator.BlueSyncRestGenerator.generateRestTemplate;
+import static com.blue.basic.component.syncrest.api.generator.BlueSyncRestGenerator.generateRestTemplate;
 
 /**
  * rest configuration

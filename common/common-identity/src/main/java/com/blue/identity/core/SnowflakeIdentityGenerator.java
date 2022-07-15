@@ -8,9 +8,9 @@ import java.time.ZoneId;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.common.SummerAttr.*;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.constant.common.SummerAttr.*;
 import static com.blue.identity.constant.SnowflakeBits.*;
 import static java.time.Instant.ofEpochSecond;
 import static java.time.LocalDateTime.ofInstant;

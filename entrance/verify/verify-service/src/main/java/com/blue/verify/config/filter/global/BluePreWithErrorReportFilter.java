@@ -1,8 +1,8 @@
 package com.blue.verify.config.filter.global;
 
-import com.blue.base.constant.common.BlueHeader;
-import com.blue.base.model.common.DataEvent;
-import com.blue.base.model.common.ExceptionResponse;
+import com.blue.basic.constant.common.BlueHeader;
+import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.common.ExceptionResponse;
 import com.blue.verify.component.event.RequestEventReporter;
 import org.springframework.core.Ordered;
 import org.springframework.http.codec.HttpMessageReader;
@@ -20,15 +20,15 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 
-import static com.blue.base.common.base.CommonFunctions.*;
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.getIp;
-import static com.blue.base.constant.common.BlueDataAttrKey.*;
-import static com.blue.base.constant.common.BlueHeader.AUTHORIZATION;
-import static com.blue.base.constant.common.BlueHeader.REQUEST_IP;
-import static com.blue.base.constant.common.DataEventOpType.CLICK;
-import static com.blue.base.constant.common.DataEventType.UNIFIED;
-import static com.blue.base.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.common.base.CommonFunctions.*;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.getIp;
+import static com.blue.basic.constant.common.BlueDataAttrKey.*;
+import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
+import static com.blue.basic.constant.common.BlueHeader.REQUEST_IP;
+import static com.blue.basic.constant.common.DataEventOpType.CLICK;
+import static com.blue.basic.constant.common.DataEventType.UNIFIED;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;

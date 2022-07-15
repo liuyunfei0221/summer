@@ -1,6 +1,6 @@
-package com.blue.base.repository.mapper;
+package com.blue.basic.repository.mapper;
 
-import com.blue.base.repository.entity.City;
+import com.blue.basic.repository.entity.City;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

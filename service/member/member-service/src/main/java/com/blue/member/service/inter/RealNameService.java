@@ -1,8 +1,8 @@
 package com.blue.member.service.inter;
 
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
-import com.blue.base.model.common.StatusParam;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.StatusParam;
 import com.blue.member.api.model.RealNameInfo;
 import com.blue.member.model.RealNameCondition;
 import com.blue.member.model.RealNameUpdateParam;

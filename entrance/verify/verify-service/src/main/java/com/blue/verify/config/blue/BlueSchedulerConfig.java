@@ -1,6 +1,6 @@
 package com.blue.verify.config.blue;
 
-import com.blue.base.component.scheduler.api.conf.SchedulerConfParams;
+import com.blue.basic.component.scheduler.api.conf.SchedulerConfParams;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 

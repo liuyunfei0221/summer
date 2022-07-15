@@ -6,7 +6,7 @@ import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.api.model.MemberRoleRelationInsertOrDeleteParam;
 import com.blue.auth.api.model.MemberRoleRelationUpdateParam;
 import com.blue.auth.service.inter.AuthControlService;
-import com.blue.base.model.common.Access;
+import com.blue.basic.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;

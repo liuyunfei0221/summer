@@ -1,4 +1,4 @@
-package com.blue.base.component.syncrest.api.conf;
+package com.blue.basic.component.syncrest.api.conf;
 
 /**
  * rest conf param

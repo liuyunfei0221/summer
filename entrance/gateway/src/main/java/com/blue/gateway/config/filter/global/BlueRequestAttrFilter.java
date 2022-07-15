@@ -1,6 +1,6 @@
 package com.blue.gateway.config.filter.global;
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.gateway.config.deploy.RequestAttributeDeploy;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -17,9 +17,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.common.base.CommonFunctions.HEADER_VALUE_GETTER;
-import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.CommonFunctions.HEADER_VALUE_GETTER;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_REQUEST_ATTR;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;

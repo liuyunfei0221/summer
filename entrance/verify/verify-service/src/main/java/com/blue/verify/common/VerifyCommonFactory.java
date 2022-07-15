@@ -1,7 +1,7 @@
 package com.blue.verify.common;
 
-import com.blue.base.common.reactive.ReactiveCommonFunctions;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.reactive.ReactiveCommonFunctions;
+import com.blue.basic.model.exps.BlueException;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.NettyDataBufferFactory;

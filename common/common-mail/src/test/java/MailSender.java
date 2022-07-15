@@ -1,5 +1,5 @@
-//import com.blue.base.common.base.BlueCheck;
-//import com.blue.base.model.exps.BlueException;
+//import com.blue.basic.common.base.BlueCheck;
+//import com.blue.basic.model.exps.BlueException;
 //import com.blue.mail.api.conf.MailSenderConf;
 //import jakarta.mail.Message;
 //import jakarta.mail.Session;
@@ -17,11 +17,11 @@
 //import java.util.function.Consumer;
 //import java.util.function.Predicate;
 //
-//import static com.blue.base.common.base.BlueCheck.isBlank;
-//import static com.blue.base.common.base.FileProcessor.getFile;
-//import static com.blue.base.common.base.OriginalThrowableGetter.getOriginalThrowable;
-//import static com.blue.base.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
-//import static com.blue.base.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
+//import static com.blue.basic.common.base.BlueCheck.isBlank;
+//import static com.blue.basic.common.base.FileProcessor.getFile;
+//import static com.blue.basic.common.base.OriginalThrowableGetter.getOriginalThrowable;
+//import static com.blue.basic.constant.base.ResponseElement.INTERNAL_SERVER_ERROR;
+//import static com.blue.basic.constant.base.Symbol.PAR_CONCATENATION_DATABASE_URL;
 //import static com.blue.mail.common.SenderComponentGenerator.generateSession;
 //import static java.util.Optional.ofNullable;
 //import static java.util.concurrent.CompletableFuture.runAsync;

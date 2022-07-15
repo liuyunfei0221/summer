@@ -2,8 +2,8 @@ package com.blue.auth.component.auto;
 
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.auto.inter.MemberParamByAutoLoginPackager;
-import com.blue.base.common.base.BlueChecker;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.member.api.model.MemberRegistryParam;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -14,9 +14,9 @@ import reactor.util.Logger;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import static com.blue.base.common.base.BlueChecker.isEmpty;
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static reactor.util.Loggers.getLogger;

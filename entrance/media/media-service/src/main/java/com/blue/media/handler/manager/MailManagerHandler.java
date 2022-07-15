@@ -1,6 +1,6 @@
 package com.blue.media.handler.manager;
 
-import com.blue.base.model.common.BlueResponse;
+import com.blue.basic.model.common.BlueResponse;
 import com.blue.mail.component.MailReader;
 import com.blue.mail.component.MailSender;
 import jakarta.mail.Message;
@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.base.constant.common.ResponseElement.OK;
-import static com.blue.base.constant.media.MailHeader.LIST_UNSUBSCRIBE;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.constant.common.ResponseElement.OK;
+import static com.blue.basic.constant.media.MailHeader.LIST_UNSUBSCRIBE;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;

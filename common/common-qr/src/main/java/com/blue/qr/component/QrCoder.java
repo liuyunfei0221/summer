@@ -1,7 +1,7 @@
 package com.blue.qr.component;
 
 
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.qr.api.conf.ColorAttr;
 import com.blue.qr.api.conf.QrConf;
 import com.google.zxing.*;
@@ -22,9 +22,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.blue.base.common.base.BlueChecker.isBlank;
-import static com.blue.base.common.base.BlueChecker.isNull;
-import static com.blue.base.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.common.base.BlueChecker.isBlank;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.google.zxing.BarcodeFormat.QR_CODE;
 import static com.google.zxing.DecodeHintType.PURE_BARCODE;
 import static com.google.zxing.EncodeHintType.ERROR_CORRECTION;

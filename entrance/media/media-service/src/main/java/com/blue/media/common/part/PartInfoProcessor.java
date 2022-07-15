@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.BlueChecker.isNotNull;
-import static com.blue.base.common.base.ClassGetter.getClassesByPackage;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.ClassGetter.getClassesByPackage;
 import static com.blue.media.common.part.constant.FilePartElementKey.PART_CLASS;
 import static com.blue.media.common.part.constant.FilePartElementKey.PART_NAME;
 import static java.util.stream.Collectors.toMap;

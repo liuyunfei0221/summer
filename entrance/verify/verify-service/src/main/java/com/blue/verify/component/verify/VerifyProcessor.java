@@ -1,8 +1,8 @@
 package com.blue.verify.component.verify;
 
-import com.blue.base.constant.verify.BusinessType;
-import com.blue.base.constant.verify.VerifyType;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyType;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.verify.api.model.VerifyParam;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import org.springframework.context.ApplicationContext;
@@ -19,9 +19,9 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.blue.base.common.base.BlueChecker.*;
-import static com.blue.base.common.base.ConstantProcessor.getBusinessTypeByIdentity;
-import static com.blue.base.constant.common.ResponseElement.*;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.ConstantProcessor.getBusinessTypeByIdentity;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static reactor.core.publisher.Mono.defer;

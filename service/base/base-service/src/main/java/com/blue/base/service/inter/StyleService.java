@@ -5,8 +5,8 @@ import com.blue.base.api.model.StyleManagerInfo;
 import com.blue.base.model.StyleCondition;
 import com.blue.base.model.StyleInsertParam;
 import com.blue.base.model.StyleUpdateParam;
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
 import com.blue.base.repository.entity.Style;
 import reactor.core.publisher.Mono;
 

@@ -7,7 +7,7 @@ import reactor.util.Logger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.identity.constant.SnowflakeBits.*;
 import static com.blue.identity.constant.SnowflakeBufferThreshold.MAX_PADDING_FACTOR;
 import static com.blue.identity.constant.SnowflakeBufferThreshold.MIN_PADDING_FACTOR;

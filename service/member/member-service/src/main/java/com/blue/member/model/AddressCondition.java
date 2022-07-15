@@ -1,7 +1,7 @@
 package com.blue.member.model;
 
-import com.blue.base.constant.common.SortType;
-import com.blue.base.model.common.SortCondition;
+import com.blue.basic.constant.common.SortType;
+import com.blue.basic.model.common.SortCondition;
 import com.blue.member.constant.AddressSortAttribute;
 
 import java.io.Serializable;
@@ -23,7 +23,7 @@ public final class AddressCondition extends SortCondition implements Serializabl
     private String memberNameLike;
 
     /**
-     * @see com.blue.base.constant.member.Gender
+     * @see com.blue.basic.constant.member.Gender
      */
     private Integer gender;
 
@@ -47,7 +47,7 @@ public final class AddressCondition extends SortCondition implements Serializabl
     private String referenceLike;
 
     /**
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

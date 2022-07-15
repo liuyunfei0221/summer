@@ -6,7 +6,7 @@ import com.blue.base.api.model.CountryInfo;
 import com.blue.base.api.model.StateInfo;
 import com.blue.base.event.producer.RegionInfosInvalidProducer;
 import com.blue.base.model.*;
-import com.blue.base.model.exps.BlueException;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.base.service.inter.*;
 import com.blue.redisson.component.SynchronizedProcessor;
 import org.springframework.stereotype.Service;
@@ -14,10 +14,10 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
-import static com.blue.base.common.base.BlueChecker.isInvalidIdentity;
-import static com.blue.base.constant.common.ResponseElement.INVALID_IDENTITY;
-import static com.blue.base.constant.common.SummerAttr.EMPTY_EVENT;
-import static com.blue.base.constant.common.SyncKey.REGION_UPDATE_SYNC;
+import static com.blue.basic.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.constant.common.SummerAttr.EMPTY_EVENT;
+import static com.blue.basic.constant.common.SyncKey.REGION_UPDATE_SYNC;
 import static reactor.core.publisher.Mono.fromRunnable;
 
 /**

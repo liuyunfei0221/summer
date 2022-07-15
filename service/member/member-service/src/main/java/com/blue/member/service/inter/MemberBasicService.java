@@ -1,9 +1,9 @@
 package com.blue.member.service.inter;
 
-import com.blue.base.model.common.IdentityParam;
-import com.blue.base.model.common.PageModelRequest;
-import com.blue.base.model.common.PageModelResponse;
-import com.blue.base.model.common.StringDataParam;
+import com.blue.basic.model.common.IdentityParam;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.StringDataParam;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.repository.entity.MemberBasic;

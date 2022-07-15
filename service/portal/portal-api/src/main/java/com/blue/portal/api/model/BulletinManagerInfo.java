@@ -22,12 +22,12 @@ public final class BulletinManagerInfo implements Serializable {
     private String link;
 
     /**
-     * @see com.blue.base.constant.portal.BulletinType
+     * @see com.blue.basic.constant.portal.BulletinType
      */
     private Integer type;
 
     /**
-     * @see com.blue.base.constant.common.Status
+     * @see com.blue.basic.constant.common.Status
      */
     private Integer status;
 

@@ -1,6 +1,6 @@
 package com.blue.media.component.file.processor.inter;
 
-import com.blue.base.constant.media.ByteHandlerType;
+import com.blue.basic.constant.media.ByteHandlerType;
 import com.blue.media.api.model.FileUploadResult;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.codec.multipart.Part;

@@ -2,7 +2,7 @@ package com.blue.base.constant;
 
 
 import com.blue.base.model.*;
-import com.blue.base.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelRequest;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.lang.reflect.Type;

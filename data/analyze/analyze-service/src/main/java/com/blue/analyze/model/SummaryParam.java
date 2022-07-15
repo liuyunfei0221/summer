@@ -12,12 +12,12 @@ public final class SummaryParam implements Serializable {
     private static final long serialVersionUID = 3498002276452937696L;
 
     /**
-     * @see com.blue.base.constant.analyze.StatisticsType
+     * @see com.blue.basic.constant.analyze.StatisticsType
      */
     private String statisticsType;
 
     /**
-     * @see com.blue.base.constant.analyze.StatisticsRange
+     * @see com.blue.basic.constant.analyze.StatisticsRange
      */
     private String statisticsRange;
 

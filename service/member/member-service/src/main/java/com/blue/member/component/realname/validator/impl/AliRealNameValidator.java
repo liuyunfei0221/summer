@@ -1,11 +1,11 @@
 package com.blue.member.component.realname.validator.impl;
 
-import com.blue.base.constant.member.RealNameValidatorType;
+import com.blue.basic.constant.member.RealNameValidatorType;
 import com.blue.member.api.model.RealNameValidateResult;
 import com.blue.member.component.realname.validator.inter.RealNameValidator;
 import com.blue.member.repository.entity.RealName;
 
-import static com.blue.base.constant.member.RealNameValidatorType.ALI;
+import static com.blue.basic.constant.member.RealNameValidatorType.ALI;
 
 /**
  * real name validator inter

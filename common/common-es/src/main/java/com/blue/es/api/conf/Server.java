@@ -2,7 +2,7 @@ package com.blue.es.api.conf;
 
 import java.util.Objects;
 
-import static com.blue.base.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 
 /**
  * es server
