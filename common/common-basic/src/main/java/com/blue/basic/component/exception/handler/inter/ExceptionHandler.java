@@ -1,6 +1,6 @@
 package com.blue.basic.component.exception.handler.inter;
 
-import com.blue.basic.component.exception.handler.model.ExceptionInfo;
+import com.blue.basic.component.exception.model.ExceptionInfo;
 
 /**
  * exp handler interface

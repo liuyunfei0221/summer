@@ -1,7 +1,7 @@
 package com.blue.basic.component.exception.handler.impl;
 
 import com.blue.basic.component.exception.handler.inter.ExceptionHandler;
-import com.blue.basic.component.exception.handler.model.ExceptionInfo;
+import com.blue.basic.component.exception.model.ExceptionInfo;
 import com.blue.basic.constant.common.BlueMediaType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.codec.DecodingException;

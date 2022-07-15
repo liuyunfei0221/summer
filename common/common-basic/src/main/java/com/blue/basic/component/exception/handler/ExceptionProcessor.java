@@ -1,7 +1,7 @@
 package com.blue.basic.component.exception.handler;
 
 import com.blue.basic.component.exception.handler.inter.ExceptionHandler;
-import com.blue.basic.component.exception.handler.model.ExceptionInfo;
+import com.blue.basic.component.exception.model.ExceptionInfo;
 import com.blue.basic.model.common.ExceptionResponse;
 import reactor.util.Logger;
 
