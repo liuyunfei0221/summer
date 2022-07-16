@@ -14,12 +14,11 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.auth.constant.AuthTypeReference.PAGE_MODEL_FOR_RESOURCE_CONDITION_TYPE;
-import static com.blue.basic.common.reactive.AccessGetterForReactive.*;
+import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.basic.common.reactive.PathVariableGetter.getLongVariableReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.ID;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
@@ -58,7 +57,7 @@ public final class ResourceManagerHandler {
                 .flatMap(tuple2 -> authControlService.insertResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
+                                .body(success(ri), BlueResponse.class));
     }
 
     /**
@@ -74,7 +73,7 @@ public final class ResourceManagerHandler {
                 .flatMap(tuple2 -> authControlService.updateResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
+                                .body(success(ri), BlueResponse.class));
     }
 
     /**
@@ -88,7 +87,7 @@ public final class ResourceManagerHandler {
                 .flatMap(tuple2 -> authControlService.deleteResource(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
+                                .body(success(ri), BlueResponse.class));
     }
 
     /**
@@ -103,7 +102,7 @@ public final class ResourceManagerHandler {
                 .flatMap(resourceService::selectResourceManagerInfoPageMonoByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, pmr, serverRequest), BlueResponse.class));
+                                .body(success(pmr), BlueResponse.class));
     }
 
     /**
@@ -119,7 +118,7 @@ public final class ResourceManagerHandler {
                         roleResRelationService.selectAuthorityMonoByResId(ip.getId()))
                 .flatMap(auth ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, auth, serverRequest), BlueResponse.class));
+                                .body(success(auth), BlueResponse.class));
 
     }
 

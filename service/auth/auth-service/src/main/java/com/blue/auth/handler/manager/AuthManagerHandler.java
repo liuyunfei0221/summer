@@ -7,11 +7,10 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.AccessGetterForReactive.*;
+import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.basic.common.reactive.PathVariableGetter.getLongVariableReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.MID;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.zip;
@@ -41,7 +40,7 @@ public final class AuthManagerHandler {
                 .flatMap(tuple2 -> authControlService.invalidateAuthByMemberId(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ri, serverRequest), BlueResponse.class));
+                                .body(success(ri), BlueResponse.class));
     }
 
     /**
@@ -56,7 +55,7 @@ public final class AuthManagerHandler {
                 .flatMap(tuple2 -> authControlService.selectSecurityInfoMonoByMemberId(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(res ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, res, serverRequest), BlueResponse.class));
+                                .body(success(res), BlueResponse.class));
     }
 
 }

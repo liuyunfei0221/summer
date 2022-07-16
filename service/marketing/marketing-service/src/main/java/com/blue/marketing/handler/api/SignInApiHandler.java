@@ -7,9 +7,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.AccessGetterForReactive.*;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.basic.constant.common.ResponseElement.OK;
+import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
@@ -41,7 +40,7 @@ public final class SignInApiHandler {
                                 .flatMap(r ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, r, serverRequest), BlueResponse.class))
+                                                .body(success(r), BlueResponse.class))
                 );
     }
 
@@ -58,7 +57,7 @@ public final class SignInApiHandler {
                                 .flatMap(info ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, info, serverRequest), BlueResponse.class))
+                                                .body(success(info), BlueResponse.class))
 
                 );
     }

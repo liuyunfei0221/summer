@@ -1,7 +1,7 @@
 package com.blue.basic.component.exception.ioc;
 
 import com.blue.basic.component.exception.handler.ExceptionProcessor;
-import com.blue.basic.model.common.ExceptionResponse;
+import com.blue.basic.model.common.ExceptionElement;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.Charset;
 
 import static com.blue.basic.common.base.CommonFunctions.GSON;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.EXP_ELE_2_RESP;
 import static com.blue.basic.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
@@ -33,13 +34,14 @@ public final class ReactiveBlueExceptionHandler implements WebExceptionHandler {
     @SuppressWarnings("NullableProblems")
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable throwable) {
-        ExceptionResponse exceptionResponse = ExceptionProcessor.handle(throwable, getAcceptLanguages(exchange.getRequest()));
+        ExceptionElement exceptionElement = ExceptionProcessor.handle(throwable, getAcceptLanguages(exchange.getRequest()));
 
         ServerHttpResponse response = exchange.getResponse();
         response.getHeaders().add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
-        response.setRawStatusCode(exceptionResponse.getStatus());
+        response.setRawStatusCode(exceptionElement.getStatus());
 
-        return response.writeWith(just(response.bufferFactory().wrap(GSON.toJson(exceptionResponse).getBytes(CHARSET))));
+        return response.writeWith(just(response.bufferFactory()
+                .wrap(GSON.toJson(EXP_ELE_2_RESP.apply(exceptionElement)).getBytes(CHARSET))));
     }
 
 }

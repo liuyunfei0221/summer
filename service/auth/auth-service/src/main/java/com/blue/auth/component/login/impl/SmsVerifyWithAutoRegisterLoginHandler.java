@@ -31,7 +31,7 @@ import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.ConstantProcessor.assertSource;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.common.reactive.SourceGetterForReactive.getSource;
 import static com.blue.basic.constant.auth.CredentialType.*;
 import static com.blue.basic.constant.auth.ExtraKey.NEW_MEMBER;
@@ -144,7 +144,7 @@ public class SmsVerifyWithAutoRegisterLoginHandler implements LoginHandler {
                                                         .header(SECRET.name, ma.getSecKey())
                                                         .header(REFRESH.name, ma.getRefresh())
                                                         .header(RESPONSE_EXTRA.name, GSON.toJson(extra))
-                                                        .body(generate(OK.code, serverRequest)
+                                                        .body(success(serverRequest)
                                                                 , BlueResponse.class))
                                 :
                                 error(() -> new BlueException(VERIFY_IS_INVALID))

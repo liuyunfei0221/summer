@@ -2,7 +2,7 @@ package com.blue.basic.component.exception.handler;
 
 import com.blue.basic.component.exception.handler.inter.ExceptionHandler;
 import com.blue.basic.component.exception.model.ExceptionInfo;
-import com.blue.basic.model.common.ExceptionResponse;
+import com.blue.basic.model.common.ExceptionElement;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -68,13 +68,13 @@ public final class ExceptionProcessor {
                 .collect(toMap(ExceptionHandler::exceptionName, eh -> eh, (a, b) -> a));
     }
 
-    private static final ExceptionResponse DEFAULT_EXP_RESP = new ExceptionResponse();
+    private static final ExceptionElement DEFAULT_EXP_RESP = new ExceptionElement();
 
-    private static final BiFunction<List<String>, ExceptionInfo, ExceptionResponse> EXP_RES_GETTER = (languages, info) ->
+    private static final BiFunction<List<String>, ExceptionInfo, ExceptionElement> EXP_RES_GETTER = (languages, info) ->
             ofNullable(info)
                     .map(i -> {
                         Integer code = i.getCode();
-                        return new ExceptionResponse(i.getStatus(), code,
+                        return new ExceptionElement(i.getStatus(), code,
                                 resolveToMessage(code, languages, info.getReplacements()));
                     }).orElse(DEFAULT_EXP_RESP);
 
@@ -84,7 +84,7 @@ public final class ExceptionProcessor {
      * @param throwable
      * @return
      */
-    public static ExceptionResponse handle(Throwable throwable, List<String> languages) {
+    public static ExceptionElement handle(Throwable throwable, List<String> languages) {
         LOGGER.info("ExceptionHandleInfo handle(Throwable throwable), throwable = {}", throwable);
 
         Throwable original = getOriginalThrowable(throwable);

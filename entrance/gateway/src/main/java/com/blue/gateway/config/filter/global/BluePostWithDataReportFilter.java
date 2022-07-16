@@ -3,7 +3,7 @@ package com.blue.gateway.config.filter.global;
 import com.blue.basic.common.content.common.RequestBodyProcessor;
 import com.blue.basic.constant.common.BlueHeader;
 import com.blue.basic.model.common.DataEvent;
-import com.blue.basic.model.common.ExceptionResponse;
+import com.blue.basic.model.common.ExceptionElement;
 import com.blue.gateway.component.event.RequestEventReporter;
 import com.blue.gateway.config.deploy.EncryptDeploy;
 import org.reactivestreams.Publisher;
@@ -87,9 +87,9 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
                     encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(EMPTY_DATA.value));
 
     private void packageError(Throwable throwable, ServerHttpRequest request, DataEvent dataEvent) {
-        ExceptionResponse exceptionResponse = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionResponse.getStatus()).intern());
-        dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionResponse));
+        ExceptionElement exceptionElement = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
+        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionElement.getStatus()).intern());
+        dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(EXP_ELE_2_RESP.apply(exceptionElement)));
     }
 
     private void packageRequestInfo(DataEvent dataEvent, Map<String, Object> attributes) {

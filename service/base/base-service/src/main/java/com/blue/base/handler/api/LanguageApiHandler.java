@@ -8,8 +8,7 @@ import reactor.core.publisher.Mono;
 
 import static com.blue.basic.common.message.MessageProcessor.defaultLanguage;
 import static com.blue.basic.common.message.MessageProcessor.supportLanguages;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.basic.constant.common.ResponseElement.OK;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -33,7 +32,7 @@ public final class LanguageApiHandler {
         return just(supportLanguages())
                 .flatMap(ls ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ls, serverRequest), BlueResponse.class)
+                                .body(success(ls), BlueResponse.class)
                 );
     }
 
@@ -47,7 +46,7 @@ public final class LanguageApiHandler {
         return just(defaultLanguage())
                 .flatMap(ls ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ls, serverRequest), BlueResponse.class)
+                                .body(success(ls), BlueResponse.class)
                 );
     }
 

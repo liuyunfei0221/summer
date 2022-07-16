@@ -12,11 +12,10 @@ import reactor.core.publisher.Mono;
 import static com.blue.auth.constant.AuthTypeReference.LIST_PARAM_FOR_QUESTION_INSERT_PARAM_TYPE;
 import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.basic.common.reactive.AccessGetterForReactive.getAuthorizationReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
 import static com.blue.basic.constant.common.BlueHeader.SECRET;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
@@ -79,7 +78,7 @@ public final class AuthApiHandler {
                         ok().contentType(APPLICATION_JSON)
                                 .header(AUTHORIZATION.name, ma.getAuth())
                                 .header(SECRET.name, ma.getSecKey())
-                                .body(generate(OK.code, serverRequest)
+                                .body(success(serverRequest)
                                         , BlueResponse.class));
     }
 
@@ -97,7 +96,7 @@ public final class AuthApiHandler {
                                 .flatMap(secKey ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(SECRET.name, secKey)
-                                                .body(generate(OK.code, serverRequest)
+                                                .body(success(serverRequest)
                                                         , BlueResponse.class)));
     }
 
@@ -115,7 +114,7 @@ public final class AuthApiHandler {
                         authControlService.updateAccessByAccess(tuple2.getT1(), tuple2.getT2()))
                 .flatMap(ig ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, serverRequest), BlueResponse.class));
+                                .body(success(serverRequest), BlueResponse.class));
     }
 
     /**
@@ -130,7 +129,7 @@ public final class AuthApiHandler {
                 .flatMap(authControlService::resetAccessByAccess)
                 .flatMap(ig ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, serverRequest), BlueResponse.class));
+                                .body(success(serverRequest), BlueResponse.class));
     }
 
     /**
@@ -147,7 +146,7 @@ public final class AuthApiHandler {
                         just(authControlService.credentialSettingUp(tuple2.getT1(), tuple2.getT2())))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
+                                .body(success(mbi), BlueResponse.class));
     }
 
     /**
@@ -164,7 +163,7 @@ public final class AuthApiHandler {
                         just(authControlService.credentialModify(tuple2.getT1(), tuple2.getT2())))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
+                                .body(success(mbi), BlueResponse.class));
     }
 
     /**
@@ -180,7 +179,7 @@ public final class AuthApiHandler {
                 .flatMap(tuple2 -> authControlService.insertSecurityQuestion(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ig ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, serverRequest), BlueResponse.class));
+                                .body(success(serverRequest), BlueResponse.class));
     }
 
     /**
@@ -196,7 +195,7 @@ public final class AuthApiHandler {
                 .flatMap(tuple2 -> authControlService.insertSecurityQuestions(tuple2.getT1().getData(), tuple2.getT2().getId()))
                 .flatMap(ig ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, serverRequest), BlueResponse.class));
+                                .body(success(serverRequest), BlueResponse.class));
     }
 
     /**
@@ -211,7 +210,7 @@ public final class AuthApiHandler {
                         authControlService.selectAuthoritiesMonoByAccess(acc)
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, authority, serverRequest)
+                                                .body(success(authority)
                                                         , BlueResponse.class)));
     }
 

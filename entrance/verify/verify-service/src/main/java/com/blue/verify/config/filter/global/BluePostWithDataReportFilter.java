@@ -3,6 +3,7 @@ package com.blue.verify.config.filter.global;
 import com.blue.basic.common.content.common.RequestBodyProcessor;
 import com.blue.basic.constant.common.BlueHeader;
 import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.common.ExceptionElement;
 import com.blue.basic.model.common.ExceptionResponse;
 import com.blue.verify.component.event.RequestEventReporter;
 import com.blue.verify.config.deploy.ResponseDeploy;
@@ -74,10 +75,10 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
             existenceBodyResponseContentTypes.contains(HEADER_VALUE_GETTER.apply(httpHeaders, HttpHeaders.CONTENT_TYPE));
 
     private void reportError(Throwable throwable, ServerHttpRequest request, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
-        ExceptionResponse exceptionResponse = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
+        ExceptionElement exceptionElement = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
 
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionResponse.getStatus()).intern());
-        dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionResponse));
+        dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionElement.getStatus()).intern());
+        dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(EXP_ELE_2_RESP.apply(exceptionElement)));
 
         requestEventReporter.report(dataEvent);
     }

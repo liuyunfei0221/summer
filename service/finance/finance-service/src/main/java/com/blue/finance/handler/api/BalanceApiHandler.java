@@ -8,8 +8,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.basic.constant.common.ResponseElement.OK;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
@@ -41,7 +40,7 @@ public final class BalanceApiHandler {
                                 .flatMap(fv ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, fv, serverRequest), BlueResponse.class))
+                                                .body(success(fv), BlueResponse.class))
                 );
     }
 

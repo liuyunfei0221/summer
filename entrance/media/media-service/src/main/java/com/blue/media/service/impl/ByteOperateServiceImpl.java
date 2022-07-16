@@ -41,7 +41,7 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConstantProcessor.assertAttachmentType;
 import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.BlueBoolean.FALSE;
 import static com.blue.basic.constant.common.BlueBoolean.TRUE;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_WRITE;
@@ -286,7 +286,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                         ATTACHMENTS_RECORDER.apply(tuple2.getT1(), tuple2.getT2()))
                 .flatMap(summary ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, summary, serverRequest), BlueResponse.class)
+                                .body(success(summary), BlueResponse.class)
                 );
     }
 

@@ -8,9 +8,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static com.blue.member.constant.MemberTypeReference.PAGE_MODEL_FOR_CARD_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -44,7 +43,7 @@ public class CardManagerHandler {
                 .flatMap(cardService::selectCardDetailInfoPageMonoByPageAndCondition)
                 .flatMap(pma ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, pma, serverRequest), BlueResponse.class));
+                                .body(success(pma), BlueResponse.class));
     }
 
 }

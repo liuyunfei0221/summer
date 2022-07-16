@@ -12,10 +12,9 @@ import reactor.core.publisher.Mono;
 
 import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.basic.common.reactive.PathVariableGetter.getLongVariableReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.ID;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static com.blue.media.constant.MediaTypeReference.PAGE_MODEL_FOR_QR_CODE_CONFIG_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -49,7 +48,7 @@ public final class QrCodeConfigManagerHandler {
                 .flatMap(tuple2 -> qrCodeConfigService.insertQrCodeConfig(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ci, serverRequest), BlueResponse.class));
+                                .body(success(ci), BlueResponse.class));
     }
 
     /**
@@ -65,7 +64,7 @@ public final class QrCodeConfigManagerHandler {
                 .flatMap(tuple2 -> qrCodeConfigService.updateQrCodeConfig(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ci, serverRequest), BlueResponse.class));
+                                .body(success(ci), BlueResponse.class));
     }
 
     /**
@@ -79,7 +78,7 @@ public final class QrCodeConfigManagerHandler {
                 .flatMap(qrCodeConfigService::deleteQrCodeConfig)
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ci, serverRequest), BlueResponse.class));
+                                .body(success(ci), BlueResponse.class));
     }
 
     /**
@@ -94,7 +93,7 @@ public final class QrCodeConfigManagerHandler {
                 .flatMap(qrCodeConfigService::selectQrCodeConfigManagerInfoPageMonoByPageAndCondition)
                 .flatMap(cmr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, cmr, serverRequest), BlueResponse.class));
+                                .body(success(cmr), BlueResponse.class));
     }
 
 }

@@ -7,8 +7,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.basic.constant.common.ResponseElement.OK;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -40,7 +39,7 @@ public final class EventApiHandler {
                 .flatMap(eventReportService::insert)
                 .flatMap(success ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, success, serverRequest), BlueResponse.class));
+                                .body(success(serverRequest), BlueResponse.class));
     }
 
 }

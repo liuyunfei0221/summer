@@ -4,7 +4,6 @@ import com.blue.base.api.model.AreaRegion;
 import com.blue.base.api.model.CityRegion;
 import com.blue.base.api.model.CountryInfo;
 import com.blue.base.api.model.StateRegion;
-import com.blue.basic.model.common.BlueResponse;
 import com.blue.base.repository.template.AreaRepository;
 import com.blue.base.repository.template.CityRepository;
 import com.blue.base.repository.template.CountryRepository;
@@ -13,6 +12,7 @@ import com.blue.base.service.inter.AreaService;
 import com.blue.base.service.inter.CityService;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
+import com.blue.basic.model.common.BlueResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -21,8 +21,7 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
-import static com.blue.basic.constant.common.ResponseElement.OK;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -82,7 +81,7 @@ public class RegionTestHandler {
 //        System.err.println(count);
 
         return ok().contentType(APPLICATION_JSON)
-                .body(generate(OK.code, "OK", serverRequest), BlueResponse.class);
+                .body(success("OK"), BlueResponse.class);
     }
 
     public Mono<ServerResponse> region(ServerRequest serverRequest) {
@@ -112,7 +111,7 @@ public class RegionTestHandler {
                     return just(res);
                 }).flatMap(res ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, res, serverRequest), BlueResponse.class)
+                                .body(success(res), BlueResponse.class)
                 );
     }
 

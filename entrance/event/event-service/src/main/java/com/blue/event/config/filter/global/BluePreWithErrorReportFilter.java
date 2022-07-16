@@ -2,7 +2,7 @@ package com.blue.event.config.filter.global;
 
 import com.blue.basic.constant.common.BlueHeader;
 import com.blue.basic.model.common.DataEvent;
-import com.blue.basic.model.common.ExceptionResponse;
+import com.blue.basic.model.common.ExceptionElement;
 import com.blue.event.component.event.RequestEventReporter;
 import org.springframework.core.Ordered;
 import org.springframework.http.codec.HttpMessageReader;
@@ -21,8 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 
 import static com.blue.basic.common.base.CommonFunctions.*;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.getIp;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.*;
 import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
 import static com.blue.basic.constant.common.BlueHeader.REQUEST_IP;
@@ -61,15 +60,15 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
     private void report(Throwable throwable, ServerHttpRequest request, DataEvent dataEvent) {
         try {
             executorService.execute(() -> {
-                ExceptionResponse exceptionResponse = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
+                ExceptionElement exceptionElement = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
 
-                dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionResponse.getStatus()).intern());
-                dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(exceptionResponse));
+                dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionElement.getStatus()).intern());
+                dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(EXP_ELE_2_RESP.apply(exceptionElement)));
 
                 requestEventReporter.report(dataEvent);
                 LOGGER.info("report exception event, dataEvent = {}", dataEvent);
 
-                exceptionResponse = null;
+                exceptionElement = null;
             });
         } catch (Exception e) {
             LOGGER.error("report failed, dataEvent = {}, throwable = {}, e = {}",

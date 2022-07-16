@@ -30,12 +30,13 @@ import static com.blue.basic.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.ConstantProcessor.assertSource;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.common.reactive.SourceGetterForReactive.getSource;
 import static com.blue.basic.constant.auth.CredentialType.*;
 import static com.blue.basic.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.basic.constant.common.BlueHeader.*;
-import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.ResponseElement.DATA_HAS_BEEN_FROZEN;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.Status.INVALID;
 import static com.blue.basic.constant.common.Status.VALID;
@@ -137,7 +138,7 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
                                 .header(SECRET.name, ma.getSecKey())
                                 .header(REFRESH.name, ma.getRefresh())
                                 .header(RESPONSE_EXTRA.name, GSON.toJson(extra))
-                                .body(generate(OK.code, serverRequest)
+                                .body(success(serverRequest)
                                         , BlueResponse.class));
 
     }

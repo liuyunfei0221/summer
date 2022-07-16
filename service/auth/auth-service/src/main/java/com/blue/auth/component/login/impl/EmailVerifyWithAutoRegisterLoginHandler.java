@@ -19,7 +19,10 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -28,7 +31,7 @@ import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.ConstantProcessor.assertSource;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.common.reactive.SourceGetterForReactive.getSource;
 import static com.blue.basic.constant.auth.CredentialType.EMAIL_PWD;
 import static com.blue.basic.constant.auth.CredentialType.EMAIL_VERIFY_AUTO_REGISTER;
@@ -140,7 +143,7 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
                                                         .header(SECRET.name, ma.getSecKey())
                                                         .header(REFRESH.name, ma.getRefresh())
                                                         .header(RESPONSE_EXTRA.name, GSON.toJson(extra))
-                                                        .body(generate(OK.code, serverRequest)
+                                                        .body(success(serverRequest)
                                                                 , BlueResponse.class))
                                 :
                                 error(() -> new BlueException(VERIFY_IS_INVALID))

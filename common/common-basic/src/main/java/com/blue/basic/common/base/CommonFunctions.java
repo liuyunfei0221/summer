@@ -255,7 +255,7 @@ public class CommonFunctions {
     /**
      * throwable converter
      */
-    public static final BiFunction<Throwable, List<String>, ExceptionResponse> THROWABLE_CONVERTER = ExceptionProcessor::handle;
+    public static final BiFunction<Throwable, List<String>, ExceptionElement> THROWABLE_CONVERTER = ExceptionProcessor::handle;
 
     /**
      * assert decrypted data and assert

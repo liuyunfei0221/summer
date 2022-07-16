@@ -10,10 +10,9 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.AccessGetterForReactive.*;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
@@ -45,7 +44,7 @@ public final class MemberBasicApiHandler {
                         memberBasicService.getMemberBasicInfoMonoWithAssert(acc.getId())
                                 .flatMap(mbi ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class))
+                                                .body(success(mbi), BlueResponse.class))
                 );
     }
 
@@ -63,7 +62,7 @@ public final class MemberBasicApiHandler {
                         memberBasicService.updateMemberBasicIcon(tuple2.getT1().getId(), tuple2.getT2()))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
+                                .body(success(mbi), BlueResponse.class));
     }
 
     /**
@@ -80,7 +79,7 @@ public final class MemberBasicApiHandler {
                         memberBasicService.updateMemberBasicQrCode(tuple2.getT1().getId(), tuple2.getT2()))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
+                                .body(success(mbi), BlueResponse.class));
     }
 
     /**
@@ -97,7 +96,7 @@ public final class MemberBasicApiHandler {
                         memberBasicService.updateMemberBasicProfile(tuple2.getT1().getId(), tuple2.getT2()))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
+                                .body(success(mbi), BlueResponse.class));
     }
 
 }

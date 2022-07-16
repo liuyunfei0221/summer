@@ -19,9 +19,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.Symbol.*;
 import static com.blue.basic.constant.media.AttachmentType.QR_CODE;
@@ -78,7 +77,7 @@ public class MemberInfoQrCodeGenHandler implements QrCodeGenHandler {
         return byteOperateService.upload(qrCoder.generateCodeWithoutLogo(content), QR_CODE.identity, memberId, EMPTY_DATA.value, descName)
                 .flatMap(aui ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, aui), BlueResponse.class));
+                                .body(success(aui), BlueResponse.class));
     }
 
     /**

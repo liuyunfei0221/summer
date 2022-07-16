@@ -10,9 +10,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
@@ -44,7 +43,7 @@ public final class MemberDetailApiHandler {
                         memberDetailService.getMemberDetailInfoMonoByMemberIdWithAssert(acc.getId())
                                 .flatMap(mdi ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .body(generate(OK.code, mdi, serverRequest), BlueResponse.class))
+                                                .body(success(mdi), BlueResponse.class))
                 );
     }
 
@@ -62,7 +61,7 @@ public final class MemberDetailApiHandler {
                         just(memberDetailService.updateMemberDetail(tuple2.getT1().getId(), tuple2.getT2())))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mbi, serverRequest), BlueResponse.class));
+                                .body(success(mbi), BlueResponse.class));
     }
 
 }

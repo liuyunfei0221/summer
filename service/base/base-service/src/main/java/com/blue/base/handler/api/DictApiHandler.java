@@ -1,17 +1,16 @@
 package com.blue.base.handler.api;
 
+import com.blue.base.service.inter.DictService;
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.common.StringDataParam;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.base.service.inter.DictService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.defer;
@@ -43,7 +42,7 @@ public final class DictApiHandler {
                 .flatMap(dts ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, dts, serverRequest), BlueResponse.class)
+                                .body(success(dts), BlueResponse.class)
                 );
     }
 
@@ -61,7 +60,7 @@ public final class DictApiHandler {
                 .flatMap(ts ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, ts, serverRequest), BlueResponse.class)
+                                .body(success(ts), BlueResponse.class)
                 );
     }
 

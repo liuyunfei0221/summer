@@ -2,6 +2,8 @@ package com.blue.basic.common.reactive;
 
 import com.blue.basic.common.base.CommonFunctions;
 import com.blue.basic.model.common.BlueResponse;
+import com.blue.basic.model.common.ExceptionElement;
+import com.blue.basic.model.common.ExceptionResponse;
 import com.blue.basic.model.exps.BlueException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +20,7 @@ import java.util.function.Predicate;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.message.MessageProcessor.resolveToMessage;
-import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Symbol.LIST_ELEMENT_SEPARATOR;
 import static java.lang.Double.compare;
 import static java.util.Optional.ofNullable;
@@ -100,15 +102,51 @@ public class ReactiveCommonFunctions extends CommonFunctions {
         return DEFAULT_LANGUAGES;
     }
 
+    public static final Function<ExceptionElement, ExceptionResponse> EXP_ELE_2_RESP = exceptionElement ->
+            isNotNull(exceptionElement) ?
+                    new ExceptionResponse(exceptionElement.getCode(), exceptionElement.getMessage())
+                    :
+                    new ExceptionResponse(INTERNAL_SERVER_ERROR.code, resolveToMessage(INTERNAL_SERVER_ERROR.code));
+
+
+    /**
+     * package response result for reactive
+     *
+     * @return
+     */
+    public static Mono<BlueResponse<String>> success() {
+        return just(new BlueResponse<>(resolveToMessage(OK.code).intern()));
+    }
+
+    /**
+     * package response result for reactive
+     *
+     * @param data
+     * @param <T>
+     * @return
+     */
+    public static <T> Mono<BlueResponse<T>> success(T data) {
+        return just(new BlueResponse<>(data));
+    }
+
     /**
      * package response result for reactive
      *
      * @param code
      * @return
      */
-    public static Mono<BlueResponse<String>> generate(int code) {
-        String message = resolveToMessage(code).intern();
-        return just(new BlueResponse<>(code, message, message));
+    public static Mono<BlueResponse<String>> success(int code) {
+        return just(new BlueResponse<>(resolveToMessage(code).intern()));
+    }
+
+    /**
+     * package response result for reactive
+     *
+     * @param serverRequest
+     * @return
+     */
+    public static Mono<BlueResponse<String>> success(ServerRequest serverRequest) {
+        return just(new BlueResponse<>(resolveToMessage(OK.code, serverRequest).intern()));
     }
 
     /**
@@ -118,9 +156,19 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @param serverRequest
      * @return
      */
-    public static Mono<BlueResponse<String>> generate(int code, ServerRequest serverRequest) {
-        String message = resolveToMessage(code, serverRequest).intern();
-        return just(new BlueResponse<>(code, message, message));
+    public static Mono<BlueResponse<String>> success(int code, ServerRequest serverRequest) {
+        return just(new BlueResponse<>(resolveToMessage(code, serverRequest).intern()));
+    }
+
+
+    /**
+     * package response result for reactive
+     *
+     * @param code
+     * @return
+     */
+    public static Mono<BlueResponse<String>> success(int code, String[] replacements) {
+        return just(new BlueResponse<>(resolveToMessage(code, replacements)));
     }
 
     /**
@@ -130,60 +178,8 @@ public class ReactiveCommonFunctions extends CommonFunctions {
      * @param serverRequest
      * @return
      */
-    public static Mono<BlueResponse<String>> generate(int code, ServerRequest serverRequest, String[] replacements) {
-        String message = resolveToMessage(code, serverRequest, replacements);
-        return just(new BlueResponse<>(code, message, message));
-    }
-
-    /**
-     * package response result for reactive
-     *
-     * @param code
-     * @param data
-     * @param <T>
-     * @return
-     */
-    public static <T> Mono<BlueResponse<T>> generate(int code, T data) {
-        return just(new BlueResponse<>(code, data, resolveToMessage(code)));
-    }
-
-    /**
-     * package response result for reactive
-     *
-     * @param code
-     * @param data
-     * @param serverRequest
-     * @param <T>
-     * @return
-     */
-    public static <T> Mono<BlueResponse<T>> generate(int code, T data, ServerRequest serverRequest) {
-        return just(new BlueResponse<>(code, data, resolveToMessage(code, serverRequest)));
-    }
-
-    /**
-     * package response result for reactive
-     *
-     * @param code
-     * @param data
-     * @param serverRequest
-     * @param <T>
-     * @return
-     */
-    public static <T> Mono<BlueResponse<T>> generate(int code, T data, ServerRequest serverRequest, String[] replacements) {
-        return just(new BlueResponse<>(code, data, resolveToMessage(code, serverRequest, replacements)));
-    }
-
-    /**
-     * package response result for reactive
-     *
-     * @param code
-     * @param data
-     * @param message
-     * @param <T>
-     * @return
-     */
-    public static <T> Mono<BlueResponse<T>> generate(int code, T data, String message) {
-        return just(new BlueResponse<>(code, data, message));
+    public static Mono<BlueResponse<String>> success(int code, ServerRequest serverRequest, String[] replacements) {
+        return just(new BlueResponse<>(resolveToMessage(code, serverRequest, replacements)));
     }
 
     /**

@@ -10,9 +10,8 @@ import reactor.util.Logger;
 import reactor.util.Loggers;
 
 import static com.blue.basic.common.reactive.PathVariableGetter.getIntegerVariable;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.TYPE;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
@@ -43,7 +42,7 @@ public final class BulletinApiHandler {
         return bulletinService.selectActiveBulletinInfoMonoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
                 .flatMap(bis -> ok()
                         .contentType(APPLICATION_JSON)
-                        .body(generate(OK.code, bis, serverRequest), BlueResponse.class)
+                        .body(success(bis), BlueResponse.class)
                 );
     }
 

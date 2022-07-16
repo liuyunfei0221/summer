@@ -9,10 +9,9 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.AccessGetterForReactive.*;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -61,7 +60,7 @@ public class LoginServiceImpl implements LoginService {
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(AUTHORIZATION.name, EMPTY_DATA.value)
                                                 .body(
-                                                        generate(OK.code, serverRequest)
+                                                        success(serverRequest)
                                                         , BlueResponse.class)));
     }
 
@@ -79,7 +78,7 @@ public class LoginServiceImpl implements LoginService {
                                 .flatMap(success ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .header(AUTHORIZATION.name, EMPTY_DATA.value)
-                                                .body(generate(OK.code, serverRequest)
+                                                .body(success(serverRequest)
                                                         , BlueResponse.class)));
     }
 

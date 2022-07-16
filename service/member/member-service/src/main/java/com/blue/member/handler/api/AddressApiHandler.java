@@ -12,10 +12,9 @@ import reactor.core.publisher.Mono;
 
 import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
 import static com.blue.basic.common.reactive.PathVariableGetter.getLongVariableReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.ID;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
@@ -48,7 +47,7 @@ public final class AddressApiHandler {
                 .flatMap(tuple2 -> addressService.insertAddress(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(mai ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mai, serverRequest), BlueResponse.class));
+                                .body(success(mai), BlueResponse.class));
     }
 
     /**
@@ -64,7 +63,7 @@ public final class AddressApiHandler {
                 .flatMap(tuple2 -> addressService.updateAddress(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(mai ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mai, serverRequest), BlueResponse.class));
+                                .body(success(mai), BlueResponse.class));
     }
 
     /**
@@ -78,7 +77,7 @@ public final class AddressApiHandler {
                 .flatMap(tuple2 -> addressService.deleteAddress(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(mai ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mai, serverRequest), BlueResponse.class));
+                                .body(success(mai), BlueResponse.class));
     }
 
     /**
@@ -92,7 +91,7 @@ public final class AddressApiHandler {
                 .flatMap(acc -> addressService.selectAddressInfoMonoByMemberId(acc.getId()))
                 .flatMap(mai ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, mai, serverRequest), BlueResponse.class));
+                                .body(success(mai), BlueResponse.class));
     }
 
 }

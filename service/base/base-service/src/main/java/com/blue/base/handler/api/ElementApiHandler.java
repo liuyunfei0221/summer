@@ -10,9 +10,8 @@ import reactor.core.publisher.Mono;
 
 import static com.blue.basic.common.message.ElementProcessor.selectAllElement;
 import static com.blue.basic.common.message.ElementProcessor.selectElement;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
@@ -38,7 +37,7 @@ public final class ElementApiHandler {
                         just(selectAllElement(request)))
                 .flatMap(element ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, element, serverRequest), BlueResponse.class)
+                                .body(success(element), BlueResponse.class)
                 );
     }
 
@@ -57,7 +56,7 @@ public final class ElementApiHandler {
                 })
                 .flatMap(element ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, element, serverRequest), BlueResponse.class)
+                                .body(success(element), BlueResponse.class)
                 );
     }
 

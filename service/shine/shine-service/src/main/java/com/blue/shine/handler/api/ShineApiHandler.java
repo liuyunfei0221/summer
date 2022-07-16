@@ -11,9 +11,8 @@ import reactor.util.Logger;
 import java.util.Map;
 
 import static com.blue.basic.common.reactive.MetadataGetterForReactive.getMetadata;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.common.reactive.RequestIpGetterForReactive.getRequestIp;
-import static com.blue.basic.constant.common.ResponseElement.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.util.Loggers.getLogger;
@@ -49,10 +48,10 @@ public final class ShineApiHandler {
         LOGGER.warn("metadata = {}", metadata);
 
         return shineService.selectShineInfo(ip)
-                .flatMap(shineInfo ->
+                .flatMap(si ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(generate(OK.code, shineInfo, serverRequest), BlueResponse.class));
+                                .body(success(si), BlueResponse.class));
     }
 
 

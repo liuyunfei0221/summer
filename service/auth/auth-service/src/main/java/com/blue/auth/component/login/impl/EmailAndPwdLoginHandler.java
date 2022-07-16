@@ -24,7 +24,7 @@ import static com.blue.auth.constant.LoginAttribute.ACCESS;
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.auth.CredentialType.EMAIL_PWD;
 import static com.blue.basic.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.basic.constant.common.BlueHeader.*;
@@ -98,7 +98,7 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
                         .header(SECRET.name, ma.getSecKey())
                         .header(REFRESH.name, ma.getRefresh())
                         .header(RESPONSE_EXTRA.name, GSON.toJson(EXTRA_INFO))
-                        .body(generate(OK.code, serverRequest)
+                        .body(success(serverRequest)
                                 , BlueResponse.class));
     }
 

@@ -21,10 +21,11 @@ import java.util.function.UnaryOperator;
 import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IP_SYNC_KEY_GETTER;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
 import static com.blue.basic.constant.common.BlueHeader.VERIFY_KEY;
 import static com.blue.basic.constant.common.RateLimitKeyPrefix.MAIL_VERIFY_RATE_LIMIT_KEY_PRE;
-import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.basic.constant.verify.VerifyType.MAIL;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -129,7 +130,7 @@ public class MailVerifyHandler implements VerifyHandler {
                                         .flatMap(vp ->
                                                 ok().contentType(APPLICATION_JSON)
                                                         .header(VERIFY_KEY.name, destination)
-                                                        .body(generate(OK.code, serverRequest)
+                                                        .body(success(serverRequest)
                                                                 , BlueResponse.class)
                                         )
                                 :
