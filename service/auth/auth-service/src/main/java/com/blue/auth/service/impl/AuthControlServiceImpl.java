@@ -43,7 +43,7 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.basic.common.base.ConstantProcessor.getVerifyTypeByIdentity;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.getIpReact;
+import static com.blue.basic.common.base.CommonFunctions.getIpReact;
 import static com.blue.basic.constant.common.BlueCommonThreshold.BLUE_ID;
 import static com.blue.basic.constant.common.RateLimitKeyPrefix.ACCESS_UPDATE_RATE_LIMIT_KEY_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;

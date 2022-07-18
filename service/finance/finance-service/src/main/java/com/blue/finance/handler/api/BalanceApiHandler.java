@@ -7,8 +7,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.AccessGetter.getAccessReact;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
@@ -37,10 +37,10 @@ public final class BalanceApiHandler {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
                         financeAccountService.getBalanceByMemberId(acc.getId())
-                                .flatMap(fv ->
+                                .flatMap(fi ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(success(fv), BlueResponse.class))
+                                                .body(success(fi, serverRequest), BlueResponse.class))
                 );
     }
 

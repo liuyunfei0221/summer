@@ -26,7 +26,7 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.BlueRandomGenerator.generate;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER;
+import static com.blue.basic.common.base.CommonFunctions.SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER;
 import static com.blue.basic.constant.common.BlueHeader.VERIFY_KEY;
 import static com.blue.basic.constant.common.RateLimitKeyPrefix.IMAGE_VERIFY_RATE_LIMIT_KEY_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;

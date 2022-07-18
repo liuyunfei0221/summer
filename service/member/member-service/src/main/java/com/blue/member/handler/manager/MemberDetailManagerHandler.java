@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.member.constant.MemberTypeReference.PAGE_MODEL_FOR_MEMBER_DETAIL_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -43,7 +43,7 @@ public class MemberDetailManagerHandler {
                 .flatMap(memberDetailService::selectMemberDetailInfoPageMonoByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(pmr), BlueResponse.class));
+                                .body(success(pmr, serverRequest), BlueResponse.class));
     }
 
 }

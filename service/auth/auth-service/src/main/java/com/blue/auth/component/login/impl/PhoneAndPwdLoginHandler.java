@@ -24,7 +24,7 @@ import static com.blue.auth.constant.LoginAttribute.ACCESS;
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.auth.CredentialType.PHONE_PWD;
 import static com.blue.basic.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.basic.constant.common.BlueHeader.*;

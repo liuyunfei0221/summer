@@ -14,9 +14,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.auth.constant.AuthTypeReference.PAGE_MODEL_FOR_ROLE_CONDITION_TYPE;
-import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.basic.common.reactive.PathVariableGetter.getLongVariableReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.AccessGetter.getAccessReact;
+import static com.blue.basic.common.base.PathVariableGetter.getLongVariableReact;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.ID;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -57,7 +57,7 @@ public final class RoleManagerHandler {
                 .flatMap(tuple2 -> authControlService.insertRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ri), BlueResponse.class));
+                                .body(success(ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -73,7 +73,7 @@ public final class RoleManagerHandler {
                 .flatMap(tuple2 -> authControlService.updateRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ri), BlueResponse.class));
+                                .body(success(ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -87,7 +87,7 @@ public final class RoleManagerHandler {
                 .flatMap(tuple2 -> authControlService.deleteRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ri), BlueResponse.class));
+                                .body(success(ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -103,7 +103,7 @@ public final class RoleManagerHandler {
                 .flatMap(tuple2 -> authControlService.updateDefaultRole(tuple2.getT1().getId(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ri), BlueResponse.class));
+                                .body(success(ri, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -118,7 +118,7 @@ public final class RoleManagerHandler {
                 .flatMap(roleService::selectRoleManagerInfoPageMonoByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(pmr), BlueResponse.class));
+                                .body(success(pmr, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -134,7 +134,7 @@ public final class RoleManagerHandler {
                         roleResRelationService.getAuthorityMonoByRoleId(ip.getId()))
                 .flatMap(auth ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(auth), BlueResponse.class));
+                                .body(success(auth, serverRequest), BlueResponse.class));
     }
 
 }

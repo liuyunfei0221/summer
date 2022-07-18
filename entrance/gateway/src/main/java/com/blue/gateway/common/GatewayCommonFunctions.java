@@ -1,6 +1,6 @@
 package com.blue.gateway.common;
 
-import com.blue.basic.common.reactive.ReactiveCommonFunctions;
+import com.blue.basic.common.base.CommonFunctions;
 import com.blue.basic.model.exps.BlueException;
 import org.springframework.cloud.gateway.filter.factory.rewrite.CachedBodyOutputMessage;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -22,7 +22,7 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
-public final class GatewayCommonFunctions extends ReactiveCommonFunctions {
+public final class GatewayCommonFunctions extends CommonFunctions {
 
     private static final Logger LOGGER = getLogger(GatewayCommonFunctions.class);
 

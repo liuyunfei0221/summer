@@ -8,6 +8,11 @@ package com.blue.template.api.conf;
 @SuppressWarnings({"unused", "JavaDoc"})
 public interface PackageFileWriterConf {
 
-
+    /**
+     * format path
+     *
+     * @return
+     */
+    String getBasePackagePath();
 
 }

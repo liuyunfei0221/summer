@@ -1,4 +1,4 @@
-package com.blue.basic.common.reactive;
+package com.blue.basic.common.base;
 
 import com.blue.basic.model.common.TuringData;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -15,7 +15,7 @@ import static reactor.core.publisher.Mono.just;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public final class TuringDataGetterForReactive {
+public final class TuringDataGetter {
 
     /**
      * get turing data from request

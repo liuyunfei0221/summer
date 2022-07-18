@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -81,7 +81,7 @@ public class RegionTestHandler {
 //        System.err.println(count);
 
         return ok().contentType(APPLICATION_JSON)
-                .body(success("OK"), BlueResponse.class);
+                .body(success("OK", serverRequest), BlueResponse.class);
     }
 
     public Mono<ServerResponse> region(ServerRequest serverRequest) {
@@ -111,7 +111,7 @@ public class RegionTestHandler {
                     return just(res);
                 }).flatMap(res ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(res), BlueResponse.class)
+                                .body(success(res, serverRequest), BlueResponse.class)
                 );
     }
 

@@ -1,34 +1,32 @@
 package com.blue.template.api.conf;
 
-import java.util.List;
-
 /**
  * package file writer params
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc"})
-public class PackageFileWriterConfParams implements StringContentWriterConf {
+public class PackageFileWriterConfParams implements PackageFileWriterConf {
 
-    private List<StringContentAttr> stringContentAttrs;
+    private String basePackagePath;
 
     public PackageFileWriterConfParams() {
     }
 
     @Override
-    public List<StringContentAttr> getStringContentAttrs() {
-        return stringContentAttrs;
+    public String getBasePackagePath() {
+        return basePackagePath;
     }
 
-    public void setStringContentAttrs(List<StringContentAttr> stringContentAttrs) {
-        this.stringContentAttrs = stringContentAttrs;
+    public void setBasePackagePath(String basePackagePath) {
+        this.basePackagePath = basePackagePath;
     }
 
     @Override
     public String toString() {
         return "PackageFileWriterConfParams{" +
-                "stringContentAttrs=" + stringContentAttrs +
+                "basePackagePath='" + basePackagePath + '\'' +
                 '}';
     }
-    
+
 }

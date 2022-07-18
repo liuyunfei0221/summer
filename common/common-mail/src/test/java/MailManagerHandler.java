@@ -18,7 +18,7 @@
 //import java.util.concurrent.CompletableFuture;
 //import java.util.stream.Stream;
 //
-//import static com.blue.basic.common.reactive.ReactiveCommonFunctions.generate;
+//import static com.blue.basic.common.base.CommonFunctions.generate;
 //import static com.blue.basic.constant.base.ResponseElement.OK;
 //import static com.blue.basic.constant.media.MailHeader.LIST_UNSUBSCRIBE;
 //import static com.blue.mail.common.MailReader.parseMessage;

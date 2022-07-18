@@ -1,4 +1,4 @@
-package com.blue.basic.common.reactive;
+package com.blue.basic.common.base;
 
 
 import com.blue.basic.model.exps.BlueException;

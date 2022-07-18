@@ -17,12 +17,10 @@ import org.springframework.transaction.interceptor.RollbackRuleAttribute;
 import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
 
-import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
-import static com.blue.database.api.generator.BlueDataAccessGenerator.generateTxManager;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -41,11 +39,6 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 public class BlueTransactionConfiguration {
 
     private static final Logger LOGGER = getLogger(BlueTransactionConfiguration.class);
-
-    @Bean
-    TransactionManager txManager(DataSource dataSource) {
-        return generateTxManager(dataSource);
-    }
 
     @Bean
     @ConditionalOnBean(value = {TransConf.class})

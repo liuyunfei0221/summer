@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 import static com.blue.basic.common.message.ElementProcessor.selectAllElement;
 import static com.blue.basic.common.message.MessageProcessor.*;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
@@ -32,7 +32,7 @@ public final class LanguageManagerHandler {
         return just(supportLanguages())
                 .flatMap(ls ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ls), BlueResponse.class)
+                                .body(success(ls, serverRequest), BlueResponse.class)
                 );
     }
 
@@ -46,7 +46,7 @@ public final class LanguageManagerHandler {
         return just(defaultLanguage())
                 .flatMap(ls ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ls), BlueResponse.class)
+                                .body(success(ls, serverRequest), BlueResponse.class)
                 );
     }
 
@@ -60,7 +60,7 @@ public final class LanguageManagerHandler {
         return just(listMessage(serverRequest))
                 .flatMap(ls ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ls), BlueResponse.class)
+                                .body(success(ls, serverRequest), BlueResponse.class)
                 );
     }
 
@@ -74,7 +74,7 @@ public final class LanguageManagerHandler {
         return just(selectAllElement(serverRequest))
                 .flatMap(ls ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ls), BlueResponse.class)
+                                .body(success(ls, serverRequest), BlueResponse.class)
                 );
     }
 

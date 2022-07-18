@@ -9,7 +9,6 @@ import com.blue.identity.core.exp.IdentityException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
-import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.shardingsphere.api.config.sharding.ShardingRuleConfiguration;
 import org.apache.shardingsphere.api.config.sharding.TableRuleConfiguration;
@@ -41,6 +40,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
+import static org.apache.ibatis.session.ExecutorType.BATCH;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -126,16 +126,6 @@ public final class BlueDataAccessGenerator {
     }
 
     /**
-     * generate transaction manager
-     *
-     * @param dataSource
-     * @return
-     */
-    public static TransactionManager generateTxManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
-    }
-
-    /**
      * generate sqlsession factory
      *
      * @param dataSource
@@ -194,8 +184,18 @@ public final class BlueDataAccessGenerator {
      * @param sqlSessionFactory
      * @return
      */
-    public static SqlSessionTemplate generateSqlSessionTemplate(SqlSessionFactory sqlSessionFactory, ExecutorType executorType) {
-        return new SqlSessionTemplate(sqlSessionFactory, executorType);
+    public static SqlSessionTemplate generateSqlSessionTemplate(SqlSessionFactory sqlSessionFactory, DataAccessConf dataAccessConf) {
+        return new SqlSessionTemplate(sqlSessionFactory, ofNullable(dataAccessConf).map(DataAccessConf::getDefaultExecutorType).orElse(BATCH));
+    }
+
+    /**
+     * generate transaction manager
+     *
+     * @param dataSource
+     * @return
+     */
+    public static TransactionManager generateTxManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 
     /**

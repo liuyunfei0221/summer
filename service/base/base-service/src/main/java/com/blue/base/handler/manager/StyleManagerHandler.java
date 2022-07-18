@@ -12,9 +12,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.base.constant.BaseTypeReference.PAGE_MODEL_FOR_STYLE_CONDITION_TYPE;
-import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.basic.common.reactive.PathVariableGetter.getLongVariableReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.AccessGetter.getAccessReact;
+import static com.blue.basic.common.base.PathVariableGetter.getLongVariableReact;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.ID;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -49,7 +49,7 @@ public final class StyleManagerHandler {
                 .flatMap(tuple2 -> just(styleService.insertStyle(tuple2.getT1(), tuple2.getT2().getId())))
                 .flatMap(si ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(si), BlueResponse.class));
+                                .body(success(si, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -65,7 +65,7 @@ public final class StyleManagerHandler {
                 .flatMap(tuple2 -> just(styleService.updateStyle(tuple2.getT1(), tuple2.getT2().getId())))
                 .flatMap(si ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(si), BlueResponse.class));
+                                .body(success(si, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -79,7 +79,7 @@ public final class StyleManagerHandler {
                 .flatMap(id -> just(styleService.deleteStyle(id)))
                 .flatMap(si ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(si), BlueResponse.class));
+                                .body(success(si, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -95,7 +95,7 @@ public final class StyleManagerHandler {
                 .flatMap(tuple2 -> just(styleService.updateActiveStyle(tuple2.getT1().getId(), tuple2.getT2().getId())))
                 .flatMap(si ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(si), BlueResponse.class));
+                                .body(success(si, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -110,7 +110,7 @@ public final class StyleManagerHandler {
                 .flatMap(styleService::selectStyleManagerInfoPageMonoByPageAndCondition)
                 .flatMap(smr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(smr), BlueResponse.class));
+                                .body(success(smr, serverRequest), BlueResponse.class));
     }
 
 }

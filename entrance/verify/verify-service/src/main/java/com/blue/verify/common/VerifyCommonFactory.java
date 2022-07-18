@@ -1,6 +1,6 @@
 package com.blue.verify.common;
 
-import com.blue.basic.common.reactive.ReactiveCommonFunctions;
+import com.blue.basic.common.base.CommonFunctions;
 import com.blue.basic.model.exps.BlueException;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
@@ -26,7 +26,7 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces"})
-public final class VerifyCommonFactory extends ReactiveCommonFunctions {
+public final class VerifyCommonFactory extends CommonFunctions {
 
     private static final Logger LOGGER = getLogger(VerifyCommonFactory.class);
 

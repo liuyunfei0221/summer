@@ -12,8 +12,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.base.constant.BaseTypeReference.PAGE_MODEL_FOR_STATE_CONDITION_TYPE;
-import static com.blue.basic.common.reactive.PathVariableGetter.getLongVariableReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.PathVariableGetter.getLongVariableReact;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.ID;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -51,7 +51,7 @@ public class StateManagerHandler {
                 .flatMap(regionControlService::insertState)
                 .flatMap(si ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(si), BlueResponse.class));
+                                .body(success(si, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -66,7 +66,7 @@ public class StateManagerHandler {
                 .flatMap(regionControlService::updateState)
                 .flatMap(si ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(si), BlueResponse.class));
+                                .body(success(si, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -80,7 +80,7 @@ public class StateManagerHandler {
                 .flatMap(regionControlService::deleteState)
                 .flatMap(si ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(si), BlueResponse.class));
+                                .body(success(si, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -95,7 +95,7 @@ public class StateManagerHandler {
                 .flatMap(stateService::selectStatePageMonoByPageAndCondition)
                 .flatMap(pms ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(pms), BlueResponse.class));
+                                .body(success(pms, serverRequest), BlueResponse.class));
     }
 
 }

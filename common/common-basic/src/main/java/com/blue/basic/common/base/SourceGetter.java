@@ -1,4 +1,4 @@
-package com.blue.basic.common.reactive;
+package com.blue.basic.common.base;
 
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -16,7 +16,7 @@ import static reactor.core.publisher.Mono.just;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public final class SourceGetterForReactive {
+public final class SourceGetter {
 
     private static final String DEFAULT_SOURCE = APP.identity;
 

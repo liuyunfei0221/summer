@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.Symbol.*;

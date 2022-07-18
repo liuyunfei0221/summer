@@ -1,4 +1,4 @@
-package com.blue.basic.common.reactive;
+package com.blue.basic.common.base;
 
 import com.blue.basic.model.common.Access;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -17,7 +17,7 @@ import static reactor.core.publisher.Mono.just;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public final class AccessGetterForReactive {
+public final class AccessGetter {
 
     /**
      * get access from request

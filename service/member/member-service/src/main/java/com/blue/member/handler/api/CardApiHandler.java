@@ -10,9 +10,9 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.basic.common.reactive.PathVariableGetter.getLongVariableReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.AccessGetter.getAccessReact;
+import static com.blue.basic.common.base.PathVariableGetter.getLongVariableReact;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.ID;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -47,7 +47,7 @@ public final class CardApiHandler {
                 .flatMap(tuple2 -> cardService.insertCard(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ci), BlueResponse.class));
+                                .body(success(ci, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -63,7 +63,7 @@ public final class CardApiHandler {
                 .flatMap(tuple2 -> cardService.updateCard(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ci), BlueResponse.class));
+                                .body(success(ci, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -77,7 +77,7 @@ public final class CardApiHandler {
                 .flatMap(tuple2 -> cardService.deleteCard(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ci ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ci), BlueResponse.class));
+                                .body(success(ci, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -91,7 +91,7 @@ public final class CardApiHandler {
                 .flatMap(acc -> cardService.selectCardInfoMonoByMemberId(acc.getId()))
                 .flatMap(mai ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(mai), BlueResponse.class));
+                                .body(success(mai, serverRequest), BlueResponse.class));
     }
 
 }

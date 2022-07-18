@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.FileGetter.getFiles;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
+import static com.blue.basic.common.base.CommonFunctions.getAcceptLanguages;
 import static com.blue.basic.constant.common.ElementKey.DEFAULT;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.SummerAttr.LANGUAGE;

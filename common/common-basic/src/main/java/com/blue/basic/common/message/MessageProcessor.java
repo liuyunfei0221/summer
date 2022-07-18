@@ -18,7 +18,7 @@ import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.FileGetter.getFiles;
 import static com.blue.basic.common.base.PropertiesProcessor.parseProp;
 import static com.blue.basic.common.message.ElementProcessor.resolveToValues;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.getAcceptLanguages;
+import static com.blue.basic.common.base.CommonFunctions.getAcceptLanguages;
 import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.SummerAttr.LANGUAGE;

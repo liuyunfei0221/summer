@@ -12,8 +12,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.base.constant.BaseTypeReference.PAGE_MODEL_FOR_AREA_CONDITION_TYPE;
-import static com.blue.basic.common.reactive.PathVariableGetter.getLongVariableReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.PathVariableGetter.getLongVariableReact;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.ID;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -51,7 +51,7 @@ public class AreaManagerHandler {
                 .flatMap(regionControlService::insertArea)
                 .flatMap(ai ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ai), BlueResponse.class));
+                                .body(success(ai, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -66,7 +66,7 @@ public class AreaManagerHandler {
                 .flatMap(regionControlService::updateArea)
                 .flatMap(ai ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ai), BlueResponse.class));
+                                .body(success(ai, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -80,7 +80,7 @@ public class AreaManagerHandler {
                 .flatMap(regionControlService::deleteArea)
                 .flatMap(ai ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(ai), BlueResponse.class));
+                                .body(success(ai, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -95,7 +95,7 @@ public class AreaManagerHandler {
                 .flatMap(areaService::selectAreaPageMonoByPageAndCondition)
                 .flatMap(pma ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(pma), BlueResponse.class));
+                                .body(success(pma, serverRequest), BlueResponse.class));
     }
 
 }

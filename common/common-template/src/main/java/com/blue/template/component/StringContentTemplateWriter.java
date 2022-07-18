@@ -7,19 +7,24 @@ import com.blue.template.model.WriterElement;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import reactor.util.Logger;
 
 import java.io.Writer;
 import java.util.*;
 
 import static com.blue.basic.common.base.BlueChecker.*;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static reactor.util.Loggers.getLogger;
 
 /**
  * template writer from string contents
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 public class StringContentTemplateWriter implements TemplateWriter {
+
+    private static final Logger LOGGER = getLogger(StringContentTemplateWriter.class);
 
     private static final Map<String, Object> EMPTY_DATA = new HashMap<>();
 
@@ -97,9 +102,8 @@ public class StringContentTemplateWriter implements TemplateWriter {
      * @param stringContentWriterConf
      */
     public void reloadTemplates(StringContentWriterConf stringContentWriterConf) {
-        WriterElement writerElement = generateElement(stringContentWriterConf);
-
         synchronized (this) {
+            WriterElement writerElement = generateElement(stringContentWriterConf);
             this.configuration = writerElement.getConfiguration();
             this.templateNames = writerElement.getTemplateNames();
         }
@@ -112,6 +116,8 @@ public class StringContentTemplateWriter implements TemplateWriter {
      * @return
      */
     private static WriterElement generateElement(StringContentWriterConf stringContentWriterConf) {
+        LOGGER.info("static WriterElement generateElement(StringContentWriterConf stringContentWriterConf), stringContentWriterConf = {}", stringContentWriterConf);
+
         confAssert(stringContentWriterConf);
 
         List<StringContentAttr> stringContentAttrs = stringContentWriterConf.getStringContentAttrs();
@@ -128,6 +134,7 @@ public class StringContentTemplateWriter implements TemplateWriter {
 
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_31);
         configuration.setTemplateLoader(stringTemplateLoader);
+        configuration.setDefaultEncoding(UTF_8.name());
 
         return new WriterElement(configuration, templateNames);
     }

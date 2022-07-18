@@ -6,11 +6,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.TransactionManager;
 
 import javax.sql.DataSource;
 
 import static com.blue.database.api.generator.BlueDataAccessGenerator.*;
-import static org.apache.ibatis.session.ExecutorType.BATCH;
 
 
 /**
@@ -42,7 +42,12 @@ public class BlueDataAccessConfiguration {
 
     @Bean
     SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
-        return generateSqlSessionTemplate(sqlSessionFactory, BATCH);
+        return generateSqlSessionTemplate(sqlSessionFactory, dataAccessConf);
+    }
+
+    @Bean
+    TransactionManager txManager(DataSource dataSource) {
+        return generateTxManager(dataSource);
     }
 
 }

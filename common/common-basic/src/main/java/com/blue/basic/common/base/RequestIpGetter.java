@@ -1,10 +1,10 @@
-package com.blue.basic.common.reactive;
+package com.blue.basic.common.base;
 
 import com.blue.basic.common.base.BlueChecker;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.getIp;
+import static com.blue.basic.common.base.CommonFunctions.getIp;
 import static com.blue.basic.constant.common.BlueHeader.REQUEST_IP;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
@@ -15,7 +15,7 @@ import static reactor.core.publisher.Mono.just;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public class RequestIpGetterForReactive {
+public class RequestIpGetter {
 
     /**
      * get req ip from request

@@ -9,8 +9,8 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
-import static com.blue.basic.common.reactive.PathVariableGetter.getIntegerVariable;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.PathVariableGetter.getIntegerVariable;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -42,7 +42,7 @@ public final class BulletinApiHandler {
         return bulletinService.selectActiveBulletinInfoMonoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
                 .flatMap(bis -> ok()
                         .contentType(APPLICATION_JSON)
-                        .body(success(bis), BlueResponse.class)
+                        .body(success(bis, serverRequest), BlueResponse.class)
                 );
     }
 

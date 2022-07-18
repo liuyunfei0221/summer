@@ -11,8 +11,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import static com.blue.basic.common.base.ConstantProcessor.assertSource;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
-import static com.blue.basic.common.reactive.SourceGetterForReactive.getSource;
+import static com.blue.basic.common.base.CommonFunctions.success;
+import static com.blue.basic.common.base.SourceGetter.getSource;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.member.SourceType.APP;
 import static java.util.Optional.ofNullable;
@@ -55,7 +55,7 @@ public final class MemberRegistryApiHandler {
                 .flatMap(mbi ->
                         ok()
                                 .contentType(APPLICATION_JSON)
-                                .body(success(mbi), BlueResponse.class));
+                                .body(success(mbi, serverRequest), BlueResponse.class));
     }
 
 }

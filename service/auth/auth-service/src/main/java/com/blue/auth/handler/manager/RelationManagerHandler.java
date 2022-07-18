@@ -11,8 +11,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.success;
+import static com.blue.basic.common.base.AccessGetter.getAccessReact;
+import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -46,7 +46,7 @@ public class RelationManagerHandler {
                 .flatMap(tuple2 -> authControlService.updateAuthorityByRole(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(a ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(a), BlueResponse.class));
+                                .body(success(a, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -62,7 +62,7 @@ public class RelationManagerHandler {
                 .flatMap(tuple2 -> authControlService.insertAuthorityByMember(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(a ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(a), BlueResponse.class));
+                                .body(success(a, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -78,7 +78,7 @@ public class RelationManagerHandler {
                 .flatMap(tuple2 -> authControlService.updateAuthoritiesByMember(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(a ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(a), BlueResponse.class));
+                                .body(success(a, serverRequest), BlueResponse.class));
     }
 
     /**
@@ -94,7 +94,7 @@ public class RelationManagerHandler {
                 .flatMap(tuple2 -> authControlService.deleteAuthorityByMember(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(a ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(a), BlueResponse.class));
+                                .body(success(a, serverRequest), BlueResponse.class));
     }
 
 }

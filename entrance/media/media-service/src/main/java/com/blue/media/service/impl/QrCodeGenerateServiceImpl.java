@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-import static com.blue.basic.common.reactive.AccessGetterForReactive.getAccessReact;
+import static com.blue.basic.common.base.AccessGetter.getAccessReact;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.FORBIDDEN;
 import static reactor.core.publisher.Mono.*;

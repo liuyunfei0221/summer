@@ -1,6 +1,6 @@
 package com.blue.media.common;
 
-import com.blue.basic.common.reactive.ReactiveCommonFunctions;
+import com.blue.basic.common.base.CommonFunctions;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.common.part.PartInfoProcessor;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -42,7 +42,7 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces"})
-public final class MediaCommonFunctions extends ReactiveCommonFunctions {
+public final class MediaCommonFunctions extends CommonFunctions {
 
     private static final Logger LOGGER = getLogger(MediaCommonFunctions.class);
 

@@ -1,4 +1,4 @@
-package com.blue.basic.common.reactive;
+package com.blue.basic.common.base;
 
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
@@ -15,7 +15,7 @@ import static reactor.core.publisher.Mono.just;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public class MetadataGetterForReactive {
+public class MetadataGetter {
 
     /**
      * get metadata from request

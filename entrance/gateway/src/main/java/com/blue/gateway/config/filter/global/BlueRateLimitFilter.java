@@ -13,7 +13,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
-import static com.blue.basic.common.reactive.ReactiveCommonFunctions.SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER;
+import static com.blue.basic.common.base.CommonFunctions.SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_RATE_LIMIT;
 import static reactor.core.publisher.Mono.error;
