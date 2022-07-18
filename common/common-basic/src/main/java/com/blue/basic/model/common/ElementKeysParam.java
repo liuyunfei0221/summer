@@ -15,7 +15,7 @@ import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
-public final class ElememtKeysParam implements Serializable, Asserter {
+public final class ElementKeysParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 2734920052156382753L;
 
@@ -24,10 +24,10 @@ public final class ElememtKeysParam implements Serializable, Asserter {
      */
     private List<String> keys;
 
-    public ElememtKeysParam() {
+    public ElementKeysParam() {
     }
 
-    public ElememtKeysParam(List<String> keys) {
+    public ElementKeysParam(List<String> keys) {
         this.keys = keys;
     }
 
@@ -47,7 +47,7 @@ public final class ElememtKeysParam implements Serializable, Asserter {
 
     @Override
     public String toString() {
-        return "ElememtKeysParam{" +
+        return "ElementKeysParam{" +
                 "keys=" + keys +
                 '}';
     }

@@ -65,7 +65,7 @@ data:
       singleTables: [ bulletin,undo_log ]
   safeRowBoundsEnabled: false
   safeResultHandlerEnabled: false
-  mapUnderscoreToCamelCase: false
+  mapUnderscoreToCamelCase: true
   aggressiveLazyLoading: false
   multipleResultSetsEnabled: false
   useGeneratedKeys: false

@@ -81,7 +81,7 @@ public final class ElementProcessor {
         return I_18_N.get(DEFAULT_LANGUAGE);
     };
 
-    private static final BiFunction<Map<String, String>, List<String>, Map<String, String>> TARGETS_GETTER = (allElement, keys) -> {
+    private static final BiFunction<List<String>, Map<String, String>, Map<String, String>> TARGETS_GETTER = (keys, allElement) -> {
         if (BlueChecker.isNotEmpty(allElement) && BlueChecker.isNotEmpty(keys)) {
             Map<String, String> res = new HashMap<>(keys.size(), 1.0f);
             String value;
@@ -147,29 +147,29 @@ public final class ElementProcessor {
      * @return
      */
     public static Map<String, String> selectElement(List<String> keys) {
-        return BlueChecker.isNotEmpty(keys) ? TARGETS_GETTER.apply(ELEMENT_GETTER.apply(null), keys) : emptyMap();
+        return BlueChecker.isNotEmpty(keys) ? TARGETS_GETTER.apply(keys, ELEMENT_GETTER.apply(null)) : emptyMap();
     }
 
     /**
      * select elements by languages and keys
      *
-     * @param languages
      * @param keys
+     * @param languages
      * @return
      */
-    public static Map<String, String> selectElement(List<String> languages, List<String> keys) {
-        return BlueChecker.isNotEmpty(keys) ? TARGETS_GETTER.apply(ELEMENT_GETTER.apply(languages), keys) : emptyMap();
+    public static Map<String, String> selectElement(List<String> keys, List<String> languages) {
+        return BlueChecker.isNotEmpty(keys) ? TARGETS_GETTER.apply(keys, ELEMENT_GETTER.apply(languages)) : emptyMap();
     }
 
     /**
      * select elements by request and request
      *
-     * @param serverRequest
      * @param keys
+     * @param serverRequest
      * @return
      */
-    public static Map<String, String> selectElement(ServerRequest serverRequest, List<String> keys) {
-        return selectElement(getAcceptLanguages(serverRequest), keys);
+    public static Map<String, String> selectElement(List<String> keys, ServerRequest serverRequest) {
+        return selectElement(keys, getAcceptLanguages(serverRequest));
     }
 
     /**

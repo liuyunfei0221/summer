@@ -1,7 +1,7 @@
 package com.blue.base.handler.api;
 
 import com.blue.basic.model.common.BlueResponse;
-import com.blue.basic.model.common.ElememtKeysParam;
+import com.blue.basic.model.common.ElementKeysParam;
 import com.blue.basic.model.exps.BlueException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -48,11 +48,11 @@ public final class ElementApiHandler {
      * @return
      */
     public Mono<ServerResponse> selectByKeys(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(ElememtKeysParam.class)
+        return serverRequest.bodyToMono(ElementKeysParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(ep -> {
                     ep.asserts();
-                    return just(selectElement(serverRequest, ep.getKeys()));
+                    return just(selectElement(ep.getKeys(), serverRequest));
                 })
                 .flatMap(element ->
                         ok().contentType(APPLICATION_JSON)

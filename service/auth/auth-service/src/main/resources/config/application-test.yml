@@ -112,7 +112,7 @@ data:
       singleTables: [ resource,role,role_res_relation ]
   safeRowBoundsEnabled: false
   safeResultHandlerEnabled: false
-  mapUnderscoreToCamelCase: false
+  mapUnderscoreToCamelCase: true
   aggressiveLazyLoading: false
   multipleResultSetsEnabled: false
   useGeneratedKeys: false

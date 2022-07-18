@@ -90,7 +90,7 @@ data:
   singleDatabases:
   safeRowBoundsEnabled: false
   safeResultHandlerEnabled: false
-  mapUnderscoreToCamelCase: false
+  mapUnderscoreToCamelCase: true
   aggressiveLazyLoading: false
   multipleResultSetsEnabled: false
   useGeneratedKeys: false
